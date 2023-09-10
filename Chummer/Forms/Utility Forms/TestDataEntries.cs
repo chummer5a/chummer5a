@@ -862,11 +862,11 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                                    _objCharacter.SkillsSection.Skills.ForEachWithBreak(objSkill =>
                                     {
                                         if (objSkill.Name == objXmlSkill.InnerText)
                                         {
-                                            if (objXmlSkill.Attributes["spec"] != null)
+                                            if (objXmlSkill.Attributes?["spec"] != null)
                                             {
                                                 //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
                                                 //objSkill.Specializations.Add(objSpec);
@@ -875,9 +875,11 @@ namespace Chummer
                                             //if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
                                             //    objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
                                             //objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-                                            break;
+                                            return false;
                                         }
-                                    }
+
+                                        return true;
+                                    });
                                 }
                             }
 
@@ -919,11 +921,12 @@ namespace Chummer
                             {
                                 int intMaxRating = intForce;
                                 // Determine the highest Skill Rating the Critter has.
-                                foreach (int intLoopRatingMaximum in _objCharacter.SkillsSection.Skills.Select(x => x.RatingMaximum))
+                                _objCharacter.SkillsSection.Skills.ForEach(objSkill =>
                                 {
+                                    int intLoopRatingMaximum = objSkill.RatingMaximum;
                                     if (intLoopRatingMaximum > intMaxRating)
                                         intMaxRating = intLoopRatingMaximum;
-                                }
+                                });
 
                                 // Now that we know the upper limit, set all of the Skill Rating Maximums to match.
                                 //foreach (Skill objSkill in _objCharacter.Skills)

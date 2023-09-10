@@ -17654,26 +17654,57 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Get all of a Character's CharacterAttributes.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public IEnumerable<CharacterAttrib> GetAllAttributes(CancellationToken token = default)
+        {
+            using (EnterReadLock.Enter(LockObject, token))
+            using (EnterReadLock.Enter(AttributeSection.LockObject, token))
+            {
+                using (EnterReadLock.Enter(AttributeSection.AttributeList.LockObject, token))
+                {
+                    foreach (CharacterAttrib objAttribute in AttributeSection.AttributeList)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        yield return objAttribute;
+                    }
+                }
+                using (EnterReadLock.Enter(AttributeSection.SpecialAttributeList.LockObject, token))
+                {
+                    foreach (CharacterAttrib objAttribute in AttributeSection.SpecialAttributeList)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        yield return objAttribute;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Get all CharacterAttributes that have a particular abbreviation.
         /// </summary>
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
         /// Mostly expected to be used for gutting Mystic Adept power points.</param>
-        public IEnumerable<CharacterAttrib> GetAllAttributes(string strAttribute, bool blnExplicit = false)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public IEnumerable<CharacterAttrib> GetAllAttributes(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute)
                                                && !blnExplicit)
                     strAttribute = "MAG";
                 foreach (CharacterAttrib objLoop in AttributeSection.AttributeList)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objLoop.Abbrev == strAttribute)
                         yield return objLoop;
                 }
 
                 foreach (CharacterAttrib objLoop in AttributeSection.SpecialAttributeList)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objLoop.Abbrev == strAttribute)
                         yield return objLoop;
                 }

@@ -1863,10 +1863,13 @@ namespace Chummer
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false)
         {
             using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(_objCharacter.Improvements.LockObject))
             {
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(
-                             i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
+                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)
+                        continue;
+
                     switch (objImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.SpellDicePool:
@@ -1874,20 +1877,18 @@ namespace Chummer
                                 || objImprovement.ImprovedName == SourceID.ToString())
                             {
                                 yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
+                                if (blnExitAfterFirst) yield break;
                             }
 
                             break;
 
                         case Improvement.ImprovementType.ReplaceSkillSpell:
                             if (objImprovement.ImprovedName == Name
-                                || objImprovement.ImprovedName == SourceID.ToString() ||
-                                string.IsNullOrEmpty(objImprovement.ImprovedName))
+                                || objImprovement.ImprovedName == SourceID.ToString()
+                                || string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
                                 yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
+                                if (blnExitAfterFirst) yield break;
                             }
 
                             break;
@@ -1906,16 +1907,14 @@ namespace Chummer
                                     if (bestFocus != null)
                                     {
                                         yield return bestFocus;
-                                        if (blnExitAfterFirst)
-                                            yield break;
+                                        if (blnExitAfterFirst) yield break;
                                     }
 
                                     break;
                                 }
 
                                 yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
+                                if (blnExitAfterFirst) yield break;
                             }
 
                             break;
@@ -1925,8 +1924,7 @@ namespace Chummer
                             if (objImprovement.ImprovedName == Category)
                             {
                                 yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
+                                if (blnExitAfterFirst) yield break;
                             }
 
                             break;
@@ -1957,8 +1955,7 @@ namespace Chummer
                                 if (blnAllow)
                                 {
                                     yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
+                                    if (blnExitAfterFirst) yield break;
                                 }
                             }
 
@@ -1967,10 +1964,8 @@ namespace Chummer
                         case Improvement.ImprovementType.DrainValue:
                         {
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName)
-                                || objImprovement.ImprovedName == Name)
-                                yield return objImprovement;
-                            if (blnExitAfterFirst)
-                                yield break;
+                                || objImprovement.ImprovedName == Name) yield return objImprovement;
+                            if (blnExitAfterFirst) yield break;
                         }
                             break;
                     }

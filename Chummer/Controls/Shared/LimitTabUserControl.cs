@@ -170,33 +170,33 @@ namespace Chummer.UI.Shared
                     break;
                 default:
                 {
-                    // the limit modifier has a source
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
-                            objImprovement.SourceName != objSelectedNodeTag.ToString())
-                            continue;
-                        using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
-                                                                              .GetAsync(() => new EditNotes(
-                                                                                  objImprovement.Notes,
-                                                                                  objImprovement.NotesColor))
-                                                                              .ConfigureAwait(false))
+                        // the limit modifier has a source
+                        await _objCharacter.Improvements.ForEachAsync(async objImprovement =>
                         {
-                            if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false)
-                                != DialogResult.OK)
-                                continue;
+                            if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
+                                objImprovement.SourceName != objSelectedNodeTag.ToString())
+                                return;
+                            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
+                                       .GetAsync(() => new EditNotes(
+                                                     objImprovement.Notes,
+                                                     objImprovement.NotesColor))
+                                       .ConfigureAwait(false))
+                            {
+                                if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false)
+                                    != DialogResult.OK)
+                                    return;
 
-                            objImprovement.Notes = frmItemNotes.MyForm.Notes;
-                        }
+                                objImprovement.Notes = frmItemNotes.MyForm.Notes;
+                            }
 
-                        string strTooltip = objImprovement.Notes.WordWrap();
-                        await treLimit.DoThreadSafeAsync(() =>
-                        {
-                            objSelectedNode.ForeColor = objImprovement.PreferredColor;
-                            objSelectedNode.ToolTipText = strTooltip;
+                            string strTooltip = objImprovement.Notes.WordWrap();
+                            await treLimit.DoThreadSafeAsync(() =>
+                            {
+                                objSelectedNode.ForeColor = objImprovement.PreferredColor;
+                                objSelectedNode.ToolTipText = strTooltip;
+                            }).ConfigureAwait(false);
+                            MakeDirty?.Invoke(this, EventArgs.Empty);
                         }).ConfigureAwait(false);
-                        MakeDirty?.Invoke(this, EventArgs.Empty);
-                    }
 
                     break;
                 }
@@ -255,7 +255,7 @@ namespace Chummer.UI.Shared
                 await treLimit.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
 
                 // Add Limit Modifiers.
-                foreach (LimitModifier objLimitModifier in _objCharacter.LimitModifiers)
+                await _objCharacter.LimitModifiers.ForEachAsync(async objLimitModifier =>
                 {
                     int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                     TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
@@ -270,28 +270,30 @@ namespace Chummer.UI.Shared
                                                             : cmsLimitModifierNotesOnly));
                         }
                     }, token: token).ConfigureAwait(false);
-                }
+                }, token).ConfigureAwait(false);
 
                 // Add Limit Modifiers from Improvements
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Custom))
+                await _objCharacter.Improvements.ForEachAsync(async objImprovement =>
                 {
+                    if (objImprovement.ImproveSource != Improvement.ImprovementSource.Custom)
+                        return;
                     int intTargetLimit = -1;
                     switch (objImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.LimitModifier:
-                            intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
+                            intTargetLimit = (int) Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
                             break;
 
                         case Improvement.ImprovementType.PhysicalLimit:
-                            intTargetLimit = (int)LimitType.Physical;
+                            intTargetLimit = (int) LimitType.Physical;
                             break;
 
                         case Improvement.ImprovementType.MentalLimit:
-                            intTargetLimit = (int)LimitType.Mental;
+                            intTargetLimit = (int) LimitType.Mental;
                             break;
 
                         case Improvement.ImprovementType.SocialLimit:
-                            intTargetLimit = (int)LimitType.Social;
+                            intTargetLimit = (int) LimitType.Social;
                             break;
                     }
 
@@ -299,50 +301,53 @@ namespace Chummer.UI.Shared
                     {
                         TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                         string strName = objImprovement.UniqueName
-                                         + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
-                                         + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                        if (objImprovement.Value > 0)
-                            strName += '+';
+                                         + await LanguageManager.GetStringAsync("String_Colon", token: token)
+                                                                .ConfigureAwait(false)
+                                         + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                                .ConfigureAwait(false);
+                        if (objImprovement.Value > 0) strName += '+';
                         strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ',' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                                           + objImprovement.Condition;
+                            strName += ','
+                                       + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                              .ConfigureAwait(false) + objImprovement.Condition;
                         await treLimit.DoThreadSafeAsync(() =>
-                        {
-                            if (!objParentNode.Nodes.ContainsKey(strName))
-                            {
-                                TreeNode objNode = new TreeNode
-                                {
-                                    Name = strName,
-                                    Text = strName,
-                                    Tag = objImprovement.SourceName,
-                                    ContextMenuStrip = cmsLimitModifierNotesOnly,
-                                    ForeColor = objImprovement.PreferredColor,
-                                    ToolTipText = objImprovement.Notes.WordWrap()
-                                };
-                                if (string.IsNullOrEmpty(objImprovement.ImprovedName))
-                                {
-                                    switch (objImprovement.ImproveType)
-                                    {
-                                        case Improvement.ImprovementType.SocialLimit:
-                                            objImprovement.ImprovedName = "Social";
-                                            break;
+                                      {
+                                          if (!objParentNode.Nodes.ContainsKey(strName))
+                                          {
+                                              TreeNode objNode = new TreeNode
+                                              {
+                                                  Name = strName,
+                                                  Text = strName,
+                                                  Tag = objImprovement.SourceName,
+                                                  ContextMenuStrip = cmsLimitModifierNotesOnly,
+                                                  ForeColor = objImprovement.PreferredColor,
+                                                  ToolTipText = objImprovement.Notes.WordWrap()
+                                              };
+                                              if (string.IsNullOrEmpty(objImprovement.ImprovedName))
+                                              {
+                                                  switch (objImprovement.ImproveType)
+                                                  {
+                                                      case Improvement.ImprovementType.SocialLimit:
+                                                          objImprovement.ImprovedName = "Social";
+                                                          break;
 
-                                        case Improvement.ImprovementType.MentalLimit:
-                                            objImprovement.ImprovedName = "Mental";
-                                            break;
+                                                      case Improvement.ImprovementType.MentalLimit:
+                                                          objImprovement.ImprovedName = "Mental";
+                                                          break;
 
-                                        default:
-                                            objImprovement.ImprovedName = "Physical";
-                                            break;
-                                    }
-                                }
+                                                      default:
+                                                          objImprovement.ImprovedName = "Physical";
+                                                          break;
+                                                  }
+                                              }
 
-                                objParentNode.Nodes.Add(objNode);
-                            }
-                        }, token: token).ConfigureAwait(false);
+                                              objParentNode.Nodes.Add(objNode);
+                                          }
+                                      }, token: token)
+                                      .ConfigureAwait(false);
                     }
-                }
+                }, token).ConfigureAwait(false);
 
                 await treLimit.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token: token).ConfigureAwait(false);
             }

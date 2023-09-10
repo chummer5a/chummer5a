@@ -174,6 +174,36 @@ namespace Chummer
             return await ToListAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
+        public static bool Any<T>(this IAsyncEnumerable<T> objEnumerable, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool Any<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate.Invoke(objEnumerator.Current))
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public static async Task<bool> AnyAsync<T>(this IAsyncEnumerable<T> objEnumerable, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false))
@@ -248,6 +278,22 @@ namespace Chummer
             return await AnyAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
+        public static bool All<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!funcPredicate.Invoke(objEnumerator.Current))
+                        return false;
+                }
+            }
+            return true;
+        }
+
         public static async Task<bool> AllAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false))
@@ -303,6 +349,37 @@ namespace Chummer
         public static async Task<bool> AllAsync<T>(this Task<IEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
         {
             return await AllAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
+        public static int Count<T>(this IAsyncEnumerable<T> objEnumerable, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    ++intReturn;
+                }
+            }
+            return intReturn;
+        }
+
+        public static int Count<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate.Invoke(objEnumerator.Current))
+                        ++intReturn;
+                }
+            }
+            return intReturn;
         }
 
         public static async Task<int> CountAsync<T>(this IAsyncEnumerable<T> objEnumerable, CancellationToken token = default)
@@ -7710,12 +7787,34 @@ namespace Chummer
         /// <summary>
         /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
         /// </summary>
+        public static IEnumerable<T> GetAllDescendants<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<T> objEnumerator = objParentList.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    T objLoopCurrent = objEnumerator.Current;
+                    yield return objLoopCurrent;
+                    token.ThrowIfCancellationRequested();
+                    foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopCurrent).GetAllDescendants(funcGetChildrenMethod, token))
+                        yield return objLoopGrandchild;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
         public static async Task<List<T>> GetAllDescendantsAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             List<T> lstReturn = new List<T>();
             await objParentList.ForEachAsync(async objLoopChild =>
             {
                 lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
                 lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild)
                                          .GetAllDescendantsAsync(funcGetChildrenMethod, token).ConfigureAwait(false));
             }, token).ConfigureAwait(false);
@@ -7727,12 +7826,119 @@ namespace Chummer
         /// </summary>
         public static async Task<List<T>> GetAllDescendantsAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, Task<IAsyncEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             List<T> lstReturn = new List<T>();
             await objParentList.ForEachAsync(async objLoopChild =>
             {
                 lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
                 lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false))
                                          .GetAllDescendantsAsync(funcGetChildrenMethod, token).ConfigureAwait(false));
+            }, token).ConfigureAwait(false);
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static IEnumerable<T> DeepWhere<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<T> objEnumerator = objParentList.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    T objLoopCurrent = objEnumerator.Current;
+                    if (predicate.Invoke(objLoopCurrent))
+                        yield return objLoopCurrent;
+                    token.ThrowIfCancellationRequested();
+                    foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopCurrent).DeepWhere(funcGetChildrenMethod, predicate, token))
+                        yield return objLoopGrandchild;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhereAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList,
+                                                            Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod,
+                                                            Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            await objParentList.ForEachAsync(async objLoopChild =>
+            {
+                if (predicate(objLoopChild))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild)
+                                         .DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                                         .ConfigureAwait(false));
+            }, token).ConfigureAwait(false);
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhereAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList,
+                                                            Func<T, Task<IAsyncEnumerable<T>>> funcGetChildrenMethod,
+                                                            Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            await objParentList.ForEachAsync(async objLoopChild =>
+            {
+                if (predicate(objLoopChild))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false))
+                                         .DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                                         .ConfigureAwait(false));
+            }, token).ConfigureAwait(false);
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhereAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList,
+                                                            Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod,
+                                                            Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            await objParentList.ForEachAsync(async objLoopChild =>
+            {
+                if (await predicate(objLoopChild).ConfigureAwait(false))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild)
+                                         .DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                                         .ConfigureAwait(false));
+            }, token).ConfigureAwait(false);
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhereAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList,
+                                                            Func<T, Task<IAsyncEnumerable<T>>> funcGetChildrenMethod,
+                                                            Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            await objParentList.ForEachAsync(async objLoopChild =>
+            {
+                if (await predicate(objLoopChild).ConfigureAwait(false))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false))
+                                         .DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                                         .ConfigureAwait(false));
             }, token).ConfigureAwait(false);
             return lstReturn;
         }

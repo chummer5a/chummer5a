@@ -259,67 +259,69 @@ namespace Chummer
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setAddedExotics))
                     {
-                        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(async objSkill =>
                         {
                             if (!objSkill.IsExoticSkill)
-                                continue;
+                                return;
                             string strLoopName = await objSkill.GetNameAsync().ConfigureAwait(false);
                             if (setAddedExotics.Contains(strLoopName))
-                                continue;
+                                return;
                             ExoticSkill objExoticSkill = objSkill as ExoticSkill;
+                            if (objExoticSkill == null)
+                                return;
                             if (!string.IsNullOrEmpty(_strForceSkill) && _strForceSkill
                                 != await objExoticSkill.GetDictionaryKeyAsync().ConfigureAwait(false))
-                                continue;
+                                return;
                             int intBaseRating = await objSkill.GetTotalBaseRatingAsync().ConfigureAwait(false);
                             if (intBaseRating < _intMinimumRating || intBaseRating > _intMaximumRating)
-                                continue;
+                                return;
                             if (!string.IsNullOrEmpty(_strIncludeCategory)
                                 && !_strIncludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                        .Contains(objSkill.SkillCategory))
                             {
-                                continue;
+                                return;
                             }
 
                             if (!string.IsNullOrEmpty(_strExcludeCategory)
                                 && _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                       .Contains(objSkill.SkillCategory))
                             {
-                                continue;
+                                return;
                             }
 
                             if (!string.IsNullOrEmpty(_strIncludeSkillGroup)
                                 && !_strIncludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                          .Contains(objSkill.SkillGroup))
                             {
-                                continue;
+                                return;
                             }
 
                             if (!string.IsNullOrEmpty(_strExcludeSkillGroup)
                                 && _strExcludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                         .Contains(objSkill.SkillGroup))
                             {
-                                continue;
+                                return;
                             }
 
                             if (!string.IsNullOrEmpty(_strLimitToSkill)
                                 && !_strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                     .Contains(strLoopName))
                             {
-                                continue;
+                                return;
                             }
 
                             if (!string.IsNullOrEmpty(_strExcludeSkill)
                                 && _strExcludeSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                    .Contains(strLoopName))
                             {
-                                continue;
+                                return;
                             }
 
                             lstSkills.Add(new ListItem(new Tuple<string, bool>(strLoopName, true),
                                                        await objExoticSkill.GetCurrentDisplayNameAsync()
                                                                            .ConfigureAwait(false)));
                             setAddedExotics.Add(strLoopName);
-                        }
+                        }).ConfigureAwait(false);
                     }
                 }
 

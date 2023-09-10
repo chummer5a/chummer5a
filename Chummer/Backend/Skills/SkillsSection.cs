@@ -606,13 +606,15 @@ namespace Chummer.Backend.Skills
                 HashSet<Skill> setSkillsToRemove
                     = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName, token));
                 // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(
-                             x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
+                _objCharacter.Improvements.ForEach(objImprovement =>
                 {
+                    if (objImprovement.ImproveType != Improvement.ImprovementType.SpecialSkills)
+                        return;
                     FilterOption eFilterOption
-                        = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
-                    setSkillsToRemove.ExceptWith(GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target, token));
-                }
+                        = (FilterOption) Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                    setSkillsToRemove.ExceptWith(
+                        GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target, token));
+                }, token);
 
                 if (setSkillsToRemove.Count == 0)
                     return;

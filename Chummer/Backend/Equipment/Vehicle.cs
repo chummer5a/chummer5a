@@ -1583,8 +1583,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
                                               () => objLoopAttribute.TotalValue.ToString(
@@ -2363,18 +2362,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
                     sbdCost.Append(strCost);
-                    // Keeping enumerations separate reduces heap allocations
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        sbdCost.CheapReplace(strCost, objLoopAttribute.Abbrev,
-                                             () => objLoopAttribute.TotalValue.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base",
-                                             () => objLoopAttribute.TotalBase.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                    }
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdCost.CheapReplace(strCost, objLoopAttribute.Abbrev,
                                              () => objLoopAttribute.TotalValue.ToString(

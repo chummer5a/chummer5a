@@ -694,36 +694,34 @@ namespace Chummer
             {
                 if (_objCharacter.SkillsSection.KnowledgeSkills.Any(k => k.DictionaryKey == strSelectedSkill))
                 {
-                    foreach (string strName in _objCharacter.SkillsSection.KnowledgeSkills.Select(x => x.DictionaryKey))
+                    _objCharacter.SkillsSection.KnowledgeSkills.ForEach(objKnowledgeSkill =>
                     {
+                        string strName = objKnowledgeSkill.DictionaryKey;
                         if (strName != strSelectedSkill)
-                            continue;
+                            return;
                         // We've found the selected Skill.
                         if (!string.IsNullOrEmpty(strVal))
                         {
                             CreateImprovement(strName, _objImprovementSource, SourceName,
-                                              Improvement.ImprovementType.Skill,
-                                              _strUnique,
-                                              ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0, string.Empty,
-                                              blnAddToRating);
+                                              Improvement.ImprovementType.Skill, _strUnique,
+                                              ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0,
+                                              0, 0, string.Empty, blnAddToRating);
                         }
 
                         if (blnDisableSpec)
                         {
                             CreateImprovement(strName, _objImprovementSource, SourceName,
-                                              Improvement.ImprovementType.DisableSpecializationEffects,
-                                              _strUnique);
+                                              Improvement.ImprovementType.DisableSpecializationEffects, _strUnique);
                         }
 
                         if (!string.IsNullOrEmpty(strMax))
                         {
                             CreateImprovement(strName, _objImprovementSource, SourceName,
-                                              Improvement.ImprovementType.Skill,
-                                              _strUnique,
-                                              0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
-                                              blnAddToRating);
+                                              Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
+                                              ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0,
+                                              string.Empty, blnAddToRating);
                         }
-                    }
+                    });
                 }
                 else
                 {
@@ -3823,13 +3821,13 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Power objPower in _objCharacter.Powers)
+                        _objCharacter.Powers.ForEach(objPower =>
                         {
                             if (objPower.InternalId == SourceName)
                             {
                                 objPower.Extra = SelectedValue;
                             }
-                        }
+                        });
 
                         CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.WeaponCategoryDice, _strUnique, ImprovementManager.ValueToDec(_objCharacter, xmlSelectCategory["value"]?.InnerText, _intRating));
@@ -3861,17 +3859,20 @@ namespace Chummer
                 string strType = bonusNode.Attributes?["type"]?.InnerText;
                 if (!string.IsNullOrEmpty(strType))
                 {
-                    foreach (Weapon objWeapon in _objCharacter.Weapons.Where(x => x.RangeType == strType))
+                    _objCharacter.Weapons.ForEach(objWeapon =>
                     {
-                        lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
-                    }
+                        if (objWeapon.RangeType == strType)
+                        {
+                            lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
+                        }
+                    });
                 }
                 else
                 {
-                    foreach (Weapon objWeapon in _objCharacter.Weapons)
+                    _objCharacter.Weapons.ForEach(objWeapon =>
                     {
                         lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
-                    }
+                    });
                 }
 
                 Weapon objSelectedWeapon;

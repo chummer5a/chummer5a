@@ -102,25 +102,26 @@ namespace Chummer
             await RefreshBaseLifestyle().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshBaseLifestyle()
+        private async ValueTask RefreshBaseLifestyle(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_blnIsSelectLifestyleRefreshing)
                 return;
-            if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) < 0)
+            if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) < 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 _objLifestyle
-                    = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false))
+                    = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false))
                     .Value as Lifestyle;
                 string strDice = string.Format(GlobalSettings.CultureInfo,
-                                               await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf").ConfigureAwait(false),
+                                               await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf", token: token).ConfigureAwait(false),
                                                SelectedLifestyle?.Dice ?? 0);
-                await lblDice.DoThreadSafeAsync(x => x.Text = strDice).ConfigureAwait(false);
-                await RefreshCalculation().ConfigureAwait(false);
-                await cmdRoll.DoThreadSafeAsync(x => x.Enabled = SelectedLifestyle?.Dice > 0).ConfigureAwait(false);
-                await DoRoll().ConfigureAwait(false);
+                await lblDice.DoThreadSafeAsync(x => x.Text = strDice, token).ConfigureAwait(false);
+                await RefreshCalculation(token).ConfigureAwait(false);
+                await cmdRoll.DoThreadSafeAsync(x => x.Enabled = SelectedLifestyle?.Dice > 0, token).ConfigureAwait(false);
+                await DoRoll(token).ConfigureAwait(false);
             }
             finally
             {
@@ -128,12 +129,13 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshSelectLifestyle()
+        private async ValueTask RefreshSelectLifestyle(CancellationToken token = default)
         {
-            _blnIsSelectLifestyleRefreshing = true;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
+                _blnIsSelectLifestyleRefreshing = true;
                 try
                 {
                     Lifestyle objPreferredLifestyle = null;
@@ -141,13 +143,16 @@ namespace Chummer
                     Lifestyle objCurrentlySelectedLifestyle = await cboSelectLifestyle.DoThreadSafeFuncAsync(
                         x => x.SelectedIndex >= 0
                             ? ((ListItem) x.SelectedItem).Value as Lifestyle
-                            : null).ConfigureAwait(false);
+                            : null, token).ConfigureAwait(false);
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
                     {
-                        foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
+                        await _objCharacter.Lifestyles.ForEachAsync(async objLifestyle =>
                         {
-                            ListItem objLifestyleItem = new ListItem(objLifestyle, await objLifestyle.GetCurrentDisplayNameAsync().ConfigureAwait(false));
+                            ListItem objLifestyleItem = new ListItem(objLifestyle,
+                                                                     await objLifestyle
+                                                                           .GetCurrentDisplayNameAsync(token)
+                                                                           .ConfigureAwait(false));
                             lstLifestyleItems.Add(objLifestyleItem);
                             // We already selected a lifestyle, so keep the selection if possible despite the refresh
                             if (objCurrentlySelectedLifestyle != null)
@@ -161,18 +166,18 @@ namespace Chummer
                                 objPreferredLifestyleItem = objLifestyleItem;
                                 objPreferredLifestyle = objLifestyle;
                             }
-                        }
+                        }, token).ConfigureAwait(false);
 
                         lstLifestyleItems.Sort(CompareListItems.CompareNames);
 
-                        await cboSelectLifestyle.PopulateWithListItemsAsync(lstLifestyleItems).ConfigureAwait(false);
+                        await cboSelectLifestyle.PopulateWithListItemsAsync(lstLifestyleItems, token).ConfigureAwait(false);
                         await cboSelectLifestyle.DoThreadSafeAsync(x =>
                         {
                             x.SelectedItem = objPreferredLifestyleItem;
                             if (x.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
                                 x.SelectedIndex = 0;
                             x.Enabled = lstLifestyleItems.Count > 1;
-                        }).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -180,7 +185,7 @@ namespace Chummer
                     _blnIsSelectLifestyleRefreshing = false;
                 }
 
-                await RefreshBaseLifestyle().ConfigureAwait(false);
+                await RefreshBaseLifestyle(token).ConfigureAwait(false);
             }
             finally
             {

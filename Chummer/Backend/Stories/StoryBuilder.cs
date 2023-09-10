@@ -57,13 +57,13 @@ namespace Chummer
                 //Generate list of all life modules (xml, we don't save required data to quality) this character has
                 List<XmlNode> modules = new List<XmlNode>(10);
 
-                foreach (Quality quality in _objCharacter.Qualities)
+                await _objCharacter.Qualities.ForEachAsync(quality =>
                 {
                     if (quality.Type == QualityType.LifeModule)
                     {
                         modules.Add(Quality.GetNodeOverrideable(quality.SourceIDString, xmlDoc));
                     }
-                }
+                }, token).ConfigureAwait(false);
 
                 //Sort the list (Crude way, but have to do)
                 for (int i = 0; i < modules.Count; i++)

@@ -2115,7 +2115,7 @@ namespace Chummer.Backend.Attributes
                             if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
                                 Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                             {
-                                foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                                _objCharacter.Cyberware.ForEach(objCyberware =>
                                 {
                                     if (objCyberware.Category == "Cyberlimb")
                                     {
@@ -2126,7 +2126,7 @@ namespace Chummer.Backend.Attributes
                                                                        .ToString(GlobalSettings.CultureInfo))
                                                    .Append(')');
                                     }
-                                }
+                                });
                             }
 
                             return _strCachedToolTip = DisplayAbbrev + strSpace + '('
@@ -2149,7 +2149,7 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
                     {
                         if ((objLoopImprovement.ImprovedName == Abbrev
                              || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
@@ -2174,7 +2174,7 @@ namespace Chummer.Backend.Attributes
                                     break;
                             }
                         }
-                    }
+                    });
 
                     if (decMultiplier != 1.0m)
                         intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
@@ -2341,7 +2341,7 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
                     {
                         if ((objLoopImprovement.ImprovedName == Abbrev ||
                              string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
@@ -2362,7 +2362,7 @@ namespace Chummer.Backend.Attributes
                                     break;
                             }
                         }
-                    }
+                    });
 
                     if (decMultiplier != 1.0m)
                         intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
@@ -2483,7 +2483,7 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
                     {
                         if ((objLoopImprovement.ImprovedName == Abbrev ||
                              string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
@@ -2497,9 +2497,9 @@ namespace Chummer.Backend.Attributes
                                 case Improvement.ImprovementType.AttributeKarmaCost:
                                     decExtra += objLoopImprovement.Value *
                                                 (Math.Min(intValue,
-                                                    objLoopImprovement.Maximum == 0
-                                                        ? int.MaxValue
-                                                        : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase,
+                                                          objLoopImprovement.Maximum == 0
+                                                              ? int.MaxValue
+                                                              : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase,
                                                     objLoopImprovement.Minimum - 1));
                                     break;
 
@@ -2508,7 +2508,7 @@ namespace Chummer.Backend.Attributes
                                     break;
                             }
                         }
-                    }
+                    });
 
                     if (decMultiplier != 1.0m)
                         intCost = (intCost * decMultiplier + decExtra).StandardRound();
@@ -2558,13 +2558,14 @@ namespace Chummer.Backend.Attributes
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                await _objCharacter.Improvements.ForEachAsync(objLoopImprovement =>
                 {
                     if ((objLoopImprovement.ImprovedName == Abbrev ||
                          string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                         (objLoopImprovement.Condition == "career") == _objCharacter.Created ||
-                         (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                         (objLoopImprovement.Condition == "career") == blnCreated ||
+                         (objLoopImprovement.Condition == "create") != blnCreated) &&
                         objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
@@ -2572,9 +2573,9 @@ namespace Chummer.Backend.Attributes
                             case Improvement.ImprovementType.AttributeKarmaCost:
                                 decExtra += objLoopImprovement.Value *
                                             (Math.Min(intValue,
-                                                objLoopImprovement.Maximum == 0
-                                                    ? int.MaxValue
-                                                    : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase,
+                                                      objLoopImprovement.Maximum == 0
+                                                          ? int.MaxValue
+                                                          : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase,
                                                 objLoopImprovement.Minimum - 1));
                                 break;
 
@@ -2583,7 +2584,7 @@ namespace Chummer.Backend.Attributes
                                 break;
                         }
                     }
-                }
+                }, token).ConfigureAwait(false);
 
                 if (decMultiplier != 1.0m)
                     intCost = (intCost * decMultiplier + decExtra).StandardRound();

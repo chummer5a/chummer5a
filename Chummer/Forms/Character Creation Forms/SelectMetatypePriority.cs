@@ -1529,15 +1529,15 @@ namespace Chummer
                         strSelectedMetavariant)
                     {
                         // Remove qualities that require the old metatype
-                        List<Quality> lstQualitiesToCheck = new List<Quality>(_objCharacter.Qualities.Count);
-                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        List<Quality> lstQualitiesToCheck = new List<Quality>(await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false));
+                        await _objCharacter.Qualities.ForEachAsync(async objQuality =>
                         {
                             if (objQuality.OriginSource == QualitySource.Improvement
                                 || objQuality.OriginSource == QualitySource.Heritage
                                 || objQuality.OriginSource == QualitySource.Metatype
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovable
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
-                                continue;
+                                return;
                             XPathNavigator xmlBaseNode
                                 = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                             XPathNavigator xmlRestrictionNode
@@ -1574,7 +1574,7 @@ namespace Chummer
                                     lstQualitiesToCheck.Add(objQuality);
                                 }
                             }
-                        }
+                        }, token).ConfigureAwait(false);
 
                         _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype,
                                              strSelectedMetavariant, objXmlMetatype, intForce,
@@ -2019,17 +2019,18 @@ namespace Chummer
 
                     // If we suspect the character converted from Karma to Priority/Sum-to-Ten, try to convert their Attributes, Skills, and Skill Groups to using points as efficiently as possible
                     bool blnDoSwitch = false;
-                    foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
+                    await _objCharacter.AttributeSection.AttributeList.ForEachWithBreakAsync(objAttribute =>
                     {
                         if (objAttribute.Base > 0)
                         {
                             blnDoSwitch = false;
-                            break;
+                            return false;
                         }
 
                         if (objAttribute.Karma > 0)
                             blnDoSwitch = true;
-                    }
+                        return true;
+                    }, token).ConfigureAwait(false);
 
                     if (blnDoSwitch)
                     {
@@ -2037,14 +2038,14 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.TotalAttributes)
                         {
                             CharacterAttrib objAttributeToShift = null;
-                            foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
+                            await _objCharacter.AttributeSection.AttributeList.ForEachAsync(objAttribute =>
                             {
                                 if (objAttribute.Karma > 0 && (objAttributeToShift == null
                                                                || objAttributeToShift.Value < objAttribute.Value))
                                 {
                                     objAttributeToShift = objAttribute;
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (objAttributeToShift == null)
                                 break;
@@ -2057,17 +2058,18 @@ namespace Chummer
                     }
 
                     blnDoSwitch = false;
-                    foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    await _objCharacter.AttributeSection.SpecialAttributeList.ForEachWithBreakAsync(objAttribute =>
                     {
                         if (objAttribute.Base > 0)
                         {
                             blnDoSwitch = false;
-                            break;
+                            return false;
                         }
 
                         if (objAttribute.Karma > 0)
                             blnDoSwitch = true;
-                    }
+                        return true;
+                    }, token).ConfigureAwait(false);
 
                     if (blnDoSwitch)
                     {
@@ -2075,15 +2077,14 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.TotalSpecial)
                         {
                             CharacterAttrib objAttributeToShift = null;
-                            foreach (CharacterAttrib objAttribute in
-                                     _objCharacter.AttributeSection.SpecialAttributeList)
+                            await _objCharacter.AttributeSection.SpecialAttributeList.ForEachAsync(objAttribute =>
                             {
                                 if (objAttribute.Karma > 0 && (objAttributeToShift == null
                                                                || objAttributeToShift.Value < objAttribute.Value))
                                 {
                                     objAttributeToShift = objAttribute;
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (objAttributeToShift == null)
                                 break;
@@ -2096,17 +2097,18 @@ namespace Chummer
                     }
 
                     blnDoSwitch = false;
-                    foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                    await _objCharacter.SkillsSection.SkillGroups.ForEachWithBreakAsync(objGroup =>
                     {
                         if (objGroup.Base > 0)
                         {
                             blnDoSwitch = false;
-                            break;
+                            return false;
                         }
 
                         if (objGroup.Karma > 0)
                             blnDoSwitch = true;
-                    }
+                        return true;
+                    }, token).ConfigureAwait(false);
 
                     if (blnDoSwitch)
                     {
@@ -2114,14 +2116,14 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
                         {
                             SkillGroup objGroupToShift = null;
-                            foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objGroup =>
                             {
                                 if (objGroup.Karma > 0
                                     && (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating))
                                 {
                                     objGroupToShift = objGroup;
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (objGroupToShift == null)
                                 break;
@@ -2135,17 +2137,18 @@ namespace Chummer
                     }
 
                     blnDoSwitch = false;
-                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    await _objCharacter.SkillsSection.Skills.ForEachWithBreakAsync(async objSkill =>
                     {
                         if (await objSkill.GetBaseAsync(token).ConfigureAwait(false) > 0)
                         {
                             blnDoSwitch = false;
-                            break;
+                            return false;
                         }
 
                         if (await objSkill.GetKarmaAsync(token).ConfigureAwait(false) > 0)
                             blnDoSwitch = true;
-                    }
+                        return true;
+                    }, token).ConfigureAwait(false);
 
                     if (blnDoSwitch)
                     {
@@ -2156,7 +2159,7 @@ namespace Chummer
                         {
                             Skill objSkillToShift = null;
                             int intSkillToShiftKarma = 0;
-                            foreach (Skill objSkill in objSkillsSection.Skills)
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objSkill =>
                             {
                                 int intLoopKarma = await objSkill.GetKarmaAsync(token).ConfigureAwait(false);
                                 if (intLoopKarma > 0 && (objSkillToShift == null
@@ -2168,7 +2171,7 @@ namespace Chummer
                                     objSkillToShift = objSkill;
                                     intSkillToShiftKarma = intLoopKarma;
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (objSkillToShift == null)
                                 break;

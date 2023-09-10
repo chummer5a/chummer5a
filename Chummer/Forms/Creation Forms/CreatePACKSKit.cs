@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -198,7 +199,7 @@ namespace Chummer
                         bool blnPositive = false;
                         bool blnNegative = false;
                         // Determine if Positive or Negative Qualities exist.
-                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        await _objCharacter.Qualities.ForEachWithBreakAsync(objQuality =>
                         {
                             switch (objQuality.Type)
                             {
@@ -211,9 +212,8 @@ namespace Chummer
                                     break;
                             }
 
-                            if (blnPositive && blnNegative)
-                                break;
-                        }
+                            return !blnPositive || !blnNegative;
+                        }).ConfigureAwait(false);
 
                         // <qualities>
                         await objWriter.WriteStartElementAsync("qualities").ConfigureAwait(false);
@@ -223,17 +223,20 @@ namespace Chummer
                         {
                             // <positive>
                             await objWriter.WriteStartElementAsync("positive").ConfigureAwait(false);
-                            foreach (Quality objQuality in _objCharacter.Qualities)
+                            await _objCharacter.Qualities.ForEachAsync(async objQuality =>
                             {
                                 if (objQuality.Type == QualityType.Positive)
                                 {
+                                    // ReSharper disable AccessToDisposedClosure
                                     await objWriter.WriteStartElementAsync("quality").ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(objQuality.Extra))
-                                        await objWriter.WriteAttributeStringAsync("select", objQuality.Extra).ConfigureAwait(false);
+                                        await objWriter.WriteAttributeStringAsync("select", objQuality.Extra)
+                                                       .ConfigureAwait(false);
                                     objWriter.WriteValue(objQuality.Name);
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                    // ReSharper restore AccessToDisposedClosure
                                 }
-                            }
+                            }).ConfigureAwait(false);
 
                             // </positive>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -244,17 +247,20 @@ namespace Chummer
                         {
                             // <negative>
                             await objWriter.WriteStartElementAsync("negative").ConfigureAwait(false);
-                            foreach (Quality objQuality in _objCharacter.Qualities)
+                            await _objCharacter.Qualities.ForEachAsync(async objQuality =>
                             {
                                 if (objQuality.Type == QualityType.Negative)
                                 {
+                                    // ReSharper disable AccessToDisposedClosure
                                     await objWriter.WriteStartElementAsync("quality").ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(objQuality.Extra))
-                                        await objWriter.WriteAttributeStringAsync("select", objQuality.Extra).ConfigureAwait(false);
+                                        await objWriter.WriteAttributeStringAsync("select", objQuality.Extra)
+                                                       .ConfigureAwait(false);
                                     objWriter.WriteValue(objQuality.Name);
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                    // ReSharper restore AccessToDisposedClosure
                                 }
-                            }
+                            }).ConfigureAwait(false);
 
                             // </negative>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -341,24 +347,29 @@ namespace Chummer
                     {
                         // <martialarts>
                         await objWriter.WriteStartElementAsync("martialarts").ConfigureAwait(false);
-                        foreach (MartialArt objArt in _objCharacter.MartialArts)
+                        // ReSharper disable AccessToDisposedClosure
+                        await _objCharacter.MartialArts.ForEachAsync(async objArt =>
                         {
                             // <martialart>
                             await objWriter.WriteStartElementAsync("martialart").ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("name", objArt.Name).ConfigureAwait(false);
-                            if (objArt.Techniques.Count > 0)
+                            if (await objArt.Techniques.GetCountAsync().ConfigureAwait(false) > 0)
                             {
                                 // <techniques>
                                 await objWriter.WriteStartElementAsync("techniques").ConfigureAwait(false);
-                                foreach (MartialArtTechnique objTechnique in objArt.Techniques)
-                                    await objWriter.WriteElementStringAsync("technique", objTechnique.Name).ConfigureAwait(false);
+                                await objArt.Techniques
+                                            .ForEachAsync(objTechnique =>
+                                                              objWriter.WriteElementStringAsync(
+                                                                  "technique", objTechnique.Name))
+                                            .ConfigureAwait(false);
                                 // </techniques>
                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             }
 
                             // </martialart>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                        }
+                        }).ConfigureAwait(false);
+                        // ReSharper restore AccessToDisposedClosure
                         // </martialarts>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                     }
@@ -368,17 +379,21 @@ namespace Chummer
                     {
                         // <spells>
                         await objWriter.WriteStartElementAsync("spells").ConfigureAwait(false);
-                        foreach (Spell objSpell in _objCharacter.Spells)
+                        // ReSharper disable AccessToDisposedClosure
+                        await _objCharacter.Spells.ForEachAsync(async objSpell =>
                         {
                             await objWriter.WriteStartElementAsync("spell").ConfigureAwait(false);
                             await objWriter.WriteStartElementAsync("name").ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objSpell.Extra))
-                                await objWriter.WriteAttributeStringAsync("select", objSpell.Extra).ConfigureAwait(false);
+                                await objWriter.WriteAttributeStringAsync("select", objSpell.Extra)
+                                               .ConfigureAwait(false);
                             objWriter.WriteValue(objSpell.Name);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                            await objWriter.WriteElementStringAsync("category", objSpell.Category).ConfigureAwait(false);
+                            await objWriter.WriteElementStringAsync("category", objSpell.Category)
+                                           .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                        }
+                        }).ConfigureAwait(false);
+                        // ReSharper restore AccessToDisposedClosure
 
                         // </spells>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -389,19 +404,22 @@ namespace Chummer
                     {
                         // <programs>
                         await objWriter.WriteStartElementAsync("complexforms").ConfigureAwait(false);
-                        foreach (ComplexForm objComplexForm in _objCharacter.ComplexForms)
+                        // ReSharper disable AccessToDisposedClosure
+                        await _objCharacter.ComplexForms.ForEachAsync(async objComplexForm =>
                         {
                             // <program>
                             await objWriter.WriteStartElementAsync("complexform").ConfigureAwait(false);
                             await objWriter.WriteStartElementAsync("name").ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objComplexForm.Extra))
-                                await objWriter.WriteAttributeStringAsync("select", objComplexForm.Extra).ConfigureAwait(false);
+                                await objWriter.WriteAttributeStringAsync("select", objComplexForm.Extra)
+                                               .ConfigureAwait(false);
                             objWriter.WriteValue(objComplexForm.Name);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             // </program>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                        }
+                        }).ConfigureAwait(false);
+                        // ReSharper restore AccessToDisposedClosure
 
                         // </programs>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -412,7 +430,7 @@ namespace Chummer
                     {
                         bool blnCyberware = false;
                         bool blnBioware = false;
-                        foreach (Cyberware objCharacterCyberware in _objCharacter.Cyberware)
+                        await _objCharacter.Cyberware.ForEachWithBreakAsync(objCharacterCyberware =>
                         {
                             switch (objCharacterCyberware.SourceType)
                             {
@@ -425,56 +443,81 @@ namespace Chummer
                                     break;
                             }
 
-                            if (blnCyberware && blnBioware)
-                                break;
-                        }
+                            return !blnCyberware || !blnBioware;
+                        }).ConfigureAwait(false);
 
                         if (blnCyberware)
                         {
                             // <cyberwares>
                             await objWriter.WriteStartElementAsync("cyberwares").ConfigureAwait(false);
-                            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                            // ReSharper disable AccessToDisposedClosure
+                            await _objCharacter.Cyberware.ForEachAsync(async objCyberware =>
                             {
                                 if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                                 {
                                     // <cyberware>
                                     await objWriter.WriteStartElementAsync("cyberware").ConfigureAwait(false);
-                                    await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
-                                    if (objCyberware.Rating > 0)
-                                        await objWriter.WriteElementStringAsync("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                                    await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.Name).ConfigureAwait(false);
-                                    if (objCyberware.Children.Count > 0)
+                                    await objWriter.WriteElementStringAsync("name", objCyberware.Name)
+                                                   .ConfigureAwait(false);
+                                    int intRating = await objCyberware.GetRatingAsync()
+                                                                      .ConfigureAwait(false);
+                                    if (intRating > 0)
+                                        await objWriter
+                                              .WriteElementStringAsync(
+                                                  "rating",
+                                                  intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                                              .ConfigureAwait(false);
+                                    await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.Name)
+                                                   .ConfigureAwait(false);
+                                    if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
                                     {
                                         // <cyberwares>
                                         await objWriter.WriteStartElementAsync("cyberwares").ConfigureAwait(false);
-                                        foreach (Cyberware objChildCyberware in objCyberware.Children)
+                                        await objCyberware.Children.ForEachAsync(async objChildCyberware =>
                                         {
                                             if (objChildCyberware.Capacity != "[*]")
                                             {
-                                                // <cyberware>
-                                                await objWriter.WriteStartElementAsync("cyberware").ConfigureAwait(false);
-                                                await objWriter.WriteElementStringAsync("name", objChildCyberware.Name).ConfigureAwait(false);
-                                                if (objChildCyberware.Rating > 0)
-                                                    await objWriter.WriteElementStringAsync("rating", objChildCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                // <cyberware/bioware>
+                                                await objWriter
+                                                      .WriteStartElementAsync(
+                                                          objChildCyberware.SourceType
+                                                          == Improvement.ImprovementSource.Cyberware
+                                                              ? "cyberware"
+                                                              : "bioware")
+                                                      .ConfigureAwait(false);
+                                                await objWriter.WriteElementStringAsync("name", objChildCyberware.Name)
+                                                               .ConfigureAwait(false);
+                                                int intChildRating = await objChildCyberware.GetRatingAsync()
+                                                    .ConfigureAwait(false);
+                                                if (intChildRating > 0)
+                                                    await objWriter
+                                                          .WriteElementStringAsync(
+                                                              "rating",
+                                                              intChildRating.ToString(
+                                                                  GlobalSettings.InvariantCultureInfo))
+                                                          .ConfigureAwait(false);
 
-                                                if (objChildCyberware.GearChildren.Count > 0)
-                                                    await WriteGear(objWriter, objChildCyberware.GearChildren).ConfigureAwait(false);
+                                                if (await objChildCyberware.GearChildren.GetCountAsync()
+                                                                           .ConfigureAwait(false) > 0)
+                                                    await WriteGear(objWriter, objChildCyberware.GearChildren)
+                                                        .ConfigureAwait(false);
                                                 // </cyberware>
                                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                             }
-                                        }
+                                        }).ConfigureAwait(false);
 
                                         // </cyberwares>
                                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                     }
 
-                                    if (objCyberware.GearChildren.Count > 0)
+                                    if (await objCyberware.GearChildren.GetCountAsync().ConfigureAwait(false) > 0)
                                         await WriteGear(objWriter, objCyberware.GearChildren).ConfigureAwait(false);
 
                                     // </cyberware>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                 }
-                            }
+                            }).ConfigureAwait(false);
+                            // ReSharper restore AccessToDisposedClosure
 
                             // </cyberwares>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -484,23 +527,75 @@ namespace Chummer
                         {
                             // <biowares>
                             await objWriter.WriteStartElementAsync("biowares").ConfigureAwait(false);
-                            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                            // ReSharper disable AccessToDisposedClosure
+                            await _objCharacter.Cyberware.ForEachAsync(async objCyberware =>
                             {
                                 if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                                 {
                                     // <bioware>
                                     await objWriter.WriteStartElementAsync("bioware").ConfigureAwait(false);
-                                    await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
-                                    if (objCyberware.Rating > 0)
-                                        await objWriter.WriteElementStringAsync("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                                    await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.ToString()).ConfigureAwait(false);
+                                    await objWriter.WriteElementStringAsync("name", objCyberware.Name)
+                                                   .ConfigureAwait(false);
+                                    int intRating = await objCyberware.GetRatingAsync()
+                                                                      .ConfigureAwait(false);
+                                    if (intRating > 0)
+                                        await objWriter
+                                              .WriteElementStringAsync(
+                                                  "rating",
+                                                  intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                                              .ConfigureAwait(false);
+                                    await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.Name)
+                                                   .ConfigureAwait(false);
+                                    if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
+                                    {
+                                        // <cyberwares>
+                                        await objWriter.WriteStartElementAsync("cyberwares").ConfigureAwait(false);
+                                        await objCyberware.Children.ForEachAsync(async objChildCyberware =>
+                                        {
+                                            if (objChildCyberware.Capacity != "[*]")
+                                            {
+                                                // <cyberware>
+                                                // <cyberware/bioware>
+                                                await objWriter
+                                                      .WriteStartElementAsync(
+                                                          objChildCyberware.SourceType
+                                                          == Improvement.ImprovementSource.Cyberware
+                                                              ? "cyberware"
+                                                              : "bioware")
+                                                      .ConfigureAwait(false);
+                                                await objWriter.WriteElementStringAsync("name", objChildCyberware.Name)
+                                                               .ConfigureAwait(false);
+                                                int intChildRating = await objChildCyberware.GetRatingAsync()
+                                                    .ConfigureAwait(false);
+                                                if (intChildRating > 0)
+                                                    await objWriter
+                                                          .WriteElementStringAsync(
+                                                              "rating",
+                                                              intChildRating.ToString(
+                                                                  GlobalSettings.InvariantCultureInfo))
+                                                          .ConfigureAwait(false);
 
-                                    if (objCyberware.GearChildren.Count > 0)
+                                                if (await objChildCyberware.GearChildren.GetCountAsync()
+                                                                           .ConfigureAwait(false) > 0)
+                                                    await WriteGear(objWriter, objChildCyberware.GearChildren)
+                                                        .ConfigureAwait(false);
+                                                // </cyberware>
+                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            }
+                                        }).ConfigureAwait(false);
+
+                                        // </cyberwares>
+                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                    }
+
+                                    if (await objCyberware.GearChildren.GetCountAsync().ConfigureAwait(false) > 0)
                                         await WriteGear(objWriter, objCyberware.GearChildren).ConfigureAwait(false);
+
                                     // </bioware>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                 }
-                            }
+                            }).ConfigureAwait(false);
+                            // ReSharper restore AccessToDisposedClosure
 
                             // </biowares>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -512,25 +607,42 @@ namespace Chummer
                     {
                         // <lifestyles>
                         await objWriter.WriteStartElementAsync("lifestyles").ConfigureAwait(false);
-                        foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
+                        // ReSharper disable AccessToDisposedClosure
+                        await _objCharacter.Lifestyles.ForEachAsync(async objLifestyle =>
                         {
                             // <lifestyle>
                             await objWriter.WriteStartElementAsync("lifestyle").ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("name", objLifestyle.Name).ConfigureAwait(false);
-                            await objWriter.WriteElementStringAsync("months", objLifestyle.Increments.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                            await objWriter
+                                  .WriteElementStringAsync(
+                                      "months", objLifestyle.Increments.ToString(GlobalSettings.InvariantCultureInfo))
+                                  .ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                             {
                                 // This is an Advanced Lifestyle, so write out its properties.
-                                await objWriter.WriteElementStringAsync("cost", objLifestyle.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)).ConfigureAwait(false);
-                                await objWriter.WriteElementStringAsync("dice", objLifestyle.Dice.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                                await objWriter.WriteElementStringAsync("multiplier", objLifestyle.Multiplier.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)).ConfigureAwait(false);
-                                await objWriter.WriteElementStringAsync("baselifestyle", objLifestyle.BaseLifestyle).ConfigureAwait(false);
+                                await objWriter
+                                      .WriteElementStringAsync(
+                                          "cost",
+                                          objLifestyle.Cost.ToString(_objCharacter.Settings.NuyenFormat,
+                                                                     GlobalSettings.CultureInfo)).ConfigureAwait(false);
+                                await objWriter
+                                      .WriteElementStringAsync(
+                                          "dice", objLifestyle.Dice.ToString(GlobalSettings.InvariantCultureInfo))
+                                      .ConfigureAwait(false);
+                                await objWriter
+                                      .WriteElementStringAsync("multiplier",
+                                                               objLifestyle.Multiplier.ToString(
+                                                                   _objCharacter.Settings.NuyenFormat,
+                                                                   GlobalSettings.CultureInfo)).ConfigureAwait(false);
+                                await objWriter.WriteElementStringAsync("baselifestyle", objLifestyle.BaseLifestyle)
+                                               .ConfigureAwait(false);
                                 if (objLifestyle.LifestyleQualities.Count > 0)
                                 {
                                     // <qualities>
                                     await objWriter.WriteStartElementAsync("qualities").ConfigureAwait(false);
                                     foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
-                                        await objWriter.WriteElementStringAsync("quality", objQuality.Name).ConfigureAwait(false);
+                                        await objWriter.WriteElementStringAsync("quality", objQuality.Name)
+                                                       .ConfigureAwait(false);
                                     // </qualities>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                 }
@@ -538,7 +650,8 @@ namespace Chummer
 
                             // </lifestyle>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                        }
+                        }).ConfigureAwait(false);
+                        // ReSharper restore AccessToDisposedClosure
 
                         // </lifestyles>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -549,25 +662,29 @@ namespace Chummer
                     {
                         // <armors>
                         await objWriter.WriteStartElementAsync("armors").ConfigureAwait(false);
-                        foreach (Armor objArmor in _objCharacter.Armor)
+                        // ReSharper disable AccessToDisposedClosure
+                        await _objCharacter.Armor.ForEachAsync(async objArmor =>
                         {
                             // <armor>
                             await objWriter.WriteStartElementAsync("armor").ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("name", objArmor.Name).ConfigureAwait(false);
-                            if (objArmor.ArmorMods.Count > 0)
+                            if (await objArmor.ArmorMods.GetCountAsync().ConfigureAwait(false) > 0)
                             {
                                 // <mods>
                                 await objWriter.WriteStartElementAsync("mods").ConfigureAwait(false);
-                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                await objArmor.ArmorMods.ForEachAsync(async objMod =>
                                 {
                                     // <mod>
                                     await objWriter.WriteStartElementAsync("mod").ConfigureAwait(false);
                                     await objWriter.WriteElementStringAsync("name", objMod.Name).ConfigureAwait(false);
                                     if (objMod.Rating > 0)
-                                        await objWriter.WriteElementStringAsync("rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                        await objWriter
+                                              .WriteElementStringAsync(
+                                                  "rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                              .ConfigureAwait(false);
                                     // </mod>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                }
+                                }).ConfigureAwait(false);
 
                                 // </mods>
                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -578,7 +695,8 @@ namespace Chummer
 
                             // </armor>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                        }
+                        }).ConfigureAwait(false);
+                        // ReSharper restore AccessToDisposedClosure
 
                         // </armors>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -589,10 +707,12 @@ namespace Chummer
                     {
                         // <weapons>
                         await objWriter.WriteStartElementAsync("weapons").ConfigureAwait(false);
-                        foreach (Weapon objWeapon in _objCharacter.Weapons)
+                        // ReSharper disable AccessToDisposedClosure
+                        await _objCharacter.Weapons.ForEachAsync(async objWeapon =>
                         {
                             // Don't attempt to export Cyberware and Gear Weapons since those are handled by those object types. The default Unarmed Attack Weapon should also not be exported.
-                            if (objWeapon.Category != "Cyberware" && objWeapon.Category != "Gear" && objWeapon.Name != "Unarmed Attack")
+                            if (objWeapon.Category != "Cyberware" && objWeapon.Category != "Gear"
+                                                                  && objWeapon.Name != "Unarmed Attack")
                             {
                                 // <weapon>
                                 await objWriter.WriteStartElementAsync("weapon").ConfigureAwait(false);
@@ -603,43 +723,51 @@ namespace Chummer
                                 {
                                     // <accessories>
                                     await objWriter.WriteStartElementAsync("accessories").ConfigureAwait(false);
-                                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                    await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                     {
                                         // Don't attempt to export items included in the Weapon.
                                         if (!objAccessory.IncludedInWeapon)
                                         {
                                             // <accessory>
                                             await objWriter.WriteStartElementAsync("accessory").ConfigureAwait(false);
-                                            await objWriter.WriteElementStringAsync("name", objAccessory.Name).ConfigureAwait(false);
-                                            await objWriter.WriteElementStringAsync("mount", objAccessory.Mount).ConfigureAwait(false);
-                                            await objWriter.WriteElementStringAsync("extramount", objAccessory.ExtraMount).ConfigureAwait(false);
+                                            await objWriter.WriteElementStringAsync("name", objAccessory.Name)
+                                                           .ConfigureAwait(false);
+                                            await objWriter.WriteElementStringAsync("mount", objAccessory.Mount)
+                                                           .ConfigureAwait(false);
+                                            await objWriter
+                                                  .WriteElementStringAsync("extramount", objAccessory.ExtraMount)
+                                                  .ConfigureAwait(false);
 
-                                            if (objAccessory.GearChildren.Count > 0)
-                                                await WriteGear(objWriter, objAccessory.GearChildren).ConfigureAwait(false);
+                                            if (await objAccessory.GearChildren.GetCountAsync().ConfigureAwait(false) > 0)
+                                                await WriteGear(objWriter, objAccessory.GearChildren)
+                                                    .ConfigureAwait(false);
 
                                             // </accessory>
                                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                         }
-                                    }
+                                    }).ConfigureAwait(false);
 
                                     // </accessories>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                 }
 
                                 // Underbarrel Weapon.
-                                if (objWeapon.UnderbarrelWeapons.Count > 0)
+                                if (await objWeapon.UnderbarrelWeapons.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
-                                    foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+                                    await objWeapon.UnderbarrelWeapons.ForEachAsync(async objUnderbarrelWeapon =>
                                     {
                                         if (!objUnderbarrelWeapon.IncludedInWeapon)
-                                            await objWriter.WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name).ConfigureAwait(false);
-                                    }
+                                            await objWriter
+                                                  .WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name)
+                                                  .ConfigureAwait(false);
+                                    }).ConfigureAwait(false);
                                 }
 
                                 // </weapon>
                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             }
-                        }
+                        }).ConfigureAwait(false);
+                        // ReSharper restore AccessToDisposedClosure
 
                         // </weapons>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -656,7 +784,8 @@ namespace Chummer
                     {
                         // <vehicles>
                         await objWriter.WriteStartElementAsync("vehicles").ConfigureAwait(false);
-                        foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                        // ReSharper disable AccessToDisposedClosure
+                        await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
                         {
                             bool blnWeapons = false;
                             // <vehicle>
@@ -666,16 +795,21 @@ namespace Chummer
                             {
                                 // <mods>
                                 await objWriter.WriteStartElementAsync("mods").ConfigureAwait(false);
-                                foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                                await objVehicle.Mods.ForEachAsync(async objVehicleMod =>
                                 {
                                     // Only write out the Mods that are not part of the base vehicle.
                                     if (!objVehicleMod.IncludedInVehicle)
                                     {
                                         // <mod>
                                         await objWriter.WriteStartElementAsync("mod").ConfigureAwait(false);
-                                        await objWriter.WriteElementStringAsync("name", objVehicleMod.Name).ConfigureAwait(false);
+                                        await objWriter.WriteElementStringAsync("name", objVehicleMod.Name)
+                                                       .ConfigureAwait(false);
                                         if (objVehicleMod.Rating > 0)
-                                            await objWriter.WriteElementStringAsync("rating", objVehicleMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                            await objWriter
+                                                  .WriteElementStringAsync(
+                                                      "rating",
+                                                      objVehicleMod.Rating.ToString(
+                                                          GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                                         // </mod>
                                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
@@ -689,7 +823,7 @@ namespace Chummer
                                         if (objVehicleMod.Weapons.Count > 0)
                                             blnWeapons = true;
                                     }
-                                }
+                                }).ConfigureAwait(false);
 
                                 // </mods>
                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -700,63 +834,73 @@ namespace Chummer
                             {
                                 // <weapons>
                                 await objWriter.WriteStartElementAsync("weapons").ConfigureAwait(false);
-                                foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                                await objVehicle.Mods.ForEachAsync(async objVehicleMod =>
                                 {
-                                    foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                                    await objVehicleMod.Weapons.ForEachAsync(async objWeapon =>
                                     {
                                         // <weapon>
                                         await objWriter.WriteStartElementAsync("weapon").ConfigureAwait(false);
-                                        await objWriter.WriteElementStringAsync("name", objWeapon.Name).ConfigureAwait(false);
+                                        await objWriter.WriteElementStringAsync("name", objWeapon.Name)
+                                                       .ConfigureAwait(false);
 
                                         // Weapon Accessories.
-                                        if (objWeapon.WeaponAccessories.Count > 0)
+                                        if (await objWeapon.WeaponAccessories.GetCountAsync().ConfigureAwait(false) > 0)
                                         {
                                             // <accessories>
                                             await objWriter.WriteStartElementAsync("accessories").ConfigureAwait(false);
-                                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                            await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                             {
                                                 // Don't attempt to export items included in the Weapon.
                                                 if (!objAccessory.IncludedInWeapon)
                                                 {
                                                     // <accessory>
-                                                    await objWriter.WriteStartElementAsync("accessory").ConfigureAwait(false);
-                                                    await objWriter.WriteElementStringAsync("name", objAccessory.Name).ConfigureAwait(false);
-                                                    await objWriter.WriteElementStringAsync("mount", objAccessory.Mount).ConfigureAwait(false);
-                                                    await objWriter.WriteElementStringAsync("extramount", objAccessory.ExtraMount).ConfigureAwait(false);
+                                                    await objWriter.WriteStartElementAsync("accessory")
+                                                                   .ConfigureAwait(false);
+                                                    await objWriter.WriteElementStringAsync("name", objAccessory.Name)
+                                                                   .ConfigureAwait(false);
+                                                    await objWriter.WriteElementStringAsync("mount", objAccessory.Mount)
+                                                                   .ConfigureAwait(false);
+                                                    await objWriter
+                                                          .WriteElementStringAsync(
+                                                              "extramount", objAccessory.ExtraMount)
+                                                          .ConfigureAwait(false);
                                                     // </accessory>
                                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                 }
-                                            }
+                                            }).ConfigureAwait(false);
 
                                             // </accessories>
                                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                         }
 
                                         // Underbarrel Weapon.
-                                        if (objWeapon.UnderbarrelWeapons.Count > 0)
+                                        if (await objWeapon.UnderbarrelWeapons.GetCountAsync().ConfigureAwait(false) > 0)
                                         {
-                                            foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
-                                                await objWriter.WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name).ConfigureAwait(false);
+                                            await objWeapon.UnderbarrelWeapons.ForEachAsync(objUnderbarrelWeapon =>
+                                                objWriter
+                                                    .WriteElementStringAsync(
+                                                        "underbarrel", objUnderbarrelWeapon.Name)).ConfigureAwait(false);
                                         }
 
                                         // </weapon>
                                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                    }
-                                }
+                                    }).ConfigureAwait(false);
+                                }).ConfigureAwait(false);
 
                                 // </weapons>
                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             }
 
                             // Gear.
-                            if (objVehicle.GearChildren.Count > 0)
+                            if (await objVehicle.GearChildren.GetCountAsync().ConfigureAwait(false) > 0)
                             {
                                 await WriteGear(objWriter, objVehicle.GearChildren).ConfigureAwait(false);
                             }
 
                             // </vehicle>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                        }
+                        }).ConfigureAwait(false);
+                        // ReSharper restore AccessToDisposedClosure
 
                         // </vehicles>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);

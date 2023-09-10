@@ -1928,7 +1928,7 @@ namespace Chummer.Backend.Skills
                                    lstRelevantCategories))
                     {
                         lstRelevantCategories.AddRange(GetRelevantSkillCategories);
-                        foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                        CharacterObject.Improvements.ForEach(objLoopImprovement =>
                         {
                             if ((objLoopImprovement.Maximum == 0 || intValue <= objLoopImprovement.Maximum)
                                 && objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
@@ -1973,7 +1973,7 @@ namespace Chummer.Backend.Skills
                                     }
                                 }
                             }
-                        }
+                        });
                     }
 
                     if (decMultiplier != 1.0m)
@@ -2090,7 +2090,7 @@ namespace Chummer.Backend.Skills
                                    lstRelevantCategories))
                     {
                         lstRelevantCategories.AddRange(GetRelevantSkillCategories);
-                        foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                        CharacterObject.Improvements.ForEach(objLoopImprovement =>
                         {
                             if (objLoopImprovement.Minimum <= intLower &&
                                 (string.IsNullOrEmpty(objLoopImprovement.Condition)
@@ -2138,7 +2138,7 @@ namespace Chummer.Backend.Skills
                                     }
                                 }
                             }
-                        }
+                        });
                     }
 
                     if (decMultiplier != 1.0m)
@@ -2291,7 +2291,7 @@ namespace Chummer.Backend.Skills
                                    lstRelevantCategories))
                     {
                         lstRelevantCategories.AddRange(GetRelevantSkillCategories);
-                        foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                        CharacterObject.Improvements.ForEach(objLoopImprovement =>
                         {
                             if ((objLoopImprovement.Maximum == 0 || intRating + 1 <= objLoopImprovement.Maximum)
                                 && objLoopImprovement.Minimum <= intRating + 1 &&
@@ -2328,7 +2328,7 @@ namespace Chummer.Backend.Skills
                                     }
                                 }
                             }
-                        }
+                        });
                     }
 
                     if (decMultiplier != 1.0m)

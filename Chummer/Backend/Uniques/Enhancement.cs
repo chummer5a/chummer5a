@@ -514,11 +514,11 @@ namespace Chummer
                 return false;
 
             _objCharacter.Enhancements.Remove(this);
-            foreach (Power objPower in _objCharacter.Powers)
+            _objCharacter.Powers.ForEach(objPower =>
             {
                 if (objPower.Enhancements.Contains(this))
                     objPower.Enhancements.Remove(this);
-            }
+            });
 
             ImprovementManager.RemoveImprovements(_objCharacter, _objImprovementSource, InternalId);
 
@@ -537,11 +537,11 @@ namespace Chummer
                 return false;
 
             await _objCharacter.Enhancements.RemoveAsync(this, token).ConfigureAwait(false);
-            foreach (Power objPower in _objCharacter.Powers)
+            await _objCharacter.Powers.ForEachAsync(async objPower =>
             {
                 if (await objPower.Enhancements.ContainsAsync(this, token).ConfigureAwait(false))
                     await objPower.Enhancements.RemoveAsync(this, token).ConfigureAwait(false);
-            }
+            }, token).ConfigureAwait(false);
 
             await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objImprovementSource, InternalId, token)
                                     .ConfigureAwait(false);
