@@ -1051,7 +1051,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
-                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + ". = " + objChild.InnerXml.Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
+                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "[. = " + objChild.InnerXml.Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
                         // Expected result is null if not found.
                         objItem?.SetAttribute("translate", strTranslate);
                     }
@@ -1155,7 +1155,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
-                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + ". = " + objChild.InnerXml.Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
+                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "[. = " + objChild.InnerXml.Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
                         // Expected result is null if not found.
                         objItem?.SetAttribute("translate", strTranslate);
                     }
