@@ -6071,7 +6071,7 @@ namespace Chummer
                 List<Gear> lstStack = new List<Gear>(2);
 
                 // Run through all of the Foci the character has and count the un-Bonded ones.
-                await CharacterObject.Gear.ForEachAsync(async objGear =>
+                await CharacterObject.Gear.ForEachAsync(objGear =>
                 {
                     if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
                     {

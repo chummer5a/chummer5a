@@ -1023,7 +1023,7 @@ namespace Chummer.Backend.Attributes
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     return _objCharacter.Cyberware.Any(objCyberware =>
-                        objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot));
+                        objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot), token);
                 }
 
                 return false;

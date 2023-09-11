@@ -1525,7 +1525,7 @@ namespace Chummer.Backend.Equipment
 
                 await objVehicle.Mods.ForEachAsync(async objVehicleMod =>
                 {
-                    if (objVehicleMod.Cyberware.Count <= 0 && objVehicleMod.Weapons.Count <= 0)
+                    if (objVehicleMod.Cyberware.Count == 0 && objVehicleMod.Weapons.Count == 0)
                         return;
                     foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(
                                  x => x.Children, x => x.GearChildren.Count > 0))

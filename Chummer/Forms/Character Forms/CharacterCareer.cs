@@ -4469,13 +4469,10 @@ namespace Chummer
                                     }
                                 }
 
-                                foreach (Gear objGear in objCyberware.GearChildren)
-                                {
-                                    await objGear
-                                          .ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter,
-                                                             token: token)
-                                          .ConfigureAwait(false);
-                                }
+                                await objCyberware.GearChildren.ForEachAsync(
+                                    objGear => objGear.ReaddImprovements(
+                                        treCyberware, sbdOutdatedItems, lstInternalIdFilter,
+                                        token: token).AsTask(), token).ConfigureAwait(false);
                             }
 
                             // Separate Pass for PairBonuses
@@ -4483,11 +4480,13 @@ namespace Chummer
                             {
                                 Cyberware objCyberware = objItem.Key;
                                 int intCyberwaresCount = objItem.Value;
-                                List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware
-                                    .DeepWhere(x => x.Children,
-                                               x => objCyberware.IncludePair.Contains(x.Name)
-                                                    && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped)
-                                    .ToList();
+                                List<Cyberware> lstPairableCyberwares = await CharacterObject.Cyberware
+                                    .DeepWhereAsync(x => x.Children,
+                                                    async x => objCyberware.IncludePair.Contains(x.Name)
+                                                               && x.Extra == objCyberware.Extra
+                                                               && await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                         .ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                 if (!string.IsNullOrEmpty(objCyberware.Location)
                                     && objCyberware.IncludePair.All(x => x == objCyberware.Name))
@@ -8966,7 +8965,7 @@ namespace Chummer
                     = new List<Gear>(await CharacterObject.Gear.GetCountAsync(GenericToken).ConfigureAwait(false));
 
                 // Run through all of the Foci the character has and count the un-Bonded ones.
-                await CharacterObject.Gear.ForEachAsync(async objGear =>
+                await CharacterObject.Gear.ForEachAsync(objGear =>
                 {
                     if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
                     {
@@ -22369,8 +22368,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strLoopHasModularMount)
                         && !dicHasMounts.ContainsKey(strLoopHasModularMount))
                         dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
-                    foreach (Cyberware objLoopCyberware in objSelectedCyberware.Children.DeepWhere(
-                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                    foreach (Cyberware objLoopCyberware in await objSelectedCyberware.Children.DeepWhereAsync(
+                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), token).ConfigureAwait(false))
                     {
                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                      ',', StringSplitOptions.RemoveEmptyEntries))
@@ -25769,7 +25768,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>(1);
             List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select")?.Value ?? string.Empty;
+            string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
 
             objCyberware.Create(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
                                 strForced);

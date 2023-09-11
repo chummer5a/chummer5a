@@ -8501,7 +8501,7 @@ namespace Chummer
         protected async ValueTask AddSpirit(CancellationToken token = default)
         {
             // The number of bound Spirits cannot exceed the character's CHA.
-            if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.BoundSpiritLimit)
+            if (!CharacterObject.IgnoreRules && await CharacterObject.Spirits.CountAsync(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered, token).ConfigureAwait(false) >= CharacterObject.BoundSpiritLimit)
             {
                 Program.ShowScrollableMessageBox(
                     this,
@@ -8526,7 +8526,7 @@ namespace Chummer
         {
             // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
             if (!CharacterObject.IgnoreRules &&
-                CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
+                await CharacterObject.Spirits.CountAsync(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered, token).ConfigureAwait(false) >=
                 CharacterObject.RegisteredSpriteLimit)
             {
                 Program.ShowScrollableMessageBox(
