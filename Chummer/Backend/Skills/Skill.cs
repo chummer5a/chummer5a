@@ -3547,7 +3547,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 return Specializations.Any(
-                           x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
+                           x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization, token)
                        && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject,
                            Improvement.ImprovementType.DisableSpecializationEffects, DictionaryKey, token: token).Count == 0;
             }

@@ -4719,14 +4719,14 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlLoopNode in xmlGearDataList)
                         {
                             token.ThrowIfCancellationRequested();
-                            XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
+                            XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
                             if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                             if (xmlTestNode != null &&
                                 !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
@@ -4734,14 +4734,14 @@ namespace Chummer.Backend.Equipment
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails");
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
                             if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails");
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                             if (xmlTestNode != null &&
                                 !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
@@ -4770,7 +4770,7 @@ namespace Chummer.Backend.Equipment
                                 foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
+                                    XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
                                     if (xmlTestNode != null &&
                                         xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -4778,7 +4778,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                                     if (xmlTestNode != null &&
                                         !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -4786,7 +4786,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails");
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
                                     if (xmlTestNode != null &&
                                         xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -4794,7 +4794,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails");
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                                     if (xmlTestNode != null &&
                                         !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -4827,7 +4827,7 @@ namespace Chummer.Backend.Equipment
                                     foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
+                                        XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
                                         if (xmlTestNode != null &&
                                             xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -4835,7 +4835,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                                         if (xmlTestNode != null &&
                                             !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -4843,7 +4843,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails");
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
                                         if (xmlTestNode != null &&
                                             xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -4851,7 +4851,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails");
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                                         if (xmlTestNode != null &&
                                             !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {

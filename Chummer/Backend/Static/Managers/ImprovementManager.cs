@@ -2243,7 +2243,13 @@ namespace Chummer
                                 }
                                 else if (objCharacter != null)
                                 {
-                                    string strXPath = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator("selecttext/@xpath")?.Value;
+                                    string strXPath = (blnSync
+                                                          ? nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                              "selecttext/@xpath", token)
+                                                          : await nodBonus
+                                                                  .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                                      "selecttext/@xpath", token).ConfigureAwait(false))?.Value
+                                                      ?? string.Empty;
                                     if (string.IsNullOrEmpty(strXPath))
                                     {
                                         if (blnSync)
@@ -2256,8 +2262,14 @@ namespace Chummer
                                         return false;
                                     }
 
-                                    string strXmlFile = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator("selecttext/@xml")?.Value
-                                                        ?? string.Empty;
+                                    string strXmlFile
+                                        = (blnSync
+                                              ? nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                  "selecttext/@xml", token)
+                                              : await nodBonus
+                                                      .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                          "selecttext/@xml", token).ConfigureAwait(false))?.Value
+                                          ?? string.Empty;
                                     XPathNavigator xmlDoc
                                         = blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
@@ -3389,7 +3401,7 @@ namespace Chummer
                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                && x.ImproveType == eImprovementType
                                                                && x.SourceName != strSourceName
-                                                               && x.Enabled)
+                                                               && x.Enabled, token)
                         : await objCharacter.Improvements.AnyAsync(
                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                && x.ImproveType == eImprovementType
@@ -4171,7 +4183,7 @@ namespace Chummer
                                 x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                    && x.ImproveType == eImprovementType
                                                                    && x.Enabled
-                                                                   && !ReferenceEquals(x, objImprovement));
+                                                                   && !ReferenceEquals(x, objImprovement), token);
                             if (!blnHasDuplicate)
                             {
                                 switch (eImprovementType)
@@ -4182,7 +4194,7 @@ namespace Chummer
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && x.ImproveType == Improvement.ImprovementType.Hardwire
                                                                                && x.Enabled
-                                                                               && !ReferenceEquals(x, objImprovement));
+                                                                               && !ReferenceEquals(x, objImprovement), token);
                                         break;
                                     case Improvement.ImprovementType.Hardwire:
                                         blnHasDuplicate = objCharacter.Improvements.Any(
@@ -4193,7 +4205,7 @@ namespace Chummer
                                                                                    == Improvement.ImprovementType
                                                                                        .Activesoft)
                                                                                && x.Enabled
-                                                                               && !ReferenceEquals(x, objImprovement));
+                                                                               && !ReferenceEquals(x, objImprovement), token);
                                         break;
                                 }
                             }
@@ -4205,7 +4217,7 @@ namespace Chummer
                                 x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                    && x.ImproveType == eImprovementType
                                                                    && x.SourceName != strSourceName
-                                                                   && x.Enabled);
+                                                                   && x.Enabled, token);
                             if (!blnHasDuplicate)
                             {
                                 switch (eImprovementType)
@@ -4216,7 +4228,7 @@ namespace Chummer
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && x.ImproveType == Improvement.ImprovementType.Hardwire
                                                                                && x.SourceName != strSourceName
-                                                                               && x.Enabled);
+                                                                               && x.Enabled, token);
                                         break;
                                     case Improvement.ImprovementType.Hardwire:
                                         blnHasDuplicate = objCharacter.Improvements.Any(
@@ -4227,7 +4239,7 @@ namespace Chummer
                                                                                    == Improvement.ImprovementType
                                                                                        .Activesoft)
                                                                                && x.SourceName != strSourceName
-                                                                               && x.Enabled);
+                                                                               && x.Enabled, token);
                                         break;
                                 }
                             }
@@ -4552,8 +4564,11 @@ namespace Chummer
                         {
                             if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
-                                foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(
-                                             x => x.Children, x => x.Grade.Adapsin))
+                                foreach (Cyberware objCyberware in blnSync
+                                             ? objCharacter.Cyberware.DeepWhere(
+                                                 x => x.Children, x => x.Grade.Adapsin, token)
+                                             : await objCharacter.Cyberware.DeepWhereAsync(
+                                                 x => x.Children, x => x.Grade.Adapsin, token).ConfigureAwait(false))
                                 {
                                     string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
                                                                     .Trim();

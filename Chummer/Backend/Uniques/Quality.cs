@@ -2130,7 +2130,7 @@ namespace Chummer
                     if (!WeaponID.IsEmptyGuid())
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
+                        foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId, token).ToList())
                         {
                             token.ThrowIfCancellationRequested();
                             decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();

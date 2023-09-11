@@ -201,10 +201,17 @@ namespace Chummer.Backend.Equipment
                         = await objWriter.StartElementAsync("children", token).ConfigureAwait(false);
                     try
                     {
-                        foreach (Gear objGear in AmmoGear.Children.DeepWhere(x => x.Children, x => x.Equipped && (x.WeaponBonus != null || x.FlechetteWeaponBonus != null)))
+                        foreach (Gear objGear in await AmmoGear.Children
+                                                               .DeepWhereAsync(
+                                                                   x => x.Children,
+                                                                   x => x.Equipped && (x.WeaponBonus != null
+                                                                       || x.FlechetteWeaponBonus != null), token)
+                                                               .ConfigureAwait(false))
                         {
                             await objWriter.WriteStartElementAsync("ammotype", token: token).ConfigureAwait(false);
-                            await objGear.PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true, token).ConfigureAwait(false);
+                            await objGear
+                                  .PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true, token)
+                                  .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         }
                     }

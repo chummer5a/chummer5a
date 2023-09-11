@@ -3521,9 +3521,15 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
                         {
                             // This cyberware should not be included in the count to make things easier.
-                            List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                                x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped && x.WirelessOn).ToList();
+                            List<Cyberware> lstPairableCyberwares
+                                = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                        .DeepWhereAsync(
+                                            x => x.Children,
+                                            async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                                                && x.Extra == Extra &&
+                                                await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                       .ConfigureAwait(false) && x.WirelessOn,
+                                            token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
@@ -3639,9 +3645,15 @@ namespace Chummer.Backend.Equipment
                             await ImprovementManager.RemoveImprovementsAsync(
                                 _objCharacter, SourceType, InternalId + "WirelessPair", token).ConfigureAwait(false);
                             // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
-                            List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                                x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped && WirelessOn).ToList();
+                            List<Cyberware> lstPairableCyberwares
+                                = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                        .DeepWhereAsync(
+                                            x => x.Children,
+                                            async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                                                && x.Extra == Extra &&
+                                                await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                       .ConfigureAwait(false) && x.WirelessOn,
+                                            token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
@@ -3910,10 +3922,13 @@ namespace Chummer.Backend.Equipment
                     {
                         // This cyberware should not be included in the count to make things easier.
                         List<Cyberware> lstPairableCyberwares
-                            = (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhere(
+                            = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                 x => x.Children,
-                                x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped).ToList();
+                                async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                                                                     && x.Extra == Extra &&
+                                                                     await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                            .ConfigureAwait(false),
+                                token).ConfigureAwait(false);
                         int intCount = lstPairableCyberwares.Count;
                         // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                         if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
@@ -3964,10 +3979,13 @@ namespace Chummer.Backend.Equipment
                               .ConfigureAwait(false);
                         // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
                         List<Cyberware> lstPairableCyberwares
-                            = (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhere(
+                            = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                 x => x.Children,
-                                x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped).ToList();
+                                async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                                                                     && x.Extra == Extra &&
+                                                                     await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                            .ConfigureAwait(false),
+                                token).ConfigureAwait(false);
                         int intCount = lstPairableCyberwares.Count;
                         // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                         if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
@@ -8098,12 +8116,14 @@ namespace Chummer.Backend.Equipment
                 if (PairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.
-                    List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                                                                             x => x != this
-                                                                                 && IncludePair.Contains(x.Name)
-                                                                                 && x.Extra == Extra &&
-                                                                                 x.IsModularCurrentlyEquipped)
-                                                                         .ToList();
+                    List<Cyberware> lstPairableCyberwares
+                        = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                            x => x.Children,
+                            async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                                                                 && x.Extra == Extra &&
+                                                                 await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                        .ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                     int intCount = lstPairableCyberwares.Count;
                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                     if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
@@ -8158,9 +8178,14 @@ namespace Chummer.Backend.Equipment
                 if (WirelessPairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.
-                    List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                        x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                             x.IsModularCurrentlyEquipped).ToList();
+                    List<Cyberware> lstPairableCyberwares
+                        = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                            x => x.Children,
+                            async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                                                                 && x.Extra == Extra &&
+                                                                 await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                        .ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                     int intCount = lstPairableCyberwares.Count;
                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                     if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
@@ -8184,7 +8209,10 @@ namespace Chummer.Backend.Equipment
                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
                                                                          objLoopCyberware.InternalId + "WirelessPair",
                                                                          token).ConfigureAwait(false);
-                        if (objLoopCyberware.WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
+                        if (objLoopCyberware.WirelessPairBonus != null
+                            && (await objLoopCyberware.WirelessPairBonus
+                                                      .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                          "@mode", token).ConfigureAwait(false))?.Value == "replace")
                         {
                             await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                               await _objCharacter.Improvements

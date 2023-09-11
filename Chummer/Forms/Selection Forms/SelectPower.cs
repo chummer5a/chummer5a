@@ -245,7 +245,11 @@ namespace Chummer
                     string strName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strExtraPointCost)
-                        && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
+                        && !await _objCharacter.Powers
+                                               .AnyAsync(
+                                                   async power =>
+                                                       power.Name == strName && await power.GetTotalRatingAsync(token)
+                                                           .ConfigureAwait(false) > 0, token).ConfigureAwait(false))
                     {
                         //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
                         decPoints += Convert.ToDecimal(strExtraPointCost, GlobalSettings.InvariantCultureInfo);

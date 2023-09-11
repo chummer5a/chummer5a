@@ -3867,13 +3867,14 @@ namespace Chummer
                             {
                                 Cyberware objCyberware = objItem.Key;
                                 int intCyberwaresCount = objItem.Value;
-                                List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware
-                                    .DeepWhere(x => x.Children,
-                                               x => objCyberware.IncludePair
-                                                                .Contains(x.Name)
-                                                    && x.Extra == objCyberware.Extra
-                                                    && x.IsModularCurrentlyEquipped)
-                                    .ToList();
+                                List<Cyberware> lstPairableCyberwares = await CharacterObject.Cyberware
+                                    .DeepWhereAsync(x => x.Children,
+                                                    async x => objCyberware.IncludePair
+                                                                           .Contains(x.Name)
+                                                               && x.Extra == objCyberware.Extra
+                                                               && await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                         .ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                 if (!string.IsNullOrEmpty(objCyberware.Location)
                                     && objCyberware.IncludePair.All(x => x == objCyberware.Name))
@@ -16675,9 +16676,10 @@ namespace Chummer
                     await CharacterObject.SetCreatedAsync(true, false, token: token).ConfigureAwait(false);
 
                     // Save all essence modifiers for all Cyberware.
-                    await CharacterObject.Cyberware.GetAllDescendants(x => x.Children)
-                                         .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
-                                         .ConfigureAwait(false);
+                    await (await CharacterObject.Cyberware.GetAllDescendantsAsync(x => x.Children, token)
+                                                .ConfigureAwait(false))
+                          .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
+                          .ConfigureAwait(false);
                     await CharacterObject.Vehicles.ForEachAsync(async objVehicle =>
                     {
                         await objVehicle.Mods.SelectMany(objMod => objMod.Cyberware).GetAllDescendants(x => x.Children)
@@ -16965,8 +16967,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strLoopHasModularMount)
                         && !dicHasMounts.ContainsKey(strLoopHasModularMount))
                         dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
-                    foreach (Cyberware objLoopCyberware in objSelectedCyberware.Children.DeepWhere(
-                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                    foreach (Cyberware objLoopCyberware in await objSelectedCyberware.Children.DeepWhereAsync(
+                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), token).ConfigureAwait(false))
                     {
                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                      ',', StringSplitOptions.RemoveEmptyEntries))
@@ -20215,8 +20217,8 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                         foreach (Weapon objWeapon in
-                                 (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false)).DeepWhere(
-                                     x => x.Children, x => x.WeaponAccessories.Count > 0))
+                                 await (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                                     x => x.Children, async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) > 0, token).ConfigureAwait(false))
                         {
                             intCapacityOver += await objWeapon.WeaponAccessories.SumAsync(async objAccessory =>
                             {
@@ -20234,9 +20236,9 @@ namespace Chummer
                         }
 
                         // Gear Capacity.
-                        foreach (Gear objGear in (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
-                                 .DeepWhere(
-                                     x => x.Children, x => x.CapacityRemaining < 0))
+                        foreach (Gear objGear in await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
+                                 .DeepWhereAsync(
+                                     x => x.Children, x => x.CapacityRemaining < 0, token).ConfigureAwait(false))
                         {
                             lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                              .ConfigureAwait(false));
@@ -20244,8 +20246,8 @@ namespace Chummer
                         }
 
                         // Cyberware Capacity.
-                        foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token)
-                                     .ConfigureAwait(false)).GetAllDescendants(x => x.Children))
+                        foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token)
+                                     .ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             if (objCyberware.CapacityRemaining < 0)
                             {
@@ -21061,7 +21063,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>(1);
             List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select")?.Value ?? string.Empty;
+            string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
 
             objCyberware.Create(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
                                 strForced);
@@ -21340,7 +21342,7 @@ namespace Chummer
                             string strCategory = objXmlSpell["category"]?.InnerText;
                             string strName = objXmlSpell["name"].InnerText;
                             // Make sure the Spell has not already been added to the character.
-                            if (CharacterObject.Spells.Any(x => x.Name == strName && x.Category == strCategory))
+                            if (await CharacterObject.Spells.AnyAsync(x => x.Name == strName && x.Category == strCategory, token).ConfigureAwait(false))
                                 continue;
                             XmlNode objXmlSpellNode = objXmlSpellDocument.TryGetNodeByNameOrId(
                                 "/chummer/spells/spell", strName,

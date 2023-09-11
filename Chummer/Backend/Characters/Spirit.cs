@@ -1543,7 +1543,7 @@ namespace Chummer
                                 objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
                             if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                             {
-                                if (Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
+                                if (Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter), token)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
                                         x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
                                     Program.OpenCharacters.Remove(objOldLinkedCharacter);

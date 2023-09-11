@@ -11967,10 +11967,7 @@ namespace Chummer
                 {
                     // Get the grade of the item we're undoing and make sure it's the highest grade
                     int intMaxGrade = 0;
-                    await CharacterObject.InitiationGrades.ForEachAsync(objGrade =>
-                    {
-                        intMaxGrade = Math.Max(intMaxGrade, objGrade.Grade);
-                    }, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.InitiationGrades.ForEachAsync(objGrade => intMaxGrade = Math.Max(intMaxGrade, objGrade.Grade), GenericToken).ConfigureAwait(false);
 
                     bool blnReturn = false;
                     await CharacterObject.InitiationGrades.ForEachWithBreakAsync(async objGrade =>
@@ -12529,10 +12526,7 @@ namespace Chummer
                 {
                     // Get the grade of the item we're undoing and make sure it's the highest grade
                     int intMaxGrade = 0;
-                    await CharacterObject.InitiationGrades.ForEachAsync(objGrade =>
-                    {
-                        intMaxGrade = Math.Max(intMaxGrade, objGrade.Grade);
-                    }, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.InitiationGrades.ForEachAsync(objGrade => intMaxGrade = Math.Max(intMaxGrade, objGrade.Grade), GenericToken).ConfigureAwait(false);
 
                     bool blnReturn = false;
                     await CharacterObject.InitiationGrades.ForEachWithBreakAsync(async objGrade =>

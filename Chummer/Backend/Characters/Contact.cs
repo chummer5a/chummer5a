@@ -2017,7 +2017,7 @@ namespace Chummer
                             {
                                 if (Program.OpenCharacters.All(x => x == _objLinkedCharacter
                                                                     || !x.LinkedCharacters.Contains(
-                                                                        objOldLinkedCharacter))
+                                                                        objOldLinkedCharacter), token)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
                                         x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
                                     Program.OpenCharacters.Remove(objOldLinkedCharacter);

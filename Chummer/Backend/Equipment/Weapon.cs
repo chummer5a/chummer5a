@@ -1495,50 +1495,69 @@ namespace Chummer.Backend.Equipment
         {
             // Find the piece of Gear that created this item if applicable
             List<Gear> lstGearToSearch = new List<Gear>(_objCharacter.Gear);
-            foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
+            foreach (Cyberware objCyberware in await _objCharacter.Cyberware
+                                                                  .DeepWhereAsync(
+                                                                      x => x.Children,
+                                                                      async x => await x.GearChildren
+                                                                              .GetCountAsync(token)
+                                                                              .ConfigureAwait(false)
+                                                                          > 0, token).ConfigureAwait(false))
             {
                 lstGearToSearch.AddRange(objCyberware.GearChildren);
             }
-            foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+
+            foreach (Weapon objWeapon in await _objCharacter.Weapons
+                                                            .DeepWhereAsync(
+                                                                x => x.Children,
+                                                                x => x.WeaponAccessories.AnyAsync(
+                                                                    async y => await y.GearChildren.GetCountAsync(token)
+                                                                        .ConfigureAwait(false) > 0, token), token)
+                                                            .ConfigureAwait(false))
             {
-                await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
-                {
-                    lstGearToSearch.AddRange(objAccessory.GearChildren);
-                }, token).ConfigureAwait(false);
+                await objWeapon.WeaponAccessories
+                               .ForEachAsync(objAccessory => lstGearToSearch.AddRange(objAccessory.GearChildren),
+                                             token).ConfigureAwait(false);
             }
 
-            await _objCharacter.Armor.ForEachAsync(objArmor =>
-            {
-                lstGearToSearch.AddRange(objArmor.GearChildren);
-            }, token).ConfigureAwait(false);
+            await _objCharacter.Armor.ForEachAsync(objArmor => lstGearToSearch.AddRange(objArmor.GearChildren), token).ConfigureAwait(false);
             await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
             {
                 lstGearToSearch.AddRange(objVehicle.GearChildren);
-                foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(
-                             x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                foreach (Weapon objWeapon in await objVehicle.Weapons.DeepWhereAsync(
+                             x => x.Children,
+                             x => x.WeaponAccessories.AnyAsync(
+                                 async y => await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0, token),
+                             token).ConfigureAwait(false))
                 {
-                    await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
-                    {
-                        lstGearToSearch.AddRange(objAccessory.GearChildren);
-                    }, token).ConfigureAwait(false);
+                    await objWeapon.WeaponAccessories
+                                   .ForEachAsync(objAccessory => lstGearToSearch.AddRange(objAccessory.GearChildren),
+                                                 token).ConfigureAwait(false);
                 }
 
                 await objVehicle.Mods.ForEachAsync(async objVehicleMod =>
                 {
-                    if (objVehicleMod.Cyberware.Count == 0 && objVehicleMod.Weapons.Count == 0)
+                    if (await objVehicleMod.Cyberware.GetCountAsync(token).ConfigureAwait(false) == 0
+                        && await objVehicleMod.Weapons.GetCountAsync(token).ConfigureAwait(false) == 0)
                         return;
-                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(
-                                 x => x.Children, x => x.GearChildren.Count > 0))
+                    foreach (Cyberware objCyberware in await objVehicleMod.Cyberware.DeepWhereAsync(
+                                                                              x => x.Children,
+                                                                              async x => await x.GearChildren
+                                                                                  .GetCountAsync(token)
+                                                                                  .ConfigureAwait(false) > 0, token)
+                                                                          .ConfigureAwait(false))
                     {
                         lstGearToSearch.AddRange(objCyberware.GearChildren);
                     }
 
-                    foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(
-                                 x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                    foreach (Weapon objWeapon in await objVehicleMod.Weapons.DeepWhereAsync(
+                                 x => x.Children,
+                                 x => x.WeaponAccessories.AnyAsync(
+                                     async y => await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0,
+                                     token), token).ConfigureAwait(false))
                     {
-                        await objWeapon.WeaponAccessories.ForEachAsync(
-                                           objAccessory => { lstGearToSearch.AddRange(objAccessory.GearChildren); },
-                                           token)
+                        await objWeapon.WeaponAccessories
+                                       .ForEachAsync(
+                                           objAccessory => lstGearToSearch.AddRange(objAccessory.GearChildren), token)
                                        .ConfigureAwait(false);
                     }
                 }, token).ConfigureAwait(false);
@@ -2997,7 +3016,10 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                        foreach (Gear objChild in blnSync
+                                     ? objGear.Children.DeepWhere(x => x.Children, x => x.Equipped, token)
+                                     : await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                                    .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                        && objChild.FlechetteWeaponBonus != null)
@@ -3792,7 +3814,10 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                        foreach (Gear objChild in blnSync
+                                     ? objGear.Children.DeepWhere(x => x.Children, x => x.Equipped, token)
+                                     : await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                                    .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                        && objChild.FlechetteWeaponBonus != null)
@@ -4288,7 +4313,10 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                        foreach (Gear objChild in blnSync
+                                     ? objGear.Children.DeepWhere(x => x.Children, x => x.Equipped, token)
+                                     : await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                                    .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {
@@ -4597,7 +4625,10 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                        foreach (Gear objChild in blnSync
+                                     ? objGear.Children.DeepWhere(x => x.Children, x => x.Equipped, token)
+                                     : await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                                    .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {
@@ -5099,7 +5130,8 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                        foreach (Gear objChild in await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                                    .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {
@@ -5544,7 +5576,8 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                    foreach (Gear objChild in await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                                .ConfigureAwait(false))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                    && objChild.FlechetteWeaponBonus != null)
@@ -6270,8 +6303,8 @@ namespace Chummer.Backend.Equipment
                         {
                             decimal decSmartlinkBonus = await ImprovementManager.ValueOfAsync(_objCharacter,
                                 Improvement.ImprovementType.Smartlink, token: token).ConfigureAwait(false);
-                            foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
-                                         x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
+                            foreach (Gear objLoopGear in await ParentVehicle.GearChildren.DeepWhereAsync(x => x.Children,
+                                         x => x.Bonus?.InnerXml.Contains("<smartlink>") == true, token).ConfigureAwait(false))
                             {
                                 string strLoopBonus = string.Empty;
                                 if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
@@ -6434,7 +6467,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objAmmo.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                    foreach (Gear objChild in await objAmmo.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token).ConfigureAwait(false))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                         {
