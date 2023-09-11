@@ -142,16 +142,10 @@ namespace Chummer
                                     xmlCyberware.WriteContentTo(objWriter);
                     }
 
-                    string strGrade = string.Empty;
                     // Determine the Grade of Cyberware.
-                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                    {
-                        if (objCyberware.SourceType == _eSource)
-                        {
-                            strGrade = objCyberware.Grade.Name;
-                            break;
-                        }
-                    }
+                    string strGrade
+                        = (await _objCharacter.Cyberware.FirstOrDefaultAsync(x => x.SourceType == _eSource)
+                                              .ConfigureAwait(false))?.Grade.Name ?? string.Empty;
 
                     // <suite>
                     await objWriter.WriteStartElementAsync("suite").ConfigureAwait(false);
@@ -165,42 +159,52 @@ namespace Chummer
                     await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
 
                     // Write out the Cyberware.
-                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                    await _objCharacter.Cyberware.ForEachAsync(async objCyberware =>
                     {
-                        if (objCyberware.SourceType == _eSource)
+                        if (objCyberware.SourceType != _eSource)
+                            return;
+
+                        // <cyberware>
+                        // ReSharper disable AccessToDisposedClosure
+                        await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
+                        if (objCyberware.Rating > 0)
+                            await objWriter
+                                  .WriteElementStringAsync(
+                                      "rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                  .ConfigureAwait(false);
+                        // Write out child items.
+                        if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
                         {
-                            // <cyberware>
-                            await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
-                            await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
-                            if (objCyberware.Rating > 0)
-                                await objWriter.WriteElementStringAsync("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                            // Write out child items.
-                            if (objCyberware.Children.Count > 0)
+                            // <cyberwares>
+                            await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
+                            await objCyberware.Children.ForEachAsync(async objChild =>
                             {
-                                // <cyberwares>
-                                await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
-                                foreach (Cyberware objChild in objCyberware.Children)
+                                // Do not include items that come with the base item by default.
+                                if (objChild.Capacity != "[*]")
                                 {
-                                    // Do not include items that come with the base item by default.
-                                    if (objChild.Capacity != "[*]")
-                                    {
-                                        await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
-                                        await objWriter.WriteElementStringAsync("name", objChild.Name).ConfigureAwait(false);
-                                        if (objChild.Rating > 0)
-                                            await objWriter.WriteElementStringAsync("rating", objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                                        // </cyberware>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                    }
+                                    await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
+                                    await objWriter.WriteElementStringAsync("name", objChild.Name)
+                                                   .ConfigureAwait(false);
+                                    if (objChild.Rating > 0)
+                                        await objWriter
+                                              .WriteElementStringAsync(
+                                                  "rating",
+                                                  objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                              .ConfigureAwait(false);
+                                    // </cyberware>
+                                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                 }
+                            }).ConfigureAwait(false);
 
-                                // </cyberwares>
-                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                            }
-
-                            // </cyberware>
+                            // </cyberwares>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         }
-                    }
+
+                        // </cyberware>
+                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                        // ReSharper restore AccessToDisposedClosure
+                    }).ConfigureAwait(false);
 
                     // </cyberwares>
                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);

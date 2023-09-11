@@ -1034,8 +1034,7 @@ namespace Chummer.Backend.Equipment
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
                                               () => objLoopAttribute.TotalValue.ToString(
@@ -1545,17 +1544,7 @@ namespace Chummer.Backend.Equipment
                     sbdCost.Append(strCostExpr.TrimStart('+'));
                     sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev,
-                                             () => objLoopAttribute.TotalValue.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                             () => objLoopAttribute.TotalBase.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                    }
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev,
                                              () => objLoopAttribute.TotalValue.ToString(
@@ -1727,17 +1716,7 @@ namespace Chummer.Backend.Equipment
                     sbdReturn.Append(strSlotsExpression.TrimStart('+'));
                     sbdReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        sbdReturn.CheapReplace(strSlotsExpression, objLoopAttribute.Abbrev,
-                                               () => objLoopAttribute.TotalValue.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                        sbdReturn.CheapReplace(strSlotsExpression, objLoopAttribute.Abbrev + "Base",
-                                               () => objLoopAttribute.TotalBase.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                    }
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdReturn.CheapReplace(strSlotsExpression, objLoopAttribute.Abbrev,
                                                () => objLoopAttribute.TotalValue.ToString(

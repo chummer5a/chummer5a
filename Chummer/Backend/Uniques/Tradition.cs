@@ -958,8 +958,7 @@ namespace Chummer.Backend.Uniques
                     using (EnterReadLock.Enter(_objCharacter.AttributeSection))
                     using (EnterReadLock.Enter(_objCharacter.AttributeSection.Attributes))
                     {
-                        foreach (CharacterAttrib objAttrib in _objCharacter.AttributeSection.Attributes)
-                            objAttrib.LockObject.EnterReadLock();
+                        _objCharacter.AttributeSection.Attributes.ForEach(x => x.LockObject.EnterReadLock());
                         try
                         {
                             string strOldExpression = Interlocked.Exchange(ref _strDrainExpression, value);
@@ -986,8 +985,7 @@ namespace Chummer.Backend.Uniques
                         }
                         finally
                         {
-                            foreach (CharacterAttrib objAttrib in _objCharacter.AttributeSection.Attributes)
-                                objAttrib.LockObject.EnterReadLock();
+                            _objCharacter.AttributeSection.Attributes.ForEach(x => x.LockObject.ExitReadLock());
                         }
                     }
 

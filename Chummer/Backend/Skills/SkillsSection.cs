@@ -430,12 +430,14 @@ namespace Chummer.Backend.Skills
                             }
                             else
                             {
+                                string strCategoryCleaned = xmlSkill["category"]?.InnerText.CleanXPath();
                                 bool blnIsKnowledgeSkill
-                                    = xmlSkillsDocument
-                                      .SelectSingleNodeAndCacheExpressionAsNavigator("/chummer/categories/category[. = "
-                                                        + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")
-                                      ?.Value
-                                      != "active";
+                                    = string.IsNullOrEmpty(strCategoryCleaned) || xmlSkillsDocument
+                                        .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                            "/chummer/categories/category[. = "
+                                            + strCategoryCleaned + "]/@type", token)
+                                        ?.Value
+                                    != "active";
                                 yield return Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
                             }
                         }
@@ -606,13 +608,15 @@ namespace Chummer.Backend.Skills
                 HashSet<Skill> setSkillsToRemove
                     = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName, token));
                 // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(
-                             x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
+                _objCharacter.Improvements.ForEach(objImprovement =>
                 {
+                    if (objImprovement.ImproveType != Improvement.ImprovementType.SpecialSkills)
+                        return;
                     FilterOption eFilterOption
-                        = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
-                    setSkillsToRemove.ExceptWith(GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target, token));
-                }
+                        = (FilterOption) Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                    setSkillsToRemove.ExceptWith(
+                        GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target, token));
+                }, token);
 
                 if (setSkillsToRemove.Count == 0)
                     return;
@@ -991,7 +995,7 @@ namespace Chummer.Backend.Skills
                                 {
                                     if (blnSync)
                                     {
-                                        if (_objCharacter.Created && !KnowledgeSkills.Any(x => x.IsNativeLanguage))
+                                        if (_objCharacter.Created && !KnowledgeSkills.Any(x => x.IsNativeLanguage, token))
                                         {
                                             KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
                                             {
@@ -1466,7 +1470,7 @@ namespace Chummer.Backend.Skills
                                 } while (objSkillToPutPointsInto != null && intSkillPointCount > 0);
 
                                 // If any points left over, then put them all into the attribute with the highest karma cost
-                                if (intSkillPointCount > 0 && Skills.Any(x => x.Karma != 0))
+                                if (intSkillPointCount > 0 && Skills.Any(x => x.Karma != 0, token))
                                 {
                                     int intHighestTotalKarmaCost = 0;
                                     foreach (Skill objLoopSkill in Skills)
@@ -1532,7 +1536,7 @@ namespace Chummer.Backend.Skills
                             } while (objKnowledgeSkillToPutPointsInto != null && intKnowledgeSkillPointCount > 0);
 
                             // If any points left over, then put them all into the attribute with the highest karma cost
-                            if (intKnowledgeSkillPointCount > 0 && KnowledgeSkills.Any(x => x.Karma != 0))
+                            if (intKnowledgeSkillPointCount > 0 && KnowledgeSkills.Any(x => x.Karma != 0, token))
                             {
                                 int intHighestTotalKarmaCost = 0;
                                 foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)

@@ -1547,7 +1547,7 @@ namespace Chummer
                             objAmendingNodeId = xmlAmendingNode["name"];
                             if (objAmendingNodeId != null && (strOperation == "remove"
                                                               || xmlAmendingNode.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                                  "child::*[not(self::name)]") != null))
+                                                                  "child::*[not(self::name)]", token) != null))
                             {
                                 // A few places in the data files use just "name" as an actual entry in a list, so only default to using it as an id node
                                 // if there are other nodes present in the amending node or if a remove operation is specified (since that only requires an id node).

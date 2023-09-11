@@ -128,10 +128,10 @@ namespace Chummer
                             {
                                 // Needed in order to properly process named sources where
                                 // the tooltip was built before the object was added to the character
-                                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                                _objCharacter.Improvements.ForEach(objImprovement =>
                                 {
                                     if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                        continue;
+                                        return;
                                     foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
                                              objImprovement.GetRelevantPropertyChangers())
                                     {
@@ -144,7 +144,7 @@ namespace Chummer
 
                                         setChangedProperties.Add(strPropertyName);
                                     }
-                                }
+                                });
                             }
 
                             foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in

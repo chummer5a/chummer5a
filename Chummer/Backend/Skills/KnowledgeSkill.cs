@@ -739,7 +739,7 @@ namespace Chummer.Backend.Skills
                     decimal decSpecCost = CharacterObject.Settings.KarmaKnowledgeSpecialization * intSpecCount;
                     decimal decExtraSpecCost = 0;
                     decimal decSpecCostMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                    CharacterObject.Improvements.ForEach(objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum <= intTotalBaseRating &&
                             (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
@@ -755,9 +755,9 @@ namespace Chummer.Backend.Skills
                                     case Improvement.ImprovementType.KnowledgeSkillKarmaCost:
                                         decExtra += objLoopImprovement.Value *
                                                     (Math.Min(intTotalBaseRating,
-                                                        objLoopImprovement.Maximum == 0
-                                                            ? int.MaxValue
-                                                            : objLoopImprovement.Maximum) - Math.Max(intLower,
+                                                              objLoopImprovement.Maximum == 0
+                                                                  ? int.MaxValue
+                                                                  : objLoopImprovement.Maximum) - Math.Max(intLower,
                                                         objLoopImprovement.Minimum - 1));
                                         break;
 
@@ -773,9 +773,9 @@ namespace Chummer.Backend.Skills
                                     case Improvement.ImprovementType.SkillCategoryKarmaCost:
                                         decExtra += objLoopImprovement.Value *
                                                     (Math.Min(intTotalBaseRating,
-                                                        objLoopImprovement.Maximum == 0
-                                                            ? int.MaxValue
-                                                            : objLoopImprovement.Maximum) - Math.Max(intLower,
+                                                              objLoopImprovement.Maximum == 0
+                                                                  ? int.MaxValue
+                                                                  : objLoopImprovement.Maximum) - Math.Max(intLower,
                                                         objLoopImprovement.Minimum - 1));
                                         break;
 
@@ -793,7 +793,7 @@ namespace Chummer.Backend.Skills
                                 }
                             }
                         }
-                    }
+                    });
 
                     if (decMultiplier != 1.0m)
                         decCost *= decMultiplier;
@@ -941,7 +941,7 @@ namespace Chummer.Backend.Skills
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
                     int intMinOverride = int.MaxValue;
-                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                    CharacterObject.Improvements.ForEach(objLoopImprovement =>
                     {
                         if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objLoopImprovement.Maximum) &&
                             objLoopImprovement.Minimum <= intTotalBaseRating + 1 &&
@@ -986,7 +986,7 @@ namespace Chummer.Backend.Skills
                                 intMinOverride = Math.Min(intMinOverride, objLoopImprovement.Value.StandardRound());
                             }
                         }
-                    }
+                    });
 
                     if (decMultiplier != 1.0m)
                         intValue = (intValue * decMultiplier + decExtra).StandardRound();
@@ -1103,7 +1103,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                    CharacterObject.Improvements.ForEach(objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum <= BasePoints &&
                             (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
@@ -1119,9 +1119,10 @@ namespace Chummer.Backend.Skills
                                     case Improvement.ImprovementType.KnowledgeSkillPointCost:
                                         decExtra += objLoopImprovement.Value *
                                                     (Math.Min(BasePoints,
-                                                        objLoopImprovement.Maximum == 0
-                                                            ? int.MaxValue
-                                                            : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                                              objLoopImprovement.Maximum == 0
+                                                                  ? int.MaxValue
+                                                                  : objLoopImprovement.Maximum)
+                                                     - objLoopImprovement.Minimum);
                                         break;
 
                                     case Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier:
@@ -1136,9 +1137,10 @@ namespace Chummer.Backend.Skills
                                     case Improvement.ImprovementType.SkillCategoryPointCost:
                                         decExtra += objLoopImprovement.Value *
                                                     (Math.Min(BasePoints,
-                                                        objLoopImprovement.Maximum == 0
-                                                            ? int.MaxValue
-                                                            : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                                              objLoopImprovement.Maximum == 0
+                                                                  ? int.MaxValue
+                                                                  : objLoopImprovement.Maximum)
+                                                     - objLoopImprovement.Minimum);
                                         break;
 
                                     case Improvement.ImprovementType.SkillCategoryPointCostMultiplier:
@@ -1147,7 +1149,7 @@ namespace Chummer.Backend.Skills
                                 }
                             }
                         }
-                    }
+                    });
 
                     if (decMultiplier != 1.0m)
                         intPointCost = (intPointCost * decMultiplier + decExtra).StandardRound();

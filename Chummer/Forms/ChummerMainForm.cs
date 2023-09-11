@@ -3183,8 +3183,11 @@ namespace Chummer
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
-                                    if (Program.OpenCharacters.All(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                    if (await Program.OpenCharacters
+                                                     .AllAsync(
+                                                         async x => x == objCharacter || !await x.LinkedCharacters
+                                                             .ContainsAsync(objCharacter, token).ConfigureAwait(false),
+                                                         token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                                      .ConfigureAwait(false);
                                     continue;
@@ -3402,8 +3405,11 @@ namespace Chummer
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
-                                    if (Program.OpenCharacters.All(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                    if (await Program.OpenCharacters.AllAsync(
+                                                         async x => x == objCharacter || !await x.LinkedCharacters
+                                                             .ContainsAsync(objCharacter, token).ConfigureAwait(false),
+                                                         token)
+                                                     .ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                                      .ConfigureAwait(false);
                                     continue;
@@ -3640,8 +3646,11 @@ namespace Chummer
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
-                                    if (Program.OpenCharacters.All(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                    if (await Program.OpenCharacters.AllAsync(
+                                                         async x => x == objCharacter || !await x.LinkedCharacters
+                                                             .ContainsAsync(objCharacter, token).ConfigureAwait(false),
+                                                         token)
+                                                     .ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                                      .ConfigureAwait(false);
                                     continue;

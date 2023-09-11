@@ -2204,18 +2204,14 @@ namespace Chummer
                         if (!CharacterObject.AddBiowareEnabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(
-                                                                                  x => x.Children, x =>
-                                                                                      x.SourceType
-                                                                                      == Improvement.ImprovementSource
-                                                                                          .Bioware
-                                                                                      && x.SourceID != Cyberware
-                                                                                          .EssenceHoleGUID
-                                                                                      && x.SourceID != Cyberware
-                                                                                          .EssenceAntiHoleGUID
-                                                                                      && x.IsModularCurrentlyEquipped
-                                                                                      && x.CanRemoveThroughImprovements)
-                                                                              .ToList())
+                            foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
+                                         x => x.Children, async x =>
+                                             x.SourceType == Improvement.ImprovementSource.Bioware
+                                             && x.SourceID != Cyberware.EssenceHoleGUID
+                                             && x.SourceID != Cyberware.EssenceAntiHoleGUID
+                                             && await x.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false)
+                                             && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
+                                                 || x.CanRemoveThroughImprovements), GenericToken).ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
@@ -2247,18 +2243,15 @@ namespace Chummer
                         if (!CharacterObject.AddCyberwareEnabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(
-                                                                                  x => x.Children, x =>
-                                                                                      x.SourceType
-                                                                                      == Improvement.ImprovementSource
-                                                                                          .Cyberware
-                                                                                      && x.SourceID != Cyberware
-                                                                                          .EssenceHoleGUID
-                                                                                      && x.SourceID != Cyberware
-                                                                                          .EssenceAntiHoleGUID
-                                                                                      && x.IsModularCurrentlyEquipped
-                                                                                      && x.CanRemoveThroughImprovements)
-                                                                              .ToList())
+                            foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
+                                             x => x.Children, async x =>
+                                                 x.SourceType == Improvement.ImprovementSource.Cyberware
+                                                 && x.SourceID != Cyberware.EssenceHoleGUID
+                                                 && x.SourceID != Cyberware.EssenceAntiHoleGUID
+                                                 && await x.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false)
+                                                 && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
+                                                     || x.CanRemoveThroughImprovements), GenericToken)
+                                         .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
@@ -2267,7 +2260,8 @@ namespace Chummer
                                     if (objCyberware.Parent != null)
                                         await objCyberware.Parent.Children.RemoveAsync(objCyberware, GenericToken)
                                                           .ConfigureAwait(false);
-                                    await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken).ConfigureAwait(false);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken)
+                                                         .ConfigureAwait(false);
                                 }
                                 else
                                 {
@@ -2289,17 +2283,18 @@ namespace Chummer
                         if (CharacterObject.ExCon)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(
-                                                                                  x => x.Children, x =>
-                                                                                      x.SourceID != Cyberware
-                                                                                          .EssenceHoleGUID
-                                                                                      && x.SourceID != Cyberware
-                                                                                          .EssenceAntiHoleGUID
-                                                                                      && x.IsModularCurrentlyEquipped
-                                                                                      && x.CanRemoveThroughImprovements)
-                                                                              .ToList())
+                            foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
+                                             x => x.Children, async x =>
+                                                 x.SourceID != Cyberware.EssenceHoleGUID
+                                                 && x.SourceID != Cyberware.EssenceAntiHoleGUID
+                                                 && x.Grade.Name != "None"
+                                                 && await x.GetIsModularCurrentlyEquippedAsync(GenericToken)
+                                                 && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
+                                                     || x.CanRemoveThroughImprovements), GenericToken)
+                                         .ConfigureAwait(false))
                             {
-                                char chrAvail = (await objCyberware.TotalAvailTupleAsync(false, GenericToken).ConfigureAwait(false)).Suffix;
+                                char chrAvail = (await objCyberware.TotalAvailTupleAsync(false, GenericToken)
+                                                                   .ConfigureAwait(false)).Suffix;
                                 if (chrAvail != 'R' && chrAvail != 'F')
                                     continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
@@ -2307,7 +2302,8 @@ namespace Chummer
                                     if (objCyberware.Parent != null)
                                         await objCyberware.Parent.Children.RemoveAsync(objCyberware, GenericToken)
                                                           .ConfigureAwait(false);
-                                    await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken).ConfigureAwait(false);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken)
+                                                         .ConfigureAwait(false);
                                     await objCyberware.ChangeModularEquipAsync(false, token: GenericToken)
                                                       .ConfigureAwait(false);
                                 }
@@ -3507,7 +3503,7 @@ namespace Chummer
                             }
 
                             // Refresh Martial Art Techniques.
-                            foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
+                            await CharacterObject.MartialArts.ForEachAsync(async objMartialArt =>
                             {
                                 XmlNode objMartialArtNode
                                     = await objMartialArt.GetNodeAsync(token: token).ConfigureAwait(false);
@@ -3534,9 +3530,10 @@ namespace Chummer
                                                                       .ConfigureAwait(false));
                                 }
 
-                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(
-                                             x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                                await objMartialArt.Techniques.ForEachAsync(async objTechnique =>
                                 {
+                                    if (lstInternalIdFilter?.Contains(objTechnique.InternalId) == false)
+                                        return;
                                     XmlNode objNode = await objTechnique.GetNodeAsync(token: token)
                                                                         .ConfigureAwait(false);
                                     if (objNode != null)
@@ -3554,13 +3551,14 @@ namespace Chummer
                                         sbdOutdatedItems.AppendLine(
                                             await objTechnique.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                     }
-                                }
-                            }
+                                }, token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
 
                             // Refresh Spells.
-                            foreach (Spell objSpell in CharacterObject.Spells.Where(
-                                         x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                            await CharacterObject.Spells.ForEachAsync(async objSpell =>
                             {
+                                if (lstInternalIdFilter?.Contains(objSpell.InternalId) == false)
+                                    return;
                                 XmlNode objNode = await objSpell.GetNodeAsync(token: token).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
@@ -3591,12 +3589,13 @@ namespace Chummer
                                     sbdOutdatedItems.AppendLine(
                                         await objSpell.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             // Refresh Adept Powers.
-                            foreach (Power objPower in CharacterObject.Powers.Where(
-                                         x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                            await CharacterObject.Powers.ForEachAsync(async objPower =>
                             {
+                                if (lstInternalIdFilter?.Contains(objPower.InternalId) == false)
+                                    return;
                                 XmlNode objNode = await objPower.GetNodeAsync(token: token).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
@@ -3617,12 +3616,13 @@ namespace Chummer
                                     sbdOutdatedItems.AppendLine(
                                         await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                 }
-                            }
+                            }, GenericToken);
 
                             // Refresh Complex Forms.
-                            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(
-                                         x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                            await CharacterObject.ComplexForms.ForEachAsync(async objComplexForm =>
                             {
+                                if (lstInternalIdFilter?.Contains(objComplexForm.InternalId) == false)
+                                    return;
                                 XmlNode objNode = await objComplexForm.GetNodeAsync(token: token).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
@@ -3656,12 +3656,13 @@ namespace Chummer
                                     sbdOutdatedItems.AppendLine(
                                         await objComplexForm.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             // Refresh AI Programs and Advanced Programs
-                            foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(
-                                         x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                            await CharacterObject.AIPrograms.ForEachAsync(async objProgram =>
                             {
+                                if (lstInternalIdFilter?.Contains(objProgram.InternalId) == false)
+                                    return;
                                 XmlNode objNode = await objProgram.GetNodeAsync(token: token).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
@@ -3693,12 +3694,13 @@ namespace Chummer
                                     sbdOutdatedItems.AppendLine(
                                         await objProgram.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             // Refresh Critter Powers.
-                            foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(
-                                         x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                            await CharacterObject.CritterPowers.ForEachAsync(async objPower =>
                             {
+                                if (lstInternalIdFilter?.Contains(objPower.InternalId) == false)
+                                    return;
                                 XmlNode objNode = await objPower.GetNodeAsync(token: token).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
@@ -3737,7 +3739,7 @@ namespace Chummer
                                     sbdOutdatedItems.AppendLine(
                                         await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             // Refresh Metamagics and Echoes.
                             // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
@@ -3778,8 +3780,8 @@ namespace Chummer
                             // Refresh Cyberware and Bioware.
                             Dictionary<Cyberware, int> dicPairableCyberwares
                                 = new Dictionary<Cyberware, int>(CharacterObject.Cyberware.Count);
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(
-                                         x => x.Children))
+                            foreach (Cyberware objCyberware in await CharacterObject.Cyberware.GetAllDescendantsAsync(
+                                         x => x.Children, token).ConfigureAwait(false))
                             {
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)
@@ -3865,13 +3867,14 @@ namespace Chummer
                             {
                                 Cyberware objCyberware = objItem.Key;
                                 int intCyberwaresCount = objItem.Value;
-                                List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware
-                                    .DeepWhere(x => x.Children,
-                                               x => objCyberware.IncludePair
-                                                                .Contains(x.Name)
-                                                    && x.Extra == objCyberware.Extra
-                                                    && x.IsModularCurrentlyEquipped)
-                                    .ToList();
+                                List<Cyberware> lstPairableCyberwares = await CharacterObject.Cyberware
+                                    .DeepWhereAsync(x => x.Children,
+                                                    async x => objCyberware.IncludePair
+                                                                           .Contains(x.Name)
+                                                               && x.Extra == objCyberware.Extra
+                                                               && await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                         .ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                 if (!string.IsNullOrEmpty(objCyberware.Location)
                                     && objCyberware.IncludePair.All(x => x == objCyberware.Name))
@@ -3936,7 +3939,7 @@ namespace Chummer
                             }
 
                             // Refresh Armors.
-                            foreach (Armor objArmor in CharacterObject.Armor)
+                            await CharacterObject.Armor.ForEachAsync(async objArmor =>
                             {
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
@@ -3976,7 +3979,7 @@ namespace Chummer
                                     }
                                 }
 
-                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                await objArmor.ArmorMods.ForEachAsync(async objMod =>
                                 {
                                     // We're only re-apply improvements a list of items, not all of them
                                     if (lstInternalIdFilter?.Contains(objMod.InternalId) != false)
@@ -4020,51 +4023,44 @@ namespace Chummer
                                         }
                                     }
 
-                                    foreach (Gear objGear in objMod.GearChildren)
-                                    {
-                                        await objGear
-                                              .ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter,
-                                                                 token: token)
-                                              .ConfigureAwait(false);
-                                    }
-                                }
+                                    await objMod.GearChildren.ForEachAsync(objGear => objGear
+                                                                               .ReaddImprovements(
+                                                                                   treArmor, sbdOutdatedItems,
+                                                                                   lstInternalIdFilter, token: token).AsTask(),
+                                                                           token).ConfigureAwait(false);
+                                }, token).ConfigureAwait(false);
 
-                                foreach (Gear objGear in objArmor.GearChildren)
-                                {
-                                    await objGear
-                                          .ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter,
-                                                             token: token)
-                                          .ConfigureAwait(false);
-                                }
+                                await objArmor.GearChildren.ForEachAsync(objGear => objGear
+                                                                             .ReaddImprovements(
+                                                                                 treArmor, sbdOutdatedItems,
+                                                                                 lstInternalIdFilter, token: token).AsTask(),
+                                                                         token).ConfigureAwait(false);
 
                                 await objArmor.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
-                            }
+                            }, token).ConfigureAwait(false);
 
                             // Refresh Gear.
-                            foreach (Gear objGear in CharacterObject.Gear)
+                            await CharacterObject.Gear.ForEachAsync(async objGear =>
                             {
                                 await objGear
                                       .ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                       .ConfigureAwait(false);
                                 await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
-                            }
+                            }, token).ConfigureAwait(false);
 
                             // Refresh Weapons Gear
-                            foreach (Weapon objWeapon in CharacterObject.Weapons)
+                            await CharacterObject.Weapons.ForEachAsync(async objWeapon =>
                             {
-                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                                {
-                                    foreach (Gear objGear in objAccessory.GearChildren)
-                                    {
-                                        await objGear
-                                              .ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter,
-                                                                 token: token)
-                                              .ConfigureAwait(false);
-                                    }
-                                }
+                                await objWeapon.WeaponAccessories.ForEachAsync(
+                                                   objAccessory => objAccessory.GearChildren.ForEachAsync(objGear =>
+                                                           objGear
+                                                               .ReaddImprovements(
+                                                                   treWeapons, sbdOutdatedItems, lstInternalIdFilter,
+                                                                   token: token).AsTask(), token), token)
+                                               .ConfigureAwait(false);
 
                                 await objWeapon.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
-                            }
+                            }, token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -5772,43 +5768,6 @@ namespace Chummer
             }
         }
 
-        /*
-        private Quality AddQuality(XmlNode objXmlAddQuality, XmlNode objXmlSelectedQuality)
-        {
-            string strForceValue = string.Empty;
-            if (objXmlAddQuality.Attributes["select"] != null)
-                strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
-            bool blnAddQuality = true;
-
-            // Make sure the character does not yet have this Quality.
-            foreach (Quality objCharacterQuality in _objCharacter.Qualities)
-            {
-                if (objCharacterQuality.Name == objXmlAddQuality.InnerText && objCharacterQuality.Extra == strForceValue)
-                {
-                    blnAddQuality = false;
-                    break;
-                }
-            }
-
-            if (blnAddQuality)
-            {
-                List<Weapon> objAddWeapons = new List<Weapon>(1);
-                Quality objAddQuality = new Quality(_objCharacter);
-                objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, lstWeapons, strForceValue);
-
-                // Add any created Weapons to the character.
-                foreach (Weapon objWeapon in objAddWeapons)
-                {
-                    _objCharacter.Weapons.Add(objWeapon);
-                }
-
-                return objAddQuality;
-            }
-
-            return null;
-        }
-        */
-
         private async ValueTask<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true,
                                                     bool blnCompleteDelete = true, CancellationToken token = default)
         {
@@ -6113,14 +6072,14 @@ namespace Chummer
                 List<Gear> lstStack = new List<Gear>(2);
 
                 // Run through all of the Foci the character has and count the un-Bonded ones.
-                foreach (Gear objGear in CharacterObject.Gear)
+                await CharacterObject.Gear.ForEachAsync(objGear =>
                 {
                     if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
                     {
                         intFree++;
                         lstGear.Add(objGear);
                     }
-                }
+                }, GenericToken).ConfigureAwait(false);
 
                 // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
                 if (intFree < 2)
@@ -16183,7 +16142,7 @@ namespace Chummer
                                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdArmorEquipped))
                                     {
-                                        foreach (Armor objLoopArmor in CharacterObject.Armor)
+                                        await CharacterObject.Armor.ForEachAsync(async objLoopArmor =>
                                         {
                                             if (objLoopArmor.Equipped && objLoopArmor.Location == objLocation)
                                             {
@@ -16195,7 +16154,7 @@ namespace Chummer
                                                     .Append(objLoopArmor.DisplayArmorValue)
                                                     .AppendLine(')');
                                             }
-                                        }
+                                        }, token).ConfigureAwait(false);
 
                                         token.ThrowIfCancellationRequested();
                                         if (sbdArmorEquipped.Length > 0)
@@ -16234,7 +16193,7 @@ namespace Chummer
                                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                    out StringBuilder sbdArmorEquipped))
                                         {
-                                            foreach (Armor objLoopArmor in CharacterObject.Armor)
+                                            await CharacterObject.Armor.ForEachAsync(async objLoopArmor =>
                                             {
                                                 if (objLoopArmor.Equipped && objLoopArmor.Location == null)
                                                 {
@@ -16246,7 +16205,7 @@ namespace Chummer
                                                         .Append(objLoopArmor.DisplayArmorValue)
                                                         .AppendLine(')');
                                                 }
-                                            }
+                                            }, token).ConfigureAwait(false);
 
                                             if (sbdArmorEquipped.Length > 0)
                                             {
@@ -16682,7 +16641,7 @@ namespace Chummer
                                                      + " or translate(id, 'abcdef', 'ABCDEF') = "
                                                      + strMetavariantGuidString.ToUpperInvariant().CleanXPath()
                                                      + ']';
-                        foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
+                        await CharacterObject.AttributeSection.AttributeList.ForEachAsync(async objOldAttribute =>
                         {
                             CharacterAttrib objNewAttribute = new CharacterAttrib(
                                 CharacterObject, objOldAttribute.Abbrev,
@@ -16692,7 +16651,7 @@ namespace Chummer
                                                                       strMetavariantXPath,
                                                                       xmlDoc, token).ConfigureAwait(false);
                             lstAttributesToAdd.Add(objNewAttribute);
-                        }
+                        }, token).ConfigureAwait(false);
 
                         foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
                         {
@@ -16717,10 +16676,11 @@ namespace Chummer
                     await CharacterObject.SetCreatedAsync(true, false, token: token).ConfigureAwait(false);
 
                     // Save all essence modifiers for all Cyberware.
-                    await CharacterObject.Cyberware.GetAllDescendants(x => x.Children)
-                                         .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
-                                         .ConfigureAwait(false);
-                    foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                    await (await CharacterObject.Cyberware.GetAllDescendantsAsync(x => x.Children, token)
+                                                .ConfigureAwait(false))
+                          .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
+                          .ConfigureAwait(false);
+                    await CharacterObject.Vehicles.ForEachAsync(async objVehicle =>
                     {
                         await objVehicle.Mods.SelectMany(objMod => objMod.Cyberware).GetAllDescendants(x => x.Children)
                                         .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
@@ -16730,7 +16690,7 @@ namespace Chummer
                                         .GetAllDescendants(x => x.Children)
                                         .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
                                         .ConfigureAwait(false);
-                    }
+                    }, token).ConfigureAwait(false);
 
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar
                            = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
@@ -17007,8 +16967,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strLoopHasModularMount)
                         && !dicHasMounts.ContainsKey(strLoopHasModularMount))
                         dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
-                    foreach (Cyberware objLoopCyberware in objSelectedCyberware.Children.DeepWhere(
-                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                    foreach (Cyberware objLoopCyberware in await objSelectedCyberware.Children.DeepWhereAsync(
+                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), token).ConfigureAwait(false))
                     {
                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                      ',', StringSplitOptions.RemoveEmptyEntries))
@@ -17035,7 +16995,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setLoopHasModularMount))
                     {
-                        foreach (Cyberware objLoopCyberware in CharacterObject.Cyberware)
+                        await CharacterObject.Cyberware.ForEachAsync(objLoopCyberware =>
                         {
                             setLoopDisallowedMounts.Clear();
                             setLoopDisallowedMounts.AddRange(
@@ -17070,7 +17030,7 @@ namespace Chummer
                                 else
                                     dicHasMounts[strKey] += objLoopCyberware.LimbSlotCount;
                             }
-                        }
+                        }, token).ConfigureAwait(false);
                     }
                 }
 
@@ -17457,24 +17417,21 @@ namespace Chummer
                         await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                     }
 
-                    bool blnMatchFound = false;
-                    // If this is Ammunition, see if the character already has it on them.
-                    if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
-                    {
-                        foreach (Gear objCharacterGear in CharacterObject.Gear)
-                        {
-                            if (!objGear.IsIdenticalToOtherGear(objCharacterGear))
-                                continue;
-                            // A match was found, so increase the quantity instead.
-                            objCharacterGear.Quantity += objGear.Quantity;
-                            blnMatchFound = true;
-                            break;
-                        }
-                    }
+                    Gear objMatchingGear
+                        // If this is Ammunition, see if the character already has it on them.
+                        = objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType)
+                            ? await CharacterObject.Gear
+                                                   .FirstOrDefaultAsync(x => objGear.IsIdenticalToOtherGear(x), token)
+                                                   .ConfigureAwait(false)
+                            : null;
 
-                    // Add the Gear.
-                    if (!blnMatchFound)
+                    if (objMatchingGear != null)
                     {
+                        objMatchingGear.Quantity += objGear.Quantity;
+                    }
+                    else
+                    {
+                        // Add the Gear.
                         if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                         {
                             await objSelectedGear.Children.AddAsync(objGear, token).ConfigureAwait(false);
@@ -20260,8 +20217,8 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                         foreach (Weapon objWeapon in
-                                 (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false)).DeepWhere(
-                                     x => x.Children, x => x.WeaponAccessories.Count > 0))
+                                 await (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                                     x => x.Children, async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) > 0, token).ConfigureAwait(false))
                         {
                             intCapacityOver += await objWeapon.WeaponAccessories.SumAsync(async objAccessory =>
                             {
@@ -20279,9 +20236,9 @@ namespace Chummer
                         }
 
                         // Gear Capacity.
-                        foreach (Gear objGear in (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
-                                 .DeepWhere(
-                                     x => x.Children, x => x.CapacityRemaining < 0))
+                        foreach (Gear objGear in await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
+                                 .DeepWhereAsync(
+                                     x => x.Children, x => x.CapacityRemaining < 0, token).ConfigureAwait(false))
                         {
                             lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                              .ConfigureAwait(false));
@@ -20289,8 +20246,8 @@ namespace Chummer
                         }
 
                         // Cyberware Capacity.
-                        foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token)
-                                     .ConfigureAwait(false)).GetAllDescendants(x => x.Children))
+                        foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token)
+                                     .ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             if (objCyberware.CapacityRemaining < 0)
                             {
@@ -20474,11 +20431,11 @@ namespace Chummer
                         List<string> lstDronesIllegalDowngrades = new List<string>(1);
                         bool blnIllegalDowngrades = false;
                         int intIllegalDowngrades = 0;
-                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                        await CharacterObject.Vehicles.ForEachAsync(async objVehicle =>
                         {
                             if (!objVehicle.IsDrone || !await CharacterObjectSettings.GetDroneModsAsync(token)
                                     .ConfigureAwait(false))
-                                continue;
+                                return;
                             foreach (string strModCategory in objVehicle.Mods
                                                                         .Where(objMod => !objMod.IncludedInVehicle
                                                                                    && objMod.Equipped
@@ -20505,7 +20462,7 @@ namespace Chummer
                                     break;
                                 }
                             }
-                        }
+                        }, token).ConfigureAwait(false);
 
                         if (blnIllegalDowngrades)
                         {
@@ -21106,7 +21063,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>(1);
             List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select")?.Value ?? string.Empty;
+            string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
 
             objCyberware.Create(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
                                 strForced);
@@ -21385,7 +21342,7 @@ namespace Chummer
                             string strCategory = objXmlSpell["category"]?.InnerText;
                             string strName = objXmlSpell["name"].InnerText;
                             // Make sure the Spell has not already been added to the character.
-                            if (CharacterObject.Spells.Any(x => x.Name == strName && x.Category == strCategory))
+                            if (await CharacterObject.Spells.AnyAsync(x => x.Name == strName && x.Category == strCategory, token).ConfigureAwait(false))
                                 continue;
                             XmlNode objXmlSpellNode = objXmlSpellDocument.TryGetNodeByNameOrId(
                                 "/chummer/spells/spell", strName,
@@ -22025,7 +21982,8 @@ namespace Chummer
         {
             // Make sure all of the Cyberware the character has is of the same grade.
             string strGrade = string.Empty;
-            foreach (Cyberware objCyberware in CharacterObject.Cyberware)
+            bool blnReturn = false;
+            await CharacterObject.Cyberware.ForEachWithBreakAsync(async objCyberware =>
             {
                 if (objCyberware.SourceType == objSource)
                 {
@@ -22039,10 +21997,15 @@ namespace Chummer
                                                  .ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_CyberwareGradeMismatch", token: token)
                                                  .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        blnReturn = true;
+                        return false;
                     }
                 }
-            }
+
+                return true;
+            }, token).ConfigureAwait(false);
+            if (blnReturn)
+                return;
 
             // The character has no Cyberware!
             if (string.IsNullOrEmpty(strGrade))
@@ -23034,18 +22997,18 @@ namespace Chummer
 
                     // Find the associated Power
                     string strPower = objXmlArt["power"]?.InnerText;
-                    bool blnPowerFound = false;
-                    foreach (Power objPower in CharacterObject.Powers)
+                    Power objPower = await CharacterObject.Powers
+                                                          .FirstOrDefaultAsync(
+                                                              x => x.Name == strPower
+                                                                   || string.Equals(
+                                                                       x.SourceIDString, strPower,
+                                                                       StringComparison.OrdinalIgnoreCase), GenericToken)
+                                                          .ConfigureAwait(false);
+                    if (objPower != null)
                     {
-                        if (objPower.Name == strPower)
-                        {
-                            await objPower.Enhancements.AddAsync(objEnhancement, GenericToken).ConfigureAwait(false);
-                            blnPowerFound = true;
-                            break;
-                        }
+                        await objPower.Enhancements.AddAsync(objEnhancement, GenericToken).ConfigureAwait(false);
                     }
-
-                    if (!blnPowerFound)
+                    else
                     {
                         // Add it to the character instead
                         await CharacterObject.Enhancements.AddAsync(objEnhancement, GenericToken).ConfigureAwait(false);

@@ -960,7 +960,7 @@ namespace Chummer.Backend.Attributes
                             } while (objAttributeToPutPointsInto != null && intAttributePointCount > 0);
 
                             // If any points left over, then put them all into the attribute with the highest karma cost
-                            if (intAttributePointCount > 0 && AttributeList.Any(x => x.Karma != 0))
+                            if (intAttributePointCount > 0 && AttributeList.Any(x => x.Karma != 0, token))
                             {
                                 int intHighestTotalKarmaCost = 0;
                                 foreach (CharacterAttrib objLoopAttribute in AttributeList)
@@ -1021,7 +1021,7 @@ namespace Chummer.Backend.Attributes
                             } while (objAttributeToPutPointsInto != null);
 
                             // If any points left over, then put them all into the attribute with the highest karma cost
-                            if (intAttributePointCount > 0 && SpecialAttributeList.Any(x => x.Karma != 0))
+                            if (intAttributePointCount > 0 && SpecialAttributeList.Any(x => x.Karma != 0, token))
                             {
                                 int intHighestTotalKarmaCost = 0;
                                 foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)

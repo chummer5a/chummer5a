@@ -457,13 +457,13 @@ namespace Chummer
             int intRitualCount = 0;
             int intAlchPrepCount = 0;
 
-            foreach (Spell objspell in _objCharacter.Spells)
+            await _objCharacter.Spells.ForEachAsync(objSpell =>
             {
-                if (objspell.Alchemical)
+                if (objSpell.Alchemical)
                 {
                     intAlchPrepCount++;
                 }
-                else if (objspell.Category == "Rituals")
+                else if (objSpell.Category == "Rituals")
                 {
                     intRitualCount++;
                 }
@@ -471,7 +471,7 @@ namespace Chummer
                 {
                     intSpellCount++;
                 }
-            }
+            }, token).ConfigureAwait(false);
             if (!await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
             {
                 if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))

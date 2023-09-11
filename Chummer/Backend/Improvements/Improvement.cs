@@ -990,22 +990,7 @@ namespace Chummer
 
                         if (setAttributePropertiesChanged.Count > 0)
                         {
-                            // Keeping two enumerations separate helps avoid extra heap allocations
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection
-                                         .AttributeList)
-                            {
-                                if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
-                                    continue;
-                                foreach (string strPropertyName in setAttributePropertiesChanged)
-                                {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(
-                                        objCharacterAttrib,
-                                        strPropertyName);
-                                }
-                            }
-
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection
-                                         .SpecialAttributeList)
+                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                             {
                                 if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
                                     continue;
@@ -1024,20 +1009,7 @@ namespace Chummer
                 case ImprovementType.AttributeMaxClamp:
                 {
                     string strTargetAttribute = ImprovedName;
-                    // Keeping two enumerations separate helps avoid extra heap allocations
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
-                            continue;
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(
-                            objCharacterAttrib,
-                            nameof(CharacterAttrib.AttributeModifiers));
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(
-                            objCharacterAttrib,
-                            nameof(CharacterAttrib.TotalAugmentedMaximum));
-                    }
-
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                     {
                         if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
                             continue;
@@ -1506,17 +1478,7 @@ namespace Chummer
 
                 case ImprovementType.EssenceMax:
                 {
-                    // Keeping two enumerations separate helps avoid extra heap allocations
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        if (objCharacterAttrib.Abbrev == "ESS")
-                        {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                nameof(CharacterAttrib.MetatypeMaximum));
-                        }
-                    }
-
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                     {
                         if (objCharacterAttrib.Abbrev == "ESS")
                         {
@@ -1645,17 +1607,7 @@ namespace Chummer
 
                 case ImprovementType.Attributelevel:
                 {
-                    // Keeping two enumerations separate helps avoid extra heap allocations
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        if (objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
-                        {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                nameof(CharacterAttrib.FreeBase));
-                        }
-                    }
-
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                     {
                         if (objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
                         {
@@ -2143,24 +2095,7 @@ namespace Chummer
 
                 case ImprovementType.ReplaceAttribute:
                 {
-                    // Keeping two enumerations separate helps avoid extra heap allocations
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        if ((objCharacterAttrib.Abbrev != ImprovedName && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
-                            || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
-                            continue;
-                        if (Maximum != 0)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                nameof(CharacterAttrib.MetatypeMaximum));
-                        if (Minimum != 0)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                nameof(CharacterAttrib.MetatypeMinimum));
-                        if (AugmentedMaximum != 0)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                nameof(CharacterAttrib.MetatypeAugmentedMaximum));
-                    }
-
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                     {
                         if ((objCharacterAttrib.Abbrev != ImprovedName && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
                             || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
@@ -2698,17 +2633,7 @@ namespace Chummer
                 case ImprovementType.AttributeKarmaCostMultiplier:
                 case ImprovementType.AttributeKarmaCost:
                 {
-                    // Keeping two enumerations separate helps avoid extra heap allocations
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
-                        {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                nameof(CharacterAttrib.UpgradeKarmaCost));
-                        }
-                    }
-
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                     {
                         if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
                         {

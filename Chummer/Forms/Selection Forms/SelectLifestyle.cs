@@ -490,7 +490,7 @@ namespace Chummer
                     continue;
                 string strLoopId = objNode.Tag.ToString();
                 setLifestyleQualityIds.Add(strLoopId);
-                if (_objLifestyle.LifestyleQualities.Any(x => string.Equals(x.SourceIDString, strLoopId, StringComparison.OrdinalIgnoreCase)))
+                if (await _objLifestyle.LifestyleQualities.AnyAsync(x => string.Equals(x.SourceIDString, strLoopId, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false))
                     continue;
                 XmlNode objXmlLifestyleQuality = _objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strLoopId);
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);

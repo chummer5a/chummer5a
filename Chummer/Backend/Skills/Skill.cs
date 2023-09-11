@@ -1725,122 +1725,126 @@ namespace Chummer.Backend.Skills
                 string strNameToUse = DictionaryKey;
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = Attribute;
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                // Special read lock makes sure we keep the lock while this function is enumerating
+                using (EnterReadLock.Enter(CharacterObject.Improvements.LockObject))
                 {
-                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
-                    if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
-                    switch (objImprovement.ImproveType)
+                    foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
-                        case Improvement.ImprovementType.SwapSkillAttribute:
-                        case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                            if (objImprovement.Target == strNameToUse)
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                        if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
+                        if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
+                        switch (objImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SwapSkillAttribute:
+                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                                if (objImprovement.Target == strNameToUse)
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.Skill:
-                        case Improvement.ImprovementType.SkillDisable:
-                            if (objImprovement.ImprovedName == strNameToUse)
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.Skill:
+                            case Improvement.ImprovementType.SkillDisable:
+                                if (objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.BlockSkillDefault:
-                        case Improvement.ImprovementType.AllowSkillDefault:
-                            if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
-                                objImprovement.ImprovedName == strNameToUse)
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.BlockSkillDefault:
+                            case Improvement.ImprovementType.AllowSkillDefault:
+                                if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
+                                    objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.SkillGroup:
-                        case Improvement.ImprovementType.SkillGroupDisable:
-                            if (objImprovement.ImprovedName == SkillGroup &&
-                                !objImprovement.Exclude.Contains(strNameToUse) &&
-                                !objImprovement.Exclude.Contains(SkillCategory))
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.SkillGroup:
+                            case Improvement.ImprovementType.SkillGroupDisable:
+                                if (objImprovement.ImprovedName == SkillGroup &&
+                                    !objImprovement.Exclude.Contains(strNameToUse) &&
+                                    !objImprovement.Exclude.Contains(SkillCategory))
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.SkillCategory:
-                            if (objImprovement.ImprovedName == SkillCategory &&
-                                !objImprovement.Exclude.Contains(strNameToUse))
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.SkillCategory:
+                                if (objImprovement.ImprovedName == SkillCategory &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.SkillAttribute:
-                            if (objImprovement.ImprovedName == strUseAttribute &&
-                                !objImprovement.Exclude.Contains(strNameToUse))
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.SkillAttribute:
+                                if (objImprovement.ImprovedName == strUseAttribute &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.SkillLinkedAttribute:
-                            if (objImprovement.ImprovedName == Attribute &&
-                                !objImprovement.Exclude.Contains(strNameToUse))
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.SkillLinkedAttribute:
+                                if (objImprovement.ImprovedName == Attribute &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.BlockSkillCategoryDefault:
-                            if (objImprovement.ImprovedName == SkillCategory)
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                                if (objImprovement.ImprovedName == SkillCategory)
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.BlockSkillGroupDefault:
-                            if (objImprovement.ImprovedName == SkillGroup)
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.BlockSkillGroupDefault:
+                                if (objImprovement.ImprovedName == SkillGroup)
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
 
-                        case Improvement.ImprovementType.EnhancedArticulation:
-                            if (SkillCategory == "Physical Active" &&
-                                AttributeSection.PhysicalAttributes.Contains(Attribute))
-                            {
-                                yield return objImprovement;
-                                if (blnExitAfterFirst)
-                                    yield break;
-                            }
+                            case Improvement.ImprovementType.EnhancedArticulation:
+                                if (SkillCategory == "Physical Active" &&
+                                    AttributeSection.PhysicalAttributes.Contains(Attribute))
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst)
+                                        yield break;
+                                }
 
-                            break;
+                                break;
+                        }
                     }
                 }
             }
@@ -1997,7 +2001,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                    CharacterObject.Improvements.ForEach(objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum <= BasePoints &&
                             (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
@@ -2013,9 +2017,10 @@ namespace Chummer.Backend.Skills
                                     case Improvement.ImprovementType.ActiveSkillPointCost:
                                         decExtra += objLoopImprovement.Value *
                                                     (Math.Min(BasePoints,
-                                                        objLoopImprovement.Maximum == 0
-                                                            ? int.MaxValue
-                                                            : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                                              objLoopImprovement.Maximum == 0
+                                                                  ? int.MaxValue
+                                                                  : objLoopImprovement.Maximum)
+                                                     - objLoopImprovement.Minimum);
                                         break;
 
                                     case Improvement.ImprovementType.ActiveSkillPointCostMultiplier:
@@ -2030,9 +2035,10 @@ namespace Chummer.Backend.Skills
                                     case Improvement.ImprovementType.SkillCategoryPointCost:
                                         decExtra += objLoopImprovement.Value *
                                                     (Math.Min(BasePoints,
-                                                        objLoopImprovement.Maximum == 0
-                                                            ? int.MaxValue
-                                                            : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                                              objLoopImprovement.Maximum == 0
+                                                                  ? int.MaxValue
+                                                                  : objLoopImprovement.Maximum)
+                                                     - objLoopImprovement.Minimum);
                                         break;
 
                                     case Improvement.ImprovementType.SkillCategoryPointCostMultiplier:
@@ -2041,7 +2047,7 @@ namespace Chummer.Backend.Skills
                                 }
                             }
                         }
-                    }
+                    });
 
                     if (decMultiplier != 1.0m)
                         cost = (cost * decMultiplier + decExtra).StandardRound();
@@ -2184,7 +2190,7 @@ namespace Chummer.Backend.Skills
                     int intSpecCost = intSpecCount * CharacterObject.Settings.KarmaSpecialization;
                     decimal decExtraSpecCost = 0;
                     decimal decSpecCostMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                    CharacterObject.Improvements.ForEach(objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum <= intTotalBaseRating &&
                             (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
@@ -2193,7 +2199,7 @@ namespace Chummer.Backend.Skills
                             objLoopImprovement.Enabled)
                         {
                             if (objLoopImprovement.ImprovedName != SkillCategory)
-                                continue;
+                                return;
                             switch (objLoopImprovement.ImproveType)
                             {
                                 case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
@@ -2205,7 +2211,7 @@ namespace Chummer.Backend.Skills
                                     break;
                             }
                         }
-                    }
+                    });
 
                     if (decSpecCostMultiplier != 1.0m)
                         intSpecCost = (intSpecCost * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
@@ -3541,7 +3547,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 return Specializations.Any(
-                           x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
+                           x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization, token)
                        && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject,
                            Improvement.ImprovementType.DisableSpecializationEffects, DictionaryKey, token: token).Count == 0;
             }
@@ -3779,20 +3785,20 @@ namespace Chummer.Backend.Skills
 
                     if (blnListAllLimbs && Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev))
                     {
-                        foreach (Cyberware cyberware in CharacterObject.Cyberware)
+                        CharacterObject.Cyberware.ForEach(cyberware =>
                         {
                             if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
-                                continue;
+                                return;
                             sbdReturn.AppendLine().AppendLine().Append(strExtraStart)
-                                .Append(cyberware.CurrentDisplayName);
+                                     .Append(cyberware.CurrentDisplayName);
                             if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
                             {
                                 sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName)
-                                    .Append(')');
+                                         .Append(')');
                             }
 
                             int pool = PoolOtherAttribute(att.Abbrev, false,
-                                cyberware.GetAttributeTotalValue(att.Abbrev));
+                                                          cyberware.GetAttributeTotalValue(att.Abbrev));
                             if ((cyberware.LimbSlot != "arm"
                                  && !cyberware.Name.ContainsAny(" Arm", " Hand"))
                                 || cyberware.Location == CharacterObject.PrimaryArm
@@ -3804,13 +3810,13 @@ namespace Chummer.Backend.Skills
                             else
                             {
                                 sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2,
-                                    strSpace, -2,
-                                    LanguageManager.GetString("Tip_Skill_OffHand"));
+                                                       strSpace, -2,
+                                                       LanguageManager.GetString("Tip_Skill_OffHand"));
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
                                 sbdReturn.Append(strExtra);
-                        }
+                        });
                     }
 
                     if (att.Abbrev != Attribute)
@@ -3860,23 +3866,24 @@ namespace Chummer.Backend.Skills
                         if (!blnListAllLimbs ||
                             !Cyberware.CyberlimbAttributeAbbrevs.Contains(objSwapSkillAttribute.ImprovedName))
                             continue;
-                        foreach (Cyberware cyberware in CharacterObject.Cyberware)
+                        CharacterObject.Cyberware.ForEach(cyberware =>
                         {
                             if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
-                                continue;
+                                return;
                             sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
-                                .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
-                                .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
-                                .Append(cyberware.CurrentDisplayName);
+                                     .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
+                                     .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
+                                     .Append(cyberware.CurrentDisplayName);
                             if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
                             {
                                 sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName)
-                                    .Append(')');
+                                         .Append(')');
                             }
 
                             int intLoopPool =
                                 PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false,
-                                    cyberware.GetAttributeTotalValue(objSwapSkillAttribute.ImprovedName));
+                                                   cyberware.GetAttributeTotalValue(
+                                                       objSwapSkillAttribute.ImprovedName));
                             if (objSpecialization != null)
                             {
                                 intLoopPool += objSpecialization.SpecializationBonus;
@@ -3893,13 +3900,13 @@ namespace Chummer.Backend.Skills
                             else
                             {
                                 sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
-                                    intLoopPool - 2, strSpace, -2,
-                                    LanguageManager.GetString("Tip_Skill_OffHand"));
+                                                       intLoopPool - 2, strSpace, -2,
+                                                       LanguageManager.GetString("Tip_Skill_OffHand"));
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
                                 sbdReturn.Append(strExtra);
-                        }
+                        });
                     }
 
                     return sbdReturn.ToString();
@@ -4097,10 +4104,10 @@ namespace Chummer.Backend.Skills
                     if (blnListAllLimbs && Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev))
                     {
                         bool blnAmbi = await CharacterObject.GetAmbidextrousAsync(token).ConfigureAwait(false);
-                        foreach (Cyberware cyberware in CharacterObject.Cyberware)
+                        await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async cyberware =>
                         {
-                            if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
-                                continue;
+                            if (cyberware.Category != "Cyberlimb" || !await cyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                return;
                             sbdReturn.AppendLine().AppendLine().Append(strExtraStart)
                                 .Append(await cyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                             if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
@@ -4130,7 +4137,7 @@ namespace Chummer.Backend.Skills
 
                             if (!string.IsNullOrEmpty(strExtra))
                                 sbdReturn.Append(strExtra);
-                        }
+                        }, token).ConfigureAwait(false);
                     }
 
                     if (att.Abbrev != Attribute)
@@ -4191,52 +4198,60 @@ namespace Chummer.Backend.Skills
                             !Cyberware.CyberlimbAttributeAbbrevs.Contains(objSwapSkillAttribute.ImprovedName))
                             continue;
                         bool blnAmbi = await CharacterObject.GetAmbidextrousAsync(token).ConfigureAwait(false);
-                        foreach (Cyberware cyberware in CharacterObject.Cyberware)
-                        {
-                            if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
-                                continue;
-                            sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
-                                .Append(await LanguageManager.GetStringAsync("String_Colon", token: token)
-                                    .ConfigureAwait(false)).Append(strSpace)
-                                .Append(await CharacterObject.GetObjectNameAsync(objSwapSkillAttribute, token: token)
-                                    .ConfigureAwait(false)).Append(strSpace)
-                                .Append(await cyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
+                        await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(
+                            async cyberware =>
                             {
-                                sbdReturn.Append(strSpace).Append('(').Append(await cyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
-                                    .Append(')');
-                            }
+                                if (cyberware.Category != "Cyberlimb" || !await cyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                    return;
+                                sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
+                                         .Append(await LanguageManager.GetStringAsync("String_Colon", token: token)
+                                                                      .ConfigureAwait(false)).Append(strSpace)
+                                         .Append(await CharacterObject
+                                                       .GetObjectNameAsync(objSwapSkillAttribute, token: token)
+                                                       .ConfigureAwait(false)).Append(strSpace)
+                                         .Append(
+                                             await cyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
+                                {
+                                    sbdReturn.Append(strSpace).Append('(').Append(
+                                                 await cyberware.Grade.GetCurrentDisplayNameAsync(token)
+                                                                .ConfigureAwait(false))
+                                             .Append(')');
+                                }
 
-                            int intLoopPool =
-                                await PoolOtherAttributeAsync(objSwapSkillAttribute.ImprovedName, false,
-                                    await cyberware
-                                        .GetAttributeTotalValueAsync(objSwapSkillAttribute.ImprovedName, token)
-                                        .ConfigureAwait(false), token).ConfigureAwait(false);
-                            if (objSpecialization != null)
-                            {
-                                intLoopPool += await objSpecialization.GetSpecializationBonusAsync(token)
-                                    .ConfigureAwait(false);
-                            }
+                                int intLoopPool =
+                                    await PoolOtherAttributeAsync(objSwapSkillAttribute.ImprovedName, false,
+                                                                  await cyberware
+                                                                        .GetAttributeTotalValueAsync(
+                                                                            objSwapSkillAttribute.ImprovedName, token)
+                                                                        .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
+                                if (objSpecialization != null)
+                                {
+                                    intLoopPool += await objSpecialization.GetSpecializationBonusAsync(token)
+                                                                          .ConfigureAwait(false);
+                                }
 
-                            if ((cyberware.LimbSlot != "arm"
-                                 && !cyberware.Name.ContainsAny(" Arm", " Hand"))
-                                || cyberware.Location == CharacterObject.PrimaryArm
-                                || blnAmbi
-                                || cyberware.LimbSlotCount > 1)
-                            {
-                                sbdReturn.Append(strSpace).Append(intLoopPool.ToString(GlobalSettings.CultureInfo));
-                            }
-                            else
-                            {
-                                sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
-                                    intLoopPool - 2, strSpace, -2,
-                                    await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: token)
-                                        .ConfigureAwait(false));
-                            }
+                                if ((cyberware.LimbSlot != "arm"
+                                     && !cyberware.Name.ContainsAny(" Arm", " Hand"))
+                                    || cyberware.Location == CharacterObject.PrimaryArm
+                                    || blnAmbi
+                                    || cyberware.LimbSlotCount > 1)
+                                {
+                                    sbdReturn.Append(strSpace).Append(intLoopPool.ToString(GlobalSettings.CultureInfo));
+                                }
+                                else
+                                {
+                                    sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
+                                                           intLoopPool - 2, strSpace, -2,
+                                                           await LanguageManager
+                                                                 .GetStringAsync("Tip_Skill_OffHand", token: token)
+                                                                 .ConfigureAwait(false));
+                                }
 
-                            if (!string.IsNullOrEmpty(strExtra))
-                                sbdReturn.Append(strExtra);
-                        }
+                                if (!string.IsNullOrEmpty(strExtra))
+                                    sbdReturn.Append(strExtra);
+                            }, token).ConfigureAwait(false);
                     }
 
                     return sbdReturn.ToString();
@@ -4287,16 +4302,16 @@ namespace Chummer.Backend.Skills
                     decimal decExtraSpecCost = 0;
                     int intTotalBaseRating = TotalBaseRating;
                     decimal decSpecCostMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                    CharacterObject.Improvements.ForEach(objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum > intTotalBaseRating
                             || (!string.IsNullOrEmpty(objLoopImprovement.Condition)
                                 && (objLoopImprovement.Condition == "career") != CharacterObject.Created
                                 && (objLoopImprovement.Condition == "create") == CharacterObject.Created)
                             || !objLoopImprovement.Enabled)
-                            continue;
+                            return;
                         if (objLoopImprovement.ImprovedName != SkillCategory)
-                            continue;
+                            return;
                         switch (objLoopImprovement.ImproveType)
                         {
                             case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
@@ -4307,7 +4322,7 @@ namespace Chummer.Backend.Skills
                                 decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                                 break;
                         }
-                    }
+                    });
 
                     if (decSpecCostMultiplier != 1.0m)
                         intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
@@ -4704,7 +4719,7 @@ namespace Chummer.Backend.Skills
                                 DictionaryKey).Count == 0)
                     {
                         int intHighestSpecBonus = 0;
-                        foreach (SkillSpecialization objSpec in Specializations)
+                        Specializations.ForEach(objSpec =>
                         {
                             int intLoopSpecBonus = objSpec.SpecializationBonus;
                             if (intHighestSpecBonus < intLoopSpecBonus)
@@ -4712,7 +4727,7 @@ namespace Chummer.Backend.Skills
                                 intHighestSpecBonus = intLoopSpecBonus;
                                 objTargetSpecialization = objSpec;
                             }
-                        }
+                        });
                     }
                 }
                 else
@@ -4739,7 +4754,7 @@ namespace Chummer.Backend.Skills
                             .ConfigureAwait(false)).Count == 0)
                     {
                         int intHighestSpecBonus = 0;
-                        foreach (SkillSpecialization objSpec in Specializations)
+                        await Specializations.ForEachAsync(async objSpec =>
                         {
                             int intLoopSpecBonus =
                                 await objSpec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
@@ -4748,7 +4763,7 @@ namespace Chummer.Backend.Skills
                                 intHighestSpecBonus = intLoopSpecBonus;
                                 objTargetSpecialization = objSpec;
                             }
-                        }
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 else
@@ -5560,8 +5575,7 @@ namespace Chummer.Backend.Skills
                             break;
 
                         case NotifyCollectionChangedAction.Reset:
-                            foreach (SkillSpecialization objSkillSpecialization in Specializations)
-                                objSkillSpecialization.Parent = this;
+                            Specializations.ForEach(objSkillSpecialization => objSkillSpecialization.Parent = this);
                             break;
                     }
                 }
@@ -5669,7 +5683,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                CharacterObject.Improvements.ForEach(objLoopImprovement =>
                 {
                     if (objLoopImprovement.Minimum <= lower &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
@@ -5685,9 +5699,9 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.ActiveSkillKarmaCost:
                                     decExtra += objLoopImprovement.Value *
                                                 (Math.Min(upper,
-                                                    objLoopImprovement.Maximum == 0
-                                                        ? int.MaxValue
-                                                        : objLoopImprovement.Maximum) - Math.Max(lower,
+                                                          objLoopImprovement.Maximum == 0
+                                                              ? int.MaxValue
+                                                              : objLoopImprovement.Maximum) - Math.Max(lower,
                                                     objLoopImprovement.Minimum - 1));
                                     break;
 
@@ -5703,9 +5717,9 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.SkillCategoryKarmaCost:
                                     decExtra += objLoopImprovement.Value *
                                                 (Math.Min(upper,
-                                                    objLoopImprovement.Maximum == 0
-                                                        ? int.MaxValue
-                                                        : objLoopImprovement.Maximum) - Math.Max(lower,
+                                                          objLoopImprovement.Maximum == 0
+                                                              ? int.MaxValue
+                                                              : objLoopImprovement.Maximum) - Math.Max(lower,
                                                     objLoopImprovement.Minimum - 1));
                                     break;
 
@@ -5715,7 +5729,7 @@ namespace Chummer.Backend.Skills
                             }
                         }
                     }
-                }
+                });
 
                 if (decMultiplier != 1.0m)
                     cost = (cost * decMultiplier + decExtra).StandardRound();
@@ -5939,7 +5953,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
-                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                    CharacterObject.Improvements.ForEach(objLoopImprovement =>
                     {
                         if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objLoopImprovement.Maximum) &&
                             objLoopImprovement.Minimum <= intTotalBaseRating + 1 &&
@@ -5976,7 +5990,7 @@ namespace Chummer.Backend.Skills
                                 }
                             }
                         }
-                    }
+                    });
 
                     if (decMultiplier != 1.0m)
                         upgrade = (upgrade * decMultiplier + decExtra).StandardRound();
@@ -6177,7 +6191,7 @@ namespace Chummer.Backend.Skills
                             decimal decExtraSpecCost = 0;
                             int intTotalBaseRating = TotalBaseRating;
                             decimal decSpecCostMultiplier = 1.0m;
-                            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                            CharacterObject.Improvements.ForEach(objLoopImprovement =>
                             {
                                 if (objLoopImprovement.Minimum <= intTotalBaseRating
                                     && (string.IsNullOrEmpty(objLoopImprovement.Condition)
@@ -6199,7 +6213,7 @@ namespace Chummer.Backend.Skills
                                             break;
                                     }
                                 }
-                            }
+                            });
 
                             if (decSpecCostMultiplier != 1.0m)
                                 intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost)
@@ -6293,7 +6307,7 @@ namespace Chummer.Backend.Skills
                     decimal decExtraSpecCost = 0;
                     int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                     decimal decSpecCostMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                    await CharacterObject.Improvements.ForEachAsync(objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum <= intTotalBaseRating
                             && (string.IsNullOrEmpty(objLoopImprovement.Condition)
@@ -6311,7 +6325,7 @@ namespace Chummer.Backend.Skills
                                     break;
                             }
                         }
-                    }
+                    }, token);
 
                     if (decSpecCostMultiplier != 1.0m)
                         intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();

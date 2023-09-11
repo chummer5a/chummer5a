@@ -338,21 +338,9 @@ namespace Chummer
                     if (blnLimitList)
                     {
                         string strRequire = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("require", token).ConfigureAwait(false))?.Value;
-                        if (!string.IsNullOrEmpty(strRequire))
-                        {
-                            bool blnAdd = false;
-                            foreach (AIProgram objAIProgram in _objCharacter.AIPrograms)
-                            {
-                                if (objAIProgram.Name == strRequire)
-                                {
-                                    blnAdd = true;
-                                    break;
-                                }
-                            }
-
-                            if (!blnAdd)
-                                continue;
-                        }
+                        if (!string.IsNullOrEmpty(strRequire) && await _objCharacter.AIPrograms
+                                .FirstOrDefaultAsync(x => x.Name == strRequire, token).ConfigureAwait(false) == null)
+                            continue;
                     }
 
                     string strName = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value

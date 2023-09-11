@@ -470,12 +470,14 @@ namespace Chummer
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setProcessedSkillNames))
                         {
-                            foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objKnowledgeSkill =>
                             {
                                 lstDropdownItems.Add(
-                                    new ListItem(objKnowledgeSkill.Name, await objKnowledgeSkill.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                    new ListItem(objKnowledgeSkill.Name,
+                                                 await objKnowledgeSkill.GetCurrentDisplayNameAsync()
+                                                                        .ConfigureAwait(false)));
                                 setProcessedSkillNames.Add(objKnowledgeSkill.Name);
-                            }
+                            }).ConfigureAwait(false);
 
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdFilters))

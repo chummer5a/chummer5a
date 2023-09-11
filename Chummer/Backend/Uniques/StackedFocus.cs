@@ -268,11 +268,14 @@ namespace Chummer
                                 break;
                         }
 
-                        foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(
-                                     x => x.ImprovedName == strFocusName
-                                          && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target))
-                                          && x.Enabled))
+                        _objCharacter.Improvements.ForEach(objLoopImprovement =>
                         {
+                            if (objLoopImprovement.ImprovedName != strFocusName
+                                || (!string.IsNullOrEmpty(objLoopImprovement.Target)
+                                    && !strFocusExtra.Contains(objLoopImprovement.Target))
+                                || !objLoopImprovement.Enabled)
+                                return;
+
                             switch (objLoopImprovement.ImproveType)
                             {
                                 case Improvement.ImprovementType.FocusBindingKarmaCost:
@@ -283,7 +286,7 @@ namespace Chummer
                                     decKarmaMultiplier += objLoopImprovement.Value;
                                     break;
                             }
-                        }
+                        });
 
                         decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
                     }

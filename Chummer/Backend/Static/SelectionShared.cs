@@ -467,8 +467,10 @@ namespace Chummer
 
                                 if (blnCheckCyberwareChildren)
                                 {
-                                    foreach (Cyberware objItem in objCharacter.Cyberware.GetAllDescendants(x =>
-                                                 x.Children))
+                                    foreach (Cyberware objItem in blnSync
+                                                 ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
+                                                 : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                                         .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                     {
                                         if (!setNamesIncludedInLimit.Contains(objItem.Name)
                                             && !setNamesIncludedInLimit.Contains(objItem.InternalId))
@@ -509,11 +511,10 @@ namespace Chummer
                         }
                         else if (blnCheckCyberwareChildren)
                         {
-                            foreach (Cyberware objItem in (blnSync
-                                         ? objCharacter.Cyberware
-                                         : await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                     .GetAllDescendants(x =>
-                                                            x.Children))
+                            foreach (Cyberware objItem in blnSync
+                                         ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
+                                         : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                                 .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
                                     continue;
@@ -966,7 +967,7 @@ namespace Chummer
                         string strTranslate = objLoopNode != null
                             ? (blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? objLoopNode.SelectSingleNodeAndCacheExpression("translate")
+                                ? objLoopNode.SelectSingleNodeAndCacheExpression("translate", token)
                                 : await objLoopNode.SelectSingleNodeAndCacheExpressionAsync("translate", token)
                                                    .ConfigureAwait(false))?.Value
                             : string.Empty;
@@ -979,7 +980,7 @@ namespace Chummer
                                                                         // ReSharper disable once MethodHasAsyncOverload
                                                                         ? objLoopNode
                                                                             .SelectSingleNodeAndCacheExpression(
-                                                                                "name")
+                                                                                "name", token)
                                                                         : await objLoopNode
                                                                             .SelectSingleNodeAndCacheExpressionAsync(
                                                                                 "name", token)
@@ -1125,8 +1126,23 @@ namespace Chummer
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         if (objParent is Cyberware objCyberware)
-                            return new Tuple<bool, string>(objCyberware.Children.Any(
-                                                               mod => mod.Name == strNodeInnerText || string.Equals(mod.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase)), strName);
+                            return new Tuple<bool, string>(blnSync
+                                                               // ReSharper disable once MethodHasAsyncOverload
+                                                               ? objCyberware.Children.Any(
+                                                                   mod => mod.Name == strNodeInnerText
+                                                                          || string.Equals(
+                                                                              mod.SourceIDString, strNodeInnerText,
+                                                                              StringComparison.OrdinalIgnoreCase),
+                                                                   token)
+                                                               : await objCyberware.Children
+                                                                   .AnyAsync(mod => mod.Name == strNodeInnerText
+                                                                                 || string.Equals(
+                                                                                     mod.SourceIDString,
+                                                                                     strNodeInnerText,
+                                                                                     StringComparison
+                                                                                         .OrdinalIgnoreCase), token)
+                                                                   .ConfigureAwait(false)
+                                                           , strName);
                         return new Tuple<bool, string>(false, strName);
                     }
 
@@ -1214,7 +1230,14 @@ namespace Chummer
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         if (objParent is Cyberware objCyberware)
-                            return new Tuple<bool, string>(objCyberware.Children.Any(mod => mod.Category == strNodeInnerText), strName);
+                            return new Tuple<bool, string>(blnSync
+                                                               // ReSharper disable once MethodHasAsyncOverload
+                                                               ? objCyberware.Children.Any(
+                                                                   mod => mod.Category == strNodeInnerText, token)
+                                                               : await objCyberware.Children
+                                                                   .AnyAsync(mod => mod.Category == strNodeInnerText,
+                                                                             token)
+                                                                   .ConfigureAwait(false), strName);
                         return new Tuple<bool, string>(false, strName);
                     }
 
@@ -1292,7 +1315,12 @@ namespace Chummer
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         if (objParent is Cyberware objCyberware)
-                            return new Tuple<bool, string>(objCyberware.Children.Any(mod => mod.Category == strNodeInnerText), strName);
+                            return new Tuple<bool, string>(
+                                blnSync
+                                    ? objCyberware.Children.Any(mod => mod.Category == strNodeInnerText, token)
+                                    : await objCyberware.Children
+                                                        .AnyAsync(mod => mod.Category == strNodeInnerText, token)
+                                                        .ConfigureAwait(false), strName);
                         return new Tuple<bool, string>(false, strName);
                     }
 
@@ -2104,7 +2132,7 @@ namespace Chummer
                         {
                             XPathNavigator xmlMetamagicNode = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? objMetamagic.GetNodeXPath()
+                                ? objMetamagic.GetNodeXPath(token)
                                 : await objMetamagic.GetNodeXPathAsync(token).ConfigureAwait(false);
                             if (xmlMetamagicNode?.SelectSingleNode(
                                     "forbidden/art[. = " + strNodeInnerTextCleaned + ']') != null)
@@ -2405,7 +2433,7 @@ namespace Chummer
                 {
                     bool blnResult = blnSync
                         ? objCharacter.AIPrograms.Any(p => p.Name == strNodeInnerText
-                                                           || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                                           || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
                         : await (await objCharacter.GetAIProgramsAsync(token).ConfigureAwait(false)).AnyAsync(p => p.Name == strNodeInnerText
                                                            || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                     // Character needs a specific Program.
@@ -2652,7 +2680,7 @@ namespace Chummer
                                                        ? objLifestyle.BaseLifestyle == strNodeInnerText
                                                        : blnSync
                                                            ? objCharacter.Lifestyles.Any(
-                                                               x => x.BaseLifestyle == strNodeInnerText)
+                                                               x => x.BaseLifestyle == strNodeInnerText, token)
                                                            : await (await objCharacter.GetLifestylesAsync(token)
                                                                        .ConfigureAwait(false))
                                                                    .AnyAsync(x => x.BaseLifestyle == strNodeInnerText,
@@ -3106,16 +3134,16 @@ namespace Chummer
                     int intMods = 0;
                     if (blnSync)
                     {
-                        intMods = objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons).Concat(
+                        intMods = objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons, token).Concat(
                                                   objCharacter.Vehicles.SelectMany(
                                                       y => y.Weapons.Concat(y.WeaponMounts.SelectMany(x => x.Weapons))
                                                             .GetAllDescendants(x => x.UnderbarrelWeapons)))
-                                              .Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
+                                              .Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification, token));
                     }
                     else
                     {
-                        foreach (Weapon objWeapon in (await objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).GetAllDescendants(
-                                     x => x.UnderbarrelWeapons))
+                        foreach (Weapon objWeapon in await (await objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                                     x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                         {
                             intMods += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
                         }
@@ -3237,7 +3265,7 @@ namespace Chummer
 
                     if (blnSync)
                         return new Tuple<bool, string>(objCharacter.Spells.Count(
-                                                           objSpell => objSpell.Category == strNodeName)
+                                                           objSpell => objSpell.Category == strNodeName, token)
                                                        // ReSharper disable once MethodHasAsyncOverload
                                                        >= (xmlNode.SelectSingleNodeAndCacheExpression("count", token)
                                                                   ?.ValueAsInt ?? 0), strName);
@@ -3267,7 +3295,7 @@ namespace Chummer
                                   + '≥' + strSpace + intCount.ToString(GlobalSettings.CultureInfo);
                     if (blnSync)
                         return new Tuple<bool, string>(objCharacter.Spells.Count(
-                                                           objSpell => objSpell.Descriptors.Contains(strNodeName))
+                                                           objSpell => objSpell.Descriptors.Contains(strNodeName), token)
                                                        // ReSharper disable once MethodHasAsyncOverload
                                                        >= intCount, strName);
                     return new Tuple<bool, string>(await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).CountAsync(
@@ -3413,7 +3441,7 @@ namespace Chummer
                 {
                     bool blnReturn = blnSync
                         ? objCharacter.Weapons.Any(x => x.Name == strNodeInnerText
-                                                        || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                                        || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
                         : await objCharacter.Weapons.AnyAsync(
                             x => x.Name == strNodeInnerText
                                  || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
@@ -3455,7 +3483,7 @@ namespace Chummer
                     bool blnReturn = blnSync
                         ? objWeapon.WeaponAccessories.Any(x =>
                                                               x.Name == strNodeInnerText
-                                                              || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                                              || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
                         : await objWeapon.WeaponAccessories.AnyAsync(x =>
                                                                          x.Name == strNodeInnerText
                                                                          || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase),
@@ -3541,7 +3569,7 @@ namespace Chummer
                         return new Tuple<bool, string>(objParent is Armor objArmor && (blnSync
                                                            ? objArmor.ArmorMods.Any(
                                                                x => x.Name == strNodeInnerText
-                                                                    || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                                                    || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
                                                            : await objArmor.ArmorMods.AnyAsync(
                                                                x => x.Name == strNodeInnerText
                                                                     || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false)),
@@ -3552,7 +3580,7 @@ namespace Chummer
                         blnSync
                             ? objCharacter.Armor.Any(
                                 x => x.ArmorMods.Any(y => y.Name == strNodeInnerText
-                                                          || string.Equals(y.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase)))
+                                                          || string.Equals(y.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token), token)
                             : await objCharacter.Armor.AnyAsync(
                                 x => x.ArmorMods.AnyAsync(
                                     y => y.Name == strNodeInnerText || string.Equals(y.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token),

@@ -611,11 +611,11 @@ namespace Chummer.Backend.Equipment
                                     {
                                         // Needed in order to properly process named sources where
                                         // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in _objCharacter.Improvements)
+                                        _objCharacter.Improvements.ForEach(objImprovement =>
                                         {
                                             if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless")
                                                 != objItem.InternalId || !objImprovement.Enabled)
-                                                continue;
+                                                return;
                                             foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
                                                       string strPropertyToUpdate) in objImprovement
                                                          .GetRelevantPropertyChangers())
@@ -629,7 +629,7 @@ namespace Chummer.Backend.Equipment
 
                                                 setChangedProperties.Add(strPropertyToUpdate);
                                             }
-                                        }
+                                        });
                                     }
                                 }
                             }
@@ -2804,8 +2804,7 @@ namespace Chummer.Backend.Equipment
                                              !string.IsNullOrWhiteSpace(LimbSlot) &&
                                              !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                                     .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
                             if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
                             {
@@ -2845,8 +2844,7 @@ namespace Chummer.Backend.Equipment
                                                  (!string.IsNullOrWhiteSpace(strOldValue) &&
                                                   !_objCharacter.Settings.ExcludeLimbSlot.Contains(strOldValue))))
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                                     .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
                             if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
                             {
@@ -2892,8 +2890,7 @@ namespace Chummer.Backend.Equipment
                         !string.IsNullOrWhiteSpace(LimbSlot) &&
                         !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                                     .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
                             if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
                             {
@@ -3524,9 +3521,15 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
                         {
                             // This cyberware should not be included in the count to make things easier.
-                            List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                                x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped && x.WirelessOn).ToList();
+                            List<Cyberware> lstPairableCyberwares
+                                = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                        .DeepWhereAsync(
+                                            x => x.Children,
+                                            async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                                                && x.Extra == Extra &&
+                                                await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                       .ConfigureAwait(false) && x.WirelessOn,
+                                            token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
@@ -3642,9 +3645,15 @@ namespace Chummer.Backend.Equipment
                             await ImprovementManager.RemoveImprovementsAsync(
                                 _objCharacter, SourceType, InternalId + "WirelessPair", token).ConfigureAwait(false);
                             // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
-                            List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                                x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped && WirelessOn).ToList();
+                            List<Cyberware> lstPairableCyberwares
+                                = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                        .DeepWhereAsync(
+                                            x => x.Children,
+                                            async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                                                && x.Extra == Extra &&
+                                                await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                       .ConfigureAwait(false) && x.WirelessOn,
+                                            token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
@@ -3913,10 +3922,13 @@ namespace Chummer.Backend.Equipment
                     {
                         // This cyberware should not be included in the count to make things easier.
                         List<Cyberware> lstPairableCyberwares
-                            = (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhere(
+                            = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                 x => x.Children,
-                                x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped).ToList();
+                                async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                                                                     && x.Extra == Extra &&
+                                                                     await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                            .ConfigureAwait(false),
+                                token).ConfigureAwait(false);
                         int intCount = lstPairableCyberwares.Count;
                         // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                         if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
@@ -3967,10 +3979,13 @@ namespace Chummer.Backend.Equipment
                               .ConfigureAwait(false);
                         // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
                         List<Cyberware> lstPairableCyberwares
-                            = (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhere(
+                            = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                 x => x.Children,
-                                x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped).ToList();
+                                async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                                                                     && x.Extra == Extra &&
+                                                                     await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                            .ConfigureAwait(false),
+                                token).ConfigureAwait(false);
                         int intCount = lstPairableCyberwares.Count;
                         // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                         if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
@@ -6328,8 +6343,7 @@ namespace Chummer.Backend.Equipment
                                          () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev,
                                              () => objLoopAttribute.TotalValue.ToString(
@@ -6865,8 +6879,7 @@ namespace Chummer.Backend.Equipment
                                            () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdWeight.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
                                                () => objLoopAttribute.TotalValue.ToString(
@@ -7721,42 +7734,62 @@ namespace Chummer.Backend.Equipment
                 // Remove the Gear Weapon created by the Gear if applicable.
                 if (!WeaponID.IsEmptyGuid())
                 {
-                    foreach (Weapon objDeleteWeapon in _objCharacter.Weapons
-                                                                    .DeepWhere(x => x.Children,
-                                                                               x => x.ParentID == InternalId).ToList())
+                    foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                     {
                         decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                     }
 
-                    foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                    decReturn += _objCharacter.Vehicles.Sum(objVehicle =>
                     {
+                        decimal decInnerReturn = 0;
                         foreach (Weapon objDeleteWeapon in objVehicle.Weapons
                                                                      .DeepWhere(x => x.Children,
                                                                          x => x.ParentID == InternalId).ToList())
                         {
-                            decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
+                            decInnerReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                         }
 
-                        foreach (VehicleMod objMod in objVehicle.Mods)
+                        decInnerReturn += objVehicle.Mods.Sum(objMod =>
                         {
+                            decimal decInnerReturn2 = 0;
                             foreach (Weapon objDeleteWeapon in objMod.Weapons
                                                                      .DeepWhere(x => x.Children,
                                                                          x => x.ParentID == InternalId).ToList())
                             {
-                                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
+                                decInnerReturn2 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                             }
-                        }
 
-                        foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                            return decInnerReturn2;
+                        });
+
+                        decInnerReturn += objVehicle.WeaponMounts.Sum(objMount =>
                         {
+                            decimal decInnerReturn2 = 0;
                             foreach (Weapon objDeleteWeapon in objMount.Weapons
                                                                        .DeepWhere(x => x.Children,
                                                                            x => x.ParentID == InternalId).ToList())
                             {
-                                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
+                                decInnerReturn2 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                             }
-                        }
-                    }
+
+                            decInnerReturn2 += objMount.Mods.Sum(objMod =>
+                            {
+                                decimal decInnerReturn3 = 0;
+                                foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                                         .DeepWhere(x => x.Children,
+                                                                             x => x.ParentID == InternalId).ToList())
+                                {
+                                    decInnerReturn3 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
+                                }
+
+                                return decInnerReturn3;
+                            });
+
+                            return decInnerReturn2;
+                        });
+
+                        return decInnerReturn;
+                    });
                 }
 
                 if (!WeaponAccessoryID.IsEmptyGuid())
@@ -7972,9 +8005,11 @@ namespace Chummer.Backend.Equipment
                 // Remove the Gear Weapon created by the Gear if applicable.
                 if (!WeaponID.IsEmptyGuid())
                 {
-                    foreach (Weapon objDeleteWeapon in _objCharacter.Weapons
-                                                                .DeepWhere(x => x.Children,
-                                                                           x => x.ParentID == InternalId).ToList())
+                    foreach (Weapon objDeleteWeapon in await _objCharacter.Weapons
+                                                                          .DeepWhereAsync(
+                                                                              x => x.Children,
+                                                                              x => x.ParentID == InternalId, token)
+                                                                          .ConfigureAwait(false))
                     {
                         decReturn += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                      + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
@@ -7983,9 +8018,11 @@ namespace Chummer.Backend.Equipment
                     decReturn += await _objCharacter.Vehicles.SumAsync(async objVehicle =>
                     {
                         decimal decInner = 0;
-                        foreach (Weapon objDeleteWeapon in objVehicle.Weapons
-                                                                     .DeepWhere(x => x.Children,
-                                                                         x => x.ParentID == InternalId).ToList())
+                        foreach (Weapon objDeleteWeapon in await objVehicle.Weapons
+                                                                           .DeepWhereAsync(
+                                                                               x => x.Children,
+                                                                               x => x.ParentID == InternalId, token)
+                                                                           .ConfigureAwait(false))
                         {
                             decInner += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
@@ -7994,12 +8031,15 @@ namespace Chummer.Backend.Equipment
                         decInner += await objVehicle.Mods.SumAsync(async objMod =>
                         {
                             decimal decInner2 = 0;
-                            foreach (Weapon objDeleteWeapon in objMod.Weapons
-                                                                     .DeepWhere(x => x.Children,
-                                                                         x => x.ParentID == InternalId).ToList())
+                            foreach (Weapon objDeleteWeapon in await objMod.Weapons
+                                                                           .DeepWhereAsync(
+                                                                               x => x.Children,
+                                                                               x => x.ParentID == InternalId, token)
+                                                                           .ConfigureAwait(false))
                             {
                                 decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                             + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                                             + await objDeleteWeapon.DeleteWeaponAsync(token: token)
+                                                                    .ConfigureAwait(false);
                             }
 
                             return decInner2;
@@ -8008,20 +8048,25 @@ namespace Chummer.Backend.Equipment
                         decInner += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                         {
                             decimal decInner2 = 0;
-                            foreach (Weapon objDeleteWeapon in objMount.Weapons
-                                                                       .DeepWhere(x => x.Children,
-                                                                           x => x.ParentID == InternalId).ToList())
+                            foreach (Weapon objDeleteWeapon in await objMount.Weapons
+                                                                             .DeepWhereAsync(
+                                                                                 x => x.Children,
+                                                                                 x => x.ParentID == InternalId, token)
+                                                                             .ConfigureAwait(false))
                             {
                                 decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                             + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                                             + await objDeleteWeapon.DeleteWeaponAsync(token: token)
+                                                                    .ConfigureAwait(false);
                             }
 
                             decInner2 += await objMount.Mods.SumAsync(async objMod =>
                             {
                                 decimal decInner3 = 0;
-                                foreach (Weapon objDeleteWeapon in objMod.Weapons
-                                                                         .DeepWhere(x => x.Children,
-                                                                             x => x.ParentID == InternalId).ToList())
+                                foreach (Weapon objDeleteWeapon in await objMod.Weapons
+                                                                               .DeepWhereAsync(
+                                                                                   x => x.Children,
+                                                                                   x => x.ParentID == InternalId, token)
+                                                                               .ConfigureAwait(false))
                                 {
                                     decInner3 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                                  + await objDeleteWeapon.DeleteWeaponAsync(token: token)
@@ -8071,12 +8116,14 @@ namespace Chummer.Backend.Equipment
                 if (PairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.
-                    List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                                                                             x => x != this
-                                                                                 && IncludePair.Contains(x.Name)
-                                                                                 && x.Extra == Extra &&
-                                                                                 x.IsModularCurrentlyEquipped)
-                                                                         .ToList();
+                    List<Cyberware> lstPairableCyberwares
+                        = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                            x => x.Children,
+                            async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                                                                 && x.Extra == Extra &&
+                                                                 await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                        .ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                     int intCount = lstPairableCyberwares.Count;
                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                     if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
@@ -8131,9 +8178,14 @@ namespace Chummer.Backend.Equipment
                 if (WirelessPairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.
-                    List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                        x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                             x.IsModularCurrentlyEquipped).ToList();
+                    List<Cyberware> lstPairableCyberwares
+                        = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                            x => x.Children,
+                            async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                                                                 && x.Extra == Extra &&
+                                                                 await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                        .ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                     int intCount = lstPairableCyberwares.Count;
                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                     if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
@@ -8157,7 +8209,10 @@ namespace Chummer.Backend.Equipment
                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
                                                                          objLoopCyberware.InternalId + "WirelessPair",
                                                                          token).ConfigureAwait(false);
-                        if (objLoopCyberware.WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
+                        if (objLoopCyberware.WirelessPairBonus != null
+                            && (await objLoopCyberware.WirelessPairBonus
+                                                      .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                          "@mode", token).ConfigureAwait(false))?.Value == "replace")
                         {
                             await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                               await _objCharacter.Improvements

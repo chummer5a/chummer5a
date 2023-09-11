@@ -1227,8 +1227,7 @@ namespace Chummer.Backend.Equipment
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
                                               () => objLoopAttribute.TotalValue.ToString(
@@ -1489,8 +1488,7 @@ namespace Chummer.Backend.Equipment
                                          () => (Parent?.MultipliableCost(this) ?? 0.0m).ToString(
                                              GlobalSettings.InvariantCultureInfo));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev,
                                              () => objLoopAttribute.TotalValue.ToString(
@@ -1648,8 +1646,7 @@ namespace Chummer.Backend.Equipment
                                            () => (Parent?.MultipliableWeight(this) ?? 0.0m).ToString(
                                                GlobalSettings.InvariantCultureInfo));
 
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                     {
                         sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
                                                () => objLoopAttribute.TotalValue.ToString(
