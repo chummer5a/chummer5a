@@ -247,7 +247,8 @@ namespace Chummer
         public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XPathNavigator xmlOperationNode,
                                                       bool blnIsOrNode)
         {
-            return xmlParentNode.CreateNavigator().ProcessFilterOperationNode(xmlOperationNode, blnIsOrNode);
+            XPathNavigator xmlParentNavigator = xmlParentNode?.CreateNavigator();
+            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode, blnIsOrNode);
         }
 
         /// <summary>
@@ -259,7 +260,8 @@ namespace Chummer
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode)
         {
-            return xmlParentNode.CreateNavigator().ProcessFilterOperationNode(xmlOperationNode.CreateNavigator(), blnIsOrNode);
+            XPathNavigator xmlParentNavigator = xmlParentNode?.CreateNavigator();
+            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode?.CreateNavigator(), blnIsOrNode);
         }
 
         /// <summary>
@@ -274,7 +276,7 @@ namespace Chummer
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<bool>(token);
-            XPathNavigator xmlParentNavigator = xmlParentNode.CreateNavigator();
+            XPathNavigator xmlParentNavigator = xmlParentNode?.CreateNavigator();
             return token.IsCancellationRequested
                 ? Task.FromCanceled<bool>(token)
                 : xmlParentNavigator.ProcessFilterOperationNodeAsync(xmlOperationNode, blnIsOrNode, token);
@@ -292,10 +294,10 @@ namespace Chummer
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<bool>(token);
-            XPathNavigator xmlParentNavigator = xmlParentNode.CreateNavigator();
+            XPathNavigator xmlParentNavigator = xmlParentNode?.CreateNavigator();
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<bool>(token);
-            XPathNavigator xmlOperationNavigator = xmlOperationNode.CreateNavigator();
+            XPathNavigator xmlOperationNavigator = xmlOperationNode?.CreateNavigator();
             return token.IsCancellationRequested
                 ? Task.FromCanceled<bool>(token)
                 : xmlParentNavigator.ProcessFilterOperationNodeAsync(xmlOperationNavigator, blnIsOrNode, token);
