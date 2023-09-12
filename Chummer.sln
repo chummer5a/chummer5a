@@ -183,7 +183,6 @@ Global
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release (for Testing, ChummerHub)|x86.ActiveCfg = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release (for Testing, ChummerHub)|x86.Build.0 = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|x86.ActiveCfg = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|x86.Build.0 = Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debug (ChummerHub)|Any CPU.ActiveCfg = Debug|Any CPU
