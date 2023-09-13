@@ -111,7 +111,7 @@ namespace Chummer
                         XPathNavigator xmlImprovementNode
                             = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId(
                                 "improvement",
-                                cboImprovemetType.SelectedValue.ToString());
+                                cboImprovemetType.SelectedValue.ToString(),blnIdIsGuid:false);
                         XPathNavigator objFetchNode = xmlImprovementNode != null
                             ? await xmlImprovementNode.SelectSingleNodeAndCacheExpressionAsync("fields/field").ConfigureAwait(false)
                             : null;
@@ -136,7 +136,7 @@ namespace Chummer
 
         private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", cboImprovemetType.SelectedValue.ToString());
+            XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", cboImprovemetType.SelectedValue.ToString(), blnIdIsGuid: false);
 
             lblVal.Visible = false;
             lblMin.Visible = false;
@@ -735,7 +735,7 @@ namespace Chummer
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     // Build the XML for the Improvement.
-                    XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedType);
+                    XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedType, blnIdIsGuid: false);
                     if (objFetchNode == null)
                         return;
                     string strInternal = (await objFetchNode.SelectSingleNodeAndCacheExpressionAsync("internal", token).ConfigureAwait(false))?.Value;
