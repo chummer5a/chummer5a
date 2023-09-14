@@ -725,8 +725,12 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode;
             List<Gear> lstChildGears = new List<Gear>(1);
             XmlAttributeCollection lstGearAttributes = xmlGearNode.Attributes;
-            int.TryParse(lstGearAttributes?["rating"]?.InnerText, NumberStyles.Any,
-                GlobalSettings.InvariantCultureInfo, out int intRating);
+            if (!int.TryParse(lstGearAttributes?["rating"]?.InnerText, NumberStyles.Any,
+                    GlobalSettings.InvariantCultureInfo, out int intRating))
+            {
+                int.TryParse(xmlGearNode?["rating"]?.InnerText, NumberStyles.Any,
+                    GlobalSettings.InvariantCultureInfo, out intRating);
+            }
             string strName = xmlGearNode["id"]?.InnerText ?? xmlGearNode["name"]?.InnerText;
             if (!string.IsNullOrEmpty(strName))
             {
