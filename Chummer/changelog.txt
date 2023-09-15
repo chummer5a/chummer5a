@@ -51,6 +51,7 @@ Application Changes:
 - Custom armor data whose armor value scales off of a character's attributes and/or off of a fixed set of rating-dependent values now work properly.
 - Changing character creation options (e.g. priority entries) without a metavariant selected no longer causes odd UI issues. Fixes #5042.
 - Fixed an issue with items with ratings not correctly setting their rating when added as a child of another object. Closes #5054
+- Fixed vehicle mods incorrectly being filtered by weapon mod capacity during career mode.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
