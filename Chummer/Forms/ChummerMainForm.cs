@@ -161,7 +161,14 @@ namespace Chummer
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
-            await ProcessQueuedCharactersToOpen().ConfigureAwait(false);
+            try
+            {
+                await ProcessQueuedCharactersToOpen(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -2355,13 +2362,20 @@ namespace Chummer
             }
         }
 
-        public void RefreshAllTabTitles()
+        public void RefreshAllTabTitles(CancellationToken token = default)
         {
+            CancellationTokenSource objSource = null;
+            if (token != _objGenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, _objGenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
-                string strSpace = LanguageManager.GetString("String_Space", token: _objGenericToken);
-                string strSheet = LanguageManager.GetString("String_Sheet_Blank", token: _objGenericToken);
-                string strExport = LanguageManager.GetString("String_Export_Blank", token: _objGenericToken);
+                string strSpace = LanguageManager.GetString("String_Space", token: token);
+                string strSheet = LanguageManager.GetString("String_Sheet_Blank", token: token);
+                string strExport = LanguageManager.GetString("String_Export_Blank", token: token);
                 tabForms.DoThreadSafe((x, z) =>
                 {
                     foreach (TabPage objTabPage in x.TabPages)
@@ -2387,11 +2401,11 @@ namespace Chummer
                                 break;
                         }
                     }
-                }, token: _objGenericToken);
+                }, token: token);
             }
-            catch (OperationCanceledException)
+            finally
             {
-                //swallow this
+                objSource?.Dispose();
             }
         }
 
@@ -3721,23 +3735,30 @@ namespace Chummer
             }
         }
 
-        private async Task ProcessQueuedCharactersToOpen()
+        private async Task ProcessQueuedCharactersToOpen(CancellationToken token = default)
         {
             ConcurrentStringHashSet setCharactersToOpen = Interlocked.Exchange(ref _setCharactersToOpen, null);
             if (setCharactersToOpen == null || setCharactersToOpen.Count == 0)
                 return;
 
+            CancellationTokenSource objSource = null;
+            if (token != _objGenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, _objGenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
                 CursorWait objCursorWait
-                    = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
+                    = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
                     List<Character> lstCharacters = new List<Character>(setCharactersToOpen.Count);
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar
                            = await Program.CreateAndShowProgressBarAsync(string.Empty,
                                                                          Character.NumLoadingSections
-                                                                         * setCharactersToOpen.Count, _objGenericToken)
+                                                                         * setCharactersToOpen.Count, token)
                                           .ConfigureAwait(false))
                     {
                         List<Task<Character>> tskCharacterLoads = new List<Task<Character>>(setCharactersToOpen.Count);
@@ -3747,22 +3768,22 @@ namespace Chummer
                             tskCharacterLoads.Add(Task.Run(
                                                       () => Program.LoadCharacterAsync(
                                                           strFile, frmLoadingBar: frmLoadingBar.MyForm,
-                                                          token: _objGenericToken), _objGenericToken));
+                                                          token: token), token));
                         }
                         Character[] aobjCharacters = await Task.WhenAll(tskCharacterLoads).ConfigureAwait(false);
                         lstCharacters.AddRange(aobjCharacters);
                     }
 
-                    await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
+                    await OpenCharacterList(lstCharacters, token: token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
-            catch (OperationCanceledException)
+            finally
             {
-                //swallow this
+                objSource?.Dispose();
             }
         }
 
