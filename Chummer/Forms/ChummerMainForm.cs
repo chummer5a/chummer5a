@@ -4061,7 +4061,11 @@ namespace Chummer
         protected override void WndProc(ref Message m)
         {
             if (_objGenericToken.IsCancellationRequested)
+            {
+                base.WndProc(ref m);
                 return;
+            }
+
             if (m.Msg == NativeMethods.WM_SHOWME)
                 ShowMe();
             else if (m.Msg == NativeMethods.WM_COPYDATA && _blnAbleToReceiveData)
