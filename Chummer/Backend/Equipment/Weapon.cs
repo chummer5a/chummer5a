@@ -6397,7 +6397,7 @@ namespace Chummer.Backend.Equipment
                                 _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId, token: token).ConfigureAwait(false);
 
                             // If the character has a Specialization, include it in the Dice Pool string.
-                            if (!objSkill.IsExoticSkill && await objSkill.Specializations.GetCountAsync(token) > 0)
+                            if (!objSkill.IsExoticSkill && await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 SkillSpecialization objSpec =
                                     await objSkill.GetSpecializationAsync(await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) ??
@@ -9007,12 +9007,11 @@ namespace Chummer.Backend.Equipment
                 Clip clip = _lstAmmo[i];
                 if (clip.OwnedBy == accessory.InternalId)
                 {
-                    IAsyncCollection<Gear> gears = ParentVehicle != null
-                        ? ParentVehicle.GearChildren
-                        : _objCharacter.Gear;
                     if (ActiveAmmoSlot == i + 1)
                         ActiveAmmoSlot = 1;
-                    UnloadGear(gears, clip);
+                    UnloadGear(ParentVehicle != null
+                                   ? ParentVehicle.GearChildren
+                                   : _objCharacter.Gear, clip);
                     _lstAmmo.RemoveAt(i);
                 }
             }
@@ -9025,12 +9024,11 @@ namespace Chummer.Backend.Equipment
                 Clip clip = _lstAmmo[i];
                 if (clip.OwnedBy == accessory.InternalId)
                 {
-                    IAsyncCollection<Gear> gears = ParentVehicle != null
-                        ? ParentVehicle.GearChildren
-                        : _objCharacter.Gear;
                     if (ActiveAmmoSlot == i + 1)
                         ActiveAmmoSlot = 1;
-                    await UnloadGearAsync(gears, clip, token).ConfigureAwait(false);
+                    await UnloadGearAsync(ParentVehicle != null
+                                              ? ParentVehicle.GearChildren
+                                              : _objCharacter.Gear, clip, token).ConfigureAwait(false);
                     _lstAmmo.RemoveAt(i);
                 }
             }

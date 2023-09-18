@@ -2244,6 +2244,7 @@ namespace Chummer
                                 else if (objCharacter != null)
                                 {
                                     string strXPath = (blnSync
+                                                          // ReSharper disable once MethodHasAsyncOverload
                                                           ? nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
                                                               "selecttext/@xpath", token)
                                                           : await nodBonus
@@ -2264,6 +2265,7 @@ namespace Chummer
 
                                     string strXmlFile
                                         = (blnSync
+                                              // ReSharper disable once MethodHasAsyncOverload
                                               ? nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
                                                   "selecttext/@xml", token)
                                               : await nodBonus
@@ -3397,6 +3399,7 @@ namespace Chummer
                     Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
                     string strSourceName = objImprovement.SourceName;
                     bool blnHasDuplicate = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Improvements.Any(
                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                && x.ImproveType == eImprovementType
@@ -4179,6 +4182,7 @@ namespace Chummer
                     {
                         if (blnAllowDuplicatesFromSameSource)
                         {
+                            // ReSharper disable once MethodHasAsyncOverload
                             blnHasDuplicate = objCharacter.Improvements.Any(
                                 x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                    && x.ImproveType == eImprovementType
@@ -4190,6 +4194,7 @@ namespace Chummer
                                 {
                                     case Improvement.ImprovementType.Skillsoft:
                                     case Improvement.ImprovementType.Activesoft:
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         blnHasDuplicate = objCharacter.Improvements.Any(
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && x.ImproveType == Improvement.ImprovementType.Hardwire
@@ -4197,6 +4202,7 @@ namespace Chummer
                                                                                && !ReferenceEquals(x, objImprovement), token);
                                         break;
                                     case Improvement.ImprovementType.Hardwire:
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         blnHasDuplicate = objCharacter.Improvements.Any(
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && (x.ImproveType
@@ -4213,25 +4219,27 @@ namespace Chummer
                         else
                         {
                             string strSourceName = objImprovement.SourceName;
-                            blnHasDuplicate = objCharacter.Improvements.Any(
+                            // ReSharper disable once MethodHasAsyncOverload
+                            blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
                                 x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                    && x.ImproveType == eImprovementType
                                                                    && x.SourceName != strSourceName
-                                                                   && x.Enabled, token);
+                                                                   && x.Enabled, token).ConfigureAwait(false);
                             if (!blnHasDuplicate)
                             {
                                 switch (eImprovementType)
                                 {
                                     case Improvement.ImprovementType.Skillsoft:
                                     case Improvement.ImprovementType.Activesoft:
-                                        blnHasDuplicate = objCharacter.Improvements.Any(
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && x.ImproveType == Improvement.ImprovementType.Hardwire
                                                                                && x.SourceName != strSourceName
-                                                                               && x.Enabled, token);
+                                                                               && x.Enabled, token).ConfigureAwait(false);
                                         break;
                                     case Improvement.ImprovementType.Hardwire:
-                                        blnHasDuplicate = objCharacter.Improvements.Any(
+                                        blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && (x.ImproveType
                                                                                    == Improvement.ImprovementType.Skillsoft
@@ -4239,7 +4247,7 @@ namespace Chummer
                                                                                    == Improvement.ImprovementType
                                                                                        .Activesoft)
                                                                                && x.SourceName != strSourceName
-                                                                               && x.Enabled, token);
+                                                                               && x.Enabled, token).ConfigureAwait(false);
                                         break;
                                 }
                             }

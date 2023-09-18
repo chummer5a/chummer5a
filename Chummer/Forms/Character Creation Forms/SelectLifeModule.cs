@@ -85,7 +85,7 @@ namespace Chummer
             List<TreeNode> lstTreeNodes = new List<TreeNode>();
             bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             AsyncLazy<string> strBookPath = new AsyncLazy<string>(
-                async () => await _objCharacter.Settings.BookXPathAsync(token: token), Utils.JoinableTaskFactory);
+                async () => await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false), Utils.JoinableTaskFactory);
             foreach (XPathNavigator xmlNode in lstXmlNodes)
             {
                 token.ThrowIfCancellationRequested();
@@ -179,7 +179,7 @@ namespace Chummer
                 string strSource = (await SourceString.GetSourceStringAsync(xmlSelectedNodeInfo["source"]?.InnerText,
                                                                             strPage: xmlSelectedNodeInfo["altpage"]?.InnerText
                                                                             ?? xmlSelectedNodeInfo["page"]?.InnerText,
-                                                                            objCharacter: _objCharacter))
+                                                                            objCharacter: _objCharacter).ConfigureAwait(false))
                                                .ToString();
                 string strStage = xmlSelectedNodeInfo["stage"]?.InnerText
                                   ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);

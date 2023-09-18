@@ -6925,6 +6925,7 @@ namespace Chummer
                                                     objQuality.Load(objXmlQuality);
                                                     // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
                                                     if (blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
                                                             ? _lstQualities.Any(
                                                                 x => x.InternalId == objQuality.InternalId, token)
                                                             : await _lstQualities.AnyAsync(
@@ -7908,6 +7909,7 @@ namespace Chummer
                                     if (objCyberware.Name == "Myostatin Inhibitor" &&
                                         LastSavedVersion <= new Version(5, 195, 1) &&
                                         !(blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             ? Improvements.Any(x =>
                                                                    x.SourceName == objCyberware.InternalId &&
                                                                    x.ImproveType == Improvement.ImprovementType
@@ -8433,8 +8435,10 @@ namespace Chummer
                                 // If we don't have any Fettered spirits, make sure that we
                                 if (blnSync)
                                 {
-                                    if (!_lstSpirits.Any(s => s.Fettered, token) && Improvements.Any(imp =>
-                                            imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering, token))
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    if (!_lstSpirits.Any(s => s.Fettered, token)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        && Improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering, token))
                                     {
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ImprovementManager.RemoveImprovements(
@@ -9288,6 +9292,7 @@ namespace Chummer
                                             await objOldQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
 
                                         if (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 ? Qualities.All(x => !x.Name.Equals("Resistance to Pathogens/Toxins", StringComparison.Ordinal)
                                                                      && !x.Name.Equals("Dwarf Resistance", StringComparison.Ordinal), token)
                                                 : await Qualities.AllAsync(x => !x.Name.Equals("Resistance to Pathogens/Toxins", StringComparison.Ordinal)
@@ -9348,6 +9353,7 @@ namespace Chummer
                                         InitiationGrade objBestGradeMatch = null;
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             InitiationGrades.ForEach(objInitiationGrade =>
                                             {
                                                 if (!objInitiationGrade.Technomancer
@@ -9408,6 +9414,7 @@ namespace Chummer
                                 {
                                     Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
                                     // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     if (objMentorQuality != null && !Improvements.Any(imp =>
                                                 imp.ImproveType == Improvement.ImprovementType.MentorSpirit &&
                                                 !string.IsNullOrEmpty(imp.ImprovedName), token))
@@ -36374,12 +36381,14 @@ namespace Chummer
                                     : await LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlQualityToImport in (blnSync
                                              ? xmlStatBlockBaseNode
+                                                 // ReSharper disable once MethodHasAsyncOverload
                                                  .SelectAndCacheExpression(
                                                      "qualities/positive/quality[traitcost/@bp != \"0\"]", token)
                                              : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync(
                                                  "qualities/positive/quality[traitcost/@bp != \"0\"]", token).ConfigureAwait(false)))
                                 {
                                     string strQualityName = (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? xmlQualityToImport.SelectSingleNodeAndCacheExpression(
                                             "@name", token)
                                         : await xmlQualityToImport.SelectSingleNodeAndCacheExpressionAsync(
@@ -36455,6 +36464,7 @@ namespace Chummer
                                                     objQuality.Notes =
                                                         (blnSync
                                                             ? xmlQualityToImport
+                                                                // ReSharper disable once MethodHasAsyncOverload
                                                                 .SelectSingleNodeAndCacheExpression(
                                                                     "description", token)
                                                             : await xmlQualityToImport
@@ -36486,6 +36496,7 @@ namespace Chummer
                                              "qualities/negative/quality[traitcost/@bp != \"0\"]", token))
                                 {
                                     string strQualityName = (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? xmlQualityToImport.SelectSingleNodeAndCacheExpression(
                                             "@name", token)
                                         : await xmlQualityToImport.SelectSingleNodeAndCacheExpressionAsync(
@@ -36584,6 +36595,7 @@ namespace Chummer
                                                     objQuality.Notes =
                                                         (blnSync
                                                             ? xmlQualityToImport
+                                                                // ReSharper disable once MethodHasAsyncOverload
                                                                 .SelectSingleNodeAndCacheExpression(
                                                                     "description", token)
                                                             : await xmlQualityToImport
@@ -36629,6 +36641,7 @@ namespace Chummer
                                 // Attempt to load in the character's tradition
                                 XPathNavigator xmlTemp
                                     = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression(
                                             "magic/tradition", token)
                                         : await xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpressionAsync(
@@ -36641,6 +36654,7 @@ namespace Chummer
                                 // Attempt to load Condition Monitor Progress.
                                 XPathNavigator xmlPhysicalCMFilledNode =
                                     blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
                                             "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity", token)
                                         : await xmlLeadsBaseNode.SelectSingleNodeAndCacheExpressionAsync(
@@ -36650,6 +36664,7 @@ namespace Chummer
                                                  GlobalSettings.InvariantCultureInfo, out _intPhysicalCMFilled);
                                 XPathNavigator xmlStunCMFilledNode =
                                     blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
                                             "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity", token)
                                         : await xmlLeadsBaseNode.SelectSingleNodeAndCacheExpressionAsync(
@@ -36664,6 +36679,7 @@ namespace Chummer
                             {
                                 SkillsSection.LoadFromHeroLab(
                                     blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("skills", token)
                                         : await xmlStatBlockBaseNode
                                                 .SelectSingleNodeAndCacheExpressionAsync("skills", token)
@@ -36774,15 +36790,19 @@ namespace Chummer
                                     if (blnSync)
                                     {
                                         objContact.Name
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             = xmlContactToImport.SelectSingleNodeAndCacheExpression("@name", token)
                                                                 ?.Value ?? string.Empty;
                                         objContact.Role
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             = xmlContactToImport.SelectSingleNodeAndCacheExpression("@type", token)
                                                                 ?.Value ?? string.Empty;
                                         objContact.Connection =
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             xmlContactToImport.SelectSingleNodeAndCacheExpression("@connection", token)
                                                               ?.ValueAsInt ?? 1;
                                         objContact.Loyalty = xmlContactToImport
+                                                             // ReSharper disable once MethodHasAsyncOverload
                                                              .SelectSingleNodeAndCacheExpression("@loyalty", token)
                                                              ?.ValueAsInt ?? 1;
                                     }
@@ -36804,6 +36824,7 @@ namespace Chummer
 
                                     string strDescription =
                                         (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             ? xmlContactToImport.SelectSingleNodeAndCacheExpression(
                                                 "description", token)
                                             : await xmlContactToImport
@@ -36882,12 +36903,14 @@ namespace Chummer
                                     : await LoadDataAsync("armor.xml", token: token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlArmorToImport in (blnSync
                                              ? xmlStatBlockBaseNode
+                                                 // ReSharper disable once MethodHasAsyncOverload
                                                  .SelectAndCacheExpression(
                                                      "gear/armor/item[@useradded != \"no\"]", token)
                                              : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync(
                                                  "gear/armor/item[@useradded != \"no\"]", token).ConfigureAwait(false)))
                                 {
                                     string strArmorName = (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? xmlArmorToImport.SelectSingleNodeAndCacheExpression(
                                             "@name", token)
                                         : await xmlArmorToImport
@@ -36929,6 +36952,7 @@ namespace Chummer
                                             Armor objArmor = new Armor(this);
                                             objArmor.Create(xmlArmorData,
                                                             (blnSync
+                                                                // ReSharper disable once MethodHasAsyncOverload
                                                                 ? xmlArmorToImport.SelectSingleNodeAndCacheExpression(
                                                                     "@rating", token)
                                                                 : await xmlArmorToImport
@@ -36938,6 +36962,7 @@ namespace Chummer
                                                             ?? 0,
                                                             lstWeapons);
                                             objArmor.Notes = (blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ? xmlArmorToImport.SelectSingleNodeAndCacheExpression(
                                                         "description", token)
                                                     : await xmlArmorToImport
@@ -36958,6 +36983,7 @@ namespace Chummer
                                                 {
                                                     string strArmorModName =
                                                         (blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
                                                             ? xmlArmorModToImport.SelectSingleNodeAndCacheExpression(
                                                                 "@name", token)
                                                             : await xmlArmorModToImport
@@ -37140,6 +37166,7 @@ namespace Chummer
                                                 {
                                                     string strArmorModName =
                                                         (blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
                                                             ? xmlArmorModToImport.SelectSingleNodeAndCacheExpression(
                                                                 "@name", token)
                                                             : await xmlArmorModToImport
@@ -37164,6 +37191,7 @@ namespace Chummer
                                                         {
                                                             objArmorMod.Notes = (blnSync
                                                                     ? xmlArmorModToImport
+                                                                        // ReSharper disable once MethodHasAsyncOverload
                                                                         .SelectSingleNodeAndCacheExpression(
                                                                             "description", token)
                                                                     : await xmlArmorModToImport
@@ -38114,8 +38142,8 @@ namespace Chummer
                                         Gear objFakeSIN = new Gear(this);
                                         objFakeSIN.Create(xmlFakeSINDataNode,
                                                           (blnSync
-                                                              // ReSharper disable once MethodHasAsyncOverload
                                                               ? xmlHeroLabFakeSINNode
+                                                                  // ReSharper disable once MethodHasAsyncOverload
                                                                   .SelectSingleNodeAndCacheExpression(
                                                                       "@rating", token)
                                                               : await xmlHeroLabFakeSINNode
@@ -38132,8 +38160,8 @@ namespace Chummer
                                             Gear objFakeLicense = new Gear(this);
                                             objFakeLicense.Create(xmlFakeLicenseDataNode,
                                                                   (blnSync
-                                                                      // ReSharper disable once MethodHasAsyncOverload
                                                                       ? xmlHeroLabFakeLicenseNode
+                                                                          // ReSharper disable once MethodHasAsyncOverload
                                                                           .SelectSingleNodeAndCacheExpression(
                                                                               "@rating", token)
                                                                       : await xmlHeroLabFakeLicenseNode
@@ -38144,8 +38172,8 @@ namespace Chummer
                                                                   1,
                                                                   lstWeapons,
                                                                   (blnSync
-                                                                      // ReSharper disable once MethodHasAsyncOverload
                                                                       ? xmlHeroLabFakeLicenseNode
+                                                                          // ReSharper disable once MethodHasAsyncOverload
                                                                           .SelectSingleNodeAndCacheExpression(
                                                                               "@for", token)
                                                                       : await xmlHeroLabFakeLicenseNode

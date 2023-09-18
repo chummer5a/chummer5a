@@ -977,8 +977,8 @@ namespace Chummer
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopNode != null
                                                                   ? (blnSync
-                                                                        // ReSharper disable once MethodHasAsyncOverload
                                                                         ? objLoopNode
+                                                                            // ReSharper disable once MethodHasAsyncOverload
                                                                             .SelectSingleNodeAndCacheExpression(
                                                                                 "name", token)
                                                                         : await objLoopNode
@@ -1317,6 +1317,7 @@ namespace Chummer
                         if (objParent is Cyberware objCyberware)
                             return new Tuple<bool, string>(
                                 blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     ? objCyberware.Children.Any(mod => mod.Category == strNodeInnerText, token)
                                     : await objCyberware.Children
                                                         .AnyAsync(mod => mod.Category == strNodeInnerText, token)
@@ -2432,6 +2433,7 @@ namespace Chummer
                 case "program":
                 {
                     bool blnResult = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.AIPrograms.Any(p => p.Name == strNodeInnerText
                                                            || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
                         : await (await objCharacter.GetAIProgramsAsync(token).ConfigureAwait(false)).AnyAsync(p => p.Name == strNodeInnerText
@@ -2679,6 +2681,7 @@ namespace Chummer
                     return new Tuple<bool, string>(objParent is Lifestyle objLifestyle
                                                        ? objLifestyle.BaseLifestyle == strNodeInnerText
                                                        : blnSync
+                                                           // ReSharper disable once MethodHasAsyncOverload
                                                            ? objCharacter.Lifestyles.Any(
                                                                x => x.BaseLifestyle == strNodeInnerText, token)
                                                            : await (await objCharacter.GetLifestylesAsync(token)
@@ -3440,6 +3443,7 @@ namespace Chummer
                 case "weapon":
                 {
                     bool blnReturn = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Weapons.Any(x => x.Name == strNodeInnerText
                                                         || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
                         : await objCharacter.Weapons.AnyAsync(
@@ -3481,6 +3485,7 @@ namespace Chummer
                 case "accessory" when objParent is Weapon objWeapon:
                 {
                     bool blnReturn = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? objWeapon.WeaponAccessories.Any(x =>
                                                               x.Name == strNodeInnerText
                                                               || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
@@ -3567,6 +3572,7 @@ namespace Chummer
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         return new Tuple<bool, string>(objParent is Armor objArmor && (blnSync
+                                                           // ReSharper disable once MethodHasAsyncOverload
                                                            ? objArmor.ArmorMods.Any(
                                                                x => x.Name == strNodeInnerText
                                                                     || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
@@ -3578,6 +3584,7 @@ namespace Chummer
 
                     return new Tuple<bool, string>(
                         blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.Armor.Any(
                                 x => x.ArmorMods.Any(y => y.Name == strNodeInnerText
                                                           || string.Equals(y.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token), token)
