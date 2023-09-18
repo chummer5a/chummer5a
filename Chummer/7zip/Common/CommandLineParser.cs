@@ -271,7 +271,7 @@ namespace SevenZip.CommandLineParser
         }
     }
 
-    internal class CommandSubCharsSet
+    internal sealed class CommandSubCharsSet
     {
         public readonly string Chars = string.Empty;
         public const bool EmptyAllowed = false;
