@@ -3213,7 +3213,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             int intBase = await Mods.SumAsync(
-                objMod => objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != strCategory,
+                objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Category == strCategory,
                 // Subtract the Modification's Slots from the Vehicle's base Body.
                 async objMod => Math.Max(await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false), 0),
                 token: token).ConfigureAwait(false);

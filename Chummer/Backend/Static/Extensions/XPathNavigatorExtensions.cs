@@ -512,16 +512,30 @@ namespace Chummer
         /// <summary>
         /// Query the XPathNavigator for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
         /// </summary>
+        /// <param name="node">XPathNavigator to examine.</param>
+        /// <param name="strPath">Name of the XPathNavigator to look for.</param>
+        /// <param name="strId">Element to search for. If it parses as a guid or f it fails to parse as a guid AND blnIdIsGuid is set, it will still search for id, otherwise it will search search for a node with a name element that matches.</param>
+        /// <param name="strExtraXPath">'Extra' value to append to the search.</param>
+        /// <param name="blnIdIsGuid">Whether to evaluate the ID as a GUID or a string. Use false to pass strId as a string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static XPathNavigator TryGetNodeByNameOrId(this XPathNavigator node, string strPath, string strId, string strExtraXPath = "")
+        public static XPathNavigator TryGetNodeByNameOrId(this XPathNavigator node, string strPath, string strId, string strExtraXPath = "", bool blnIdIsGuid = true)
         {
             if (node == null || string.IsNullOrEmpty(strPath) || string.IsNullOrEmpty(strId))
                 return null;
+
             if (Guid.TryParse(strId, out Guid guidId))
             {
                 XPathNavigator objReturn = node.TryGetNodeById(strPath, guidId, strExtraXPath);
                 if (objReturn != null)
                     return objReturn;
+            }
+            // This is mostly for improvements.xml, which uses the improvement id (such as addecho) as the id rather than a guid.
+            if (!blnIdIsGuid)
+            {
+                return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath()
+                                             + (string.IsNullOrEmpty(strExtraXPath)
+                                                 ? "]"
+                                                 : " and (" + strExtraXPath + ") ]"));
             }
 
             return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath()

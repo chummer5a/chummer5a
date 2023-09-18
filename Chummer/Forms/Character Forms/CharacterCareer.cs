@@ -10226,7 +10226,7 @@ namespace Chummer
                                                            .ConfigureAwait(false) > await objVehicle
                                             .GetDroneModSlotsAsync(GenericToken).ConfigureAwait(false);
                                 else
-                                    blnOverCapacity = await objVehicle.OverR5CapacityAsync("Weapons", GenericToken);
+                                    blnOverCapacity = await objVehicle.OverR5CapacityAsync(objMod.Category, GenericToken);
                             }
                             else
                                 blnOverCapacity = await objVehicle.GetSlotsAsync(GenericToken).ConfigureAwait(false)

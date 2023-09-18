@@ -1296,35 +1296,49 @@ namespace Chummer
                 ChummerMainForm frmMain = Program.MainForm;
                 if (frmMain == null)
                     return;
-                frmMain.TranslateWinForm();
-                IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
-                if (lstToProcess != null)
+                try
                 {
-                    foreach (Form frmLoop in lstToProcess)
+                    frmMain.TranslateWinForm();
+                    IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
+                    if (lstToProcess != null)
                     {
-                        frmLoop.TranslateWinForm();
+                        foreach (Form frmLoop in lstToProcess)
+                        {
+                            frmLoop.TranslateWinForm();
+                        }
                     }
+
+                    lstToProcess = frmMain.OpenCharacterSheetViewers;
+                    if (lstToProcess != null)
+                    {
+                        foreach (Form frmLoop in lstToProcess)
+                        {
+                            frmLoop.TranslateWinForm();
+                        }
+                    }
+
+                    lstToProcess = frmMain.OpenCharacterExportForms;
+                    if (lstToProcess != null)
+                    {
+                        foreach (Form frmLoop in lstToProcess)
+                        {
+                            frmLoop.TranslateWinForm();
+                        }
+                    }
+
+                    frmMain.PrintMultipleCharactersForm?.TranslateWinForm();
+                    frmMain.CharacterRoster?.TranslateWinForm();
+                    frmMain.MasterIndex?.TranslateWinForm();
+                    frmMain.RefreshAllTabTitles();
                 }
-                lstToProcess = frmMain.OpenCharacterSheetViewers;
-                if (lstToProcess != null)
+                catch (ObjectDisposedException)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        frmLoop.TranslateWinForm();
-                    }
+                    //swallow this
                 }
-                lstToProcess = frmMain.OpenCharacterExportForms;
-                if (lstToProcess != null)
+                catch (OperationCanceledException)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        frmLoop.TranslateWinForm();
-                    }
+                    //swallow this
                 }
-                frmMain.PrintMultipleCharactersForm?.TranslateWinForm();
-                frmMain.CharacterRoster?.TranslateWinForm();
-                frmMain.MasterIndex?.TranslateWinForm();
-                frmMain.RefreshAllTabTitles();
             }
         }
 
