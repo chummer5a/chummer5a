@@ -349,7 +349,7 @@ namespace Chummer
 
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-            
+
             if (astrNeedles.All(x => x.Length > intHaystackLength))
                 return -1;
 
@@ -430,7 +430,7 @@ namespace Chummer
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
 
-            return !astrNeedles.All(x => x.Length > intHaystackLength) && astrNeedles.Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+            return !astrNeedles.All(x => x.Length > intHaystackLength) && astrNeedles.Any(strNeedle => strHaystack.Contains(strNeedle, eComparison));
         }
 
         /// <summary>
@@ -451,7 +451,7 @@ namespace Chummer
             return astrNeedles != null &&
                    // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
                    // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-                   astrNeedles.Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+                   astrNeedles.Any(strNeedle => strHaystack.Contains(strNeedle, eComparison));
         }
 
         /// <summary>

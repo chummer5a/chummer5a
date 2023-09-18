@@ -8763,12 +8763,12 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strOriginalName);
                 if (xmlWeaponDataNode == null)
                 {
-                    if (strOriginalName.IndexOf(':') >= 0)
+                    if (strOriginalName.Contains(':'))
                     {
                         string strName = strOriginalName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                         xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strName);
                     }
-                    if (xmlWeaponDataNode == null && strOriginalName.IndexOf(',') >= 0)
+                    if (xmlWeaponDataNode == null && strOriginalName.Contains(','))
                     {
                         string strName = strOriginalName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                         xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strName);
