@@ -324,7 +324,7 @@ namespace Chummer
                         strSelectedName = frmSelectName.MyForm.SelectedValue;
                     }
 
-                    if (dicCharacterSettings.Any(x => x.Value.Name == strSelectedName))
+                    if (await dicCharacterSettings.AnyAsync(x => x.Value.Name == strSelectedName).ConfigureAwait(false))
                     {
                         DialogResult eCreateDuplicateSetting = Program.ShowScrollableMessageBox(
                             string.Format(
@@ -356,7 +356,7 @@ namespace Chummer
                 int intMaxNameLength = char.MaxValue - Utils.GetStartupPath.Length - "settings".Length - 6;
                 uint uintAccumulator = 1;
                 string strSeparator = "_";
-                while (dicCharacterSettings.Any(x => x.Value.FileName == strSelectedFullFileName))
+                while (await dicCharacterSettings.AnyAsync(x => x.Value.FileName == strSelectedFullFileName).ConfigureAwait(false))
                 {
                     strSelectedFullFileName = strBaseFileName + strSeparator
                                                               + uintAccumulator.ToString(

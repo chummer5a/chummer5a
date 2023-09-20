@@ -6325,7 +6325,7 @@ namespace Chummer.Backend.Skills
                                     break;
                             }
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
 
                     if (decSpecCostMultiplier != 1.0m)
                         intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();

@@ -2288,7 +2288,7 @@ namespace Chummer
                                                  x.SourceID != Cyberware.EssenceHoleGUID
                                                  && x.SourceID != Cyberware.EssenceAntiHoleGUID
                                                  && x.Grade.Name != "None"
-                                                 && await x.GetIsModularCurrentlyEquippedAsync(GenericToken)
+                                                 && await x.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
                                                      || x.CanRemoveThroughImprovements), GenericToken)
                                          .ConfigureAwait(false))
@@ -3616,7 +3616,7 @@ namespace Chummer
                                     sbdOutdatedItems.AppendLine(
                                         await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                 }
-                            }, GenericToken);
+                            }, GenericToken).ConfigureAwait(false);
 
                             // Refresh Complex Forms.
                             await CharacterObject.ComplexForms.ForEachAsync(async objComplexForm =>
@@ -4795,7 +4795,7 @@ namespace Chummer
 
                         // Check for SelectText.
                         string strExtra = string.Empty;
-                        XPathNavigator xmlSelectText = objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext");
+                        XPathNavigator xmlSelectText = await objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext", GenericToken).ConfigureAwait(false);
                         if (xmlSelectText != null)
                         {
                             string strDescription = string.Format(GlobalSettings.CultureInfo,
@@ -17908,10 +17908,10 @@ namespace Chummer
                                     await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                       .ConfigureAwait(false);
                                     string strText
-                                        = (await objVehicle.GetDroneModSlotsUsedAsync(token)).ToString(
+                                        = (await objVehicle.GetDroneModSlotsUsedAsync(token).ConfigureAwait(false)).ToString(
                                             GlobalSettings.CultureInfo) + '/'
                                                                         + (await objVehicle
-                                                                            .GetDroneModSlotsAsync(token))
+                                                                            .GetDroneModSlotsAsync(token).ConfigureAwait(false))
                                                                         .ToString(GlobalSettings.CultureInfo);
                                     await lblVehicleDroneModSlots.DoThreadSafeAsync(x =>
                                     {

@@ -766,11 +766,11 @@ namespace Chummer
                                                     objMostRecentAutosave = objAutosave;
                                                 string strAutosaveName
                                                     = Path.GetFileNameWithoutExtension(objAutosave.Name);
-                                                if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
-                                                        Path.GetFileNameWithoutExtension(x) == strAutosaveName)
+                                                if (await GlobalSettings.MostRecentlyUsedCharacters.AnyAsync(x =>
+                                                        Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken).ConfigureAwait(false)
                                                     ||
-                                                    GlobalSettings.FavoriteCharacters.Any(x =>
-                                                        Path.GetFileNameWithoutExtension(x) == strAutosaveName))
+                                                    await GlobalSettings.FavoriteCharacters.AnyAsync(x =>
+                                                        Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken).ConfigureAwait(false))
                                                     blnAnyAutosaveInMru = true;
                                                 else if (objAutosave != objMostRecentAutosave &&
                                                          objAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold
@@ -788,12 +788,12 @@ namespace Chummer
                                                     string strAutosaveName
                                                         = Path.GetFileNameWithoutExtension(
                                                             objMostRecentAutosave.Name);
-                                                    if (GlobalSettings.MostRecentlyUsedCharacters.All(
+                                                    if (await GlobalSettings.MostRecentlyUsedCharacters.AllAsync(
                                                             x => Path.GetFileNameWithoutExtension(x)
-                                                                 != strAutosaveName) &&
-                                                        GlobalSettings.FavoriteCharacters.All(
+                                                                 != strAutosaveName, _objGenericToken).ConfigureAwait(false) &&
+                                                        await GlobalSettings.FavoriteCharacters.AllAsync(
                                                             x => Path.GetFileNameWithoutExtension(x)
-                                                                 != strAutosaveName))
+                                                                 != strAutosaveName, _objGenericToken).ConfigureAwait(false))
                                                     {
                                                         if (Program.ShowScrollableMessageBox(
                                                                 string.Format(GlobalSettings.CultureInfo,

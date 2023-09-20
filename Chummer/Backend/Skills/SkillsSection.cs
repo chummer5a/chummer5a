@@ -995,6 +995,7 @@ namespace Chummer.Backend.Skills
                                 {
                                     if (blnSync)
                                     {
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         if (_objCharacter.Created && !KnowledgeSkills.Any(x => x.IsNativeLanguage, token))
                                         {
                                             KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
