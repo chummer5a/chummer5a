@@ -1,7 +1,8 @@
 <!--
 This component acts as a shared wrapper around each top level component that is added to the WinForms app.
 Think of it as the MainLayout of a normal Blazor application.
-THere is one important distinction! This component will be initialized multiple times instead of just once.
+There is one important distinction!
+It will be initialized every time a BlazorWebView is loaded.
 -->
 @inherits LayoutComponentBase
 

@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace ChummerDBRazorLibrary.Backend.Bases;
+namespace ChummerRazorLibrary.Bases;
 
 public interface IViewModelBase : INotifyPropertyChanged
 {

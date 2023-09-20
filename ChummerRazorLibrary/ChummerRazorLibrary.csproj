@@ -26,6 +26,9 @@
       <Compile Update="Bases\IViewModelBase.cs">
         <DependentUpon>ViewModelBase.cs</DependentUpon>
       </Compile>
+      <Compile Update="Pages\IAboutViewModel.cs">
+        <DependentUpon>About.razor</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using ChummerDBRazorLibrary.Backend.Bases;
+using ChummerRazorLibrary.Bases;
 using Microsoft.AspNetCore.Components;
 
 namespace ChummerRazorLibrary.Bases;
