@@ -2522,11 +2522,16 @@ namespace Chummer
                                         }
                                     }
 
-                                    if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                        objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
+                                    if
+                                    (
+                                        !blnDoCyberlimbAttributesRefresh &&
+                                        !Settings.DontUseCyberlimbCalculation &&
+                                        (objNewItem.Category == "Cyberlimb" || objNewItem.Category == "Cybersuite") &&
+                                        objNewItem.Parent == null &&
                                         objNewItem.ParentVehicle == null &&
                                         !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
-                                        !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                                        !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot)
+                                    )
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
                                     }
@@ -2547,11 +2552,16 @@ namespace Chummer
                                 dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                                 using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
                                 {
-                                    if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                        objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
+                                    if
+                                    (
+                                        !blnDoCyberlimbAttributesRefresh &&
+                                        !Settings.DontUseCyberlimbCalculation &&
+                                        (objOldItem.Category == "Cyberlimb" || objOldItem.Category == "Cybersuite") &&
+                                        objOldItem.Parent == null &&
                                         objOldItem.ParentVehicle == null &&
                                         !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
-                                        !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                                        !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot)
+                                    )
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
                                     }
@@ -2574,11 +2584,16 @@ namespace Chummer
                                         if (objOldItem.IsModularCurrentlyEquipped)
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
-                                        if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                            objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
+                                        if
+                                        (
+                                            !blnDoCyberlimbAttributesRefresh &&
+                                            !Settings.DontUseCyberlimbCalculation &&
+                                            (objOldItem.Category == "Cyberlimb" || objOldItem.Category == "Cybersuite") &&
+                                            objOldItem.Parent == null &&
                                             objOldItem.ParentVehicle == null &&
                                             !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
-                                            !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                                            !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot)
+                                        )
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
                                         }
@@ -2589,11 +2604,16 @@ namespace Chummer
                                         if (objNewItem.IsModularCurrentlyEquipped)
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                                        if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                            objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
+                                        if
+                                        (
+                                            !blnDoCyberlimbAttributesRefresh &&
+                                            !Settings.DontUseCyberlimbCalculation &&
+                                            (objNewItem.Category == "Cyberlimb" || objNewItem.Category == "Cybersuite") &&
+                                            objNewItem.Parent == null &&
                                             objNewItem.ParentVehicle == null &&
                                             !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
-                                            !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                                            !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot)
+                                        )
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
                                         }

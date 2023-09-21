@@ -1023,7 +1023,7 @@ namespace Chummer.Backend.Attributes
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     return _objCharacter.Cyberware.Any(objCyberware =>
-                        objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot), token);
+                        (objCyberware.Category == "Cyberlimb" || objCyberware.Category == "Cybersuite") && !string.IsNullOrEmpty(objCyberware.LimbSlot), token);
                 }
 
                 return false;
@@ -1075,8 +1075,9 @@ namespace Chummer.Backend.Attributes
                 {
                     return await _objCharacter.Cyberware
                         .AnyAsync(
-                            objCyberware => objCyberware.Category == "Cyberlimb" &&
-                                            !string.IsNullOrEmpty(objCyberware.LimbSlot), token: token)
+                            objCyberware =>
+                                (objCyberware.Category == "Cyberlimb" || objCyberware.Category == "Cybersuite") &&
+                                !string.IsNullOrEmpty(objCyberware.LimbSlot), token: token)
                         .ConfigureAwait(false);
                 }
 
@@ -2117,14 +2118,25 @@ namespace Chummer.Backend.Attributes
                             {
                                 _objCharacter.Cyberware.ForEach(objCyberware =>
                                 {
-                                    if (objCyberware.Category == "Cyberlimb")
+                                    switch (objCyberware.Category)
                                     {
-                                        sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName)
-                                                   .Append(strSpace)
-                                                   .Append('(')
-                                                   .Append(objCyberware.GetAttributeTotalValue(Abbrev)
-                                                                       .ToString(GlobalSettings.CultureInfo))
-                                                   .Append(')');
+                                        case "Cybersuite":
+                                        {
+                                            foreach (var objCyberwareChild in objCyberware.Children)
+                                            {
+                                                if (objCyberwareChild.Category != "Cyberlimb")
+                                                {
+                                                    continue;
+                                                }
+
+                                                sbdModifier = AppendCyberware(sbdModifier, objCyberwareChild, strSpace);
+                                            }
+
+                                            break;
+                                        }
+                                        case "Cyberlimb":
+                                            sbdModifier = AppendCyberware(sbdModifier, objCyberware, strSpace);
+                                            break;
                                     }
                                 });
                             }
@@ -2134,6 +2146,18 @@ namespace Chummer.Backend.Attributes
                                                        sbdModifier;
                         }
                     }
+                }
+
+                StringBuilder AppendCyberware(StringBuilder sb, Cyberware cyberware, string strSpace)
+                {
+                    sb.AppendLine().Append(cyberware.CurrentDisplayName)
+                        .Append(strSpace)
+                        .Append('(')
+                        .Append(cyberware.GetAttributeTotalValue(Abbrev)
+                            .ToString(GlobalSettings.CultureInfo))
+                        .Append(')');
+
+                    return sb;
                 }
             }
         }
