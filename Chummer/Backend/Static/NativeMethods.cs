@@ -339,7 +339,7 @@ namespace Chummer
             ShowNormal = 1,
             ShowMinimized = 2,
             ShowMaximized = 3,
-            Maximize = 3,
+            Maximize = ShowMaximized,
             ShowNormalNoActivate = 4,
             Show = 5,
             Minimize = 6,
@@ -885,7 +885,7 @@ namespace Chummer
             SHGSI_SYSICONINDEX = 0x000004000,
             SHGSI_LINKOVERLAY = 0x000008000,
             SHGSI_SELECTED = 0x000010000,
-            SHGSI_LARGEICON = 0x000000000,
+            SHGSI_LARGEICON = SHGSI_ICONLOCATION,
             SHGSI_SMALLICON = 0x000000001,
             SHGSI_SHELLICONSIZE = 0x000000004
         }

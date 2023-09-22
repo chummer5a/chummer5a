@@ -514,7 +514,7 @@ namespace Chummer
         /// </summary>
         /// <param name="node">XPathNavigator to examine.</param>
         /// <param name="strPath">Name of the XPathNavigator to look for.</param>
-        /// <param name="strId">Element to search for. If it parses as a guid or f it fails to parse as a guid AND blnIdIsGuid is set, it will still search for id, otherwise it will search search for a node with a name element that matches.</param>
+        /// <param name="strId">Element to search for. If it parses as a guid or f it fails to parse as a guid AND blnIdIsGuid is set, it will still search for id, otherwise it will search for a node with a name element that matches.</param>
         /// <param name="strExtraXPath">'Extra' value to append to the search.</param>
         /// <param name="blnIdIsGuid">Whether to evaluate the ID as a GUID or a string. Use false to pass strId as a string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -3869,10 +3869,7 @@ namespace Chummer
                 }
                 else
                 {
-                    _objCharacter.Weapons.ForEach(objWeapon =>
-                    {
-                        lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
-                    });
+                    _objCharacter.Weapons.ForEach(objWeapon => lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName)));
                 }
 
                 Weapon objSelectedWeapon;
