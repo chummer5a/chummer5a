@@ -342,10 +342,8 @@ namespace Codaxy.WkHtmlToPdf
                                                                 .ConfigureAwait(false);
                                                     await stream.WriteLineAsync().ConfigureAwait(false);
                                                 }
-                                                catch (OperationCanceledException)
+                                                catch (OperationCanceledException) when (!token.IsCancellationRequested)
                                                 {
-                                                    if (token.IsCancellationRequested)
-                                                        throw;
                                                     // Swallow this
                                                 }
                                             }

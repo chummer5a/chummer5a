@@ -1998,11 +1998,9 @@ namespace Chummer
                             : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, token)
                                                    .ConfigureAwait(false);
                     }
-                    catch (OperationCanceledException)
+                    // Don't generate a new canceled exception if the one we generated originates from our token
+                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
                     {
-                        // Don't generate a new canceled exception if the one we generated originates from our token
-                        if (token.IsCancellationRequested)
-                            throw;
                         token.ThrowIfCancellationRequested();
                     }
                     // All sorts of weird things can happen when we hammer I/O from constantly running tasks, and there's no good way of handling these without this very broad try-catch
