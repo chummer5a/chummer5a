@@ -5720,7 +5720,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>3.06</ess>
       <capacity>0</capacity>
       <avail>8R</avail>
@@ -5758,7 +5757,6 @@
       <name>Aztechnology Cuanmiztli B</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>5.31</ess>
       <capacity>0</capacity>
@@ -5803,7 +5801,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>0.72</ess>
       <capacity>0</capacity>
       <avail>8</avail>
@@ -5844,7 +5841,6 @@
       <name>Horizon Experience!</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>1.08</ess>
       <capacity>0</capacity>
@@ -5898,7 +5894,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>0.9</ess>
       <capacity>0</capacity>
       <avail>12</avail>
@@ -5936,7 +5931,6 @@
       <name>Saeder-Krupp Cyberlogician</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>0.81</ess>
       <capacity>0</capacity>
@@ -5981,7 +5975,6 @@
       <name>Shiawase Kacho</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>0.45</ess>
       <capacity>0</capacity>
@@ -6259,7 +6252,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>3.5</ess>
       <capacity>0</capacity>
       <avail>10R</avail>
@@ -6311,7 +6303,6 @@
       <name>Spinrad Peak Performance</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>5.0</ess>
       <capacity>0</capacity>
@@ -6370,7 +6361,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>4.5</ess>
       <capacity>0</capacity>
       <avail>14R</avail>
@@ -6427,7 +6417,6 @@
       <name>Evo Freak</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>4.5</ess>
       <capacity>0</capacity>
@@ -6520,14 +6509,12 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>4.5</ess>
       <capacity>0</capacity>
       <avail>16R</avail>
       <cost>275000</cost>
       <source>LCD</source>
       <page>206</page>
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <blocksmounts>ankle,knee,wrist,elbow,hip,shoulder</blocksmounts>
       <subsystems>
@@ -6614,7 +6601,6 @@
       <name>Evo InHuman</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>5</ess>
       <capacity>0</capacity>
@@ -6707,7 +6693,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>1</ess>
       <capacity>0</capacity>
       <avail>10</avail>
@@ -6778,7 +6763,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>2</ess>
       <capacity>0</capacity>
       <avail>20</avail>
@@ -6848,7 +6832,6 @@
       <name>Transys-Erika Front Line Mind</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>4.5</ess>
       <capacity>0</capacity>
@@ -6935,7 +6918,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>3</ess>
       <capacity>0</capacity>
       <avail>14R</avail>
@@ -7007,7 +6989,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>2.5</ess>
       <capacity>0</capacity>
       <avail>10R</avail>
@@ -7064,7 +7045,6 @@
       <name>Sony Cybersystems Ultimate Warrior</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>5.0</ess>
       <capacity>0</capacity>
@@ -7141,7 +7121,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>2.0</ess>
       <capacity>0</capacity>
       <avail>10R</avail>
@@ -7199,7 +7178,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>3.5</ess>
       <capacity>0</capacity>
       <avail>14R</avail>
@@ -7244,7 +7222,6 @@
       <name>MCT Kuro</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>5.25</ess>
       <capacity>0</capacity>
@@ -8293,7 +8270,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>2.09</ess>
       <capacity>0</capacity>
       <avail>10R</avail>
@@ -8334,7 +8310,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>0.22</ess>
       <capacity>0</capacity>
       <avail>12R</avail>
@@ -8359,7 +8334,6 @@
       <name>Siemens Cyberspine Upgrade (Celestial Athletic)</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>0.22</ess>
       <capacity>0</capacity>
@@ -8387,7 +8361,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>0.72</ess>
       <capacity>0</capacity>
       <avail>14R</avail>
@@ -8412,7 +8385,6 @@
       <name>Siemens Cyberspine Upgrade (Celestial Warrior)</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>1.44</ess>
       <capacity>0</capacity>
@@ -8439,7 +8411,6 @@
       <name>Zeiss Consortium MET2000 Elitepilot</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>2.23</ess>
       <capacity>0</capacity>
@@ -8475,7 +8446,6 @@
       <name>Zeiss Consortium MET2000 Fernspäher</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>1.22</ess>
       <capacity>0</capacity>
@@ -8547,7 +8517,6 @@
       <category>Cybersuite</category>
       <inheritattributes />
       <limbslot>all</limbslot>
-      <limbslot>all</limbslot>
       <ess>1.4</ess>
       <capacity>0</capacity>
       <avail>11R</avail>
@@ -8610,7 +8579,6 @@
       <name>Zeiss Consortium MET2000 Sturmpionier - Trench Wires</name>
       <category>Cybersuite</category>
       <inheritattributes />
-      <limbslot>all</limbslot>
       <limbslot>all</limbslot>
       <ess>1.69</ess>
       <capacity>0</capacity>

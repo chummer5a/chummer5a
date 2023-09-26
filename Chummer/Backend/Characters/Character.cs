@@ -2526,10 +2526,9 @@ namespace Chummer
                                     (
                                         !blnDoCyberlimbAttributesRefresh &&
                                         !Settings.DontUseCyberlimbCalculation &&
-                                        (objNewItem.Category == "Cyberlimb" || objNewItem.Category == "Cybersuite") &&
+                                        objNewItem.IsLimb &&
                                         objNewItem.Parent == null &&
                                         objNewItem.ParentVehicle == null &&
-                                        !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
                                         !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot)
                                     )
                                     {
@@ -2556,10 +2555,9 @@ namespace Chummer
                                     (
                                         !blnDoCyberlimbAttributesRefresh &&
                                         !Settings.DontUseCyberlimbCalculation &&
-                                        (objOldItem.Category == "Cyberlimb" || objOldItem.Category == "Cybersuite") &&
+                                        objOldItem.IsLimb &&
                                         objOldItem.Parent == null &&
                                         objOldItem.ParentVehicle == null &&
-                                        !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
                                         !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot)
                                     )
                                     {
@@ -2588,10 +2586,10 @@ namespace Chummer
                                         (
                                             !blnDoCyberlimbAttributesRefresh &&
                                             !Settings.DontUseCyberlimbCalculation &&
-                                            (objOldItem.Category == "Cyberlimb" || objOldItem.Category == "Cybersuite") &&
+                                            objOldItem.IsLimb &&
                                             objOldItem.Parent == null &&
                                             objOldItem.ParentVehicle == null &&
-                                            !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
+
                                             !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot)
                                         )
                                         {
@@ -2608,10 +2606,9 @@ namespace Chummer
                                         (
                                             !blnDoCyberlimbAttributesRefresh &&
                                             !Settings.DontUseCyberlimbCalculation &&
-                                            (objNewItem.Category == "Cyberlimb" || objNewItem.Category == "Cybersuite") &&
+                                            objNewItem.IsLimb &&
                                             objNewItem.Parent == null &&
                                             objNewItem.ParentVehicle == null &&
-                                            !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
                                             !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot)
                                         )
                                         {

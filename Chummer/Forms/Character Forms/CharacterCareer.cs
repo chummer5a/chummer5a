@@ -19912,7 +19912,7 @@ namespace Chummer
                                                       x => x.Text = strCost,
                                                       token)
                                                   .ConfigureAwait(false);
-                            if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal))
+                            if (objCyberware.IsLimb)
                             {
                                 await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);

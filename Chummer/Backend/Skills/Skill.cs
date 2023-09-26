@@ -3792,16 +3792,21 @@ namespace Chummer.Backend.Skills
 
                         StringBuilder BuildTooltipString(StringBuilder sb, Cyberware cyberware)
                         {
-                            if (cyberware.Category == "Cybersuite")
+                            if (!cyberware.IsLimb || !cyberware.IsModularCurrentlyEquipped)
                             {
-                                cyberware.Children.ForEach(childWare =>
-                                {
-                                    sb = BuildTooltipString(sb, childWare);
-                                });
+                                return sb;
                             }
 
-                            if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
+                            if (cyberware.InheritAttributes)
+                            {
+                                foreach (var child in cyberware.Children)
+                                {
+                                    sb = BuildTooltipString(sb, child);
+                                }
+
                                 return sb;
+                            }
+
                             sb.AppendLine().AppendLine().Append(strExtraStart)
                                 .Append(cyberware.CurrentDisplayName);
                             if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
@@ -3889,16 +3894,20 @@ namespace Chummer.Backend.Skills
 
                         StringBuilder BuildTooltip(StringBuilder sb, Cyberware cyberware)
                         {
-                            if (cyberware.Category == "Cybersuite")
+                            if (!cyberware.IsLimb || !cyberware.IsModularCurrentlyEquipped)
+                            {
+                                return sb;
+                            }
+
+                            if (cyberware.InheritAttributes)
                             {
                                 cyberware.Children.ForEach(childWare =>
                                 {
                                     sb = BuildTooltip(sb, childWare);
                                 });
+                                return sb;
                             }
 
-                            if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
-                                return sb;
                             sb.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
                                      .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
                                      .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
@@ -4142,16 +4151,22 @@ namespace Chummer.Backend.Skills
 
                         async Task<StringBuilder> BuildTooltipAsync(StringBuilder sb, Cyberware cyberware)
                         {
-                            if (cyberware.Category == "Cybersuite")
+                            if (!cyberware.IsLimb || !await cyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                            {
+                                return sb;
+                            }
+
+                            if (cyberware.InheritAttributes)
                             {
                                 foreach (var cyberwareChild in cyberware.Children)
                                 {
                                     sb = await BuildTooltipAsync(sb, cyberwareChild);
                                 }
+
+                                return sb;
                             }
 
-                            if (cyberware.Category != "Cyberlimb" || !await cyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                return sb;
+
                             sb.AppendLine().AppendLine().Append(strExtraStart)
                                 .Append(await cyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                             if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
@@ -4252,16 +4267,21 @@ namespace Chummer.Backend.Skills
                         continue;
                         async Task<StringBuilder> BuildTooltipAsync(StringBuilder sb, Cyberware cyberware)
                         {
-                            if (cyberware.Category == "Cybersuite")
+                            if (!cyberware.IsLimb || !await cyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                            {
+                                return sb;
+                            }
+
+                            if (cyberware.InheritAttributes)
                             {
                                 foreach (var cyberwareChild in cyberware.Children)
                                 {
                                     sb = await BuildTooltipAsync(sb, cyberwareChild);
                                 }
+
+                                return sb;
                             }
 
-                            if (cyberware.Category != "Cyberlimb" || !await cyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                return sb;
                             sb.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
                                      .Append(await LanguageManager.GetStringAsync("String_Colon", token: token)
                                                                   .ConfigureAwait(false)).Append(strSpace)
