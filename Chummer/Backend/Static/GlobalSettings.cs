@@ -85,6 +85,56 @@ namespace Chummer
         private PdfReader _objPdfReader;
         private PdfDocument _objPdfDocument;
 
+        public SourcebookInfo()
+        {
+        }
+
+        /// <summary>
+        /// Special constructor used when we have already created a PdfReader assigned to a file representing this SourcebookInfo.
+        /// </summary>
+        /// <param name="strPath">Path to the file.</param>
+        /// <param name="objPdfReader">PdfReader object associated with the file.</param>
+        public SourcebookInfo(string strPath, PdfReader objPdfReader)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                throw new ArgumentNullException(nameof(strPath));
+            _strPath = strPath;
+            _objPdfReader = objPdfReader ?? throw new ArgumentNullException(nameof(objPdfReader));
+            _objPdfDocument = new PdfDocument(objPdfReader);
+        }
+
+        /// <summary>
+        /// Special constructor used when we have already created a PdfDocument assigned to a file representing this SourcebookInfo.
+        /// </summary>
+        /// <param name="strPath">Path to the file.</param>
+        /// <param name="objPdfDocument">PdfDocument object associated with the file.</param>
+        public SourcebookInfo(string strPath, PdfDocument objPdfDocument)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                throw new ArgumentNullException(nameof(strPath));
+            _strPath = strPath;
+            _objPdfReader = objPdfDocument.GetReader() ?? throw new ArgumentException("objPdfDocument has no associated reader", nameof(objPdfDocument));
+            _objPdfDocument = objPdfDocument;
+        }
+
+        /// <summary>
+        /// Special constructor used when we have already created a PdfReader and PdfDocument assigned to a file representing this SourcebookInfo
+        /// </summary>
+        /// <param name="strPath">Path to the file.</param>
+        /// <param name="objPdfReader">PdfReader object associated with the file.</param>
+        /// <param name="objPdfDocument">PdfDocument object associated with the file.</param>
+        /// <exception cref="ArgumentException"><paramref name="objPdfDocument"/>'s associated reader is not the same value as<paramref name="objPdfReader"/>.</exception>
+        public SourcebookInfo(string strPath, PdfReader objPdfReader, PdfDocument objPdfDocument)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                throw new ArgumentNullException(nameof(strPath));
+            _strPath = strPath;
+            _objPdfReader = objPdfReader ?? throw new ArgumentNullException(nameof(objPdfReader));
+            if (objPdfDocument?.GetReader() != objPdfReader)
+                throw new ArgumentException("objPdfDocument reader is different from objPdfReader", nameof(objPdfDocument));
+            _objPdfDocument = objPdfDocument;
+        }
+
         #region Properties
 
         public string Code { get; set; } = string.Empty;

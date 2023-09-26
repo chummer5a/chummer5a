@@ -1163,8 +1163,15 @@ namespace Chummer
 
                 try
                 {
-                    PdfReader objPdfReader = new PdfReader(strNewFileName);
-                    objPdfReader.Close();
+                    PdfReader objPdfReader = null;
+                    try
+                    {
+                        objPdfReader = new PdfReader(strNewFileName);
+                    }
+                    finally
+                    {
+                        objPdfReader?.Close();
+                    }
                 }
                 catch
                 {
@@ -2413,15 +2420,43 @@ namespace Chummer
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                XPathNavigator books = await tskLoadBooks.ConfigureAwait(false);
+                XPathNavigator objBooks = await tskLoadBooks.ConfigureAwait(false);
                 string[] astrFiles = Directory.GetFiles(strSelectedPath, "*.pdf");
-                XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = "
-                                                         + _strSelectedLanguage.CleanXPath() + ']');
+                ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch
+                    = new ConcurrentDictionary<string, Tuple<string, int>>();
+                foreach (XPathNavigator objBook in await objBooks
+                                                         .SelectAndCacheExpressionAsync(
+                                                             "/chummer/books/book[matches/match/language = "
+                                                             + _strSelectedLanguage.CleanXPath() + ']')
+                                                         .ConfigureAwait(false))
+                {
+                    string strCode
+                        = (await objBook.SelectSingleNodeAndCacheExpressionAsync("code").ConfigureAwait(false))?.Value;
+                    if (string.IsNullOrEmpty(strCode))
+                        continue;
+                    XPathNavigator objMatch
+                        = await objBook.SelectSingleNodeAndCacheExpressionAsync(
+                                           "matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']')
+                                       .ConfigureAwait(false);
+                    if (objMatch == null)
+                        continue;
+                    string strMatchText
+                        = (await objMatch.SelectSingleNodeAndCacheExpressionAsync("text").ConfigureAwait(false))?.Value;
+                    if (string.IsNullOrEmpty(strMatchText))
+                        continue;
+                    if (!int.TryParse(
+                            (await objMatch.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))
+                            ?.Value, out int intMatchPage))
+                        continue;
+                    Tuple<string, int> tupValue = new Tuple<string, int>(strMatchText, intMatchPage);
+                    dicPatternsToMatch.AddOrUpdate(strCode, tupValue, (x, y) => tupValue);
+                }
+
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
                        = await Program.CreateAndShowProgressBarAsync(strSelectedPath, astrFiles.Length)
                                       .ConfigureAwait(false))
                 {
-                    List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, matches, frmLoadingBar.MyForm)
+                    List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, dicPatternsToMatch, frmLoadingBar.MyForm)
                         .ConfigureAwait(false);
                     sw.Stop();
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -2464,14 +2499,14 @@ namespace Chummer
         }
 
         private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(IEnumerable<string> lstFiles,
-                                                                      XPathNodeIterator matches,
+                                                                      ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch,
                                                                       LoadingBar frmProgressBar,
                                                                       CancellationToken token = default)
         {
             // ConcurrentDictionary makes sure we don't pick out multiple files for the same sourcebook
             ConcurrentDictionary<string, SourcebookInfo>
                 dicResults = new ConcurrentDictionary<string, SourcebookInfo>();
-            List<Task<SourcebookInfo>> lstLoadingTasks = new List<Task<SourcebookInfo>>(Utils.MaxParallelBatchSize);
+            List<Task<List<SourcebookInfo>>> lstLoadingTasks = new List<Task<List<SourcebookInfo>>>(Utils.MaxParallelBatchSize);
             int intCounter = 0;
             foreach (string strFile in lstFiles)
             {
@@ -2479,9 +2514,32 @@ namespace Chummer
                 if (++intCounter != Utils.MaxParallelBatchSize)
                     continue;
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
-                foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
+                foreach (Task<List<SourcebookInfo>> tskLoop in lstLoadingTasks)
                 {
-                    SourcebookInfo objInfo = await tskLoop.ConfigureAwait(false);
+                    foreach (SourcebookInfo objInfo in await tskLoop.ConfigureAwait(false))
+                    {
+                        // ReSharper disable once AccessToDisposedClosure
+                        if (objInfo == null)
+                            continue;
+                        dicResults.AddOrUpdate(objInfo.Code, objInfo, (x, y) =>
+                        {
+                            y.Path = objInfo.Path;
+                            y.Offset = objInfo.Offset;
+                            objInfo.Dispose();
+                            return y;
+                        });
+                    }
+                }
+
+                intCounter = 0;
+                lstLoadingTasks.Clear();
+            }
+
+            await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
+            foreach (Task<List<SourcebookInfo>> tskLoop in lstLoadingTasks)
+            {
+                foreach (SourcebookInfo objInfo in await tskLoop.ConfigureAwait(false))
+                {
                     // ReSharper disable once AccessToDisposedClosure
                     if (objInfo == null)
                         continue;
@@ -2493,34 +2551,15 @@ namespace Chummer
                         return y;
                     });
                 }
-
-                intCounter = 0;
-                lstLoadingTasks.Clear();
             }
 
-            await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
-            foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
-            {
-                SourcebookInfo objInfo = await tskLoop.ConfigureAwait(false);
-                // ReSharper disable once AccessToDisposedClosure
-                if (objInfo == null)
-                    continue;
-                dicResults.AddOrUpdate(objInfo.Code, objInfo, (x, y) =>
-                {
-                    y.Path = objInfo.Path;
-                    y.Offset = objInfo.Offset;
-                    objInfo.Dispose();
-                    return y;
-                });
-            }
-
-            async Task<SourcebookInfo> GetSourcebookInfo(string strBookFile)
+            async Task<List<SourcebookInfo>> GetSourcebookInfo(string strBookFile)
             {
                 FileInfo fileInfo = new FileInfo(strBookFile);
                 await frmProgressBar
                       .PerformStepAsync(fileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning, token)
                       .ConfigureAwait(false);
-                return await ScanPDFForMatchingText(fileInfo, matches, token).ConfigureAwait(false);
+                return await ScanPDFForMatchingText(fileInfo, dicPatternsToMatch, token).ConfigureAwait(false);
             }
 
             List<SourcebookInfo> lstReturn
@@ -2539,124 +2578,149 @@ namespace Chummer
             return lstReturn;
         }
 
-        private static async ValueTask<SourcebookInfo> ScanPDFForMatchingText(
-            FileSystemInfo fileInfo, XPathNodeIterator xmlMatches, CancellationToken token = default)
+        private static async ValueTask<List<SourcebookInfo>> ScanPDFForMatchingText(
+            FileSystemInfo fileInfo, ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch, CancellationToken token = default)
         {
-            //Search the first 10 pages for all the text
-            for (int intPage = 1; intPage <= 10; intPage++)
+            token.ThrowIfCancellationRequested();
+            List<SourcebookInfo> lstReturn = new List<SourcebookInfo>();
+            if (dicPatternsToMatch.Count == 0)
+                return lstReturn;
+            PdfReader objPdfReader = null;
+            PdfDocument objPdfDocument = null;
+            try
             {
-                token.ThrowIfCancellationRequested();
-                string text = await GetPageTextFromPDF(fileInfo, intPage).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(text))
-                    continue;
-
-                foreach (XPathNavigator xmlMatch in xmlMatches)
-                {
-                    token.ThrowIfCancellationRequested();
-                    string strLanguageText
-                        = (await xmlMatch.SelectSingleNodeAndCacheExpressionAsync("text", token: token)
-                                         .ConfigureAwait(false))?.Value ?? string.Empty;
-                    if (!text.Contains(strLanguageText))
-                        continue;
-                    int trueOffset
-                        = intPage - (await xmlMatch.SelectSingleNodeAndCacheExpressionAsync("page", token: token)
-                                                   .ConfigureAwait(false))?.ValueAsInt ?? 0;
-
-                    xmlMatch.MoveToParent();
-                    xmlMatch.MoveToParent();
-
-                    return new SourcebookInfo
-                    {
-                        Code = (await xmlMatch.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
-                                              .ConfigureAwait(false))?.Value,
-                        Offset = trueOffset,
-                        Path = fileInfo.FullName
-                    };
-                }
-            }
-
-            return null;
-
-            async ValueTask<string> GetPageTextFromPDF(FileSystemInfo objInnerFileInfo, int intPage)
-            {
-                PdfReader objPdfReader = null;
-                PdfDocument objPdfDocument = null;
+                string strPath = fileInfo.FullName;
                 try
                 {
-                    try
-                    {
-                        objPdfReader = new PdfReader(objInnerFileInfo.FullName);
-                        objPdfDocument = new PdfDocument(objPdfReader);
-                    }
-                    catch (iText.IO.Exceptions.IOException e)
-                    {
-                        if (e.Message == "PDF header not found.")
-                            return string.Empty;
-                        throw;
-                    }
-                    catch (Exception e)
-                    {
-                        //Loading failed, probably not a PDF file
-                        Log.Warn(
-                            e,
-                            "Could not load file " + objInnerFileInfo.FullName
-                                                   + " and open it as PDF to search for text.");
-                        return null;
-                    }
+                    objPdfReader = new PdfReader(strPath);
+                    objPdfDocument = new PdfDocument(objPdfReader);
+                }
+                catch (iText.IO.Exceptions.IOException e)
+                {
+                    if (e.Message == "PDF header not found.")
+                        return lstReturn;
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    //Loading failed, probably not a PDF file
+                    Log.Warn(
+                        e,
+                        "Could not load file " + strPath
+                                               + " and open it as PDF to search for text.");
+                    return lstReturn;
+                }
 
+                token.ThrowIfCancellationRequested();
+                List<string> lstKeysToLoop = new List<string>(dicPatternsToMatch.Keys);
+                //Search the first 15 pages for all the text
+                for (int intPage = 1; intPage <= 15; intPage++)
+                {
                     token.ThrowIfCancellationRequested();
+                    // No more patterns to match, exit early
+                    if (dicPatternsToMatch.Count == 0)
+                        break;
+                    string strText = await GetPageTextFromPDF(objPdfDocument, intPage).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strText))
+                        continue;
 
-                    List<string> lstStringFromPdf = new List<string>(30);
-                    // Loop through each page, starting at the listed page + offset.
-                    if (intPage >= objPdfDocument.GetNumberOfPages())
-                        return null;
-
-                    int intProcessedStrings = lstStringFromPdf.Count;
-                    try
+                    for (int i = lstKeysToLoop.Count - 1; i >= 0; --i)
                     {
-                        // each page should have its own text extraction strategy for it to work properly
-                        // this way we don't need to check for previous page appearing in the current page
-                        // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                        string strPageText = await CommonFunctions.GetPdfTextFromPageSafeAsync(objPdfDocument, intPage, token).ConfigureAwait(false);
-                        strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()
-                                                 .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
                         token.ThrowIfCancellationRequested();
-                        // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                        lstStringFromPdf.AddRange(
-                            strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                                       .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                        // No more patterns to match, exit early
+                        if (dicPatternsToMatch.Count == 0)
+                            break;
+                        string strKey = lstKeysToLoop[i];
                         token.ThrowIfCancellationRequested();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        throw;
-                        // simply rethrow this
-                    }
-                    // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
-                    catch (Exception e)
-                    {
-                        Utils.BreakIfDebug();
-                        Log.Error(e);
-                        return null;
-                    }
-
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdAllLines))
-                    {
-                        for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                        if (!dicPatternsToMatch.TryGetValue(strKey, out Tuple<string, int> tupValue))
+                            continue;
+                        token.ThrowIfCancellationRequested();
+                        if (!strText.Contains(tupValue.Item1))
+                            continue;
+                        token.ThrowIfCancellationRequested();
+                        // We already got a match elsewhere, skip
+                        if (!dicPatternsToMatch.TryRemove(strKey, out _))
+                            continue;
+                        token.ThrowIfCancellationRequested();
+                        int intTrueOffset = intPage - tupValue.Item2;
+                        if (lstReturn.Count == 0)
                         {
-                            token.ThrowIfCancellationRequested();
-                            string strCurrentLine = lstStringFromPdf[i];
-                            sbdAllLines.AppendLine(strCurrentLine);
+                            lstReturn.Add(new SourcebookInfo(strPath, objPdfReader, objPdfDocument)
+                            {
+                                Code = strKey,
+                                Offset = intTrueOffset
+                            });
                         }
-
-                        return sbdAllLines.ToString();
+                        else
+                        {
+                            // Subsequent additions should not get a reader assigned to them because we want separate readers for each sourcebook info
+                            lstReturn.Add(new SourcebookInfo
+                            {
+                                Code = strKey,
+                                Offset = intTrueOffset,
+                                Path = strPath
+                            });
+                        }
                     }
                 }
-                finally
+            }
+            finally
+            {
+                if (lstReturn.Count == 0)
                 {
                     objPdfDocument?.Close();
                     objPdfReader?.Close();
+                }
+            }
+
+            return lstReturn;
+
+            async ValueTask<string> GetPageTextFromPDF(PdfDocument objInnerPdfDocument, int intPage)
+            {
+                // Loop through each page, starting at the listed page + offset.
+                if (intPage >= objInnerPdfDocument.GetNumberOfPages())
+                    return string.Empty;
+
+                int intProcessedStrings = 0;
+                List<string> lstStringFromPdf = new List<string>(30);
+                try
+                {
+                    // each page should have its own text extraction strategy for it to work properly
+                    // this way we don't need to check for previous page appearing in the current page
+                    // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                    string strPageText = await CommonFunctions.GetPdfTextFromPageSafeAsync(objInnerPdfDocument, intPage, token).ConfigureAwait(false);
+                    strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()
+                                             .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
+                    token.ThrowIfCancellationRequested();
+                    // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                    lstStringFromPdf.AddRange(
+                        strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                                   .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                    token.ThrowIfCancellationRequested();
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                    // simply rethrow this
+                }
+                // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
+                catch (Exception e)
+                {
+                    Utils.BreakIfDebug();
+                    Log.Error(e);
+                    return string.Empty;
+                }
+
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdAllLines))
+                {
+                    for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strCurrentLine = lstStringFromPdf[i];
+                        sbdAllLines.AppendLine(strCurrentLine);
+                    }
+                    return sbdAllLines.ToString();
                 }
             }
         }
