@@ -2583,7 +2583,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<SourcebookInfo> lstReturn = new List<SourcebookInfo>();
-            if (dicPatternsToMatch.Count == 0)
+            if (dicPatternsToMatch.IsEmpty)
                 return lstReturn;
             PdfReader objPdfReader = null;
             PdfDocument objPdfDocument = null;
@@ -2618,7 +2618,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     // No more patterns to match, exit early
-                    if (dicPatternsToMatch.Count == 0)
+                    if (dicPatternsToMatch.IsEmpty)
                         break;
                     string strText = await GetPageTextFromPDF(objPdfDocument, intPage).ConfigureAwait(false);
                     if (string.IsNullOrEmpty(strText))
@@ -2628,17 +2628,23 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         // No more patterns to match, exit early
-                        if (dicPatternsToMatch.Count == 0)
+                        if (dicPatternsToMatch.IsEmpty)
                             break;
                         string strKey = lstKeysToLoop[i];
                         token.ThrowIfCancellationRequested();
+                        // We already got a match elsewhere, skip this going forward
                         if (!dicPatternsToMatch.TryGetValue(strKey, out Tuple<string, int> tupValue))
+                        {
+                            lstKeysToLoop.RemoveAt(i);
                             continue;
+                        }
                         token.ThrowIfCancellationRequested();
                         if (!strText.Contains(tupValue.Item1))
                             continue;
                         token.ThrowIfCancellationRequested();
-                        // We already got a match elsewhere, skip
+                        lstKeysToLoop.RemoveAt(i);
+                        token.ThrowIfCancellationRequested();
+                        // We already got a match elsewhere, skip this going forward
                         if (!dicPatternsToMatch.TryRemove(strKey, out _))
                             continue;
                         token.ThrowIfCancellationRequested();
@@ -2681,45 +2687,48 @@ namespace Chummer
                 if (intPage >= objInnerPdfDocument.GetNumberOfPages())
                     return string.Empty;
 
-                int intProcessedStrings = 0;
-                List<string> lstStringFromPdf = new List<string>(30);
-                try
-                {
-                    // each page should have its own text extraction strategy for it to work properly
-                    // this way we don't need to check for previous page appearing in the current page
-                    // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                    string strPageText = await CommonFunctions.GetPdfTextFromPageSafeAsync(objInnerPdfDocument, intPage, token).ConfigureAwait(false);
-                    strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()
-                                             .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
-                    token.ThrowIfCancellationRequested();
-                    // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                    lstStringFromPdf.AddRange(
-                        strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                                   .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
-                    token.ThrowIfCancellationRequested();
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                    // simply rethrow this
-                }
-                // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
-                catch (Exception e)
-                {
-                    Utils.BreakIfDebug();
-                    Log.Error(e);
-                    return string.Empty;
-                }
-
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdAllLines))
                 {
-                    for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                    try
                     {
+                        // each page should have its own text extraction strategy for it to work properly
+                        // this way we don't need to check for previous page appearing in the current page
+                        // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                        string strPageText = await CommonFunctions
+                                                   .GetPdfTextFromPageSafeAsync(objInnerPdfDocument, intPage, token)
+                                                   .ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
-                        string strCurrentLine = lstStringFromPdf[i];
-                        sbdAllLines.AppendLine(strCurrentLine);
+                        strPageText = strPageText.CleanStylisticLigatures();
+                        token.ThrowIfCancellationRequested();
+                        strPageText = strPageText.NormalizeWhiteSpace();
+                        token.ThrowIfCancellationRequested();
+                        strPageText = strPageText.NormalizeLineEndings();
+                        token.ThrowIfCancellationRequested();
+                        strPageText = strPageText.CleanOfInvalidUnicodeChars();
+                        token.ThrowIfCancellationRequested();
+                        // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                        foreach (string strLine in strPageText.SplitNoAlloc(Environment.NewLine,
+                                                                            StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLine))
+                                sbdAllLines.AppendLine(strLine.Trim());
+                        }
                     }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                        // simply rethrow this
+                    }
+                    // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
+                    catch (Exception e)
+                    {
+                        Utils.BreakIfDebug();
+                        Log.Error(e);
+                        return string.Empty;
+                    }
+
                     return sbdAllLines.ToString();
                 }
             }
