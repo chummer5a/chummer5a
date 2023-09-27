@@ -3267,6 +3267,7 @@ namespace Chummer
                     }
 
                     if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
                         return new Tuple<bool, string>(objCharacter.Spells.Count(
                                                            objSpell => objSpell.Category == strNodeName, token)
                                                        // ReSharper disable once MethodHasAsyncOverload
@@ -3297,6 +3298,7 @@ namespace Chummer
                                 token: token).ConfigureAwait(false)) + strSpace
                                   + '≥' + strSpace + intCount.ToString(GlobalSettings.CultureInfo);
                     if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
                         return new Tuple<bool, string>(objCharacter.Spells.Count(
                                                            objSpell => objSpell.Descriptors.Contains(strNodeName), token)
                                                        // ReSharper disable once MethodHasAsyncOverload

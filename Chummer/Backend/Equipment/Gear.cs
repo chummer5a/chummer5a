@@ -728,7 +728,7 @@ namespace Chummer.Backend.Equipment
             if (!int.TryParse(lstGearAttributes?["rating"]?.InnerText, NumberStyles.Any,
                     GlobalSettings.InvariantCultureInfo, out int intRating))
             {
-                int.TryParse(xmlGearNode?["rating"]?.InnerText, NumberStyles.Any,
+                int.TryParse(xmlGearNode["rating"]?.InnerText, NumberStyles.Any,
                     GlobalSettings.InvariantCultureInfo, out intRating);
             }
             string strName = xmlGearNode["id"]?.InnerText ?? xmlGearNode["name"]?.InnerText;

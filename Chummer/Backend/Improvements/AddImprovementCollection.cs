@@ -3932,7 +3932,7 @@ namespace Chummer
                 }
                 XmlNode xmlMentor = _objCharacter.LoadData("mentors.xml").TryGetNodeByNameOrId("/chummer/mentors/mentor", frmPickMentorSpirit.MyForm.SelectedMentor)
                                     ?? throw new AbortedException();
-                SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
+                SelectedValue = xmlMentor["name"]?.InnerText ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
 
@@ -3984,7 +3984,7 @@ namespace Chummer
 
                 XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").TryGetNodeByNameOrId("/chummer/paragons/paragon", frmPickMentorSpirit.MyForm.SelectedMentor)
                                     ?? throw new AbortedException();
-                SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
+                SelectedValue = xmlMentor["name"]?.InnerText ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
 
@@ -4330,7 +4330,7 @@ namespace Chummer
                                     throw new AbortedException();
                                 }
                                 
-                                objXmlPower = _objCharacter.LoadData("paragons.xml").TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower)
+                                objXmlPower = xmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower)
                                               ?? throw new AbortedException();
                             }
 
@@ -4455,7 +4455,7 @@ namespace Chummer
                         }
                     }
 
-                    string strSelectedName = objXmlSelectedArt?["name"]?.InnerText;
+                    string strSelectedName = objXmlSelectedArt["name"]?.InnerText;
                     if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
                 }
@@ -4562,7 +4562,7 @@ namespace Chummer
                         }
                     }
 
-                    string strSelectedName = objXmlSelectedMetamagic?["name"]?.InnerText;
+                    string strSelectedName = objXmlSelectedMetamagic["name"]?.InnerText;
                     if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
                     foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
@@ -4679,7 +4679,7 @@ namespace Chummer
                         }
                     }
 
-                    string strSelectedName = xmlSelectedEcho?["name"]?.InnerText;
+                    string strSelectedName = xmlSelectedEcho["name"]?.InnerText;
                     if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
                     foreach (XmlNode objXmlAddEcho in xmlEchoList)
