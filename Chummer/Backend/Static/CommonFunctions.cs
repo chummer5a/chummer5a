@@ -1809,22 +1809,6 @@ namespace Chummer
         }
 
         private static readonly ConcurrentHashSet<PdfDocument> _setDocumentsProcessing = new ConcurrentHashSet<PdfDocument>();
-        private static readonly ConcurrentStack<Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>> _stkPdfReaders
-            = new ConcurrentStack<Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>>();
-
-        [CLSCompliant(false)]
-        public static Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor> GetPdfReaderUtilsTuple()
-        {
-            if (_stkPdfReaders.TryPop(out Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor> tupReturn))
-                return tupReturn;
-            SimpleTextExtractionStrategy objNewExtractionStrategy = new SimpleTextExtractionStrategy();
-            PdfCanvasProcessor objNewCanvasProcessor
-                = new PdfCanvasProcessor(objNewExtractionStrategy, new Dictionary<string, IContentOperator>());
-            tupReturn = new Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>(
-                objNewExtractionStrategy, objNewCanvasProcessor);
-            _stkPdfReaders.Push(tupReturn);
-            return tupReturn;
-        }
 
         [CLSCompliant(false)]
         public static string GetPdfTextFromPageSafe(PdfDocument objDocument, int intPage, CancellationToken token = default)
@@ -1836,7 +1820,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                (SimpleTextExtractionStrategy objStrategy, PdfCanvasProcessor objCanvasProcessor) = GetPdfReaderUtilsTuple();
+                SimpleTextExtractionStrategy objStrategy = new SimpleTextExtractionStrategy();
+                token.ThrowIfCancellationRequested();
+                PdfCanvasProcessor objCanvasProcessor = new PdfCanvasProcessor(objStrategy);
                 token.ThrowIfCancellationRequested();
                 PdfPage objPage = objDocument.GetPage(intPage);
                 token.ThrowIfCancellationRequested();
@@ -1860,7 +1846,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                (SimpleTextExtractionStrategy objStrategy, PdfCanvasProcessor objCanvasProcessor) = GetPdfReaderUtilsTuple();
+                SimpleTextExtractionStrategy objStrategy = new SimpleTextExtractionStrategy();
+                token.ThrowIfCancellationRequested();
+                PdfCanvasProcessor objCanvasProcessor = new PdfCanvasProcessor(objStrategy);
                 token.ThrowIfCancellationRequested();
                 PdfPage objPage = objDocument.GetPage(intPage);
                 token.ThrowIfCancellationRequested();
