@@ -101,8 +101,8 @@ namespace Chummer
 #if DEBUG
             DpiFriendlyToolStripMenuItem mnuForceCrash = new DpiFriendlyToolStripMenuItem
             {
-                ImageDpi96 = Properties.Resources.error,
-                ImageDpi192 = Properties.Resources.error1,
+                ImageDpi96 = Properties.Resources.error_16,
+                ImageDpi192 = Properties.Resources.error_32,
                 Name = "mnuForceCrash",
                 Text = "&Force Crash"
             };

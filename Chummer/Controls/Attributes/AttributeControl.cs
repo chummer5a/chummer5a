@@ -78,8 +78,8 @@ namespace Chummer.UI.Attributes
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
-                        ImageDpi96 = Resources.add,
-                        ImageDpi192 = Resources.add1,
+                        ImageDpi96 = Resources.add_16,
+                        ImageDpi192 = Resources.add_32,
                         Name = "cmdImproveATT",
                         UseVisualStyleBackColor = true
                     };
@@ -94,8 +94,8 @@ namespace Chummer.UI.Attributes
                             AutoSizeMode = AutoSizeMode.GrowAndShrink,
                             Padding = new Padding(1),
                             MinimumSize = new Size(24, 24),
-                            ImageDpi96 = Resources.fire,
-                            ImageDpi192 = Resources.fire1,
+                            ImageDpi96 = Resources.fire_16,
+                            ImageDpi192 = Resources.fire_32,
                             Name = "cmdBurnEdge",
                             ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge"),
                             UseVisualStyleBackColor = true

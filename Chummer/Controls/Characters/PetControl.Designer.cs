@@ -67,13 +67,13 @@ namespace Chummer
             // 
             // tsContactOpen
             // 
-            this.tsContactOpen.Image = global::Chummer.Properties.Resources.link_go;
+            this.tsContactOpen.Image = global::Chummer.Properties.Resources.link_go_16;
             this.tsContactOpen.ImageDpi120 = null;
             this.tsContactOpen.ImageDpi144 = null;
-            this.tsContactOpen.ImageDpi192 = global::Chummer.Properties.Resources.link_go1;
+            this.tsContactOpen.ImageDpi192 = global::Chummer.Properties.Resources.link_go_32;
             this.tsContactOpen.ImageDpi288 = null;
             this.tsContactOpen.ImageDpi384 = null;
-            this.tsContactOpen.ImageDpi96 = global::Chummer.Properties.Resources.link_go;
+            this.tsContactOpen.ImageDpi96 = global::Chummer.Properties.Resources.link_go_16;
             this.tsContactOpen.Name = "tsContactOpen";
             this.tsContactOpen.Size = new System.Drawing.Size(171, 22);
             this.tsContactOpen.Tag = "MenuItem_OpenCharacter";
@@ -82,13 +82,13 @@ namespace Chummer
             // 
             // tsRemoveCharacter
             // 
-            this.tsRemoveCharacter.Image = global::Chummer.Properties.Resources.link_delete;
+            this.tsRemoveCharacter.Image = global::Chummer.Properties.Resources.link_delete_16;
             this.tsRemoveCharacter.ImageDpi120 = null;
             this.tsRemoveCharacter.ImageDpi144 = null;
-            this.tsRemoveCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_delete1;
+            this.tsRemoveCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_delete_32;
             this.tsRemoveCharacter.ImageDpi288 = null;
             this.tsRemoveCharacter.ImageDpi384 = null;
-            this.tsRemoveCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_delete;
+            this.tsRemoveCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_delete_16;
             this.tsRemoveCharacter.Name = "tsRemoveCharacter";
             this.tsRemoveCharacter.Size = new System.Drawing.Size(171, 22);
             this.tsRemoveCharacter.Tag = "MenuItem_RemoveCharacter";
@@ -97,13 +97,13 @@ namespace Chummer
             // 
             // tsAttachCharacter
             // 
-            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add;
+            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add_16;
             this.tsAttachCharacter.ImageDpi120 = null;
             this.tsAttachCharacter.ImageDpi144 = null;
-            this.tsAttachCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_add1;
+            this.tsAttachCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_add_32;
             this.tsAttachCharacter.ImageDpi288 = null;
             this.tsAttachCharacter.ImageDpi384 = null;
-            this.tsAttachCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_add;
+            this.tsAttachCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_add_16;
             this.tsAttachCharacter.Name = "tsAttachCharacter";
             this.tsAttachCharacter.Size = new System.Drawing.Size(171, 22);
             this.tsAttachCharacter.Tag = "MenuItem_AttachCharacter";
@@ -181,13 +181,13 @@ namespace Chummer
             this.cmdNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdNotes.FlatAppearance.BorderSize = 0;
             this.cmdNotes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmdNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.cmdNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
             this.cmdNotes.ImageDpi120 = null;
             this.cmdNotes.ImageDpi144 = null;
-            this.cmdNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.cmdNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
             this.cmdNotes.ImageDpi288 = null;
             this.cmdNotes.ImageDpi384 = null;
-            this.cmdNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.cmdNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.cmdNotes.Location = new System.Drawing.Point(689, 4);
             this.cmdNotes.Name = "cmdNotes";
             this.cmdNotes.Size = new System.Drawing.Size(22, 22);
@@ -203,13 +203,13 @@ namespace Chummer
             this.cmdLink.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdLink.FlatAppearance.BorderSize = 0;
             this.cmdLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmdLink.Image = global::Chummer.Properties.Resources.link;
+            this.cmdLink.Image = global::Chummer.Properties.Resources.link_16;
             this.cmdLink.ImageDpi120 = null;
             this.cmdLink.ImageDpi144 = null;
-            this.cmdLink.ImageDpi192 = global::Chummer.Properties.Resources.link1;
+            this.cmdLink.ImageDpi192 = global::Chummer.Properties.Resources.link_32;
             this.cmdLink.ImageDpi288 = null;
             this.cmdLink.ImageDpi384 = null;
-            this.cmdLink.ImageDpi96 = global::Chummer.Properties.Resources.link;
+            this.cmdLink.ImageDpi96 = global::Chummer.Properties.Resources.link_16;
             this.cmdLink.Location = new System.Drawing.Point(661, 4);
             this.cmdLink.Name = "cmdLink";
             this.cmdLink.Size = new System.Drawing.Size(22, 22);
@@ -223,13 +223,13 @@ namespace Chummer
             this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdDelete.Image = global::Chummer.Properties.Resources.delete_16;
             this.cmdDelete.ImageDpi120 = null;
             this.cmdDelete.ImageDpi144 = null;
-            this.cmdDelete.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
+            this.cmdDelete.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
             this.cmdDelete.ImageDpi288 = null;
             this.cmdDelete.ImageDpi384 = null;
-            this.cmdDelete.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.cmdDelete.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
             this.cmdDelete.Location = new System.Drawing.Point(717, 3);
             this.cmdDelete.MinimumSize = new System.Drawing.Size(24, 24);
             this.cmdDelete.Name = "cmdDelete";

@@ -171,7 +171,7 @@ namespace Chummer
             // 
             this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.BackgroundImage = global::Chummer.Properties.Resources.delete;
+            this.cmdDelete.BackgroundImage = global::Chummer.Properties.Resources.delete_16;
             this.cmdDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.cmdDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdDelete.Location = new System.Drawing.Point(242, 9);

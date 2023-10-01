@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class SelectDiceHits
     {
@@ -112,7 +112,7 @@
             this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cmdRoll.AutoSize = true;
             this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
+            this.cmdRoll.Image = global::Chummer.Properties.Resources.die_16;
             this.cmdRoll.Location = new System.Drawing.Point(123, 67);
             this.cmdRoll.Name = "cmdRoll";
             this.cmdRoll.Padding = new System.Windows.Forms.Padding(1);
