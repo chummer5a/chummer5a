@@ -241,7 +241,7 @@ namespace Chummer
             this.btnMinusInit1.AutoSize = true;
             this.btnMinusInit1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnMinusInit1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnMinusInit1.Image = global::Chummer.Properties.Resources.delete;
+            this.btnMinusInit1.Image = global::Chummer.Properties.Resources.delete_16;
             this.btnMinusInit1.Location = new System.Drawing.Point(58, 57);
             this.btnMinusInit1.Name = "btnMinusInit1";
             this.btnMinusInit1.Padding = new System.Windows.Forms.Padding(1);
@@ -266,7 +266,7 @@ namespace Chummer
             this.btnAdd1Init.AutoSize = true;
             this.btnAdd1Init.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAdd1Init.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnAdd1Init.Image = global::Chummer.Properties.Resources.add;
+            this.btnAdd1Init.Image = global::Chummer.Properties.Resources.add_16;
             this.btnAdd1Init.Location = new System.Drawing.Point(168, 57);
             this.btnAdd1Init.Name = "btnAdd1Init";
             this.btnAdd1Init.Padding = new System.Windows.Forms.Padding(1);
@@ -291,7 +291,7 @@ namespace Chummer
             this.btnMinus5Init.AutoSize = true;
             this.btnMinus5Init.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnMinus5Init.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnMinus5Init.Image = global::Chummer.Properties.Resources.delete;
+            this.btnMinus5Init.Image = global::Chummer.Properties.Resources.delete_16;
             this.btnMinus5Init.Location = new System.Drawing.Point(58, 87);
             this.btnMinus5Init.Name = "btnMinus5Init";
             this.btnMinus5Init.Padding = new System.Windows.Forms.Padding(1);
@@ -316,7 +316,7 @@ namespace Chummer
             this.btnAdd5Init.AutoSize = true;
             this.btnAdd5Init.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAdd5Init.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnAdd5Init.Image = global::Chummer.Properties.Resources.add;
+            this.btnAdd5Init.Image = global::Chummer.Properties.Resources.add_16;
             this.btnAdd5Init.Location = new System.Drawing.Point(168, 87);
             this.btnAdd5Init.Name = "btnAdd5Init";
             this.btnAdd5Init.Padding = new System.Windows.Forms.Padding(1);
@@ -341,7 +341,7 @@ namespace Chummer
             this.btnMinus10Init.AutoSize = true;
             this.btnMinus10Init.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnMinus10Init.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnMinus10Init.Image = global::Chummer.Properties.Resources.delete;
+            this.btnMinus10Init.Image = global::Chummer.Properties.Resources.delete_16;
             this.btnMinus10Init.Location = new System.Drawing.Point(58, 117);
             this.btnMinus10Init.Name = "btnMinus10Init";
             this.btnMinus10Init.Padding = new System.Windows.Forms.Padding(1);
@@ -366,7 +366,7 @@ namespace Chummer
             this.btnAdd10Init.AutoSize = true;
             this.btnAdd10Init.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAdd10Init.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnAdd10Init.Image = global::Chummer.Properties.Resources.add;
+            this.btnAdd10Init.Image = global::Chummer.Properties.Resources.add_16;
             this.btnAdd10Init.Location = new System.Drawing.Point(168, 117);
             this.btnAdd10Init.Name = "btnAdd10Init";
             this.btnAdd10Init.Padding = new System.Windows.Forms.Padding(1);

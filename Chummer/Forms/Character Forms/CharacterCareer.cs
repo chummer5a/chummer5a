@@ -19090,8 +19090,8 @@ namespace Chummer
                                         .ControlDarkerLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
                                 if (intCurrentBoxTag == intConditionMax + intOverflow)
                                 {
-                                    x.ImageDpi96 = Properties.Resources.rip;
-                                    x.ImageDpi192 = Properties.Resources.rip1;
+                                    x.ImageDpi96 = Properties.Resources.rip_16;
+                                    x.ImageDpi192 = Properties.Resources.rip_32;
                                 }
                                 else
                                 {

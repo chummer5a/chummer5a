@@ -2473,11 +2473,11 @@ namespace Chummer
                 //
                 DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem
                 {
-                    Image = Properties.Resources.asterisk_orange,
+                    Image = Properties.Resources.asterisk_orange_16,
                     Name = "tsToggleFav",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
                     Tag = "Menu_ToggleFavorite",
-                    ImageDpi192 = Properties.Resources.asterisk_orange1
+                    ImageDpi192 = Properties.Resources.asterisk_orange_32
                 };
                 tsToggleFav.Click += tsToggleFav_Click;
                 //
@@ -2485,11 +2485,11 @@ namespace Chummer
                 //
                 DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem
                 {
-                    Image = Properties.Resources.page_refresh,
+                    Image = Properties.Resources.page_refresh_16,
                     Name = "tsSort",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
                     Tag = "Menu_Sort",
-                    ImageDpi192 = Properties.Resources.page_refresh1
+                    ImageDpi192 = Properties.Resources.page_refresh_32
                 };
                 tsSort.Click += tsSort_Click;
                 //
@@ -2497,11 +2497,11 @@ namespace Chummer
                 //
                 DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem
                 {
-                    Image = Properties.Resources.folder_page,
+                    Image = Properties.Resources.folder_page_16,
                     Name = "tsOpen",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
                     Tag = "Menu_Main_Open",
-                    ImageDpi192 = Properties.Resources.folder_page1
+                    ImageDpi192 = Properties.Resources.folder_page_32
                 };
                 tsOpen.Click += tsOpen_Click;
                 //
@@ -2509,11 +2509,11 @@ namespace Chummer
                 //
                 DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem
                 {
-                    Image = Properties.Resources.folder_print,
+                    Image = Properties.Resources.folder_print_16,
                     Name = "tsOpenForPrinting",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
                     Tag = "Menu_Main_OpenForPrinting",
-                    ImageDpi192 = Properties.Resources.folder_print1
+                    ImageDpi192 = Properties.Resources.folder_print_32
                 };
                 tsOpenForPrinting.Click += tsOpenForPrinting_Click;
                 //
@@ -2521,11 +2521,11 @@ namespace Chummer
                 //
                 DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem
                 {
-                    Image = Properties.Resources.folder_script_go,
+                    Image = Properties.Resources.folder_script_go_16,
                     Name = "tsOpenForExport",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
                     Tag = "Menu_Main_OpenForExport",
-                    ImageDpi192 = Properties.Resources.folder_script_go1
+                    ImageDpi192 = Properties.Resources.folder_script_go_32
                 };
                 tsOpenForExport.Click += tsOpenForExport_Click;
                 //
@@ -2533,11 +2533,11 @@ namespace Chummer
                 //
                 DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem
                 {
-                    Image = Properties.Resources.delete,
+                    Image = Properties.Resources.delete_16,
                     Name = "tsDelete",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
                     Tag = "Menu_Delete",
-                    ImageDpi192 = Properties.Resources.delete1
+                    ImageDpi192 = Properties.Resources.delete_32
                 };
                 tsDelete.Click += tsDelete_Click;
                 //
@@ -2572,11 +2572,11 @@ namespace Chummer
                     //
                     DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem
                     {
-                        Image = Properties.Resources.door_out,
+                        Image = Properties.Resources.door_out_16,
                         Name = "tsCloseOpenCharacter",
                         Size = new Size(intToolStripWidth, intToolStripHeight),
                         Tag = "Menu_Close",
-                        ImageDpi192 = Properties.Resources.door_out1
+                        ImageDpi192 = Properties.Resources.door_out_32
                     };
                     tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
                     cmsRoster.Items.Add(tsCloseOpenCharacter);

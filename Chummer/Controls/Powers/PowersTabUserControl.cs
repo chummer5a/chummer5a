@@ -653,8 +653,8 @@ namespace Chummer.UI.Powers
                     DpiFriendlyImagedButton cmdReturn
                         = new DpiFriendlyImagedButton
                         {
-                            ImageDpi96 = Resources.note_edit,
-                            ImageDpi192 = Resources.note_edit1,
+                            ImageDpi96 = Resources.note_edit_16,
+                            ImageDpi192 = Resources.note_edit_32,
                             Dock = DockStyle.Fill,
                             AutoSize = true,
                             FlatStyle = FlatStyle.Flat
@@ -714,8 +714,8 @@ namespace Chummer.UI.Powers
                     DpiFriendlyImagedButton cmdReturn
                         = new DpiFriendlyImagedButton
                         {
-                            ImageDpi96 = Resources.delete,
-                            ImageDpi192 = Resources.delete1,
+                            ImageDpi96 = Resources.delete_16,
+                            ImageDpi192 = Resources.delete_32,
                             Dock = DockStyle.Fill,
                             AutoSize = true,
                             FlatStyle = FlatStyle.Flat
@@ -787,8 +787,8 @@ namespace Chummer.UI.Powers
                     DpiFriendlyImagedButton cmdReturn
                         = new DpiFriendlyImagedButton
                         {
-                            ImageDpi96 = Resources.page_refresh,
-                            ImageDpi192 = Resources.page_refresh1,
+                            ImageDpi96 = Resources.page_refresh_16,
+                            ImageDpi192 = Resources.page_refresh_32,
                             Dock = DockStyle.Fill,
                             AutoSize = true,
                             FlatStyle = FlatStyle.Flat

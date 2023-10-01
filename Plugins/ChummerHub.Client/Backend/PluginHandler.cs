@@ -97,8 +97,8 @@ namespace Chummer.Plugins
                     Tag = "Menu_ShowMySINners",
                     Text = "Show all my SINners",
                     Size = new Size(177, 22),
-                    ImageDpi96 = Resources.group,
-                    ImageDpi192 = Resources.group1,
+                    ImageDpi96 = Resources.group_16,
+                    ImageDpi192 = Resources.group_32,
                 };
                 tsShowMySINners.Click += ShowMySINnersOnClick;
                 tsShowMySINners.UpdateLightDarkMode();
@@ -111,8 +111,8 @@ namespace Chummer.Plugins
                     Tag = "Menu_SINnersCreateGroup",
                     Text = "Create Group",
                     Size = new Size(177, 22),
-                    ImageDpi96 = Resources.group,
-                    ImageDpi192 = Resources.group1,
+                    ImageDpi96 = Resources.group_16,
+                    ImageDpi192 = Resources.group_32,
                 };
                 tsSINnersCreateGroup.Click += SINnersCreateGroupOnClick;
                 tsSINnersCreateGroup.UpdateLightDarkMode();
@@ -127,8 +127,8 @@ namespace Chummer.Plugins
                         Tag = "Menu_ShareChummer",
                         Text = "Share chummer",
                         Size = new Size(177, 22),
-                        ImageDpi96 = Resources.link_add,
-                        ImageDpi192 = Resources.link_add1
+                        ImageDpi96 = Resources.link_add_16,
+                        ImageDpi192 = Resources.link_add_32
                     };
                     newShare.Click += NewShareOnClick;
                     newShare.UpdateLightDarkMode();
@@ -147,8 +147,8 @@ namespace Chummer.Plugins
                                 Tag = "Menu_RemovePinnedChummer",
                                 Text = "remove from pinned Chummers",
                                 Size = new Size(177, 22),
-                                ImageDpi96 = Resources.user_delete,
-                                ImageDpi192 = Resources.user_delete1
+                                ImageDpi96 = Resources.user_delete_16,
+                                ImageDpi192 = Resources.user_delete_32
                             };
                             newFavorite.Click += RemovePinnedOnClick;
                         }
@@ -160,8 +160,8 @@ namespace Chummer.Plugins
                                 Tag = "Menu_AddPinnedChummer",
                                 Text = "add to pinned Chummers",
                                 Size = new Size(177, 22),
-                                ImageDpi96 = Resources.user_add,
-                                ImageDpi192 = Resources.user_add1
+                                ImageDpi96 = Resources.user_add_16,
+                                ImageDpi192 = Resources.user_add_32
                             };
                             newFavorite.Click += AddPinnedOnClick;
                         }
@@ -177,8 +177,8 @@ namespace Chummer.Plugins
                         Tag = "Menu_DeleteFromSINners",
                         Text = "delete chummer from SINners registry",
                         Size = new Size(177, 22),
-                        ImageDpi96 = Resources.delete,
-                        ImageDpi192 = Resources.delete1
+                        ImageDpi96 = Resources.delete_16,
+                        ImageDpi192 = Resources.delete_32
                     };
                     if (MainForm != null)
                         newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
@@ -207,8 +207,8 @@ namespace Chummer.Plugins
                         Tag = "Menu_ShareChummerGroup",
                         Text = "Share chummer group",
                         Size = new Size(177, 22),
-                        ImageDpi96 = Resources.link_add,
-                        ImageDpi192 = Resources.link_add1
+                        ImageDpi96 = Resources.link_add_16,
+                        ImageDpi192 = Resources.link_add_32
                     };
                     newShare.Click += NewShareOnClick;
                     newShare.UpdateLightDarkMode();
@@ -238,8 +238,8 @@ namespace Chummer.Plugins
                             Tag = "Menu_AddPinnedGroup",
                             Text = "Pin Chummer",
                             Size = new Size(177, 22),
-                            ImageDpi96 = Resources.user_add,
-                            ImageDpi192 = Resources.user_add1
+                            ImageDpi96 = Resources.user_add_16,
+                            ImageDpi192 = Resources.user_add_32
                         };
                         newFavorite.Click += AddPinnedOnClick;
                     }
@@ -631,11 +631,11 @@ namespace Chummer.Plugins
                 {
                     Name = "mnuSINSearch",
                     Text = "&SINner Search",
-                    ImageDpi96 = Resources.group,
+                    ImageDpi96 = Resources.group_16,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
                     Tag = "Menu_Tools_SINnerSearch",
-                    ImageDpi192 = Resources.group1,
+                    ImageDpi192 = Resources.group_32,
                 };
                 mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
                 mnuSINnerSearchs.UpdateLightDarkMode(token: token);
@@ -647,11 +647,11 @@ namespace Chummer.Plugins
             {
                 Name = "mnuSINnersArchetypes",
                 Text = "&Archetypes",
-                ImageDpi96 = Resources.group,
+                ImageDpi96 = Resources.group_16,
                 ImageTransparentColor = Color.Black,
                 Size = new Size(148, 22),
                 Tag = "Menu_Tools_SINnersArchetypes",
-                ImageDpi192 = Resources.group1,
+                ImageDpi192 = Resources.group_32,
             };
             mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
             mnuSINnersArchetypes.UpdateLightDarkMode(token: token);
@@ -664,11 +664,11 @@ namespace Chummer.Plugins
                 {
                     Name = "mnuSINners",
                     Text = "&SINners",
-                    ImageDpi96 = Resources.group,
+                    ImageDpi96 = Resources.group_16,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
                     Tag = "Menu_Tools_SINners",
-                    ImageDpi192 = Resources.group1,
+                    ImageDpi192 = Resources.group_32,
                 };
                 mnuSINners.Click += mnuSINners_Click;
                 mnuSINners.UpdateLightDarkMode(token: token);

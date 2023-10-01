@@ -671,8 +671,8 @@ namespace Chummer
         {
             await cmdExpand.DoThreadSafeAsync(x =>
             {
-                x.ImageDpi96 = value ? Resources.toggle : Resources.toggle_expand;
-                x.ImageDpi192 = value ? Resources.toggle1 : Resources.toggle_expand1;
+                x.ImageDpi96 = value ? Resources.toggle_16 : Resources.toggle_expand_16;
+                x.ImageDpi192 = value ? Resources.toggle_32 : Resources.toggle_expand_32;
             }, token).ConfigureAwait(false);
             if (value)
             {
@@ -892,8 +892,8 @@ namespace Chummer
                         FlatStyle = FlatStyle.Flat,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
-                        ImageDpi96 = Resources.link,
-                        ImageDpi192 = Resources.link1,
+                        ImageDpi96 = Resources.link_16,
+                        ImageDpi192 = Resources.link_32,
                         Name = "cmdLink",
                         UseVisualStyleBackColor = true,
                         TabStop = false

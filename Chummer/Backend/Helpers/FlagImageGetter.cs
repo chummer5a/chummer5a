@@ -34,935 +34,935 @@ namespace Chummer
             switch (strCode.ToUpperInvariant())
             {
                 case "AD":
-                    objReturn = Properties.Resources.flag_andorra;
+                    objReturn = Properties.Resources.flag_andorra_16;
                     break;
 
                 case "AE":
-                    objReturn = Properties.Resources.flag_united_arab_emirates;
+                    objReturn = Properties.Resources.flag_united_arab_emirates_16;
                     break;
 
                 case "AF":
-                    objReturn = Properties.Resources.flag_afghanistan;
+                    objReturn = Properties.Resources.flag_afghanistan_16;
                     break;
 
                 case "AG":
-                    objReturn = Properties.Resources.flag_antigua_and_barbuda;
+                    objReturn = Properties.Resources.flag_antigua_and_barbuda_16;
                     break;
 
                 case "AI":
-                    objReturn = Properties.Resources.flag_anguilla;
+                    objReturn = Properties.Resources.flag_anguilla_16;
                     break;
 
                 case "AL":
-                    objReturn = Properties.Resources.flag_albania;
+                    objReturn = Properties.Resources.flag_albania_16;
                     break;
 
                 case "AM":
-                    objReturn = Properties.Resources.flag_armenia;
+                    objReturn = Properties.Resources.flag_armenia_16;
                     break;
 
                 case "AN":
-                    objReturn = Properties.Resources.flag_netherlands_antilles;
+                    objReturn = Properties.Resources.flag_netherlands_antilles_16;
                     break;
 
                 case "AO":
-                    objReturn = Properties.Resources.flag_angola;
+                    objReturn = Properties.Resources.flag_angola_16;
                     break;
 
                 case "AR":
-                    objReturn = Properties.Resources.flag_argentina;
+                    objReturn = Properties.Resources.flag_argentina_16;
                     break;
 
                 case "AS":
-                    objReturn = Properties.Resources.flag_american_samoa;
+                    objReturn = Properties.Resources.flag_american_samoa_16;
                     break;
 
                 case "AT":
-                    objReturn = Properties.Resources.flag_austria;
+                    objReturn = Properties.Resources.flag_austria_16;
                     break;
 
                 case "AU":
-                    objReturn = Properties.Resources.flag_australia;
+                    objReturn = Properties.Resources.flag_australia_16;
                     break;
 
                 case "AW":
-                    objReturn = Properties.Resources.flag_aruba;
+                    objReturn = Properties.Resources.flag_aruba_16;
                     break;
 
                 case "AZ":
-                    objReturn = Properties.Resources.flag_azerbaijan;
+                    objReturn = Properties.Resources.flag_azerbaijan_16;
                     break;
 
                 case "BA":
-                    objReturn = Properties.Resources.flag_bosnia;
+                    objReturn = Properties.Resources.flag_bosnia_16;
                     break;
 
                 case "BB":
-                    objReturn = Properties.Resources.flag_barbados;
+                    objReturn = Properties.Resources.flag_barbados_16;
                     break;
 
                 case "BD":
-                    objReturn = Properties.Resources.flag_bangladesh;
+                    objReturn = Properties.Resources.flag_bangladesh_16;
                     break;
 
                 case "BE":
-                    objReturn = Properties.Resources.flag_belgium;
+                    objReturn = Properties.Resources.flag_belgium_16;
                     break;
 
                 case "BF":
-                    objReturn = Properties.Resources.flag_burkina_faso;
+                    objReturn = Properties.Resources.flag_burkina_faso_16;
                     break;
 
                 case "BG":
-                    objReturn = Properties.Resources.flag_bulgaria;
+                    objReturn = Properties.Resources.flag_bulgaria_16;
                     break;
 
                 case "BH":
-                    objReturn = Properties.Resources.flag_bahrain;
+                    objReturn = Properties.Resources.flag_bahrain_16;
                     break;
 
                 case "BI":
-                    objReturn = Properties.Resources.flag_burundi;
+                    objReturn = Properties.Resources.flag_burundi_16;
                     break;
 
                 case "BJ":
-                    objReturn = Properties.Resources.flag_benin;
+                    objReturn = Properties.Resources.flag_benin_16;
                     break;
 
                 case "BM":
-                    objReturn = Properties.Resources.flag_bermuda;
+                    objReturn = Properties.Resources.flag_bermuda_16;
                     break;
 
                 case "BN":
-                    objReturn = Properties.Resources.flag_brunei;
+                    objReturn = Properties.Resources.flag_brunei_16;
                     break;
 
                 case "BO":
-                    objReturn = Properties.Resources.flag_bolivia;
+                    objReturn = Properties.Resources.flag_bolivia_16;
                     break;
 
                 case "BR":
-                    objReturn = Properties.Resources.flag_brazil;
+                    objReturn = Properties.Resources.flag_brazil_16;
                     break;
 
                 case "BS":
-                    objReturn = Properties.Resources.flag_bahamas;
+                    objReturn = Properties.Resources.flag_bahamas_16;
                     break;
 
                 case "BT":
-                    objReturn = Properties.Resources.flag_bhutan;
+                    objReturn = Properties.Resources.flag_bhutan_16;
                     break;
 
                 case "BW":
-                    objReturn = Properties.Resources.flag_botswana;
+                    objReturn = Properties.Resources.flag_botswana_16;
                     break;
 
                 case "BY":
-                    objReturn = Properties.Resources.flag_belarus;
+                    objReturn = Properties.Resources.flag_belarus_16;
                     break;
 
                 case "BZ":
-                    objReturn = Properties.Resources.flag_belize;
+                    objReturn = Properties.Resources.flag_belize_16;
                     break;
 
                 case "CA":
-                    objReturn = Properties.Resources.flag_canada;
+                    objReturn = Properties.Resources.flag_canada_16;
                     break;
 
                 case "CD":
-                    objReturn = Properties.Resources.flag_congo_democratic_republic;
+                    objReturn = Properties.Resources.flag_congo_democratic_republic_16;
                     break;
 
                 case "CF":
-                    objReturn = Properties.Resources.flag_central_african_republic;
+                    objReturn = Properties.Resources.flag_central_african_republic_16;
                     break;
 
                 case "CG":
-                    objReturn = Properties.Resources.flag_congo_republic;
+                    objReturn = Properties.Resources.flag_congo_republic_16;
                     break;
 
                 case "CH":
-                    objReturn = Properties.Resources.flag_switzerland;
+                    objReturn = Properties.Resources.flag_switzerland_16;
                     break;
 
                 case "CI":
-                    objReturn = Properties.Resources.flag_cote_divoire;
+                    objReturn = Properties.Resources.flag_cote_divoire_16;
                     break;
 
                 case "CK":
-                    objReturn = Properties.Resources.flag_cook_islands;
+                    objReturn = Properties.Resources.flag_cook_islands_16;
                     break;
 
                 case "CL":
-                    objReturn = Properties.Resources.flag_chile;
+                    objReturn = Properties.Resources.flag_chile_16;
                     break;
 
                 case "CM":
-                    objReturn = Properties.Resources.flag_cameroon;
+                    objReturn = Properties.Resources.flag_cameroon_16;
                     break;
 
                 case "CN":
-                    objReturn = Properties.Resources.flag_china;
+                    objReturn = Properties.Resources.flag_china_16;
                     break;
 
                 case "CO":
-                    objReturn = Properties.Resources.flag_colombia;
+                    objReturn = Properties.Resources.flag_colombia_16;
                     break;
 
                 case "CR":
-                    objReturn = Properties.Resources.flag_costa_rica;
+                    objReturn = Properties.Resources.flag_costa_rica_16;
                     break;
 
                 case "CU":
-                    objReturn = Properties.Resources.flag_cuba;
+                    objReturn = Properties.Resources.flag_cuba_16;
                     break;
 
                 case "CV":
-                    objReturn = Properties.Resources.flag_cape_verde;
+                    objReturn = Properties.Resources.flag_cape_verde_16;
                     break;
 
                 case "CY":
-                    objReturn = Properties.Resources.flag_cyprus;
+                    objReturn = Properties.Resources.flag_cyprus_16;
                     break;
 
                 case "CZ":
-                    objReturn = Properties.Resources.flag_czech_republic;
+                    objReturn = Properties.Resources.flag_czech_republic_16;
                     break;
 
                 case "DE":
-                    objReturn = Properties.Resources.flag_germany;
+                    objReturn = Properties.Resources.flag_germany_16;
                     break;
 
                 case "DJ":
-                    objReturn = Properties.Resources.flag_djibouti;
+                    objReturn = Properties.Resources.flag_djibouti_16;
                     break;
 
                 case "DK":
-                    objReturn = Properties.Resources.flag_denmark;
+                    objReturn = Properties.Resources.flag_denmark_16;
                     break;
 
                 case "DM":
-                    objReturn = Properties.Resources.flag_dominica;
+                    objReturn = Properties.Resources.flag_dominica_16;
                     break;
 
                 case "DO":
-                    objReturn = Properties.Resources.flag_dominican_republic;
+                    objReturn = Properties.Resources.flag_dominican_republic_16;
                     break;
 
                 case "DZ":
-                    objReturn = Properties.Resources.flag_algeria;
+                    objReturn = Properties.Resources.flag_algeria_16;
                     break;
 
                 case "EC":
-                    objReturn = Properties.Resources.flag_equador;
+                    objReturn = Properties.Resources.flag_equador_16;
                     break;
 
                 case "EE":
-                    objReturn = Properties.Resources.flag_estonia;
+                    objReturn = Properties.Resources.flag_estonia_16;
                     break;
 
                 case "EG":
-                    objReturn = Properties.Resources.flag_egypt;
+                    objReturn = Properties.Resources.flag_egypt_16;
                     break;
 
                 case "ER":
-                    objReturn = Properties.Resources.flag_eritrea;
+                    objReturn = Properties.Resources.flag_eritrea_16;
                     break;
 
                 case "ES":
-                    objReturn = Properties.Resources.flag_spain;
+                    objReturn = Properties.Resources.flag_spain_16;
                     break;
 
                 case "ET":
-                    objReturn = Properties.Resources.flag_ethiopia;
+                    objReturn = Properties.Resources.flag_ethiopia_16;
                     break;
 
                 case "EU":
-                    objReturn = Properties.Resources.flag_european_union;
+                    objReturn = Properties.Resources.flag_european_union_16;
                     break;
 
                 case "FI":
-                    objReturn = Properties.Resources.flag_finland;
+                    objReturn = Properties.Resources.flag_finland_16;
                     break;
 
                 case "FJ":
-                    objReturn = Properties.Resources.flag_fiji;
+                    objReturn = Properties.Resources.flag_fiji_16;
                     break;
 
                 case "FK":
-                    objReturn = Properties.Resources.flag_falkland_islands;
+                    objReturn = Properties.Resources.flag_falkland_islands_16;
                     break;
 
                 case "FM":
-                    objReturn = Properties.Resources.flag_micronesia;
+                    objReturn = Properties.Resources.flag_micronesia_16;
                     break;
 
                 case "FO":
-                    objReturn = Properties.Resources.flag_faroe_islands;
+                    objReturn = Properties.Resources.flag_faroe_islands_16;
                     break;
 
                 case "FR":
-                    objReturn = Properties.Resources.flag_france;
+                    objReturn = Properties.Resources.flag_france_16;
                     break;
 
                 case "GA":
-                    objReturn = Properties.Resources.flag_gabon;
+                    objReturn = Properties.Resources.flag_gabon_16;
                     break;
 
                 case "GB":
-                    objReturn = Properties.Resources.flag_great_britain;
+                    objReturn = Properties.Resources.flag_great_britain_16;
                     break;
 
                 case "GD":
-                    objReturn = Properties.Resources.flag_grenada;
+                    objReturn = Properties.Resources.flag_grenada_16;
                     break;
 
                 case "GE":
-                    objReturn = Properties.Resources.flag_georgia;
+                    objReturn = Properties.Resources.flag_georgia_16;
                     break;
 
                 case "GG":
-                    objReturn = Properties.Resources.flag_guernsey;
+                    objReturn = Properties.Resources.flag_guernsey_16;
                     break;
 
                 case "GH":
-                    objReturn = Properties.Resources.flag_ghana;
+                    objReturn = Properties.Resources.flag_ghana_16;
                     break;
 
                 case "GI":
-                    objReturn = Properties.Resources.flag_gibraltar;
+                    objReturn = Properties.Resources.flag_gibraltar_16;
                     break;
 
                 case "GL":
-                    objReturn = Properties.Resources.flag_greenland;
+                    objReturn = Properties.Resources.flag_greenland_16;
                     break;
 
                 case "GM":
-                    objReturn = Properties.Resources.flag_gambia;
+                    objReturn = Properties.Resources.flag_gambia_16;
                     break;
 
                 case "GN":
-                    objReturn = Properties.Resources.flag_guinea;
+                    objReturn = Properties.Resources.flag_guinea_16;
                     break;
 
                 case "GQ":
-                    objReturn = Properties.Resources.flag_equatorial_guinea;
+                    objReturn = Properties.Resources.flag_equatorial_guinea_16;
                     break;
 
                 case "GR":
-                    objReturn = Properties.Resources.flag_greece;
+                    objReturn = Properties.Resources.flag_greece_16;
                     break;
 
                 case "GS":
-                    objReturn = Properties.Resources.flag_south_georgia;
+                    objReturn = Properties.Resources.flag_south_georgia_16;
                     break;
 
                 case "GT":
-                    objReturn = Properties.Resources.flag_guatemala;
+                    objReturn = Properties.Resources.flag_guatemala_16;
                     break;
 
                 case "GU":
-                    objReturn = Properties.Resources.flag_guam;
+                    objReturn = Properties.Resources.flag_guam_16;
                     break;
 
                 case "GW":
-                    objReturn = Properties.Resources.flag_guinea_bissau;
+                    objReturn = Properties.Resources.flag_guinea_bissau_16;
                     break;
 
                 case "GY":
-                    objReturn = Properties.Resources.flag_guyana;
+                    objReturn = Properties.Resources.flag_guyana_16;
                     break;
 
                 case "HK":
-                    objReturn = Properties.Resources.flag_hong_kong;
+                    objReturn = Properties.Resources.flag_hong_kong_16;
                     break;
 
                 case "HN":
-                    objReturn = Properties.Resources.flag_honduras;
+                    objReturn = Properties.Resources.flag_honduras_16;
                     break;
 
                 case "HR":
-                    objReturn = Properties.Resources.flag_croatia;
+                    objReturn = Properties.Resources.flag_croatia_16;
                     break;
 
                 case "HT":
-                    objReturn = Properties.Resources.flag_haiti;
+                    objReturn = Properties.Resources.flag_haiti_16;
                     break;
 
                 case "HU":
-                    objReturn = Properties.Resources.flag_hungary;
+                    objReturn = Properties.Resources.flag_hungary_16;
                     break;
 
                 case "ID":
-                    objReturn = Properties.Resources.flag_indonesia;
+                    objReturn = Properties.Resources.flag_indonesia_16;
                     break;
 
                 case "IE":
-                    objReturn = Properties.Resources.flag_ireland;
+                    objReturn = Properties.Resources.flag_ireland_16;
                     break;
 
                 case "IL":
-                    objReturn = Properties.Resources.flag_israel;
+                    objReturn = Properties.Resources.flag_israel_16;
                     break;
 
                 case "IM":
-                    objReturn = Properties.Resources.flag_isle_of_man;
+                    objReturn = Properties.Resources.flag_isle_of_man_16;
                     break;
 
                 case "IN":
-                    objReturn = Properties.Resources.flag_india;
+                    objReturn = Properties.Resources.flag_india_16;
                     break;
 
                 case "IO":
-                    objReturn = Properties.Resources.flag_british_indian_ocean;
+                    objReturn = Properties.Resources.flag_british_indian_ocean_16;
                     break;
 
                 case "IQ":
-                    objReturn = Properties.Resources.flag_iraq;
+                    objReturn = Properties.Resources.flag_iraq_16;
                     break;
 
                 case "IR":
-                    objReturn = Properties.Resources.flag_iran;
+                    objReturn = Properties.Resources.flag_iran_16;
                     break;
 
                 case "IS":
-                    objReturn = Properties.Resources.flag_iceland;
+                    objReturn = Properties.Resources.flag_iceland_16;
                     break;
 
                 case "IT":
-                    objReturn = Properties.Resources.flag_italy;
+                    objReturn = Properties.Resources.flag_italy_16;
                     break;
 
                 case "JE":
-                    objReturn = Properties.Resources.flag_jersey;
+                    objReturn = Properties.Resources.flag_jersey_16;
                     break;
 
                 case "JM":
-                    objReturn = Properties.Resources.flag_jamaica;
+                    objReturn = Properties.Resources.flag_jamaica_16;
                     break;
 
                 case "JO":
-                    objReturn = Properties.Resources.flag_jordan;
+                    objReturn = Properties.Resources.flag_jordan_16;
                     break;
 
                 case "JP":
-                    objReturn = Properties.Resources.flag_japan;
+                    objReturn = Properties.Resources.flag_japan_16;
                     break;
 
                 case "KE":
-                    objReturn = Properties.Resources.flag_kenya;
+                    objReturn = Properties.Resources.flag_kenya_16;
                     break;
 
                 case "KG":
-                    objReturn = Properties.Resources.flag_kyrgyzstan;
+                    objReturn = Properties.Resources.flag_kyrgyzstan_16;
                     break;
 
                 case "KH":
-                    objReturn = Properties.Resources.flag_cambodia;
+                    objReturn = Properties.Resources.flag_cambodia_16;
                     break;
 
                 case "KI":
-                    objReturn = Properties.Resources.flag_kiribati;
+                    objReturn = Properties.Resources.flag_kiribati_16;
                     break;
 
                 case "KM":
-                    objReturn = Properties.Resources.flag_comoros;
+                    objReturn = Properties.Resources.flag_comoros_16;
                     break;
 
                 case "KN":
-                    objReturn = Properties.Resources.flag_saint_kitts_and_nevis;
+                    objReturn = Properties.Resources.flag_saint_kitts_and_nevis_16;
                     break;
 
                 case "KP":
-                    objReturn = Properties.Resources.flag_north_korea;
+                    objReturn = Properties.Resources.flag_north_korea_16;
                     break;
 
                 case "KR":
-                    objReturn = Properties.Resources.flag_south_korea;
+                    objReturn = Properties.Resources.flag_south_korea_16;
                     break;
 
                 case "KW":
-                    objReturn = Properties.Resources.flag_kuwait;
+                    objReturn = Properties.Resources.flag_kuwait_16;
                     break;
 
                 case "KY":
-                    objReturn = Properties.Resources.flag_cayman_islands;
+                    objReturn = Properties.Resources.flag_cayman_islands_16;
                     break;
 
                 case "KZ":
-                    objReturn = Properties.Resources.flag_kazakhstan;
+                    objReturn = Properties.Resources.flag_kazakhstan_16;
                     break;
 
                 case "LA":
-                    objReturn = Properties.Resources.flag_laos;
+                    objReturn = Properties.Resources.flag_laos_16;
                     break;
 
                 case "LB":
-                    objReturn = Properties.Resources.flag_lebanon;
+                    objReturn = Properties.Resources.flag_lebanon_16;
                     break;
 
                 case "LC":
-                    objReturn = Properties.Resources.flag_saint_lucia;
+                    objReturn = Properties.Resources.flag_saint_lucia_16;
                     break;
 
                 case "LI":
-                    objReturn = Properties.Resources.flag_liechtenstein;
+                    objReturn = Properties.Resources.flag_liechtenstein_16;
                     break;
 
                 case "LK":
-                    objReturn = Properties.Resources.flag_sri_lanka;
+                    objReturn = Properties.Resources.flag_sri_lanka_16;
                     break;
 
                 case "LR":
-                    objReturn = Properties.Resources.flag_liberia;
+                    objReturn = Properties.Resources.flag_liberia_16;
                     break;
 
                 case "LS":
-                    objReturn = Properties.Resources.flag_lesotho;
+                    objReturn = Properties.Resources.flag_lesotho_16;
                     break;
 
                 case "LT":
-                    objReturn = Properties.Resources.flag_lithuania;
+                    objReturn = Properties.Resources.flag_lithuania_16;
                     break;
 
                 case "LU":
-                    objReturn = Properties.Resources.flag_luxembourg;
+                    objReturn = Properties.Resources.flag_luxembourg_16;
                     break;
 
                 case "LV":
-                    objReturn = Properties.Resources.flag_latvia;
+                    objReturn = Properties.Resources.flag_latvia_16;
                     break;
 
                 case "LY":
-                    objReturn = Properties.Resources.flag_libya;
+                    objReturn = Properties.Resources.flag_libya_16;
                     break;
 
                 case "MA":
-                    objReturn = Properties.Resources.flag_morocco;
+                    objReturn = Properties.Resources.flag_morocco_16;
                     break;
 
                 case "MC":
-                    objReturn = Properties.Resources.flag_monaco;
+                    objReturn = Properties.Resources.flag_monaco_16;
                     break;
 
                 case "MD":
-                    objReturn = Properties.Resources.flag_moldova;
+                    objReturn = Properties.Resources.flag_moldova_16;
                     break;
 
                 case "MG":
-                    objReturn = Properties.Resources.flag_madagascar;
+                    objReturn = Properties.Resources.flag_madagascar_16;
                     break;
 
                 case "MH":
-                    objReturn = Properties.Resources.flag_marshall_islands;
+                    objReturn = Properties.Resources.flag_marshall_islands_16;
                     break;
 
                 case "MK":
-                    objReturn = Properties.Resources.flag_macedonia;
+                    objReturn = Properties.Resources.flag_macedonia_16;
                     break;
 
                 case "ML":
-                    objReturn = Properties.Resources.flag_mali;
+                    objReturn = Properties.Resources.flag_mali_16;
                     break;
 
                 case "MM":
-                    objReturn = Properties.Resources.flag_burma;
+                    objReturn = Properties.Resources.flag_burma_16;
                     break;
 
                 case "MN":
-                    objReturn = Properties.Resources.flag_mongolia;
+                    objReturn = Properties.Resources.flag_mongolia_16;
                     break;
 
                 case "MO":
-                    objReturn = Properties.Resources.flag_macau;
+                    objReturn = Properties.Resources.flag_macau_16;
                     break;
 
                 case "MP":
-                    objReturn = Properties.Resources.flag_northern_mariana_islands;
+                    objReturn = Properties.Resources.flag_northern_mariana_islands_16;
                     break;
 
                 case "MQ":
-                    objReturn = Properties.Resources.flag_martinique;
+                    objReturn = Properties.Resources.flag_martinique_16;
                     break;
 
                 case "MR":
-                    objReturn = Properties.Resources.flag_mauretania;
+                    objReturn = Properties.Resources.flag_mauretania_16;
                     break;
 
                 case "MS":
-                    objReturn = Properties.Resources.flag_montserrat;
+                    objReturn = Properties.Resources.flag_montserrat_16;
                     break;
 
                 case "MT":
-                    objReturn = Properties.Resources.flag_malta;
+                    objReturn = Properties.Resources.flag_malta_16;
                     break;
 
                 case "MU":
-                    objReturn = Properties.Resources.flag_mauritius;
+                    objReturn = Properties.Resources.flag_mauritius_16;
                     break;
 
                 case "MV":
-                    objReturn = Properties.Resources.flag_maledives;
+                    objReturn = Properties.Resources.flag_maledives_16;
                     break;
 
                 case "MW":
-                    objReturn = Properties.Resources.flag_malawi;
+                    objReturn = Properties.Resources.flag_malawi_16;
                     break;
 
                 case "MX":
-                    objReturn = Properties.Resources.flag_mexico;
+                    objReturn = Properties.Resources.flag_mexico_16;
                     break;
 
                 case "MY":
-                    objReturn = Properties.Resources.flag_malaysia;
+                    objReturn = Properties.Resources.flag_malaysia_16;
                     break;
 
                 case "MZ":
-                    objReturn = Properties.Resources.flag_mozambique;
+                    objReturn = Properties.Resources.flag_mozambique_16;
                     break;
 
                 case "NA":
-                    objReturn = Properties.Resources.flag_namibia;
+                    objReturn = Properties.Resources.flag_namibia_16;
                     break;
 
                 case "NE":
-                    objReturn = Properties.Resources.flag_niger;
+                    objReturn = Properties.Resources.flag_niger_16;
                     break;
 
                 case "NF":
-                    objReturn = Properties.Resources.flag_norfolk_islands;
+                    objReturn = Properties.Resources.flag_norfolk_islands_16;
                     break;
 
                 case "NG":
-                    objReturn = Properties.Resources.flag_nigeria;
+                    objReturn = Properties.Resources.flag_nigeria_16;
                     break;
 
                 case "NI":
-                    objReturn = Properties.Resources.flag_nicaragua;
+                    objReturn = Properties.Resources.flag_nicaragua_16;
                     break;
 
                 case "NL":
-                    objReturn = Properties.Resources.flag_netherlands;
+                    objReturn = Properties.Resources.flag_netherlands_16;
                     break;
 
                 case "NO":
-                    objReturn = Properties.Resources.flag_norway;
+                    objReturn = Properties.Resources.flag_norway_16;
                     break;
 
                 case "NP":
-                    objReturn = Properties.Resources.flag_nepal;
+                    objReturn = Properties.Resources.flag_nepal_16;
                     break;
 
                 case "NR":
-                    objReturn = Properties.Resources.flag_nauru;
+                    objReturn = Properties.Resources.flag_nauru_16;
                     break;
 
                 case "NU":
-                    objReturn = Properties.Resources.flag_niue;
+                    objReturn = Properties.Resources.flag_niue_16;
                     break;
 
                 case "NZ":
-                    objReturn = Properties.Resources.flag_new_zealand;
+                    objReturn = Properties.Resources.flag_new_zealand_16;
                     break;
 
                 case "OM":
-                    objReturn = Properties.Resources.flag_oman;
+                    objReturn = Properties.Resources.flag_oman_16;
                     break;
 
                 case "PA":
-                    objReturn = Properties.Resources.flag_panama;
+                    objReturn = Properties.Resources.flag_panama_16;
                     break;
 
                 case "PE":
-                    objReturn = Properties.Resources.flag_peru;
+                    objReturn = Properties.Resources.flag_peru_16;
                     break;
 
                 case "PF":
-                    objReturn = Properties.Resources.flag_french_polynesia;
+                    objReturn = Properties.Resources.flag_french_polynesia_16;
                     break;
 
                 case "PG":
-                    objReturn = Properties.Resources.flag_papua_new_guinea;
+                    objReturn = Properties.Resources.flag_papua_new_guinea_16;
                     break;
 
                 case "PH":
-                    objReturn = Properties.Resources.flag_philippines;
+                    objReturn = Properties.Resources.flag_philippines_16;
                     break;
 
                 case "PK":
-                    objReturn = Properties.Resources.flag_pakistan;
+                    objReturn = Properties.Resources.flag_pakistan_16;
                     break;
 
                 case "PL":
-                    objReturn = Properties.Resources.flag_poland;
+                    objReturn = Properties.Resources.flag_poland_16;
                     break;
 
                 case "PM":
-                    objReturn = Properties.Resources.flag_saint_pierre_and_miquelon;
+                    objReturn = Properties.Resources.flag_saint_pierre_and_miquelon_16;
                     break;
 
                 case "PN":
-                    objReturn = Properties.Resources.flag_pitcairn_islands;
+                    objReturn = Properties.Resources.flag_pitcairn_islands_16;
                     break;
 
                 case "PR":
-                    objReturn = Properties.Resources.flag_puerto_rico;
+                    objReturn = Properties.Resources.flag_puerto_rico_16;
                     break;
 
                 case "PT":
-                    objReturn = Properties.Resources.flag_portugal;
+                    objReturn = Properties.Resources.flag_portugal_16;
                     break;
 
                 case "PW":
-                    objReturn = Properties.Resources.flag_palau;
+                    objReturn = Properties.Resources.flag_palau_16;
                     break;
 
                 case "PY":
-                    objReturn = Properties.Resources.flag_paraquay;
+                    objReturn = Properties.Resources.flag_paraquay_16;
                     break;
 
                 case "QA":
-                    objReturn = Properties.Resources.flag_qatar;
+                    objReturn = Properties.Resources.flag_qatar_16;
                     break;
 
                 case "RO":
-                    objReturn = Properties.Resources.flag_romania;
+                    objReturn = Properties.Resources.flag_romania_16;
                     break;
 
                 case "RS":
-                    objReturn = Properties.Resources.flag_serbia_montenegro;
+                    objReturn = Properties.Resources.flag_serbia_montenegro_16;
                     break;
 
                 case "RU":
-                    objReturn = Properties.Resources.flag_russia;
+                    objReturn = Properties.Resources.flag_russia_16;
                     break;
 
                 case "RW":
-                    objReturn = Properties.Resources.flag_rwanda;
+                    objReturn = Properties.Resources.flag_rwanda_16;
                     break;
 
                 case "SA":
-                    objReturn = Properties.Resources.flag_saudi_arabia;
+                    objReturn = Properties.Resources.flag_saudi_arabia_16;
                     break;
 
                 case "SB":
-                    objReturn = Properties.Resources.flag_solomon_islands;
+                    objReturn = Properties.Resources.flag_solomon_islands_16;
                     break;
 
                 case "SC":
-                    objReturn = Properties.Resources.flag_seychelles;
+                    objReturn = Properties.Resources.flag_seychelles_16;
                     break;
 
                 case "SD":
-                    objReturn = Properties.Resources.flag_sudan;
+                    objReturn = Properties.Resources.flag_sudan_16;
                     break;
 
                 case "SE":
-                    objReturn = Properties.Resources.flag_sweden;
+                    objReturn = Properties.Resources.flag_sweden_16;
                     break;
 
                 case "SG":
-                    objReturn = Properties.Resources.flag_singapore;
+                    objReturn = Properties.Resources.flag_singapore_16;
                     break;
 
                 case "SH":
-                    objReturn = Properties.Resources.flag_saint_helena;
+                    objReturn = Properties.Resources.flag_saint_helena_16;
                     break;
 
                 case "SI":
-                    objReturn = Properties.Resources.flag_slovenia;
+                    objReturn = Properties.Resources.flag_slovenia_16;
                     break;
 
                 case "SK":
-                    objReturn = Properties.Resources.flag_slovakia;
+                    objReturn = Properties.Resources.flag_slovakia_16;
                     break;
 
                 case "SL":
-                    objReturn = Properties.Resources.flag_sierra_leone;
+                    objReturn = Properties.Resources.flag_sierra_leone_16;
                     break;
 
                 case "SM":
-                    objReturn = Properties.Resources.flag_san_marino;
+                    objReturn = Properties.Resources.flag_san_marino_16;
                     break;
 
                 case "SN":
-                    objReturn = Properties.Resources.flag_senegal;
+                    objReturn = Properties.Resources.flag_senegal_16;
                     break;
 
                 case "SO":
-                    objReturn = Properties.Resources.flag_somalia;
+                    objReturn = Properties.Resources.flag_somalia_16;
                     break;
 
                 case "SR":
-                    objReturn = Properties.Resources.flag_suriname;
+                    objReturn = Properties.Resources.flag_suriname_16;
                     break;
 
                 case "ST":
-                    objReturn = Properties.Resources.flag_sao_tome_and_principe;
+                    objReturn = Properties.Resources.flag_sao_tome_and_principe_16;
                     break;
 
                 case "SV":
-                    objReturn = Properties.Resources.flag_el_salvador;
+                    objReturn = Properties.Resources.flag_el_salvador_16;
                     break;
 
                 case "SY":
-                    objReturn = Properties.Resources.flag_syria;
+                    objReturn = Properties.Resources.flag_syria_16;
                     break;
 
                 case "SZ":
-                    objReturn = Properties.Resources.flag_swaziland;
+                    objReturn = Properties.Resources.flag_swaziland_16;
                     break;
 
                 case "TC":
-                    objReturn = Properties.Resources.flag_turks_and_caicos_islands;
+                    objReturn = Properties.Resources.flag_turks_and_caicos_islands_16;
                     break;
 
                 case "TD":
-                    objReturn = Properties.Resources.flag_chad;
+                    objReturn = Properties.Resources.flag_chad_16;
                     break;
 
                 case "TG":
-                    objReturn = Properties.Resources.flag_togo;
+                    objReturn = Properties.Resources.flag_togo_16;
                     break;
 
                 case "TH":
-                    objReturn = Properties.Resources.flag_thailand;
+                    objReturn = Properties.Resources.flag_thailand_16;
                     break;
 
                 case "TI":
-                    objReturn = Properties.Resources.flag_tibet;
+                    objReturn = Properties.Resources.flag_tibet_16;
                     break;
 
                 case "TJ":
-                    objReturn = Properties.Resources.flag_tajikistan;
+                    objReturn = Properties.Resources.flag_tajikistan_16;
                     break;
 
                 case "TL":
-                    objReturn = Properties.Resources.flag_east_timor;
+                    objReturn = Properties.Resources.flag_east_timor_16;
                     break;
 
                 case "TM":
-                    objReturn = Properties.Resources.flag_turkmenistan;
+                    objReturn = Properties.Resources.flag_turkmenistan_16;
                     break;
 
                 case "TN":
-                    objReturn = Properties.Resources.flag_tunisia;
+                    objReturn = Properties.Resources.flag_tunisia_16;
                     break;
 
                 case "TO":
-                    objReturn = Properties.Resources.flag_tonga;
+                    objReturn = Properties.Resources.flag_tonga_16;
                     break;
 
                 case "TR":
-                    objReturn = Properties.Resources.flag_turkey;
+                    objReturn = Properties.Resources.flag_turkey_16;
                     break;
 
                 case "TT":
-                    objReturn = Properties.Resources.flag_trinidad_and_tobago;
+                    objReturn = Properties.Resources.flag_trinidad_and_tobago_16;
                     break;
 
                 case "TV":
-                    objReturn = Properties.Resources.flag_tuvalu;
+                    objReturn = Properties.Resources.flag_tuvalu_16;
                     break;
 
                 case "TW":
-                    objReturn = Properties.Resources.flag_taiwan;
+                    objReturn = Properties.Resources.flag_taiwan_16;
                     break;
 
                 case "TZ":
-                    objReturn = Properties.Resources.flag_tanzania;
+                    objReturn = Properties.Resources.flag_tanzania_16;
                     break;
 
                 case "UA":
-                    objReturn = Properties.Resources.flag_ukraine;
+                    objReturn = Properties.Resources.flag_ukraine_16;
                     break;
 
                 case "UG":
-                    objReturn = Properties.Resources.flag_uganda;
+                    objReturn = Properties.Resources.flag_uganda_16;
                     break;
 
                 case "US":
-                    objReturn = Properties.Resources.flag_usa;
+                    objReturn = Properties.Resources.flag_usa_16;
                     break;
 
                 case "UY":
-                    objReturn = Properties.Resources.flag_uruquay;
+                    objReturn = Properties.Resources.flag_uruquay_16;
                     break;
 
                 case "UZ":
-                    objReturn = Properties.Resources.flag_uzbekistan;
+                    objReturn = Properties.Resources.flag_uzbekistan_16;
                     break;
 
                 case "VA":
-                    objReturn = Properties.Resources.flag_vatican_city;
+                    objReturn = Properties.Resources.flag_vatican_city_16;
                     break;
 
                 case "VC":
-                    objReturn = Properties.Resources.flag_saint_vincent_and_grenadines;
+                    objReturn = Properties.Resources.flag_saint_vincent_and_grenadines_16;
                     break;
 
                 case "VE":
-                    objReturn = Properties.Resources.flag_venezuela;
+                    objReturn = Properties.Resources.flag_venezuela_16;
                     break;
 
                 case "VG":
-                    objReturn = Properties.Resources.flag_british_virgin_islands;
+                    objReturn = Properties.Resources.flag_british_virgin_islands_16;
                     break;
 
                 case "VI":
-                    objReturn = Properties.Resources.flag_virgin_islands;
+                    objReturn = Properties.Resources.flag_virgin_islands_16;
                     break;
 
                 case "VN":
-                    objReturn = Properties.Resources.flag_vietnam;
+                    objReturn = Properties.Resources.flag_vietnam_16;
                     break;
 
                 case "VU":
-                    objReturn = Properties.Resources.flag_vanuatu;
+                    objReturn = Properties.Resources.flag_vanuatu_16;
                     break;
 
                 case "WF":
-                    objReturn = Properties.Resources.flag_wallis_and_futuna;
+                    objReturn = Properties.Resources.flag_wallis_and_futuna_16;
                     break;
 
                 case "WS":
-                    objReturn = Properties.Resources.flag_samoa;
+                    objReturn = Properties.Resources.flag_samoa_16;
                     break;
 
                 case "XE":
-                    objReturn = Properties.Resources.flag_england;
+                    objReturn = Properties.Resources.flag_england_16;
                     break;
 
                 case "XS":
-                    objReturn = Properties.Resources.flag_scotland;
+                    objReturn = Properties.Resources.flag_scotland_16;
                     break;
 
                 case "XW":
-                    objReturn = Properties.Resources.flag_wales;
+                    objReturn = Properties.Resources.flag_wales_16;
                     break;
 
                 case "YE":
-                    objReturn = Properties.Resources.flag_yemen;
+                    objReturn = Properties.Resources.flag_yemen_16;
                     break;
 
                 case "ZA":
-                    objReturn = Properties.Resources.flag_south_africa;
+                    objReturn = Properties.Resources.flag_south_africa_16;
                     break;
 
                 case "ZM":
-                    objReturn = Properties.Resources.flag_zambia;
+                    objReturn = Properties.Resources.flag_zambia_16;
                     break;
 
                 case "ZW":
-                    objReturn = Properties.Resources.flag_zimbabwe;
+                    objReturn = Properties.Resources.flag_zimbabwe_16;
                     break;
 
                 case "DEFAULT":
-                    objReturn = Properties.Resources.defaulted;
+                    objReturn = Properties.Resources.defaulted_16;
                     break;
 
                 case "NOIMAGEDOTS":
-                    objReturn = Properties.Resources.noimagedots;
+                    objReturn = Properties.Resources.noimagedots_16;
                     break;
 
                 default:
@@ -985,927 +985,927 @@ namespace Chummer
             switch (strCode.ToUpperInvariant())
             {
                 case "AD":
-                    objReturn = Properties.Resources.flag_andorra1;
+                    objReturn = Properties.Resources.flag_andorra_32;
                     break;
 
                 case "AE":
-                    objReturn = Properties.Resources.flag_united_arab_emirates1;
+                    objReturn = Properties.Resources.flag_united_arab_emirates_32;
                     break;
 
                 case "AF":
-                    objReturn = Properties.Resources.flag_afghanistan1;
+                    objReturn = Properties.Resources.flag_afghanistan_32;
                     break;
 
                 case "AG":
-                    objReturn = Properties.Resources.flag_antigua_and_barbuda1;
+                    objReturn = Properties.Resources.flag_antigua_and_barbuda_32;
                     break;
 
                 case "AI":
-                    objReturn = Properties.Resources.flag_anguilla1;
+                    objReturn = Properties.Resources.flag_anguilla_32;
                     break;
 
                 case "AL":
-                    objReturn = Properties.Resources.flag_albania1;
+                    objReturn = Properties.Resources.flag_albania_32;
                     break;
 
                 case "AM":
-                    objReturn = Properties.Resources.flag_armenia1;
+                    objReturn = Properties.Resources.flag_armenia_32;
                     break;
 
                 case "AN":
-                    objReturn = Properties.Resources.flag_netherlands_antilles1;
+                    objReturn = Properties.Resources.flag_netherlands_antilles_32;
                     break;
 
                 case "AO":
-                    objReturn = Properties.Resources.flag_angola1;
+                    objReturn = Properties.Resources.flag_angola_32;
                     break;
 
                 case "AR":
-                    objReturn = Properties.Resources.flag_argentina1;
+                    objReturn = Properties.Resources.flag_argentina_32;
                     break;
 
                 case "AS":
-                    objReturn = Properties.Resources.flag_american_samoa1;
+                    objReturn = Properties.Resources.flag_american_samoa_32;
                     break;
 
                 case "AT":
-                    objReturn = Properties.Resources.flag_austria1;
+                    objReturn = Properties.Resources.flag_austria_32;
                     break;
 
                 case "AU":
-                    objReturn = Properties.Resources.flag_australia1;
+                    objReturn = Properties.Resources.flag_australia_32;
                     break;
 
                 case "AW":
-                    objReturn = Properties.Resources.flag_aruba1;
+                    objReturn = Properties.Resources.flag_aruba_32;
                     break;
 
                 case "AZ":
-                    objReturn = Properties.Resources.flag_azerbaijan1;
+                    objReturn = Properties.Resources.flag_azerbaijan_32;
                     break;
 
                 case "BA":
-                    objReturn = Properties.Resources.flag_bosnia1;
+                    objReturn = Properties.Resources.flag_bosnia_32;
                     break;
 
                 case "BB":
-                    objReturn = Properties.Resources.flag_barbados1;
+                    objReturn = Properties.Resources.flag_barbados_32;
                     break;
 
                 case "BD":
-                    objReturn = Properties.Resources.flag_bangladesh1;
+                    objReturn = Properties.Resources.flag_bangladesh_32;
                     break;
 
                 case "BE":
-                    objReturn = Properties.Resources.flag_belgium1;
+                    objReturn = Properties.Resources.flag_belgium_32;
                     break;
 
                 case "BF":
-                    objReturn = Properties.Resources.flag_burkina_faso1;
+                    objReturn = Properties.Resources.flag_burkina_faso_32;
                     break;
 
                 case "BG":
-                    objReturn = Properties.Resources.flag_bulgaria1;
+                    objReturn = Properties.Resources.flag_bulgaria_32;
                     break;
 
                 case "BH":
-                    objReturn = Properties.Resources.flag_bahrain1;
+                    objReturn = Properties.Resources.flag_bahrain_32;
                     break;
 
                 case "BI":
-                    objReturn = Properties.Resources.flag_burundi1;
+                    objReturn = Properties.Resources.flag_burundi_32;
                     break;
 
                 case "BJ":
-                    objReturn = Properties.Resources.flag_benin1;
+                    objReturn = Properties.Resources.flag_benin_32;
                     break;
 
                 case "BM":
-                    objReturn = Properties.Resources.flag_bermuda1;
+                    objReturn = Properties.Resources.flag_bermuda_32;
                     break;
 
                 case "BN":
-                    objReturn = Properties.Resources.flag_brunei1;
+                    objReturn = Properties.Resources.flag_brunei_32;
                     break;
 
                 case "BO":
-                    objReturn = Properties.Resources.flag_bolivia1;
+                    objReturn = Properties.Resources.flag_bolivia_32;
                     break;
 
                 case "BR":
-                    objReturn = Properties.Resources.flag_brazil1;
+                    objReturn = Properties.Resources.flag_brazil_32;
                     break;
 
                 case "BS":
-                    objReturn = Properties.Resources.flag_bahamas1;
+                    objReturn = Properties.Resources.flag_bahamas_32;
                     break;
 
                 case "BT":
-                    objReturn = Properties.Resources.flag_bhutan1;
+                    objReturn = Properties.Resources.flag_bhutan_32;
                     break;
 
                 case "BW":
-                    objReturn = Properties.Resources.flag_botswana1;
+                    objReturn = Properties.Resources.flag_botswana_32;
                     break;
 
                 case "BY":
-                    objReturn = Properties.Resources.flag_belarus1;
+                    objReturn = Properties.Resources.flag_belarus_32;
                     break;
 
                 case "BZ":
-                    objReturn = Properties.Resources.flag_belize1;
+                    objReturn = Properties.Resources.flag_belize_32;
                     break;
 
                 case "CA":
-                    objReturn = Properties.Resources.flag_canada1;
+                    objReturn = Properties.Resources.flag_canada_32;
                     break;
 
                 case "CD":
-                    objReturn = Properties.Resources.flag_congo_democratic_republic1;
+                    objReturn = Properties.Resources.flag_congo_democratic_republic_32;
                     break;
 
                 case "CF":
-                    objReturn = Properties.Resources.flag_central_african_republic1;
+                    objReturn = Properties.Resources.flag_central_african_republic_32;
                     break;
 
                 case "CG":
-                    objReturn = Properties.Resources.flag_congo_republic1;
+                    objReturn = Properties.Resources.flag_congo_republic_32;
                     break;
 
                 case "CH":
-                    objReturn = Properties.Resources.flag_switzerland1;
+                    objReturn = Properties.Resources.flag_switzerland_32;
                     break;
 
                 case "CI":
-                    objReturn = Properties.Resources.flag_cote_divoire1;
+                    objReturn = Properties.Resources.flag_cote_divoire_32;
                     break;
 
                 case "CK":
-                    objReturn = Properties.Resources.flag_cook_islands1;
+                    objReturn = Properties.Resources.flag_cook_islands_32;
                     break;
 
                 case "CL":
-                    objReturn = Properties.Resources.flag_chile1;
+                    objReturn = Properties.Resources.flag_chile_32;
                     break;
 
                 case "CM":
-                    objReturn = Properties.Resources.flag_cameroon1;
+                    objReturn = Properties.Resources.flag_cameroon_32;
                     break;
 
                 case "CN":
-                    objReturn = Properties.Resources.flag_china1;
+                    objReturn = Properties.Resources.flag_china_32;
                     break;
 
                 case "CO":
-                    objReturn = Properties.Resources.flag_colombia1;
+                    objReturn = Properties.Resources.flag_colombia_32;
                     break;
 
                 case "CR":
-                    objReturn = Properties.Resources.flag_costa_rica1;
+                    objReturn = Properties.Resources.flag_costa_rica_32;
                     break;
 
                 case "CU":
-                    objReturn = Properties.Resources.flag_cuba1;
+                    objReturn = Properties.Resources.flag_cuba_32;
                     break;
 
                 case "CV":
-                    objReturn = Properties.Resources.flag_cape_verde1;
+                    objReturn = Properties.Resources.flag_cape_verde_32;
                     break;
 
                 case "CY":
-                    objReturn = Properties.Resources.flag_cyprus1;
+                    objReturn = Properties.Resources.flag_cyprus_32;
                     break;
 
                 case "CZ":
-                    objReturn = Properties.Resources.flag_czech_republic1;
+                    objReturn = Properties.Resources.flag_czech_republic_32;
                     break;
 
                 case "DE":
-                    objReturn = Properties.Resources.flag_germany1;
+                    objReturn = Properties.Resources.flag_germany_32;
                     break;
 
                 case "DJ":
-                    objReturn = Properties.Resources.flag_djibouti1;
+                    objReturn = Properties.Resources.flag_djibouti_32;
                     break;
 
                 case "DK":
-                    objReturn = Properties.Resources.flag_denmark1;
+                    objReturn = Properties.Resources.flag_denmark_32;
                     break;
 
                 case "DM":
-                    objReturn = Properties.Resources.flag_dominica1;
+                    objReturn = Properties.Resources.flag_dominica_32;
                     break;
 
                 case "DO":
-                    objReturn = Properties.Resources.flag_dominican_republic1;
+                    objReturn = Properties.Resources.flag_dominican_republic_32;
                     break;
 
                 case "DZ":
-                    objReturn = Properties.Resources.flag_algeria1;
+                    objReturn = Properties.Resources.flag_algeria_32;
                     break;
 
                 case "EC":
-                    objReturn = Properties.Resources.flag_equador1;
+                    objReturn = Properties.Resources.flag_equador_32;
                     break;
 
                 case "EE":
-                    objReturn = Properties.Resources.flag_estonia1;
+                    objReturn = Properties.Resources.flag_estonia_32;
                     break;
 
                 case "EG":
-                    objReturn = Properties.Resources.flag_egypt1;
+                    objReturn = Properties.Resources.flag_egypt_32;
                     break;
 
                 case "ER":
-                    objReturn = Properties.Resources.flag_eritrea1;
+                    objReturn = Properties.Resources.flag_eritrea_32;
                     break;
 
                 case "ES":
-                    objReturn = Properties.Resources.flag_spain1;
+                    objReturn = Properties.Resources.flag_spain_32;
                     break;
 
                 case "ET":
-                    objReturn = Properties.Resources.flag_ethiopia1;
+                    objReturn = Properties.Resources.flag_ethiopia_32;
                     break;
 
                 case "EU":
-                    objReturn = Properties.Resources.flag_european_union1;
+                    objReturn = Properties.Resources.flag_european_union_32;
                     break;
 
                 case "FI":
-                    objReturn = Properties.Resources.flag_finland1;
+                    objReturn = Properties.Resources.flag_finland_32;
                     break;
 
                 case "FJ":
-                    objReturn = Properties.Resources.flag_fiji1;
+                    objReturn = Properties.Resources.flag_fiji_32;
                     break;
 
                 case "FK":
-                    objReturn = Properties.Resources.flag_falkland_islands1;
+                    objReturn = Properties.Resources.flag_falkland_islands_32;
                     break;
 
                 case "FM":
-                    objReturn = Properties.Resources.flag_micronesia1;
+                    objReturn = Properties.Resources.flag_micronesia_32;
                     break;
 
                 case "FO":
-                    objReturn = Properties.Resources.flag_faroe_islands1;
+                    objReturn = Properties.Resources.flag_faroe_islands_32;
                     break;
 
                 case "FR":
-                    objReturn = Properties.Resources.flag_france1;
+                    objReturn = Properties.Resources.flag_france_32;
                     break;
 
                 case "GA":
-                    objReturn = Properties.Resources.flag_gabon1;
+                    objReturn = Properties.Resources.flag_gabon_32;
                     break;
 
                 case "GB":
-                    objReturn = Properties.Resources.flag_great_britain1;
+                    objReturn = Properties.Resources.flag_great_britain_32;
                     break;
 
                 case "GD":
-                    objReturn = Properties.Resources.flag_grenada1;
+                    objReturn = Properties.Resources.flag_grenada_32;
                     break;
 
                 case "GE":
-                    objReturn = Properties.Resources.flag_georgia1;
+                    objReturn = Properties.Resources.flag_georgia_32;
                     break;
 
                 case "GG":
-                    objReturn = Properties.Resources.flag_guernsey1;
+                    objReturn = Properties.Resources.flag_guernsey_32;
                     break;
 
                 case "GH":
-                    objReturn = Properties.Resources.flag_ghana1;
+                    objReturn = Properties.Resources.flag_ghana_32;
                     break;
 
                 case "GI":
-                    objReturn = Properties.Resources.flag_gibraltar1;
+                    objReturn = Properties.Resources.flag_gibraltar_32;
                     break;
 
                 case "GL":
-                    objReturn = Properties.Resources.flag_greenland1;
+                    objReturn = Properties.Resources.flag_greenland_32;
                     break;
 
                 case "GM":
-                    objReturn = Properties.Resources.flag_gambia1;
+                    objReturn = Properties.Resources.flag_gambia_32;
                     break;
 
                 case "GN":
-                    objReturn = Properties.Resources.flag_guinea1;
+                    objReturn = Properties.Resources.flag_guinea_32;
                     break;
 
                 case "GQ":
-                    objReturn = Properties.Resources.flag_equatorial_guinea1;
+                    objReturn = Properties.Resources.flag_equatorial_guinea_32;
                     break;
 
                 case "GR":
-                    objReturn = Properties.Resources.flag_greece1;
+                    objReturn = Properties.Resources.flag_greece_32;
                     break;
 
                 case "GS":
-                    objReturn = Properties.Resources.flag_south_georgia1;
+                    objReturn = Properties.Resources.flag_south_georgia_32;
                     break;
 
                 case "GT":
-                    objReturn = Properties.Resources.flag_guatemala1;
+                    objReturn = Properties.Resources.flag_guatemala_32;
                     break;
 
                 case "GU":
-                    objReturn = Properties.Resources.flag_guam1;
+                    objReturn = Properties.Resources.flag_guam_32;
                     break;
 
                 case "GW":
-                    objReturn = Properties.Resources.flag_guinea_bissau1;
+                    objReturn = Properties.Resources.flag_guinea_bissau_32;
                     break;
 
                 case "GY":
-                    objReturn = Properties.Resources.flag_guyana1;
+                    objReturn = Properties.Resources.flag_guyana_32;
                     break;
 
                 case "HK":
-                    objReturn = Properties.Resources.flag_hong_kong1;
+                    objReturn = Properties.Resources.flag_hong_kong_32;
                     break;
 
                 case "HN":
-                    objReturn = Properties.Resources.flag_honduras1;
+                    objReturn = Properties.Resources.flag_honduras_32;
                     break;
 
                 case "HR":
-                    objReturn = Properties.Resources.flag_croatia1;
+                    objReturn = Properties.Resources.flag_croatia_32;
                     break;
 
                 case "HT":
-                    objReturn = Properties.Resources.flag_haiti1;
+                    objReturn = Properties.Resources.flag_haiti_32;
                     break;
 
                 case "HU":
-                    objReturn = Properties.Resources.flag_hungary1;
+                    objReturn = Properties.Resources.flag_hungary_32;
                     break;
 
                 case "ID":
-                    objReturn = Properties.Resources.flag_indonesia1;
+                    objReturn = Properties.Resources.flag_indonesia_32;
                     break;
 
                 case "IE":
-                    objReturn = Properties.Resources.flag_ireland1;
+                    objReturn = Properties.Resources.flag_ireland_32;
                     break;
 
                 case "IL":
-                    objReturn = Properties.Resources.flag_israel1;
+                    objReturn = Properties.Resources.flag_israel_32;
                     break;
 
                 case "IM":
-                    objReturn = Properties.Resources.flag_isle_of_man1;
+                    objReturn = Properties.Resources.flag_isle_of_man_32;
                     break;
 
                 case "IN":
-                    objReturn = Properties.Resources.flag_india1;
+                    objReturn = Properties.Resources.flag_india_32;
                     break;
 
                 case "IO":
-                    objReturn = Properties.Resources.flag_british_indian_ocean1;
+                    objReturn = Properties.Resources.flag_british_indian_ocean_32;
                     break;
 
                 case "IQ":
-                    objReturn = Properties.Resources.flag_iraq1;
+                    objReturn = Properties.Resources.flag_iraq_32;
                     break;
 
                 case "IR":
-                    objReturn = Properties.Resources.flag_iran1;
+                    objReturn = Properties.Resources.flag_iran_32;
                     break;
 
                 case "IS":
-                    objReturn = Properties.Resources.flag_iceland1;
+                    objReturn = Properties.Resources.flag_iceland_32;
                     break;
 
                 case "IT":
-                    objReturn = Properties.Resources.flag_italy1;
+                    objReturn = Properties.Resources.flag_italy_32;
                     break;
 
                 case "JE":
-                    objReturn = Properties.Resources.flag_jersey1;
+                    objReturn = Properties.Resources.flag_jersey_32;
                     break;
 
                 case "JM":
-                    objReturn = Properties.Resources.flag_jamaica1;
+                    objReturn = Properties.Resources.flag_jamaica_32;
                     break;
 
                 case "JO":
-                    objReturn = Properties.Resources.flag_jordan1;
+                    objReturn = Properties.Resources.flag_jordan_32;
                     break;
 
                 case "JP":
-                    objReturn = Properties.Resources.flag_japan1;
+                    objReturn = Properties.Resources.flag_japan_32;
                     break;
 
                 case "KE":
-                    objReturn = Properties.Resources.flag_kenya1;
+                    objReturn = Properties.Resources.flag_kenya_32;
                     break;
 
                 case "KG":
-                    objReturn = Properties.Resources.flag_kyrgyzstan1;
+                    objReturn = Properties.Resources.flag_kyrgyzstan_32;
                     break;
 
                 case "KH":
-                    objReturn = Properties.Resources.flag_cambodia1;
+                    objReturn = Properties.Resources.flag_cambodia_32;
                     break;
 
                 case "KI":
-                    objReturn = Properties.Resources.flag_kiribati1;
+                    objReturn = Properties.Resources.flag_kiribati_32;
                     break;
 
                 case "KM":
-                    objReturn = Properties.Resources.flag_comoros1;
+                    objReturn = Properties.Resources.flag_comoros_32;
                     break;
 
                 case "KN":
-                    objReturn = Properties.Resources.flag_saint_kitts_and_nevis1;
+                    objReturn = Properties.Resources.flag_saint_kitts_and_nevis_32;
                     break;
 
                 case "KP":
-                    objReturn = Properties.Resources.flag_north_korea1;
+                    objReturn = Properties.Resources.flag_north_korea_32;
                     break;
 
                 case "KR":
-                    objReturn = Properties.Resources.flag_south_korea1;
+                    objReturn = Properties.Resources.flag_south_korea_32;
                     break;
 
                 case "KW":
-                    objReturn = Properties.Resources.flag_kuwait1;
+                    objReturn = Properties.Resources.flag_kuwait_32;
                     break;
 
                 case "KY":
-                    objReturn = Properties.Resources.flag_cayman_islands1;
+                    objReturn = Properties.Resources.flag_cayman_islands_32;
                     break;
 
                 case "KZ":
-                    objReturn = Properties.Resources.flag_kazakhstan1;
+                    objReturn = Properties.Resources.flag_kazakhstan_32;
                     break;
 
                 case "LA":
-                    objReturn = Properties.Resources.flag_laos1;
+                    objReturn = Properties.Resources.flag_laos_32;
                     break;
 
                 case "LB":
-                    objReturn = Properties.Resources.flag_lebanon1;
+                    objReturn = Properties.Resources.flag_lebanon_32;
                     break;
 
                 case "LC":
-                    objReturn = Properties.Resources.flag_saint_lucia1;
+                    objReturn = Properties.Resources.flag_saint_lucia_32;
                     break;
 
                 case "LI":
-                    objReturn = Properties.Resources.flag_liechtenstein1;
+                    objReturn = Properties.Resources.flag_liechtenstein_32;
                     break;
 
                 case "LK":
-                    objReturn = Properties.Resources.flag_sri_lanka1;
+                    objReturn = Properties.Resources.flag_sri_lanka_32;
                     break;
 
                 case "LR":
-                    objReturn = Properties.Resources.flag_liberia1;
+                    objReturn = Properties.Resources.flag_liberia_32;
                     break;
 
                 case "LS":
-                    objReturn = Properties.Resources.flag_lesotho1;
+                    objReturn = Properties.Resources.flag_lesotho_32;
                     break;
 
                 case "LT":
-                    objReturn = Properties.Resources.flag_lithuania1;
+                    objReturn = Properties.Resources.flag_lithuania_32;
                     break;
 
                 case "LU":
-                    objReturn = Properties.Resources.flag_luxembourg1;
+                    objReturn = Properties.Resources.flag_luxembourg_32;
                     break;
 
                 case "LV":
-                    objReturn = Properties.Resources.flag_latvia1;
+                    objReturn = Properties.Resources.flag_latvia_32;
                     break;
 
                 case "LY":
-                    objReturn = Properties.Resources.flag_libya1;
+                    objReturn = Properties.Resources.flag_libya_32;
                     break;
 
                 case "MA":
-                    objReturn = Properties.Resources.flag_morocco1;
+                    objReturn = Properties.Resources.flag_morocco_32;
                     break;
 
                 case "MC":
-                    objReturn = Properties.Resources.flag_monaco1;
+                    objReturn = Properties.Resources.flag_monaco_32;
                     break;
 
                 case "MD":
-                    objReturn = Properties.Resources.flag_moldova1;
+                    objReturn = Properties.Resources.flag_moldova_32;
                     break;
 
                 case "MG":
-                    objReturn = Properties.Resources.flag_madagascar1;
+                    objReturn = Properties.Resources.flag_madagascar_32;
                     break;
 
                 case "MH":
-                    objReturn = Properties.Resources.flag_marshall_islands1;
+                    objReturn = Properties.Resources.flag_marshall_islands_32;
                     break;
 
                 case "MK":
-                    objReturn = Properties.Resources.flag_macedonia1;
+                    objReturn = Properties.Resources.flag_macedonia_32;
                     break;
 
                 case "ML":
-                    objReturn = Properties.Resources.flag_mali1;
+                    objReturn = Properties.Resources.flag_mali_32;
                     break;
 
                 case "MM":
-                    objReturn = Properties.Resources.flag_burma1;
+                    objReturn = Properties.Resources.flag_burma_32;
                     break;
 
                 case "MN":
-                    objReturn = Properties.Resources.flag_mongolia1;
+                    objReturn = Properties.Resources.flag_mongolia_32;
                     break;
 
                 case "MO":
-                    objReturn = Properties.Resources.flag_macau1;
+                    objReturn = Properties.Resources.flag_macau_32;
                     break;
 
                 case "MP":
-                    objReturn = Properties.Resources.flag_northern_mariana_islands1;
+                    objReturn = Properties.Resources.flag_northern_mariana_islands_32;
                     break;
 
                 case "MQ":
-                    objReturn = Properties.Resources.flag_martinique1;
+                    objReturn = Properties.Resources.flag_martinique_32;
                     break;
 
                 case "MR":
-                    objReturn = Properties.Resources.flag_mauretania1;
+                    objReturn = Properties.Resources.flag_mauretania_32;
                     break;
 
                 case "MS":
-                    objReturn = Properties.Resources.flag_montserrat1;
+                    objReturn = Properties.Resources.flag_montserrat_32;
                     break;
 
                 case "MT":
-                    objReturn = Properties.Resources.flag_malta1;
+                    objReturn = Properties.Resources.flag_malta_32;
                     break;
 
                 case "MU":
-                    objReturn = Properties.Resources.flag_mauritius1;
+                    objReturn = Properties.Resources.flag_mauritius_32;
                     break;
 
                 case "MV":
-                    objReturn = Properties.Resources.flag_maledives1;
+                    objReturn = Properties.Resources.flag_maledives_32;
                     break;
 
                 case "MW":
-                    objReturn = Properties.Resources.flag_malawi1;
+                    objReturn = Properties.Resources.flag_malawi_32;
                     break;
 
                 case "MX":
-                    objReturn = Properties.Resources.flag_mexico1;
+                    objReturn = Properties.Resources.flag_mexico_32;
                     break;
 
                 case "MY":
-                    objReturn = Properties.Resources.flag_malaysia1;
+                    objReturn = Properties.Resources.flag_malaysia_32;
                     break;
 
                 case "MZ":
-                    objReturn = Properties.Resources.flag_mozambique1;
+                    objReturn = Properties.Resources.flag_mozambique_32;
                     break;
 
                 case "NA":
-                    objReturn = Properties.Resources.flag_namibia1;
+                    objReturn = Properties.Resources.flag_namibia_32;
                     break;
 
                 case "NE":
-                    objReturn = Properties.Resources.flag_niger1;
+                    objReturn = Properties.Resources.flag_niger_32;
                     break;
 
                 case "NF":
-                    objReturn = Properties.Resources.flag_norfolk_islands1;
+                    objReturn = Properties.Resources.flag_norfolk_islands_32;
                     break;
 
                 case "NG":
-                    objReturn = Properties.Resources.flag_nigeria1;
+                    objReturn = Properties.Resources.flag_nigeria_32;
                     break;
 
                 case "NI":
-                    objReturn = Properties.Resources.flag_nicaragua1;
+                    objReturn = Properties.Resources.flag_nicaragua_32;
                     break;
 
                 case "NL":
-                    objReturn = Properties.Resources.flag_netherlands1;
+                    objReturn = Properties.Resources.flag_netherlands_32;
                     break;
 
                 case "NO":
-                    objReturn = Properties.Resources.flag_norway1;
+                    objReturn = Properties.Resources.flag_norway_32;
                     break;
 
                 case "NP":
-                    objReturn = Properties.Resources.flag_nepal1;
+                    objReturn = Properties.Resources.flag_nepal_32;
                     break;
 
                 case "NR":
-                    objReturn = Properties.Resources.flag_nauru1;
+                    objReturn = Properties.Resources.flag_nauru_32;
                     break;
 
                 case "NU":
-                    objReturn = Properties.Resources.flag_niue1;
+                    objReturn = Properties.Resources.flag_niue_32;
                     break;
 
                 case "NZ":
-                    objReturn = Properties.Resources.flag_new_zealand1;
+                    objReturn = Properties.Resources.flag_new_zealand_32;
                     break;
 
                 case "OM":
-                    objReturn = Properties.Resources.flag_oman1;
+                    objReturn = Properties.Resources.flag_oman_32;
                     break;
 
                 case "PA":
-                    objReturn = Properties.Resources.flag_panama1;
+                    objReturn = Properties.Resources.flag_panama_32;
                     break;
 
                 case "PE":
-                    objReturn = Properties.Resources.flag_peru1;
+                    objReturn = Properties.Resources.flag_peru_32;
                     break;
 
                 case "PF":
-                    objReturn = Properties.Resources.flag_french_polynesia1;
+                    objReturn = Properties.Resources.flag_french_polynesia_32;
                     break;
 
                 case "PG":
-                    objReturn = Properties.Resources.flag_papua_new_guinea1;
+                    objReturn = Properties.Resources.flag_papua_new_guinea_32;
                     break;
 
                 case "PH":
-                    objReturn = Properties.Resources.flag_philippines1;
+                    objReturn = Properties.Resources.flag_philippines_32;
                     break;
 
                 case "PK":
-                    objReturn = Properties.Resources.flag_pakistan1;
+                    objReturn = Properties.Resources.flag_pakistan_32;
                     break;
 
                 case "PL":
-                    objReturn = Properties.Resources.flag_poland1;
+                    objReturn = Properties.Resources.flag_poland_32;
                     break;
 
                 case "PM":
-                    objReturn = Properties.Resources.flag_saint_pierre_and_miquelon1;
+                    objReturn = Properties.Resources.flag_saint_pierre_and_miquelon_32;
                     break;
 
                 case "PN":
-                    objReturn = Properties.Resources.flag_pitcairn_islands1;
+                    objReturn = Properties.Resources.flag_pitcairn_islands_32;
                     break;
 
                 case "PR":
-                    objReturn = Properties.Resources.flag_puerto_rico1;
+                    objReturn = Properties.Resources.flag_puerto_rico_32;
                     break;
 
                 case "PT":
-                    objReturn = Properties.Resources.flag_portugal1;
+                    objReturn = Properties.Resources.flag_portugal_32;
                     break;
 
                 case "PW":
-                    objReturn = Properties.Resources.flag_palau1;
+                    objReturn = Properties.Resources.flag_palau_32;
                     break;
 
                 case "PY":
-                    objReturn = Properties.Resources.flag_paraquay1;
+                    objReturn = Properties.Resources.flag_paraquay_32;
                     break;
 
                 case "QA":
-                    objReturn = Properties.Resources.flag_qatar1;
+                    objReturn = Properties.Resources.flag_qatar_32;
                     break;
 
                 case "RO":
-                    objReturn = Properties.Resources.flag_romania1;
+                    objReturn = Properties.Resources.flag_romania_32;
                     break;
 
                 case "RS":
-                    objReturn = Properties.Resources.flag_serbia_montenegro1;
+                    objReturn = Properties.Resources.flag_serbia_montenegro_32;
                     break;
 
                 case "RU":
-                    objReturn = Properties.Resources.flag_russia1;
+                    objReturn = Properties.Resources.flag_russia_32;
                     break;
 
                 case "RW":
-                    objReturn = Properties.Resources.flag_rwanda1;
+                    objReturn = Properties.Resources.flag_rwanda_32;
                     break;
 
                 case "SA":
-                    objReturn = Properties.Resources.flag_saudi_arabia1;
+                    objReturn = Properties.Resources.flag_saudi_arabia_32;
                     break;
 
                 case "SB":
-                    objReturn = Properties.Resources.flag_solomon_islands1;
+                    objReturn = Properties.Resources.flag_solomon_islands_32;
                     break;
 
                 case "SC":
-                    objReturn = Properties.Resources.flag_seychelles1;
+                    objReturn = Properties.Resources.flag_seychelles_32;
                     break;
 
                 case "SD":
-                    objReturn = Properties.Resources.flag_sudan1;
+                    objReturn = Properties.Resources.flag_sudan_32;
                     break;
 
                 case "SE":
-                    objReturn = Properties.Resources.flag_sweden1;
+                    objReturn = Properties.Resources.flag_sweden_32;
                     break;
 
                 case "SG":
-                    objReturn = Properties.Resources.flag_singapore1;
+                    objReturn = Properties.Resources.flag_singapore_32;
                     break;
 
                 case "SH":
-                    objReturn = Properties.Resources.flag_saint_helena1;
+                    objReturn = Properties.Resources.flag_saint_helena_32;
                     break;
 
                 case "SI":
-                    objReturn = Properties.Resources.flag_slovenia1;
+                    objReturn = Properties.Resources.flag_slovenia_32;
                     break;
 
                 case "SK":
-                    objReturn = Properties.Resources.flag_slovakia1;
+                    objReturn = Properties.Resources.flag_slovakia_32;
                     break;
 
                 case "SL":
-                    objReturn = Properties.Resources.flag_sierra_leone1;
+                    objReturn = Properties.Resources.flag_sierra_leone_32;
                     break;
 
                 case "SM":
-                    objReturn = Properties.Resources.flag_san_marino1;
+                    objReturn = Properties.Resources.flag_san_marino_32;
                     break;
 
                 case "SN":
-                    objReturn = Properties.Resources.flag_senegal1;
+                    objReturn = Properties.Resources.flag_senegal_32;
                     break;
 
                 case "SO":
-                    objReturn = Properties.Resources.flag_somalia1;
+                    objReturn = Properties.Resources.flag_somalia_32;
                     break;
 
                 case "SR":
-                    objReturn = Properties.Resources.flag_suriname1;
+                    objReturn = Properties.Resources.flag_suriname_32;
                     break;
 
                 case "ST":
-                    objReturn = Properties.Resources.flag_sao_tome_and_principe1;
+                    objReturn = Properties.Resources.flag_sao_tome_and_principe_32;
                     break;
 
                 case "SV":
-                    objReturn = Properties.Resources.flag_el_salvador1;
+                    objReturn = Properties.Resources.flag_el_salvador_32;
                     break;
 
                 case "SY":
-                    objReturn = Properties.Resources.flag_syria1;
+                    objReturn = Properties.Resources.flag_syria_32;
                     break;
 
                 case "SZ":
-                    objReturn = Properties.Resources.flag_swaziland1;
+                    objReturn = Properties.Resources.flag_swaziland_32;
                     break;
 
                 case "TC":
-                    objReturn = Properties.Resources.flag_turks_and_caicos_islands1;
+                    objReturn = Properties.Resources.flag_turks_and_caicos_islands_32;
                     break;
 
                 case "TD":
-                    objReturn = Properties.Resources.flag_chad1;
+                    objReturn = Properties.Resources.flag_chad_32;
                     break;
 
                 case "TG":
-                    objReturn = Properties.Resources.flag_togo1;
+                    objReturn = Properties.Resources.flag_togo_32;
                     break;
 
                 case "TH":
-                    objReturn = Properties.Resources.flag_thailand1;
+                    objReturn = Properties.Resources.flag_thailand_32;
                     break;
 
                 case "TI":
-                    objReturn = Properties.Resources.flag_tibet1;
+                    objReturn = Properties.Resources.flag_tibet_32;
                     break;
 
                 case "TJ":
-                    objReturn = Properties.Resources.flag_tajikistan1;
+                    objReturn = Properties.Resources.flag_tajikistan_32;
                     break;
 
                 case "TL":
-                    objReturn = Properties.Resources.flag_east_timor1;
+                    objReturn = Properties.Resources.flag_east_timor_32;
                     break;
 
                 case "TM":
-                    objReturn = Properties.Resources.flag_turkmenistan1;
+                    objReturn = Properties.Resources.flag_turkmenistan_32;
                     break;
 
                 case "TN":
-                    objReturn = Properties.Resources.flag_tunisia1;
+                    objReturn = Properties.Resources.flag_tunisia_32;
                     break;
 
                 case "TO":
-                    objReturn = Properties.Resources.flag_tonga1;
+                    objReturn = Properties.Resources.flag_tonga_32;
                     break;
 
                 case "TR":
-                    objReturn = Properties.Resources.flag_turkey1;
+                    objReturn = Properties.Resources.flag_turkey_32;
                     break;
 
                 case "TT":
-                    objReturn = Properties.Resources.flag_trinidad_and_tobago1;
+                    objReturn = Properties.Resources.flag_trinidad_and_tobago_32;
                     break;
 
                 case "TV":
-                    objReturn = Properties.Resources.flag_tuvalu1;
+                    objReturn = Properties.Resources.flag_tuvalu_32;
                     break;
 
                 case "TW":
-                    objReturn = Properties.Resources.flag_taiwan1;
+                    objReturn = Properties.Resources.flag_taiwan_32;
                     break;
 
                 case "TZ":
-                    objReturn = Properties.Resources.flag_tanzania1;
+                    objReturn = Properties.Resources.flag_tanzania_32;
                     break;
 
                 case "UA":
-                    objReturn = Properties.Resources.flag_ukraine1;
+                    objReturn = Properties.Resources.flag_ukraine_32;
                     break;
 
                 case "UG":
-                    objReturn = Properties.Resources.flag_uganda1;
+                    objReturn = Properties.Resources.flag_uganda_32;
                     break;
 
                 case "US":
-                    objReturn = Properties.Resources.flag_usa1;
+                    objReturn = Properties.Resources.flag_usa_32;
                     break;
 
                 case "UY":
-                    objReturn = Properties.Resources.flag_uruquay1;
+                    objReturn = Properties.Resources.flag_uruquay_32;
                     break;
 
                 case "UZ":
-                    objReturn = Properties.Resources.flag_uzbekistan1;
+                    objReturn = Properties.Resources.flag_uzbekistan_32;
                     break;
 
                 case "VA":
-                    objReturn = Properties.Resources.flag_vatican_city1;
+                    objReturn = Properties.Resources.flag_vatican_city_32;
                     break;
 
                 case "VC":
-                    objReturn = Properties.Resources.flag_saint_vincent_and_grenadines1;
+                    objReturn = Properties.Resources.flag_saint_vincent_and_grenadines_32;
                     break;
 
                 case "VE":
-                    objReturn = Properties.Resources.flag_venezuela1;
+                    objReturn = Properties.Resources.flag_venezuela_32;
                     break;
 
                 case "VG":
-                    objReturn = Properties.Resources.flag_british_virgin_islands1;
+                    objReturn = Properties.Resources.flag_british_virgin_islands_32;
                     break;
 
                 case "VI":
-                    objReturn = Properties.Resources.flag_virgin_islands1;
+                    objReturn = Properties.Resources.flag_virgin_islands_32;
                     break;
 
                 case "VN":
-                    objReturn = Properties.Resources.flag_vietnam1;
+                    objReturn = Properties.Resources.flag_vietnam_32;
                     break;
 
                 case "VU":
-                    objReturn = Properties.Resources.flag_vanuatu1;
+                    objReturn = Properties.Resources.flag_vanuatu_32;
                     break;
 
                 case "WF":
-                    objReturn = Properties.Resources.flag_wallis_and_futuna1;
+                    objReturn = Properties.Resources.flag_wallis_and_futuna_32;
                     break;
 
                 case "WS":
-                    objReturn = Properties.Resources.flag_samoa1;
+                    objReturn = Properties.Resources.flag_samoa_32;
                     break;
 
                 case "XE":
-                    objReturn = Properties.Resources.flag_england1;
+                    objReturn = Properties.Resources.flag_england_32;
                     break;
 
                 case "XS":
-                    objReturn = Properties.Resources.flag_scotland1;
+                    objReturn = Properties.Resources.flag_scotland_32;
                     break;
 
                 case "XW":
-                    objReturn = Properties.Resources.flag_wales1;
+                    objReturn = Properties.Resources.flag_wales_32;
                     break;
 
                 case "YE":
-                    objReturn = Properties.Resources.flag_yemen1;
+                    objReturn = Properties.Resources.flag_yemen_32;
                     break;
 
                 case "ZA":
-                    objReturn = Properties.Resources.flag_south_africa1;
+                    objReturn = Properties.Resources.flag_south_africa_32;
                     break;
 
                 case "ZM":
-                    objReturn = Properties.Resources.flag_zambia1;
+                    objReturn = Properties.Resources.flag_zambia_32;
                     break;
 
                 case "ZW":
-                    objReturn = Properties.Resources.flag_zimbabwe1;
+                    objReturn = Properties.Resources.flag_zimbabwe_32;
                     break;
 
                 case "DEFAULT":
