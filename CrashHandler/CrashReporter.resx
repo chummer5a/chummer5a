@@ -120,17 +120,6 @@
   <metadata name="stpMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="lblIntroText.Text" xml:space="preserve">
-    <value>We are sorry, Chummer encountered a problem and closed to protect your character data. 
-
-You can help us improve Chummer by reporting this error.
-
-Fill out the description of the error in the Error Description tab, then click the 'Create New Issue' button below to open a link to our GitHub issue tracker in your default browser.
-
-You can help even more if you attach the .zip archive containing anonymized crash information for this crash. The archive is either being created or has already been created in your Chummer folder. It can be accessed quickly by clicking the link below.
-
-Note: It is safe to close this window if you do not want to report this bug.</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -634,5 +623,16 @@ Note: It is safe to close this window if you do not want to report this bug.</va
         D3LKc4UCqNZM+3EWcirAPshWmwGkz6836QHi3uFkvO/tyETYKXTmc9hOwNMRf8qLkJ0Uc5DBwEzkPU5H
         +n99cDCCCLR+rmEDeFILb0W++D8M3AX8CBkIVCiI/w/Csqz4H/BJeAAAAABJRU5ErkJggg==
 </value>
+  </data>
+  <data name="lblIntroText.Text" xml:space="preserve">
+    <value>We are sorry, Chummer encountered a problem and closed to protect your character data. 
+
+You can help us improve Chummer by reporting this error.
+
+Fill out the description of the error in the Error Description tab, then click the 'Create New Issue' button below to open a link to our GitHub issue tracker in your default browser.
+
+You can help even more if you attach the .zip archive containing anonymized crash information for this crash. The archive is either being created or has already been created in your Chummer folder. It can be accessed quickly by clicking the link below.
+
+Note: It is safe to close this window if you do not want to report this bug.</value>
   </data>
 </root>
