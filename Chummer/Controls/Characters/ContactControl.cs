@@ -671,8 +671,16 @@ namespace Chummer
         {
             await cmdExpand.DoThreadSafeAsync(x =>
             {
-                x.ImageDpi96 = value ? Resources.toggle_16 : Resources.toggle_expand_16;
-                x.ImageDpi192 = value ? Resources.toggle_32 : Resources.toggle_expand_32;
+                if (value)
+                {
+                    x.BatchSetImages(Resources.toggle_16, Resources.toggle_20, Resources.toggle_24, Resources.toggle_32,
+                        Resources.toggle_48, Resources.toggle_64);
+                }
+                else
+                {
+                    x.BatchSetImages(Resources.toggle_expand_16, Resources.toggle_expand_20, Resources.toggle_expand_24, Resources.toggle_expand_32,
+                        Resources.toggle_expand_48, Resources.toggle_expand_64);
+                }
             }, token).ConfigureAwait(false);
             if (value)
             {
@@ -892,12 +900,12 @@ namespace Chummer
                         FlatStyle = FlatStyle.Flat,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
-                        ImageDpi96 = Resources.link_16,
-                        ImageDpi192 = Resources.link_32,
                         Name = "cmdLink",
                         UseVisualStyleBackColor = true,
                         TabStop = false
                     };
+                    x.cmdLink.BatchSetImages(Resources.link_16, Resources.link_20, Resources.link_24, Resources.link_32,
+                        Resources.link_48, Resources.link_64);
                     x.nudConnection.ValueChanged += nudConnection_ValueChanged;
                     x.nudLoyalty.ValueChanged += nudLoyalty_ValueChanged;
                     x.chkFree.CheckedChanged += chkFree_CheckedChanged;

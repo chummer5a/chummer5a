@@ -78,11 +78,11 @@ namespace Chummer.UI.Attributes
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
-                        ImageDpi96 = Resources.add_16,
-                        ImageDpi192 = Resources.add_32,
                         Name = "cmdImproveATT",
                         UseVisualStyleBackColor = true
                     };
+                    cmdImproveATT.BatchSetImages(Resources.add_16, Resources.add_20, Resources.add_24, Resources.add_32,
+                        Resources.add_48, Resources.add_64);
                     cmdImproveATT.Click += cmdImproveATT_Click;
                     flpRight.Controls.Add(cmdImproveATT);
                     if (AttributeName == "EDG")
@@ -94,12 +94,13 @@ namespace Chummer.UI.Attributes
                             AutoSizeMode = AutoSizeMode.GrowAndShrink,
                             Padding = new Padding(1),
                             MinimumSize = new Size(24, 24),
-                            ImageDpi96 = Resources.fire_16,
-                            ImageDpi192 = Resources.fire_32,
                             Name = "cmdBurnEdge",
                             ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge"),
                             UseVisualStyleBackColor = true
                         };
+                        cmdBurnEdge.BatchSetImages(Resources.fire_16, Resources.fire_20, Resources.fire_24,
+                            Resources.fire_32,
+                            Resources.fire_48, Resources.fire_64);
                         cmdBurnEdge.Click += cmdBurnEdge_Click;
                         flpRight.Controls.Add(cmdBurnEdge);
                     }

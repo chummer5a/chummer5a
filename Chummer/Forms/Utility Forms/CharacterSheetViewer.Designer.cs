@@ -66,11 +66,11 @@ namespace Chummer
             // 
             this.tsSaveAsXml.Enabled = false;
             this.tsSaveAsXml.Image = global::Chummer.Properties.Resources.xml_go_16;
-            this.tsSaveAsXml.ImageDpi120 = null;
-            this.tsSaveAsXml.ImageDpi144 = null;
+            this.tsSaveAsXml.ImageDpi120 = global::Chummer.Properties.Resources.xml_go_20;
+            this.tsSaveAsXml.ImageDpi144 = global::Chummer.Properties.Resources.xml_go_24;
             this.tsSaveAsXml.ImageDpi192 = global::Chummer.Properties.Resources.xml_go_32;
-            this.tsSaveAsXml.ImageDpi288 = null;
-            this.tsSaveAsXml.ImageDpi384 = null;
+            this.tsSaveAsXml.ImageDpi288 = global::Chummer.Properties.Resources.xml_go_48;
+            this.tsSaveAsXml.ImageDpi384 = global::Chummer.Properties.Resources.xml_go_64;
             this.tsSaveAsXml.ImageDpi96 = global::Chummer.Properties.Resources.xml_go_16;
             this.tsSaveAsXml.Name = "tsSaveAsXml";
             this.tsSaveAsXml.Size = new System.Drawing.Size(147, 22);
@@ -82,11 +82,11 @@ namespace Chummer
             // 
             this.tsSaveAsHtml.Enabled = false;
             this.tsSaveAsHtml.Image = global::Chummer.Properties.Resources.html_go_16;
-            this.tsSaveAsHtml.ImageDpi120 = null;
-            this.tsSaveAsHtml.ImageDpi144 = null;
+            this.tsSaveAsHtml.ImageDpi120 = global::Chummer.Properties.Resources.html_go_20;
+            this.tsSaveAsHtml.ImageDpi144 = global::Chummer.Properties.Resources.html_go_24;
             this.tsSaveAsHtml.ImageDpi192 = global::Chummer.Properties.Resources.html_go_32;
-            this.tsSaveAsHtml.ImageDpi288 = null;
-            this.tsSaveAsHtml.ImageDpi384 = null;
+            this.tsSaveAsHtml.ImageDpi288 = global::Chummer.Properties.Resources.html_go_48;
+            this.tsSaveAsHtml.ImageDpi384 = global::Chummer.Properties.Resources.html_go_64;
             this.tsSaveAsHtml.ImageDpi96 = global::Chummer.Properties.Resources.html_go_16;
             this.tsSaveAsHtml.Name = "tsSaveAsHtml";
             this.tsSaveAsHtml.Size = new System.Drawing.Size(147, 22);
@@ -105,11 +105,11 @@ namespace Chummer
             // 
             this.tsPrintPreview.Enabled = false;
             this.tsPrintPreview.Image = global::Chummer.Properties.Resources.printer_magnify_16;
-            this.tsPrintPreview.ImageDpi120 = null;
-            this.tsPrintPreview.ImageDpi144 = null;
+            this.tsPrintPreview.ImageDpi120 = global::Chummer.Properties.Resources.printer_magnify_20;
+            this.tsPrintPreview.ImageDpi144 = global::Chummer.Properties.Resources.printer_magnify_24;
             this.tsPrintPreview.ImageDpi192 = global::Chummer.Properties.Resources.printer_magnify_32;
-            this.tsPrintPreview.ImageDpi288 = null;
-            this.tsPrintPreview.ImageDpi384 = null;
+            this.tsPrintPreview.ImageDpi288 = global::Chummer.Properties.Resources.printer_magnify_48;
+            this.tsPrintPreview.ImageDpi384 = global::Chummer.Properties.Resources.printer_magnify_64;
             this.tsPrintPreview.ImageDpi96 = global::Chummer.Properties.Resources.printer_magnify_16;
             this.tsPrintPreview.Name = "tsPrintPreview";
             this.tsPrintPreview.Size = new System.Drawing.Size(143, 22);

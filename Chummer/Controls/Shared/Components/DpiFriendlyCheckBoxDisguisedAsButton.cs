@@ -217,6 +217,22 @@ namespace Chummer
             }
         }
 
+        public void BatchSetImages(Image imgDpi96, Image imgDpi120, Image imgDpi144, Image imgDpi192, Image imgDpi288,
+            Image imgDpi384)
+        {
+            _objImageDpi96 = imgDpi96;
+            _objImageDpi120 = imgDpi120;
+            _objImageDpi144 = imgDpi144;
+            _objImageDpi192 = imgDpi192;
+            _objImageDpi288 = imgDpi288;
+            _objImageDpi384 = imgDpi384;
+
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                base.Image = imgDpi96;
+            else
+                RefreshImage();
+        }
+
         /// <summary>
         /// Checks a newly set image against the existing image of the button to see if it's a better fit than the current image.
         /// Only use this with images that are one of the ones set for this button!

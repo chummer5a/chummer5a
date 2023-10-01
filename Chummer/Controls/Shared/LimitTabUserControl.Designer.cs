@@ -274,11 +274,11 @@ namespace Chummer.UI.Shared
             // tssLimitModifierEdit
             // 
             this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit_16;
-            this.tssLimitModifierEdit.ImageDpi120 = null;
-            this.tssLimitModifierEdit.ImageDpi144 = null;
+            this.tssLimitModifierEdit.ImageDpi120 = global::Chummer.Properties.Resources.house_edit_20;
+            this.tssLimitModifierEdit.ImageDpi144 = global::Chummer.Properties.Resources.house_edit_24;
             this.tssLimitModifierEdit.ImageDpi192 = global::Chummer.Properties.Resources.house_edit_32;
-            this.tssLimitModifierEdit.ImageDpi288 = null;
-            this.tssLimitModifierEdit.ImageDpi384 = null;
+            this.tssLimitModifierEdit.ImageDpi288 = global::Chummer.Properties.Resources.house_edit_48;
+            this.tssLimitModifierEdit.ImageDpi384 = global::Chummer.Properties.Resources.house_edit_64;
             this.tssLimitModifierEdit.ImageDpi96 = global::Chummer.Properties.Resources.house_edit_16;
             this.tssLimitModifierEdit.Name = "tssLimitModifierEdit";
             this.tssLimitModifierEdit.Size = new System.Drawing.Size(105, 22);
@@ -289,11 +289,11 @@ namespace Chummer.UI.Shared
             // tssLimitModifierNotes
             // 
             this.tssLimitModifierNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
-            this.tssLimitModifierNotes.ImageDpi120 = null;
-            this.tssLimitModifierNotes.ImageDpi144 = null;
+            this.tssLimitModifierNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tssLimitModifierNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
             this.tssLimitModifierNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
-            this.tssLimitModifierNotes.ImageDpi288 = null;
-            this.tssLimitModifierNotes.ImageDpi384 = null;
+            this.tssLimitModifierNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tssLimitModifierNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
             this.tssLimitModifierNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tssLimitModifierNotes.Name = "tssLimitModifierNotes";
             this.tssLimitModifierNotes.Size = new System.Drawing.Size(105, 22);
@@ -311,11 +311,11 @@ namespace Chummer.UI.Shared
             // tssLimitModifierNotesOnlyNotes
             // 
             this.tssLimitModifierNotesOnlyNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
-            this.tssLimitModifierNotesOnlyNotes.ImageDpi120 = null;
-            this.tssLimitModifierNotesOnlyNotes.ImageDpi144 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
             this.tssLimitModifierNotesOnlyNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
-            this.tssLimitModifierNotesOnlyNotes.ImageDpi288 = null;
-            this.tssLimitModifierNotesOnlyNotes.ImageDpi384 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
             this.tssLimitModifierNotesOnlyNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tssLimitModifierNotesOnlyNotes.Name = "tssLimitModifierNotesOnlyNotes";
             this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(105, 22);

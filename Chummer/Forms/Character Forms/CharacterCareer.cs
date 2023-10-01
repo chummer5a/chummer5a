@@ -19067,8 +19067,7 @@ namespace Chummer
                             await chkCmBox.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.ImageDpi96 = null;
-                                x.ImageDpi192 = null;
+                                x.BatchSetImages(null, null, null, null, null, null);
                                 if (intCurrentBoxTag > intThresholdOffset
                                     && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
                                 {
@@ -19090,13 +19089,13 @@ namespace Chummer
                                         .ControlDarkerLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
                                 if (intCurrentBoxTag == intConditionMax + intOverflow)
                                 {
-                                    x.ImageDpi96 = Properties.Resources.rip_16;
-                                    x.ImageDpi192 = Properties.Resources.rip_32;
+                                    x.BatchSetImages(Properties.Resources.rip_16, Properties.Resources.rip_20,
+                                        Properties.Resources.rip_24, Properties.Resources.rip_32,
+                                        Properties.Resources.rip_48, Properties.Resources.rip_64);
                                 }
                                 else
                                 {
-                                    x.ImageDpi96 = null;
-                                    x.ImageDpi192 = null;
+                                    x.BatchSetImages(null, null, null, null, null, null);
                                 }
                             }, token).ConfigureAwait(false);
                         }
@@ -19105,8 +19104,7 @@ namespace Chummer
                             await chkCmBox.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = false;
-                                x.ImageDpi96 = null;
-                                x.ImageDpi192 = null;
+                                x.BatchSetImages(null, null, null, null, null, null);
                                 x.Text = " "; // Non-breaking space to help with DPI stuff
                             }, token).ConfigureAwait(false);
                         }

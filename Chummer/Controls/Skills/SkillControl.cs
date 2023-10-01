@@ -139,13 +139,13 @@ namespace Chummer.UI.Skills
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        ImageDpi96 = Resources.add_16,
-                        ImageDpi192 = Resources.add_32,
                         MinimumSize = new Size(24, 24),
                         Name = "btnCareerIncrease",
                         Padding = new Padding(1),
                         UseVisualStyleBackColor = true
                     };
+                    btnCareerIncrease.BatchSetImages(Resources.add_16, Resources.add_20, Resources.add_24,
+                        Resources.add_32, Resources.add_48, Resources.add_64);
                     btnCareerIncrease.Click += btnCareerIncrease_Click;
 
                     tlpMain.Controls.Add(lblCareerRating, 2, 0);
@@ -156,13 +156,13 @@ namespace Chummer.UI.Skills
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        ImageDpi96 = Resources.add_16,
-                        ImageDpi192 = Resources.add_32,
                         MinimumSize = new Size(24, 24),
                         Name = "btnAddSpec",
                         Padding = new Padding(1),
                         UseVisualStyleBackColor = true
                     };
+                    btnAddSpec.BatchSetImages(Resources.add_16, Resources.add_20, Resources.add_24,
+                        Resources.add_32, Resources.add_48, Resources.add_64);
                     btnAddSpec.Click += btnAddSpec_Click;
                     lblCareerSpec = new Label
                     {

@@ -101,11 +101,12 @@ namespace Chummer
 #if DEBUG
             DpiFriendlyToolStripMenuItem mnuForceCrash = new DpiFriendlyToolStripMenuItem
             {
-                ImageDpi96 = Properties.Resources.error_16,
-                ImageDpi192 = Properties.Resources.error_32,
                 Name = "mnuForceCrash",
                 Text = "&Force Crash"
             };
+            mnuForceCrash.BatchSetImages(Properties.Resources.error_16, Properties.Resources.error_20,
+                Properties.Resources.error_24, Properties.Resources.error_32, Properties.Resources.error_48,
+                Properties.Resources.error_32);
             mnuForceCrash.Click += mnuForceCrash_Click;
             toolsMenu.DropDownItems.Add(mnuForceCrash);
 #endif

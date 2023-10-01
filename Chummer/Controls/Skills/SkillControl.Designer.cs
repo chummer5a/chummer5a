@@ -57,11 +57,11 @@ namespace Chummer.UI.Skills
             // tsSkillLabelNotes
             // 
             this.tsSkillLabelNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
-            this.tsSkillLabelNotes.ImageDpi120 = null;
-            this.tsSkillLabelNotes.ImageDpi144 = null;
+            this.tsSkillLabelNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsSkillLabelNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
             this.tsSkillLabelNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
-            this.tsSkillLabelNotes.ImageDpi288 = null;
-            this.tsSkillLabelNotes.ImageDpi384 = null;
+            this.tsSkillLabelNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsSkillLabelNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
             this.tsSkillLabelNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsSkillLabelNotes.Name = "tsSkillLabelNotes";
             this.tsSkillLabelNotes.Size = new System.Drawing.Size(109, 26);

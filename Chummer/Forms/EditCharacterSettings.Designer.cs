@@ -148,6 +148,12 @@ namespace Chummer
             this.nudMinAstralInitiativeDice = new Chummer.NumericUpDownEx();
             this.nudMinColdSimInitiativeDice = new Chummer.NumericUpDownEx();
             this.nudMinHotSimInitiativeDice = new Chummer.NumericUpDownEx();
+            this.gpbMartialArts = new System.Windows.Forms.GroupBox();
+            this.tlpMartialArts = new System.Windows.Forms.TableLayoutPanel();
+            this.lblMaxMartialTechniques = new System.Windows.Forms.Label();
+            this.lblMaxMartialArts = new System.Windows.Forms.Label();
+            this.nudMaxMartialArts = new Chummer.NumericUpDownEx();
+            this.nudMaxMartialTechniques = new Chummer.NumericUpDownEx();
             this.tabKarmaCosts = new System.Windows.Forms.TabPage();
             this.tlpKarmaCosts = new System.Windows.Forms.TableLayoutPanel();
             this.lblKarmaSpecialization = new System.Windows.Forms.Label();
@@ -366,12 +372,6 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.gpbMartialArts = new System.Windows.Forms.GroupBox();
-            this.tlpMartialArts = new System.Windows.Forms.TableLayoutPanel();
-            this.lblMaxMartialArts = new System.Windows.Forms.Label();
-            this.nudMaxMartialArts = new Chummer.NumericUpDownEx();
-            this.nudMaxMartialTechniques = new Chummer.NumericUpDownEx();
-            this.lblMaxMartialTechniques = new System.Windows.Forms.Label();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -420,6 +420,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMinAstralInitiativeDice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinColdSimInitiativeDice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinHotSimInitiativeDice)).BeginInit();
+            this.gpbMartialArts.SuspendLayout();
+            this.tlpMartialArts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialArts)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialTechniques)).BeginInit();
             this.tabKarmaCosts.SuspendLayout();
             this.tlpKarmaCosts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpecialization)).BeginInit();
@@ -501,10 +505,6 @@ namespace Chummer
             this.flpKarmaGainedFromEnemies.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).BeginInit();
             this.tlpButtons.SuspendLayout();
-            this.gpbMartialArts.SuspendLayout();
-            this.tlpMartialArts.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialArts)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialTechniques)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -2501,6 +2501,114 @@ namespace Chummer
             this.nudMinHotSimInitiativeDice.TabIndex = 26;
             this.nudMinHotSimInitiativeDice.Value = new decimal(new int[] {
             4,
+            0,
+            0,
+            0});
+            // 
+            // gpbMartialArts
+            // 
+            this.gpbMartialArts.AutoSize = true;
+            this.gpbMartialArts.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbMartialArts.Controls.Add(this.tlpMartialArts);
+            this.gpbMartialArts.Location = new System.Drawing.Point(248, 675);
+            this.gpbMartialArts.Name = "gpbMartialArts";
+            this.gpbMartialArts.Size = new System.Drawing.Size(272, 71);
+            this.gpbMartialArts.TabIndex = 10;
+            this.gpbMartialArts.TabStop = false;
+            this.gpbMartialArts.Tag = "Tab_MartialArts";
+            this.gpbMartialArts.Text = "Martial Arts";
+            // 
+            // tlpMartialArts
+            // 
+            this.tlpMartialArts.AutoSize = true;
+            this.tlpMartialArts.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMartialArts.ColumnCount = 2;
+            this.tlpMartialArts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMartialArts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMartialArts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMartialArts.Controls.Add(this.lblMaxMartialTechniques, 0, 1);
+            this.tlpMartialArts.Controls.Add(this.lblMaxMartialArts, 0, 0);
+            this.tlpMartialArts.Controls.Add(this.nudMaxMartialArts, 1, 0);
+            this.tlpMartialArts.Controls.Add(this.nudMaxMartialTechniques, 1, 1);
+            this.tlpMartialArts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMartialArts.Location = new System.Drawing.Point(3, 16);
+            this.tlpMartialArts.Name = "tlpMartialArts";
+            this.tlpMartialArts.RowCount = 2;
+            this.tlpMartialArts.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMartialArts.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMartialArts.Size = new System.Drawing.Size(266, 52);
+            this.tlpMartialArts.TabIndex = 0;
+            // 
+            // lblMaxMartialTechniques
+            // 
+            this.lblMaxMartialTechniques.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxMartialTechniques.AutoSize = true;
+            this.lblMaxMartialTechniques.Location = new System.Drawing.Point(3, 32);
+            this.lblMaxMartialTechniques.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxMartialTechniques.Name = "lblMaxMartialTechniques";
+            this.lblMaxMartialTechniques.Size = new System.Drawing.Size(213, 13);
+            this.lblMaxMartialTechniques.TabIndex = 48;
+            this.lblMaxMartialTechniques.Tag = "Label_Options_MaximumMartialTechniques";
+            this.lblMaxMartialTechniques.Text = "Maximum number of Martial Art Techniques:";
+            this.lblMaxMartialTechniques.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblMaxMartialArts
+            // 
+            this.lblMaxMartialArts.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxMartialArts.AutoSize = true;
+            this.lblMaxMartialArts.Location = new System.Drawing.Point(57, 6);
+            this.lblMaxMartialArts.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxMartialArts.Name = "lblMaxMartialArts";
+            this.lblMaxMartialArts.Size = new System.Drawing.Size(159, 13);
+            this.lblMaxMartialArts.TabIndex = 48;
+            this.lblMaxMartialArts.Tag = "Label_Options_MaximumMartialArts";
+            this.lblMaxMartialArts.Text = "Maximum number of Martial Arts:";
+            this.lblMaxMartialArts.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxMartialArts
+            // 
+            this.nudMaxMartialArts.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxMartialArts.AutoSize = true;
+            this.nudMaxMartialArts.Location = new System.Drawing.Point(222, 3);
+            this.nudMaxMartialArts.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxMartialArts.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxMartialArts.Name = "nudMaxMartialArts";
+            this.nudMaxMartialArts.Size = new System.Drawing.Size(41, 20);
+            this.nudMaxMartialArts.TabIndex = 49;
+            this.nudMaxMartialArts.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // nudMaxMartialTechniques
+            // 
+            this.nudMaxMartialTechniques.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxMartialTechniques.AutoSize = true;
+            this.nudMaxMartialTechniques.Location = new System.Drawing.Point(222, 29);
+            this.nudMaxMartialTechniques.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxMartialTechniques.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxMartialTechniques.Name = "nudMaxMartialTechniques";
+            this.nudMaxMartialTechniques.Size = new System.Drawing.Size(41, 20);
+            this.nudMaxMartialTechniques.TabIndex = 49;
+            this.nudMaxMartialTechniques.Value = new decimal(new int[] {
+            5,
             0,
             0,
             0});
@@ -5987,114 +6095,6 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // gpbMartialArts
-            // 
-            this.gpbMartialArts.AutoSize = true;
-            this.gpbMartialArts.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbMartialArts.Controls.Add(this.tlpMartialArts);
-            this.gpbMartialArts.Location = new System.Drawing.Point(248, 675);
-            this.gpbMartialArts.Name = "gpbMartialArts";
-            this.gpbMartialArts.Size = new System.Drawing.Size(272, 71);
-            this.gpbMartialArts.TabIndex = 10;
-            this.gpbMartialArts.TabStop = false;
-            this.gpbMartialArts.Tag = "Tab_MartialArts";
-            this.gpbMartialArts.Text = "Martial Arts";
-            // 
-            // tlpMartialArts
-            // 
-            this.tlpMartialArts.AutoSize = true;
-            this.tlpMartialArts.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMartialArts.ColumnCount = 2;
-            this.tlpMartialArts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMartialArts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMartialArts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMartialArts.Controls.Add(this.lblMaxMartialTechniques, 0, 1);
-            this.tlpMartialArts.Controls.Add(this.lblMaxMartialArts, 0, 0);
-            this.tlpMartialArts.Controls.Add(this.nudMaxMartialArts, 1, 0);
-            this.tlpMartialArts.Controls.Add(this.nudMaxMartialTechniques, 1, 1);
-            this.tlpMartialArts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMartialArts.Location = new System.Drawing.Point(3, 16);
-            this.tlpMartialArts.Name = "tlpMartialArts";
-            this.tlpMartialArts.RowCount = 2;
-            this.tlpMartialArts.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMartialArts.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMartialArts.Size = new System.Drawing.Size(266, 52);
-            this.tlpMartialArts.TabIndex = 0;
-            // 
-            // lblMaxMartialArts
-            // 
-            this.lblMaxMartialArts.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxMartialArts.AutoSize = true;
-            this.lblMaxMartialArts.Location = new System.Drawing.Point(57, 6);
-            this.lblMaxMartialArts.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxMartialArts.Name = "lblMaxMartialArts";
-            this.lblMaxMartialArts.Size = new System.Drawing.Size(159, 13);
-            this.lblMaxMartialArts.TabIndex = 48;
-            this.lblMaxMartialArts.Tag = "Label_Options_MaximumMartialArts";
-            this.lblMaxMartialArts.Text = "Maximum number of Martial Arts:";
-            this.lblMaxMartialArts.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudMaxMartialArts
-            // 
-            this.nudMaxMartialArts.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxMartialArts.AutoSize = true;
-            this.nudMaxMartialArts.Location = new System.Drawing.Point(222, 3);
-            this.nudMaxMartialArts.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudMaxMartialArts.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxMartialArts.Name = "nudMaxMartialArts";
-            this.nudMaxMartialArts.Size = new System.Drawing.Size(41, 20);
-            this.nudMaxMartialArts.TabIndex = 49;
-            this.nudMaxMartialArts.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // nudMaxMartialTechniques
-            // 
-            this.nudMaxMartialTechniques.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxMartialTechniques.AutoSize = true;
-            this.nudMaxMartialTechniques.Location = new System.Drawing.Point(222, 29);
-            this.nudMaxMartialTechniques.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudMaxMartialTechniques.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxMartialTechniques.Name = "nudMaxMartialTechniques";
-            this.nudMaxMartialTechniques.Size = new System.Drawing.Size(41, 20);
-            this.nudMaxMartialTechniques.TabIndex = 49;
-            this.nudMaxMartialTechniques.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            // 
-            // lblMaxMartialTechniques
-            // 
-            this.lblMaxMartialTechniques.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxMartialTechniques.AutoSize = true;
-            this.lblMaxMartialTechniques.Location = new System.Drawing.Point(3, 32);
-            this.lblMaxMartialTechniques.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxMartialTechniques.Name = "lblMaxMartialTechniques";
-            this.lblMaxMartialTechniques.Size = new System.Drawing.Size(213, 13);
-            this.lblMaxMartialTechniques.TabIndex = 48;
-            this.lblMaxMartialTechniques.Tag = "Label_Options_MaximumMartialTechniques";
-            this.lblMaxMartialTechniques.Text = "Maximum number of Martial Art Techniques:";
-            this.lblMaxMartialTechniques.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // EditCharacterSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -6181,6 +6181,12 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMinAstralInitiativeDice)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinColdSimInitiativeDice)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinHotSimInitiativeDice)).EndInit();
+            this.gpbMartialArts.ResumeLayout(false);
+            this.gpbMartialArts.PerformLayout();
+            this.tlpMartialArts.ResumeLayout(false);
+            this.tlpMartialArts.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialArts)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialTechniques)).EndInit();
             this.tabKarmaCosts.ResumeLayout(false);
             this.tabKarmaCosts.PerformLayout();
             this.tlpKarmaCosts.ResumeLayout(false);
@@ -6291,12 +6297,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            this.gpbMartialArts.ResumeLayout(false);
-            this.gpbMartialArts.PerformLayout();
-            this.tlpMartialArts.ResumeLayout(false);
-            this.tlpMartialArts.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialArts)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialTechniques)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
