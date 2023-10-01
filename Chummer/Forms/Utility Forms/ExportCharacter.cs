@@ -389,14 +389,10 @@ namespace Chummer
 
                 _objCharacterXml = null;
                 token.ThrowIfCancellationRequested();
-                await imgSheetLanguageFlag.DoThreadSafeAsync(x =>
-                                                                 x.Image
-                                                                     = Math.Min(x.Width, x.Height) >= 32
-                                                                         ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
-                                                                             _strExportLanguage.Substring(3, 2))
-                                                                         : FlagImageGetter.GetFlagFromCountryCode(
-                                                                             _strExportLanguage.Substring(3, 2)),
-                                                             token).ConfigureAwait(false);
+                await imgSheetLanguageFlag
+                    .DoThreadSafeAsync(
+                        x => x.Image = FlagImageGetter.GetFlagFromCountryCode(_strExportLanguage.Substring(3, 2),
+                            Math.Min(x.Width, x.Height)), token).ConfigureAwait(false);
                 await DoXsltUpdate(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
             }
