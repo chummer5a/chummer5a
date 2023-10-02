@@ -370,14 +370,14 @@ namespace Chummer.Controls.Shared
                 case ListChangedType.ItemAdded:
                     _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this));
                     _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList.Skip(intNewIndex);
+                    lstToRedraw = intNewIndex == 0 ? _lstContentList : _lstContentList.Skip(intNewIndex);
                     break;
 
                 case ListChangedType.ItemDeleted:
                     _lstContentList[intNewIndex].Cleanup();
                     _lstContentList.RemoveAt(intNewIndex);
                     _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList.Skip(intNewIndex);
+                    lstToRedraw = intNewIndex == 0 ? _lstContentList : _lstContentList.Skip(intNewIndex);
                     break;
 
                 case ListChangedType.ItemMoved:
