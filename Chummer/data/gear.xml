@@ -1299,6 +1299,17 @@
       <cost>100</cost>
     </gear>
     <gear>
+      <id>ee1789ab-c000-4c69-bc11-7a99370f89b2</id>
+      <name>Grenade: Paint (Radioactive Tracking Dye)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>102</page>
+      <avail>8R</avail>
+      <addweapon>Grenade: Paint (Radioactive Tracking Dye)</addweapon>
+      <cost>150</cost>
+    </gear>
+    <gear>
       <id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
       <name>Grenade: Smokebomb</name>
       <category>Ammunition</category>
@@ -1400,6 +1411,17 @@
       <avail>8R</avail>
       <addweapon>Grenade: Paint, Aerodynamic</addweapon>
       <cost>100</cost>
+    </gear>
+    <gear>
+      <id>022bc6c7-1f91-4852-b1ee-0f50433a1b97</id>
+      <name>Grenade: Paint (Radioactive Tracking Dye),  Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>102</page>
+      <avail>8R</avail>
+      <addweapon>Grenade: Paint (Radioactive Tracking Dye), Aerodynamic</addweapon>
+      <cost>150</cost>
     </gear>
     <gear>
       <id>32d933f1-638e-4022-bed7-7cf846cb4f20</id>
