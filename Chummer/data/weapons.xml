@@ -2473,6 +2473,27 @@
       <useskill>Throwing Weapons</useskill>
     </weapon>
     <weapon>
+      <id>5163597c-e37e-4cac-87e9-d2d7f00f9b68</id>
+      <name>Grenade: Paint (Radioactive Tracking Dye)</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(10m Radius)</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>8R</avail>
+      <cost>150</cost>
+      <source>RG</source>
+      <page>102</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
       <id>bb4e9274-2cf0-4c73-a312-f1b51649d1bc</id>
       <name>Grenade: Smokebomb</name>
       <category>Gear</category>
@@ -2655,6 +2676,27 @@
       <ammo>0</ammo>
       <avail>8R</avail>
       <cost>100</cost>
+      <source>RG</source>
+      <page>102</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>2dfc166e-6a11-4046-8d93-34545008a8f6</id>
+      <name>Grenade: Paint (Radioactive Tracking Dye), Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(10m Radius)</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>8R</avail>
+      <cost>150</cost>
       <source>RG</source>
       <page>102</page>
       <range>Aerodynamic Grenade</range>
