@@ -1064,18 +1064,26 @@ namespace Chummer
                                         "ToolTipText", CharacterObject,
                                         nameof(Character.WildReputationTooltip), GenericToken).ConfigureAwait(false);
 
-                                    await lblMentorSpirit.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.FirstMentorSpiritDisplayName), GenericToken).ConfigureAwait(false);
-                                    await lblMentorSpiritInformation.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character
-                                                   .FirstMentorSpiritDisplayInformation), GenericToken).ConfigureAwait(false);
-                                    await lblParagon.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                                                              nameof(Character
-                                                                                  .FirstMentorSpiritDisplayName), GenericToken)
-                                                    .ConfigureAwait(false);
-                                    await lblParagonInformation.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character
-                                                   .FirstMentorSpiritDisplayInformation), GenericToken).ConfigureAwait(false);
+                                    await lblMentorSpirit.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayName),
+                                        x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken,
+                                        GenericToken).ConfigureAwait(false);
+                                    await lblMentorSpiritInformation.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayInformation),
+                                        x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken,
+                                        GenericToken).ConfigureAwait(false);
+                                    await lblParagon.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayName),
+                                        x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken,
+                                        GenericToken).ConfigureAwait(false);
+                                    await lblParagonInformation.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayInformation),
+                                        x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken,
+                                        GenericToken).ConfigureAwait(false);
 
                                     await lblSurprise.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                                                                nameof(Character.SurpriseToolTip), GenericToken)

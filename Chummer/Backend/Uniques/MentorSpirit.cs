@@ -41,6 +41,8 @@ namespace Chummer
         private string _strAdvantage = string.Empty;
         private string _strDisadvantage = string.Empty;
         private string _strExtra = string.Empty;
+        private string _strExtraChoice1 = string.Empty;
+        private string _strExtraChoice2 = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
@@ -83,9 +85,9 @@ namespace Chummer
         /// <param name="xmlMentor">XmlNode to create the object from.</param>
         /// <param name="eMentorType">Whether this is a Mentor or a Paragon.</param>
         /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
-        /// <param name="strForceValueChoice1">Name/Text for Choice 1.</param>
-        /// <param name="strForceValueChoice2">Name/Text for Choice 2.</param>
-        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "")
+        /// <param name="strChoice1">Name/Text for Choice 1.</param>
+        /// <param name="strChoice2">Name/Text for Choice 2.</param>
+        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strChoice1 = "", string strChoice2 = "")
         {
             using (LockObject.EnterWriteLock())
             {
@@ -109,9 +111,10 @@ namespace Chummer
                 if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                     xmlMentor.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
+                string strDisplayName = CurrentDisplayNameShort;
                 if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
-                    Notes = CommonFunctions.GetBookNotes(xmlMentor, Name, CurrentDisplayNameShort, Source, Page,
+                    Notes = CommonFunctions.GetBookNotes(xmlMentor, Name, strDisplayName, Source, Page,
                                                              DisplayPage(GlobalSettings.Language), _objCharacter);
                 }
 
@@ -124,84 +127,125 @@ namespace Chummer
                 {
                     string strOldForce = ImprovementManager.ForcedValue;
                     string strOldSelected = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = strForceValue;
-                    if (!ImprovementManager.CreateImprovements(_objCharacter,
-                                                               Improvement.ImprovementSource.MentorSpirit,
-                                                               _guiID.ToString(
-                                                                   "D", GlobalSettings.InvariantCultureInfo), _nodBonus,
-                                                               1, CurrentDisplayNameShort))
+                    try
                     {
-                        _guiID = Guid.Empty;
-                        return;
+                        ImprovementManager.ForcedValue =
+                            string.IsNullOrWhiteSpace(strForceValue) ? _strName : strForceValue;
+                        ImprovementManager.SelectedValue = string.Empty;
+                        if (!ImprovementManager.CreateImprovements(_objCharacter,
+                                Improvement.ImprovementSource.MentorSpirit,
+                                _guiID.ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo), _nodBonus,
+                                1, strDisplayName))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+
+                        _strExtra = ImprovementManager.SelectedValue;
+                    }
+                    finally
+                    {
+                        ImprovementManager.ForcedValue = strOldForce;
+                        ImprovementManager.SelectedValue = strOldSelected;
                     }
 
-                    _strExtra = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = strOldForce;
-                    ImprovementManager.SelectedValue = strOldSelected;
+                    if (string.IsNullOrWhiteSpace(_strExtra))
+                        _strExtra = strForceValue;
                 }
-                else if (!string.IsNullOrEmpty(strForceValue))
+                else if (!string.IsNullOrWhiteSpace(strForceValue))
                 {
                     _strExtra = strForceValue;
                 }
+                else
+                    _strExtra = string.Empty;
 
-                _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = " + strForceValueChoice1.CleanXPath()
-                                                         + "]/bonus");
-                if (_nodChoice1 != null)
+                if (!string.IsNullOrEmpty(strChoice1))
                 {
-                    string strOldForce = ImprovementManager.ForcedValue;
-                    string strOldSelected = ImprovementManager.SelectedValue;
-                    //ImprovementManager.ForcedValue = strForceValueChoice1;
-                    if (!ImprovementManager.CreateImprovements(_objCharacter,
-                                                               Improvement.ImprovementSource.MentorSpirit,
-                                                               _guiID.ToString(
-                                                                   "D", GlobalSettings.InvariantCultureInfo),
-                                                               _nodChoice1, 1, CurrentDisplayNameShort))
+                    _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = " + strChoice1.CleanXPath()
+                        + "]/bonus");
+                    if (_nodChoice1 != null)
                     {
-                        _guiID = Guid.Empty;
-                        return;
-                    }
+                        string strOldForce = ImprovementManager.ForcedValue;
+                        string strOldSelected = ImprovementManager.SelectedValue;
+                        try
+                        {
+                            ImprovementManager.ForcedValue = string.Empty;
+                            ImprovementManager.SelectedValue = string.Empty;
+                            if (!ImprovementManager.CreateImprovements(_objCharacter,
+                                    Improvement.ImprovementSource.MentorSpirit,
+                                    _guiID.ToString(
+                                        "D", GlobalSettings.InvariantCultureInfo),
+                                    _nodChoice1, 1, strDisplayName))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
 
-                    if (string.IsNullOrEmpty(_strExtra))
+                            _strExtraChoice1 = ImprovementManager.SelectedValue;
+                        }
+                        finally
+                        {
+                            ImprovementManager.ForcedValue = strOldForce;
+                            ImprovementManager.SelectedValue = strOldSelected;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(_strExtraChoice1))
+                            _strExtraChoice1 = strChoice1;
+                    }
+                    else
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtraChoice1 = strChoice1;
                     }
-
-                    ImprovementManager.ForcedValue = strOldForce;
-                    ImprovementManager.SelectedValue = strOldSelected;
                 }
-                else if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(strForceValueChoice1))
+                else
                 {
-                    _strExtra = strForceValueChoice1;
+                    _nodChoice1 = null;
+                    _strExtraChoice1 = string.Empty;
                 }
 
-                _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = " + strForceValueChoice2.CleanXPath()
-                                                         + "]/bonus");
-                if (_nodChoice2 != null)
+                if (!string.IsNullOrEmpty(strChoice2))
                 {
-                    string strOldForce = ImprovementManager.ForcedValue;
-                    string strOldSelected = ImprovementManager.SelectedValue;
-                    //ImprovementManager.ForcedValue = strForceValueChoice2;
-                    if (!ImprovementManager.CreateImprovements(_objCharacter,
-                                                               Improvement.ImprovementSource.MentorSpirit,
-                                                               _guiID.ToString(
-                                                                   "D", GlobalSettings.InvariantCultureInfo),
-                                                               _nodChoice2, 1, CurrentDisplayNameShort))
+                    _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = " + strChoice2.CleanXPath()
+                        + "]/bonus");
+                    if (_nodChoice2 != null)
                     {
-                        _guiID = Guid.Empty;
-                        return;
-                    }
+                        string strOldForce = ImprovementManager.ForcedValue;
+                        string strOldSelected = ImprovementManager.SelectedValue;
+                        try
+                        {
+                            ImprovementManager.ForcedValue = string.Empty;
+                            ImprovementManager.SelectedValue = string.Empty;
+                            if (!ImprovementManager.CreateImprovements(_objCharacter,
+                                    Improvement.ImprovementSource.MentorSpirit,
+                                    _guiID.ToString(
+                                        "D", GlobalSettings.InvariantCultureInfo),
+                                    _nodChoice2, 1, strDisplayName))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
 
-                    if (string.IsNullOrEmpty(_strExtra))
+                            _strExtraChoice2 = ImprovementManager.SelectedValue;
+                        }
+                        finally
+                        {
+                            ImprovementManager.ForcedValue = strOldForce;
+                            ImprovementManager.SelectedValue = strOldSelected;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(_strExtraChoice2))
+                            _strExtraChoice2 = strChoice2;
+                    }
+                    else
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtraChoice2 = strChoice2;
                     }
-
-                    ImprovementManager.ForcedValue = strOldForce;
-                    ImprovementManager.SelectedValue = strOldSelected;
                 }
-                else if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(strForceValueChoice2))
+                else
                 {
-                    _strExtra = strForceValueChoice2;
+                    _nodChoice2 = null;
+                    _strExtraChoice2 = string.Empty;
                 }
 
                 /*
@@ -252,6 +296,8 @@ namespace Chummer
                 objWriter.WriteElementString("name", _strName);
                 objWriter.WriteElementString("mentortype", _eMentorType.ToString());
                 objWriter.WriteElementString("extra", _strExtra);
+                objWriter.WriteElementString("extrachoice1", _strExtraChoice1);
+                objWriter.WriteElementString("extrachoice2", _strExtraChoice2);
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
                 objWriter.WriteElementString("advantage", _strAdvantage);
@@ -321,6 +367,8 @@ namespace Chummer
                 }
 
                 objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+                objNode.TryGetStringFieldQuickly("extrachoice1", ref _strExtraChoice1);
+                objNode.TryGetStringFieldQuickly("extrachoice2", ref _strExtraChoice2);
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
                 if (_objCharacter.LastSavedVersion <= new Version(5, 217, 31))
@@ -401,6 +449,16 @@ namespace Chummer
                               "extra",
                               await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
                                                  .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extrachoice1",
+                            await _objCharacter.TranslateExtraAsync(ExtraChoice1, strLanguageToPrint, token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extrachoice2",
+                            await _objCharacter.TranslateExtraAsync(ExtraChoice2, strLanguageToPrint, token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync(
                               "source",
@@ -492,6 +550,94 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Choices related to the mentor as it should be displayed in the UI.
+        /// </summary>
+        public string DisplayExtras(string strLanguage)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                string strReturn;
+                string strReturn1 = LanguageManager.TranslateExtra(Extra, strLanguage, _objCharacter);
+                string strReturn2 = LanguageManager.TranslateExtra(ExtraChoice1, strLanguage, _objCharacter);
+                string strReturn3 = LanguageManager.TranslateExtra(ExtraChoice2, strLanguage, _objCharacter);
+
+                if (!string.IsNullOrWhiteSpace(strReturn1))
+                {
+                    strReturn = strReturn1;
+                    if (!string.IsNullOrWhiteSpace(strReturn2))
+                    {
+                        strReturn += Environment.NewLine + strReturn2;
+                    }
+                    if (!string.IsNullOrWhiteSpace(strReturn3))
+                    {
+                        strReturn += Environment.NewLine + strReturn3;
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(strReturn2))
+                {
+                    strReturn = strReturn2;
+                    if (!string.IsNullOrWhiteSpace(strReturn3))
+                    {
+                        strReturn += Environment.NewLine + strReturn3;
+                    }
+                }
+                else
+                {
+                    strReturn = strReturn3;
+                }
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Choices related to the mentor as it should be displayed in the UI.
+        /// </summary>
+        public async ValueTask<string> DisplayExtrasAsync(string strLanguage, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                string strReturn;
+                string strReturn1 = await LanguageManager
+                    .TranslateExtraAsync(Extra, strLanguage, _objCharacter, token: token)
+                    .ConfigureAwait(false);
+                string strReturn2 = await LanguageManager
+                    .TranslateExtraAsync(ExtraChoice1, strLanguage, _objCharacter, token: token)
+                    .ConfigureAwait(false);
+                string strReturn3 = await LanguageManager
+                    .TranslateExtraAsync(ExtraChoice2, strLanguage, _objCharacter, token: token)
+                    .ConfigureAwait(false);
+
+                if (!string.IsNullOrWhiteSpace(strReturn1))
+                {
+                    strReturn = strReturn1;
+                    if (!string.IsNullOrWhiteSpace(strReturn2))
+                    {
+                        strReturn += Environment.NewLine + strReturn2;
+                    }
+                    if (!string.IsNullOrWhiteSpace(strReturn3))
+                    {
+                        strReturn += Environment.NewLine + strReturn3;
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(strReturn2))
+                {
+                    strReturn = strReturn2;
+                    if (!string.IsNullOrWhiteSpace(strReturn3))
+                    {
+                        strReturn += Environment.NewLine + strReturn3;
+                    }
+                }
+                else
+                {
+                    strReturn = strReturn3;
+                }
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
         /// Extra string related to improvements selected for the Mentor Spirit or Paragon.
         /// </summary>
         public string Extra
@@ -507,7 +653,49 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) != value && _objCharacter.MentorSpirits.Count > 0
                                                                             && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
+                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to the improvements selected for the first choice of the Mentor Spirit or Paragon.
+        /// </summary>
+        public string ExtraChoice1
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strExtraChoice1;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (Interlocked.Exchange(ref _strExtraChoice1, value) != value && _objCharacter.MentorSpirits.Count > 0
+                                                                            && _objCharacter.MentorSpirits[0] == this)
+                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to improvements selected for the second choice of the Mentor Spirit or Paragon.
+        /// </summary>
+        public string ExtraChoice2
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strExtraChoice2;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (Interlocked.Exchange(ref _strExtraChoice2, value) != value && _objCharacter.MentorSpirits.Count > 0
+                                                                            && _objCharacter.MentorSpirits[0] == this)
+                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
                 }
             }
         }
@@ -542,7 +730,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Advantage of the mentor as it should be displayed in the UI. Advantage (Extra).
+        /// Advantage of the mentor as it should be displayed in the UI.
         /// </summary>
         public string DisplayAdvantage(string strLanguage)
         {
@@ -557,19 +745,12 @@ namespace Chummer
                         strReturn = strTemp;
                 }
 
-                if (!string.IsNullOrEmpty(Extra))
-                {
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '('
-                        + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
-                }
-
                 return strReturn;
             }
         }
 
         /// <summary>
-        /// Advantage of the mentor as it should be displayed in the UI. Advantage (Extra).
+        /// Advantage of the mentor as it should be displayed in the UI.
         /// </summary>
         public async ValueTask<string> DisplayAdvantageAsync(string strLanguage, CancellationToken token = default)
         {
@@ -582,15 +763,6 @@ namespace Chummer
                     if ((await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
                         ?.TryGetMultiLineStringFieldQuickly("altadvantage", ref strTemp) == true)
                         strReturn = strTemp;
-                }
-
-                if (!string.IsNullOrEmpty(Extra))
-                {
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn
-                        += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                .ConfigureAwait(false) + '(' + await _objCharacter
-                            .TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
                 }
 
                 return strReturn;
@@ -610,7 +782,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Disadvantage of the mentor as it should be displayed in the UI. Disadvantage (Extra).
+        /// Disadvantage of the mentor as it should be displayed in the UI.
         /// </summary>
         public string DisplayDisadvantage(string strLanguage)
         {
@@ -625,19 +797,12 @@ namespace Chummer
                         strReturn = strTemp;
                 }
 
-                if (!string.IsNullOrEmpty(Extra))
-                {
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '('
-                        + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
-                }
-
                 return strReturn;
             }
         }
 
         /// <summary>
-        /// Disadvantage of the mentor as it should be displayed in the UI. Disadvantage (Extra).
+        /// Disadvantage of the mentor as it should be displayed in the UI.
         /// </summary>
         public async ValueTask<string> DisplayDisadvantageAsync(string strLanguage, CancellationToken token = default)
         {
@@ -650,15 +815,6 @@ namespace Chummer
                     if ((await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
                         ?.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref strTemp) == true)
                         strReturn = strTemp;
-                }
-
-                if (!string.IsNullOrEmpty(Extra))
-                {
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn
-                        += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                .ConfigureAwait(false) + '(' + await _objCharacter
-                            .TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
                 }
 
                 return strReturn;

@@ -27051,6 +27051,15 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetFirstMentorSpiritDisplayNameAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return await MentorSpirits.GetCountAsync(token).ConfigureAwait(false) > 0
+                    ? await (await MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false))
+                        .GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)
+                    : string.Empty;
+        }
+
         public string FirstMentorSpiritDisplayInformation
         {
             get
@@ -27062,12 +27071,57 @@ namespace Chummer
 
                     MentorSpirit objMentorSpirit = MentorSpirits[0];
                     string strSpace = LanguageManager.GetString("String_Space");
-                    return (LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace
-                        + objMentorSpirit.DisplayAdvantage(GlobalSettings.Language)
-                        + Environment.NewLine + Environment.NewLine
-                        + LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + strSpace
-                        + objMentorSpirit.DisplayDisadvantage(GlobalSettings.Language)).WordWrap();
+                    string strAdvantage = objMentorSpirit.DisplayAdvantage(GlobalSettings.Language);
+                    if (string.IsNullOrWhiteSpace(strAdvantage))
+                        strAdvantage = LanguageManager.GetString("String_None");
+                    string strDisadvantage = objMentorSpirit.DisplayDisadvantage(GlobalSettings.Language);
+                    if (string.IsNullOrWhiteSpace(strDisadvantage))
+                        strDisadvantage = LanguageManager.GetString("String_None");
+                    string strReturn = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace +
+                                       strAdvantage + Environment.NewLine + Environment.NewLine +
+                                       LanguageManager.GetString("Label_SelectMentorSpirit_Disadvantage") + strSpace +
+                                       strDisadvantage;
+                    string strExtraReturn = objMentorSpirit.DisplayExtras(GlobalSettings.Language);
+                    if (!string.IsNullOrEmpty(strExtraReturn))
+                    {
+                        strReturn += Environment.NewLine + Environment.NewLine +
+                                     LanguageManager.GetString("Label_SelectMentorSpirit_Choices") +
+                                     Environment.NewLine +
+                                     strExtraReturn;
+                    }
+                    return strReturn.WordWrap();
                 }
+            }
+        }
+
+        public async Task<string> GetFirstMentorSpiritDisplayInformationAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (await MentorSpirits.GetCountAsync(token).ConfigureAwait(false) == 0)
+                    return string.Empty;
+
+                MentorSpirit objMentorSpirit = await MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strAdvantage = await objMentorSpirit.DisplayAdvantageAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strAdvantage))
+                    strAdvantage = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                string strDisadvantage = await objMentorSpirit.DisplayDisadvantageAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strDisadvantage))
+                    strDisadvantage = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                string strReturn =
+                    await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Advantage", token: token).ConfigureAwait(false) +
+                    strSpace + strAdvantage + Environment.NewLine + Environment.NewLine +
+                    await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Disadvantage", token: token).ConfigureAwait(false) +
+                    strSpace + strDisadvantage;
+                string strExtraReturn = await objMentorSpirit.DisplayExtrasAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strExtraReturn))
+                {
+                    strReturn += Environment.NewLine + Environment.NewLine +
+                                 await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Choices",
+                                     token: token).ConfigureAwait(false) + Environment.NewLine + strExtraReturn;
+                }
+                return strReturn.WordWrap();
             }
         }
 

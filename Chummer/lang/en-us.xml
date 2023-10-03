@@ -8818,8 +8818,12 @@
       <text>Advantage:</text>
     </string>
     <string>
-      <key>Label_SelectMetamagic_Disadvantage</key>
+      <key>Label_SelectMentorSpirit_Disadvantage</key>
       <text>Disadvantage:</text>
+    </string>
+    <string>
+      <key>Label_SelectMentorSpirit_Choices</key>
+      <text>Choices:</text>
     </string>
     <string>
       <key>Label_SelectMentor_ChooseOne</key>
