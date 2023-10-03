@@ -322,13 +322,15 @@ namespace Chummer.Backend.Equipment
                                     lstImprovementSourcesToProcess.Add(objNewItem);
                                 }
 
-                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
-                                    Category == "Cyberlimb" && Parent?.InheritAttributes != false
-                                    && ParentVehicle == null
-                                    &&
+                                if
+                                (
+                                    setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
+                                    IsLimb &&
+                                    Parent?.InheritAttributes != false &&
+                                    ParentVehicle == null &&
                                     _objCharacter?.Settings.DontUseCyberlimbCalculation != true &&
-                                    !string.IsNullOrWhiteSpace(LimbSlot) &&
-                                    _objCharacter?.Settings.ExcludeLimbSlot.Contains(LimbSlot) != true)
+                                    _objCharacter?.Settings.ExcludeLimbSlot.Contains(LimbSlot) != true
+                                )
                                 {
                                     if (InheritAttributes)
                                     {
@@ -380,11 +382,10 @@ namespace Chummer.Backend.Equipment
                                     objOldItem.Parent = null;
 
                                 if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
-                                    Category == "Cyberlimb" && Parent?.InheritAttributes != false
-                                    && ParentVehicle == null
-                                    &&
+                                    IsLimb &&
+                                    Parent?.InheritAttributes != false &&
+                                    ParentVehicle == null &&
                                     !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                    !string.IsNullOrWhiteSpace(LimbSlot) &&
                                     !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                                 {
                                     if (InheritAttributes)
@@ -441,11 +442,10 @@ namespace Chummer.Backend.Equipment
                                     objOldItem.Parent = null;
 
                                 if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
-                                    Category == "Cyberlimb" && Parent?.InheritAttributes != false
-                                    && ParentVehicle == null
-                                    &&
+                                    IsLimb &&
+                                    Parent?.InheritAttributes != false &&
+                                    ParentVehicle == null &&
                                     !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                    !string.IsNullOrWhiteSpace(LimbSlot) &&
                                     !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                                 {
                                     if (InheritAttributes)
@@ -492,11 +492,11 @@ namespace Chummer.Backend.Equipment
                                 }
 
                                 if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
-                                    Category == "Cyberlimb" && Parent?.InheritAttributes != false
-                                    && ParentVehicle == null
-                                    &&
+                                    IsLimb &&
+                                    Parent?.InheritAttributes != false &&
+                                    ParentVehicle == null &&
                                     !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                    !string.IsNullOrWhiteSpace(LimbSlot) &&
+
                                     !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                                 {
                                     if (InheritAttributes)
@@ -527,12 +527,13 @@ namespace Chummer.Backend.Equipment
                         case NotifyCollectionChangedAction.Reset:
                             blnDoEssenceImprovementsRefresh = true;
                             blnDoEncumbranceRefresh = blnEverDoEncumbranceRefresh;
-                            if (Category == "Cyberlimb" && Parent?.InheritAttributes != false
-                                                        && ParentVehicle == null
-                                                        &&
-                                                        !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                                        !string.IsNullOrWhiteSpace(LimbSlot) &&
-                                                        !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                            if
+                            (
+                                IsLimb &&
+                                Parent?.InheritAttributes != false &&
+                                ParentVehicle == null &&
+                                !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                                !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                             {
                                 setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
                             }
@@ -2084,8 +2085,7 @@ namespace Chummer.Backend.Equipment
                     = await objWriter.StartElementAsync("cyberware", token: token).ConfigureAwait(false);
                 try
                 {
-                    if ((string.IsNullOrWhiteSpace(LimbSlot) && _strCategory != "Cyberlimb")
-                        || CyberlimbAttributeAbbrevs.Count == 0)
+                    if (IsLimb || CyberlimbAttributeAbbrevs.Count == 0)
                     {
                         await objWriter
                               .WriteElementStringAsync(
@@ -2552,10 +2552,13 @@ namespace Chummer.Backend.Equipment
                         _lstIncludeInWirelessPairBonus.Add(value);
                     }
 
-                    if (_objParent?.Category != "Cyberlimb" || _objParent.Parent?.InheritAttributes == false ||
-                        _objParent.ParentVehicle != null || _objCharacter.Settings.DontUseCyberlimbCalculation ||
-                        string.IsNullOrWhiteSpace(_objParent.LimbSlot) ||
-                        _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    if
+                        (
+                            _objParent?.IsLimb != true ||
+                            _objParent.Parent?.InheritAttributes == false ||
+                            _objParent.ParentVehicle != null ||
+                            _objCharacter.Settings.DontUseCyberlimbCalculation ||
+                            _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                         return;
                     // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether or not we use cyberleg movement
                     foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
@@ -2797,12 +2800,12 @@ namespace Chummer.Backend.Equipment
                 using (EnterReadLock.Enter(LockObject))
                 {
                     string strOldValue = Interlocked.Exchange(ref _strCategory, value);
-                    if (strOldValue != value && (value == "Cyberlimb" || strOldValue == "Cyberlimb")
-                                             && Parent?.InheritAttributes != false &&
-                                             ParentVehicle == null
-                                             && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                             !string.IsNullOrWhiteSpace(LimbSlot) &&
-                                             !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                    if (strOldValue != value &&
+                        IsLimb &&
+                        Parent?.InheritAttributes != false &&
+                        ParentVehicle == null &&
+                        !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                        !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                     {
                         foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
@@ -2834,15 +2837,20 @@ namespace Chummer.Backend.Equipment
                 using (EnterReadLock.Enter(LockObject))
                 {
                     string strOldValue = Interlocked.Exchange(ref _strLimbSlot, value);
-                    if (strOldValue != value && (Category == "Cyberlimb" && Parent?.InheritAttributes != false
-                                                                         && ParentVehicle == null &&
-                                                                         !_objCharacter.Settings
-                                                                             .DontUseCyberlimbCalculation &&
-                                                                         (!string.IsNullOrWhiteSpace(value)
-                                                                          && !_objCharacter.Settings.ExcludeLimbSlot
-                                                                              .Contains(value)) ||
-                                                 (!string.IsNullOrWhiteSpace(strOldValue) &&
-                                                  !_objCharacter.Settings.ExcludeLimbSlot.Contains(strOldValue))))
+                    if (
+                            strOldValue != value &&
+                            (
+                                Parent?.InheritAttributes != false &&
+                                ParentVehicle == null &&
+                                !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                                !string.IsNullOrWhiteSpace(value) &&
+                                !_objCharacter.Settings.ExcludeLimbSlot.Contains(value) ||
+                                (
+                                    !string.IsNullOrWhiteSpace(strOldValue) &&
+                                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(strOldValue)
+                                )
+                            )
+                        )
                     {
                         foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
@@ -2883,12 +2891,15 @@ namespace Chummer.Backend.Equipment
                 string strNewValue = value.ToString(GlobalSettings.InvariantCultureInfo);
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (Interlocked.Exchange(ref _strLimbSlotCount, strNewValue) != strNewValue
-                        && Category == "Cyberlimb"
-                        && Parent?.InheritAttributes != false && ParentVehicle == null &&
+                    if
+                    (
+                        Interlocked.Exchange(ref _strLimbSlotCount, strNewValue) != strNewValue &&
+                        IsLimb &&
+                        Parent?.InheritAttributes != false &&
+                        ParentVehicle == null &&
                         !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(LimbSlot) &&
-                        !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                        !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot)
+                    )
                     {
                         foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
@@ -4175,11 +4186,11 @@ namespace Chummer.Backend.Equipment
                         {
                             if (IsModularCurrentlyEquipped && ParentVehicle == null)
                             {
-                                if (_objParent?.Category == "Cyberlimb"
+                                if (
+                                    _objParent?.IsLimb == true
                                     && _objParent.Parent?.InheritAttributes != false
                                     && _objParent.ParentVehicle == null
                                     && !_objCharacter.Settings.DontUseCyberlimbCalculation
-                                    && !string.IsNullOrWhiteSpace(_objParent.LimbSlot)
                                     && !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                                 {
                                     foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
@@ -5349,6 +5360,25 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this ware could modify AGI or STR
+        /// </summary>
+        public bool IsLimb
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (!InheritAttributes)
+                    {
+                        return !string.IsNullOrEmpty(LimbSlot);
+                    }
+
+                    return !string.IsNullOrWhiteSpace(LimbSlot) || Children.Any(child => child.IsLimb);
+                }
             }
         }
 
@@ -7081,7 +7111,7 @@ namespace Chummer.Backend.Equipment
                 return 0;
             using (EnterReadLock.Enter(LockObject))
             {
-                if (Category != "Cyberlimb")
+                if (!IsLimb)
                     return 0;
                 switch (strAbbrev)
                 {
@@ -7108,7 +7138,7 @@ namespace Chummer.Backend.Equipment
                 return 0;
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (Category != "Cyberlimb")
+                if (!IsLimb)
                     return 0;
                 switch (strAbbrev)
                 {
@@ -7239,7 +7269,7 @@ namespace Chummer.Backend.Equipment
                     return intAverageAttribute / intCyberlimbChildrenNumber;
                 }
 
-                if (Category != "Cyberlimb")
+                if (!IsLimb)
                     return 0;
 
                 int intBonus = 0;
@@ -7306,7 +7336,7 @@ namespace Chummer.Backend.Equipment
                     return intAverageAttribute / intCyberlimbChildrenNumber;
                 }
 
-                if (Category != "Cyberlimb")
+                if (!IsLimb)
                     return 0;
 
                 int intBonus = 0;

@@ -14463,7 +14463,7 @@ namespace Chummer
                                              + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblCyberwareCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                   .ConfigureAwait(false);
-                            if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal)
+                            if (objCyberware.IsLimb
                                 || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                             {
                                 await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true, token)
