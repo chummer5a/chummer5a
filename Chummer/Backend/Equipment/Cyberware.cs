@@ -43,7 +43,8 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class Cyberware : ICanPaste, IHasChildrenAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasSourceId, IHasXmlDataNode,
+    public sealed class Cyberware : ICanPaste, IHasChildrenAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId,
+        IHasSourceId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
         IHasWirelessBonus, ICanBlackMarketDiscount, IHasLockObject
     {
@@ -139,19 +140,21 @@ namespace Chummer.Backend.Equipment
         // I don't like this, but it's easier than making it a specific property of the cyberware.
         // We're using IReadOnlyCollection and IReadOnlyDictionary to make extra-sure that none of these will get changed
 
-        private static readonly IReadOnlyDictionary<string, IReadOnlyCollection<string>> s_AttributeCustomizationCyberwares
-            = new Dictionary<string, IReadOnlyCollection<string>>
-            {
-                {"AGI", new HashSet<string> {"Customized Agility", "Cyberlimb Customization, Agility (2050)"}},
-                {"STR", new HashSet<string> {"Customized Strength", "Cyberlimb Customization, Strength (2050)"}}
-            };
+        private static readonly IReadOnlyDictionary<string, IReadOnlyCollection<string>>
+            s_AttributeCustomizationCyberwares
+                = new Dictionary<string, IReadOnlyCollection<string>>
+                {
+                    { "AGI", new HashSet<string> { "Customized Agility", "Cyberlimb Customization, Agility (2050)" } },
+                    { "STR", new HashSet<string> { "Customized Strength", "Cyberlimb Customization, Strength (2050)" } }
+                };
 
-        private static readonly IReadOnlyDictionary<string, IReadOnlyCollection<string>> s_AttributeEnhancementCyberwares
-            = new Dictionary<string, IReadOnlyCollection<string>>
-            {
-                {"AGI", new HashSet<string> {"Enhanced Agility", "Cyberlimb Augmentation, Agility (2050)"}},
-                {"STR", new HashSet<string> {"Enhanced Strength", "Cyberlimb Augmentation, Strength (2050)"}}
-            };
+        private static readonly IReadOnlyDictionary<string, IReadOnlyCollection<string>>
+            s_AttributeEnhancementCyberwares
+                = new Dictionary<string, IReadOnlyCollection<string>>
+                {
+                    { "AGI", new HashSet<string> { "Enhanced Agility", "Cyberlimb Augmentation, Agility (2050)" } },
+                    { "STR", new HashSet<string> { "Enhanced Strength", "Cyberlimb Augmentation, Strength (2050)" } }
+                };
 
         private static readonly IReadOnlyDictionary<string, IReadOnlyCollection<string>> s_AttributeAffectingCyberwares
             = new Dictionary<string, IReadOnlyCollection<string>>
@@ -159,16 +162,17 @@ namespace Chummer.Backend.Equipment
                 {
                     "AGI",
                     new HashSet<string>(s_AttributeCustomizationCyberwares["AGI"]
-                                            .Concat(s_AttributeEnhancementCyberwares["AGI"]))
+                        .Concat(s_AttributeEnhancementCyberwares["AGI"]))
                 },
                 {
                     "STR",
                     new HashSet<string>(s_AttributeCustomizationCyberwares["STR"]
-                                            .Concat(s_AttributeEnhancementCyberwares["STR"]))
+                        .Concat(s_AttributeEnhancementCyberwares["STR"]))
                 }
             };
 
-        public static IReadOnlyCollection<string> CyberlimbAttributeAbbrevs { get; } = new HashSet<string>(s_AttributeAffectingCyberwares.Keys);
+        public static IReadOnlyCollection<string> CyberlimbAttributeAbbrevs { get; } =
+            new HashSet<string>(s_AttributeAffectingCyberwares.Keys);
 
         #region Helper Methods
 
@@ -191,6 +195,7 @@ namespace Chummer.Backend.Equipment
                 if (objGrade.Name == "Standard")
                     objStandardGrade = objGrade;
             }
+
             return objStandardGrade;
         }
 
@@ -289,7 +294,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                out HashSet<string> setAttributesToRefresh))
+                           out HashSet<string> setAttributesToRefresh))
                 {
                     bool blnDoEssenceImprovementsRefresh = false;
                     bool blnDoRedlinerRefresh = false;
@@ -322,15 +327,10 @@ namespace Chummer.Backend.Equipment
                                     lstImprovementSourcesToProcess.Add(objNewItem);
                                 }
 
-                                if
-                                (
-                                    setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
-                                    IsLimb &&
-                                    Parent?.InheritAttributes != false &&
-                                    ParentVehicle == null &&
-                                    _objCharacter?.Settings.DontUseCyberlimbCalculation != true &&
-                                    _objCharacter?.Settings.ExcludeLimbSlot.Contains(LimbSlot) != true
-                                )
+                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
+                                    && Parent?.InheritAttributes != false && ParentVehicle == null
+                                    && _objCharacter?.Settings.DontUseCyberlimbCalculation != true && IsLimb
+                                    && _objCharacter?.Settings.ExcludeLimbSlot.Contains(LimbSlot) != true)
                                 {
                                     if (InheritAttributes)
                                     {
@@ -381,12 +381,10 @@ namespace Chummer.Backend.Equipment
                                 if (objOldItem.Parent == this)
                                     objOldItem.Parent = null;
 
-                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
-                                    IsLimb &&
-                                    Parent?.InheritAttributes != false &&
-                                    ParentVehicle == null &&
-                                    !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
+                                    && Parent?.InheritAttributes != false && ParentVehicle == null
+                                    && !_objCharacter.Settings.DontUseCyberlimbCalculation && IsLimb
+                                    && !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                                 {
                                     if (InheritAttributes)
                                     {
@@ -441,12 +439,10 @@ namespace Chummer.Backend.Equipment
                                 if (objOldItem.Parent == this)
                                     objOldItem.Parent = null;
 
-                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
-                                    IsLimb &&
-                                    Parent?.InheritAttributes != false &&
-                                    ParentVehicle == null &&
-                                    !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
+                                    && Parent?.InheritAttributes != false && ParentVehicle == null
+                                    && !_objCharacter.Settings.DontUseCyberlimbCalculation && IsLimb
+                                    && !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                                 {
                                     if (InheritAttributes)
                                     {
@@ -491,13 +487,10 @@ namespace Chummer.Backend.Equipment
                                     lstImprovementSourcesToProcess.Add(objNewItem);
                                 }
 
-                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
-                                    IsLimb &&
-                                    Parent?.InheritAttributes != false &&
-                                    ParentVehicle == null &&
-                                    !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-
-                                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
+                                    && Parent?.InheritAttributes != false && ParentVehicle == null
+                                    && !_objCharacter.Settings.DontUseCyberlimbCalculation && IsLimb
+                                    && !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                                 {
                                     if (InheritAttributes)
                                     {
@@ -527,12 +520,8 @@ namespace Chummer.Backend.Equipment
                         case NotifyCollectionChangedAction.Reset:
                             blnDoEssenceImprovementsRefresh = true;
                             blnDoEncumbranceRefresh = blnEverDoEncumbranceRefresh;
-                            if
-                            (
-                                IsLimb &&
-                                Parent?.InheritAttributes != false &&
-                                ParentVehicle == null &&
-                                !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                            if (Parent?.InheritAttributes != false && ParentVehicle == null &&
+                                !_objCharacter.Settings.DontUseCyberlimbCalculation && IsLimb &&
                                 !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                             {
                                 setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
@@ -558,7 +547,7 @@ namespace Chummer.Backend.Equipment
                                     if (objCharacterAttrib == null)
                                         continue;
                                     if (!dicChangedProperties.TryGetValue(objCharacterAttrib,
-                                                                          out HashSet<string> setChangedProperties))
+                                            out HashSet<string> setChangedProperties))
                                     {
                                         setChangedProperties = Utils.StringHashSetPool.Get();
                                         dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
@@ -573,7 +562,7 @@ namespace Chummer.Backend.Equipment
                                 if (blnDoRedlinerRefresh)
                                 {
                                     if (!dicChangedProperties.TryGetValue(_objCharacter,
-                                                                          out HashSet<string> setChangedProperties))
+                                            out HashSet<string> setChangedProperties))
                                     {
                                         setChangedProperties = Utils.StringHashSetPool.Get();
                                         dicChangedProperties.Add(_objCharacter, setChangedProperties);
@@ -585,7 +574,7 @@ namespace Chummer.Backend.Equipment
                                 if (blnDoEssenceImprovementsRefresh)
                                 {
                                     if (!dicChangedProperties.TryGetValue(_objCharacter,
-                                                                          out HashSet<string> setChangedProperties))
+                                            out HashSet<string> setChangedProperties))
                                     {
                                         setChangedProperties = Utils.StringHashSetPool.Get();
                                         dicChangedProperties.Add(_objCharacter, setChangedProperties);
@@ -597,7 +586,7 @@ namespace Chummer.Backend.Equipment
                                 if (blnDoEncumbranceRefresh)
                                 {
                                     if (!dicChangedProperties.TryGetValue(_objCharacter,
-                                                                          out HashSet<string> setChangedProperties))
+                                            out HashSet<string> setChangedProperties))
                                     {
                                         setChangedProperties = Utils.StringHashSetPool.Get();
                                         dicChangedProperties.Add(_objCharacter, setChangedProperties);
@@ -618,7 +607,7 @@ namespace Chummer.Backend.Equipment
                                                 != objItem.InternalId || !objImprovement.Enabled)
                                                 return;
                                             foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                      string strPropertyToUpdate) in objImprovement
+                                                         string strPropertyToUpdate) in objImprovement
                                                          .GetRelevantPropertyChangers())
                                             {
                                                 if (!dicChangedProperties.TryGetValue(
@@ -659,7 +648,8 @@ namespace Chummer.Backend.Equipment
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
-            bool blnDoEquipped = _objCharacter?.IsLoading == false && IsModularCurrentlyEquipped && ParentVehicle == null;
+            bool blnDoEquipped = _objCharacter?.IsLoading == false && IsModularCurrentlyEquipped &&
+                                 ParentVehicle == null;
             using (EnterReadLock.Enter(LockObject))
             {
                 switch (e.Action)
@@ -706,6 +696,7 @@ namespace Chummer.Backend.Equipment
                             _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                         break;
                 }
+
                 this.RefreshMatrixAttributeArray(_objCharacter);
             }
         }
@@ -740,7 +731,7 @@ namespace Chummer.Backend.Equipment
                     _objParentVehicle = objParentVehicle;
                     if (!objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
                     {
-                        Log.Warn(new object[] {"Missing id field for cyberware xmlnode", objXmlCyberware});
+                        Log.Warn(new object[] { "Missing id field for cyberware xmlnode", objXmlCyberware });
                         Utils.BreakIfDebug();
                     }
                     else
@@ -770,7 +761,7 @@ namespace Chummer.Backend.Equipment
                     if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                     {
                         Notes = CommonFunctions.GetBookNotes(objXmlCyberware, Name, CurrentDisplayName, Source, Page,
-                                                             DisplayPage(GlobalSettings.Language), _objCharacter);
+                            DisplayPage(GlobalSettings.Language), _objCharacter);
                     }
 
                     _blnAddToParentESS = objXmlCyberware["addtoparentess"] != null
@@ -834,13 +825,15 @@ namespace Chummer.Backend.Equipment
 
                     // Add Subsytem information if applicable.
                     XPathNavigator xmlCyberwareNavigator = objXmlCyberware.CreateNavigator();
-                    XPathNavigator xmlAllowSubsystems = xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("allowsubsystems");
+                    XPathNavigator xmlAllowSubsystems =
+                        xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("allowsubsystems");
                     if (xmlAllowSubsystems != null)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdSubsystem))
+                                   out StringBuilder sbdSubsystem))
                         {
-                            foreach (XPathNavigator xmlSubsystem in xmlAllowSubsystems.SelectAndCacheExpression("category"))
+                            foreach (XPathNavigator xmlSubsystem in xmlAllowSubsystems.SelectAndCacheExpression(
+                                         "category"))
                             {
                                 sbdSubsystem.Append(xmlSubsystem.Value).Append(',');
                             }
@@ -851,7 +844,8 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    XPathNavigator xmlPairInclude = xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("pairinclude");
+                    XPathNavigator xmlPairInclude =
+                        xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("pairinclude");
                     if (xmlPairInclude != null)
                     {
                         if (xmlPairInclude.SelectSingleNodeAndCacheExpression("@includeself")?.Value !=
@@ -913,7 +907,7 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                                 decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'),
-                                                           GlobalSettings.InvariantCultureInfo);
+                                    GlobalSettings.InvariantCultureInfo);
 
                             if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
                             {
@@ -972,15 +966,15 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strLoopRating))
                                 {
                                     strLoopRating = strLoopRating.CheapReplace("{Rating}",
-                                                                               () => Rating.ToString(
-                                                                                   GlobalSettings
-                                                                                       .InvariantCultureInfo));
+                                        () => Rating.ToString(
+                                            GlobalSettings
+                                                .InvariantCultureInfo));
                                     int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                                 out intAddWeaponRating);
+                                        out intAddWeaponRating);
                                 }
 
                                 objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,
-                                                     blnSkipSelectForms, intAddWeaponRating);
+                                    blnSkipSelectForms, intAddWeaponRating);
                                 objGearWeapon.ParentID = InternalId;
                                 objGearWeapon.Cost = "0";
 
@@ -1000,7 +994,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
                                 {
-                                    XmlNode objXmlAccessory = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory",
+                                    XmlNode objXmlAccessory = objXmlWeaponDocument.TryGetNodeByNameOrId(
+                                        "/chummer/accessories/accessory",
                                         objXml.InnerText);
 
                                     if (objXmlAccessory == null) continue;
@@ -1013,13 +1008,14 @@ namespace Chummer.Backend.Equipment
                                             () => Rating.ToString(
                                                 GlobalSettings.InvariantCultureInfo));
                                         int.TryParse(strLoopRating, NumberStyles.Any,
-                                                     GlobalSettings.InvariantCultureInfo,
-                                                     out intAddWeaponRating);
+                                            GlobalSettings.InvariantCultureInfo,
+                                            out intAddWeaponRating);
                                     }
 
-                                    objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>(string.Empty, string.Empty),
-                                                         intAddWeaponRating,
-                                                         blnSkipSelectForms, true, blnCreateImprovements);
+                                    objGearWeapon.Create(objXmlAccessory,
+                                        new Tuple<string, string>(string.Empty, string.Empty),
+                                        intAddWeaponRating,
+                                        blnSkipSelectForms, true, blnCreateImprovements);
                                     objGearWeapon.Cost = "0";
                                     objGearWeapon.ParentID = InternalId;
                                     objGearWeapon.Parent = objWeapon;
@@ -1037,13 +1033,14 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
                         {
                             string strLoopID = xmlAddVehicle.InnerText;
-                            XmlNode xmlVehicle = objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID);
+                            XmlNode xmlVehicle =
+                                objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID);
 
                             if (xmlVehicle != null)
                             {
                                 Vehicle objVehicle = new Vehicle(_objCharacter);
                                 objVehicle.Create(xmlVehicle, blnSkipSelectForms, true, blnCreateImprovements,
-                                                  blnSkipSelectForms);
+                                    blnSkipSelectForms);
                                 objVehicle.ParentID = InternalId;
 
                                 if (Guid.TryParse(objVehicle.InternalId, out _guiVehicleID))
@@ -1123,12 +1120,12 @@ namespace Chummer.Backend.Equipment
                                 else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
                                     ImprovementManager.ForcedValue = _strExtra;
                                 if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
-                                                                           _guiID.ToString(
-                                                                               "D", GlobalSettings.InvariantCultureInfo)
-                                                                           + "Pair", PairBonus,
-                                                                           Rating,
-                                                                           CurrentDisplayNameShort,
-                                                                           blnCreateImprovements))
+                                        _guiID.ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo)
+                                        + "Pair", PairBonus,
+                                        Rating,
+                                        CurrentDisplayNameShort,
+                                        blnCreateImprovements))
                                 {
                                     _guiID = Guid.Empty;
                                     return;
@@ -1210,8 +1207,8 @@ namespace Chummer.Backend.Equipment
                         () =>
                         {
                             blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty,
-                                                                        string.Empty,
-                                                                        string.Empty, "Left");
+                                string.Empty,
+                                string.Empty, "Left");
                             if (!blnAllowLeft)
                                 return;
                             if (!string.IsNullOrEmpty(HasModularMount)
@@ -1230,8 +1227,8 @@ namespace Chummer.Backend.Equipment
                                        Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
                             {
                                 setBlocksMounts.AddRange(BlocksMounts
-                                                             .SplitNoAlloc(
-                                                                 ',', StringSplitOptions.RemoveEmptyEntries));
+                                    .SplitNoAlloc(
+                                        ',', StringSplitOptions.RemoveEmptyEntries));
                                 foreach (Cyberware x in lstCyberwareToCheck)
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
@@ -1282,8 +1279,8 @@ namespace Chummer.Backend.Equipment
                                        Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
                             {
                                 setBlocksMounts.AddRange(BlocksMounts
-                                                             .SplitNoAlloc(
-                                                                 ',', StringSplitOptions.RemoveEmptyEntries));
+                                    .SplitNoAlloc(
+                                        ',', StringSplitOptions.RemoveEmptyEntries));
                                 foreach (Cyberware x in lstCyberwareToCheck)
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
@@ -1331,8 +1328,8 @@ namespace Chummer.Backend.Equipment
                            {
                                Description =
                                    string.Format(GlobalSettings.CultureInfo,
-                                                 LanguageManager.GetString("Label_SelectSide"),
-                                                 CurrentDisplayNameShort)
+                                       LanguageManager.GetString("Label_SelectSide"),
+                                       CurrentDisplayNameShort)
                            }))
                     {
                         // Make sure the dialogue window was not canceled.
@@ -1368,21 +1365,22 @@ namespace Chummer.Backend.Equipment
                             string strName = objXmlSubsystemNode["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strName))
                                 continue;
-                            XmlNode objXmlSubsystem = objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", strName);
+                            XmlNode objXmlSubsystem =
+                                objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", strName);
 
                             if (objXmlSubsystem != null)
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
                                 int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                             GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
+                                    GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
                                 objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Cyberware,
-                                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                                 objSubsystem.ParentID = InternalId;
                                 objSubsystem.Cost = "0";
                                 // If the <subsystem> tag itself contains extra children, add those, too
                                 objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                                            blnCreateImprovements);
+                                    blnCreateImprovements);
 
                                 _lstChildren.Add(objSubsystem);
                             }
@@ -1401,21 +1399,22 @@ namespace Chummer.Backend.Equipment
                             string strName = objXmlSubsystemNode["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strName))
                                 continue;
-                            XmlNode objXmlSubsystem = objXmlDocument.TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
+                            XmlNode objXmlSubsystem =
+                                objXmlDocument.TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
 
                             if (objXmlSubsystem != null)
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
                                 int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                             GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
+                                    GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
                                 objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Bioware,
-                                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                                 objSubsystem.ParentID = InternalId;
                                 objSubsystem.Cost = "0";
                                 // If the <subsystem> tag itself contains extra children, add those, too
                                 objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                                            blnCreateImprovements);
+                                    blnCreateImprovements);
 
                                 _lstChildren.Add(objSubsystem);
                             }
@@ -1437,7 +1436,7 @@ namespace Chummer.Backend.Equipment
                         {
                             Gear objGear = new Gear(_objCharacter);
                             if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
-                                                        blnCreateImprovements))
+                                    blnCreateImprovements))
                                 continue;
                             foreach (Weapon objWeapon in lstChildWeapons)
                             {
@@ -1474,7 +1473,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("limbslot", _strLimbSlot);
                 objWriter.WriteElementString("limbslotcount", _strLimbSlotCount);
                 objWriter.WriteElementString("inheritattributes",
-                                             _blnInheritAttributes.ToString(GlobalSettings.InvariantCultureInfo));
+                    _blnInheritAttributes.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("ess", _strESS);
                 objWriter.WriteElementString("capacity", _strCapacity);
                 objWriter.WriteElementString("avail", _strAvail);
@@ -1488,8 +1487,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("blocksmounts", _strBlocksMounts);
                 objWriter.WriteElementString("forced", _strForced);
                 objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("minagility", _intMinAgility.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("minstrength", _intMinStrength.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("minagility",
+                    _intMinAgility.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("minstrength",
+                    _intMinStrength.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("minrating", _strMinRating);
                 objWriter.WriteElementString("maxrating", _strMaxRating);
                 objWriter.WriteElementString("ratinglabel", _strRatingLabel);
@@ -1501,15 +1502,15 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("suite", _blnSuite.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("essdiscount",
-                                             _intEssenceDiscount.ToString(GlobalSettings.InvariantCultureInfo));
+                    _intEssenceDiscount.ToString(GlobalSettings.InvariantCultureInfo));
                 if (_objCharacter.Created)
                 {
                     objWriter.WriteElementString("extraessadditivemultiplier",
-                                                 _decExtraESSAdditiveMultiplier.ToString(
-                                                     GlobalSettings.InvariantCultureInfo));
+                        _decExtraESSAdditiveMultiplier.ToString(
+                            GlobalSettings.InvariantCultureInfo));
                     objWriter.WriteElementString("extraessmultiplicativemultiplier",
-                                                 _decExtraESSMultiplicativeMultiplier.ToString(
-                                                     GlobalSettings.InvariantCultureInfo));
+                        _decExtraESSMultiplicativeMultiplier.ToString(
+                            GlobalSettings.InvariantCultureInfo));
                 }
                 else
                 {
@@ -1527,9 +1528,9 @@ namespace Chummer.Backend.Equipment
                             {
                                 decimal decMultiplier = 1;
                                 decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                                                              (current, objImprovement) =>
-                                                                                  current - (1m - objImprovement.Value
-                                                                                      / 100m));
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value
+                                            / 100m));
                                 decTemp1 -= 1.0m - decMultiplier;
                             }
 
@@ -1557,9 +1558,9 @@ namespace Chummer.Backend.Equipment
                             {
                                 decimal decMultiplier = 1;
                                 decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                                                              (current, objImprovement) =>
-                                                                                  current - (1m - objImprovement.Value
-                                                                                      / 100m));
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value
+                                            / 100m));
                                 decTemp1 -= 1.0m - decMultiplier;
                             }
 
@@ -1580,19 +1581,19 @@ namespace Chummer.Backend.Equipment
                     }
 
                     objWriter.WriteElementString("extraessadditivemultiplier",
-                                                 decTemp1.ToString(GlobalSettings.InvariantCultureInfo));
+                        decTemp1.ToString(GlobalSettings.InvariantCultureInfo));
                     objWriter.WriteElementString("extraessmultiplicativemultiplier",
-                                                 decTemp2.ToString(GlobalSettings.InvariantCultureInfo));
+                        decTemp2.ToString(GlobalSettings.InvariantCultureInfo));
                 }
 
                 objWriter.WriteElementString("forcegrade", _strForceGrade);
                 objWriter.WriteElementString("matrixcmfilled",
-                                             _intMatrixCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
+                    _intMatrixCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("matrixcmbonus",
-                                             _intMatrixCMBonus.ToString(GlobalSettings.InvariantCultureInfo));
+                    _intMatrixCMBonus.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("prototypetranshuman",
-                                             (_blnPrototypeTranshuman && _objCharacter.IsPrototypeTranshuman).ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
+                    (_blnPrototypeTranshuman && _objCharacter.IsPrototypeTranshuman).ToString(
+                        GlobalSettings.InvariantCultureInfo));
                 if (_nodBonus != null)
                     objWriter.WriteRaw(_nodBonus.OuterXml);
                 else
@@ -1614,10 +1615,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
                 if (_guiWeaponID != Guid.Empty)
                     objWriter.WriteElementString("weaponguid",
-                                                 _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
+                        _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
                 if (_guiVehicleID != Guid.Empty)
                     objWriter.WriteElementString("vehicleguid",
-                                                 _guiVehicleID.ToString("D", GlobalSettings.InvariantCultureInfo));
+                        _guiVehicleID.ToString("D", GlobalSettings.InvariantCultureInfo));
 
                 #region PairInclude
 
@@ -1662,13 +1663,13 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("discountedcost",
-                                             _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
+                    _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("addtoparentess",
-                                             _blnAddToParentESS.ToString(GlobalSettings.InvariantCultureInfo));
+                    _blnAddToParentESS.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("addtoparentcapacity",
-                                             _blnAddToParentCapacity.ToString(GlobalSettings.InvariantCultureInfo));
+                    _blnAddToParentCapacity.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("isgeneware",
-                                             _blnIsGeneware.ToString(GlobalSettings.InvariantCultureInfo));
+                    _blnIsGeneware.ToString(GlobalSettings.InvariantCultureInfo));
 
                 objWriter.WriteElementString(
                     "active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
@@ -1689,7 +1690,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("modfirewall", _strModFirewall);
                 objWriter.WriteElementString("modattributearray", _strModAttributeArray);
                 objWriter.WriteElementString("canswapattributes",
-                                             _blnCanSwapAttributes.ToString(GlobalSettings.InvariantCultureInfo));
+                    _blnCanSwapAttributes.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteEndElement();
             }
@@ -1737,11 +1738,11 @@ namespace Chummer.Backend.Equipment
                         XPathNavigator xmlReflexRecorderNode
                             = _eImprovementSource == Improvement.ImprovementSource.Bioware
                                 ? _objCharacter.LoadDataXPath("bioware.xml")
-                                               .SelectSingleNodeAndCacheExpression(
-                                                   "/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]")
+                                    .SelectSingleNodeAndCacheExpression(
+                                        "/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]")
                                 : _objCharacter.LoadDataXPath("cyberware.xml")
-                                               .SelectSingleNodeAndCacheExpression(
-                                                   "/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]");
+                                    .SelectSingleNodeAndCacheExpression(
+                                        "/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]");
                         if (xmlReflexRecorderNode == null)
                             _strName = "Reflex Recorder";
                     }
@@ -1792,7 +1793,7 @@ namespace Chummer.Backend.Equipment
                     objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
                     if (objNode["grade"] != null)
                         _objGrade = Grade.ConvertToCyberwareGrade(objNode["grade"].InnerText, _eImprovementSource,
-                                                                  _objCharacter);
+                            _objCharacter);
                     objNode.TryGetStringFieldQuickly("location", ref _strLocation);
                     if (!objNode.TryGetStringFieldQuickly("extra", ref _strExtra) && _strLocation != "Left" &&
                         _strLocation != "Right")
@@ -1808,7 +1809,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objNode.TryGetDecFieldQuickly("extraessadditivemultiplier", ref _decExtraESSAdditiveMultiplier);
                         objNode.TryGetDecFieldQuickly("extraessmultiplicativemultiplier",
-                                                      ref _decExtraESSMultiplicativeMultiplier);
+                            ref _decExtraESSMultiplicativeMultiplier);
                     }
 
                     objNode.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
@@ -1869,7 +1870,7 @@ namespace Chummer.Backend.Equipment
                         _strForceGrade = objMyNode.Value?["forcegrade"]?.InnerText;
                         if (!string.IsNullOrEmpty(_strForceGrade))
                             _objGrade = Grade.ConvertToCyberwareGrade(_strForceGrade, _eImprovementSource,
-                                                                      _objCharacter);
+                                _objCharacter);
                     }
 
                     if (objNode["weaponguid"] != null
@@ -1999,10 +2000,10 @@ namespace Chummer.Backend.Equipment
                             if (Bonus != null)
                             {
                                 ImprovementManager.CreateImprovements(_objCharacter, _eImprovementSource,
-                                                                      _guiID.ToString(
-                                                                          "D", GlobalSettings.InvariantCultureInfo),
-                                                                      Bonus, Rating,
-                                                                      CurrentDisplayNameShort);
+                                    _guiID.ToString(
+                                        "D", GlobalSettings.InvariantCultureInfo),
+                                    Bonus, Rating,
+                                    CurrentDisplayNameShort);
                             }
 
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
@@ -2074,7 +2075,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint,
+            CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -2085,27 +2087,27 @@ namespace Chummer.Backend.Equipment
                     = await objWriter.StartElementAsync("cyberware", token: token).ConfigureAwait(false);
                 try
                 {
-                    if (IsLimb || CyberlimbAttributeAbbrevs.Count == 0)
+                    if (!await GetIsLimbAsync(token).ConfigureAwait(false) || CyberlimbAttributeAbbrevs.Count == 0)
                     {
                         await objWriter
-                              .WriteElementStringAsync(
-                                  "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                                  token: token).ConfigureAwait(false);
+                            .WriteElementStringAsync(
+                                "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                                token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("name_english", Name, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                     }
                     else
                     {
                         string strSpace = await LanguageManager
-                                                .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                                .ConfigureAwait(false);
+                            .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                            .ConfigureAwait(false);
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdName))
+                                   out StringBuilder sbdName))
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdNameEnglish))
+                                   out StringBuilder sbdNameEnglish))
                         {
                             sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false))
-                                   .Append(strSpace).Append('(');
+                                .Append(strSpace).Append('(');
                             sbdNameEnglish.Append(Name).Append(strSpace).Append('(');
                             bool blnFirst = true;
                             foreach (string strAbbrev in CyberlimbAttributeAbbrevs)
@@ -2121,154 +2123,156 @@ namespace Chummer.Backend.Equipment
                                     blnFirst = false;
 
                                 CharacterAttrib objLoopAttribute = await _objCharacter
-                                                                         .GetAttributeAsync(strAbbrev, token: token)
-                                                                         .ConfigureAwait(false);
+                                    .GetAttributeAsync(strAbbrev, token: token)
+                                    .ConfigureAwait(false);
                                 if (objLoopAttribute != null)
                                     sbdName.Append(await objLoopAttribute
-                                                         .GetDisplayAbbrevAsync(strLanguageToPrint, token)
-                                                         .ConfigureAwait(false));
+                                        .GetDisplayAbbrevAsync(strLanguageToPrint, token)
+                                        .ConfigureAwait(false));
                                 else
                                     sbdName.Append(strAbbrev);
                                 sbdName.Append(strSpace).Append(intTotalValue.ToString(objCulture));
                                 sbdNameEnglish.Append(strAbbrev).Append(strSpace)
-                                              .Append(intTotalValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                    .Append(intTotalValue.ToString(GlobalSettings.InvariantCultureInfo));
                             }
 
                             sbdName.Append(')');
                             sbdNameEnglish.Append(')');
                             await objWriter.WriteElementStringAsync("name", sbdName.ToString(), token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await objWriter
-                                  .WriteElementStringAsync("name_english", sbdNameEnglish.ToString(), token: token)
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync("name_english", sbdNameEnglish.ToString(), token: token)
+                                .ConfigureAwait(false);
                         }
                     }
 
                     await objWriter
-                          .WriteElementStringAsync(
-                              "category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("category_english", Category, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
 
                     await objWriter.WriteElementStringAsync("ess",
-                                                            (await GetCalculatedESSAsync(token).ConfigureAwait(false))
-                                                            .ToString(_objCharacter.Settings.EssenceFormat, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        (await GetCalculatedESSAsync(token).ConfigureAwait(false))
+                        .ToString(_objCharacter.Settings.EssenceFormat, objCulture),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("capacity", Capacity, token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("avail",
+                            await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "owncost",
-                              (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                                  _objCharacter.Settings.NuyenFormat, objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "owncost",
+                            (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
+                                _objCharacter.Settings.NuyenFormat, objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("ownweight",
-                                                   OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("ownweight",
+                            OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "source",
-                              await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
-                                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "source",
+                            await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("minrating",
-                                                   (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(
-                                                       objCulture), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("minrating",
+                            (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(
+                                objCulture), token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("maxrating",
-                                                   (await GetMaxRatingAsync(token).ConfigureAwait(false)).ToString(
-                                                       objCulture), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("maxrating",
+                            (await GetMaxRatingAsync(token).ConfigureAwait(false)).ToString(
+                                objCulture), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("allowsubsystems", AllowedSubsystems, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("wirelesson",
-                                                   WirelessOn.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("wirelesson",
+                            WirelessOn.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "grade", await Grade.DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "grade", await Grade.DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("location", Location, token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "extra",
-                              await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
-                                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "extra",
+                            await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("improvementsource", SourceType.ToString(), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("isgeneware",
-                                                   IsGeneware.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("isgeneware",
+                            IsGeneware.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
 
                     await objWriter
-                          .WriteElementStringAsync(
-                              "attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("dataprocessing",
-                                                   this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("dataprocessing",
+                            this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("devicerating",
-                                                   this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("devicerating",
+                            this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("programlimit",
-                                                   this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("programlimit",
+                            this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("iscommlink",
-                                                   IsCommlink.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("iscommlink",
+                            IsCommlink.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "active",
-                              this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "active",
+                            this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
 
                     if (GearChildren.Count > 0)
                     {
@@ -2280,7 +2284,7 @@ namespace Chummer.Backend.Equipment
                             foreach (Gear objGear in GearChildren)
                             {
                                 await objGear.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                             .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             }
                         }
                         finally
@@ -2298,7 +2302,7 @@ namespace Chummer.Backend.Equipment
                         foreach (Cyberware objChild in Children)
                         {
                             await objChild.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                          .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2552,13 +2556,10 @@ namespace Chummer.Backend.Equipment
                         _lstIncludeInWirelessPairBonus.Add(value);
                     }
 
-                    if
-                        (
-                            _objParent?.IsLimb != true ||
-                            _objParent.Parent?.InheritAttributes == false ||
-                            _objParent.ParentVehicle != null ||
-                            _objCharacter.Settings.DontUseCyberlimbCalculation ||
-                            _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    if (_objParent?.IsLimb != true
+                        || _objParent.Parent?.InheritAttributes == false || _objParent.ParentVehicle != null
+                        || _objCharacter.Settings.DontUseCyberlimbCalculation
+                        || _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                         return;
                     // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether or not we use cyberleg movement
                     foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
@@ -2635,14 +2636,15 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Name
+                        .ConfigureAwait(false))?.Value ?? Name
                     : Name;
             }
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+            DisplayNameShortAsync(GlobalSettings.Language, token);
 
         public static Guid EssenceHoleGUID { get; } = new Guid("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
         public static Guid EssenceAntiHoleGUID { get; } = new Guid("961eac53-0c43-4b19-8741-2872177a3a4c");
@@ -2693,18 +2695,19 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage,
+            CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                       .ConfigureAwait(false);
+                    .ConfigureAwait(false);
                 if (Rating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
                 {
                     strReturn += strSpace + '('
                                           + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
-                                                                 .ConfigureAwait(false) + strSpace
+                                              .ConfigureAwait(false) + strSpace
                                           + Rating.ToString(objCulture) + ')';
                 }
 
@@ -2712,8 +2715,8 @@ namespace Chummer.Backend.Equipment
                 {
                     // Attempt to retrieve the CharacterAttribute name.
                     strReturn += strSpace + '(' + await _objCharacter
-                                                        .TranslateExtraAsync(Extra, strLanguage, token: token)
-                                                        .ConfigureAwait(false) + ')';
+                        .TranslateExtraAsync(Extra, strLanguage, token: token)
+                        .ConfigureAwait(false) + ')';
                 }
 
                 if (!string.IsNullOrEmpty(Location))
@@ -2723,14 +2726,14 @@ namespace Chummer.Backend.Equipment
                     {
                         case "Left":
                             strSide = await LanguageManager
-                                            .GetStringAsync("String_Improvement_SideLeft", strLanguage, token: token)
-                                            .ConfigureAwait(false);
+                                .GetStringAsync("String_Improvement_SideLeft", strLanguage, token: token)
+                                .ConfigureAwait(false);
                             break;
 
                         case "Right":
                             strSide = await LanguageManager
-                                            .GetStringAsync("String_Improvement_SideRight", strLanguage, token: token)
-                                            .ConfigureAwait(false);
+                                .GetStringAsync("String_Improvement_SideRight", strLanguage, token: token)
+                                .ConfigureAwait(false);
                             break;
                     }
 
@@ -2744,7 +2747,8 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Translated Category.
@@ -2757,11 +2761,12 @@ namespace Chummer.Backend.Equipment
             using (EnterReadLock.Enter(LockObject))
             {
                 return _objCharacter
-                       .LoadDataXPath(
-                           SourceType == Improvement.ImprovementSource.Cyberware ? "cyberware.xml" : "bioware.xml",
-                           strLanguage)
-                       .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
-                       ?.Value ?? Category;
+                    .LoadDataXPath(
+                        SourceType == Improvement.ImprovementSource.Cyberware ? "cyberware.xml" : "bioware.xml",
+                        strLanguage)
+                    .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + Category.CleanXPath() +
+                                                        "]/@translate")
+                    ?.Value ?? Category;
             }
         }
 
@@ -2776,12 +2781,14 @@ namespace Chummer.Backend.Equipment
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 return (await (await _objCharacter
-                                     .LoadDataXPathAsync(
-                                         SourceType == Improvement.ImprovementSource.Cyberware
-                                             ? "cyberware.xml"
-                                             : "bioware.xml", strLanguage, token: token).ConfigureAwait(false))
-                        .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token).ConfigureAwait(false))
-                       ?.Value ?? Category;
+                            .LoadDataXPathAsync(
+                                SourceType == Improvement.ImprovementSource.Cyberware
+                                    ? "cyberware.xml"
+                                    : "bioware.xml", strLanguage, token: token).ConfigureAwait(false))
+                        .SelectSingleNodeAndCacheExpressionAsync(
+                            "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token)
+                        .ConfigureAwait(false))
+                    ?.Value ?? Category;
             }
         }
 
@@ -2800,12 +2807,9 @@ namespace Chummer.Backend.Equipment
                 using (EnterReadLock.Enter(LockObject))
                 {
                     string strOldValue = Interlocked.Exchange(ref _strCategory, value);
-                    if (strOldValue != value &&
-                        IsLimb &&
-                        Parent?.InheritAttributes != false &&
-                        ParentVehicle == null &&
-                        !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                        !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                    if (strOldValue != value && IsLimb && Parent?.InheritAttributes != false && ParentVehicle == null
+                        && !_objCharacter.Settings.DontUseCyberlimbCalculation
+                        && !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                     {
                         foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
@@ -2838,19 +2842,19 @@ namespace Chummer.Backend.Equipment
                 {
                     string strOldValue = Interlocked.Exchange(ref _strLimbSlot, value);
                     if (
-                            strOldValue != value &&
+                        strOldValue != value &&
+                        (
+                            Parent?.InheritAttributes != false &&
+                            ParentVehicle == null &&
+                            !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                            !string.IsNullOrWhiteSpace(value) &&
+                            !_objCharacter.Settings.ExcludeLimbSlot.Contains(value) ||
                             (
-                                Parent?.InheritAttributes != false &&
-                                ParentVehicle == null &&
-                                !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                !string.IsNullOrWhiteSpace(value) &&
-                                !_objCharacter.Settings.ExcludeLimbSlot.Contains(value) ||
-                                (
-                                    !string.IsNullOrWhiteSpace(strOldValue) &&
-                                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(strOldValue)
-                                )
+                                !string.IsNullOrWhiteSpace(strOldValue) &&
+                                !_objCharacter.Settings.ExcludeLimbSlot.Contains(strOldValue)
                             )
                         )
+                    )
                     {
                         foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
@@ -2876,13 +2880,13 @@ namespace Chummer.Backend.Equipment
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strLimbSlotCount == "all")
+                    if (string.Equals(_strLimbSlotCount, "all", StringComparison.OrdinalIgnoreCase))
                     {
                         return _objCharacter.LimbCount(LimbSlot);
                     }
 
                     int.TryParse(_strLimbSlotCount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                 out int intReturn);
+                        out int intReturn);
                     return intReturn;
                 }
             }
@@ -2891,15 +2895,10 @@ namespace Chummer.Backend.Equipment
                 string strNewValue = value.ToString(GlobalSettings.InvariantCultureInfo);
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if
-                    (
-                        Interlocked.Exchange(ref _strLimbSlotCount, strNewValue) != strNewValue &&
-                        IsLimb &&
-                        Parent?.InheritAttributes != false &&
-                        ParentVehicle == null &&
-                        !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                        !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot)
-                    )
+                    if (Interlocked.Exchange(ref _strLimbSlotCount, strNewValue) != strNewValue && IsLimb
+                        && Parent?.InheritAttributes != false && ParentVehicle == null
+                        && !_objCharacter.Settings.DontUseCyberlimbCalculation
+                        && !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                     {
                         foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                         {
@@ -2913,6 +2912,24 @@ namespace Chummer.Backend.Equipment
                             _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// The amount of body "slots" a Cyberlimb occupies.
+        /// </summary>
+        public async ValueTask<int> GetLimbSlotCountAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (string.Equals(_strLimbSlotCount, "all", StringComparison.OrdinalIgnoreCase))
+                {
+                    return await _objCharacter.LimbCountAsync(LimbSlot, token).ConfigureAwait(false);
+                }
+
+                int.TryParse(_strLimbSlotCount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                    out int intReturn);
+                return intReturn;
             }
         }
 
@@ -2931,6 +2948,27 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     intCount += Children.Sum(x => x.GetCyberlimbCount(lstExcludeLimbs));
+                }
+
+                return intCount;
+            }
+        }
+
+        /// <summary>
+        /// How many limbs does this cyberware have?
+        /// </summary>
+        public async Task<int> GetCyberlimbCountAsync(ICollection<string> lstExcludeLimbs = null, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                int intCount = 0;
+                if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs?.All(l => l != LimbSlot) != false)
+                {
+                    intCount += await GetLimbSlotCountAsync(token);
+                }
+                else
+                {
+                    intCount += await Children.SumAsync(x => x.GetCyberlimbCountAsync(lstExcludeLimbs, token), token).ConfigureAwait(false);
                 }
 
                 return intCount;
@@ -4186,8 +4224,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (IsModularCurrentlyEquipped && ParentVehicle == null)
                             {
-                                if (
-                                    _objParent?.IsLimb == true
+                                if (_objParent?.IsLimb == true
                                     && _objParent.Parent?.InheritAttributes != false
                                     && _objParent.ParentVehicle == null
                                     && !_objCharacter.Settings.DontUseCyberlimbCalculation
@@ -5372,13 +5409,22 @@ namespace Chummer.Backend.Equipment
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (!InheritAttributes)
-                    {
-                        return !string.IsNullOrEmpty(LimbSlot);
-                    }
-
-                    return !string.IsNullOrWhiteSpace(LimbSlot) || Children.Any(child => child.IsLimb);
+                    return !string.IsNullOrWhiteSpace(LimbSlot)
+                           || (InheritAttributes && Children.Any(objChild => objChild.IsLimb));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this ware could modify AGI or STR
+        /// </summary>
+        public async Task<bool> GetIsLimbAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                return !string.IsNullOrWhiteSpace(LimbSlot)
+                       || (InheritAttributes && await Children
+                           .AnyAsync(objChild => objChild.GetIsLimbAsync(token), token).ConfigureAwait(false));
             }
         }
 
@@ -7138,7 +7184,7 @@ namespace Chummer.Backend.Equipment
                 return 0;
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (!IsLimb)
+                if (!await GetIsLimbAsync(token).ConfigureAwait(false))
                     return 0;
                 switch (strAbbrev)
                 {
@@ -7336,7 +7382,7 @@ namespace Chummer.Backend.Equipment
                     return intAverageAttribute / intCyberlimbChildrenNumber;
                 }
 
-                if (!IsLimb)
+                if (!await GetIsLimbAsync(token).ConfigureAwait(false))
                     return 0;
 
                 int intBonus = 0;
@@ -7362,7 +7408,7 @@ namespace Chummer.Backend.Equipment
 
                 if (ParentVehicle == null)
                 {
-                    intBonus += _objCharacter.RedlinerBonus;
+                    intBonus += await _objCharacter.GetRedlinerBonusAsync(token).ConfigureAwait(false);
                 }
 
                 intBonus = Math.Min(intBonus, _objCharacter.Settings.CyberlimbAttributeBonusCap);

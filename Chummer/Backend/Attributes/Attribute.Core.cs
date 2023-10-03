@@ -1022,8 +1022,7 @@ namespace Chummer.Backend.Attributes
                 if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
-                    return _objCharacter.Cyberware.Any(objCyberware =>
-                        objCyberware.IsLimb && !string.IsNullOrEmpty(objCyberware.LimbSlot), token);
+                    return _objCharacter.Cyberware.Any(objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped, token);
                 }
 
                 return false;
@@ -1074,11 +1073,10 @@ namespace Chummer.Backend.Attributes
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     return await _objCharacter.Cyberware
-                        .AnyAsync
-                        (
-                            objCyberware => objCyberware.IsLimb,
-                            token: token)
-                        .ConfigureAwait(false);
+                        .AnyAsync(
+                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                      .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
 
                 return false;
@@ -1293,13 +1291,17 @@ namespace Chummer.Backend.Attributes
                         int intLimbTotalReturn = 0;
                         foreach (Cyberware objCyberware in lstToCheck)
                         {
+                            if (!objCyberware.IsModularCurrentlyEquipped)
+                                continue;
                             if (objCyberware.IsLimb)
                             {
-                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)) continue;
+                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
+                                    continue;
 
-                                intLimbCountReturn += objCyberware.LimbSlotCount;
+                                int intLoop = objCyberware.LimbSlotCount;
+                                intLimbCountReturn += intLoop;
                                 intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev) *
-                                                      objCyberware.LimbSlotCount;
+                                                      intLoop;
                             }
                             else
                             {
@@ -1318,14 +1320,17 @@ namespace Chummer.Backend.Attributes
                         int intLimbTotalReturn = 0;
                         foreach (Cyberware objCyberware in lstToCheck)
                         {
-                            if (objCyberware.IsLimb)
+                            if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                continue;
+                            if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
-                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)) continue;
+                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
+                                    continue;
 
-                                intLimbCountReturn += objCyberware.LimbSlotCount;
-                                intLimbTotalReturn +=
-                                    await objCyberware.GetAttributeTotalValueAsync(Abbrev, token)
-                                        .ConfigureAwait(false) * objCyberware.LimbSlotCount;
+                                int intLoop = await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                intLimbCountReturn += intLoop;
+                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev, token)
+                                    .ConfigureAwait(false) * intLoop;
                             }
                             else
                             {
@@ -2110,10 +2115,7 @@ namespace Chummer.Backend.Attributes
                             if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
                                 Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                             {
-                                _objCharacter.Cyberware.ForEach(objCyberware =>
-                                {
-                                    sbdModifier = BuildTooltip(sbdModifier, objCyberware, strSpace);
-                                });
+                                _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace));
                             }
 
                             return _strCachedToolTip = DisplayAbbrev + strSpace + '('
@@ -2123,31 +2125,26 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                StringBuilder BuildTooltip(StringBuilder sb, Cyberware cyberware, string strSpace)
+                void BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace)
                 {
-                    if (!cyberware.IsLimb)
+                    if (!objCyberware.IsLimb || !objCyberware.IsModularCurrentlyEquipped)
                     {
-                        return sb;
+                        return;
                     }
 
-                    if (cyberware.InheritAttributes)
+                    if (objCyberware.InheritAttributes)
                     {
-                        foreach (var cyberwareChild in cyberware.Children)
-                        {
-                            sb = BuildTooltip(sb, cyberwareChild, strSpace);
-                        }
+                        objCyberware.Children.ForEach(objChild => BuildTooltip(sbdModifier, objChild, strSpace));
 
-                        return sb;
+                        return;
                     }
 
-                    sb.AppendLine()
-                        .Append(cyberware.CurrentDisplayName)
+                    sbdModifier.AppendLine()
+                        .Append(objCyberware.CurrentDisplayName)
                         .Append(strSpace)
                         .Append('(')
-                        .Append(cyberware.GetAttributeTotalValue(Abbrev).ToString(GlobalSettings.CultureInfo))
+                        .Append(objCyberware.GetAttributeTotalValue(Abbrev).ToString(GlobalSettings.CultureInfo))
                         .Append(')');
-
-                    return sb;
                 }
             }
         }
@@ -2667,12 +2664,10 @@ namespace Chummer.Backend.Attributes
                 case nameof(Character.LimbCount):
                     {
                         if (!CharacterObject.Settings.DontUseCyberlimbCalculation &&
-                            Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) &&
-                            CharacterObject.Cyberware.Any(objCyberware =>
-                                objCyberware.IsLimb &&
-                                !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)
-                                )
-                            )
+                            Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
+                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
+                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
+                                                                        .Contains(objCyberware.LimbSlot)))
                         {
                             OnPropertyChanged(nameof(TotalValue));
                         }
@@ -2688,29 +2683,27 @@ namespace Chummer.Backend.Attributes
             {
                 case nameof(CharacterSettings.DontUseCyberlimbCalculation):
                     {
-                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) &&
-                            CharacterObject.Cyberware.Any(objCyberware =>
-                                objCyberware.IsLimb &&
-                                !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)
-                                )
-                            )
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
+                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
+                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
+                                                                        .Contains(objCyberware.LimbSlot)))
                         {
                             this.OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
                         }
+
                         break;
                     }
                 case nameof(CharacterSettings.CyberlimbAttributeBonusCap):
                 case nameof(CharacterSettings.ExcludeLimbSlot):
                     {
-                        if ((Abbrev == "AGI" || Abbrev == "STR") &&
-                            CharacterObject.Cyberware.Any(objCyberware =>
-                                objCyberware.IsLimb &&
-                                !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)
-                                )
-                            )
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
+                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
+                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
+                                                                        .Contains(objCyberware.LimbSlot)))
                         {
                             this.OnMultiplePropertyChanged(nameof(TotalValue));
                         }
+
                         break;
                     }
                 case nameof(CharacterSettings.UnclampAttributeMinimum):

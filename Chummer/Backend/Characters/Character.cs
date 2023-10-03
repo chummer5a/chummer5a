@@ -2522,15 +2522,11 @@ namespace Chummer
                                         }
                                     }
 
-                                    if
-                                    (
-                                        !blnDoCyberlimbAttributesRefresh &&
-                                        !Settings.DontUseCyberlimbCalculation &&
-                                        objNewItem.IsLimb &&
-                                        objNewItem.Parent == null &&
-                                        objNewItem.ParentVehicle == null &&
-                                        !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot)
-                                    )
+                                    if (!blnDoCyberlimbAttributesRefresh
+                                        && !Settings.DontUseCyberlimbCalculation && objNewItem.Parent == null
+                                        && objNewItem.ParentVehicle == null
+                                        && await objNewItem.GetIsLimbAsync().ConfigureAwait(false)
+                                        && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
                                     }
@@ -2551,15 +2547,11 @@ namespace Chummer
                                 dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                                 using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
                                 {
-                                    if
-                                    (
-                                        !blnDoCyberlimbAttributesRefresh &&
-                                        !Settings.DontUseCyberlimbCalculation &&
-                                        objOldItem.IsLimb &&
-                                        objOldItem.Parent == null &&
-                                        objOldItem.ParentVehicle == null &&
-                                        !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot)
-                                    )
+                                    if (!blnDoCyberlimbAttributesRefresh
+                                        && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
+                                        && objOldItem.ParentVehicle == null
+                                        && await objOldItem.GetIsLimbAsync().ConfigureAwait(false)
+                                        && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
                                     }
@@ -2582,16 +2574,11 @@ namespace Chummer
                                         if (objOldItem.IsModularCurrentlyEquipped)
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
-                                        if
-                                        (
-                                            !blnDoCyberlimbAttributesRefresh &&
-                                            !Settings.DontUseCyberlimbCalculation &&
-                                            objOldItem.IsLimb &&
-                                            objOldItem.Parent == null &&
-                                            objOldItem.ParentVehicle == null &&
-
-                                            !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot)
-                                        )
+                                        if (!blnDoCyberlimbAttributesRefresh
+                                            && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
+                                            && objOldItem.ParentVehicle == null
+                                            && await objOldItem.GetIsLimbAsync().ConfigureAwait(false)
+                                            && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
                                         }
@@ -2602,15 +2589,11 @@ namespace Chummer
                                         if (objNewItem.IsModularCurrentlyEquipped)
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                                        if
-                                        (
-                                            !blnDoCyberlimbAttributesRefresh &&
-                                            !Settings.DontUseCyberlimbCalculation &&
-                                            objNewItem.IsLimb &&
-                                            objNewItem.Parent == null &&
-                                            objNewItem.ParentVehicle == null &&
-                                            !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot)
-                                        )
+                                        if (!blnDoCyberlimbAttributesRefresh
+                                            && !Settings.DontUseCyberlimbCalculation && objNewItem.Parent == null
+                                            && objNewItem.ParentVehicle == null
+                                            && await objNewItem.GetIsLimbAsync().ConfigureAwait(false)
+                                            && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
                                         }
@@ -28275,7 +28258,7 @@ namespace Chummer
                         {
                             if (objCyber.LimbSlot != "leg")
                                 return;
-                            intLegs += objCyber.LimbSlotCount;
+                            intLegs += await objCyber.GetLimbSlotCountAsync(token).ConfigureAwait(false);
                             intTempAGI = Math.Min(intTempAGI, await objCyber.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false));
                         }, token).ConfigureAwait(false);
 
@@ -31135,6 +31118,21 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetRedlinerBonusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int intReturn = _intCachedRedlinerBonus;
+                while (intReturn == int.MinValue)
+                {
+                    await RefreshRedlinerImprovementsAsync(token).ConfigureAwait(false);
+                    intReturn = _intCachedRedlinerBonus;
+                }
+
+                return intReturn;
+            }
+        }
+
         private bool RefreshRedlinerImprovements(CancellationToken token = default)
         {
             using (EnterReadLock.Enter(LockObject, token))
@@ -31242,6 +31240,124 @@ namespace Chummer
                     }
 
                     ImprovementManager.Commit(this);
+                }
+                return true;
+            }
+        }
+
+        private async Task<bool> RefreshRedlinerImprovementsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+                {
+                    await EnqueuePostLoadAsyncMethodAsync(RefreshRedlinerImprovementsAsync, token);
+                    return true;
+                }
+
+                //Get attributes affected by redliner/cyber singularity seeker
+                List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
+                lstSeekerImprovements.AddRange((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.Attribute, token: token))
+                                               .Where(objLoopImprovement =>
+                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
+                lstSeekerImprovements.AddRange((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.PhysicalCM, token: token))
+                                               .Where(objLoopImprovement =>
+                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
+                List<string> lstSeekerAttributes = (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.Seeker, token: token))
+                                                   .ConvertAll(objImprovement => objImprovement.ImprovedName);
+                lstSeekerAttributes.RemoveAll(x => x != "BOX" && !AttributeSection.AttributeStrings.Contains(x));
+                //if neither contains anything, it is safe to exit
+                if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
+                {
+                    _intCachedRedlinerBonus = 0;
+                    return true;
+                }
+
+                //Calculate bonus from cyberlimbs
+                int intCount = await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token), token);
+
+                intCount = Math.Min(intCount / 2, 2);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
+                        ? intCount
+                        : 0;
+
+                    if (lstSeekerImprovements.Count == lstSeekerAttributes.Count)
+                    {
+                        for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
+                        {
+                            string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
+                            int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
+                            Improvement objImprovement
+                                = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
+                                                                  && x.Value == intCountToTarget);
+                            if (objImprovement != null)
+                            {
+                                lstSeekerAttributes.RemoveAt(i);
+                                lstSeekerImprovements.Remove(objImprovement);
+                            }
+                        }
+
+                        if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
+                            return true;
+                    }
+
+                    //Improvement manager defines the functions needed to manipulate improvements
+                    //When the locals (someday) gets moved to this class, this can be removed and use
+                    //the local
+
+                    // Remove which qualities have been removed or which values have changed
+                    await ImprovementManager.RemoveImprovementsAsync(this, lstSeekerImprovements, token: token);
+
+                    try
+                    {
+                        // Add new improvements or old improvements with new values
+                        foreach (string strAttribute in lstSeekerAttributes)
+                        {
+                            if (strAttribute == "BOX")
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, strAttribute,
+                                    Improvement.ImprovementSource.Quality,
+                                    "SEEKER_BOX",
+                                    Improvement.ImprovementType.PhysicalCM,
+                                    Guid.NewGuid()
+                                        .ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo),
+                                    intCount * -3, token: token);
+                            }
+                            else
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, strAttribute,
+                                    Improvement.ImprovementSource.Quality,
+                                    "SEEKER_" + strAttribute,
+                                    Improvement.ImprovementType.Attribute,
+                                    Guid.NewGuid()
+                                        .ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo),
+                                    intCount, 1, 0, 0,
+                                    intCount, token: token);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None);
+                        throw;
+                    }
+
+                    ImprovementManager.Commit(this);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
                 return true;
             }

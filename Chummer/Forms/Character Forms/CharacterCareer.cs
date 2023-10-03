@@ -19910,7 +19910,7 @@ namespace Chummer
                                                       x => x.Text = strCost,
                                                       token)
                                                   .ConfigureAwait(false);
-                            if (objCyberware.IsLimb)
+                            if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
                                 await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
@@ -22388,7 +22388,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setLoopHasModularMount))
                     {
-                        await CharacterObject.Cyberware.ForEachAsync(objLoopCyberware =>
+                        await CharacterObject.Cyberware.ForEachAsync(async objLoopCyberware =>
                         {
                             setLoopDisallowedMounts.Clear();
                             setLoopDisallowedMounts.AddRange(
@@ -22396,8 +22396,8 @@ namespace Chummer
                             setLoopHasModularMount.Clear();
                             if (!string.IsNullOrEmpty(objLoopCyberware.HasModularMount))
                                 setLoopHasModularMount.Add(objLoopCyberware.HasModularMount);
-                            foreach (Cyberware objInnerLoopCyberware in objLoopCyberware.Children.DeepWhere(
-                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            foreach (Cyberware objInnerLoopCyberware in await objLoopCyberware.Children.DeepWhereAsync(
+                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), token).ConfigureAwait(false))
                             {
                                 foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(
                                              ',', StringSplitOptions.RemoveEmptyEntries))
@@ -22410,18 +22410,18 @@ namespace Chummer
                             {
                                 string strKey = strLoop + objLoopCyberware.Location;
                                 if (!dicDisallowedMounts.ContainsKey(strKey))
-                                    dicDisallowedMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                                    dicDisallowedMounts.Add(strKey, await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false));
                                 else
-                                    dicDisallowedMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                                    dicDisallowedMounts[strKey] += await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
                             }
 
                             foreach (string strLoop in setLoopHasModularMount)
                             {
                                 string strKey = strLoop + objLoopCyberware.Location;
                                 if (!dicHasMounts.ContainsKey(strKey))
-                                    dicHasMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                                    dicHasMounts.Add(strKey, await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false));
                                 else
-                                    dicHasMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                                    dicHasMounts[strKey] += await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
                             }
                         }, token).ConfigureAwait(false);
                     }
