@@ -829,21 +829,24 @@ namespace Chummer
                                         nameof(Character.PhysicalCM), GenericToken).ConfigureAwait(false);
                                     await lblCMPhysicalLabel.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character.PhysicalCMLabelText), GenericToken).ConfigureAwait(false);
-                                    await lblCMStun.DoThreadSafeAsync(x => x.Visible = true,
-                                                                      GenericToken)
-                                                   .ConfigureAwait(
-                                                       false); // Needed to make sure data bindings go through
-                                    await lblCMStun.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                                                             nameof(Character.StunCMToolTip), GenericToken)
+                                    await lblCMStun.RegisterOneWayAsyncDataBindingAsync(
+                                                       (x, y) => x.Text = y, CharacterObject,
+                                                       nameof(Character.DisplayStunCM),
+                                                       x => x.GetDisplayStunCMAsync(GenericToken), GenericToken,
+                                                       GenericToken)
                                                    .ConfigureAwait(false);
-                                    await lblCMStun
-                                          .DoOneWayDataBindingAsync("Text", CharacterObject, nameof(Character.StunCM), GenericToken)
-                                          .ConfigureAwait(false);
-                                    await lblCMStun.DoOneWayDataBindingAsync("Visible", CharacterObject,
-                                                                             nameof(Character.StunCMVisible), GenericToken)
+                                    await lblCMStun.RegisterOneWayAsyncDataBindingAsync(
+                                                       (x, y) => x.ToolTipText = y, CharacterObject,
+                                                       nameof(Character.StunCMToolTip),
+                                                       x => x.GetStunCMToolTipAsync(GenericToken), GenericToken,
+                                                       GenericToken)
                                                    .ConfigureAwait(false);
-                                    await lblCMStunLabel.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.StunCMLabelText), GenericToken).ConfigureAwait(false);
+                                    await lblCMStunLabel.RegisterOneWayAsyncDataBindingAsync(
+                                                            (x, y) => x.Text = y, CharacterObject,
+                                                            nameof(Character.StunCMLabelText),
+                                                            x => x.GetStunCMLabelTextAsync(GenericToken), GenericToken,
+                                                            GenericToken)
+                                                        .ConfigureAwait(false);
 
                                     await lblESSMax.DoOneWayDataBindingAsync("Text", CharacterObject,
                                                                              nameof(Character.DisplayEssence), GenericToken)

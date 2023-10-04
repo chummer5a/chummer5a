@@ -25972,6 +25972,35 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Number of Stun Condition Monitor boxes as meant to displayed for the UI.
+        /// It's a hacky work-around for visibility data bindings messing up ther data bindings
+        /// </summary>
+        public string DisplayStunCM
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    return IsAI && HomeNode == null ? string.Empty : StunCM.ToString(GlobalSettings.CultureInfo);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Number of Stun Condition Monitor boxes as meant to displayed for the UI.
+        /// It's a hacky work-around for visibility data bindings messing up ther data bindings
+        /// </summary>
+        public async Task<string> GetDisplayStunCMAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                return await GetIsAIAsync(token).ConfigureAwait(false) && HomeNode == null
+                    ? string.Empty
+                    : (await GetStunCMAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            }
+        }
+
+        /// <summary>
         /// Number of Stun Condition Monitor boxes.
         /// </summary>
         public int StunCM
@@ -26033,15 +26062,6 @@ namespace Chummer
             return intCMStun;
         }
 
-        public bool StunCMVisible
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return !IsAI || HomeNode != null;
-            }
-        }
-
         public string StunCMLabelText
         {
             get
@@ -26055,6 +26075,22 @@ namespace Chummer
 
                     return LanguageManager.GetString("Label_OtherStunCM");
                 }
+            }
+        }
+
+        public async Task<string> GetStunCMLabelTextAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return HomeNode != null
+                        ? await LanguageManager.GetStringAsync("Label_OtherMatrixCM", token: token)
+                                               .ConfigureAwait(false)
+                        : string.Empty;
+                }
+
+                return await LanguageManager.GetStringAsync("Label_OtherStunCM", token: token).ConfigureAwait(false);
             }
         }
 
@@ -26099,6 +26135,50 @@ namespace Chummer
 
                 return strCM;
             }
+        }
+
+        public async Task<string> GetStunCMToolTipAsync(CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strModifiers
+                = await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false);
+            string strCM;
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int intBonus;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (HomeNode == null)
+                        return string.Empty;
+                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '('
+                            + await LanguageManager.GetStringAsync("String_DeviceRating", token: token)
+                                                   .ConfigureAwait(false) + '÷' + 2.ToString(GlobalSettings.CultureInfo)
+                            + ')' + strSpace + '('
+                            + ((HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2).ToString(
+                                GlobalSettings.CultureInfo) + ')';
+                    intBonus = HomeNode.TotalBonusMatrixBoxes;
+                    if (intBonus != 0)
+                        strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
+                                 + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                }
+                else
+                {
+                    CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '('
+                            + await objWil.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)
+                            + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
+                            + ((await objWil.GetTotalValueAsync(token).ConfigureAwait(false) + 1) / 2).ToString(
+                                GlobalSettings.CultureInfo) + ')';
+                    intBonus = (await ImprovementManager
+                                      .ValueOfAsync(this, Improvement.ImprovementType.StunCM, token: token)
+                                      .ConfigureAwait(false)).StandardRound();
+                    if (intBonus != 0)
+                        strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '(' +
+                                 intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                }
+            }
+
+            return strCM;
         }
 
         /// <summary>
@@ -34763,9 +34843,10 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(StunCMToolTip),
                         new DependencyGraphNode<string, Character>(nameof(StunCM))
                     ),
-                    new DependencyGraphNode<string, Character>(nameof(StunCMVisible),
+                    new DependencyGraphNode<string, Character>(nameof(DisplayStunCM),
                         new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                        new DependencyGraphNode<string, Character>(nameof(HomeNode))
+                        new DependencyGraphNode<string, Character>(nameof(HomeNode)),
+                        new DependencyGraphNode<string, Character>(nameof(StunCM), x => !x.IsAI || x.HomeNode != null)
                     ),
                     new DependencyGraphNode<string, Character>(nameof(StunCMLabelText),
                         new DependencyGraphNode<string, Character>(nameof(IsAI)),
