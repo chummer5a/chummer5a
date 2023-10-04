@@ -1022,8 +1022,7 @@ namespace Chummer.Backend.Attributes
                 if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
-                    return _objCharacter.Cyberware.Any(objCyberware =>
-                        objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot), token);
+                    return _objCharacter.Cyberware.Any(objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped, token);
                 }
 
                 return false;
@@ -1075,9 +1074,9 @@ namespace Chummer.Backend.Attributes
                 {
                     return await _objCharacter.Cyberware
                         .AnyAsync(
-                            objCyberware => objCyberware.Category == "Cyberlimb" &&
-                                            !string.IsNullOrEmpty(objCyberware.LimbSlot), token: token)
-                        .ConfigureAwait(false);
+                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                      .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
 
                 return false;
@@ -1292,16 +1291,17 @@ namespace Chummer.Backend.Attributes
                         int intLimbTotalReturn = 0;
                         foreach (Cyberware objCyberware in lstToCheck)
                         {
-                            if (objCyberware.Category == "Cyberlimb")
+                            if (!objCyberware.IsModularCurrentlyEquipped)
+                                continue;
+                            if (objCyberware.IsLimb)
                             {
-                                if (!string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                    && !_objCharacter.Settings.ExcludeLimbSlot
-                                        .Contains(objCyberware.LimbSlot))
-                                {
-                                    intLimbCountReturn += objCyberware.LimbSlotCount;
-                                    intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev) *
-                                                          objCyberware.LimbSlotCount;
-                                }
+                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
+                                    continue;
+
+                                int intLoop = objCyberware.LimbSlotCount;
+                                intLimbCountReturn += intLoop;
+                                intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev) *
+                                                      intLoop;
                             }
                             else
                             {
@@ -1320,17 +1320,17 @@ namespace Chummer.Backend.Attributes
                         int intLimbTotalReturn = 0;
                         foreach (Cyberware objCyberware in lstToCheck)
                         {
-                            if (objCyberware.Category == "Cyberlimb")
+                            if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                continue;
+                            if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
-                                if (!string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                    && !_objCharacter.Settings.ExcludeLimbSlot
-                                        .Contains(objCyberware.LimbSlot))
-                                {
-                                    intLimbCountReturn += objCyberware.LimbSlotCount;
-                                    intLimbTotalReturn +=
-                                        await objCyberware.GetAttributeTotalValueAsync(Abbrev, token)
-                                            .ConfigureAwait(false) * objCyberware.LimbSlotCount;
-                                }
+                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
+                                    continue;
+
+                                int intLoop = await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                intLimbCountReturn += intLoop;
+                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev, token)
+                                    .ConfigureAwait(false) * intLoop;
                             }
                             else
                             {
@@ -2115,18 +2115,7 @@ namespace Chummer.Backend.Attributes
                             if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
                                 Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                             {
-                                _objCharacter.Cyberware.ForEach(objCyberware =>
-                                {
-                                    if (objCyberware.Category == "Cyberlimb")
-                                    {
-                                        sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName)
-                                                   .Append(strSpace)
-                                                   .Append('(')
-                                                   .Append(objCyberware.GetAttributeTotalValue(Abbrev)
-                                                                       .ToString(GlobalSettings.CultureInfo))
-                                                   .Append(')');
-                                    }
-                                });
+                                _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace));
                             }
 
                             return _strCachedToolTip = DisplayAbbrev + strSpace + '('
@@ -2134,6 +2123,28 @@ namespace Chummer.Backend.Attributes
                                                        sbdModifier;
                         }
                     }
+                }
+
+                void BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace)
+                {
+                    if (!objCyberware.IsLimb || !objCyberware.IsModularCurrentlyEquipped)
+                    {
+                        return;
+                    }
+
+                    if (objCyberware.InheritAttributes)
+                    {
+                        objCyberware.Children.ForEach(objChild => BuildTooltip(sbdModifier, objChild, strSpace));
+
+                        return;
+                    }
+
+                    sbdModifier.AppendLine()
+                        .Append(objCyberware.CurrentDisplayName)
+                        .Append(strSpace)
+                        .Append('(')
+                        .Append(objCyberware.GetAttributeTotalValue(Abbrev).ToString(GlobalSettings.CultureInfo))
+                        .Append(')');
                 }
             }
         }
@@ -2653,10 +2664,10 @@ namespace Chummer.Backend.Attributes
                 case nameof(Character.LimbCount):
                     {
                         if (!CharacterObject.Settings.DontUseCyberlimbCalculation &&
-                            Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) &&
-                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                          && !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                            Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
+                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
+                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
+                                                                        .Contains(objCyberware.LimbSlot)))
                         {
                             OnPropertyChanged(nameof(TotalValue));
                         }
@@ -2672,25 +2683,27 @@ namespace Chummer.Backend.Attributes
             {
                 case nameof(CharacterSettings.DontUseCyberlimbCalculation):
                     {
-                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) &&
-                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                          && !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
+                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
+                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
+                                                                        .Contains(objCyberware.LimbSlot)))
                         {
                             this.OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
                         }
+
                         break;
                     }
                 case nameof(CharacterSettings.CyberlimbAttributeBonusCap):
                 case nameof(CharacterSettings.ExcludeLimbSlot):
                     {
-                        if ((Abbrev == "AGI" || Abbrev == "STR") &&
-                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                          && !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
+                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
+                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
+                                                                        .Contains(objCyberware.LimbSlot)))
                         {
                             this.OnMultiplePropertyChanged(nameof(TotalValue));
                         }
+
                         break;
                     }
                 case nameof(CharacterSettings.UnclampAttributeMinimum):

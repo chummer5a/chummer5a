@@ -653,12 +653,13 @@ namespace Chummer.UI.Powers
                     DpiFriendlyImagedButton cmdReturn
                         = new DpiFriendlyImagedButton
                         {
-                            ImageDpi96 = Resources.note_edit_16,
-                            ImageDpi192 = Resources.note_edit_32,
                             Dock = DockStyle.Fill,
                             AutoSize = true,
                             FlatStyle = FlatStyle.Flat
                         };
+                    cmdReturn.BatchSetImages(Resources.note_edit_16, Resources.note_edit_20, Resources.note_edit_24,
+                        Resources.note_edit_32,
+                        Resources.note_edit_48, Resources.note_edit_64);
                     cmdReturn.FlatAppearance.BorderSize = 0;
                     return new ButtonTableCell<Power>(cmdReturn)
                     {
@@ -714,12 +715,13 @@ namespace Chummer.UI.Powers
                     DpiFriendlyImagedButton cmdReturn
                         = new DpiFriendlyImagedButton
                         {
-                            ImageDpi96 = Resources.delete_16,
-                            ImageDpi192 = Resources.delete_32,
                             Dock = DockStyle.Fill,
                             AutoSize = true,
                             FlatStyle = FlatStyle.Flat
                         };
+                    cmdReturn.BatchSetImages(Resources.delete_16, Resources.delete_20, Resources.delete_24,
+                        Resources.delete_32,
+                        Resources.delete_48, Resources.delete_64);
                     cmdReturn.FlatAppearance.BorderSize = 0;
                     return new ButtonTableCell<Power>(cmdReturn)
                     {
@@ -787,12 +789,14 @@ namespace Chummer.UI.Powers
                     DpiFriendlyImagedButton cmdReturn
                         = new DpiFriendlyImagedButton
                         {
-                            ImageDpi96 = Resources.page_refresh_16,
-                            ImageDpi192 = Resources.page_refresh_32,
                             Dock = DockStyle.Fill,
                             AutoSize = true,
                             FlatStyle = FlatStyle.Flat
                         };
+                    cmdReturn.BatchSetImages(Resources.page_refresh_16, Resources.page_refresh_20,
+                        Resources.page_refresh_24,
+                        Resources.page_refresh_32,
+                        Resources.page_refresh_48, Resources.page_refresh_64);
                     cmdReturn.FlatAppearance.BorderSize = 0;
                     return new ButtonTableCell<Power>(cmdReturn)
                     {

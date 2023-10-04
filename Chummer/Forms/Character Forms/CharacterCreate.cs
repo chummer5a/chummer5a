@@ -817,21 +817,24 @@ namespace Chummer
                                         nameof(Character.PhysicalCM), GenericToken).ConfigureAwait(false);
                                     await lblCMPhysicalLabel.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character.PhysicalCMLabelText), GenericToken).ConfigureAwait(false);
-                                    await lblCMStun.DoThreadSafeAsync(x => x.Visible = true,
-                                                                      GenericToken)
-                                                   .ConfigureAwait(
-                                                       false); // Needed to make sure data bindings go through
-                                    await lblCMStun.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                                                             nameof(Character.StunCMToolTip),
-                                                                             GenericToken).ConfigureAwait(false);
-                                    await lblCMStun
-                                          .DoOneWayDataBindingAsync("Text", CharacterObject, nameof(Character.StunCM),
-                                                                    GenericToken).ConfigureAwait(false);
-                                    await lblCMStun.DoOneWayDataBindingAsync("Visible", CharacterObject,
-                                                                             nameof(Character.StunCMVisible),
-                                                                             GenericToken).ConfigureAwait(false);
-                                    await lblCMStunLabel.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.StunCMLabelText), GenericToken).ConfigureAwait(false);
+                                    await lblCMStun.RegisterOneWayAsyncDataBindingAsync(
+                                                       (x, y) => x.Text = y, CharacterObject,
+                                                       nameof(Character.DisplayStunCM),
+                                                       x => x.GetDisplayStunCMAsync(GenericToken), GenericToken,
+                                                       GenericToken)
+                                                   .ConfigureAwait(false);
+                                    await lblCMStun.RegisterOneWayAsyncDataBindingAsync(
+                                                       (x, y) => x.ToolTipText = y, CharacterObject,
+                                                       nameof(Character.StunCMToolTip),
+                                                       x => x.GetStunCMToolTipAsync(GenericToken), GenericToken,
+                                                       GenericToken)
+                                                   .ConfigureAwait(false);
+                                    await lblCMStunLabel.RegisterOneWayAsyncDataBindingAsync(
+                                                            (x, y) => x.Text = y, CharacterObject,
+                                                            nameof(Character.StunCMLabelText),
+                                                            x => x.GetStunCMLabelTextAsync(GenericToken), GenericToken,
+                                                            GenericToken)
+                                                        .ConfigureAwait(false);
 
                                     await lblESSMax.DoOneWayDataBindingAsync("Text", CharacterObject,
                                                                              nameof(Character.DisplayEssence),
@@ -1073,24 +1076,26 @@ namespace Chummer
                                         "ToolTipText", CharacterObject,
                                         nameof(Character.WildReputationTooltip), GenericToken).ConfigureAwait(false);
 
-                                    await lblMentorSpirit.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                                             nameof(Character.FirstMentorSpiritDisplayName),
-                                                             GenericToken)
-                                                         .ConfigureAwait(false);
-                                    await lblMentorSpiritInformation.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                                                        nameof(Character
-                                                                                   .FirstMentorSpiritDisplayInformation),
-                                                                        GenericToken)
-                                                                    .ConfigureAwait(false);
-                                    await lblParagon.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                                                              nameof(Character
-                                                                                  .FirstMentorSpiritDisplayName),
-                                                                              GenericToken).ConfigureAwait(false);
-                                    await lblParagonInformation.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                                                   nameof(Character
-                                                                              .FirstMentorSpiritDisplayInformation),
-                                                                   GenericToken)
-                                                               .ConfigureAwait(false);
+                                    await lblMentorSpirit.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayName),
+                                        x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken,
+                                        GenericToken).ConfigureAwait(false);
+                                    await lblMentorSpiritInformation.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayInformation),
+                                        x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken,
+                                        GenericToken).ConfigureAwait(false);
+                                    await lblParagon.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayName),
+                                        x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken,
+                                        GenericToken).ConfigureAwait(false);
+                                    await lblParagonInformation.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayInformation),
+                                        x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken,
+                                        GenericToken).ConfigureAwait(false);
 
                                     await lblComposure.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character.ComposureToolTip), GenericToken).ConfigureAwait(false);
@@ -14463,8 +14468,7 @@ namespace Chummer
                                              + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblCyberwareCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                   .ConfigureAwait(false);
-                            if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal)
-                                || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
+                            if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
                                 await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
@@ -16995,7 +16999,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setLoopHasModularMount))
                     {
-                        await CharacterObject.Cyberware.ForEachAsync(objLoopCyberware =>
+                        await CharacterObject.Cyberware.ForEachAsync(async objLoopCyberware =>
                         {
                             setLoopDisallowedMounts.Clear();
                             setLoopDisallowedMounts.AddRange(
@@ -17003,8 +17007,8 @@ namespace Chummer
                             setLoopHasModularMount.Clear();
                             if (!string.IsNullOrEmpty(objLoopCyberware.HasModularMount))
                                 setLoopHasModularMount.Add(objLoopCyberware.HasModularMount);
-                            foreach (Cyberware objInnerLoopCyberware in objLoopCyberware.Children.DeepWhere(
-                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            foreach (Cyberware objInnerLoopCyberware in await objLoopCyberware.Children.DeepWhereAsync(
+                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), token).ConfigureAwait(false))
                             {
                                 foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(
                                              ',', StringSplitOptions.RemoveEmptyEntries))
@@ -17017,18 +17021,18 @@ namespace Chummer
                             {
                                 string strKey = strLoop + objLoopCyberware.Location;
                                 if (!dicDisallowedMounts.ContainsKey(strKey))
-                                    dicDisallowedMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                                    dicDisallowedMounts.Add(strKey, await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false));
                                 else
-                                    dicDisallowedMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                                    dicDisallowedMounts[strKey] += await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
                             }
 
                             foreach (string strLoop in setLoopHasModularMount)
                             {
                                 string strKey = strLoop + objLoopCyberware.Location;
                                 if (!dicHasMounts.ContainsKey(strKey))
-                                    dicHasMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                                    dicHasMounts.Add(strKey, await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false));
                                 else
-                                    dicHasMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                                    dicHasMounts[strKey] += await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
                             }
                         }, token).ConfigureAwait(false);
                     }

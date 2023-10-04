@@ -78,7 +78,7 @@ namespace Chummer
             this.lblDisadvantageLabel.Name = "lblDisadvantageLabel";
             this.lblDisadvantageLabel.Size = new System.Drawing.Size(76, 13);
             this.lblDisadvantageLabel.TabIndex = 9;
-            this.lblDisadvantageLabel.Tag = "Label_SelectMetamagic_Disadvantage";
+            this.lblDisadvantageLabel.Tag = "Label_SelectMentorSpirit_Disadvantage";
             this.lblDisadvantageLabel.Text = "Disadvantage:";
             // 
             // lblAdvantage

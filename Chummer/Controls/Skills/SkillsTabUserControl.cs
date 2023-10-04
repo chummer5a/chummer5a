@@ -523,7 +523,29 @@ namespace Chummer.UI.Skills
             if (e.ListChangedType == ListChangedType.Reset
                 || e.ListChangedType == ListChangedType.ItemAdded
                 || e.ListChangedType == ListChangedType.ItemDeleted)
+            {
                 RefreshSkillLabels();
+                // Special, hacky fix to force skill group displays to refresh when skill lists could change (e.g., because skill groups can end up getting
+                // added before their skills do through said skills' constructors and how they are used, making them not show up in the UI initially)
+                if (e.ListChangedType == ListChangedType.Reset || e.ListChangedType == ListChangedType.ItemDeleted)
+                {
+                    _lstSkillGroups.Filter(
+                        z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
+                        true);
+                }
+                else if (e.ListChangedType == ListChangedType.ItemAdded)
+                {
+                    SkillGroup objNewSkillGroup = _objCharacter.SkillsSection.Skills[e.NewIndex]?.SkillGroupObject;
+                    if (objNewSkillGroup != null &&
+                        objNewSkillGroup.SkillList.Count(y =>
+                            _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)) == 1)
+                    {
+                        _lstSkillGroups.Filter(
+                            z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
+                            true);
+                    }
+                }
+            }
         }
 
         private void KnowledgeSkillsOnListChanged(object sender, ListChangedEventArgs e)

@@ -3785,38 +3785,50 @@ namespace Chummer.Backend.Skills
 
                     if (blnListAllLimbs && Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev))
                     {
-                        CharacterObject.Cyberware.ForEach(cyberware =>
+                        CharacterObject.Cyberware.ForEach(x => BuildTooltipString(sbdReturn, x));
+
+                        void BuildTooltipString(StringBuilder sb, Cyberware objCyberware)
                         {
-                            if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
-                                return;
-                            sbdReturn.AppendLine().AppendLine().Append(strExtraStart)
-                                     .Append(cyberware.CurrentDisplayName);
-                            if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
+                            if (!objCyberware.IsLimb || !objCyberware.IsModularCurrentlyEquipped)
                             {
-                                sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName)
-                                         .Append(')');
+                                return;
+                            }
+
+                            if (objCyberware.InheritAttributes)
+                            {
+                                objCyberware.Children.ForEach(x => BuildTooltipString(sbdReturn, x));
+
+                                return;
+                            }
+
+                            sb.AppendLine().AppendLine().Append(strExtraStart)
+                                .Append(objCyberware.CurrentDisplayName);
+                            if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
+                            {
+                                sb.Append(strSpace).Append('(').Append(objCyberware.Grade.CurrentDisplayName)
+                                    .Append(')');
                             }
 
                             int pool = PoolOtherAttribute(att.Abbrev, false,
-                                                          cyberware.GetAttributeTotalValue(att.Abbrev));
-                            if ((cyberware.LimbSlot != "arm"
-                                 && !cyberware.Name.ContainsAny(" Arm", " Hand"))
-                                || cyberware.Location == CharacterObject.PrimaryArm
+                                objCyberware.GetAttributeTotalValue(att.Abbrev));
+                            if ((objCyberware.LimbSlot != "arm"
+                                 && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
+                                || objCyberware.Location == CharacterObject.PrimaryArm
                                 || CharacterObject.Ambidextrous
-                                || cyberware.LimbSlotCount > 1)
+                                || objCyberware.LimbSlotCount > 1)
                             {
-                                sbdReturn.Append(strSpace).Append(pool.ToString(GlobalSettings.CultureInfo));
+                                sb.Append(strSpace).Append(pool.ToString(GlobalSettings.CultureInfo));
                             }
                             else
                             {
-                                sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2,
-                                                       strSpace, -2,
-                                                       LanguageManager.GetString("Tip_Skill_OffHand"));
+                                sb.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2,
+                                    strSpace, -2,
+                                    LanguageManager.GetString("Tip_Skill_OffHand"));
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
-                                sbdReturn.Append(strExtra);
-                        });
+                                sb.Append(strExtra);
+                        }
                     }
 
                     if (att.Abbrev != Attribute)
@@ -3866,47 +3878,58 @@ namespace Chummer.Backend.Skills
                         if (!blnListAllLimbs ||
                             !Cyberware.CyberlimbAttributeAbbrevs.Contains(objSwapSkillAttribute.ImprovedName))
                             continue;
-                        CharacterObject.Cyberware.ForEach(cyberware =>
+                        CharacterObject.Cyberware.ForEach(objChild => BuildTooltip(sbdReturn, objChild));
+
+                        void BuildTooltip(StringBuilder sbdLoop, Cyberware objCyberware)
                         {
-                            if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
-                                return;
-                            sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
-                                     .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
-                                     .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
-                                     .Append(cyberware.CurrentDisplayName);
-                            if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
+                            if (!objCyberware.IsLimb || !objCyberware.IsModularCurrentlyEquipped)
                             {
-                                sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName)
-                                         .Append(')');
+                                return;
+                            }
+
+                            if (objCyberware.InheritAttributes)
+                            {
+                                objCyberware.Children.ForEach(objChild => BuildTooltip(sbdLoop, objChild));
+                                return;
+                            }
+
+                            sbdLoop.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
+                                .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
+                                .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
+                                .Append(objCyberware.CurrentDisplayName);
+                            if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
+                            {
+                                sbdLoop.Append(strSpace).Append('(').Append(objCyberware.Grade.CurrentDisplayName)
+                                    .Append(')');
                             }
 
                             int intLoopPool =
                                 PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false,
-                                                   cyberware.GetAttributeTotalValue(
-                                                       objSwapSkillAttribute.ImprovedName));
+                                    objCyberware.GetAttributeTotalValue(
+                                        objSwapSkillAttribute.ImprovedName));
                             if (objSpecialization != null)
                             {
                                 intLoopPool += objSpecialization.SpecializationBonus;
                             }
 
-                            if ((cyberware.LimbSlot != "arm"
-                                 && !cyberware.Name.ContainsAny(" Arm", " Hand"))
-                                || cyberware.Location == CharacterObject.PrimaryArm
+                            if ((objCyberware.LimbSlot != "arm"
+                                 && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
+                                || objCyberware.Location == CharacterObject.PrimaryArm
                                 || CharacterObject.Ambidextrous
-                                || cyberware.LimbSlotCount > 1)
+                                || objCyberware.LimbSlotCount > 1)
                             {
-                                sbdReturn.Append(strSpace).Append(intLoopPool.ToString(GlobalSettings.CultureInfo));
+                                sbdLoop.Append(strSpace).Append(intLoopPool.ToString(GlobalSettings.CultureInfo));
                             }
                             else
                             {
-                                sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
-                                                       intLoopPool - 2, strSpace, -2,
-                                                       LanguageManager.GetString("Tip_Skill_OffHand"));
+                                sbdLoop.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
+                                    intLoopPool - 2, strSpace, -2,
+                                    LanguageManager.GetString("Tip_Skill_OffHand"));
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
-                                sbdReturn.Append(strExtra);
-                        });
+                                sbdLoop.Append(strExtra);
+                        }
                     }
 
                     return sbdReturn.ToString();
@@ -3999,6 +4022,8 @@ namespace Chummer.Backend.Skills
                             sbdReturn.Append("))");
                     }
 
+                    bool blnAmbidextrous = await CharacterObject.GetAmbidextrousAsync(token).ConfigureAwait(false);
+
                     if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) ||
                         objShowOnlyCyberware == null)
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace)
@@ -4019,8 +4044,8 @@ namespace Chummer.Backend.Skills
                         if ((objShowOnlyCyberware.LimbSlot == "arm"
                              || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
                             && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
-                            && !CharacterObject.Ambidextrous
-                            && objShowOnlyCyberware.LimbSlotCount <= 1)
+                            && !blnAmbidextrous
+                            && await objShowOnlyCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) <= 1)
                         {
                             sbdReturn.Append(strSpace).Append('-').Append(strSpace)
                                 .Append(2.ToString(GlobalSettings.CultureInfo))
@@ -4103,41 +4128,50 @@ namespace Chummer.Backend.Skills
 
                     if (blnListAllLimbs && Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev))
                     {
-                        bool blnAmbi = await CharacterObject.GetAmbidextrousAsync(token).ConfigureAwait(false);
-                        await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async cyberware =>
+                        await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(objCyberware => BuildTooltipAsync(sbdReturn, objCyberware), token).ConfigureAwait(false);
+
+                        async Task BuildTooltipAsync(StringBuilder sb, Cyberware objCyberware)
                         {
-                            if (cyberware.Category != "Cyberlimb" || !await cyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                return;
-                            sbdReturn.AppendLine().AppendLine().Append(strExtraStart)
-                                .Append(await cyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
+                            if (!await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) || !await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                             {
-                                sbdReturn.Append(strSpace).Append('(').Append(await cyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                                return;
+                            }
+
+                            if (objCyberware.InheritAttributes)
+                            {
+                                await objCyberware.Children.ForEachAsync(objChild => BuildTooltipAsync(sbdReturn, objChild), token).ConfigureAwait(false);
+                                return;
+                            }
+
+
+                            sb.AppendLine().AppendLine().Append(strExtraStart)
+                                .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                            if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
+                            {
+                                sb.Append(strSpace).Append('(').Append(await objCyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
                                     .Append(')');
                             }
 
-                            int pool = await PoolOtherAttributeAsync(att.Abbrev, false,
-                                await cyberware.GetAttributeTotalValueAsync(att.Abbrev, token).ConfigureAwait(false),
+                            int intPool = await PoolOtherAttributeAsync(att.Abbrev, false,
+                                await objCyberware.GetAttributeTotalValueAsync(att.Abbrev, token).ConfigureAwait(false),
                                 token).ConfigureAwait(false);
-                            if ((cyberware.LimbSlot != "arm"
-                                 && !cyberware.Name.ContainsAny(" Arm", " Hand"))
-                                || cyberware.Location == CharacterObject.PrimaryArm
-                                || blnAmbi
-                                || cyberware.LimbSlotCount > 1)
+                            if ((objCyberware.LimbSlot != "arm" && !objCyberware.Name.ContainsAny(" Arm", " Hand")) ||
+                                objCyberware.Location == CharacterObject.PrimaryArm || blnAmbidextrous ||
+                                await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) > 1)
                             {
-                                sbdReturn.Append(strSpace).Append(pool.ToString(GlobalSettings.CultureInfo));
+                                sb.Append(strSpace).Append(intPool.ToString(GlobalSettings.CultureInfo));
                             }
                             else
                             {
-                                sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2,
+                                sb.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", intPool - 2,
                                     strSpace, -2,
                                     await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: token)
                                         .ConfigureAwait(false));
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
-                                sbdReturn.Append(strExtra);
-                        }, token).ConfigureAwait(false);
+                                sb.Append(strExtra);
+                        }
                     }
 
                     if (att.Abbrev != Attribute)
@@ -4197,61 +4231,64 @@ namespace Chummer.Backend.Skills
                         if (!blnListAllLimbs ||
                             !Cyberware.CyberlimbAttributeAbbrevs.Contains(objSwapSkillAttribute.ImprovedName))
                             continue;
-                        bool blnAmbi = await CharacterObject.GetAmbidextrousAsync(token).ConfigureAwait(false);
-                        await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(
-                            async cyberware =>
+                        await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(objCyberware => BuildTooltipAsync(sbdReturn, objCyberware), token).ConfigureAwait(false);
+
+                        async Task BuildTooltipAsync(StringBuilder sb, Cyberware objCyberware)
+                        {
+                            if (!await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) || !await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                             {
-                                if (cyberware.Category != "Cyberlimb" || !await cyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                    return;
-                                sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
-                                         .Append(await LanguageManager.GetStringAsync("String_Colon", token: token)
-                                                                      .ConfigureAwait(false)).Append(strSpace)
-                                         .Append(await CharacterObject
-                                                       .GetObjectNameAsync(objSwapSkillAttribute, token: token)
-                                                       .ConfigureAwait(false)).Append(strSpace)
-                                         .Append(
-                                             await cyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
-                                {
-                                    sbdReturn.Append(strSpace).Append('(').Append(
-                                                 await cyberware.Grade.GetCurrentDisplayNameAsync(token)
-                                                                .ConfigureAwait(false))
-                                             .Append(')');
-                                }
+                                return;
+                            }
 
-                                int intLoopPool =
-                                    await PoolOtherAttributeAsync(objSwapSkillAttribute.ImprovedName, false,
-                                                                  await cyberware
-                                                                        .GetAttributeTotalValueAsync(
-                                                                            objSwapSkillAttribute.ImprovedName, token)
-                                                                        .ConfigureAwait(false), token)
-                                        .ConfigureAwait(false);
-                                if (objSpecialization != null)
-                                {
-                                    intLoopPool += await objSpecialization.GetSpecializationBonusAsync(token)
-                                                                          .ConfigureAwait(false);
-                                }
+                            if (objCyberware.InheritAttributes)
+                            {
+                                await objCyberware.Children.ForEachAsync(objChild => BuildTooltipAsync(sbdReturn, objChild), token).ConfigureAwait(false);
+                                return;
+                            }
 
-                                if ((cyberware.LimbSlot != "arm"
-                                     && !cyberware.Name.ContainsAny(" Arm", " Hand"))
-                                    || cyberware.Location == CharacterObject.PrimaryArm
-                                    || blnAmbi
-                                    || cyberware.LimbSlotCount > 1)
-                                {
-                                    sbdReturn.Append(strSpace).Append(intLoopPool.ToString(GlobalSettings.CultureInfo));
-                                }
-                                else
-                                {
-                                    sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
-                                                           intLoopPool - 2, strSpace, -2,
-                                                           await LanguageManager
-                                                                 .GetStringAsync("Tip_Skill_OffHand", token: token)
-                                                                 .ConfigureAwait(false));
-                                }
 
-                                if (!string.IsNullOrEmpty(strExtra))
-                                    sbdReturn.Append(strExtra);
-                            }, token).ConfigureAwait(false);
+                            sb.AppendLine().AppendLine().Append(strExtraStart).Append(await LanguageManager
+                                    .GetStringAsync("String_Colon", token: token)
+                                    .ConfigureAwait(false)).Append(strSpace)
+                                .Append(await CharacterObject
+                                    .GetObjectNameAsync(objSwapSkillAttribute, token: token)
+                                    .ConfigureAwait(false)).Append(strSpace)
+                                .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                            if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
+                            {
+                                sb.Append(strSpace).Append('(').Append(await objCyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                                    .Append(')');
+                            }
+
+                            int intPool =
+                                await PoolOtherAttributeAsync(objSwapSkillAttribute.ImprovedName, false,
+                                        await objCyberware
+                                            .GetAttributeTotalValueAsync(
+                                                objSwapSkillAttribute.ImprovedName, token)
+                                            .ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                            if (objSpecialization != null)
+                            {
+                                intPool += await objSpecialization.GetSpecializationBonusAsync(token)
+                                    .ConfigureAwait(false);
+                            }
+                            if ((objCyberware.LimbSlot != "arm" && !objCyberware.Name.ContainsAny(" Arm", " Hand")) ||
+                                objCyberware.Location == CharacterObject.PrimaryArm || blnAmbidextrous ||
+                                await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) > 1)
+                            {
+                                sb.Append(strSpace).Append(intPool.ToString(GlobalSettings.CultureInfo));
+                            }
+                            else
+                            {
+                                sb.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", intPool - 2,
+                                    strSpace, -2,
+                                    await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: token)
+                                        .ConfigureAwait(false));
+                            }
+
+                            if (!string.IsNullOrEmpty(strExtra))
+                                sb.Append(strExtra);
+                        }
                     }
 
                     return sbdReturn.ToString();

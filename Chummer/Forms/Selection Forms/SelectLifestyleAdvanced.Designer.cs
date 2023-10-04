@@ -69,7 +69,6 @@ namespace Chummer
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpQualityButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
-            this.nudComforts = new Chummer.NumericUpDownEx();
             this.lblComforts = new System.Windows.Forms.Label();
             this.lblArea = new System.Windows.Forms.Label();
             this.nudArea = new Chummer.NumericUpDownEx();
@@ -90,13 +89,13 @@ namespace Chummer
             this.cboBorough = new Chummer.ElasticComboBox();
             this.nudBonusLP = new Chummer.NumericUpDownEx();
             this.chkBonusLPRandomize = new Chummer.ColorableCheckBox();
+            this.nudComforts = new Chummer.NumericUpDownEx();
             this.tlpLifestyleQuality = new System.Windows.Forms.TableLayoutPanel();
             this.chkQualityUseLPCost = new Chummer.ColorableCheckBox();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpQualityButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudComforts)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudArea)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
@@ -104,6 +103,7 @@ namespace Chummer
             this.tlpRightTop.SuspendLayout();
             this.tlpRightMiddle.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudBonusLP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudComforts)).BeginInit();
             this.tlpLifestyleQuality.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -500,7 +500,7 @@ namespace Chummer
             this.lblBonusLP.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblBonusLP.AutoSize = true;
             this.tlpRight.SetColumnSpan(this.lblBonusLP, 2);
-            this.lblBonusLP.Location = new System.Drawing.Point(217, 234);
+            this.lblBonusLP.Location = new System.Drawing.Point(195, 234);
             this.lblBonusLP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBonusLP.Name = "lblBonusLP";
             this.tlpRight.SetRowSpan(this.lblBonusLP, 2);
@@ -662,26 +662,6 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.Size = new System.Drawing.Size(460, 378);
             this.tlpRight.TabIndex = 97;
-            // 
-            // nudComforts
-            // 
-            this.nudComforts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudComforts.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.nudComforts, 2);
-            this.nudComforts.Location = new System.Drawing.Point(191, 82);
-            this.nudComforts.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudComforts.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudComforts.Name = "nudComforts";
-            this.nudComforts.Size = new System.Drawing.Size(41, 20);
-            this.nudComforts.TabIndex = 39;
             // 
             // lblComforts
             // 
@@ -970,7 +950,7 @@ namespace Chummer
             // 
             this.nudBonusLP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudBonusLP.AutoSize = true;
-            this.nudBonusLP.Location = new System.Drawing.Point(303, 237);
+            this.nudBonusLP.Location = new System.Drawing.Point(281, 237);
             this.nudBonusLP.Maximum = new decimal(new int[] {
             100,
             0,
@@ -994,7 +974,7 @@ namespace Chummer
             this.chkBonusLPRandomize.Checked = true;
             this.chkBonusLPRandomize.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBonusLPRandomize.DefaultColorScheme = true;
-            this.chkBonusLPRandomize.Location = new System.Drawing.Point(350, 238);
+            this.chkBonusLPRandomize.Location = new System.Drawing.Point(328, 238);
             this.chkBonusLPRandomize.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkBonusLPRandomize.Name = "chkBonusLPRandomize";
             this.tlpRight.SetRowSpan(this.chkBonusLPRandomize, 2);
@@ -1005,6 +985,26 @@ namespace Chummer
             this.chkBonusLPRandomize.UseVisualStyleBackColor = true;
             this.chkBonusLPRandomize.Visible = false;
             this.chkBonusLPRandomize.CheckedChanged += new System.EventHandler(this.chkTravelerBonusLPRandomize_CheckedChanged);
+            // 
+            // nudComforts
+            // 
+            this.nudComforts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudComforts.AutoSize = true;
+            this.tlpRight.SetColumnSpan(this.nudComforts, 2);
+            this.nudComforts.Location = new System.Drawing.Point(191, 82);
+            this.nudComforts.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudComforts.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudComforts.Name = "nudComforts";
+            this.nudComforts.Size = new System.Drawing.Size(41, 20);
+            this.nudComforts.TabIndex = 39;
             // 
             // tlpLifestyleQuality
             // 
@@ -1076,7 +1076,6 @@ namespace Chummer
             this.tlpQualityButtons.PerformLayout();
             this.tlpRight.ResumeLayout(false);
             this.tlpRight.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudComforts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudArea)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).EndInit();
@@ -1086,6 +1085,7 @@ namespace Chummer
             this.tlpRightMiddle.ResumeLayout(false);
             this.tlpRightMiddle.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudBonusLP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudComforts)).EndInit();
             this.tlpLifestyleQuality.ResumeLayout(false);
             this.tlpLifestyleQuality.PerformLayout();
             this.ResumeLayout(false);

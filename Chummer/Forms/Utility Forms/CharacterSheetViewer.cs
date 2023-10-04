@@ -561,9 +561,8 @@ namespace Chummer
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
             _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.Language;
-            imgSheetLanguageFlag.Image = Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height) >= 32
-                ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strPrintLanguage.Substring(3, 2))
-                : FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2));
+            imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2),
+                Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height));
             try
             {
                 _objPrintCulture = CultureInfo.GetCultureInfo(_strPrintLanguage);

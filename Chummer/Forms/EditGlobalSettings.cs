@@ -187,13 +187,9 @@ namespace Chummer
                     _objSelectedCultureInfo = GlobalSettings.SystemCultureInfo;
                 }
 
-                await imgLanguageFlag.DoThreadSafeAsync(x => x.Image
-                                                            = Math.Min(x.Width, x.Height) >= 32
-                                                                ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
-                                                                    _strSelectedLanguage.Substring(3, 2))
-                                                                : FlagImageGetter.GetFlagFromCountryCode(
-                                                                    _strSelectedLanguage.Substring(3, 2)))
-                                     .ConfigureAwait(false);
+                await imgLanguageFlag.DoThreadSafeAsync(x =>
+                    x.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2),
+                        Math.Min(x.Width, x.Height))).ConfigureAwait(false);
 
                 bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage)
                                  && !_strSelectedLanguage.Equals(GlobalSettings.DefaultLanguage,
@@ -2195,14 +2191,10 @@ namespace Chummer
             string strSelectedSheetLanguage = await cboSheetLanguage
                                                     .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                                                     .ConfigureAwait(false);
-            await imgSheetLanguageFlag.DoThreadSafeAsync(x => x.Image
-                                                             = Math.Min(x.Width, x.Height)
-                                                               >= 32
-                                                                 ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
-                                                                     strSelectedSheetLanguage?.Substring(3, 2))
-                                                                 : FlagImageGetter.GetFlagFromCountryCode(
-                                                                     strSelectedSheetLanguage?.Substring(3, 2)), token)
-                                      .ConfigureAwait(false);
+            await imgSheetLanguageFlag
+                .DoThreadSafeAsync(
+                    x => x.Image = FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2),
+                        Math.Min(x.Width, x.Height)), token).ConfigureAwait(false);
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFiles))
             {

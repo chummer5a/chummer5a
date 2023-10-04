@@ -3940,7 +3940,7 @@ namespace Chummer
                 MentorSpirit objMentor = new MentorSpirit(_objCharacter);
                 try
                 {
-                    objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue,
+                    objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, string.Empty,
                                      frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
                     if (objMentor.InternalId == Guid.Empty.ToString())
                     {
@@ -3992,7 +3992,7 @@ namespace Chummer
                 MentorSpirit objMentor = new MentorSpirit(_objCharacter);
                 try
                 {
-                    objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue,
+                    objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, string.Empty,
                                      frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
                     if (objMentor.InternalId == Guid.Empty.ToString())
                     {

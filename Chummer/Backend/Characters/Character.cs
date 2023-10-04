@@ -2522,11 +2522,11 @@ namespace Chummer
                                         }
                                     }
 
-                                    if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                        objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
-                                        objNewItem.ParentVehicle == null &&
-                                        !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
-                                        !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                                    if (!blnDoCyberlimbAttributesRefresh
+                                        && !Settings.DontUseCyberlimbCalculation && objNewItem.Parent == null
+                                        && objNewItem.ParentVehicle == null
+                                        && await objNewItem.GetIsLimbAsync().ConfigureAwait(false)
+                                        && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
                                     }
@@ -2547,11 +2547,11 @@ namespace Chummer
                                 dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                                 using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
                                 {
-                                    if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                        objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
-                                        objOldItem.ParentVehicle == null &&
-                                        !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
-                                        !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                                    if (!blnDoCyberlimbAttributesRefresh
+                                        && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
+                                        && objOldItem.ParentVehicle == null
+                                        && await objOldItem.GetIsLimbAsync().ConfigureAwait(false)
+                                        && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
                                     }
@@ -2574,11 +2574,11 @@ namespace Chummer
                                         if (objOldItem.IsModularCurrentlyEquipped)
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
-                                        if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                            objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
-                                            objOldItem.ParentVehicle == null &&
-                                            !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
-                                            !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                                        if (!blnDoCyberlimbAttributesRefresh
+                                            && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
+                                            && objOldItem.ParentVehicle == null
+                                            && await objOldItem.GetIsLimbAsync().ConfigureAwait(false)
+                                            && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
                                         }
@@ -2589,11 +2589,11 @@ namespace Chummer
                                         if (objNewItem.IsModularCurrentlyEquipped)
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                                        if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                            objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
-                                            objNewItem.ParentVehicle == null &&
-                                            !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
-                                            !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                                        if (!blnDoCyberlimbAttributesRefresh
+                                            && !Settings.DontUseCyberlimbCalculation && objNewItem.Parent == null
+                                            && objNewItem.ParentVehicle == null
+                                            && await objNewItem.GetIsLimbAsync().ConfigureAwait(false)
+                                            && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
                                         }
@@ -25972,6 +25972,35 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Number of Stun Condition Monitor boxes as meant to displayed for the UI.
+        /// It's a hacky work-around for visibility data bindings messing up ther data bindings
+        /// </summary>
+        public string DisplayStunCM
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    return IsAI && HomeNode == null ? string.Empty : StunCM.ToString(GlobalSettings.CultureInfo);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Number of Stun Condition Monitor boxes as meant to displayed for the UI.
+        /// It's a hacky work-around for visibility data bindings messing up ther data bindings
+        /// </summary>
+        public async Task<string> GetDisplayStunCMAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                return await GetIsAIAsync(token).ConfigureAwait(false) && HomeNode == null
+                    ? string.Empty
+                    : (await GetStunCMAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            }
+        }
+
+        /// <summary>
         /// Number of Stun Condition Monitor boxes.
         /// </summary>
         public int StunCM
@@ -26033,15 +26062,6 @@ namespace Chummer
             return intCMStun;
         }
 
-        public bool StunCMVisible
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return !IsAI || HomeNode != null;
-            }
-        }
-
         public string StunCMLabelText
         {
             get
@@ -26055,6 +26075,22 @@ namespace Chummer
 
                     return LanguageManager.GetString("Label_OtherStunCM");
                 }
+            }
+        }
+
+        public async Task<string> GetStunCMLabelTextAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return HomeNode != null
+                        ? await LanguageManager.GetStringAsync("Label_OtherMatrixCM", token: token)
+                                               .ConfigureAwait(false)
+                        : string.Empty;
+                }
+
+                return await LanguageManager.GetStringAsync("Label_OtherStunCM", token: token).ConfigureAwait(false);
             }
         }
 
@@ -26099,6 +26135,50 @@ namespace Chummer
 
                 return strCM;
             }
+        }
+
+        public async Task<string> GetStunCMToolTipAsync(CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strModifiers
+                = await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false);
+            string strCM;
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int intBonus;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (HomeNode == null)
+                        return string.Empty;
+                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '('
+                            + await LanguageManager.GetStringAsync("String_DeviceRating", token: token)
+                                                   .ConfigureAwait(false) + '÷' + 2.ToString(GlobalSettings.CultureInfo)
+                            + ')' + strSpace + '('
+                            + ((HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2).ToString(
+                                GlobalSettings.CultureInfo) + ')';
+                    intBonus = HomeNode.TotalBonusMatrixBoxes;
+                    if (intBonus != 0)
+                        strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
+                                 + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                }
+                else
+                {
+                    CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '('
+                            + await objWil.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)
+                            + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
+                            + ((await objWil.GetTotalValueAsync(token).ConfigureAwait(false) + 1) / 2).ToString(
+                                GlobalSettings.CultureInfo) + ')';
+                    intBonus = (await ImprovementManager
+                                      .ValueOfAsync(this, Improvement.ImprovementType.StunCM, token: token)
+                                      .ConfigureAwait(false)).StandardRound();
+                    if (intBonus != 0)
+                        strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '(' +
+                                 intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                }
+            }
+
+            return strCM;
         }
 
         /// <summary>
@@ -27051,6 +27131,15 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetFirstMentorSpiritDisplayNameAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return await MentorSpirits.GetCountAsync(token).ConfigureAwait(false) > 0
+                    ? await (await MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false))
+                        .GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)
+                    : string.Empty;
+        }
+
         public string FirstMentorSpiritDisplayInformation
         {
             get
@@ -27062,12 +27151,57 @@ namespace Chummer
 
                     MentorSpirit objMentorSpirit = MentorSpirits[0];
                     string strSpace = LanguageManager.GetString("String_Space");
-                    return (LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace
-                        + objMentorSpirit.DisplayAdvantage(GlobalSettings.Language)
-                        + Environment.NewLine + Environment.NewLine
-                        + LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + strSpace
-                        + objMentorSpirit.DisplayDisadvantage(GlobalSettings.Language)).WordWrap();
+                    string strAdvantage = objMentorSpirit.DisplayAdvantage(GlobalSettings.Language);
+                    if (string.IsNullOrWhiteSpace(strAdvantage))
+                        strAdvantage = LanguageManager.GetString("String_None");
+                    string strDisadvantage = objMentorSpirit.DisplayDisadvantage(GlobalSettings.Language);
+                    if (string.IsNullOrWhiteSpace(strDisadvantage))
+                        strDisadvantage = LanguageManager.GetString("String_None");
+                    string strReturn = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace +
+                                       strAdvantage + Environment.NewLine + Environment.NewLine +
+                                       LanguageManager.GetString("Label_SelectMentorSpirit_Disadvantage") + strSpace +
+                                       strDisadvantage;
+                    string strExtraReturn = objMentorSpirit.DisplayExtras(GlobalSettings.Language);
+                    if (!string.IsNullOrEmpty(strExtraReturn))
+                    {
+                        strReturn += Environment.NewLine + Environment.NewLine +
+                                     LanguageManager.GetString("Label_SelectMentorSpirit_Choices") +
+                                     Environment.NewLine +
+                                     strExtraReturn;
+                    }
+                    return strReturn.WordWrap();
                 }
+            }
+        }
+
+        public async Task<string> GetFirstMentorSpiritDisplayInformationAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (await MentorSpirits.GetCountAsync(token).ConfigureAwait(false) == 0)
+                    return string.Empty;
+
+                MentorSpirit objMentorSpirit = await MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strAdvantage = await objMentorSpirit.DisplayAdvantageAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strAdvantage))
+                    strAdvantage = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                string strDisadvantage = await objMentorSpirit.DisplayDisadvantageAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strDisadvantage))
+                    strDisadvantage = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                string strReturn =
+                    await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Advantage", token: token).ConfigureAwait(false) +
+                    strSpace + strAdvantage + Environment.NewLine + Environment.NewLine +
+                    await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Disadvantage", token: token).ConfigureAwait(false) +
+                    strSpace + strDisadvantage;
+                string strExtraReturn = await objMentorSpirit.DisplayExtrasAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strExtraReturn))
+                {
+                    strReturn += Environment.NewLine + Environment.NewLine +
+                                 await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Choices",
+                                     token: token).ConfigureAwait(false) + Environment.NewLine + strExtraReturn;
+                }
+                return strReturn.WordWrap();
             }
         }
 
@@ -28258,7 +28392,7 @@ namespace Chummer
                         {
                             if (objCyber.LimbSlot != "leg")
                                 return;
-                            intLegs += objCyber.LimbSlotCount;
+                            intLegs += await objCyber.GetLimbSlotCountAsync(token).ConfigureAwait(false);
                             intTempAGI = Math.Min(intTempAGI, await objCyber.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false));
                         }, token).ConfigureAwait(false);
 
@@ -31118,6 +31252,21 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetRedlinerBonusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int intReturn = _intCachedRedlinerBonus;
+                while (intReturn == int.MinValue)
+                {
+                    await RefreshRedlinerImprovementsAsync(token).ConfigureAwait(false);
+                    intReturn = _intCachedRedlinerBonus;
+                }
+
+                return intReturn;
+            }
+        }
+
         private bool RefreshRedlinerImprovements(CancellationToken token = default)
         {
             using (EnterReadLock.Enter(LockObject, token))
@@ -31225,6 +31374,124 @@ namespace Chummer
                     }
 
                     ImprovementManager.Commit(this);
+                }
+                return true;
+            }
+        }
+
+        private async Task<bool> RefreshRedlinerImprovementsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+                {
+                    await EnqueuePostLoadAsyncMethodAsync(RefreshRedlinerImprovementsAsync, token);
+                    return true;
+                }
+
+                //Get attributes affected by redliner/cyber singularity seeker
+                List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
+                lstSeekerImprovements.AddRange((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.Attribute, token: token))
+                                               .Where(objLoopImprovement =>
+                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
+                lstSeekerImprovements.AddRange((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.PhysicalCM, token: token))
+                                               .Where(objLoopImprovement =>
+                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
+                List<string> lstSeekerAttributes = (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.Seeker, token: token))
+                                                   .ConvertAll(objImprovement => objImprovement.ImprovedName);
+                lstSeekerAttributes.RemoveAll(x => x != "BOX" && !AttributeSection.AttributeStrings.Contains(x));
+                //if neither contains anything, it is safe to exit
+                if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
+                {
+                    _intCachedRedlinerBonus = 0;
+                    return true;
+                }
+
+                //Calculate bonus from cyberlimbs
+                int intCount = await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token), token);
+
+                intCount = Math.Min(intCount / 2, 2);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
+                        ? intCount
+                        : 0;
+
+                    if (lstSeekerImprovements.Count == lstSeekerAttributes.Count)
+                    {
+                        for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
+                        {
+                            string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
+                            int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
+                            Improvement objImprovement
+                                = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
+                                                                  && x.Value == intCountToTarget);
+                            if (objImprovement != null)
+                            {
+                                lstSeekerAttributes.RemoveAt(i);
+                                lstSeekerImprovements.Remove(objImprovement);
+                            }
+                        }
+
+                        if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
+                            return true;
+                    }
+
+                    //Improvement manager defines the functions needed to manipulate improvements
+                    //When the locals (someday) gets moved to this class, this can be removed and use
+                    //the local
+
+                    // Remove which qualities have been removed or which values have changed
+                    await ImprovementManager.RemoveImprovementsAsync(this, lstSeekerImprovements, token: token);
+
+                    try
+                    {
+                        // Add new improvements or old improvements with new values
+                        foreach (string strAttribute in lstSeekerAttributes)
+                        {
+                            if (strAttribute == "BOX")
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, strAttribute,
+                                    Improvement.ImprovementSource.Quality,
+                                    "SEEKER_BOX",
+                                    Improvement.ImprovementType.PhysicalCM,
+                                    Guid.NewGuid()
+                                        .ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo),
+                                    intCount * -3, token: token);
+                            }
+                            else
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, strAttribute,
+                                    Improvement.ImprovementSource.Quality,
+                                    "SEEKER_" + strAttribute,
+                                    Improvement.ImprovementType.Attribute,
+                                    Guid.NewGuid()
+                                        .ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo),
+                                    intCount, 1, 0, 0,
+                                    intCount, token: token);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None);
+                        throw;
+                    }
+
+                    ImprovementManager.Commit(this);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
                 return true;
             }
@@ -34576,9 +34843,10 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(StunCMToolTip),
                         new DependencyGraphNode<string, Character>(nameof(StunCM))
                     ),
-                    new DependencyGraphNode<string, Character>(nameof(StunCMVisible),
+                    new DependencyGraphNode<string, Character>(nameof(DisplayStunCM),
                         new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                        new DependencyGraphNode<string, Character>(nameof(HomeNode))
+                        new DependencyGraphNode<string, Character>(nameof(HomeNode)),
+                        new DependencyGraphNode<string, Character>(nameof(StunCM), x => !x.IsAI || x.HomeNode != null)
                     ),
                     new DependencyGraphNode<string, Character>(nameof(StunCMLabelText),
                         new DependencyGraphNode<string, Character>(nameof(IsAI)),

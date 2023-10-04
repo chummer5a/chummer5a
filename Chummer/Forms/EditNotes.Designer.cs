@@ -80,11 +80,11 @@ namespace Chummer
             this.btnColorSelect.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnColorSelect.Image = global::Chummer.Properties.Resources.color_wheel_16;
             this.btnColorSelect.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.btnColorSelect.ImageDpi120 = null;
-            this.btnColorSelect.ImageDpi144 = null;
+            this.btnColorSelect.ImageDpi120 = global::Chummer.Properties.Resources.color_wheel_20;
+            this.btnColorSelect.ImageDpi144 = global::Chummer.Properties.Resources.color_wheel_24;
             this.btnColorSelect.ImageDpi192 = global::Chummer.Properties.Resources.color_wheel_32;
-            this.btnColorSelect.ImageDpi288 = null;
-            this.btnColorSelect.ImageDpi384 = null;
+            this.btnColorSelect.ImageDpi288 = global::Chummer.Properties.Resources.color_wheel_48;
+            this.btnColorSelect.ImageDpi384 = global::Chummer.Properties.Resources.color_wheel_64;
             this.btnColorSelect.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel_16;
             this.btnColorSelect.Location = new System.Drawing.Point(3, 295);
             this.btnColorSelect.MinimumSize = new System.Drawing.Size(80, 0);

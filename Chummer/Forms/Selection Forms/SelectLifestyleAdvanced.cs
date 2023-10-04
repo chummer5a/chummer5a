@@ -66,8 +66,8 @@ namespace Chummer
                 _tmrBoroughChangeTimer?.Dispose();
             };
             _tmrCityChangeTimer.Tick += CityChangeTimer_Tick;
-            _tmrCityChangeTimer.Tick += DistrictChangeTimer_Tick;
-            _tmrCityChangeTimer.Tick += BoroughChangeTimer_Tick;
+            _tmrDistrictChangeTimer.Tick += DistrictChangeTimer_Tick;
+            _tmrBoroughChangeTimer.Tick += BoroughChangeTimer_Tick;
         }
 
         private void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
