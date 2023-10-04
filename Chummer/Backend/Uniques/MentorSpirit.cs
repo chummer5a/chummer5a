@@ -129,8 +129,7 @@ namespace Chummer
                     string strOldSelected = ImprovementManager.SelectedValue;
                     try
                     {
-                        ImprovementManager.ForcedValue =
-                            string.IsNullOrWhiteSpace(strForceValue) ? _strName : strForceValue;
+                        ImprovementManager.ForcedValue = strForceValue;
                         ImprovementManager.SelectedValue = string.Empty;
                         if (!ImprovementManager.CreateImprovements(_objCharacter,
                                 Improvement.ImprovementSource.MentorSpirit,
