@@ -443,8 +443,10 @@ namespace Chummer
                     if (_colNotes == value)
                         return;
                     using (LockObject.UpgradeToWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }

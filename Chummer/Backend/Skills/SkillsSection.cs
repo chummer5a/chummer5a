@@ -568,7 +568,7 @@ namespace Chummer.Backend.Skills
         {
             XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml", token: token)
                 .TryGetNodeByNameOrId("/chummer/skills/skill", strName);
-            using (LockObject.UpgradeToWriteLock(token))
+            using (LockObject.EnterWriteLock(token))
             {
                 ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
                 {

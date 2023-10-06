@@ -686,8 +686,8 @@ namespace Chummer.Backend.Uniques
                     {
                         _xmlCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }

@@ -532,7 +532,7 @@ namespace Chummer
             }
             private set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     value?.LockObject.EnterReadLock();
                     try
@@ -585,7 +585,7 @@ namespace Chummer
             }
             private set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     value?.LockObject.EnterReadLock();
                     try
@@ -680,16 +680,19 @@ namespace Chummer
                     string strOldValue = Interlocked.Exchange(ref _strName, value);
                     if (strOldValue == value)
                         return;
-                    if (strOldValue == "Improved Ability (skill)")
+                    using (LockObject.UpgradeToWriteLock())
                     {
-                        BoostedSkill = null;
-                    }
-                    else if (value == "Improved Ability (skill)")
-                    {
-                        BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
-                    }
+                        if (strOldValue == "Improved Ability (skill)")
+                        {
+                            BoostedSkill = null;
+                        }
+                        else if (value == "Improved Ability (skill)")
+                        {
+                            BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
+                        }
 
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -710,9 +713,12 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) == value)
                         return;
-                    if (Name == "Improved Ability (skill)")
-                        BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(value);
-                    OnPropertyChanged();
+                    using (LockObject.UpgradeToWriteLock())
+                    {
+                        if (Name == "Improved Ability (skill)")
+                            BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(value);
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
