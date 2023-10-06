@@ -123,7 +123,7 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
-                    using (LockObject.EnterWriteLock(token))
+                    using (LockObject.UpgradeToWriteLock(token))
                     {
                         if (objContent != null)
                         {
@@ -152,7 +152,7 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (objContent != null)
@@ -429,9 +429,9 @@ namespace Chummer
                         IAsyncDisposable objLockerAsync = null;
                         if (blnSync)
                             // ReSharper disable once MethodHasAsyncOverload
-                            objLocker = s_objDataDirectoriesLock.EnterWriteLock(token);
+                            objLocker = s_objDataDirectoriesLock.UpgradeToWriteLock(token);
                         else
-                            objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            objLockerAsync = await s_objDataDirectoriesLock.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();

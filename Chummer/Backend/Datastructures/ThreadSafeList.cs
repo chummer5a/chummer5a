@@ -60,7 +60,7 @@ namespace Chummer
                 {
                     if (_lstData.Capacity == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData.Capacity = value;
                 }
             }
@@ -134,7 +134,7 @@ namespace Chummer
                 {
                     if (_lstData[index].Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData[index] = value;
                 }
             }
@@ -152,7 +152,7 @@ namespace Chummer
             {
                 if (_lstData[index].Equals(value))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _lstData[index] = value;
@@ -177,7 +177,7 @@ namespace Chummer
                 {
                     if (_lstData[index].Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData[index] = (T)value;
                 }
             }

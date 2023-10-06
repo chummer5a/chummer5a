@@ -34,6 +34,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EnterReadLock Enter(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             rwlMyLock.EnterReadLock(token);
             return new EnterReadLock(rwlMyLock);
         }
@@ -48,6 +49,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async ValueTask<EnterReadLock> EnterAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             await rwlMyLock.EnterReadLockAsync(token).ConfigureAwait(false);
             return new EnterReadLock(rwlMyLock);
         }

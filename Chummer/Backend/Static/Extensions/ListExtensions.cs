@@ -85,7 +85,15 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                lstCollection.Insert(intTargetIndex, objNewItem);
+                IDisposable objLocker2 = objLocker?.LockObject.UpgradeToWriteLock();
+                try
+                {
+                    lstCollection.Insert(intTargetIndex, objNewItem);
+                }
+                finally
+                {
+                    objLocker2?.Dispose();
+                }
             }
             finally
             {
@@ -153,7 +161,15 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                lstCollection.Insert(intTargetIndex, objNewItem);
+                IDisposable objLocker2 = objLocker?.LockObject.UpgradeToWriteLock();
+                try
+                {
+                    lstCollection.Insert(intTargetIndex, objNewItem);
+                }
+                finally
+                {
+                    objLocker2?.Dispose();
+                }
             }
             finally
             {
@@ -221,7 +237,15 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                lstCollection.Insert(intTargetIndex, objNewItem);
+                IDisposable objLocker2 = objLocker?.LockObject.UpgradeToWriteLock();
+                try
+                {
+                    lstCollection.Insert(intTargetIndex, objNewItem);
+                }
+                finally
+                {
+                    objLocker2?.Dispose();
+                }
             }
             finally
             {

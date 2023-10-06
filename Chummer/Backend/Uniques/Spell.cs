@@ -453,7 +453,7 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
@@ -495,7 +495,7 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _strDescriptors, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         UpdateHashDescriptors();
                         if (Extended)
@@ -1466,15 +1466,17 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnExtended = value;
-                    using (LockObject.EnterWriteLock())
+                    if (_blnExtended == value)
+                        return;
+                    using (LockObject.UpgradeToWriteLock())
                     {
+                        _blnExtended = value;
                         if (value)
                         {
                             _blnCustomExtended = !HashDescriptors.Any(x =>
-                                                                          string.Equals(
-                                                                              x.Trim(), "Extended Area",
-                                                                              StringComparison.OrdinalIgnoreCase));
+                                string.Equals(
+                                    x.Trim(), "Extended Area",
+                                    StringComparison.OrdinalIgnoreCase));
                         }
                         else
                             _blnCustomExtended = false;

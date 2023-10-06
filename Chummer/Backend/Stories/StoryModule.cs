@@ -174,7 +174,7 @@ namespace Chummer
                 {
                     if (_guiSourceID == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _guiSourceID = value;
                         _objCachedMyXmlNode = null;

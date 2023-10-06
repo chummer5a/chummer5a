@@ -826,7 +826,16 @@ namespace Chummer
             {
                 if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
-                await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(intIndex, 2).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.UpgradeToWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(intIndex, 2).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
                 await _objCharacterSettings.CustomDataDirectoryKeys.ReverseAsync(intIndex, 2).ConfigureAwait(false);
             }
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
@@ -848,7 +857,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await _objCharacterSettings.CustomDataDirectoryKeys.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    IAsyncDisposable objLocker2 = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await _dicCharacterCustomDataDirectoryInfos.LockObject.UpgradeToWriteLockAsync().ConfigureAwait(false);
                     try
                     {
                         for (int i = intIndex; i < intCount - 1; ++i)

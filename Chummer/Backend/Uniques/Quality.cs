@@ -675,7 +675,7 @@ namespace Chummer
                 {
                     if (!Guid.TryParse(value, out Guid guiTemp) || _guiWeaponID == guiTemp)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _guiWeaponID = guiTemp;
                     OnPropertyChanged();
                 }
@@ -1163,7 +1163,7 @@ namespace Chummer
                 {
                     if (_blnPrint == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _blnPrint = value;
                     OnPropertyChanged();
                 }
@@ -1186,7 +1186,7 @@ namespace Chummer
                 {
                     if (_blnDoubleCostCareer == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _blnDoubleCostCareer = value;
                     OnPropertyChanged();
                 }
@@ -1209,7 +1209,7 @@ namespace Chummer
                 {
                     if (_blnCanBuyWithSpellPoints == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _blnCanBuyWithSpellPoints = value;
                     OnPropertyChanged();
                 }
@@ -1232,7 +1232,7 @@ namespace Chummer
                 {
                     if (_blnImplemented == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _blnImplemented = value;
                     OnPropertyChanged();
                 }
@@ -1281,7 +1281,7 @@ namespace Chummer
                 {
                     if (_blnContributeToLimit == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _blnContributeToLimit = value;
                     OnPropertyChanged();
                 }
@@ -1323,7 +1323,7 @@ namespace Chummer
                 {
                     if (_blnStagedPurchase == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _blnStagedPurchase = value;
                     OnPropertyChanged();
                 }
@@ -1430,7 +1430,7 @@ namespace Chummer
                 {
                     if (_colNotes == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _colNotes = value;
                     OnPropertyChanged();
                 }
@@ -2061,7 +2061,7 @@ namespace Chummer
 
                     if (lstPropertyNames.Contains(nameof(Suppressed)))
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
                         {
                             _intCachedSuppressed = -1;
                             RefreshSuppressed();

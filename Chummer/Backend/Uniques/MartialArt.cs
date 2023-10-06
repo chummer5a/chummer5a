@@ -417,7 +417,7 @@ namespace Chummer
                         return;
                     if (SourceID != Guid.Empty)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
@@ -442,7 +442,7 @@ namespace Chummer
                 {
                     if (_guiSourceID == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;

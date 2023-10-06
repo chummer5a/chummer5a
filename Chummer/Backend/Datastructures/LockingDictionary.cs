@@ -846,7 +846,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    using (LockObject.EnterWriteLock(token))
+                    using (LockObject.UpgradeToWriteLock(token))
                         _dicData[key] = objReturn;
                     return objReturn;
                 }
@@ -880,7 +880,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    using (LockObject.EnterWriteLock(token))
+                    using (LockObject.UpgradeToWriteLock(token))
                         _dicData[key] = objNewValue;
                     return objNewValue;
                 }
@@ -916,7 +916,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -967,7 +967,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1018,7 +1018,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1069,7 +1069,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1121,7 +1121,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1172,7 +1172,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1223,7 +1223,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1274,7 +1274,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1352,7 +1352,7 @@ namespace Chummer
                         else if (objValue.Equals(value))
                             return;
                     }
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _dicData[key] = value;
                 }
             }
@@ -1379,7 +1379,7 @@ namespace Chummer
                         return;
                 }
 
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _dicData[key] = value;

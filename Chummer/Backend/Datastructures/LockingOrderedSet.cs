@@ -639,7 +639,7 @@ namespace Chummer
                     T objOldItem = _lstOrderedData[index];
                     if (objOldItem.Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _setData.Remove(objOldItem);
                         _setData.Add(value);
@@ -662,7 +662,7 @@ namespace Chummer
                 T objOldItem = _lstOrderedData[index];
                 if (objOldItem.Equals(value))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _setData.Remove(objOldItem);
@@ -697,12 +697,12 @@ namespace Chummer
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                 {
-                    using (LockObject.EnterWriteLock(token))
+                    using (LockObject.UpgradeToWriteLock(token))
                         _lstOrderedData.Sort(comparer);
                 }
                 else
                 {
-                    using (LockObject.EnterWriteLock(token))
+                    using (LockObject.UpgradeToWriteLock(token))
                         _lstOrderedData.Sort();
                 }
             }
@@ -736,7 +736,7 @@ namespace Chummer
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _lstOrderedData.Sort(comparer);
@@ -748,7 +748,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _lstOrderedData.Sort();

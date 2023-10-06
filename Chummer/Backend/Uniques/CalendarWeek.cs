@@ -442,7 +442,7 @@ namespace Chummer
                 {
                     if (_colNotes == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _colNotes = value;
                     OnPropertyChanged();
                 }

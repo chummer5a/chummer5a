@@ -119,7 +119,7 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
                         {
@@ -1466,9 +1466,11 @@ namespace Chummer
                 {
                     if (_blnIsGroup == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnIsGroup = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1626,9 +1628,11 @@ namespace Chummer
                 {
                     if (_colNotes == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1669,9 +1673,11 @@ namespace Chummer
                 {
                     if (_objColor == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _objColor = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1708,9 +1714,11 @@ namespace Chummer
                 {
                     if (_blnFree == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnFree = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1854,9 +1862,11 @@ namespace Chummer
                 {
                     if (_blnBlackmail == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnBlackmail = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1874,9 +1884,11 @@ namespace Chummer
                 {
                     if (_blnFamily == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnFamily = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1958,7 +1970,7 @@ namespace Chummer
             using (EnterReadLock.Enter(LockObject, token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                using (LockObject.EnterWriteLock(token))
+                using (LockObject.UpgradeToWriteLock(token))
                 {
                     CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
@@ -2039,7 +2051,7 @@ namespace Chummer
                                 if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
                                     _strMetatype = Metatype;
 
-                                using (_objLinkedCharacter.LockObject.EnterWriteLock(token))
+                                using (_objLinkedCharacter.LockObject.UpgradeToWriteLock(token))
                                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                             }
                         }
@@ -2055,7 +2067,7 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     await CharacterObject.LinkedCharacters.RemoveAsync(_objLinkedCharacter, token)
@@ -2146,7 +2158,7 @@ namespace Chummer
                                 if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
                                     _strMetatype = Metatype;
 
-                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
                                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;

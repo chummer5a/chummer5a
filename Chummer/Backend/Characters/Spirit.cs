@@ -1064,9 +1064,11 @@ namespace Chummer
                         return;
                     }
 
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnBound = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1174,9 +1176,11 @@ namespace Chummer
                 {
                     if (_colNotes == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1221,6 +1225,7 @@ namespace Chummer
                 {
                     if (_blnFettered == value)
                         return;
+                    int intFetteringCost = 0;
                     if (value)
                     {
                         //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
@@ -1230,82 +1235,89 @@ namespace Chummer
                         //Only one Fettered spirit is permitted.
                         if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
                             return;
-
                         if (CharacterObject.Created)
                         {
                             // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
-                            int fetteringCost = EntityType == SpiritType.Spirit
+                            intFetteringCost = EntityType == SpiritType.Spirit
                                 ? Force * CharacterObject.Settings.KarmaSpiritFettering
                                 : Force;
                             if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                         LanguageManager.GetString(
-                                                                             "Message_ConfirmKarmaExpenseSpend"),
-                                                                         Name,
-                                                                         fetteringCost.ToString(GlobalSettings.CultureInfo))))
+                                    LanguageManager.GetString(
+                                        "Message_ConfirmKarmaExpenseSpend"),
+                                    Name,
+                                    intFetteringCost.ToString(GlobalSettings.CultureInfo))))
                             {
                                 return;
                             }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(fetteringCost * -1,
-                                              LanguageManager.GetString("String_ExpenseFetteredSpirit")
-                                              + LanguageManager.GetString("String_Space") + Name,
-                                              ExpenseType.Karma, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Karma -= fetteringCost;
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
-                            objExpense.Undo = objUndo;
-                        }
-
-                        if (EntityType == SpiritType.Spirit)
-                        {
-                            try
-                            {
-                                ImprovementManager.CreateImprovement(CharacterObject, "MAG",
-                                                                     Improvement.ImprovementSource.SpiritFettering,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0,
-                                                                     1, 0, 0, -1);
-                            }
-                            catch
-                            {
-                                ImprovementManager.Rollback(CharacterObject, CancellationToken.None);
-                                throw;
-                            }
-
-                            ImprovementManager.Commit(CharacterObject);
                         }
                     }
-                    else
+                    else if (CharacterObject.Created && !Bound && ServicesOwed > 0 && CharacterObject.Spirits.Any(
+                                 x =>
+                                     !ReferenceEquals(x, this) && x.EntityType == EntityType && x.ServicesOwed > 0
+                                     && !x.Bound &&
+                                     !x.Fettered))
                     {
-                        if (CharacterObject.Created && !Bound && ServicesOwed > 0 && CharacterObject.Spirits.Any(x =>
-                                !ReferenceEquals(x, this) && x.EntityType == EntityType && x.ServicesOwed > 0
-                                && !x.Bound &&
-                                !x.Fettered))
-                        {
-                            // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                            Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString(EntityType == SpiritType.Sprite
-                                                              ? "Message_UnregisteredSpriteLimit"
-                                                              : "Message_UnboundSpiritLimit"),
-                                LanguageManager.GetString(EntityType == SpiritType.Sprite
-                                                              ? "MessageTitle_UnregisteredSpriteLimit"
-                                                              : "MessageTitle_UnboundSpiritLimit"),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-
-                        ImprovementManager.RemoveImprovements(CharacterObject,
-                                                              Improvement.ImprovementSource.SpiritFettering);
+                        // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                        Program.ShowScrollableMessageBox(
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "Message_UnregisteredSpriteLimit"
+                                : "Message_UnboundSpiritLimit"),
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "MessageTitle_UnregisteredSpriteLimit"
+                                : "MessageTitle_UnboundSpiritLimit"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
                     }
 
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnFettered = value;
-                    OnPropertyChanged();
+                        if (value)
+                        {
+                            if (EntityType == SpiritType.Spirit)
+                            {
+                                try
+                                {
+                                    ImprovementManager.CreateImprovement(CharacterObject, "MAG",
+                                        Improvement.ImprovementSource.SpiritFettering,
+                                        string.Empty,
+                                        Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0,
+                                        1, 0, 0, -1);
+                                }
+                                catch
+                                {
+                                    ImprovementManager.Rollback(CharacterObject, CancellationToken.None);
+                                    throw;
+                                }
+
+                                ImprovementManager.Commit(CharacterObject);
+                            }
+
+                            if (CharacterObject.Created)
+                            {
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(intFetteringCost * -1,
+                                    LanguageManager.GetString("String_ExpenseFetteredSpirit")
+                                    + LanguageManager.GetString("String_Space") + Name,
+                                    ExpenseType.Karma, DateTime.Now);
+                                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                                CharacterObject.Karma -= intFetteringCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
+                                objExpense.Undo = objUndo;
+                            }
+                        }
+                        else
+                        {
+                            ImprovementManager.RemoveImprovements(CharacterObject,
+                                Improvement.ImprovementSource.SpiritFettering);
+                        }
+
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1327,9 +1339,11 @@ namespace Chummer
                 {
                     if (_objColor == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _objColor = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1487,7 +1501,7 @@ namespace Chummer
             using (EnterReadLock.Enter(LockObject, token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                using (LockObject.EnterWriteLock(token))
+                using (LockObject.UpgradeToWriteLock(token))
                 {
                     CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
@@ -1556,11 +1570,15 @@ namespace Chummer
                         {
                             using (EnterReadLock.Enter(_objLinkedCharacter.LockObject, token))
                             {
-                                if (string.IsNullOrEmpty(_strCritterName)
-                                    && CritterName != LanguageManager.GetString("String_UnnamedCharacter", token: token))
-                                    _strCritterName = CritterName;
+                                if (string.IsNullOrEmpty(_strCritterName))
+                                {
+                                    string strCritterName = _objLinkedCharacter.CharacterName;
+                                    if (strCritterName !=
+                                        LanguageManager.GetString("String_UnnamedCharacter", token: token))
+                                        _strCritterName = strCritterName;
+                                }
 
-                                using (_objLinkedCharacter.LockObject.EnterWriteLock(token))
+                                using (_objLinkedCharacter.LockObject.UpgradeToWriteLock(token))
                                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                             }
                         }
@@ -1576,7 +1594,7 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     await CharacterObject.LinkedCharacters.RemoveAsync(_objLinkedCharacter, token)
@@ -1657,11 +1675,15 @@ namespace Chummer
                         {
                             using (await EnterReadLock.EnterAsync(_objLinkedCharacter.LockObject, token).ConfigureAwait(false))
                             {
-                                if (string.IsNullOrEmpty(_strCritterName)
-                                    && CritterName != LanguageManager.GetString("String_UnnamedCharacter", token: token))
-                                    _strCritterName = CritterName;
+                                if (string.IsNullOrEmpty(_strCritterName))
+                                {
+                                    string strCritterName = await _objLinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
+                                    if (strCritterName !=
+                                        await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
+                                        _strCritterName = strCritterName;
+                                }
 
-                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
                                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;

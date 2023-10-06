@@ -231,7 +231,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (_blnAllowUpgrade == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _blnAllowUpgrade = value;
                         OnPropertyChanged();
@@ -260,12 +260,12 @@ namespace Chummer.Backend.Skills
                         return;
                     if (string.Equals(CurrentDisplayName, value, StringComparison.Ordinal))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         LoadSkillFromData(value);
                         Name = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -280,17 +280,17 @@ namespace Chummer.Backend.Skills
                     return;
                 if (string.Equals(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), value, StringComparison.Ordinal))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     await LoadSkillFromDataAsync(value, token).ConfigureAwait(false);
                     await SetNameAsync(value, token).ConfigureAwait(false);
+                    OnPropertyChanged(nameof(WritableName));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                OnPropertyChanged(nameof(WritableName));
             }
         }
 
@@ -441,7 +441,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (_intCachedCyberwareRating != int.MinValue)
                         return _intCachedCyberwareRating;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         if (_intCachedCyberwareRating != int.MinValue) // Just in case
                             return _intCachedCyberwareRating;
@@ -493,7 +493,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (_intCachedCyberwareRating != int.MinValue)
@@ -570,7 +570,7 @@ namespace Chummer.Backend.Skills
                     // Interlocked guarantees thread safety here without write lock
                     if (Interlocked.Exchange(ref _strType, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                         //default skills to reset to the default Type for that skill. If we want to disable
@@ -591,8 +591,8 @@ namespace Chummer.Backend.Skills
 
                         if (!IsLanguage)
                             IsNativeLanguage = false;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -610,7 +610,7 @@ namespace Chummer.Backend.Skills
                 // Interlocked guarantees thread safety here without write lock
                 if (Interlocked.Exchange(ref _strType, value) == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     //2018-22-03: Causes any attempt to alter the Type for skills with names that match
@@ -632,12 +632,13 @@ namespace Chummer.Backend.Skills
 
                     if (!await GetIsLanguageAsync(token).ConfigureAwait(false))
                         await SetIsNativeLanguageAsync(false, token).ConfigureAwait(false);
+
+                    OnPropertyChanged(nameof(Type));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                OnPropertyChanged(nameof(Type));
             }
         }
 
@@ -663,7 +664,7 @@ namespace Chummer.Backend.Skills
                     // Interlocked guarantees thread safety here without write lock
                     if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         if (value)
                         {
@@ -672,8 +673,9 @@ namespace Chummer.Backend.Skills
                             BuyWithKarma = false;
                             Specializations.Clear();
                         }
+
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -692,7 +694,7 @@ namespace Chummer.Backend.Skills
                 // Interlocked guarantees thread safety here without write lock
                 if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (value)
@@ -702,12 +704,12 @@ namespace Chummer.Backend.Skills
                         await SetBuyWithKarmaAsync(false, token).ConfigureAwait(false);
                         await Specializations.ClearAsync(token).ConfigureAwait(false);
                     }
+                    OnPropertyChanged(nameof(IsNativeLanguage));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                OnPropertyChanged(nameof(IsNativeLanguage));
             }
         }
 

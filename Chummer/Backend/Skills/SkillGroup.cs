@@ -448,7 +448,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (_intCachedBaseUnbroken < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
                         {
                             if (_intCachedBaseUnbroken < 0) // Just in case
                             {
@@ -482,7 +482,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedBaseUnbroken < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedBaseUnbroken < 0)
@@ -545,7 +545,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (_intCachedKarmaUnbroken < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
                         {
                             if (_intCachedKarmaUnbroken < 0) // Just in case
                             {
@@ -583,7 +583,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedKarmaUnbroken < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedKarmaUnbroken < 0) // Just in case
@@ -645,7 +645,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (_intCachedIsDisabled < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
                         {
                             if (_intCachedIsDisabled < 0) // Just in case
                             {
@@ -677,7 +677,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedIsDisabled < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedIsDisabled < 0)
@@ -725,7 +725,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (_blnIsBroken == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _blnIsBroken = value;
                         OnPropertyChanged();
@@ -752,7 +752,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_blnIsBroken == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _blnIsBroken = value;
@@ -801,7 +801,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (_intCachedHasAnyBreakingSkills < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
                         {
                             if (_intCachedHasAnyBreakingSkills < 0) // Just in case
                             {
@@ -844,7 +844,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedHasAnyBreakingSkills < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedHasAnyBreakingSkills < 0) // Just in case
@@ -1148,10 +1148,10 @@ namespace Chummer.Backend.Skills
                 // Do not add duplicate skills that we are still in the process of loading
                 if (_lstAffectedSkills.Any(x => x.SkillId == guidAddedSkillId))
                     return;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     _lstAffectedSkills.Add(skill);
-                    using (skill.LockObject.EnterWriteLock())
+                    using (skill.LockObject.UpgradeToWriteLock())
                         skill.PropertyChanged += SkillOnPropertyChanged;
                     if (_objCharacter?.SkillsSection?.IsLoading != true)
                         OnPropertyChanged(nameof(SkillList));
@@ -1202,7 +1202,7 @@ namespace Chummer.Backend.Skills
             {
                 if (!_lstAffectedSkills.Remove(skill))
                     return;
-                using (skill.LockObject.EnterWriteLock())
+                using (skill.LockObject.UpgradeToWriteLock())
                     skill.PropertyChanged -= SkillOnPropertyChanged;
                 if (_objCharacter?.SkillsSection?.IsLoading != true)
                     OnPropertyChanged(nameof(SkillList));
@@ -1562,7 +1562,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (!string.IsNullOrEmpty(_strToolTip))
                         return _strToolTip;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         if (!string.IsNullOrEmpty(_strToolTip)) // Just in case
                             return _strToolTip;
@@ -1604,7 +1604,7 @@ namespace Chummer.Backend.Skills
             {
                 if (!string.IsNullOrEmpty(_strToolTip))
                     return _strToolTip;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (!string.IsNullOrEmpty(_strToolTip)) // Just in case
@@ -1820,7 +1820,7 @@ namespace Chummer.Backend.Skills
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(IsDisabled)))
                             _intCachedIsDisabled = int.MinValue;

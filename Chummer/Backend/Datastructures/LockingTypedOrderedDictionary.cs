@@ -716,7 +716,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    using (LockObject.EnterWriteLock(token))
+                    using (LockObject.UpgradeToWriteLock(token))
                         _dicUnorderedData[key] = objReturn;
                     return objReturn;
                 }
@@ -751,7 +751,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    using (LockObject.EnterWriteLock(token))
+                    using (LockObject.UpgradeToWriteLock(token))
                         _dicUnorderedData[key] = objNewValue;
                     return objNewValue;
                 }
@@ -788,7 +788,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -840,7 +840,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -892,7 +892,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -944,7 +944,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -997,7 +997,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1049,7 +1049,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1101,7 +1101,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1153,7 +1153,7 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1543,7 +1543,7 @@ namespace Chummer
                     }
                     else if (objOldValue.Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _dicUnorderedData[key] = value;
                 }
             }
@@ -1567,7 +1567,7 @@ namespace Chummer
                 }
                 else if (objOldValue.Equals(value))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _dicUnorderedData[key] = value;
@@ -1592,7 +1592,7 @@ namespace Chummer
                 }
                 else if (objOldValue.Equals(value))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _dicUnorderedData[objKey] = value;
@@ -1662,7 +1662,7 @@ namespace Chummer
                         if (index == intOriginalIndex)
                             return;
                         TKey objKeyToRemove = _lstIndexes[index];
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
                         {
                             _lstIndexes[index] = value.Key;
                             for (int i = intOriginalIndex; i < _lstIndexes.Count - 2; ++i)
@@ -1680,7 +1680,7 @@ namespace Chummer
                     }
                     else
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
                         {
                             TKey objKeyToRemove = _lstIndexes[index];
                             _dicUnorderedData.Remove(objKeyToRemove);
@@ -1720,7 +1720,7 @@ namespace Chummer
                     if (index == intOriginalIndex)
                         return;
                     TKey objKeyToRemove = _lstIndexes[index];
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _lstIndexes[index] = value.Key;
@@ -1743,7 +1743,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         TKey objKeyToRemove = _lstIndexes[index];
@@ -1775,7 +1775,7 @@ namespace Chummer
             {
                 if (_dicUnorderedData.ContainsKey(item.Key))
                     throw new ArgumentException(null, nameof(item));
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _dicUnorderedData.Add(item.Key, item.Value);
@@ -1974,7 +1974,7 @@ namespace Chummer
             {
                 if (_dicUnorderedData.ContainsKey(item.Key))
                     throw new ArgumentException(null, nameof(item));
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     _dicUnorderedData.Add(item.Key, item.Value);
                     _lstIndexes.Insert(index, item.Key);
@@ -1990,7 +1990,7 @@ namespace Chummer
                     throw new ArgumentNullException(nameof(item));
                 if (_dicUnorderedData.ContainsKey(item.Item1))
                     throw new ArgumentException(null, nameof(item));
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     _dicUnorderedData.Add(item.Item1, item.Item2);
                     _lstIndexes.Insert(index, item.Item1);
@@ -2005,7 +2005,7 @@ namespace Chummer
                 TKey objKeyToRemove = _lstIndexes[index];
                 if (objKeyToRemove.Equals(default))
                     return;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     _dicUnorderedData.Remove(objKeyToRemove);
                     _lstIndexes.RemoveAt(index);
@@ -2021,7 +2021,7 @@ namespace Chummer
                 TKey objKeyToRemove = _lstIndexes[index];
                 if (objKeyToRemove.Equals(default))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _dicUnorderedData.Remove(objKeyToRemove);
@@ -2042,7 +2042,7 @@ namespace Chummer
 
         public async Task ReverseAsync(int index, int count, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 _lstIndexes.Reverse(index, count);

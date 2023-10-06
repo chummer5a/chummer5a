@@ -798,9 +798,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_guiSourceID == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _guiSourceID = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1007,9 +1009,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_decCost == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _decCost = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1050,9 +1054,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_decMultiplier == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _decMultiplier = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1122,7 +1128,7 @@ namespace Chummer.Backend.Equipment
                     if (Interlocked.Exchange(ref _strBaseLifestyle, value) == value)
                         return;
                     XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         // This needs a handler for translations, will fix later.
                         if (value == "Bolt Hole")
@@ -1141,8 +1147,8 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             foreach (LifestyleQuality objNotAHomeQuality in LifestyleQualities
-                                                                            .Where(x => x.Name == "Not a Home"
-                                                                                || x.Name == "Dug a Hole").ToList())
+                                         .Where(x => x.Name == "Not a Home"
+                                                     || x.Name == "Dug a Hole").ToList())
                                 objNotAHomeQuality.Remove(false);
                         }
 
@@ -1170,18 +1176,18 @@ namespace Chummer.Backend.Equipment
                             _intSecurityMaximum = 0;
                             Create(xmlLifestyle);
                             this.OnMultiplePropertyChanged(nameof(BaseLifestyle), nameof(Cost), nameof(Dice),
-                                                           nameof(Multiplier), nameof(SourceID), nameof(Source),
-                                                           nameof(Page), nameof(LP), nameof(CostForArea),
-                                                           nameof(CostForComforts), nameof(CostForSecurity),
-                                                           nameof(AllowBonusLP), nameof(IncrementType),
-                                                           nameof(BaseComforts), nameof(ComfortsMaximum),
-                                                           nameof(BaseArea), nameof(AreaMaximum), nameof(BaseSecurity),
-                                                           nameof(SecurityMaximum), nameof(LifestyleQualities));
+                                nameof(Multiplier), nameof(SourceID), nameof(Source),
+                                nameof(Page), nameof(LP), nameof(CostForArea),
+                                nameof(CostForComforts), nameof(CostForSecurity),
+                                nameof(AllowBonusLP), nameof(IncrementType),
+                                nameof(BaseComforts), nameof(ComfortsMaximum),
+                                nameof(BaseArea), nameof(AreaMaximum), nameof(BaseSecurity),
+                                nameof(SecurityMaximum), nameof(LifestyleQualities));
                             return;
                         }
-                    }
 
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1568,9 +1574,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_colNotes == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1651,9 +1659,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_decPercentage == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _decPercentage = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1674,9 +1684,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_blnTrustFund == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnTrustFund = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1716,9 +1728,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_blnIsPrimaryTenant == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnIsPrimaryTenant = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1739,9 +1753,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_decCostForArea == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _decCostForArea = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1762,9 +1778,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_decCostForComforts == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _decCostForComforts = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1785,9 +1803,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_decCostForSecurity == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _decCostForSecurity = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }

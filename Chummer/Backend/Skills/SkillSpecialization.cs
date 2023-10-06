@@ -328,7 +328,7 @@ namespace Chummer.Backend.Skills
                         return;
                     CancellationTokenSource objNewSource = new CancellationTokenSource();
                     CancellationToken objToken = objNewSource.Token;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _intNameLoaded = 0;
                         CancellationTokenSource objOldSource

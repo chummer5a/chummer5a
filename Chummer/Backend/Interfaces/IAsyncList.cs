@@ -103,7 +103,18 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = objLocker != null
+                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -175,7 +186,18 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = objLocker != null
+                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -247,7 +269,18 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = objLocker != null
+                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -414,7 +447,18 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = objLocker != null
+                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -486,7 +530,18 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = objLocker != null
+                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -558,7 +613,18 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = objLocker != null
+                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -630,7 +696,18 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = objLocker != null
+                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -702,7 +779,18 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = objLocker != null
+                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {

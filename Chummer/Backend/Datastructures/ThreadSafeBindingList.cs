@@ -93,7 +93,7 @@ namespace Chummer
                 {
                     if (_lstData[index].Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData[index] = value;
                 }
             }
@@ -111,7 +111,7 @@ namespace Chummer
             {
                 if (_lstData[index].Equals(value))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _lstData[index] = value;
@@ -136,7 +136,7 @@ namespace Chummer
                 {
                     if (_lstData[index].Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData[index] = (T)value;
                 }
             }
@@ -750,7 +750,7 @@ namespace Chummer
                 {
                     if (_lstData.RaiseListChangedEvents.Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData.RaiseListChangedEvents = value;
                 }
             }
@@ -800,7 +800,7 @@ namespace Chummer
                 {
                     if (_lstData.AllowNew.Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData.AllowNew = value;
                 }
             }
@@ -820,7 +820,7 @@ namespace Chummer
                 {
                     if (_lstData.AllowEdit.Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData.AllowEdit = value;
                 }
             }
@@ -840,7 +840,7 @@ namespace Chummer
                 {
                     if (_lstData.AllowRemove.Equals(value))
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                         _lstData.AllowRemove = value;
                 }
             }
@@ -972,7 +972,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     _lstData.RaiseListChangedEvents = false;
@@ -1060,7 +1060,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     _lstData.RaiseListChangedEvents = false;
@@ -1149,7 +1149,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     _lstData.RaiseListChangedEvents = false;
@@ -1249,7 +1249,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1344,7 +1344,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1440,7 +1440,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();

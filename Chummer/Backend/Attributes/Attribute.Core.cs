@@ -1754,7 +1754,7 @@ namespace Chummer.Backend.Attributes
                 bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
                 if (!blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
                     return;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
@@ -1787,7 +1787,7 @@ namespace Chummer.Backend.Attributes
                 bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
                 if (!blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _intMetatypeMin = intMin;
@@ -1828,7 +1828,7 @@ namespace Chummer.Backend.Attributes
                 bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
                 if (!blnBaseChanged && !blnKarmaChanged && !blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
                     return;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     _intBase = intBase;
                     _intKarma = intKarma;
@@ -1871,7 +1871,7 @@ namespace Chummer.Backend.Attributes
                 bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
                 if (!blnBaseChanged && !blnKarmaChanged && !blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _intBase = intBase;
@@ -2765,7 +2765,7 @@ namespace Chummer.Backend.Attributes
 
                     if (setNamesOfChangedProperties.Overlaps(s_SetPropertyNamesWithCachedValues))
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
                         {
                             if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
                                 _intCachedCanUpgradeCareer = int.MinValue;

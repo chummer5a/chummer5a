@@ -2482,9 +2482,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_blnWirelessOn == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnWirelessOn = value;
-                    RefreshWirelessBonuses();
+                        RefreshWirelessBonuses();
+                    }
                 }
             }
         }
@@ -2522,7 +2524,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (InterlockedExtensions.Exchange(ref _eImprovementSource, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
@@ -2548,29 +2550,29 @@ namespace Chummer.Backend.Equipment
                     string strOldValue = Interlocked.Exchange(ref _strName, value);
                     if (strOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _lstIncludeInPairBonus.Remove(strOldValue);
                         _lstIncludeInPairBonus.Add(value);
                         _lstIncludeInWirelessPairBonus.Remove(strOldValue);
                         _lstIncludeInWirelessPairBonus.Add(value);
-                    }
 
-                    if (_objParent?.IsLimb != true
-                        || _objParent.Parent?.InheritAttributes == false || _objParent.ParentVehicle != null
-                        || _objCharacter.Settings.DontUseCyberlimbCalculation
-                        || _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
-                        return;
-                    // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether or not we use cyberleg movement
-                    foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
-                             s_AttributeAffectingCyberwares)
-                    {
-                        if (kvpToCheck.Value.Contains(value) || kvpToCheck.Value.Contains(strOldValue))
+                        if (_objParent?.IsLimb != true
+                            || _objParent.Parent?.InheritAttributes == false || _objParent.ParentVehicle != null
+                            || _objCharacter.Settings.DontUseCyberlimbCalculation
+                            || _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                            return;
+                        // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether or not we use cyberleg movement
+                        foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                                 s_AttributeAffectingCyberwares)
                         {
-                            foreach (CharacterAttrib objCharacterAttrib in
-                                     _objCharacter.GetAllAttributes(kvpToCheck.Key))
+                            if (kvpToCheck.Value.Contains(value) || kvpToCheck.Value.Contains(strOldValue))
                             {
-                                objCharacterAttrib?.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                                foreach (CharacterAttrib objCharacterAttrib in
+                                         _objCharacter.GetAllAttributes(kvpToCheck.Key))
+                                {
+                                    objCharacterAttrib?.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                                }
                             }
                         }
                     }
@@ -4756,11 +4758,13 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_decExtraESSAdditiveMultiplier != value)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
+                        {
                             _decExtraESSAdditiveMultiplier = value;
-                        if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
-                            ParentVehicle == null)
-                            _objCharacter.OnPropertyChanged(EssencePropertyName);
+                            if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
+                                ParentVehicle == null)
+                                _objCharacter.OnPropertyChanged(EssencePropertyName);
+                        }
                     }
                 }
             }
@@ -4782,11 +4786,13 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_decExtraESSMultiplicativeMultiplier != value)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.UpgradeToWriteLock())
+                        {
                             _decExtraESSMultiplicativeMultiplier = value;
-                        if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
-                            ParentVehicle == null)
-                            _objCharacter.OnPropertyChanged(EssencePropertyName);
+                            if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
+                                ParentVehicle == null)
+                                _objCharacter.OnPropertyChanged(EssencePropertyName);
+                        }
                     }
                 }
             }
@@ -4798,7 +4804,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("forcegrade")?.Value != "None")
                 {
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _decExtraESSAdditiveMultiplier = 0;
                         _decExtraESSMultiplicativeMultiplier = 1;
@@ -4879,7 +4885,7 @@ namespace Chummer.Backend.Equipment
                     || (await objNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token)
                                      .ConfigureAwait(false))?.Value != "None")
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _decExtraESSAdditiveMultiplier = 0;
@@ -5121,11 +5127,13 @@ namespace Chummer.Backend.Equipment
                     bool blnOldValue = _blnAddToParentESS;
                     if (blnOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnAddToParentESS = value;
-                    if ((Parent == null || AddToParentESS || blnOldValue) &&
-                        string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.OnPropertyChanged(EssencePropertyName);
+                        if ((Parent == null || AddToParentESS || blnOldValue) &&
+                            string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                            _objCharacter.OnPropertyChanged(EssencePropertyName);
+                    }
                 }
             }
         }
@@ -5147,11 +5155,13 @@ namespace Chummer.Backend.Equipment
                     bool blnOldValue = _blnAddToParentCapacity;
                     if (blnOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnAddToParentCapacity = value;
-                    if ((Parent == null || AddToParentCapacity || blnOldValue) &&
-                        string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.OnPropertyChanged(Capacity);
+                        if ((Parent == null || AddToParentCapacity || blnOldValue) &&
+                            string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                            _objCharacter.OnPropertyChanged(Capacity);
+                    }
                 }
             }
         }
@@ -9139,7 +9149,7 @@ namespace Chummer.Backend.Equipment
                 // Create the Cyberware object.
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 List<Vehicle> lstVehicles = new List<Vehicle>(1);
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     Create(objNode, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true,
                            string.Empty, objParent, objVehicle);
@@ -9290,7 +9300,7 @@ namespace Chummer.Backend.Equipment
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
                 objExpense.Undo = objUndo;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.UpgradeToWriteLock())
                 {
                     Interlocked.Decrement(ref _intProcessPropertyChanges);
                     try
@@ -9302,20 +9312,20 @@ namespace Chummer.Backend.Equipment
                     {
                         Interlocked.Increment(ref _intProcessPropertyChanges);
                     }
-                }
 
-                decimal decEssDelta = GetCalculatedESSPrototypeInvariant(intRating, objGrade) - decOldEssence;
-                if (decEssDelta > 0)
-                {
-                    //The new Essence cost is greater than the old one.
-                    _objCharacter.DecreaseEssenceHole(decEssDelta);
-                }
-                else if (decEssDelta < 0)
-                {
-                    _objCharacter.IncreaseEssenceHole(-decEssDelta);
-                }
+                    decimal decEssDelta = GetCalculatedESSPrototypeInvariant(intRating, objGrade) - decOldEssence;
+                    if (decEssDelta > 0)
+                    {
+                        //The new Essence cost is greater than the old one.
+                        _objCharacter.DecreaseEssenceHole(decEssDelta);
+                    }
+                    else if (decEssDelta < 0)
+                    {
+                        _objCharacter.IncreaseEssenceHole(-decEssDelta);
+                    }
 
-                DoPropertyChanges(blnDoRatingChange, blnDoGradeChange);
+                    DoPropertyChanges(blnDoRatingChange, blnDoGradeChange);
+                }
             }
         }
 

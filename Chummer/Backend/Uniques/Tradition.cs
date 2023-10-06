@@ -682,7 +682,7 @@ namespace Chummer.Backend.Uniques
                 {
                     if (InterlockedExtensions.Exchange(ref _eTraditionType, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _xmlCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
@@ -954,42 +954,32 @@ namespace Chummer.Backend.Uniques
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    using (EnterReadLock.Enter(_objCharacter))
-                    using (EnterReadLock.Enter(_objCharacter.AttributeSection))
-                    using (EnterReadLock.Enter(_objCharacter.AttributeSection.Attributes))
+                    string strOldExpression = Interlocked.Exchange(ref _strDrainExpression, value);
+                    if (strOldExpression == value)
+                        return;
+                    using (LockObject.UpgradeToWriteLock())
                     {
-                        _objCharacter.AttributeSection.Attributes.ForEach(x => x.LockObject.EnterReadLock());
-                        try
+                        foreach (string strAttribute in AttributeSection.AttributeStrings)
                         {
-                            string strOldExpression = Interlocked.Exchange(ref _strDrainExpression, value);
-                            if (strOldExpression == value)
-                                return;
-                            foreach (string strAttribute in AttributeSection.AttributeStrings)
+                            if (strOldExpression.Contains(strAttribute))
                             {
-                                if (strOldExpression.Contains(strAttribute))
-                                {
-                                    if (!value.Contains(strAttribute))
-                                    {
-                                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                                        using (objAttrib.LockObject.EnterWriteLock())
-                                            objAttrib.PropertyChanged -= RefreshDrainValue;
-                                    }
-                                }
-                                else if (value.Contains(strAttribute))
+                                if (!value.Contains(strAttribute))
                                 {
                                     CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                                     using (objAttrib.LockObject.EnterWriteLock())
-                                        objAttrib.PropertyChanged += RefreshDrainValue;
+                                        objAttrib.PropertyChanged -= RefreshDrainValue;
                                 }
                             }
+                            else if (value.Contains(strAttribute))
+                            {
+                                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                                using (objAttrib.LockObject.EnterWriteLock())
+                                    objAttrib.PropertyChanged += RefreshDrainValue;
+                            }
                         }
-                        finally
-                        {
-                            _objCharacter.AttributeSection.Attributes.ForEach(x => x.LockObject.ExitReadLock());
-                        }
-                    }
 
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }

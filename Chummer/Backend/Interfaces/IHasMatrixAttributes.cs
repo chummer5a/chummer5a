@@ -718,7 +718,7 @@ namespace Chummer
 
                         IDisposable objLocker = null;
                         if (objThisLocker != null)
-                            objLocker = objThisLocker.LockObject.EnterWriteLock();
+                            objLocker = objThisLocker.LockObject.UpgradeToWriteLock();
                         try
                         {
                             for (int i = 0; i < 4; ++i)

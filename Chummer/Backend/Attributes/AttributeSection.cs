@@ -111,7 +111,8 @@ namespace Chummer.Backend.Attributes
                     {
                         if (!_blnAttributesInitialized)
                         {
-                            InitializeAttributesList();
+                            using (_objAttributesInitializerLock.UpgradeToWriteLock())
+                                InitializeAttributesList();
                         }
                     }
                     return _lstAttributes;
@@ -127,7 +128,16 @@ namespace Chummer.Backend.Attributes
                 {
                     if (!_blnAttributesInitialized)
                     {
-                        await InitializeAttributesListAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker = await _objAttributesInitializerLock.UpgradeToWriteLockAsync(token)
+                            .ConfigureAwait(false);
+                        try
+                        {
+                            await InitializeAttributesListAsync(token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
 
@@ -177,6 +187,7 @@ namespace Chummer.Backend.Attributes
 
         private async ValueTask InitializeAttributesListAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token).ConfigureAwait(false))
             {
                 IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);

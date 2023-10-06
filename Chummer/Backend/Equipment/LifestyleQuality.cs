@@ -593,13 +593,12 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
+                        OnPropertyChanged();
                     }
-
-                    OnPropertyChanged();
                 }
             }
         }
@@ -930,9 +929,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_blnPrint == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnPrint = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -973,9 +974,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_colNotes == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1042,9 +1045,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_blnFree == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnFree = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1062,20 +1067,22 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_blnIsFreeGrid == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                        _blnIsFreeGrid = value;
-                    switch (value)
+                    using (LockObject.UpgradeToWriteLock())
                     {
-                        case true when OriginSource == QualitySource.Selected:
-                            OriginSource = QualitySource.BuiltIn;
-                            break;
+                        _blnIsFreeGrid = value;
+                        switch (value)
+                        {
+                            case true when OriginSource == QualitySource.Selected:
+                                OriginSource = QualitySource.BuiltIn;
+                                break;
 
-                        case false when OriginSource == QualitySource.BuiltIn:
-                            OriginSource = QualitySource.Selected;
-                            break;
+                            case false when OriginSource == QualitySource.BuiltIn:
+                                OriginSource = QualitySource.Selected;
+                                break;
+                        }
+
+                        OnPropertyChanged();
                     }
-
-                    OnPropertyChanged();
                 }
             }
         }
@@ -1098,9 +1105,11 @@ namespace Chummer.Backend.Equipment
                         return;
                     if (_blnUseLPCost == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.UpgradeToWriteLock())
+                    {
                         _blnUseLPCost = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }

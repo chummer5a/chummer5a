@@ -357,7 +357,7 @@ namespace Chummer.UI.Skills
                         ResumeLayout(true);
                     }
                 }, token: token).ConfigureAwait(false);
-                if (!_objCharacter.Created)
+                if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {
                     await lblGroupsSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                                                                           nameof(Character
