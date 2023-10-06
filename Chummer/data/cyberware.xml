@@ -539,7 +539,7 @@
       <ess>(Rating * 0.1) + 0.1</ess>
       <capacity>(Rating * 4)</capacity>
       <avail>(Rating * 3)</avail>
-      <cost>4000 * (Rating + 1) - 2000 * number(Rating > 1)</cost>
+      <cost>4000 * Rating - 2000 * number(Rating > 1)</cost>
       <source>SR5</source>
       <page>453</page>
       <allowgear>
