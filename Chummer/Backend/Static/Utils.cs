@@ -342,6 +342,18 @@ namespace Chummer
 
         public static LockingDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
 
+        public static void TryCacheExpression(string xpath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            CachedXPathExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
+        }
+
+        public static ValueTask<XPathExpression> TryCacheExpressionAsync(string xpath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return CachedXPathExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token);
+        }
+
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
             = new Lazy<JoinableTaskFactory>(() => IsRunningInVisualStudio
                                                 ? new JoinableTaskFactory(new JoinableTaskContext())
