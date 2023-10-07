@@ -285,7 +285,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_blnDoingCopy)
                     return;
@@ -308,7 +308,7 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
                             _intCachedMaxNuyenDecimals = int.MinValue;
@@ -436,7 +436,7 @@ namespace Chummer
                 {
                     PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                     lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
-                    using (EnterReadLock.Enter(objOther, token))
+                    using (objOther.LockObject.EnterReadLock(token))
                     {
                         if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                         {
@@ -472,8 +472,8 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        using (EnterReadLock.Enter(objOther._dicCustomDataDirectoryKeys, token))
-                        using (EnterReadLock.Enter(_dicCustomDataDirectoryKeys, token))
+                        using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
+                        using (_dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
                         {
                             int intMyCount = _dicCustomDataDirectoryKeys.Count;
                             bool blnDoRebuildDirectoryKeys = intMyCount != objOther._dicCustomDataDirectoryKeys.Count;
@@ -496,7 +496,7 @@ namespace Chummer
                             if (blnDoRebuildDirectoryKeys)
                             {
                                 lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                                using (_dicCustomDataDirectoryKeys.LockObject.UpgradeToWriteLock(token))
+                                using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock(token))
                                 {
                                     _dicCustomDataDirectoryKeys.Clear();
                                     objOther.CustomDataDirectoryKeys.ForEach(kvpOther => _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value), token);
@@ -554,7 +554,7 @@ namespace Chummer
                 {
                     PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                     lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
-                    using (await EnterReadLock.EnterAsync(objOther, token).ConfigureAwait(false))
+                    using (await objOther.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
                         if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                         {
@@ -587,8 +587,8 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        using (await EnterReadLock.EnterAsync(objOther._dicCustomDataDirectoryKeys, token).ConfigureAwait(false))
-                        using (await EnterReadLock.EnterAsync(_dicCustomDataDirectoryKeys, token).ConfigureAwait(false))
+                        using (await objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                        using (await _dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                         {
                             int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token)
                                                                               .ConfigureAwait(false);
@@ -616,7 +616,7 @@ namespace Chummer
                             {
                                 lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
                                 IAsyncDisposable objLocker2 = await _dicCustomDataDirectoryKeys.LockObject
-                                    .UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                                    .EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
                                     await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
@@ -688,8 +688,8 @@ namespace Chummer
             if (objOther == this)
                 yield break;
 
-            using (EnterReadLock.Enter(objOther, token))
-            using (EnterReadLock.Enter(LockObject, token))
+            using (objOther.LockObject.EnterReadLock(token))
+            using (LockObject.EnterReadLock(token))
             {
                 if (!_guiSourceId.Equals(objOther._guiSourceId))
                 {
@@ -757,8 +757,8 @@ namespace Chummer
             if (objOther == this)
                 return lstReturn;
 
-            using (await EnterReadLock.EnterAsync(objOther, token).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await objOther.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!_guiSourceId.Equals(objOther._guiSourceId))
                 {
@@ -812,8 +812,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objOther == null)
                 return false;
-            using (EnterReadLock.Enter(objOther, token))
-            using (EnterReadLock.Enter(LockObject, token))
+            using (objOther.LockObject.EnterReadLock(token))
+            using (LockObject.EnterReadLock(token))
             {
                 if (_guiSourceId != objOther._guiSourceId)
                     return false;
@@ -832,8 +832,8 @@ namespace Chummer
                         return false;
                 }
 
-                using (EnterReadLock.Enter(objOther._dicCustomDataDirectoryKeys, token))
-                using (EnterReadLock.Enter(_dicCustomDataDirectoryKeys, token))
+                using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
+                using (_dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
                 {
                     int intMyCount = _dicCustomDataDirectoryKeys.Count;
                     if (intMyCount != objOther._dicCustomDataDirectoryKeys.Count)
@@ -860,8 +860,8 @@ namespace Chummer
         {
             if (objOther == null)
                 return false;
-            using (await EnterReadLock.EnterAsync(objOther, token).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await objOther.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_guiSourceId != objOther._guiSourceId)
                     return false;
@@ -880,8 +880,8 @@ namespace Chummer
                         return false;
                 }
 
-                using (await EnterReadLock.EnterAsync(objOther._dicCustomDataDirectoryKeys, token).ConfigureAwait(false))
-                using (await EnterReadLock.EnterAsync(_dicCustomDataDirectoryKeys, token).ConfigureAwait(false))
+                using (await objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                using (await _dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token).ConfigureAwait(false);
                     if (intMyCount != await objOther._dicCustomDataDirectoryKeys.GetCountAsync(token)
@@ -915,7 +915,7 @@ namespace Chummer
         /// </summary>
         public int GetEquatableHashCode(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
                 return GetEquatableHashCodeCommon();
         }
 
@@ -926,7 +926,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetEquatableHashCodeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return GetEquatableHashCodeCommon();
         }
 
@@ -1138,7 +1138,7 @@ namespace Chummer
                 }
             }
 
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 if (!string.IsNullOrEmpty(strNewFileName))
                     _strFileName = strNewFileName;
@@ -1867,7 +1867,7 @@ namespace Chummer
                 }
             }
 
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!string.IsNullOrEmpty(strNewFileName))
                     _strFileName = strNewFileName;
@@ -4321,12 +4321,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _eBuildMethod;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eBuildMethod, value) != value)
                         OnPropertyChanged();
@@ -4339,7 +4339,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<CharacterBuildMethod> GetBuildMethodAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _eBuildMethod;
         }
 
@@ -4347,14 +4347,14 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _eBuildMethod.UsesPriorityTables();
             }
         }
 
         public async ValueTask<bool> GetBuildMethodUsesPriorityTablesAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _eBuildMethod.UsesPriorityTables();
         }
 
@@ -4380,12 +4380,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPriorityArray;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPriorityArray, value) != value)
                         OnPropertyChanged();
@@ -4400,12 +4400,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPriorityTable;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPriorityTable, value) != value)
                         OnPropertyChanged();
@@ -4420,12 +4420,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intSumtoTen;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intSumtoTen, value) != value)
                         OnPropertyChanged();
@@ -4440,12 +4440,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intBuildPoints;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intBuildPoints, value) != value)
                         OnPropertyChanged();
@@ -4458,7 +4458,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetBuildKarmaAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intBuildPoints;
         }
 
@@ -4469,12 +4469,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intQualityKarmaLimit;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intQualityKarmaLimit, value) != value)
                         OnPropertyChanged();
@@ -4487,7 +4487,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetQualityKarmaLimitAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intQualityKarmaLimit;
         }
 
@@ -4498,12 +4498,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intAvailability;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intAvailability, value) != value)
                         OnPropertyChanged();
@@ -4518,12 +4518,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxMartialArts;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxMartialArts, value) != value)
                         OnPropertyChanged();
@@ -4538,12 +4538,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxMartialTechniques;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxMartialTechniques, value) != value)
                         OnPropertyChanged();
@@ -4558,16 +4558,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decNuyenMaximumBP;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decNuyenMaximumBP == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decNuyenMaximumBP = value;
                         OnPropertyChanged();
@@ -4581,7 +4581,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<decimal> GetNuyenMaximumBPAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _decNuyenMaximumBP;
         }
 
@@ -4592,7 +4592,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _setBannedWareGrades;
             }
         }
@@ -4604,7 +4604,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _setRedlinerExcludes;
             }
         }
@@ -4613,18 +4613,18 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _setRedlinerExcludes.Contains("skull");
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (value)
                     {
                         if (_setRedlinerExcludes.Contains("skull"))
                             return;
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             _setRedlinerExcludes.Add("skull");
                             OnPropertyChanged(nameof(RedlinerExcludes));
@@ -4634,7 +4634,7 @@ namespace Chummer
                     {
                         if (!_setRedlinerExcludes.Contains("skull"))
                             return;
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             _setRedlinerExcludes.Remove("skull");
                             OnPropertyChanged(nameof(RedlinerExcludes));
@@ -4648,18 +4648,18 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return RedlinerExcludes.Contains("torso");
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (value)
                     {
                         if (_setRedlinerExcludes.Contains("torso"))
                             return;
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             _setRedlinerExcludes.Add("torso");
                             OnPropertyChanged(nameof(RedlinerExcludes));
@@ -4669,7 +4669,7 @@ namespace Chummer
                     {
                         if (!_setRedlinerExcludes.Contains("torso"))
                             return;
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             _setRedlinerExcludes.Remove("torso");
                             OnPropertyChanged(nameof(RedlinerExcludes));
@@ -4683,18 +4683,18 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return RedlinerExcludes.Contains("arm");
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (value)
                     {
                         if (_setRedlinerExcludes.Contains("arm"))
                             return;
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             _setRedlinerExcludes.Add("arm");
                             OnPropertyChanged(nameof(RedlinerExcludes));
@@ -4704,7 +4704,7 @@ namespace Chummer
                     {
                         if (!_setRedlinerExcludes.Contains("arm"))
                             return;
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             _setRedlinerExcludes.Remove("arm");
                             OnPropertyChanged(nameof(RedlinerExcludes));
@@ -4718,18 +4718,18 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return RedlinerExcludes.Contains("leg");
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (value)
                     {
                         if (_setRedlinerExcludes.Contains("leg"))
                             return;
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             _setRedlinerExcludes.Add("leg");
                             OnPropertyChanged(nameof(RedlinerExcludes));
@@ -4739,7 +4739,7 @@ namespace Chummer
                     {
                         if (!_setRedlinerExcludes.Contains("leg"))
                             return;
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             _setRedlinerExcludes.Remove("leg");
                             OnPropertyChanged(nameof(RedlinerExcludes));
@@ -4769,7 +4769,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public bool BookEnabled(string strCode, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
                 return _setBooks.Contains(strCode);
         }
 
@@ -4780,7 +4780,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async ValueTask<bool> BookEnabledAsync(string strCode, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _setBooks.Contains(strCode);
         }
 
@@ -4794,7 +4794,7 @@ namespace Chummer
             {
                 if (excludeHidden)
                     sbdPath.Append("not(hide)");
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                 {
                     if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
                     {
@@ -4841,7 +4841,7 @@ namespace Chummer
             {
                 if (excludeHidden)
                     sbdPath.Append("not(hide)");
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
                     {
@@ -4885,7 +4885,7 @@ namespace Chummer
         /// </summary>
         public void RecalculateBookXPath(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 _strBookXPath = string.Empty;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -4916,7 +4916,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask RecalculateBookXPathAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 _strBookXPath = string.Empty;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -4946,7 +4946,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _dicCustomDataDirectoryKeys;
             }
         }
@@ -4954,7 +4954,7 @@ namespace Chummer
         public async ValueTask<LockingTypedOrderedDictionary<string, bool>> GetCustomDataDirectoryKeysAsync(
             CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _dicCustomDataDirectoryKeys;
         }
 
@@ -4962,7 +4962,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstEnabledCustomDataDirectoryPaths;
             }
         }
@@ -4970,7 +4970,7 @@ namespace Chummer
         public async ValueTask<IReadOnlyList<string>> GetEnabledCustomDataDirectoryPathsAsync(
             CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _lstEnabledCustomDataDirectoryPaths;
         }
 
@@ -4978,7 +4978,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _setEnabledCustomDataDirectories;
             }
         }
@@ -4986,7 +4986,7 @@ namespace Chummer
         public async ValueTask<IReadOnlyList<CustomDataDirectoryInfo>> GetEnabledCustomDataDirectoryInfosAsync(
             CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _setEnabledCustomDataDirectories;
         }
 
@@ -4997,7 +4997,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _setEnabledCustomDataDirectoryGuids;
             }
         }
@@ -5008,7 +5008,7 @@ namespace Chummer
         public async ValueTask<IReadOnlyCollection<Guid>> GetEnabledCustomDataDirectoryInfoGuidsAsync(
             CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _setEnabledCustomDataDirectoryGuids;
         }
 
@@ -5151,7 +5151,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceId;
             }
         }
@@ -5160,14 +5160,14 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
 
         public async ValueTask<string> GetSourceIdAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
         }
 
@@ -5175,14 +5175,14 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceId != Guid.Empty;
             }
         }
 
         public async ValueTask<bool> GetBuiltInOptionAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _guiSourceId != Guid.Empty;
         }
 
@@ -5193,16 +5193,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnMoreLethalGameplay;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnMoreLethalGameplay == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnMoreLethalGameplay = value;
                         OnPropertyChanged();
@@ -5218,16 +5218,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnLicenseRestrictedItems;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnLicenseRestrictedItems == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnLicenseRestrictedItems = value;
                         OnPropertyChanged();
@@ -5243,16 +5243,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnSpiritForceBasedOnTotalMAG;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnSpiritForceBasedOnTotalMAG == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnSpiritForceBasedOnTotalMAG = value;
                         OnPropertyChanged();
@@ -5268,16 +5268,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decNuyenPerBPWftM;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decNuyenPerBPWftM == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decNuyenPerBPWftM = value;
                         OnPropertyChanged();
@@ -5293,16 +5293,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decNuyenPerBPWftP;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decNuyenPerBPWftP == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decNuyenPerBPWftP = value;
                         OnPropertyChanged();
@@ -5318,16 +5318,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnUnarmedImprovementsApplyToWeapons;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnUnarmedImprovementsApplyToWeapons == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnUnarmedImprovementsApplyToWeapons = value;
                         OnPropertyChanged();
@@ -5343,16 +5343,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowInitiationInCreateMode;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowInitiationInCreateMode == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowInitiationInCreateMode = value;
                         OnPropertyChanged();
@@ -5368,16 +5368,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnUsePointsOnBrokenGroups;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnUsePointsOnBrokenGroups == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnUsePointsOnBrokenGroups = value;
                         OnPropertyChanged();
@@ -5391,7 +5391,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetUsePointsOnBrokenGroupsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnUsePointsOnBrokenGroups;
         }
 
@@ -5402,16 +5402,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDontDoubleQualityPurchaseCost;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDontDoubleQualityPurchaseCost == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDontDoubleQualityPurchaseCost = value;
                         OnPropertyChanged();
@@ -5427,16 +5427,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDontDoubleQualityRefundCost;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDontDoubleQualityRefundCost == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDontDoubleQualityRefundCost = value;
                         OnPropertyChanged();
@@ -5452,16 +5452,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnIgnoreArt;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnIgnoreArt == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnIgnoreArt = value;
                         OnPropertyChanged();
@@ -5477,16 +5477,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnIgnoreComplexFormLimit;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnIgnoreComplexFormLimit == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnIgnoreComplexFormLimit = value;
                         OnPropertyChanged();
@@ -5502,16 +5502,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnCyberlegMovement;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnCyberlegMovement == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnCyberlegMovement = value;
                         OnPropertyChanged();
@@ -5525,7 +5525,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetCyberlegMovementAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnCyberlegMovement;
         }
 
@@ -5536,16 +5536,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnMysAdeptAllowPpCareer;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnMysAdeptAllowPpCareer == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnMysAdeptAllowPpCareer = value;
                         if (value)
@@ -5558,7 +5558,7 @@ namespace Chummer
 
         public async ValueTask<bool> GetMysAdeptAllowPpCareerAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnMysAdeptAllowPpCareer;
         }
 
@@ -5569,16 +5569,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnMysAdeptSecondMAGAttribute;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnMysAdeptSecondMAGAttribute == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnMysAdeptSecondMAGAttribute = value;
                         if (value)
@@ -5595,7 +5595,7 @@ namespace Chummer
 
         public async ValueTask<bool> GetMysAdeptSecondMAGAttributeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnMysAdeptSecondMAGAttribute;
         }
 
@@ -5603,14 +5603,14 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPpCareer;
             }
         }
 
         public async ValueTask<bool> GetMysAdeptSecondMAGAttributeEnabledAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return !await GetPrioritySpellsAsAdeptPowersAsync(token).ConfigureAwait(false) && !await GetMysAdeptAllowPpCareerAsync(token).ConfigureAwait(false);
         }
 
@@ -5621,13 +5621,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strContactPointsExpression;
             }
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strContactPointsExpression, value) == value)
                         return;
@@ -5641,7 +5641,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetContactPointsExpressionAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _strContactPointsExpression;
         }
 
@@ -5652,13 +5652,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strKnowledgePointsExpression;
             }
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strKnowledgePointsExpression, value) == value)
                         return;
@@ -5672,7 +5672,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetKnowledgePointsExpressionAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _strKnowledgePointsExpression;
         }
 
@@ -5683,7 +5683,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strChargenKarmaToNuyenExpression;
             }
             set
@@ -5695,7 +5695,7 @@ namespace Chummer
                 {
                     value = '(' + value + ") + {PriorityNuyen}";
                 }
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
                         return;
@@ -5709,7 +5709,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetChargenKarmaToNuyenExpressionAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _strChargenKarmaToNuyenExpression;
         }
 
@@ -5729,7 +5729,7 @@ namespace Chummer
                     = '(' + value + ") + {PriorityNuyen}";
             }
 
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
                     return;
@@ -5744,13 +5744,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strBoundSpiritExpression;
             }
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strBoundSpiritExpression, value) == value)
                         return;
@@ -5766,13 +5766,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strRegisteredSpriteExpression;
             }
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strRegisteredSpriteExpression, value) == value)
                         return;
@@ -5788,13 +5788,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strEssenceModifierPostExpression;
             }
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEssenceModifierPostExpression, value) == value)
                         return;
@@ -5810,12 +5810,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intDroneArmorMultiplier;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intDroneArmorMultiplier, value) != value)
                         OnPropertyChanged();
@@ -5830,16 +5830,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDroneArmorMultiplierEnabled;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDroneArmorMultiplierEnabled == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDroneArmorMultiplierEnabled = value;
                         if (!value)
@@ -5855,7 +5855,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetDroneArmorMultiplierEnabledAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnDroneArmorMultiplierEnabled;
         }
 
@@ -5866,16 +5866,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnNoArmorEncumbrance;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnNoArmorEncumbrance == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnNoArmorEncumbrance = value;
                         OnPropertyChanged();
@@ -5891,16 +5891,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnUncappedArmorAccessoryBonuses;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnUncappedArmorAccessoryBonuses == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnUncappedArmorAccessoryBonuses = value;
                         OnPropertyChanged();
@@ -5916,16 +5916,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnESSLossReducesMaximumOnly;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnESSLossReducesMaximumOnly == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnESSLossReducesMaximumOnly = value;
                         OnPropertyChanged();
@@ -5941,16 +5941,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowSkillRegrouping;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowSkillRegrouping == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowSkillRegrouping = value;
                         OnPropertyChanged();
@@ -5966,16 +5966,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnSpecializationsBreakSkillGroups;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnSpecializationsBreakSkillGroups == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnSpecializationsBreakSkillGroups = value;
                         OnPropertyChanged();
@@ -5989,7 +5989,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetSpecializationsBreakSkillGroupsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnSpecializationsBreakSkillGroups;
         }
 
@@ -6000,7 +6000,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _setBooks;
             }
         }
@@ -6012,7 +6012,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _setBooks;
             }
         }
@@ -6022,7 +6022,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<HashSet<string>> GetBooksWritableAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _setBooks;
         }
 
@@ -6031,7 +6031,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<IReadOnlyCollection<string>> GetBooksAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _setBooks;
         }
 
@@ -6042,7 +6042,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strFileName;
             }
         }
@@ -6052,7 +6052,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetFileNameAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _strFileName;
         }
 
@@ -6063,12 +6063,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) != value)
                         OnPropertyChanged();
@@ -6081,7 +6081,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetNameAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _strName;
         }
 
@@ -6092,7 +6092,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     string strReturn = Name;
                     if (BuiltInOption)
@@ -6119,7 +6119,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 string strReturn = await GetNameAsync(token).ConfigureAwait(false);
                 if (await GetBuiltInOptionAsync(token).ConfigureAwait(false))
@@ -6149,16 +6149,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnMetatypeCostsKarma;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnMetatypeCostsKarma == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnMetatypeCostsKarma = value;
                         OnPropertyChanged();
@@ -6174,12 +6174,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMetatypeCostMultiplier;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMetatypeCostMultiplier, value) != value)
                         OnPropertyChanged();
@@ -6189,7 +6189,7 @@ namespace Chummer
 
         public async ValueTask<int> GetMetatypeCostsKarmaMultiplierAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intMetatypeCostMultiplier;
         }
 
@@ -6200,12 +6200,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intLimbCount;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intLimbCount, value) != value)
                         OnPropertyChanged();
@@ -6220,12 +6220,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strExcludeLimbSlot;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExcludeLimbSlot, value) != value)
                         OnPropertyChanged();
@@ -6240,16 +6240,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowCyberwareESSDiscounts;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowCyberwareESSDiscounts == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowCyberwareESSDiscounts = value;
                         OnPropertyChanged();
@@ -6265,16 +6265,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnArmorDegradation;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnArmorDegradation == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnArmorDegradation = value;
                         OnPropertyChanged();
@@ -6290,16 +6290,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnSpecialKarmaCostBasedOnShownValue;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnSpecialKarmaCostBasedOnShownValue == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnSpecialKarmaCostBasedOnShownValue = value;
                         OnPropertyChanged();
@@ -6315,16 +6315,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnExceedPositiveQualities;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnExceedPositiveQualities == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnExceedPositiveQualities = value;
                         if (!value)
@@ -6340,7 +6340,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetExceedPositiveQualitiesAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnExceedPositiveQualities;
         }
 
@@ -6351,16 +6351,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnExceedPositiveQualitiesCostDoubled;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnExceedPositiveQualitiesCostDoubled == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnExceedPositiveQualitiesCostDoubled = value;
                         OnPropertyChanged();
@@ -6374,7 +6374,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetExceedPositiveQualitiesCostDoubledAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnExceedPositiveQualitiesCostDoubled;
         }
 
@@ -6385,16 +6385,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnExceedNegativeQualities;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnExceedNegativeQualities == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnExceedNegativeQualities = value;
                         if (!value)
@@ -6410,7 +6410,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetExceedNegativeQualitiesAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnExceedNegativeQualities;
         }
 
@@ -6421,16 +6421,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnExceedNegativeQualitiesNoBonus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnExceedNegativeQualitiesNoBonus == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnExceedNegativeQualitiesNoBonus = value;
                         OnPropertyChanged();
@@ -6444,7 +6444,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetExceedNegativeQualitiesNoBonusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnExceedNegativeQualitiesNoBonus;
         }
 
@@ -6455,16 +6455,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnMultiplyRestrictedCost;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnMultiplyRestrictedCost == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnMultiplyRestrictedCost = value;
                         OnPropertyChanged();
@@ -6480,16 +6480,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnMultiplyForbiddenCost;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnMultiplyForbiddenCost == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnMultiplyForbiddenCost = value;
                         OnPropertyChanged();
@@ -6505,12 +6505,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intRestrictedCostMultiplier;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intRestrictedCostMultiplier, value) != value)
                         OnPropertyChanged();
@@ -6525,12 +6525,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intForbiddenCostMultiplier;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intForbiddenCostMultiplier, value) != value)
                         OnPropertyChanged();
@@ -6547,7 +6547,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedMaxNuyenDecimals >= 0)
                         return _intCachedMaxNuyenDecimals;
@@ -6607,7 +6607,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedMinNuyenDecimals >= 0)
                         return _intCachedMinNuyenDecimals;
@@ -6667,12 +6667,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strNuyenFormat;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNuyenFormat, value) != value)
                         OnPropertyChanged();
@@ -6687,12 +6687,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strWeightFormat;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strWeightFormat, value) != value)
                         OnPropertyChanged();
@@ -6709,7 +6709,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedWeightDecimals >= 0)
                         return _intCachedWeightDecimals;
@@ -6723,19 +6723,19 @@ namespace Chummer
             set
             {
                 int intNewWeightDecimals = Math.Max(value, 0);
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intCurrentWeightDecimals = WeightDecimals;
                     if (intNewWeightDecimals < intCurrentWeightDecimals)
                     {
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                             WeightFormat
                                 = WeightFormat.Substring(
                                     0, WeightFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals));
                     }
                     else if (intNewWeightDecimals > intCurrentWeightDecimals)
                     {
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdWeightFormat))
                         {
@@ -6764,13 +6764,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strLiftLimitExpression;
             }
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strLiftLimitExpression, value) == value)
                         return;
@@ -6786,13 +6786,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCarryLimitExpression;
             }
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strCarryLimitExpression, value) == value)
                         return;
@@ -6808,13 +6808,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strEncumbranceIntervalExpression;
             }
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEncumbranceIntervalExpression, value) == value)
                         return;
@@ -6830,16 +6830,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDoEncumbrancePenaltyPhysicalLimit;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyPhysicalLimit == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDoEncumbrancePenaltyPhysicalLimit = value;
                         OnPropertyChanged();
@@ -6855,12 +6855,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intEncumbrancePenaltyPhysicalLimit;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyPhysicalLimit, value) != value)
                         OnPropertyChanged();
@@ -6875,16 +6875,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDoEncumbrancePenaltyMovementSpeed;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyMovementSpeed == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDoEncumbrancePenaltyMovementSpeed = value;
                         OnPropertyChanged();
@@ -6900,12 +6900,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intEncumbrancePenaltyMovementSpeed;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyMovementSpeed, value) != value)
                         OnPropertyChanged();
@@ -6920,16 +6920,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDoEncumbrancePenaltyAgility;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyAgility == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDoEncumbrancePenaltyAgility = value;
                         OnPropertyChanged();
@@ -6945,12 +6945,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intEncumbrancePenaltyAgility;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyAgility, value) != value)
                         OnPropertyChanged();
@@ -6965,16 +6965,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDoEncumbrancePenaltyReaction;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyReaction == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDoEncumbrancePenaltyReaction = value;
                         OnPropertyChanged();
@@ -6990,12 +6990,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intEncumbrancePenaltyReaction;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyReaction, value) != value)
                         OnPropertyChanged();
@@ -7010,16 +7010,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDoEncumbrancePenaltyWoundModifier;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyWoundModifier == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDoEncumbrancePenaltyWoundModifier = value;
                         OnPropertyChanged();
@@ -7035,12 +7035,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intEncumbrancePenaltyWoundModifier;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyWoundModifier, value) != value)
                         OnPropertyChanged();
@@ -7057,7 +7057,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedEssenceDecimals >= 0)
                         return _intCachedEssenceDecimals;
@@ -7071,19 +7071,19 @@ namespace Chummer
             set
             {
                 int intNewEssenceDecimals = Math.Max(value, 2);
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intCurrentEssenceDecimals = EssenceDecimals;
                     if (intNewEssenceDecimals < intCurrentEssenceDecimals)
                     {
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                             EssenceFormat
                                 = EssenceFormat.Substring(
                                     0, EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals));
                     }
                     else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                     {
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdEssenceFormat))
                         {
@@ -7112,7 +7112,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strEssenceFormat;
             }
             set
@@ -7135,7 +7135,7 @@ namespace Chummer
                     }
                 }
 
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEssenceFormat, value) != value)
                         OnPropertyChanged();
@@ -7150,16 +7150,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDoNotRoundEssenceInternally;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDoNotRoundEssenceInternally == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDoNotRoundEssenceInternally = value;
                         OnPropertyChanged();
@@ -7175,16 +7175,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnEnableEnemyTracking;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnEnableEnemyTracking == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnEnableEnemyTracking = value;
                         OnPropertyChanged();
@@ -7198,7 +7198,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetEnableEnemyTrackingAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnEnableEnemyTracking;
         }
 
@@ -7209,16 +7209,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnEnemyKarmaQualityLimit;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnEnemyKarmaQualityLimit == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnEnemyKarmaQualityLimit = value;
                         OnPropertyChanged();
@@ -7234,16 +7234,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnEnforceCapacity;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnEnforceCapacity == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnEnforceCapacity = value;
                         OnPropertyChanged();
@@ -7259,16 +7259,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnRestrictRecoil;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnRestrictRecoil == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnRestrictRecoil = value;
                         OnPropertyChanged();
@@ -7284,16 +7284,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnUnrestrictedNuyen;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnUnrestrictedNuyen == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnUnrestrictedNuyen = value;
                         OnPropertyChanged();
@@ -7307,7 +7307,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetUnrestrictedNuyenAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnUnrestrictedNuyen;
         }
 
@@ -7318,16 +7318,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowHigherStackedFoci;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowHigherStackedFoci == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowHigherStackedFoci = value;
                         OnPropertyChanged();
@@ -7343,16 +7343,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowEditPartOfBaseWeapon;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowEditPartOfBaseWeapon == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowEditPartOfBaseWeapon = value;
                         OnPropertyChanged();
@@ -7368,16 +7368,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnStrictSkillGroupsInCreateMode;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnStrictSkillGroupsInCreateMode == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnStrictSkillGroupsInCreateMode = value;
                         OnPropertyChanged();
@@ -7391,7 +7391,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetStrictSkillGroupsInCreateModeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnStrictSkillGroupsInCreateMode;
         }
 
@@ -7402,16 +7402,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowPointBuySpecializationsOnKarmaSkills;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowPointBuySpecializationsOnKarmaSkills == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowPointBuySpecializationsOnKarmaSkills = value;
                         OnPropertyChanged();
@@ -7426,7 +7426,7 @@ namespace Chummer
         public async ValueTask<bool> GetAllowPointBuySpecializationsOnKarmaSkillsAsync(
             CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnAllowPointBuySpecializationsOnKarmaSkills;
         }
 
@@ -7437,16 +7437,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnExtendAnyDetectionSpell;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnExtendAnyDetectionSpell == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnExtendAnyDetectionSpell = value;
                         OnPropertyChanged();
@@ -7462,16 +7462,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDontUseCyberlimbCalculation;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDontUseCyberlimbCalculation == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDontUseCyberlimbCalculation = value;
                         OnPropertyChanged();
@@ -7487,16 +7487,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAlternateMetatypeAttributeKarma;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAlternateMetatypeAttributeKarma == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAlternateMetatypeAttributeKarma = value;
                         OnPropertyChanged();
@@ -7512,16 +7512,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnCompensateSkillGroupKarmaDifference;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnCompensateSkillGroupKarmaDifference == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnCompensateSkillGroupKarmaDifference = value;
                         OnPropertyChanged();
@@ -7535,7 +7535,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetCompensateSkillGroupKarmaDifferenceAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnCompensateSkillGroupKarmaDifference;
         }
 
@@ -7546,16 +7546,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowObsolescentUpgrade;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowObsolescentUpgrade == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowObsolescentUpgrade = value;
                         OnPropertyChanged();
@@ -7571,16 +7571,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowBiowareSuites;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowBiowareSuites == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowBiowareSuites = value;
                         OnPropertyChanged();
@@ -7596,16 +7596,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnFreeSpiritPowerPointsMAG;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnFreeSpiritPowerPointsMAG == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnFreeSpiritPowerPointsMAG = value;
                         OnPropertyChanged();
@@ -7619,7 +7619,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetFreeSpiritPowerPointsMAGAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnFreeSpiritPowerPointsMAG;
         }
 
@@ -7630,16 +7630,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnUnclampAttributeMinimum;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnUnclampAttributeMinimum == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnUnclampAttributeMinimum = value;
                         OnPropertyChanged();
@@ -7655,16 +7655,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDroneMods;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDroneMods == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDroneMods = value;
                         OnPropertyChanged();
@@ -7678,7 +7678,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetDroneModsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnDroneMods;
         }
 
@@ -7689,16 +7689,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDroneModsMaximumPilot;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnDroneModsMaximumPilot == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDroneModsMaximumPilot = value;
                         OnPropertyChanged();
@@ -7714,12 +7714,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxNumberMaxAttributesCreate;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxNumberMaxAttributesCreate, value) != value)
                         OnPropertyChanged();
@@ -7734,12 +7734,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxSkillRatingCreate;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxSkillRatingCreate, value) != value)
                         OnPropertyChanged();
@@ -7752,7 +7752,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetMaxSkillRatingCreateAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intMaxSkillRatingCreate;
         }
 
@@ -7763,12 +7763,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxKnowledgeSkillRatingCreate;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxKnowledgeSkillRatingCreate, value) != value)
                         OnPropertyChanged();
@@ -7781,7 +7781,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetMaxKnowledgeSkillRatingCreateAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intMaxKnowledgeSkillRatingCreate;
         }
 
@@ -7792,16 +7792,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxSkillRating;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intMaxSkillRating == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (MaxSkillRatingCreate > value)
                             MaxSkillRatingCreate = value;
@@ -7817,7 +7817,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetMaxSkillRatingAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intMaxSkillRating;
         }
 
@@ -7828,16 +7828,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxKnowledgeSkillRating;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intMaxKnowledgeSkillRating == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (MaxKnowledgeSkillRatingCreate > value)
                             MaxKnowledgeSkillRatingCreate = value;
@@ -7853,7 +7853,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetMaxKnowledgeSkillRatingAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intMaxKnowledgeSkillRating;
         }
 
@@ -7864,16 +7864,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAutomaticBackstory;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAutomaticBackstory == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAutomaticBackstory = value;
                         OnPropertyChanged();
@@ -7889,16 +7889,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnUseCalculatedPublicAwareness;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnUseCalculatedPublicAwareness == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnUseCalculatedPublicAwareness = value;
                         OnPropertyChanged();
@@ -7914,16 +7914,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnFreeMartialArtSpecialization;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnFreeMartialArtSpecialization == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnFreeMartialArtSpecialization = value;
                         OnPropertyChanged();
@@ -7939,16 +7939,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnPrioritySpellsAsAdeptPowers;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnPrioritySpellsAsAdeptPowers == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnPrioritySpellsAsAdeptPowers = value;
                         if (value)
@@ -7961,7 +7961,7 @@ namespace Chummer
 
         public async ValueTask<bool> GetPrioritySpellsAsAdeptPowersAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnPrioritySpellsAsAdeptPowers;
         }
 
@@ -7972,16 +7972,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnReverseAttributePriorityOrder;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnReverseAttributePriorityOrder == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnReverseAttributePriorityOrder = value;
                         OnPropertyChanged();
@@ -7997,16 +7997,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnIncreasedImprovedAbilityMultiplier;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnIncreasedImprovedAbilityMultiplier == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnIncreasedImprovedAbilityMultiplier = value;
                         OnPropertyChanged();
@@ -8020,7 +8020,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetIncreasedImprovedAbilityMultiplierAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnIncreasedImprovedAbilityMultiplier;
         }
 
@@ -8031,16 +8031,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowFreeGrids;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowFreeGrids == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowFreeGrids = value;
                         OnPropertyChanged();
@@ -8056,16 +8056,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowTechnomancerSchooling;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowTechnomancerSchooling == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowTechnomancerSchooling = value;
                         OnPropertyChanged();
@@ -8081,16 +8081,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnCyberlimbAttributeBonusCapOverride;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnCyberlimbAttributeBonusCapOverride == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnCyberlimbAttributeBonusCapOverride = value;
                         if (!value)
@@ -8106,7 +8106,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetCyberlimbAttributeBonusCapOverrideAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnCyberlimbAttributeBonusCapOverride;
         }
 
@@ -8117,12 +8117,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intCyberlimbAttributeBonusCap;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intCyberlimbAttributeBonusCap, value) != value)
                         OnPropertyChanged();
@@ -8137,12 +8137,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intDicePenaltySustaining;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intDicePenaltySustaining, value) != value)
                         OnPropertyChanged();
@@ -8161,12 +8161,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMinInitiativeDice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMinInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8181,12 +8181,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxInitiativeDice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8201,12 +8201,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMinAstralInitiativeDice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMinAstralInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8221,12 +8221,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxAstralInitiativeDice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxAstralInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8241,12 +8241,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMinColdSimInitiativeDice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMinColdSimInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8261,12 +8261,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxColdSimInitiativeDice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxColdSimInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8281,12 +8281,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMinHotSimInitiativeDice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMinHotSimInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8301,12 +8301,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intMaxHotSimInitiativeDice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxHotSimInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8325,12 +8325,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaAttribute;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaAttribute, value) != value)
                         OnPropertyChanged();
@@ -8343,7 +8343,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaAttributeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaAttribute;
         }
 
@@ -8354,12 +8354,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaQuality;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaQuality, value) != value)
                         OnPropertyChanged();
@@ -8372,7 +8372,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaQualityAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaQuality;
         }
 
@@ -8383,12 +8383,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaSpecialization;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpecialization, value) != value)
                         OnPropertyChanged();
@@ -8401,7 +8401,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaSpecializationAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaSpecialization;
         }
 
@@ -8412,12 +8412,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaKnoSpecialization;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaKnoSpecialization, value) != value)
                         OnPropertyChanged();
@@ -8430,7 +8430,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaKnowledgeSpecializationAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaKnoSpecialization;
         }
 
@@ -8441,12 +8441,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaNewKnowledgeSkill;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewKnowledgeSkill, value) != value)
                         OnPropertyChanged();
@@ -8459,7 +8459,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaNewKnowledgeSkillAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaNewKnowledgeSkill;
         }
 
@@ -8470,12 +8470,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaNewActiveSkill;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewActiveSkill, value) != value)
                         OnPropertyChanged();
@@ -8488,7 +8488,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaNewActiveSkillAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaNewActiveSkill;
         }
 
@@ -8499,12 +8499,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaNewSkillGroup;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewSkillGroup, value) != value)
                         OnPropertyChanged();
@@ -8517,7 +8517,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaNewSkillGroupAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaNewSkillGroup;
         }
 
@@ -8528,12 +8528,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaImproveKnowledgeSkill;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaImproveKnowledgeSkill, value) != value)
                         OnPropertyChanged();
@@ -8546,7 +8546,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaImproveKnowledgeSkillAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaImproveKnowledgeSkill;
         }
 
@@ -8557,12 +8557,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaImproveActiveSkill;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaImproveActiveSkill, value) != value)
                         OnPropertyChanged();
@@ -8575,7 +8575,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaImproveActiveSkillAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaImproveActiveSkill;
         }
 
@@ -8586,12 +8586,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaImproveSkillGroup;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaImproveSkillGroup, value) != value)
                         OnPropertyChanged();
@@ -8604,7 +8604,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaImproveSkillGroupAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaImproveSkillGroup;
         }
 
@@ -8615,12 +8615,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaSpell;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpell, value) != value)
                         OnPropertyChanged();
@@ -8633,7 +8633,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaSpellAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaSpell;
         }
 
@@ -8644,12 +8644,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaEnhancement;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaEnhancement, value) != value)
                         OnPropertyChanged();
@@ -8664,12 +8664,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaNewComplexForm;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewComplexForm, value) != value)
                         OnPropertyChanged();
@@ -8682,7 +8682,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaNewComplexFormAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaNewComplexForm;
         }
 
@@ -8693,12 +8693,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaNewAIProgram;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewAIProgram, value) != value)
                         OnPropertyChanged();
@@ -8711,7 +8711,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaNewAIProgramAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaNewAIProgram;
         }
 
@@ -8722,12 +8722,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaNewAIAdvancedProgram;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewAIAdvancedProgram, value) != value)
                         OnPropertyChanged();
@@ -8740,7 +8740,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaNewAIAdvancedProgramAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaNewAIAdvancedProgram;
         }
 
@@ -8751,12 +8751,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaContact;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaContact, value) != value)
                         OnPropertyChanged();
@@ -8769,7 +8769,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaContactAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaContact;
         }
 
@@ -8780,12 +8780,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaEnemy;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaEnemy, value) != value)
                         OnPropertyChanged();
@@ -8798,7 +8798,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaEnemyAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaEnemy;
         }
 
@@ -8809,12 +8809,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaCarryover;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaCarryover, value) != value)
                         OnPropertyChanged();
@@ -8827,7 +8827,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaCarryoverAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaCarryover;
         }
 
@@ -8838,12 +8838,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaSpirit;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpirit, value) != value)
                         OnPropertyChanged();
@@ -8856,7 +8856,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaSpiritAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaSpirit;
         }
 
@@ -8867,12 +8867,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaTechnique;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaTechnique, value) != value)
                         OnPropertyChanged();
@@ -8885,7 +8885,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaTechniqueAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaTechnique;
         }
 
@@ -8896,12 +8896,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaInitiation;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaInitiation, value) != value)
                         OnPropertyChanged();
@@ -8914,7 +8914,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaInitiationAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaInitiation;
         }
 
@@ -8925,12 +8925,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaInitiationFlat;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaInitiationFlat, value) != value)
                         OnPropertyChanged();
@@ -8943,7 +8943,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaInitiationFlatAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaInitiationFlat;
         }
 
@@ -8954,12 +8954,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaMetamagic;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaMetamagic, value) != value)
                         OnPropertyChanged();
@@ -8972,7 +8972,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaMetamagicAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaMetamagic;
         }
 
@@ -8983,12 +8983,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaJoinGroup;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaJoinGroup, value) != value)
                         OnPropertyChanged();
@@ -9001,7 +9001,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaJoinGroupAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaJoinGroup;
         }
 
@@ -9012,12 +9012,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaLeaveGroup;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaLeaveGroup, value) != value)
                         OnPropertyChanged();
@@ -9030,7 +9030,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaLeaveGroupAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaLeaveGroup;
         }
 
@@ -9041,12 +9041,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaAlchemicalFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaAlchemicalFocus, value) != value)
                         OnPropertyChanged();
@@ -9059,7 +9059,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaAlchemicalFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaAlchemicalFocus;
         }
 
@@ -9070,12 +9070,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaBanishingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaBanishingFocus, value) != value)
                         OnPropertyChanged();
@@ -9088,7 +9088,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaBanishingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaBanishingFocus;
         }
 
@@ -9099,12 +9099,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaBindingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaBindingFocus, value) != value)
                         OnPropertyChanged();
@@ -9117,7 +9117,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaBindingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaBindingFocus;
         }
 
@@ -9128,12 +9128,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaCenteringFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaCenteringFocus, value) != value)
                         OnPropertyChanged();
@@ -9146,7 +9146,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaCenteringFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaCenteringFocus;
         }
 
@@ -9157,12 +9157,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaCounterspellingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaCounterspellingFocus, value) != value)
                         OnPropertyChanged();
@@ -9175,7 +9175,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaCounterspellingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaCounterspellingFocus;
         }
 
@@ -9186,12 +9186,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaDisenchantingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaDisenchantingFocus, value) != value)
                         OnPropertyChanged();
@@ -9204,7 +9204,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaDisenchantingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaDisenchantingFocus;
         }
 
@@ -9215,12 +9215,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaFlexibleSignatureFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaFlexibleSignatureFocus, value) != value)
                         OnPropertyChanged();
@@ -9233,7 +9233,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaFlexibleSignatureFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaFlexibleSignatureFocus;
         }
 
@@ -9244,12 +9244,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaMaskingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaMaskingFocus, value) != value)
                         OnPropertyChanged();
@@ -9262,7 +9262,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaMaskingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaMaskingFocus;
         }
 
@@ -9273,7 +9273,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaPowerFocus;
             }
             set
@@ -9288,7 +9288,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaPowerFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaPowerFocus;
         }
 
@@ -9299,7 +9299,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaQiFocus;
             }
             set
@@ -9314,7 +9314,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaQiFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaQiFocus;
         }
 
@@ -9325,12 +9325,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaRitualSpellcastingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaRitualSpellcastingFocus, value) != value)
                         OnPropertyChanged();
@@ -9343,7 +9343,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaRitualSpellcastingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaRitualSpellcastingFocus;
         }
 
@@ -9354,12 +9354,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaSpellcastingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpellcastingFocus, value) != value)
                         OnPropertyChanged();
@@ -9372,7 +9372,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaSpellcastingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaSpellcastingFocus;
         }
 
@@ -9383,12 +9383,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaSpellShapingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpellShapingFocus, value) != value)
                         OnPropertyChanged();
@@ -9401,7 +9401,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaSpellShapingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaSpellShapingFocus;
         }
 
@@ -9412,12 +9412,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaSummoningFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSummoningFocus, value) != value)
                         OnPropertyChanged();
@@ -9430,7 +9430,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaSummoningFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaSummoningFocus;
         }
 
@@ -9441,12 +9441,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaSustainingFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSustainingFocus, value) != value)
                         OnPropertyChanged();
@@ -9459,7 +9459,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaSustainingFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaSustainingFocus;
         }
 
@@ -9470,12 +9470,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaWeaponFocus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaWeaponFocus, value) != value)
                         OnPropertyChanged();
@@ -9488,7 +9488,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaWeaponFocusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaWeaponFocus;
         }
 
@@ -9499,12 +9499,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaMysticAdeptPowerPoint;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaMysticAdeptPowerPoint, value) != value)
                         OnPropertyChanged();
@@ -9517,7 +9517,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaMysticAdeptPowerPointAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaMysticAdeptPowerPoint;
         }
 
@@ -9528,12 +9528,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intKarmaSpiritFettering;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpiritFettering, value) != value)
                         OnPropertyChanged();
@@ -9546,7 +9546,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetKarmaSpiritFetteringAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intKarmaSpiritFettering;
         }
 
@@ -9561,16 +9561,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decKarmaMAGInitiationGroupPercent;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decKarmaMAGInitiationGroupPercent == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decKarmaMAGInitiationGroupPercent = value;
                         OnPropertyChanged();
@@ -9586,16 +9586,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decKarmaRESInitiationGroupPercent;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decKarmaRESInitiationGroupPercent == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decKarmaRESInitiationGroupPercent = value;
                         OnPropertyChanged();
@@ -9611,16 +9611,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decKarmaMAGInitiationOrdealPercent;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decKarmaMAGInitiationOrdealPercent == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decKarmaMAGInitiationOrdealPercent = value;
                         OnPropertyChanged();
@@ -9636,16 +9636,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decKarmaRESInitiationOrdealPercent;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decKarmaRESInitiationOrdealPercent == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decKarmaRESInitiationOrdealPercent = value;
                         OnPropertyChanged();
@@ -9661,16 +9661,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decKarmaMAGInitiationSchoolingPercent;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decKarmaMAGInitiationSchoolingPercent == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decKarmaMAGInitiationSchoolingPercent = value;
                         OnPropertyChanged();
@@ -9686,16 +9686,16 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _decKarmaRESInitiationSchoolingPercent;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_decKarmaRESInitiationSchoolingPercent == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _decKarmaRESInitiationSchoolingPercent = value;
                         OnPropertyChanged();
@@ -9715,7 +9715,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return 2;
             }
         }
@@ -9727,7 +9727,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return 3;
             }
         }

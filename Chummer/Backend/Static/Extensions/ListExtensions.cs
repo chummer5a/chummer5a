@@ -33,7 +33,7 @@ namespace Chummer
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.EnterReadLock(token);
+                objLocker.LockObject.SimpleEnterReadLock(token);
             else
                 objLocker = null;
             try
@@ -85,7 +85,7 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IDisposable objLocker2 = objLocker?.LockObject.UpgradeToWriteLock();
+                IDisposable objLocker2 = objLocker?.LockObject.EnterWriteLock();
                 try
                 {
                     lstCollection.Insert(intTargetIndex, objNewItem);
@@ -109,7 +109,7 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.EnterReadLock(token);
+                objLocker.LockObject.SimpleEnterReadLock(token);
             else
                 objLocker = null;
             try
@@ -161,7 +161,7 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IDisposable objLocker2 = objLocker?.LockObject.UpgradeToWriteLock();
+                IDisposable objLocker2 = objLocker?.LockObject.EnterWriteLock();
                 try
                 {
                     lstCollection.Insert(intTargetIndex, objNewItem);
@@ -185,7 +185,7 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.EnterReadLock(token);
+                objLocker.LockObject.SimpleEnterReadLock(token);
             else
                 objLocker = null;
             try
@@ -237,7 +237,7 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IDisposable objLocker2 = objLocker?.LockObject.UpgradeToWriteLock();
+                IDisposable objLocker2 = objLocker?.LockObject.EnterWriteLock();
                 try
                 {
                     lstCollection.Insert(intTargetIndex, objNewItem);

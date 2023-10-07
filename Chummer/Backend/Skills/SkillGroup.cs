@@ -163,7 +163,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return IsDisabled ? 0 : Math.Min(BasePoints + FreeBase, RatingMaximum);
             }
             set
@@ -191,7 +191,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<int> GetBaseAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 return await GetIsDisabledAsync(token).ConfigureAwait(false)
                     ? 0
@@ -233,7 +233,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (!KarmaUnbroken && KarmaPoints > 0)
                     {
@@ -268,7 +268,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<int> GetKarmaAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!await GetKarmaUnbrokenAsync(token).ConfigureAwait(false) && KarmaPoints > 0)
                 {
@@ -321,12 +321,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intSkillFromSp;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intSkillFromSp, value) == value)
@@ -341,7 +341,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetBasePointsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intSkillFromSp;
         }
 
@@ -350,7 +350,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetBasePointsAsync(int value, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intSkillFromSp, value) == value)
@@ -366,7 +366,7 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intSkillFromSp, value);
@@ -381,12 +381,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intSkillFromKarma;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intSkillFromKarma, value) == value)
@@ -401,7 +401,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetKarmaPointsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intSkillFromKarma;
         }
 
@@ -410,7 +410,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetKarmaPointsAsync(int value, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intSkillFromKarma, value) == value)
@@ -426,7 +426,7 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intSkillFromKarma, value);
@@ -444,11 +444,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedBaseUnbroken < 0)
                     {
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             if (_intCachedBaseUnbroken < 0) // Just in case
                             {
@@ -478,11 +478,11 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<bool> GetBaseUnbrokenAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedBaseUnbroken < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedBaseUnbroken < 0)
@@ -541,11 +541,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedKarmaUnbroken < 0)
                     {
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             if (_intCachedKarmaUnbroken < 0) // Just in case
                             {
@@ -579,11 +579,11 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<bool> GetKarmaUnbrokenAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedKarmaUnbroken < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedKarmaUnbroken < 0) // Just in case
@@ -641,11 +641,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedIsDisabled < 0)
                     {
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             if (_intCachedIsDisabled < 0) // Just in case
                             {
@@ -673,11 +673,11 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<bool> GetIsDisabledAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedIsDisabled < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedIsDisabled < 0)
@@ -716,16 +716,16 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnIsBroken;
             }
             private set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnIsBroken == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnIsBroken = value;
                         OnPropertyChanged();
@@ -739,7 +739,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<bool> GetIsBrokenAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnIsBroken;
         }
 
@@ -748,11 +748,11 @@ namespace Chummer.Backend.Skills
         /// </summary>
         private async ValueTask SetIsBrokenAsync(bool value, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_blnIsBroken == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _blnIsBroken = value;
@@ -767,7 +767,7 @@ namespace Chummer.Backend.Skills
 
         private void UpdateIsBroken()
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (!_objCharacter.Created)
                     return;
@@ -779,7 +779,7 @@ namespace Chummer.Backend.Skills
 
         private async ValueTask UpdateIsBrokenAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     return;
@@ -797,11 +797,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedHasAnyBreakingSkills < 0)
                     {
-                        using (LockObject.UpgradeToWriteLock())
+                        using (LockObject.EnterWriteLock())
                         {
                             if (_intCachedHasAnyBreakingSkills < 0) // Just in case
                             {
@@ -840,11 +840,11 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<bool> GetHasAnyBreakingSkillsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedHasAnyBreakingSkills < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedHasAnyBreakingSkills < 0) // Just in case
@@ -905,14 +905,14 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return UpgradeKarmaCost <= CharacterObject.Karma && !IsDisabled && !IsBroken;
             }
         }
 
         public async ValueTask<bool> GetCareerCanIncreaseAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
                        <= await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false)
                        && !await GetIsDisabledAsync(token).ConfigureAwait(false)
@@ -923,14 +923,14 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Karma + Base;
             }
         }
 
         public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
         }
 
@@ -938,7 +938,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     return !string.IsNullOrEmpty(Name)
                         ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false,
@@ -951,7 +951,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<int> GetFreeBaseAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 return !string.IsNullOrEmpty(Name)
                     ? (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillGroupBase,
@@ -964,7 +964,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     return !string.IsNullOrEmpty(Name)
                         ? ImprovementManager
@@ -977,7 +977,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<int> GetFreeLevelsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 return !string.IsNullOrEmpty(Name)
                     ? (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillGroupLevel,
@@ -993,7 +993,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                 {
                     return _objCharacter.Created || _objCharacter.IgnoreRules
                         ? _objCharacter.Settings.MaxSkillRating
@@ -1007,7 +1007,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetRatingMaximumAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token).ConfigureAwait(false))
+            using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 return await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) ||
@@ -1066,7 +1066,7 @@ namespace Chummer.Backend.Skills
         {
             if (objSkill == null)
                 return null;
-            using (EnterReadLock.Enter(objSkill.LockObject))
+            using (objSkill.LockObject.EnterReadLock())
             {
                 if (objSkill.SkillGroupObject != null)
                     return objSkill.SkillGroupObject;
@@ -1104,7 +1104,7 @@ namespace Chummer.Backend.Skills
         {
             if (objSkill == null)
                 return null;
-            using (await EnterReadLock.EnterAsync(objSkill.LockObject, token).ConfigureAwait(false))
+            using (await objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (objSkill.SkillGroupObject != null)
                     return objSkill.SkillGroupObject;
@@ -1141,17 +1141,17 @@ namespace Chummer.Backend.Skills
 
         public void Add(Skill skill)
         {
-            using (EnterReadLock.Enter(skill))
-            using (EnterReadLock.Enter(LockObject))
+            using (skill.LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock())
             {
                 Guid guidAddedSkillId = skill.SkillId;
                 // Do not add duplicate skills that we are still in the process of loading
                 if (_lstAffectedSkills.Any(x => x.SkillId == guidAddedSkillId))
                     return;
-                using (LockObject.UpgradeToWriteLock())
+                using (LockObject.EnterWriteLock())
                 {
                     _lstAffectedSkills.Add(skill);
-                    using (skill.LockObject.UpgradeToWriteLock())
+                    using (skill.LockObject.EnterWriteLock())
                         skill.PropertyChanged += SkillOnPropertyChanged;
                     if (_objCharacter?.SkillsSection?.IsLoading != true)
                         OnPropertyChanged(nameof(SkillList));
@@ -1161,8 +1161,8 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask AddAsync(Skill skill, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(skill, token).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await skill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 Guid guidAddedSkillId = await skill.GetSkillIdAsync(token).ConfigureAwait(false);
                 // Do not add duplicate skills that we are still in the process of loading
@@ -1197,12 +1197,12 @@ namespace Chummer.Backend.Skills
 
         public void Remove(Skill skill)
         {
-            using (EnterReadLock.Enter(skill))
+            using (skill.LockObject.EnterReadLock())
             using (LockObject.EnterWriteLock())
             {
                 if (!_lstAffectedSkills.Remove(skill))
                     return;
-                using (skill.LockObject.UpgradeToWriteLock())
+                using (skill.LockObject.EnterWriteLock())
                     skill.PropertyChanged -= SkillOnPropertyChanged;
                 if (_objCharacter?.SkillsSection?.IsLoading != true)
                     OnPropertyChanged(nameof(SkillList));
@@ -1211,7 +1211,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask RemoveAsync(Skill skill, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(skill, token).ConfigureAwait(false))
+            using (await skill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
@@ -1243,7 +1243,7 @@ namespace Chummer.Backend.Skills
         {
             if (writer == null)
                 return;
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 writer.WriteStartElement("group");
 
@@ -1261,7 +1261,7 @@ namespace Chummer.Backend.Skills
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // <skillgroup>
                 XmlElementWriteHelper objBaseElement =
@@ -1447,7 +1447,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _objCharacter;
             }
         }
@@ -1456,12 +1456,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strGroupName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _strGroupName, value) == value)
@@ -1478,7 +1478,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayName(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Name;
@@ -1491,7 +1491,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Name;
@@ -1508,7 +1508,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (IsDisabled)
                         return LanguageManager.GetString("Label_SkillGroup_Disabled");
@@ -1530,7 +1530,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<string> GetDisplayRatingAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (await GetIsDisabledAsync(token).ConfigureAwait(false))
                     return await LanguageManager.GetStringAsync("Label_SkillGroup_Disabled", token: token)
@@ -1558,11 +1558,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (!string.IsNullOrEmpty(_strToolTip))
                         return _strToolTip;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (!string.IsNullOrEmpty(_strToolTip)) // Just in case
                             return _strToolTip;
@@ -1600,11 +1600,11 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<string> GetToolTipAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!string.IsNullOrEmpty(_strToolTip))
                     return _strToolTip;
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (!string.IsNullOrEmpty(_strToolTip)) // Just in case
@@ -1662,7 +1662,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intRating = int.MaxValue;
                     foreach (Skill objSkill in SkillList)
@@ -1681,7 +1681,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<string> GetUpgradeToolTipAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 int intRating = int.MaxValue;
                 foreach (Skill objSkill in SkillList)
@@ -1706,7 +1706,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guidId;
             }
         }
@@ -1719,7 +1719,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillList.Any(x => x.SkillCategory == "Combat Active");
             }
         }
@@ -1728,7 +1728,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillList.Any(x => x.SkillCategory == "Physical Active");
             }
         }
@@ -1737,7 +1737,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillList.Any(x => x.SkillCategory == "Social Active");
             }
         }
@@ -1746,7 +1746,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillList.Any(x => x.SkillCategory == "Technical Active");
             }
         }
@@ -1755,7 +1755,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillList.Any(x => x.SkillCategory == "Vehicle Active");
             }
         }
@@ -1764,7 +1764,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillList.Any(x => x.SkillCategory == "Magical Active");
             }
         }
@@ -1773,7 +1773,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillList.Any(x => x.SkillCategory == "Resonance Active");
             }
         }
@@ -1782,7 +1782,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillList.Select(x => x.SkillCategory).Distinct();
             }
         }
@@ -1799,7 +1799,7 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -1820,7 +1820,7 @@ namespace Chummer.Backend.Skills
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(IsDisabled)))
                             _intCachedIsDisabled = int.MinValue;
@@ -1916,7 +1916,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intReturn = BasePoints;
                     int intValue = intReturn;
@@ -1988,7 +1988,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<int> GetCurrentSpCostAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 int intReturn = BasePoints;
                 int intValue = intReturn;
@@ -2059,7 +2059,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (KarmaPoints == 0)
                         return 0;
@@ -2153,7 +2153,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<int> GetCurrentKarmaCostAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 int intKarmaPoints = await GetKarmaPointsAsync(token).ConfigureAwait(false);
                 if (intKarmaPoints == 0)
@@ -2254,7 +2254,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (IsDisabled)
                         return -1;
@@ -2343,7 +2343,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (await GetIsDisabledAsync(token).ConfigureAwait(false))
                     return -1;
@@ -2455,8 +2455,8 @@ namespace Chummer.Backend.Skills
                 return false;
             if (ReferenceEquals(other, this))
                 return true;
-            using (EnterReadLock.Enter(LockObject))
-            using (EnterReadLock.Enter(other.LockObject))
+            using (LockObject.EnterReadLock())
+            using (other.LockObject.EnterReadLock())
                 return InternalId == other.InternalId;
         }
 
@@ -2467,7 +2467,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstAffectedSkills;
             }
         }

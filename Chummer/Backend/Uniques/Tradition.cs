@@ -83,7 +83,7 @@ namespace Chummer.Backend.Uniques
 
         public override string ToString()
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return !string.IsNullOrEmpty(_strName) ? _strName : base.ToString();
         }
 
@@ -311,7 +311,7 @@ namespace Chummer.Backend.Uniques
         {
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_eTraditionType == TraditionType.None)
                     return;
@@ -499,7 +499,7 @@ namespace Chummer.Backend.Uniques
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // <tradition>
                 XmlElementWriteHelper objBaseElement
@@ -595,7 +595,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceID;
             }
         }
@@ -607,7 +607,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Type == TraditionType.None
                         ? string.Empty
                         : _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
@@ -621,7 +621,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -632,7 +632,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_objCachedSourceDetail == default)
                         _objCachedSourceDetail = SourceString.GetSourceString(Source,
@@ -652,12 +652,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _nodBonus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _nodBonus, value) == value)
                         return;
@@ -673,16 +673,16 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _eTraditionType;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eTraditionType, value) == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _xmlCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
@@ -704,7 +704,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return string.Equals(SourceIDString, CustomMagicalTraditionGuid, StringComparison.OrdinalIgnoreCase);
                 // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
             }
@@ -714,7 +714,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return IsCustomTradition || string.IsNullOrEmpty(_strDrainExpression);
             }
         }
@@ -726,12 +726,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
@@ -745,7 +745,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (IsCustomTradition)
                 {
@@ -786,7 +786,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (IsCustomTradition)
                 {
@@ -834,7 +834,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string strReturn = DisplayNameShort(strLanguage);
 
@@ -851,7 +851,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
@@ -880,13 +880,13 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSpiritForm;
             }
             set
             {
                 value = _objCharacter.ReverseTranslateExtra(value);
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSpiritForm, value) == value)
                         return;
@@ -918,13 +918,13 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strExtra;
             }
             set
             {
                 value = _objCharacter.ReverseTranslateExtra(value);
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) == value)
                         return;
@@ -940,7 +940,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                     {
@@ -952,12 +952,12 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     string strOldExpression = Interlocked.Exchange(ref _strDrainExpression, value);
                     if (strOldExpression == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         foreach (string strAttribute in AttributeSection.AttributeStrings)
                         {
@@ -1012,7 +1012,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type == TraditionType.None)
                         return 0;
@@ -1050,7 +1050,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type == TraditionType.None)
                         return string.Empty;
@@ -1104,12 +1104,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Type == TraditionType.None ? string.Empty : _strSpiritCombat;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritCombat, value) != value)
                         OnPropertyChanged();
@@ -1147,7 +1147,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritCombatMethod(GlobalSettings.Language);
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None)
                     {
@@ -1164,12 +1164,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Type == TraditionType.None ? string.Empty : _strSpiritDetection;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritDetection, value) != value)
                         OnPropertyChanged();
@@ -1207,7 +1207,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritDetectionMethod(GlobalSettings.Language);
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None)
                         SpiritDetection
@@ -1223,12 +1223,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Type == TraditionType.None ? string.Empty : _strSpiritHealth;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritHealth, value) != value)
                         OnPropertyChanged();
@@ -1266,7 +1266,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritHealthMethod(GlobalSettings.Language);
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None)
                         SpiritHealth
@@ -1282,12 +1282,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Type == TraditionType.None ? string.Empty : _strSpiritIllusion;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritIllusion, value) != value)
                         OnPropertyChanged();
@@ -1325,7 +1325,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritIllusionMethod(GlobalSettings.Language);
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None)
                         SpiritIllusion
@@ -1341,12 +1341,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Type == TraditionType.None ? string.Empty : _strSpiritManipulation;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritManipulation, value) != value)
                         OnPropertyChanged();
@@ -1384,7 +1384,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritManipulationMethod(GlobalSettings.Language);
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Type != TraditionType.None)
                         SpiritManipulation
@@ -1400,12 +1400,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSource;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSource, value) == value)
                         return;
@@ -1421,12 +1421,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPage;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPage, value) == value)
                         return;
@@ -1442,12 +1442,12 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNotes, value) == value)
                         return;
@@ -1464,7 +1464,7 @@ namespace Chummer.Backend.Uniques
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;
@@ -1482,7 +1482,7 @@ namespace Chummer.Backend.Uniques
         /// <returns></returns>
         public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;
@@ -1503,7 +1503,7 @@ namespace Chummer.Backend.Uniques
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (Type == TraditionType.None)
                     return null;
@@ -1544,7 +1544,7 @@ namespace Chummer.Backend.Uniques
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
@@ -1646,7 +1646,7 @@ namespace Chummer.Backend.Uniques
 
         public void SetSourceDetail(Control sourceControl)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
@@ -1656,7 +1656,7 @@ namespace Chummer.Backend.Uniques
 
         public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
@@ -1672,7 +1672,7 @@ namespace Chummer.Backend.Uniques
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try

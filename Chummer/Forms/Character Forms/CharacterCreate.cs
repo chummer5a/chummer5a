@@ -5806,7 +5806,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                using (await EnterReadLock.EnterAsync(objSelectedQuality.LockObject, token).ConfigureAwait(false))
+                using (await objSelectedQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
                     {
@@ -9660,7 +9660,7 @@ namespace Chummer
                                         .ConfigureAwait(false) is Quality objSelectedQuality))
                     return;
                 bool blnDoRemoveQuality = false;
-                using (await EnterReadLock.EnterAsync(objSelectedQuality, GenericToken).ConfigureAwait(false))
+                using (await objSelectedQuality.LockObject.EnterReadLockAsync(GenericToken).ConfigureAwait(false))
                 {
                     int intCurrentLevels = objSelectedQuality.Levels;
                     int intSelectedLevels = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
@@ -14106,7 +14106,7 @@ namespace Chummer
         protected override async Task DoUpdateCharacterInfo(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await EnterReadLock.EnterAsync(CharacterObject, token).ConfigureAwait(false))
+            using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 while (SkipUpdate)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);

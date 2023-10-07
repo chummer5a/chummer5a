@@ -780,7 +780,7 @@ namespace Chummer
                 strImprovedName = string.Empty;
 
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(objCharacter.LockObject, token) : await EnterReadLock.EnterAsync(objCharacter.LockObject, token).ConfigureAwait(false))
+            using (blnSync ? objCharacter.LockObject.EnterReadLock(token) : await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // These values are needed to prevent race conditions that could cause Chummer to crash
                 Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>> tupMyValueToCheck
@@ -1704,7 +1704,7 @@ namespace Chummer
                                                out HashSet<string>
                                                    setProcessedSkillNames))
                                     {
-                                        using (EnterReadLock.Enter(objCharacter.LockObject))
+                                        using (objCharacter.LockObject.EnterReadLock())
                                         {
                                             foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
                                                          .KnowledgeSkills)
@@ -4006,7 +4006,7 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             List<Improvement> objImprovementList;
-            using (EnterReadLock.Enter(objCharacter.LockObject, token))
+            using (objCharacter.LockObject.EnterReadLock(token))
             {
                 // A List of Improvements to hold all of the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
@@ -4054,7 +4054,7 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             List<Improvement> objImprovementList;
-            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token).ConfigureAwait(false))
+            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // A List of Improvements to hold all of the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)

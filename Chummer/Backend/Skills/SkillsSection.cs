@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using iText.Forms.Xfdf;
 using Microsoft.VisualStudio.Threading;
 using IAsyncDisposable = System.IAsyncDisposable;
 
@@ -57,12 +58,12 @@ namespace Chummer.Backend.Skills
 
         private async void SkillGroupsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(SkillGroups.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await SkillGroups.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     await (await SkillGroups.GetValueAtAsync(e.OldIndex).ConfigureAwait(false)).DisposeAsync().ConfigureAwait(false);
@@ -76,14 +77,14 @@ namespace Chummer.Backend.Skills
 
         private async void SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(Skills.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(_dicSkillBackups.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await Skills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await _dicSkillBackups.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
                 Skill objSkill = await Skills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     await _dicSkills.RemoveAsync(await objSkill.GetDictionaryKeyAsync().ConfigureAwait(false)).ConfigureAwait(false);
@@ -99,15 +100,15 @@ namespace Chummer.Backend.Skills
 
         private async void KnowledgeSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(KnowledgeSkills.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(_dicSkillBackups.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(KnowsoftSkills.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await KnowledgeSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await _dicSkillBackups.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await KnowsoftSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
                 KnowledgeSkill objSkill = await KnowledgeSkills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     IAsyncDisposable objLocker2 = await objSkill.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
@@ -132,15 +133,15 @@ namespace Chummer.Backend.Skills
 
         private async void KnowsoftSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(KnowsoftSkills.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(_dicSkillBackups.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(KnowledgeSkills.LockObject).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await KnowsoftSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await _dicSkillBackups.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await KnowledgeSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
                 KnowledgeSkill objSkill = await KnowsoftSkills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     if (!await _dicSkillBackups.ContainsValueAsync(objSkill).ConfigureAwait(false)
@@ -158,7 +159,7 @@ namespace Chummer.Backend.Skills
 
         private async void SkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
@@ -166,8 +167,8 @@ namespace Chummer.Backend.Skills
                 {
                     case ListChangedType.Reset:
                     {
-                        using (await EnterReadLock.EnterAsync(_lstSkills.LockObject).ConfigureAwait(false))
-                        using (await EnterReadLock.EnterAsync(_dicSkills.LockObject).ConfigureAwait(false))
+                        using (await _lstSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                        using (await _dicSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                         {
                             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                             try
@@ -189,8 +190,8 @@ namespace Chummer.Backend.Skills
                     }
                     case ListChangedType.ItemAdded:
                     {
-                        using (await EnterReadLock.EnterAsync(_lstSkills.LockObject).ConfigureAwait(false))
-                        using (await EnterReadLock.EnterAsync(_dicSkills.LockObject).ConfigureAwait(false))
+                        using (await _lstSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                        using (await _dicSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                         {
                             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                             try
@@ -213,7 +214,7 @@ namespace Chummer.Backend.Skills
 
         private async void KnowledgeSkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
@@ -221,7 +222,7 @@ namespace Chummer.Backend.Skills
                 {
                     case ListChangedType.Reset:
                     {
-                        using (await EnterReadLock.EnterAsync(KnowledgeSkills.LockObject).ConfigureAwait(false))
+                        using (await KnowledgeSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                         {
                             await KnowledgeSkills.ForEachAsync(async objKnoSkill =>
                             {
@@ -241,7 +242,7 @@ namespace Chummer.Backend.Skills
                     }
                     case ListChangedType.ItemAdded:
                     {
-                        using (await EnterReadLock.EnterAsync(KnowledgeSkills.LockObject).ConfigureAwait(false))
+                        using (await KnowledgeSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                         {
                             KnowledgeSkill objKnoSkill = await KnowledgeSkills.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
                             if (objKnoSkill != null)
@@ -271,7 +272,7 @@ namespace Chummer.Backend.Skills
 
         private async void OnKnowledgeSkillPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
@@ -290,7 +291,7 @@ namespace Chummer.Backend.Skills
 
         private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
@@ -301,7 +302,7 @@ namespace Chummer.Backend.Skills
 
         private async void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (_intLoading > 0)
                     return;
@@ -354,7 +355,7 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -375,7 +376,7 @@ namespace Chummer.Backend.Skills
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
                             _intCachedKnowledgePoints = int.MinValue;
@@ -415,7 +416,7 @@ namespace Chummer.Backend.Skills
             {
                 if (xmlSkillList?.Count > 0)
                 {
-                    using (EnterReadLock.Enter(LockObject, token))
+                    using (LockObject.EnterReadLock(token))
                     {
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
@@ -461,7 +462,7 @@ namespace Chummer.Backend.Skills
                 lstReturn = new List<Skill>(xmlSkillList?.Count ?? 0);
                 if (xmlSkillList?.Count > 0)
                 {
-                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
@@ -605,7 +606,7 @@ namespace Chummer.Backend.Skills
 
         internal void RemoveSkills(FilterOption eSkillsToRemove, string strName = "", bool blnCreateKnowledge = true, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 HashSet<Skill> setSkillsToRemove
                     = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName, token));
@@ -639,7 +640,7 @@ namespace Chummer.Backend.Skills
                     });
                 }
 
-                using (LockObject.UpgradeToWriteLock(token))
+                using (LockObject.EnterWriteLock(token))
                 {
                     for (int i = Skills.Count - 1; i >= 0; --i)
                     {
@@ -697,7 +698,7 @@ namespace Chummer.Backend.Skills
 
         internal async Task RemoveSkillsAsync(FilterOption eSkillsToRemove, string strName = "", bool blnCreateKnowledge = true, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 HashSet<Skill> setSkillsToRemove
                     = new HashSet<Skill>(await GetActiveSkillsFromDataAsync(eSkillsToRemove, false, strName, token).ConfigureAwait(false));
@@ -732,7 +733,7 @@ namespace Chummer.Backend.Skills
                     }, Utils.JoinableTaskFactory);
                 }
 
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     ThreadSafeBindingList<Skill> lstSkills = await GetSkillsAsync(token).ConfigureAwait(false);
@@ -1716,7 +1717,7 @@ namespace Chummer.Backend.Skills
 
         internal void Save(XmlWriter objWriter)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 objWriter.WriteStartElement("newskills");
 
@@ -1865,12 +1866,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
-                using (EnterReadLock.Enter(_objSkillsInitializerLock))
+                using (LockObject.EnterReadLock())
+                using (_objSkillsInitializerLock.EnterReadLock())
                 {
                     if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this)
                     {
-                        using (_objSkillsInitializerLock.UpgradeToWriteLock())
+                        using (_objSkillsInitializerLock.EnterWriteLock())
                         {
                             if (!_blnSkillsInitialized
                                 && _objCharacter.SkillsSection
@@ -1926,14 +1927,14 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<ThreadSafeBindingList<Skill>> GetSkillsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(_objSkillsInitializerLock, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objSkillsInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!_blnSkillsInitialized
                     && await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false) == this)
                 {
                     IAsyncDisposable objLocker
-                        = await _objSkillsInitializerLock.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                        = await _objSkillsInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (!_blnSkillsInitialized
@@ -2006,7 +2007,7 @@ namespace Chummer.Backend.Skills
         /// <param name="strSkillKey">Name of the skill. For exotic skills, this is slightly different, refer to a Skill's DictionaryKey property for more info.</param>
         public bool HasActiveSkill(string strSkillKey)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _dicSkills.ContainsKey(strSkillKey);
         }
 
@@ -2017,7 +2018,7 @@ namespace Chummer.Backend.Skills
         /// <param name="token">Cancellation token to listen to.</param>
         public async ValueTask<bool> HasActiveSkillAsync(string strSkillKey, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return await _dicSkills.ContainsKeyAsync(strSkillKey, token).ConfigureAwait(false);
         }
 
@@ -2028,7 +2029,7 @@ namespace Chummer.Backend.Skills
         /// <param name="token">CancellationToken to listen to.</param>
         public Skill GetActiveSkill(string strSkillName, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 _dicSkills.TryGetValue(strSkillName, out Skill objReturn, token);
                 return objReturn;
@@ -2042,7 +2043,7 @@ namespace Chummer.Backend.Skills
         /// <param name="token">CancellationToken to listen to.</param>
         public async ValueTask<Skill> GetActiveSkillAsync(string strSkillName, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 return (await _dicSkills.TryGetValueAsync(strSkillName, token).ConfigureAwait(false)).Item2;
             }
@@ -2056,7 +2057,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     List<Skill> resultList = new List<Skill>(_lstSkills.Count);
                     foreach (Skill objLoopSkill in _lstSkills)
@@ -2078,14 +2079,14 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstKnowledgeSkills;
             }
         }
 
         public async ValueTask<ThreadSafeBindingList<KnowledgeSkill>> GetKnowledgeSkillsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _lstKnowledgeSkills;
         }
 
@@ -2096,7 +2097,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstKnowsoftSkills;
             }
         }
@@ -2107,7 +2108,7 @@ namespace Chummer.Backend.Skills
         public async ValueTask<ThreadSafeBindingList<KnowledgeSkill>> GetKnowsoftSkillsAsync(
             CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _lstKnowsoftSkills;
         }
 
@@ -2118,7 +2119,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstSkillGroups;
             }
         }
@@ -2128,7 +2129,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<ThreadSafeBindingList<SkillGroup>> GetSkillGroupsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _lstSkillGroups;
         }
 
@@ -2141,7 +2142,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return KnowledgeSkills.Count(x => x.IsNativeLanguage) < 1
                         + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit);
             }
@@ -2149,7 +2150,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<bool> GetHasAvailableNativeLanguageSlotsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
                              .CountAsync(x => x.GetIsNativeLanguageAsync(token).AsTask(), token).ConfigureAwait(false)
                        < 1 + await ImprovementManager
@@ -2170,12 +2171,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
-                using (EnterReadLock.Enter(_objCachedKnowledgePointsLock))
+                using (LockObject.EnterReadLock())
+                using (_objCachedKnowledgePointsLock.EnterReadLock())
                 {
                     if (_intCachedKnowledgePoints == int.MinValue)
                     {
-                        using (_objCachedKnowledgePointsLock.UpgradeToWriteLock())
+                        using (_objCachedKnowledgePointsLock.EnterWriteLock())
                         {
                             if (_intCachedKnowledgePoints == int.MinValue) // Just in case
                             {
@@ -2220,12 +2221,12 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetKnowledgeSkillPointsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(_objCachedKnowledgePointsLock, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedKnowledgePointsLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedKnowledgePoints == int.MinValue)
                 {
-                    IAsyncDisposable objLocker = await _objCachedKnowledgePointsLock.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCachedKnowledgePointsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (_intCachedKnowledgePoints == int.MinValue) // Just in case
@@ -2276,7 +2277,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return KnowledgeSkillPoints - KnowledgeSkillPointsUsed;
             }
         }
@@ -2286,7 +2287,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetKnowledgeSkillPointsRemainAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return await GetKnowledgeSkillPointsAsync(token).ConfigureAwait(false) - await GetKnowledgeSkillPointsUsedAsync(token).ConfigureAwait(false);
         }
 
@@ -2297,7 +2298,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return KnowledgeSkillRanksSum - SkillPointsSpentOnKnoskills;
             }
         }
@@ -2307,7 +2308,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetKnowledgeSkillPointsUsedAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return await GetKnowledgeSkillRanksSumAsync(token).ConfigureAwait(false) - await GetSkillPointsSpentOnKnoskillsAsync(token).ConfigureAwait(false);
         }
 
@@ -2318,7 +2319,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return KnowledgeSkills.Sum(x => x.CurrentSpCost);
             }
         }
@@ -2328,7 +2329,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetKnowledgeSkillRanksSumAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).SumAsync(x => x.GetCurrentSpCostAsync(token).AsTask(), token).ConfigureAwait(false);
         }
 
@@ -2339,7 +2340,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     //Even if it is stupid, you can spend real skill points on knoskills...
                     if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
@@ -2358,7 +2359,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetSkillPointsSpentOnKnoskillsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 //Even if it is stupid, you can spend real skill points on knoskills...
                 if (!await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
@@ -2378,7 +2379,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (SkillPointsMaximum == 0)
                     {
@@ -2395,7 +2396,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetSkillPointsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (SkillPointsMaximum == 0)
                 {
@@ -2416,12 +2417,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intSkillPointsMaximum;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intSkillPointsMaximum, value) == value)
@@ -2438,7 +2439,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return SkillGroupPointsMaximum - SkillGroups.Sum(x => x.Base - x.FreeBase);
             }
         }
@@ -2448,7 +2449,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetSkillGroupPointsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return SkillGroupPointsMaximum - await SkillGroups.SumAsync(x => x.Base - x.FreeBase, token: token).ConfigureAwait(false);
         }
 
@@ -2459,12 +2460,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intSkillGroupPointsMaximum;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intSkillGroupPointsMaximum, value) == value)
@@ -2610,8 +2611,8 @@ namespace Chummer.Backend.Skills
 
         private static void MergeSkills(Skill objExistingSkill, Skill objNewSkill, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(objNewSkill, token))
-            using (EnterReadLock.Enter(objExistingSkill, token))
+            using (objNewSkill.LockObject.EnterReadLock(token))
+            using (objExistingSkill.LockObject.EnterReadLock(token))
             {
                 objExistingSkill.CopyInternalId(objNewSkill);
                 if (objNewSkill.BasePoints > objExistingSkill.BasePoints)
@@ -2628,8 +2629,8 @@ namespace Chummer.Backend.Skills
 
         private static async Task MergeSkillsAsync(Skill objExistingSkill, Skill objNewSkill, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(objNewSkill, token).ConfigureAwait(false))
-            using (await EnterReadLock.EnterAsync(objExistingSkill, token).ConfigureAwait(false))
+            using (await objNewSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await objExistingSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 objExistingSkill.CopyInternalId(objNewSkill);
                 int intExistingBasePoints = await objExistingSkill.GetBasePointsAsync(token).ConfigureAwait(false);
@@ -2660,7 +2661,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (GlobalSettings.LiveCustomData || _lstDefaultKnowledgeSkills == null)
                     {
@@ -2695,7 +2696,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (GlobalSettings.LiveCustomData || _lstKnowledgeTypes == null)
                     {
@@ -2767,7 +2768,7 @@ namespace Chummer.Backend.Skills
 
         internal void ForcePropertyChangedNotificationAll(string strName)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 foreach (Skill objSkill in Skills)
                 {
@@ -2785,7 +2786,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (Skill objSkill in Skills)
                 {
@@ -2856,7 +2857,7 @@ namespace Chummer.Backend.Skills
                 strLanguage = GlobalSettings.Language;
             string strReturn = strInput;
             string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage) + "({0})" : string.Empty;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
                 {
@@ -2905,7 +2906,7 @@ namespace Chummer.Backend.Skills
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage) + "({0})" : string.Empty;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
                 {

@@ -70,12 +70,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strFilePath;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strFilePath, value);
             }
         }
@@ -84,12 +84,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strFileName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strFileName, value);
             }
         }
@@ -98,12 +98,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strErrorText;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strErrorText, value);
             }
         }
@@ -112,12 +112,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strDescription;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strDescription, value);
             }
         }
@@ -126,12 +126,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strBackground;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strBackground, value);
             }
         }
@@ -140,12 +140,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strGameNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strGameNotes, value);
             }
         }
@@ -154,12 +154,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strCharacterNotes, value);
             }
         }
@@ -168,12 +168,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strConcept;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strConcept, value);
             }
         }
@@ -182,12 +182,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strKarma;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strKarma, value);
             }
         }
@@ -196,12 +196,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strMetatype;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strMetatype, value);
             }
         }
@@ -210,12 +210,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strMetavariant;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strMetavariant, value);
             }
         }
@@ -224,12 +224,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPlayerName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strPlayerName, value);
             }
         }
@@ -238,12 +238,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strCharacterName, value);
             }
         }
@@ -252,12 +252,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterAlias;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strCharacterAlias, value);
             }
         }
@@ -266,12 +266,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strBuildMethod;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strBuildMethod, value);
             }
         }
@@ -280,12 +280,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strEssence;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strEssence, value);
             }
         }
@@ -297,12 +297,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _imgMugshot;
             }
             private set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _imgMugshot, value)?.Dispose();
             }
         }
@@ -311,13 +311,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intCreated > 0;
             }
             set
             {
                 int intNewValue = value.ToInt32();
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _intCreated, intNewValue);
             }
         }
@@ -326,12 +326,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSettingsFile;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strSettingsFile, value);
             }
         }
@@ -343,7 +343,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _dicMyPluginData;
             }
         }
@@ -352,13 +352,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _tskRunningDownloadTask;
             }
             set
             {
                 Task<string> tskOld;
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
                 if (tskOld != null && tskOld != value)
                     Utils.SafelyRunSynchronously(() => tskOld);
@@ -406,7 +406,7 @@ namespace Chummer
         public void CopyFrom(CharacterCache objExistingCache)
         {
             using (LockObject.EnterWriteLock())
-            using (EnterReadLock.Enter(objExistingCache.LockObject))
+            using (objExistingCache.LockObject.EnterReadLock())
             {
                 _strBackground = objExistingCache.Background;
                 _strBuildMethod = objExistingCache.BuildMethod;
@@ -433,7 +433,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                using (await EnterReadLock.EnterAsync(objExistingCache.LockObject, token).ConfigureAwait(false))
+                using (await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     _strBackground = objExistingCache.Background;
                     _strBuildMethod = objExistingCache.BuildMethod;
@@ -477,12 +477,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyDoubleClick;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _onMyDoubleClick, value);
             }
         }
@@ -494,12 +494,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyContextMenuDeleteClick;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _onMyContextMenuDeleteClick, value);
             }
         }
@@ -511,12 +511,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyAfterSelect;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _onMyAfterSelect, value);
             }
         }
@@ -528,12 +528,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyKeyDown;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _onMyKeyDown, value);
             }
         }

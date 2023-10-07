@@ -104,21 +104,21 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Contains" />
         public bool Contains(T item)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _queData.Contains(item);
         }
 
         /// <inheritdoc cref="Queue{T}.Contains" />
         public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _queData.Contains(item);
         }
 
         /// <inheritdoc />
         public async ValueTask<bool> RemoveAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (ReferenceEquals(await PeekAsync(token).ConfigureAwait(false), item))
                 {
@@ -154,14 +154,14 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Peek" />
         public T Peek()
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _queData.Peek();
         }
 
         /// <inheritdoc cref="Queue{T}.Peek" />
         public async ValueTask<T> PeekAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _queData.Peek();
         }
 
@@ -210,7 +210,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryTake(out T item)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_queData.Count == 0)
                 {
@@ -235,28 +235,28 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.ToArray" />
         public T[] ToArray()
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _queData.ToArray();
         }
 
         /// <inheritdoc cref="Queue{T}.ToArray" />
         public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _queData.ToArray();
         }
 
         /// <inheritdoc cref="Queue{T}.CopyTo" />
         public void CopyTo(T[] array, int index)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 _queData.CopyTo(array, index);
         }
 
         /// <inheritdoc />
         public bool Remove(T item)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (ReferenceEquals(Peek(), item))
                 {
@@ -271,7 +271,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.CopyTo" />
         public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 _queData.CopyTo(array, index);
         }
 
@@ -291,7 +291,7 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_queData.Count == 0)
                     return new Tuple<bool, T>(false, default);
@@ -315,7 +315,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.CopyTo" />
         public void CopyTo(Array array, int index)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 foreach (T objItem in _queData)
                 {
@@ -328,7 +328,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.CopyTo" />
         public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (T objItem in _queData)
                 {
@@ -343,7 +343,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _queData.Count;
             }
         }
@@ -353,7 +353,7 @@ namespace Chummer
 
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _queData.Count;
         }
 

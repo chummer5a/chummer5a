@@ -49,7 +49,7 @@ namespace Chummer.Backend.Attributes
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -105,13 +105,13 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
-                    using (EnterReadLock.Enter(_objAttributesInitializerLock))
+                    using (_objAttributesInitializerLock.EnterReadLock())
                     {
                         if (!_blnAttributesInitialized)
                         {
-                            using (_objAttributesInitializerLock.UpgradeToWriteLock())
+                            using (_objAttributesInitializerLock.EnterWriteLock())
                                 InitializeAttributesList();
                         }
                     }
@@ -122,13 +122,13 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributesAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                using (await EnterReadLock.EnterAsync(_objAttributesInitializerLock, token).ConfigureAwait(false))
+                using (await _objAttributesInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     if (!_blnAttributesInitialized)
                     {
-                        IAsyncDisposable objLocker = await _objAttributesInitializerLock.UpgradeToWriteLockAsync(token)
+                        IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token)
                             .ConfigureAwait(false);
                         try
                         {
@@ -147,7 +147,7 @@ namespace Chummer.Backend.Attributes
 
         private void InitializeAttributesList(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(_objCharacter.LockObject, token))
+            using (_objCharacter.LockObject.EnterReadLock(token))
             {
                 using (_objAttributesInitializerLock.EnterWriteLock(token))
                 {
@@ -188,7 +188,7 @@ namespace Chummer.Backend.Attributes
         private async ValueTask InitializeAttributesListAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token).ConfigureAwait(false))
+            using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
@@ -311,7 +311,7 @@ namespace Chummer.Backend.Attributes
 
         private void SpecialAttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_intLoading > 0)
                     return;
@@ -326,7 +326,7 @@ namespace Chummer.Backend.Attributes
 
         private void AttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_intLoading > 0)
                     return;
@@ -341,7 +341,7 @@ namespace Chummer.Backend.Attributes
 
         private void AttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_intLoading > 0)
                     return;
@@ -390,7 +390,7 @@ namespace Chummer.Backend.Attributes
 
         private void SpecialAttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_intLoading > 0)
                     return;
@@ -476,7 +476,7 @@ namespace Chummer.Backend.Attributes
 
         internal void Save(XmlWriter objWriter, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList)
                 {
@@ -1183,7 +1183,7 @@ namespace Chummer.Backend.Attributes
 
         internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_objCharacter.MetatypeCategory == "Shapeshifter")
                 {
@@ -1226,7 +1226,7 @@ namespace Chummer.Backend.Attributes
 
         public CharacterAttrib GetAttributeByName(string abbrev, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
                     && AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
@@ -1242,7 +1242,7 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<CharacterAttrib> GetAttributeByNameAsync(string abbrev, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 bool blnGetShifterAttribute = await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Shapeshifter" && await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
                     && await GetAttributeCategoryAsync(token).ConfigureAwait(false) == CharacterAttrib.AttributeCategory.Shapeshifter;
@@ -1258,13 +1258,13 @@ namespace Chummer.Backend.Attributes
 
         public BindingSource GetAttributeBindingByName(string abbrev, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
                 return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding, token) ? objAttributeBinding : null;
         }
 
         public async ValueTask<BindingSource> GetAttributeBindingByNameAsync(string abbrev, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 (bool blnSuccess, BindingSource objAttributeBinding) = await _dicBindings.TryGetValueAsync(abbrev, token).ConfigureAwait(false);
                 return blnSuccess ? objAttributeBinding : null;
@@ -1283,7 +1283,7 @@ namespace Chummer.Backend.Attributes
         {
             if (objSource == null || objTarget == null)
                 return;
-            using (EnterReadLock.Enter(objSource.LockObject))
+            using (objSource.LockObject.EnterReadLock())
             {
                 string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
                 if (strSourceAbbrev == "magadept")
@@ -1310,7 +1310,7 @@ namespace Chummer.Backend.Attributes
         {
             if (objSource == null || objTarget == null)
                 return;
-            using (await EnterReadLock.EnterAsync(objSource.LockObject, token).ConfigureAwait(false))
+            using (await objSource.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
                 if (strSourceAbbrev == "magadept")
@@ -1337,7 +1337,7 @@ namespace Chummer.Backend.Attributes
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 string strReturn = strInput;
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -1371,7 +1371,7 @@ namespace Chummer.Backend.Attributes
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1398,7 +1398,7 @@ namespace Chummer.Backend.Attributes
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 string strReturn = strInput;
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -1433,7 +1433,7 @@ namespace Chummer.Backend.Attributes
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1467,7 +1467,7 @@ namespace Chummer.Backend.Attributes
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
             string strReturn = strInput;
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1543,7 +1543,7 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterReadLock(token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1609,7 +1609,7 @@ namespace Chummer.Backend.Attributes
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             string strReturn = strInput;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1691,7 +1691,7 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1928,7 +1928,7 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute,
                                                                     CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
                     || await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
@@ -1959,14 +1959,14 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstNormalAttributes;
             }
         }
 
         public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributeListAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _lstNormalAttributes;
         }
 
@@ -1977,14 +1977,14 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstSpecialAttributes;
             }
         }
 
         public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetSpecialAttributeListAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _lstSpecialAttributes;
         }
 
@@ -1992,12 +1992,12 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _eAttributeCategory;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (InterlockedExtensions.Exchange(ref _eAttributeCategory, value) == value)
@@ -2017,7 +2017,7 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<CharacterAttrib.AttributeCategory> GetAttributeCategoryAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _eAttributeCategory;
         }
 

@@ -822,11 +822,11 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            using (await EnterReadLock.EnterAsync(_dicCharacterCustomDataDirectoryInfos.LockObject).ConfigureAwait(false))
+            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
-                IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.UpgradeToWriteLockAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(intIndex, 2).ConfigureAwait(false);
@@ -849,7 +849,7 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            using (await EnterReadLock.EnterAsync(_dicCharacterCustomDataDirectoryInfos.LockObject).ConfigureAwait(false))
+            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
                 int intCount = await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false);
                 if (intIndex >= intCount - 1)
@@ -857,7 +857,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await _objCharacterSettings.CustomDataDirectoryKeys.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    IAsyncDisposable objLocker2 = await _dicCharacterCustomDataDirectoryInfos.LockObject.UpgradeToWriteLockAsync().ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
                         for (int i = intIndex; i < intCount - 1; ++i)
@@ -1229,7 +1229,7 @@ namespace Chummer
                 string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
                                                               .ConfigureAwait(false);
                 Color objGrayTextColor = await ColorManager.GetGrayTextAsync(token).ConfigureAwait(false);
-                using (await EnterReadLock.EnterAsync(_dicCharacterCustomDataDirectoryInfos, token)
+                using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync(token)
                                           .ConfigureAwait(false))
                 {
                     int intNewCount

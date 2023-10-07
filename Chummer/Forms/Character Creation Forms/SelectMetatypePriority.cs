@@ -1358,7 +1358,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask MetatypeSelected(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token).ConfigureAwait(false))
+            using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                 {
@@ -1487,7 +1487,7 @@ namespace Chummer
                 strSelectedMetatype = objXmlMetatype["id"]?.InnerText ?? Guid.Empty.ToString("D");
 
                 System.IAsyncDisposable objLocker
-                    = await _objCharacter.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                    = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)

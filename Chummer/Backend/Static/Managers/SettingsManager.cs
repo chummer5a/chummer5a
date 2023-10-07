@@ -455,7 +455,7 @@ namespace Chummer
                 }, Utils.JoinableTaskFactory);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    using (await EnterReadLock.EnterAsync(objCharacter, token).ConfigureAwait(false))
+                    using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
                         if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                             await objCharacter

@@ -36,7 +36,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (GlobalSettings.LiveCustomData)
                     {
@@ -58,7 +58,7 @@ namespace Chummer.Backend.Skills
                     }
                     if (_dicCategoriesSkillMap == null)
                     {
-                        using (EnterReadLock.Enter(LockObject))
+                        using (LockObject.EnterReadLock())
                         {
                             XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
                                                                             .SelectAndCacheExpression(
@@ -85,7 +85,7 @@ namespace Chummer.Backend.Skills
 
         private async ValueTask<IReadOnlyDictionary<string, string>> GetCategoriesSkillMapAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (GlobalSettings.LiveCustomData)
                 {
@@ -108,7 +108,7 @@ namespace Chummer.Backend.Skills
 
                 if (_dicCategoriesSkillMap == null)
                 {
-                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
                         XPathNodeIterator lstXmlSkills = await (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                                .SelectAndCacheExpressionAsync(
@@ -138,14 +138,14 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return (!ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0) && !IsNativeLanguage;
             }
         }
 
         public override async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return (!ForcedName || await GetFreeBaseAsync(token).ConfigureAwait(false)
                            + await GetFreeKarmaAsync(token).ConfigureAwait(false)
                            + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0)
@@ -156,7 +156,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return !ForcedName && (AllowUpgrade || IsNativeLanguage) &&
                            (!CharacterObject.Created || (Karma == 0 && Base == 0 && !IsNativeLanguage));
             }
@@ -164,7 +164,7 @@ namespace Chummer.Backend.Skills
 
         public override async ValueTask<bool> GetAllowNameChangeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 bool blnIsNativeLanguage = await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
                 return !ForcedName && (blnIsNativeLanguage || await GetAllowUpgradeAsync(token).ConfigureAwait(false))
@@ -180,14 +180,14 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return (AllowNameChange || string.IsNullOrWhiteSpace(Type)) && !IsNativeLanguage;
             }
         }
 
         public override async ValueTask<bool> GetAllowTypeChangeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return (await GetAllowNameChangeAsync(token).ConfigureAwait(false)
                         || string.IsNullOrWhiteSpace(await GetTypeAsync(token).ConfigureAwait(false)))
                        && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
@@ -222,16 +222,16 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnAllowUpgrade && !IsNativeLanguage;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnAllowUpgrade == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAllowUpgrade = value;
                         OnPropertyChanged();
@@ -245,7 +245,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<bool> GetAllowUpgradeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _blnAllowUpgrade && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
         }
 
@@ -254,13 +254,13 @@ namespace Chummer.Backend.Skills
             get => CurrentDisplayName;
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (ForcedName)
                         return;
                     if (string.Equals(CurrentDisplayName, value, StringComparison.Ordinal))
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         LoadSkillFromData(value);
                         Name = value;
@@ -274,13 +274,13 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask SetWritableNameAsync(string value, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (ForcedName)
                     return;
                 if (string.Equals(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), value, StringComparison.Ordinal))
                     return;
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     await LoadSkillFromDataAsync(value, token).ConfigureAwait(false);
@@ -379,7 +379,7 @@ namespace Chummer.Backend.Skills
                 return strInputSkillName;
             }
 
-            using (EnterReadLock.Enter(CharacterObject.LockObject))
+            using (CharacterObject.LockObject.EnterReadLock())
             {
                 XPathNavigator xmlSkillTranslationNode = CharacterObject.LoadDataXPath("skills.xml")
                     .SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() +
@@ -402,7 +402,7 @@ namespace Chummer.Backend.Skills
                 return strInputSkillName;
             }
 
-            using (await EnterReadLock.EnterAsync(CharacterObject.LockObject, token).ConfigureAwait(false))
+            using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 XPathNavigator xmlSkillTranslationNode = (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                                         .SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() +
@@ -437,11 +437,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedCyberwareRating != int.MinValue)
                         return _intCachedCyberwareRating;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (_intCachedCyberwareRating != int.MinValue) // Just in case
                             return _intCachedCyberwareRating;
@@ -488,12 +488,12 @@ namespace Chummer.Backend.Skills
         /// <returns>Artificial skill attributeValue</returns>
         public override async ValueTask<int> GetCyberwareRatingAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (_intCachedCyberwareRating != int.MinValue)
@@ -544,13 +544,13 @@ namespace Chummer.Backend.Skills
 
         public override string DisplaySpecialization(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return IsNativeLanguage ? string.Empty : base.DisplaySpecialization(strLanguage);
         }
 
         public override async ValueTask<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return await GetIsNativeLanguageAsync(token).ConfigureAwait(false)
                     ? string.Empty
                     : await base.DisplaySpecializationAsync(strLanguage, token).ConfigureAwait(false);
@@ -560,17 +560,17 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strType;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     // Interlocked guarantees thread safety here without write lock
                     if (Interlocked.Exchange(ref _strType, value) == value)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                         //default skills to reset to the default Type for that skill. If we want to disable
@@ -599,18 +599,18 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<string> GetTypeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _strType;
         }
 
         public async ValueTask SetTypeAsync(string value, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // Interlocked guarantees thread safety here without write lock
                 if (Interlocked.Exchange(ref _strType, value) == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     //2018-22-03: Causes any attempt to alter the Type for skills with names that match
@@ -653,18 +653,18 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intIsNativeLanguage > 0;
             }
             set
             {
                 int intNewValue = value.ToInt32();
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     // Interlocked guarantees thread safety here without write lock
                     if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
                         return;
-                    using (LockObject.UpgradeToWriteLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (value)
                         {
@@ -682,19 +682,19 @@ namespace Chummer.Backend.Skills
 
         public override async ValueTask<bool> GetIsNativeLanguageAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 return _intIsNativeLanguage > 0;
         }
 
         public override async ValueTask SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
         {
             int intNewValue = value.ToInt32();
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 // Interlocked guarantees thread safety here without write lock
                 if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
                     return;
-                IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (value)
@@ -720,7 +720,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intTotalBaseRating = TotalBaseRating;
                     decimal decCost = intTotalBaseRating * (intTotalBaseRating + 1);
@@ -815,7 +815,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public override async ValueTask<int> GetCurrentKarmaCostAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                 decimal decCost = intTotalBaseRating * (intTotalBaseRating + 1);
@@ -919,7 +919,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intTotalBaseRating = TotalBaseRating;
                     if (intTotalBaseRating >= RatingMaximum)
@@ -1006,7 +1006,7 @@ namespace Chummer.Backend.Skills
         /// <returns>Price in karma</returns>
         public override async ValueTask<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                 if (intTotalBaseRating >= await GetRatingMaximumAsync(token).ConfigureAwait(false))
@@ -1097,7 +1097,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intPointCost = BasePoints;
                     if (!IsExoticSkill && !BuyWithKarma)
@@ -1168,7 +1168,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public override async ValueTask<int> GetCurrentSpCostAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
                 int cost = intBasePoints;

@@ -971,7 +971,7 @@ namespace Chummer.UI.Skills
                         frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation, MyToken).ConfigureAwait(false);
                 }
 
-                using (await EnterReadLock.EnterAsync(objSkill.LockObject, MyToken).ConfigureAwait(false))
+                using (await objSkill.LockObject.EnterReadLockAsync(MyToken).ConfigureAwait(false))
                 {
                     // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
                     if (await _objCharacter.GetCreatedAsync(MyToken).ConfigureAwait(false)

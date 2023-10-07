@@ -1001,7 +1001,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                using (EnterReadLock.Enter(objCharacter.LockObject, token))
+                using (objCharacter.LockObject.EnterReadLock(token))
                 {
                     foreach (Enhancement objEnhancement in objCharacter.Enhancements)
                     {
@@ -1168,7 +1168,7 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            using (EnterReadLock.Enter(objCharacter.LockObject, token))
+            using (objCharacter.LockObject.EnterReadLock(token))
             {
                 string strNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token);
 
@@ -1205,7 +1205,7 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token).ConfigureAwait(false))
+            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 string strNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token).ConfigureAwait(false);
 

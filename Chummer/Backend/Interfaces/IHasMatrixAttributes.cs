@@ -662,7 +662,7 @@ namespace Chummer
             if (objThis == null)
                 return;
             if (objThis is IHasLockObject objThisLocker)
-                objThisLocker.LockObject.EnterReadLock();
+                objThisLocker.LockObject.SimpleEnterReadLock();
             else
                 objThisLocker = null;
             try
@@ -718,7 +718,7 @@ namespace Chummer
 
                         IDisposable objLocker = null;
                         if (objThisLocker != null)
-                            objLocker = objThisLocker.LockObject.UpgradeToWriteLock();
+                            objLocker = objThisLocker.LockObject.EnterWriteLock();
                         try
                         {
                             for (int i = 0; i < 4; ++i)

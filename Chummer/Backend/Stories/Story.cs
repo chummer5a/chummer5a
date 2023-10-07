@@ -51,7 +51,7 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        using (EnterReadLock.Enter(LockObject))
+                        using (LockObject.EnterReadLock())
                         {
                             _blnNeedToRegeneratePersistents = true;
                             foreach (StoryModule objModule in e.NewItems)
@@ -62,7 +62,7 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        using (EnterReadLock.Enter(LockObject))
+                        using (LockObject.EnterReadLock())
                         {
                             _blnNeedToRegeneratePersistents = true;
                             foreach (StoryModule objModule in e.OldItems)
@@ -79,7 +79,7 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        using (EnterReadLock.Enter(LockObject))
+                        using (LockObject.EnterReadLock())
                         {
                             _blnNeedToRegeneratePersistents = true;
                             foreach (StoryModule objModule in e.OldItems)
@@ -99,7 +99,7 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        using (EnterReadLock.Enter(LockObject))
+                        using (LockObject.EnterReadLock())
                             _blnNeedToRegeneratePersistents = true;
                         break;
                     }
@@ -110,7 +110,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstStoryModules;
             }
         }
@@ -119,7 +119,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _dicPersistentModules;
             }
         }
@@ -217,12 +217,12 @@ namespace Chummer
 
         public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
                 string[] strModuleOutputStrings;
-                using (await EnterReadLock.EnterAsync(Modules, token).ConfigureAwait(false))
+                using (await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
                     strModuleOutputStrings = new string[intCount];

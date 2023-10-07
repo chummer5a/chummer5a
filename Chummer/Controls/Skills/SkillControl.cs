@@ -828,7 +828,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _objSkill.LockObject.EnterReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
@@ -858,7 +858,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _objSkill.LockObject.EnterReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     int price = _objSkill.CharacterObject.Settings.KarmaSpecialization;
 

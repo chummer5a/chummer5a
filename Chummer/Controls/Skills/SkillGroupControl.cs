@@ -276,7 +276,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_skillGroup.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _skillGroup.LockObject.EnterReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager

@@ -32,13 +32,13 @@ namespace Chummer
 
         public static LockingDictionaryEnumerator Get(IHasLockObject objMyParent)
         {
-            objMyParent.LockObject.EnterReadLock();
+            objMyParent.LockObject.SimpleEnterReadLock();
             return new LockingDictionaryEnumerator(objMyParent);
         }
 
         public static async ValueTask<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            await objMyParent.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             return new LockingDictionaryEnumerator(objMyParent);
         }
 

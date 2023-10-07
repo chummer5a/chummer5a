@@ -48,7 +48,7 @@ namespace Chummer
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             else
                 objLocker = null;
             try
@@ -104,7 +104,7 @@ namespace Chummer
                 }
 
                 IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -131,7 +131,7 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             else
                 objLocker = null;
             try
@@ -187,7 +187,7 @@ namespace Chummer
                 }
 
                 IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -214,7 +214,7 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             else
                 objLocker = null;
             try
@@ -270,7 +270,7 @@ namespace Chummer
                 }
 
                 IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -392,7 +392,7 @@ namespace Chummer
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             else
                 objLocker = null;
             try
@@ -448,7 +448,7 @@ namespace Chummer
                 }
 
                 IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -475,7 +475,7 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             else
                 objLocker = null;
             try
@@ -531,7 +531,7 @@ namespace Chummer
                 }
 
                 IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -558,7 +558,7 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             else
                 objLocker = null;
             try
@@ -614,7 +614,7 @@ namespace Chummer
                 }
 
                 IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -641,7 +641,7 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             else
                 objLocker = null;
             try
@@ -697,7 +697,7 @@ namespace Chummer
                 }
 
                 IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -724,7 +724,7 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             else
                 objLocker = null;
             try
@@ -780,7 +780,7 @@ namespace Chummer
                 }
 
                 IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false)
+                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {

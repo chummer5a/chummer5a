@@ -46,13 +46,13 @@ namespace Chummer
             /// </summary>
             public bool GetDuplicatesChecked(CancellationToken token = default)
             {
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                     return _intDuplicatesChecked > 0;
             }
 
             public void SetDuplicatesChecked(bool blnNewValue, CancellationToken token = default)
             {
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                     Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
             }
 
@@ -61,13 +61,13 @@ namespace Chummer
             /// </summary>
             public async ValueTask<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     return _intDuplicatesChecked > 0;
             }
 
             public async ValueTask SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
             }
 
@@ -85,13 +85,13 @@ namespace Chummer
                 while (true)
                 {
                     int intLoadComplete;
-                    using (EnterReadLock.Enter(LockObject, token))
+                    using (LockObject.EnterReadLock(token))
                         intLoadComplete = _intInitialLoadComplete;
                     if (intLoadComplete > 0)
                         break;
                     Utils.SafeSleep(token);
                 }
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                     return _xmlContent;
             }
 
@@ -104,13 +104,13 @@ namespace Chummer
                 while (true)
                 {
                     int intLoadComplete;
-                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                         intLoadComplete = _intInitialLoadComplete;
                     if (intLoadComplete > 0)
                         break;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     return _xmlContent;
             }
 
@@ -119,11 +119,11 @@ namespace Chummer
             /// </summary>
             public void SetXmlContent(XmlDocument objContent, CancellationToken token = default)
             {
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                 {
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
-                    using (LockObject.UpgradeToWriteLock(token))
+                    using (LockObject.EnterWriteLock(token))
                     {
                         if (objContent != null)
                         {
@@ -148,11 +148,11 @@ namespace Chummer
             /// </summary>
             public async ValueTask SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
-                    IAsyncDisposable objLocker = await LockObject.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (objContent != null)
@@ -185,13 +185,13 @@ namespace Chummer
                 while (true)
                 {
                     int intLoadComplete;
-                    using (EnterReadLock.Enter(LockObject, token))
+                    using (LockObject.EnterReadLock(token))
                         intLoadComplete = _intInitialLoadComplete;
                     if (intLoadComplete > 0)
                         break;
                     Utils.SafeSleep(token);
                 }
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                     return _objXPathContent;
             }
 
@@ -204,13 +204,13 @@ namespace Chummer
                 while (true)
                 {
                     int intLoadComplete;
-                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                         intLoadComplete = _intInitialLoadComplete;
                     if (intLoadComplete > 0)
                         break;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     return _objXPathContent;
             }
 
@@ -393,7 +393,7 @@ namespace Chummer
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(s_objDataDirectoriesLock, token) : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token).ConfigureAwait(false))
+            using (blnSync ? s_objDataDirectoriesLock.EnterReadLock(token) : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;
@@ -429,9 +429,9 @@ namespace Chummer
                         IAsyncDisposable objLockerAsync = null;
                         if (blnSync)
                             // ReSharper disable once MethodHasAsyncOverload
-                            objLocker = s_objDataDirectoriesLock.UpgradeToWriteLock(token);
+                            objLocker = s_objDataDirectoriesLock.EnterWriteLock(token);
                         else
-                            objLockerAsync = await s_objDataDirectoriesLock.UpgradeToWriteLockAsync(token).ConfigureAwait(false);
+                            objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -580,10 +580,8 @@ namespace Chummer
             string strPath = string.Empty;
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
-            using (blnSync
-                       // ReSharper disable once MethodHasAsyncOverload
-                       ? EnterReadLock.Enter(s_objDataDirectoriesLock, token)
-                       : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? s_objDataDirectoriesLock.EnterReadLock(token) : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (string strDirectory in s_SetDataDirectories)
                 {

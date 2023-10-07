@@ -107,7 +107,7 @@ namespace Chummer.UI.Attributes
                 }
                 else
                 {
-                    using (EnterReadLock.Enter(AttributeObject))
+                    using (AttributeObject.LockObject.EnterReadLock())
                     {
                         while (AttributeObject.KarmaMaximum < 0 && AttributeObject.Base > 0)
                             --AttributeObject.Base;
@@ -175,7 +175,7 @@ namespace Chummer.UI.Attributes
                 }
                 else
                 {
-                    using (await EnterReadLock.EnterAsync(AttributeObject).ConfigureAwait(false))
+                    using (await AttributeObject.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                     {
                         while (await AttributeObject.GetBaseAsync().ConfigureAwait(false) > 0 &&
                                await AttributeObject.GetKarmaMaximumAsync().ConfigureAwait(false) < 0)
@@ -289,7 +289,7 @@ namespace Chummer.UI.Attributes
             try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
+                using (await objAttribute.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                 {
                     int intUpgradeKarmaCost = await objAttribute.GetUpgradeKarmaCostAsync().ConfigureAwait(false);
 
@@ -334,7 +334,7 @@ namespace Chummer.UI.Attributes
             try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
+                using (await objAttribute.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                 {
                     if (!await CanBeMetatypeMax(
                                 Math.Max(
@@ -382,7 +382,7 @@ namespace Chummer.UI.Attributes
             try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
+                using (await objAttribute.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                 {
                     if (!await CanBeMetatypeMax(
                                 Math.Max(
@@ -446,7 +446,7 @@ namespace Chummer.UI.Attributes
         private async ValueTask<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
         {
             CharacterAttrib objAttribute = await GetAttributeObjectAsync(token).ConfigureAwait(false);
-            using (await EnterReadLock.EnterAsync(objAttribute, token).ConfigureAwait(false))
+            using (await objAttribute.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 int intTotalMaximum = await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false);
                 if (intValue < intTotalMaximum || intTotalMaximum == 0)
@@ -490,7 +490,7 @@ namespace Chummer.UI.Attributes
             {
                 // Edge cannot go below 1.
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
+                using (await objAttribute.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                 {
                     if (await objAttribute.GetValueAsync().ConfigureAwait(false) <= 0)
                     {

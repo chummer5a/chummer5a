@@ -59,7 +59,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 objWriter.WriteStartElement("stackedfocus");
                 objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
@@ -109,7 +109,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -121,14 +121,14 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiGearId.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
                 {
-                    using (EnterReadLock.Enter(LockObject))
+                    using (LockObject.EnterReadLock())
                         _guiGearId = guiTemp;
                 }
             }
@@ -141,12 +141,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnBonded;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     _blnBonded = value;
             }
         }
@@ -158,7 +158,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Gear.Sum(x => x.Rating);
             }
         }
@@ -171,7 +171,7 @@ namespace Chummer
             get
             {
                 decimal decCost = 0;
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     foreach (Gear objFocus in Gear)
                     {
@@ -302,7 +302,7 @@ namespace Chummer
         public async ValueTask<int> GetBindingCostAsync(CancellationToken token = default)
         {
             decimal decCost = 0;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (Gear objFocus in Gear)
                 {
@@ -450,7 +450,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     foreach (Gear objGear in Gear)
                     {
@@ -474,7 +474,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     await Gear.ForEachAsync(async objGear =>
                     {
@@ -502,7 +502,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstGear;
             }
         }
@@ -515,7 +515,7 @@ namespace Chummer
         {
             if (objGear == null)
                 throw new ArgumentNullException(nameof(objGear));
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus, null);
 

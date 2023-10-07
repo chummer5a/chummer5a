@@ -37,13 +37,13 @@ namespace Chummer
 
         public static LockingEnumerator<T> Get(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            objMyParent.LockObject.EnterReadLock(token);
+            objMyParent.LockObject.SimpleEnterReadLock(token);
             return new LockingEnumerator<T>(objMyParent);
         }
 
         public static async ValueTask<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            await objMyParent.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
             return new LockingEnumerator<T>(objMyParent);
         }
 

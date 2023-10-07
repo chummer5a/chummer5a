@@ -410,7 +410,7 @@ namespace Chummer.Plugins
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstMyPlugins;
             }
         }
@@ -421,7 +421,7 @@ namespace Chummer.Plugins
             {
                 if (!GlobalSettings.PluginsEnabled)
                     return Array.Empty<IPlugin>();
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
                     foreach (IPlugin plugin in MyPlugins)
@@ -440,7 +440,7 @@ namespace Chummer.Plugins
         {
             if (!GlobalSettings.PluginsEnabled)
                 return Array.Empty<IPlugin>();
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
                 await MyPlugins.ForEachAsync(async plugin =>
@@ -545,7 +545,7 @@ namespace Chummer.Plugins
 
         internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
@@ -576,7 +576,7 @@ namespace Chummer.Plugins
         internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
@@ -606,7 +606,7 @@ namespace Chummer.Plugins
         internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {

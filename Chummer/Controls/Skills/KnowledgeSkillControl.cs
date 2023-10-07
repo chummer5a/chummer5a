@@ -798,7 +798,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _objSkill.LockObject.EnterReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     int intKarmaCost = await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken).ConfigureAwait(false);
 
@@ -835,7 +835,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _objSkill.LockObject.EnterReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
 
