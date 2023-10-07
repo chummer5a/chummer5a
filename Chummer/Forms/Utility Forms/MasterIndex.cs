@@ -244,6 +244,34 @@ namespace Chummer
                 try
                 {
                     await SourceString.Blank.SetControlAsync(lblSource, _objGenericToken).ConfigureAwait(false);
+
+                    // Pre-load some very common expressions to speed up content load
+                    await Utils.TryCacheExpressionAsync("/chummer", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("/chummer/books/book/code", _objGenericToken).ConfigureAwait(false);
+                    foreach (XPathNavigator objCode in await (await XmlManager
+                                     .LoadXPathAsync("books.xml", token: _objGenericToken).ConfigureAwait(false))
+                                 .SelectAndCacheExpressionAsync("/chummer/books/book/code", _objGenericToken)
+                                 .ConfigureAwait(false))
+                    {
+                        await Utils.TryCacheExpressionAsync(
+                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + ']', _objGenericToken)
+                            .ConfigureAwait(false);
+                        await Utils.TryCacheExpressionAsync(
+                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + "]/altcode", _objGenericToken)
+                            .ConfigureAwait(false);
+                    }
+
+                    await Utils.TryCacheExpressionAsync("name", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("translate", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("id", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("source", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("page", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("altpage", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("nameonpage", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("altnameonpage", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("notes", _objGenericToken).ConfigureAwait(false);
+                    await Utils.TryCacheExpressionAsync("altnotes", _objGenericToken).ConfigureAwait(false);
+
                     await PopulateCharacterSettings(_objGenericToken).ConfigureAwait(false);
                     await LoadContent(_objGenericToken).ConfigureAwait(false);
                     CharacterSettings objSettings = _objSelectedSetting;
