@@ -1,8 +1,9 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Chummer.Tests.AccessChummerState;
 
-public class ChummerTestFixture: SetupStaThreadFixture
+public class ChummerTestFixture: SetupStaThreadFixture, IDisposable
 {
     public ChummerTestFixture()
     {
@@ -37,7 +38,11 @@ public class ChummerTestFixture: SetupStaThreadFixture
             }
             LanguageManager.LoadLanguage(Path.GetFileNameWithoutExtension(languageFile));
         }
+
+        Trace.Listeners.Add(Listener);
     }
+
+    public TestTraceListener Listener { get; } = new TestTraceListener();
 
     public DirectoryInfo WorkingDirectory { get; set; }
 
@@ -63,5 +68,11 @@ public class ChummerTestFixture: SetupStaThreadFixture
     {
         character.Save(path, false);
         return true;
+    }
+
+    public void Dispose()
+    {
+        Trace.Listeners.Remove(Listener);
+        GC.SuppressFinalize(this);
     }
 }

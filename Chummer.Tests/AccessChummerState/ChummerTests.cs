@@ -44,6 +44,7 @@ public class ChummerTests: IClassFixture<ChummerTestFixture>
         finally
         {
             GlobalSettings.Chum5lzCompressionLevel = oldCompressionPreset;
+            _testOutput.WriteLine(_testFixture.Listener.GetContentAndClear());
         }
     }
 
@@ -97,6 +98,7 @@ public class ChummerTests: IClassFixture<ChummerTestFixture>
         {
             Assert.Fail("Unexpected validation failure: " + e.Message);
         }
+        _testOutput.WriteLine(_testFixture.Listener.GetContentAndClear());
     }
 
 
@@ -128,6 +130,7 @@ public class ChummerTests: IClassFixture<ChummerTestFixture>
 
         await using var fileStream = new FileStream(exportPath, FileMode.Create, FileAccess.Write, FileShare.None);
         xmlDocument.Save(fileStream);
+        _testOutput.WriteLine(_testFixture.Listener.GetContentAndClear());
     }
 
 
