@@ -55,8 +55,6 @@ namespace Chummer
         private int _intCountActiveReaders;
         private int _intDisposedStatus;
 
-        private const int ReadLockHeartbeatDelay = 2000;
-
         /// <summary>
         /// Try to synchronously obtain a lock for writing.
         /// The returned SafeSemaphoreWriterRelease must be stored for when the write lock is to be released.
@@ -249,40 +247,44 @@ namespace Chummer
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.CurrentCount == 0)
             {
-                // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
-                DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                bool blnReleaseSemaphore = true;
-                while (!objCurrentSemaphore.SafeWait(ReadLockHeartbeatDelay / 2, token))
+                // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
+                DebuggableSemaphoreSlim objCurrentSemaphore =
+                    _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
+                if (objCurrentSemaphore.CurrentCount == 0)
                 {
-                    // Do a heartbeat update to sanity-check for longer waits and skip the longer lock if we'd be able to safely reset
-                    Utils.SafeSleep(ReadLockHeartbeatDelay / 2, token);
-                    if (_objTopLevelWriterSemaphore.CurrentCount == 0)
-                        objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                    else
+                    // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
+                    objCurrentSemaphore.SafeWait(token);
+                    try
                     {
-                        blnReleaseSemaphore = false;
-                        break;
-                    }
-                }
-                try
-                {
-                    if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
-                    {
-                        try
+                        if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                         {
-                            _objReaderSemaphore.SafeWait(token);
-                        }
-                        catch
-                        {
-                            Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
+                            try
+                            {
+                                _objReaderSemaphore.SafeWait(token);
+                            }
+                            catch
+                            {
+                                Interlocked.Decrement(ref _intCountActiveReaders);
+                                throw;
+                            }
                         }
                     }
-                }
-                finally
-                {
-                    if (blnReleaseSemaphore)
+                    finally
+                    {
                         objCurrentSemaphore.Release();
+                    }
+                }
+                else if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
+                {
+                    try
+                    {
+                        _objReaderSemaphore.SafeWait(token);
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _intCountActiveReaders);
+                        throw;
+                    }
                 }
             }
             else if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -316,12 +318,14 @@ namespace Chummer
             }
             // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
             ++_intCountLocalReaders.Value;
+            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.CurrentCount != 0)
                 return SimpleTakeReadLockCoreLightAsync();
-            // We will need to store the current execution context so that we can switch back to it whenever we wish to update objCurrentSemaphore
-            ExecutionContext objCurrentContext = ExecutionContext.Capture();
+            // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-            return SimpleTakeReadLockCoreAsync(objCurrentSemaphore, objCurrentContext);
+            return objCurrentSemaphore.CurrentCount != 0
+                ? SimpleTakeReadLockCoreLightAsync()
+                : SimpleTakeReadLockCoreAsync(objCurrentSemaphore);
         }
 
         /// <summary>
@@ -342,48 +346,24 @@ namespace Chummer
                 return Task.FromException(new OperationCanceledException(token));
             // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
             // To undo this change in case the request is canceled, we will register a callback that will only be disposed at the end of the async methods
-            ++_intCountLocalReaders.Value;
             CancellationTokenRegistration objLocalReaderUndo = token.Register(x => --_intCountLocalReaders.Value, true);
-            if (token.IsCancellationRequested)
-                return Task.FromException(new OperationCanceledException(token));
+            ++_intCountLocalReaders.Value;
+            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.CurrentCount != 0)
-                return SimpleTakeReadLockCoreLightAsync(objLocalReaderUndo, token);
-            // We will need to store the current execution context so that we can switch back to it whenever we wish to update objCurrentSemaphore
-            ExecutionContext objCurrentContext = ExecutionContext.Capture();
+                return SimpleTakeReadLockCoreLightAsync();
+            // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-            return SimpleTakeReadLockCoreAsync(objCurrentSemaphore, objCurrentContext, objLocalReaderUndo, token);
+            return objCurrentSemaphore.CurrentCount != 0
+                ? SimpleTakeReadLockCoreLightAsync(objLocalReaderUndo, token)
+                : SimpleTakeReadLockCoreAsync(objCurrentSemaphore, objLocalReaderUndo, token);
         }
 
         /// <summary>
         /// Heavier read lock entrant, used if a write lock is already being held somewhere
         /// </summary>
-        private async Task SimpleTakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, ExecutionContext objOriginalContext)
+        private async Task SimpleTakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore)
         {
-            bool blnReleaseSemaphore = true;
-            while (!await objCurrentSemaphore.WaitAsync(ReadLockHeartbeatDelay / 2).ConfigureAwait(false))
-            {
-                // Do a heartbeat update to sanity-check for longer waits and skip the longer lock if we'd be able to safely reset
-                await Utils.SafeSleepAsync(ReadLockHeartbeatDelay / 2).ConfigureAwait(false);
-                if (_objTopLevelWriterSemaphore.CurrentCount == 0)
-                {
-                    if (objOriginalContext == null || ExecutionContext.Capture() == objOriginalContext)
-                        objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                    else
-                    {
-                        // We need to switch back to the original execution context to make sure we fetch from the proper AsyncLocal
-                        ExecutionContext objContextCopy = objOriginalContext.CreateCopy();
-                        ExecutionContext.Run(objOriginalContext,
-                                             state => objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2
-                                                                            ?? _objTopLevelWriterSemaphore, null);
-                        objOriginalContext = objContextCopy;
-                    }
-                }
-                else
-                {
-                    blnReleaseSemaphore = false;
-                    break;
-                }
-            }
+            await objCurrentSemaphore.WaitAsync().ConfigureAwait(false);
             try
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -401,42 +381,17 @@ namespace Chummer
             }
             finally
             {
-                if (blnReleaseSemaphore)
-                    objCurrentSemaphore.Release();
+                objCurrentSemaphore.Release();
             }
         }
 
         /// <summary>
         /// Heavier read lock entrant, used if a write lock is already being held somewhere
         /// </summary>
-        private async Task SimpleTakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, ExecutionContext objOriginalContext, CancellationTokenRegistration objLocalReaderUndo, CancellationToken token)
+        private async Task SimpleTakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, CancellationTokenRegistration objLocalReaderUndo, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            bool blnReleaseSemaphore = true;
-            while (!await objCurrentSemaphore.WaitAsync(ReadLockHeartbeatDelay / 2, token).ConfigureAwait(false))
-            {
-                // Do a heartbeat update to sanity-check for longer waits and skip the longer lock if we'd be able to safely reset
-                await Utils.SafeSleepAsync(ReadLockHeartbeatDelay / 2, token).ConfigureAwait(false);
-                if (_objTopLevelWriterSemaphore.CurrentCount == 0)
-                {
-                    if (objOriginalContext == null || ExecutionContext.Capture() == objOriginalContext)
-                        objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                    else
-                    {
-                        // We need to switch back to the original execution context to make sure we fetch from the proper AsyncLocal
-                        ExecutionContext objContextCopy = objOriginalContext.CreateCopy();
-                        ExecutionContext.Run(objOriginalContext,
-                                             state => objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2
-                                                                            ?? _objTopLevelWriterSemaphore, null);
-                        objOriginalContext = objContextCopy;
-                    }
-                }
-                else
-                {
-                    blnReleaseSemaphore = false;
-                    break;
-                }
-            }
+            await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -454,10 +409,9 @@ namespace Chummer
             }
             finally
             {
-                if (blnReleaseSemaphore)
-                    objCurrentSemaphore.Release();
+                objLocalReaderUndo.Dispose();
+                objCurrentSemaphore.Release();
             }
-            objLocalReaderUndo.Dispose();
         }
 
         /// <summary>
@@ -515,59 +469,67 @@ namespace Chummer
             }
             token.ThrowIfCancellationRequested();
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (_objTopLevelWriterSemaphore.CurrentCount == 0)
+            if (_objTopLevelWriterSemaphore.CurrentCount != 0)
             {
-                // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
-                DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                bool blnReleaseSemaphore = true;
-                while (!objCurrentSemaphore.SafeWait(ReadLockHeartbeatDelay / 2, token))
+                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
-                    // Do a heartbeat update to sanity-check for longer waits and skip the longer lock if we'd be able to safely reset
-                    Utils.SafeSleep(ReadLockHeartbeatDelay / 2, token);
-                    if (_objTopLevelWriterSemaphore.CurrentCount == 0)
-                        objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                    else
+                    try
                     {
-                        blnReleaseSemaphore = false;
-                        break;
+                        _objReaderSemaphore.SafeWait(token);
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _intCountActiveReaders);
+                        throw;
                     }
                 }
-                try
-                {
-                    if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
-                    {
-                        try
-                        {
-                            _objReaderSemaphore.SafeWait(token);
-                        }
-                        catch
-                        {
-                            Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                    }
-                }
-                finally
-                {
-                    if (blnReleaseSemaphore)
-                        objCurrentSemaphore.Release();
-                }
+                ++_intCountLocalReaders.Value;
+                return new SafeReaderSemaphoreRelease(this);
             }
-            else if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
+            token.ThrowIfCancellationRequested();
+            // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
+            if (objCurrentSemaphore.CurrentCount != 0)
             {
-                try
+                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
-                    _objReaderSemaphore.SafeWait(token);
+                    try
+                    {
+                        _objReaderSemaphore.SafeWait(token);
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _intCountActiveReaders);
+                        throw;
+                    }
                 }
-                catch
-                {
-                    Interlocked.Decrement(ref _intCountActiveReaders);
-                    throw;
-                }
+                ++_intCountLocalReaders.Value;
+                return new SafeReaderSemaphoreRelease(this);
             }
 
-            ++_intCountLocalReaders.Value;
-            return new SafeReaderSemaphoreRelease(this);
+            // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
+            objCurrentSemaphore.SafeWait(token);
+            try
+            {
+                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
+                {
+                    try
+                    {
+                        _objReaderSemaphore.SafeWait(token);
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _intCountActiveReaders);
+                        throw;
+                    }
+                }
+                ++_intCountLocalReaders.Value;
+                return new SafeReaderSemaphoreRelease(this);
+            }
+            finally
+            {
+                objCurrentSemaphore.Release();
+            }
         }
 
         /// <summary>
@@ -585,12 +547,14 @@ namespace Chummer
             }
             // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
             ++_intCountLocalReaders.Value;
+            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.CurrentCount != 0)
                 return TakeReadLockCoreLightAsync();
-            // We will need to store the current execution context so that we can switch back to it whenever we wish to update objCurrentSemaphore
-            ExecutionContext objCurrentContext = ExecutionContext.Capture();
+            // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-            return TakeReadLockCoreAsync(objCurrentSemaphore, objCurrentContext);
+            return objCurrentSemaphore.CurrentCount != 0
+                ? TakeReadLockCoreLightAsync()
+                : TakeReadLockCoreAsync(objCurrentSemaphore);
         }
 
         /// <summary>
@@ -610,48 +574,24 @@ namespace Chummer
                 return Task.FromException<IDisposable>(new OperationCanceledException(token));
             // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
             // To undo this change in case the request is canceled, we will register a callback that will only be disposed at the end of the async methods
-            ++_intCountLocalReaders.Value;
             CancellationTokenRegistration objLocalReaderUndo = token.Register(x => --_intCountLocalReaders.Value, true);
-            if (token.IsCancellationRequested)
-                return Task.FromException<IDisposable>(new OperationCanceledException(token));
+            ++_intCountLocalReaders.Value;
+            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.CurrentCount != 0)
                 return TakeReadLockCoreLightAsync(objLocalReaderUndo, token);
-            // We will need to store the current execution context so that we can switch back to it whenever we wish to update objCurrentSemaphore
-            ExecutionContext objCurrentContext = ExecutionContext.Capture();
+            // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-            return TakeReadLockCoreAsync(objCurrentSemaphore, objCurrentContext, objLocalReaderUndo, token);
+            return objCurrentSemaphore.CurrentCount != 0
+                ? TakeReadLockCoreLightAsync(objLocalReaderUndo, token)
+                : TakeReadLockCoreAsync(objCurrentSemaphore, objLocalReaderUndo, token);
         }
 
         /// <summary>
         /// Heavier read lock entrant, used if a write lock is already being held somewhere
         /// </summary>
-        private async Task<IDisposable> TakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, ExecutionContext objOriginalContext)
+        private async Task<IDisposable> TakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore)
         {
-            bool blnReleaseSemaphore = true;
-            while (!await objCurrentSemaphore.WaitAsync(ReadLockHeartbeatDelay / 2).ConfigureAwait(false))
-            {
-                // Do a heartbeat update to sanity-check for longer waits and skip the longer lock if we'd be able to safely reset
-                await Utils.SafeSleepAsync(ReadLockHeartbeatDelay / 2).ConfigureAwait(false);
-                if (_objTopLevelWriterSemaphore.CurrentCount == 0)
-                {
-                    if (objOriginalContext == null || ExecutionContext.Capture() == objOriginalContext)
-                        objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                    else
-                    {
-                        // We need to switch back to the original execution context to make sure we fetch from the proper AsyncLocal
-                        ExecutionContext objContextCopy = objOriginalContext.CreateCopy();
-                        ExecutionContext.Run(objOriginalContext,
-                                             state => objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2
-                                                                            ?? _objTopLevelWriterSemaphore, null);
-                        objOriginalContext = objContextCopy;
-                    }
-                }
-                else
-                {
-                    blnReleaseSemaphore = false;
-                    break;
-                }
-            }
+            await objCurrentSemaphore.WaitAsync().ConfigureAwait(false);
             try
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -666,46 +606,21 @@ namespace Chummer
                         throw;
                     }
                 }
+                return new SafeReaderSemaphoreRelease(this);
             }
             finally
             {
-                if (blnReleaseSemaphore)
-                    objCurrentSemaphore.Release();
+                objCurrentSemaphore.Release();
             }
-            return new SafeReaderSemaphoreRelease(this);
         }
 
         /// <summary>
         /// Heavier read lock entrant, used if a write lock is already being held somewhere
         /// </summary>
-        private async Task<IDisposable> TakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, ExecutionContext objOriginalContext, CancellationTokenRegistration objLocalReaderUndo, CancellationToken token)
+        private async Task<IDisposable> TakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, CancellationTokenRegistration objLocalReaderUndo, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            bool blnReleaseSemaphore = true;
-            while (!await objCurrentSemaphore.WaitAsync(ReadLockHeartbeatDelay / 2, token).ConfigureAwait(false))
-            {
-                // Do a heartbeat update to sanity-check for longer waits and skip the longer lock if we'd be able to safely reset
-                await Utils.SafeSleepAsync(ReadLockHeartbeatDelay / 2, token).ConfigureAwait(false);
-                if (_objTopLevelWriterSemaphore.CurrentCount == 0)
-                {
-                    if (objOriginalContext == null || ExecutionContext.Capture() == objOriginalContext)
-                        objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                    else
-                    {
-                        // We need to switch back to the original execution context to make sure we fetch from the proper AsyncLocal
-                        ExecutionContext objContextCopy = objOriginalContext.CreateCopy();
-                        ExecutionContext.Run(objOriginalContext,
-                                             state => objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2
-                                                                            ?? _objTopLevelWriterSemaphore, null);
-                        objOriginalContext = objContextCopy;
-                    }
-                }
-                else
-                {
-                    blnReleaseSemaphore = false;
-                    break;
-                }
-            }
+            await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -720,14 +635,13 @@ namespace Chummer
                         throw;
                     }
                 }
+                return new SafeReaderSemaphoreRelease(this);
             }
             finally
             {
-                if (blnReleaseSemaphore)
-                    objCurrentSemaphore.Release();
+                objLocalReaderUndo.Dispose();
+                objCurrentSemaphore.Release();
             }
-            objLocalReaderUndo.Dispose();
-            return new SafeReaderSemaphoreRelease(this);
         }
 
         /// <summary>
@@ -856,7 +770,7 @@ namespace Chummer
             }
         }
 
-        private struct SafeReaderSemaphoreRelease : IDisposable
+        private readonly struct SafeReaderSemaphoreRelease : IDisposable
         {
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
 
