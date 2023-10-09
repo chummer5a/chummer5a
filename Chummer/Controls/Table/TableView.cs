@@ -451,7 +451,7 @@ namespace Chummer.UI.Table
 
                             header.SortType = _eSortType;
                             // ReSharper disable once MethodSupportsCancellation
-                            Sort();
+                            Sort(token: CancellationToken.None);
                         };
                         header.Sortable = true;
                     }

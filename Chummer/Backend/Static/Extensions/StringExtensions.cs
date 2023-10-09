@@ -264,8 +264,8 @@ namespace Chummer
         /// Method to quickly remove the first instance of a substring from a string.
         /// </summary>
         /// <param name="strInput">String on which to operate.</param>
-        /// <param name="intStartIndex">Index from which to begin searching.</param>
         /// <param name="strSubstringToDelete">Substring to remove.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the first instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
         public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete,
@@ -290,8 +290,8 @@ namespace Chummer
         /// Method to quickly remove the last instance of a substring from a string.
         /// </summary>
         /// <param name="strInput">String on which to operate.</param>
-        /// <param name="intStartIndex">Index from which to begin searching (proceeding towards the beginning of the string).</param>
         /// <param name="strSubstringToDelete">Substring to remove.</param>
+        /// <param name="intStartIndex">Index from which to begin searching (proceeding towards the beginning of the string).</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the last instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
         public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete,

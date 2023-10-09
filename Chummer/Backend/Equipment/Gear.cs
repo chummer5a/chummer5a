@@ -5366,7 +5366,6 @@ namespace Chummer.Backend.Equipment
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                 }
-
             }
             finally
             {

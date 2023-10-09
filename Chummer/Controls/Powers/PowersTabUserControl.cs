@@ -672,7 +672,7 @@ namespace Chummer.UI.Powers
                                            .ConfigureAwait(false))
                                 {
                                     if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter, MyToken)
-                                                           .ConfigureAwait(false) == DialogResult.OK)
+                                            .ConfigureAwait(false) == DialogResult.OK)
                                         p.Notes = frmPowerNotes.MyForm.Notes;
                                 }
                             }
@@ -682,7 +682,6 @@ namespace Chummer.UI.Powers
                             }
                         },
                         Alignment = Alignment.Center
-
                     };
                 })
             {

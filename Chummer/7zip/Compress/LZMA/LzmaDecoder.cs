@@ -314,7 +314,7 @@ namespace SevenZip.Compression.LZMA
         public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
-            Chummer.Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None));
+            Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None));
         }
 
         public Task CodeAsync(Stream inStream, Stream outStream,

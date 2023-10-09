@@ -2321,7 +2321,8 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (blnSync)
                 {

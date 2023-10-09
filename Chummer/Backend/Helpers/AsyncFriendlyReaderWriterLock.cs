@@ -111,7 +111,7 @@ namespace Chummer
                 try
                 {
                     // ReSharper disable once MethodSupportsCancellation
-                    objNextSemaphore.SafeWait();
+                    objNextSemaphore.SafeWait(CancellationToken.None);
                     try
                     {
                         objCurrentSemaphore.Release();
@@ -350,7 +350,7 @@ namespace Chummer
             ++_intCountLocalReaders.Value;
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.CurrentCount != 0)
-                return SimpleTakeReadLockCoreLightAsync();
+                return SimpleTakeReadLockCoreLightAsync(objLocalReaderUndo, token);
             // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
             return objCurrentSemaphore.CurrentCount != 0

@@ -355,7 +355,6 @@ namespace Chummer.UI.Skills
                                                                     .AsTask(),
                                                               _objMyToken, _objMyToken);
 
-
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))
                     {
@@ -540,7 +539,6 @@ namespace Chummer.UI.Skills
                                                                     x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                           .AsTask(),
                                                                     _objMyToken, _objMyToken).ConfigureAwait(false);
-
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))

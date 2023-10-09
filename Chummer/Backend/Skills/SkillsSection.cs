@@ -29,7 +29,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
-using iText.Forms.Xfdf;
 using Microsoft.VisualStudio.Threading;
 using IAsyncDisposable = System.IAsyncDisposable;
 
@@ -1190,7 +1189,7 @@ namespace Chummer.Backend.Skills
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? _objCharacter.LoadData("skills.xml", token: token)
                                 : await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
-                            foreach (string skillId in setSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
+                            foreach (string skillId in setSkillGuids.Where(s => Skills.All(skill => skill.Name != s, token)))
                             {
                                 XmlNode objXmlSkillNode
                                     = skillsDoc.TryGetNodeByNameOrId(
@@ -1655,58 +1654,74 @@ namespace Chummer.Backend.Skills
                 //Hacky way of converting Expense entries to guid based skill identification
                 //specs already did?
                 //First create dictionary mapping name=>guid
-                using (LockingDictionary<string, Guid> dicGroups = new LockingDictionary<string, Guid>())
-                using (LockingDictionary<string, Guid> dicSkills = new LockingDictionary<string, Guid>())
+                LockingDictionary<string, Guid> dicGroups = new LockingDictionary<string, Guid>();
+                try
                 {
-                    // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-                    // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
-                    // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
-                    await Task.WhenAll(
-                        Task.Run(() => SkillGroups.ForEachParallelAsync(async x =>
-                        {
-                            // ReSharper disable once AccessToDisposedClosure
-                            if (await x.GetRatingAsync(token).ConfigureAwait(false) > 0)
-                                // ReSharper disable once AccessToDisposedClosure
-                                await dicGroups.TryAddAsync(x.Name, x.Id, token).ConfigureAwait(false);
-                        }, token: token), token),
-                        Task.Run(() => Skills.ForEachParallelAsync(async x =>
-                        {
-                            if (await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0)
-                                // ReSharper disable once AccessToDisposedClosure
-                                await dicSkills.TryAddAsync(x.Name, x.Id, token).ConfigureAwait(false);
-                        }, token: token), token),
-                        // ReSharper disable once AccessToDisposedClosure
-                        Task.Run(() => KnowledgeSkills.ForEachParallelAsync(x => dicSkills.TryAddAsync(x.Name, x.Id, token).AsTask(), token: token), token)).ConfigureAwait(false);
-                    UpdateUndoSpecific(
-                        dicSkills,
-                        EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
-                    UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
-
-                    void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
-                                            IEnumerable<KarmaExpenseType> typesRequiringConverting)
+                    LockingDictionary<string, Guid> dicSkills = new LockingDictionary<string, Guid>();
+                    try
                     {
-                        //Build a crazy xpath to get everything we want to convert
+                        // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+                        // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                        // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
+                        await Task.WhenAll(
+                                Task.Run(() => SkillGroups.ForEachParallelAsync(async x =>
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    if (await x.GetRatingAsync(token).ConfigureAwait(false) > 0)
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        await dicGroups.TryAddAsync(x.Name, x.Id, token).ConfigureAwait(false);
+                                }, token: token), token),
+                                Task.Run(() => Skills.ForEachParallelAsync(async x =>
+                                {
+                                    if (await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0)
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        await dicSkills.TryAddAsync(x.Name, x.Id, token).ConfigureAwait(false);
+                                }, token: token), token),
+                                // ReSharper disable once AccessToDisposedClosure
+                                Task.Run(
+                                    () => KnowledgeSkills.ForEachParallelAsync(
+                                        x => dicSkills.TryAddAsync(x.Name, x.Id, token).AsTask(), token: token), token))
+                            .ConfigureAwait(false);
+                        UpdateUndoSpecific(
+                            dicSkills,
+                            EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill,
+                                KarmaExpenseType.ImproveSkill));
+                        UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
 
-                        string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
-                                          string.Join(
-                                              " or ",
-                                              typesRequiringConverting.Select(
-                                                  x => "karmatype = " + x.ToString().CleanXPath())) +
-                                          "]/objectid";
-
-                        //Find everything
-                        XmlNodeList lstNodesToChange = xmlSkillOwnerDocument.SelectNodes(strXPath);
-                        if (lstNodesToChange != null)
+                        void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
+                            IEnumerable<KarmaExpenseType> typesRequiringConverting)
                         {
-                            for (int i = 0; i < lstNodesToChange.Count; i++)
+                            //Build a crazy xpath to get everything we want to convert
+
+                            string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
+                                              string.Join(
+                                                  " or ",
+                                                  typesRequiringConverting.Select(
+                                                      x => "karmatype = " + x.ToString().CleanXPath())) +
+                                              "]/objectid";
+
+                            //Find everything
+                            XmlNodeList lstNodesToChange = xmlSkillOwnerDocument.SelectNodes(strXPath);
+                            if (lstNodesToChange != null)
                             {
-                                lstNodesToChange[i].InnerText
-                                    = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
-                                        ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
-                                        : StringExtensions.EmptyGuid;
+                                for (int i = 0; i < lstNodesToChange.Count; i++)
+                                {
+                                    lstNodesToChange[i].InnerText
+                                        = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                                            ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                            : StringExtensions.EmptyGuid;
+                                }
                             }
                         }
                     }
+                    finally
+                    {
+                        await dicSkills.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await dicGroups.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally

@@ -790,7 +790,6 @@ namespace Chummer.Backend.Equipment
                     objXmlCyberware.TryGetInt32FieldQuickly("minagility", ref _intMinAgility);
                     objXmlCyberware.TryGetInt32FieldQuickly("minstrength", ref _intMinStrength);
 
-
                     _intRating = Math.Min(Math.Max(intRating, MinRating), MaxRating);
 
                     objXmlCyberware.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
@@ -5685,7 +5684,8 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objChild.ParentID == InternalId)
                         return 0;
-                    AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                    AvailabilityValue objLoopAvailTuple =
+                        await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (!objLoopAvailTuple.AddToParent)
                         intLoopAvail = Math.Max(intLoopAvail, objLoopAvailTuple.Value);
                     if (blnCheckChildren)
@@ -5696,6 +5696,7 @@ namespace Chummer.Backend.Equipment
                             chrLastAvailChar = 'R';
                         return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
                     }
+
                     if (blnOrGear)
                     {
                         if (objLoopAvailTuple.Suffix == 'F')
@@ -5703,8 +5704,8 @@ namespace Chummer.Backend.Equipment
                         else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                             chrLastAvailChar = 'R';
                     }
-                    return 0;
 
+                    return 0;
                 }, token).ConfigureAwait(false);
 
                 // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
@@ -9124,8 +9125,8 @@ namespace Chummer.Backend.Equipment
         /// Purchases a selected piece of Cyberware with a given Grade and Rating.
         /// </summary>
         /// <param name="objNode"></param>
-        /// <param name="objGrade"></param>
         /// <param name="objImprovementSource"></param>
+        /// <param name="objGrade"></param>
         /// <param name="intRating"></param>
         /// <param name="objVehicle"></param>
         /// <param name="lstCyberwareCollection"></param>

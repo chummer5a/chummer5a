@@ -1637,8 +1637,8 @@ namespace Chummer
         /// <summary>
         /// Find a TreeNode in a TreeNode based on its Tag.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="objNode">TreeNode to search.</param>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeNode objNode, string strGuid, bool blnDeep = true)
         {
@@ -1898,8 +1898,8 @@ namespace Chummer
         /// <summary>
         /// Find a TreeNode in a TreeView based on its Tag.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="treTree">TreeView to search.</param>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeView treTree, string strGuid, bool blnDeep = true)
         {

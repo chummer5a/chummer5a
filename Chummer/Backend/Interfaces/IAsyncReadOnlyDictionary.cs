@@ -116,18 +116,15 @@ namespace Chummer
                     return false;
             }
 
-            using (IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = dicRight.GetEnumerator())
+            foreach (KeyValuePair<object, IComparable> kvpRight in dicRight)
             {
-                while (objRightEnumerator.MoveNext())
-                {
-                    object objKey = objRightEnumerator.Current.Key;
-                    (bool blnContains, IComparable objValue)
-                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                    if (!blnContains)
-                        return false;
-                    if (!objValue.Equals(objRightEnumerator.Current.Value))
-                        return false;
-                }
+                object objKey = kvpRight.Key;
+                (bool blnContains, IComparable objValue)
+                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                if (!blnContains)
+                    return false;
+                if (!objValue.Equals(kvpRight.Value))
+                    return false;
             }
 
             return true;
@@ -148,18 +145,15 @@ namespace Chummer
                     return false;
             }
 
-            using (IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = dicRight.GetEnumerator())
+            foreach (KeyValuePair<object, IComparable> kvpRight in dicRight)
             {
-                while (objRightEnumerator.MoveNext())
-                {
-                    object objKey = objRightEnumerator.Current.Key;
-                    (bool blnContains, IComparable objValue)
-                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                    if (!blnContains)
-                        return false;
-                    if (!objValue.Equals(objRightEnumerator.Current.Value))
-                        return false;
-                }
+                object objKey = kvpRight.Key;
+                (bool blnContains, IComparable objValue)
+                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                if (!blnContains)
+                    return false;
+                if (!objValue.Equals(kvpRight.Value))
+                    return false;
             }
 
             return true;

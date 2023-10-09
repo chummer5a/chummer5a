@@ -1185,7 +1185,7 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     func.Invoke();
                 });
             }
@@ -1202,7 +1202,7 @@ namespace Chummer
                 : JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     return func.Invoke();
                 });
         }
@@ -1238,7 +1238,7 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     func.Invoke();
                 }, eOptions);
             }
@@ -1255,7 +1255,7 @@ namespace Chummer
                 : JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     return func.Invoke();
                 }, eOptions);
         }

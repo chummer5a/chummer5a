@@ -48,7 +48,6 @@ using Microsoft.ApplicationInsights;
 using Microsoft.IO;
 using Newtonsoft.Json;
 using NLog;
-using Org.BouncyCastle.Operators;
 using Application = System.Windows.Forms.Application;
 
 namespace Chummer
@@ -596,7 +595,7 @@ namespace Chummer
                 try
                 {
                     // First remove all existing bindings
-                    foreach (CharacterAttrib objAttribute in GetAllAttributes())
+                    foreach (CharacterAttrib objAttribute in GetAllAttributes(token))
                     {
                         stkLockers.Push(objAttribute.LockObject.EnterWriteLock(token));
                         switch (objAttribute.Abbrev)
@@ -2869,7 +2868,7 @@ namespace Chummer
                         using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                         {
                             Description = string.Format(GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_Improvement_SelectText"),
+                                       LanguageManager.GetString("String_Improvement_SelectText", token: token),
                                        xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"]?.InnerText)
                         }))
                         {
@@ -5615,7 +5614,7 @@ namespace Chummer
                                         CharacterSettings objHashCodeMatchSettings
                                             = blnSync
                                                 ? SettingsManager.LoadedCharacterSettings.FirstOrDefault(
-                                                    x => x.Value.GetEquatableHashCode() == intSettingsHashCode).Value
+                                                    x => x.Value.GetEquatableHashCode(token) == intSettingsHashCode).Value
                                                 : (await (await SettingsManager
                                                                 .GetLoadedCharacterSettingsAsync(token)
                                                                 .ConfigureAwait(false))
@@ -7726,7 +7725,7 @@ namespace Chummer
                                                         !x.IsModularCurrentlyEquipped)
                                                         return false;
                                                     string strToMatch = x.InternalId + "Pair";
-                                                    return Improvements.Any(y => y.SourceName == strToMatch);
+                                                    return Improvements.Any(y => y.SourceName == strToMatch, token);
                                                 }))
                                             {
                                                 XmlNode objNode = objCyberware.GetNode(token: token);
@@ -11717,7 +11716,7 @@ namespace Chummer
                             }
 
                             foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
-                                         x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0), token))
+                                         x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
                             {
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
@@ -11751,7 +11750,7 @@ namespace Chummer
                             foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                             {
                                 foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
-                                             x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0), token))
+                                             x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
                                 {
                                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                     {
@@ -11815,7 +11814,7 @@ namespace Chummer
                                 foreach (VehicleMod objVehicleMod in objMount.Mods)
                                 {
                                     foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
-                                                 x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0), token))
+                                                 x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
                                     {
                                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                         {
@@ -13310,30 +13309,34 @@ namespace Chummer
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                await (await (await GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(async objLoopCyberware =>
-                {
-                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                    if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
-                        && (objLoopCyberware.Location == objModularCyberware.Location
-                            || string.IsNullOrEmpty(objModularCyberware.Location))
-                        && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
-                        && objLoopCyberware != objModularCyberware
-                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                        && await objLoopCyberware.Children.AllAsync(
-                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token).ConfigureAwait(false))
+                await (await (await GetCyberwareAsync(token).ConfigureAwait(false))
+                    .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(
+                    async objLoopCyberware =>
                     {
-                        string strName = objLoopCyberware.Parent != null
-                            ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                            : await objLoopCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                    }
-                }, token).ConfigureAwait(false);
+                        // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                        if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                            && (objLoopCyberware.Location == objModularCyberware.Location
+                                || string.IsNullOrEmpty(objModularCyberware.Location))
+                            && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                            && objLoopCyberware != objModularCyberware
+                            // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                            && await objLoopCyberware.Children.AllAsync(
+                                    x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token)
+                                .ConfigureAwait(false))
+                        {
+                            string strName = objLoopCyberware.Parent != null
+                                ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                : await objLoopCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                        }
+                    }, token).ConfigureAwait(false);
 
                 await (await GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopVehicle =>
                 {
                     await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
                     {
-                        await objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children).ForEachAsync(
+                        await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)
+                            .ConfigureAwait(false)).ForEachAsync(
                             async objLoopCyberware =>
                             {
                                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
@@ -13343,17 +13346,17 @@ namespace Chummer
                                     && objLoopCyberware != objModularCyberware
                                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
                                     && await objLoopCyberware.Children.AllAsync(
-                                                                 x => x.PlugsIntoModularMount
-                                                                      != objLoopCyberware.HasModularMount, token)
-                                                             .ConfigureAwait(false))
+                                            x => x.PlugsIntoModularMount
+                                                 != objLoopCyberware.HasModularMount, token)
+                                        .ConfigureAwait(false))
                                 {
                                     string strName
                                         = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
                                           + strSpace + (objLoopCyberware.Parent != null
                                               ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
-                                                                      .ConfigureAwait(false)
+                                                  .ConfigureAwait(false)
                                               : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                                       .ConfigureAwait(false));
+                                                  .ConfigureAwait(false));
                                     lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                                 }
                             }, token).ConfigureAwait(false);
@@ -13363,7 +13366,8 @@ namespace Chummer
                     {
                         await objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
                         {
-                            await objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children).ForEachAsync(
+                            await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)
+                                .ConfigureAwait(false)).ForEachAsync(
                                 async objLoopCyberware =>
                                 {
                                     // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
@@ -13373,15 +13377,17 @@ namespace Chummer
                                         && objLoopCyberware != objModularCyberware
                                         // Make sure it's not the place where the mount is already occupied (either by us or something else)
                                         && await objLoopCyberware.Children.AllAsync(
-                                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token).ConfigureAwait(false))
+                                                x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token)
+                                            .ConfigureAwait(false))
                                     {
                                         string strName
-                                            = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                            = await objLoopVehicle.GetCurrentDisplayNameAsync(token)
+                                                  .ConfigureAwait(false)
                                               + strSpace + (objLoopCyberware.Parent != null
                                                   ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
-                                                                          .ConfigureAwait(false)
+                                                      .ConfigureAwait(false)
                                                   : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                                           .ConfigureAwait(false));
+                                                      .ConfigureAwait(false));
                                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                                     }
                                 }, token).ConfigureAwait(false);
@@ -14005,8 +14011,8 @@ namespace Chummer
         /// <summary>
         /// Move a Gear TreeNode after Drag and Drop, changing its parent.
         /// </summary>
-        /// <param name="objGearNode">Node of gear to move.</param>
         /// <param name="objDestination">Destination Node.</param>
+        /// <param name="objGearNode">Node of gear to move.</param>
         /// <param name="token">CancellationToken to listen to.</param>
         public void MoveGearParent(TreeNode objDestination, TreeNode objGearNode, CancellationToken token = default)
         {
@@ -29219,19 +29225,19 @@ namespace Chummer
                         {
                             objVehicle.DiscountCost = objVehicle.DiscountCost
                                                       && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
-                            foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                            foreach (Gear objGear in await objVehicle.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
 
-                            await objVehicle.Mods.ForEachAsync(objMod =>
+                            await objVehicle.Mods.ForEachAsync(async objMod =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setVehicleModBlackMarketMaps.Contains(objMod.Category);
-                                foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
+                                             x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     if (objCyberware.DiscountCost)
@@ -29242,8 +29248,8 @@ namespace Chummer
                                                 : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
                                     }
 
-                                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                                 x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
@@ -29252,18 +29258,18 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                            foreach (Weapon objWeapon in await objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = objWeapon.DiscountCost
                                                          && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                                await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                                await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                 {
                                     objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                 && setWeaponBlackMarketMaps
                                                                     .Contains(objWeapon.Category);
-                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                 x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
@@ -29277,12 +29283,12 @@ namespace Chummer
                                 objMount.DiscountCost = objMount.DiscountCost
                                                         && setWeaponMountBlackMarketMaps
                                                             .Contains(objMount.Category);
-                                await objMount.Mods.ForEachAsync(objMod =>
+                                await objMount.Mods.ForEachAsync(async objMod =>
                                 {
                                     objMod.DiscountCost = objMod.DiscountCost
                                                           && setVehicleModBlackMarketMaps.Contains(objMod.Category);
-                                    foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
+                                                 x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         if (objCyberware.DiscountCost)
@@ -29293,8 +29299,8 @@ namespace Chummer
                                                     : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
                                         }
 
-                                        foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                                     x => x.Children))
+                                        foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                                     x => x.Children, token).ConfigureAwait(false))
                                         {
                                             token.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
@@ -29304,20 +29310,20 @@ namespace Chummer
                                     }
                                 }, token).ConfigureAwait(false);
 
-                                foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                                foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objWeapon.DiscountCost = objWeapon.DiscountCost
                                                              && setWeaponBlackMarketMaps.Contains(
                                                                  objWeapon.Category);
-                                    await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                                    await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                     && setWeaponBlackMarketMaps
                                                                         .Contains(objWeapon.Category);
-                                        foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                     x => x.Children))
+                                        foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                     x => x.Children, token).ConfigureAwait(false))
                                         {
                                             token.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
@@ -29334,14 +29340,14 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = objWeapon.DiscountCost
                                                      && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                            await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                            await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                             {
                                 token.ThrowIfCancellationRequested();
                                 objAccessory.DiscountCost = objAccessory.DiscountCost
                                                             && setWeaponBlackMarketMaps
                                                                 .Contains(objWeapon.Category);
-                                foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
@@ -29394,21 +29400,21 @@ namespace Chummer
                     await Vehicles.ForEachAsync(async objVehicle =>
                     {
                         objVehicle.DiscountCost = false;
-                        foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                        foreach (Gear objGear in await objVehicle.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
                         }
 
-                        await objVehicle.Mods.ForEachAsync(objMod =>
+                        await objVehicle.Mods.ForEachAsync(async objMod =>
                         {
                             objMod.DiscountCost = false;
-                            foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                            foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objCyberware.DiscountCost = false;
-                                foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
@@ -29416,15 +29422,15 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
 
-                        foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                        foreach (Weapon objWeapon in await objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = false;
-                            await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                            await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                             {
                                 objAccessory.DiscountCost = false;
-                                foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
@@ -29435,16 +29441,16 @@ namespace Chummer
                         await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
                         {
                             objMount.DiscountCost = false;
-                            await objMount.Mods.ForEachAsync(objMod =>
+                            await objMount.Mods.ForEachAsync(async objMod =>
                             {
                                 objMod.DiscountCost = false;
-                                foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
+                                             x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objCyberware.DiscountCost = false;
-                                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                                 x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
@@ -29452,15 +29458,15 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                            foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = false;
-                                await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                                await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                 {
                                     objAccessory.DiscountCost = false;
-                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                 x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
@@ -29474,11 +29480,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         objWeapon.DiscountCost = false;
-                        await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                        await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                         {
                             objAccessory.DiscountCost = false;
-                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                         x => x.Children))
+                            foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                         x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
@@ -31078,7 +31084,7 @@ namespace Chummer
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
-                    await EnqueuePostLoadAsyncMethodAsync(RefreshRedlinerImprovementsAsync, token);
+                    await EnqueuePostLoadAsyncMethodAsync(RefreshRedlinerImprovementsAsync, token).ConfigureAwait(false);
                     return true;
                 }
 
@@ -31086,17 +31092,17 @@ namespace Chummer
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
                 lstSeekerImprovements.AddRange((await ImprovementManager
                         .GetCachedImprovementListForValueOfAsync(
-                            this, Improvement.ImprovementType.Attribute, token: token))
+                            this, Improvement.ImprovementType.Attribute, token: token).ConfigureAwait(false))
                                                .Where(objLoopImprovement =>
                                                           objLoopImprovement.SourceName.Contains("SEEKER")));
                 lstSeekerImprovements.AddRange((await ImprovementManager
                         .GetCachedImprovementListForValueOfAsync(
-                            this, Improvement.ImprovementType.PhysicalCM, token: token))
+                            this, Improvement.ImprovementType.PhysicalCM, token: token).ConfigureAwait(false))
                                                .Where(objLoopImprovement =>
                                                           objLoopImprovement.SourceName.Contains("SEEKER")));
                 List<string> lstSeekerAttributes = (await ImprovementManager
                         .GetCachedImprovementListForValueOfAsync(
-                            this, Improvement.ImprovementType.Seeker, token: token))
+                            this, Improvement.ImprovementType.Seeker, token: token).ConfigureAwait(false))
                                                    .ConvertAll(objImprovement => objImprovement.ImprovedName);
                 lstSeekerAttributes.RemoveAll(x => x != "BOX" && !AttributeSection.AttributeStrings.Contains(x));
                 //if neither contains anything, it is safe to exit
@@ -31107,7 +31113,7 @@ namespace Chummer
                 }
 
                 //Calculate bonus from cyberlimbs
-                int intCount = await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token), token);
+                int intCount = await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token), token).ConfigureAwait(false);
 
                 intCount = Math.Min(intCount / 2, 2);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -31142,7 +31148,7 @@ namespace Chummer
                     //the local
 
                     // Remove which qualities have been removed or which values have changed
-                    await ImprovementManager.RemoveImprovementsAsync(this, lstSeekerImprovements, token: token);
+                    await ImprovementManager.RemoveImprovementsAsync(this, lstSeekerImprovements, token: token).ConfigureAwait(false);
 
                     try
                     {
@@ -31158,7 +31164,7 @@ namespace Chummer
                                     Guid.NewGuid()
                                         .ToString(
                                             "D", GlobalSettings.InvariantCultureInfo),
-                                    intCount * -3, token: token);
+                                    intCount * -3, token: token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -31170,13 +31176,13 @@ namespace Chummer
                                         .ToString(
                                             "D", GlobalSettings.InvariantCultureInfo),
                                     intCount, 1, 0, 0,
-                                    intCount, token: token);
+                                    intCount, token: token).ConfigureAwait(false);
                             }
                         }
                     }
                     catch
                     {
-                        await ImprovementManager.RollbackAsync(this, CancellationToken.None);
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
                         throw;
                     }
 

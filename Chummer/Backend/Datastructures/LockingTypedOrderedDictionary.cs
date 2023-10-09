@@ -704,8 +704,8 @@ namespace Chummer
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
         /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
-        /// <param name="token">Cancellation token to listen to.</param>
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
         public TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory,
                                   Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)

@@ -1595,14 +1595,14 @@ namespace Chummer
                             // Essence must be less than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                          string.Format(GlobalSettings.CultureInfo, (blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                "Message_SelectQuality_RequireESSGradeBelow",
-                                                                token: token)
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Message_SelectQuality_RequireESSGradeBelow",
-                                                                token: token).ConfigureAwait(false)), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
+                                          string.Format(GlobalSettings.CultureInfo, blnSync
+                                              // ReSharper disable once MethodHasAsyncOverload
+                                              ? LanguageManager.GetString(
+                                                  "Message_SelectQuality_RequireESSGradeBelow",
+                                                  token: token)
+                                              : await LanguageManager.GetStringAsync(
+                                                  "Message_SelectQuality_RequireESSGradeBelow",
+                                                  token: token).ConfigureAwait(false), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
                             return new Tuple<bool, string>(decGrade
                                                            < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
                                                                                GlobalSettings.InvariantCultureInfo), strName);
@@ -1611,14 +1611,14 @@ namespace Chummer
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
-                                      string.Format(GlobalSettings.CultureInfo, (blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString(
-                                                            "Message_SelectQuality_RequireESSAbove",
-                                                            token: token)
-                                                        : await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireESSAbove",
-                                                            token: token).ConfigureAwait(false)), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
+                                      string.Format(GlobalSettings.CultureInfo, blnSync
+                                          // ReSharper disable once MethodHasAsyncOverload
+                                          ? LanguageManager.GetString(
+                                              "Message_SelectQuality_RequireESSAbove",
+                                              token: token)
+                                          : await LanguageManager.GetStringAsync(
+                                              "Message_SelectQuality_RequireESSAbove",
+                                              token: token).ConfigureAwait(false), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
                         return new Tuple<bool, string>(decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
                     }
 
@@ -1633,14 +1633,14 @@ namespace Chummer
                         // Essence must be less than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
-                                      string.Format(GlobalSettings.CultureInfo, (blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString(
-                                                            "Message_SelectQuality_RequireESSBelow",
-                                                            token: token)
-                                                        : await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireESSBelow",
-                                                            token: token).ConfigureAwait(false)), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
+                                      string.Format(GlobalSettings.CultureInfo, blnSync
+                                          // ReSharper disable once MethodHasAsyncOverload
+                                          ? LanguageManager.GetString(
+                                              "Message_SelectQuality_RequireESSBelow",
+                                              token: token)
+                                          : await LanguageManager.GetStringAsync(
+                                              "Message_SelectQuality_RequireESSBelow",
+                                              token: token).ConfigureAwait(false), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
                         return new Tuple<bool, string>(decEssence
                                                        < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
                                                                            GlobalSettings.InvariantCultureInfo), strName);
@@ -1649,14 +1649,14 @@ namespace Chummer
                     // Essence must be equal to or greater than the value.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' +
-                                  string.Format(GlobalSettings.CultureInfo, (blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                    ? LanguageManager.GetString(
-                                                        "Message_SelectQuality_RequireESSAbove",
-                                                        token: token)
-                                                    : await LanguageManager.GetStringAsync(
-                                                        "Message_SelectQuality_RequireESSAbove",
-                                                        token: token).ConfigureAwait(false)), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
+                                  string.Format(GlobalSettings.CultureInfo, blnSync
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      ? LanguageManager.GetString(
+                                          "Message_SelectQuality_RequireESSAbove",
+                                          token: token)
+                                      : await LanguageManager.GetStringAsync(
+                                          "Message_SelectQuality_RequireESSAbove",
+                                          token: token).ConfigureAwait(false), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
                     return new Tuple<bool, string>(decEssence
                                                    >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
                 }
@@ -2742,7 +2742,7 @@ namespace Chummer
                                          && x.TotalBaseRating >= intValue)
                                 : objSkillsSection.KnowledgeSkills.FirstOrDefault(
                                     x => (string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
-                                         && x.HasSpecialization(strSpec)
+                                         && x.HasSpecialization(strSpec, token)
                                          && x.TotalBaseRating >= intValue);
                         }
                         else
@@ -3154,7 +3154,7 @@ namespace Chummer
                         intMods += await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).SumAsync(async objVehicle =>
                         {
                             int intInnerSum = 0;
-                            foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons))
+                            foreach (Weapon objWeapon in await objVehicle.Weapons.GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                             {
                                 intInnerSum += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
                             }
@@ -3162,8 +3162,8 @@ namespace Chummer
                             intInnerSum += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                             {
                                 int intInnerSum2 = 0;
-                                foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(
-                                             x => x.UnderbarrelWeapons))
+                                foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(
+                                             x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                                 {
                                     intInnerSum2 += await objWeapon.WeaponAccessories.CountAsync(
                                         x => x.SpecialModification, token).ConfigureAwait(false);

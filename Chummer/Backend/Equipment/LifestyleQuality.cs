@@ -129,8 +129,8 @@ namespace Chummer.Backend.Equipment
         ///     Create a LifestyleQuality from an XmlNode.
         /// </summary>
         /// <param name="objXmlLifestyleQuality">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
         /// <param name="objParentLifestyle">Lifestyle object to which the LifestyleQuality will be added.</param>
+        /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
         /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
         /// <param name="strExtra">Forced value for the LifestyleQuality's Extra string (also used by its bonus node).</param>
         public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter,

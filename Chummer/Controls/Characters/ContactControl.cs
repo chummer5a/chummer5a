@@ -788,7 +788,7 @@ namespace Chummer
             await lblQuickStats.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objContact,
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
-                                                               x => x.GetQuickTextAsync().AsTask(), token: token).ConfigureAwait(false);
+                                                               x => x.GetQuickTextAsync(token).AsTask(), token: token).ConfigureAwait(false);
             await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(_objContact.Name), token).ConfigureAwait(false);
             await txtContactLocation.DoDataBindingAsync("Text", _objContact, nameof(_objContact.Location), token).ConfigureAwait(false);
             await cmdDelete.DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(_objContact.ReadOnly), token).ConfigureAwait(false);
@@ -947,22 +947,22 @@ namespace Chummer
                     await chkGroup.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                        nameof(Contact.GroupEnabled),
                                                                        // ReSharper disable once MethodSupportsCancellation
-                                                                       x => x.GetGroupEnabledAsync().AsTask(),
+                                                                       x => x.GetGroupEnabledAsync(token).AsTask(),
                                                                        token: token).ConfigureAwait(false);
                     await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                       nameof(Contact.FreeEnabled),
                                                                       // ReSharper disable once MethodSupportsCancellation
-                                                                      x => x.GetFreeEnabledAsync().AsTask(),
+                                                                      x => x.GetFreeEnabledAsync(token).AsTask(),
                                                                       token: token).ConfigureAwait(false);
                     await nudLoyalty.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                          nameof(Contact.LoyaltyEnabled),
                                                                          // ReSharper disable once MethodSupportsCancellation
-                                                                         x => x.GetLoyaltyEnabledAsync().AsTask(),
+                                                                         x => x.GetLoyaltyEnabledAsync(token).AsTask(),
                                                                          token: token).ConfigureAwait(false);
                     await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact,
                                                                             nameof(Contact.ConnectionMaximum),
                                                                             // ReSharper disable once MethodSupportsCancellation
-                                                                            x => x.GetConnectionMaximumAsync().AsTask(),
+                                                                            x => x.GetConnectionMaximumAsync(token).AsTask(),
                                                                             token: token).ConfigureAwait(false);
                     string strToolTipText;
                     if (_objContact.IsEnemy)

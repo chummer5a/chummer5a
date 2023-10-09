@@ -3566,46 +3566,46 @@ namespace Chummer.Backend.Equipment
                         strReturn = strReturn
                                     .CheapReplace(
                                         " or ",
-                                        () => strSpace + LanguageManager.GetString("String_Or", strLanguage) + strSpace,
+                                        () => strSpace + LanguageManager.GetString("String_Or", strLanguage, token: token) + strSpace,
                                         StringComparison.OrdinalIgnoreCase)
                                     .CheapReplace(
-                                        " Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage),
+                                        " Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage, token: token),
                                         StringComparison.OrdinalIgnoreCase)
                                     .CheapReplace(
-                                        " Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage),
+                                        " Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage, token: token),
                                         StringComparison.OrdinalIgnoreCase)
                                     .CheapReplace(" External Source",
                                                   () => LanguageManager.GetString(
-                                                      "String_AmmoExternalSource", strLanguage),
+                                                      "String_AmmoExternalSource", strLanguage, token: token),
                                                   StringComparison.OrdinalIgnoreCase)
                                     .CheapReplace(
-                                        " Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage),
+                                        " Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage, token: token),
                                         StringComparison.OrdinalIgnoreCase)
                                     .CheapReplace(
                                         "(b)",
-                                        () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage)
+                                        () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage, token: token)
                                                   + ')')
                                     .CheapReplace(
                                         "(belt)",
-                                        () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ')')
+                                        () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage, token: token) + ')')
                                     .CheapReplace(
                                         "(box)",
-                                        () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage) + ')')
+                                        () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage, token: token) + ')')
                                     .CheapReplace(
                                         "(c)",
-                                        () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage) + ')')
+                                        () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage, token: token) + ')')
                                     .CheapReplace(
                                         "(cy)",
-                                        () => '(' + LanguageManager.GetString("String_AmmoCylinder", strLanguage) + ')')
+                                        () => '(' + LanguageManager.GetString("String_AmmoCylinder", strLanguage, token: token) + ')')
                                     .CheapReplace(
                                         "(d)",
-                                        () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage) + ')')
+                                        () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage, token: token) + ')')
                                     .CheapReplace(
                                         "(m)",
-                                        () => '(' + LanguageManager.GetString("String_AmmoMagazine", strLanguage) + ')')
+                                        () => '(' + LanguageManager.GetString("String_AmmoMagazine", strLanguage, token: token) + ')')
                                     .CheapReplace(
                                         "(ml)",
-                                        () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage)
+                                        () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage, token: token)
                                                   + ')');
                         // ReSharper restore MethodHasAsyncOverloadWithCancellation
                     }
@@ -4384,7 +4384,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? ReplaceStrings(strAP.Replace("//", "/")
                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                           .CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage)), strLanguage, token)
+                           .CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)), strLanguage, token)
                     : await ReplaceStringsAsync(await strAP.Replace("//", "/")
                                                            .CheapReplaceAsync(
                                                                "-half",
@@ -4428,7 +4428,7 @@ namespace Chummer.Backend.Equipment
                             ? ReplaceStrings(
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 strAP.CheapReplace(
-                                    "-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
+                                    "-half", () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
                                 strLanguage, token)
                             : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                                             "-half",
@@ -4446,7 +4446,7 @@ namespace Chummer.Backend.Equipment
                         ? ReplaceStrings(
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strAP.CheapReplace(
-                                "-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
+                                "-half", () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
                             strLanguage, token)
                         : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                                         "-half",
@@ -4464,7 +4464,7 @@ namespace Chummer.Backend.Equipment
                         ? ReplaceStrings(
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strAP.CheapReplace(
-                                "-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
+                                "-half", () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
                             strLanguage, token)
                         : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                                         "-half",
@@ -4482,7 +4482,7 @@ namespace Chummer.Backend.Equipment
                         ? ReplaceStrings(
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strAP.CheapReplace(
-                                "-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
+                                "-half", () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
                             strLanguage, token)
                         : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                                         "-half",

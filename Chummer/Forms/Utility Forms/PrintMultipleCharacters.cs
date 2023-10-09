@@ -72,7 +72,7 @@ namespace Chummer
             }
             _objGenericCancellationTokenSource.Cancel(false);
             // ReSharper disable once MethodSupportsCancellation
-            await CleanUpOldCharacters().ConfigureAwait(false);
+            await CleanUpOldCharacters(CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void cmdSelectCharacter_Click(object sender, EventArgs e)

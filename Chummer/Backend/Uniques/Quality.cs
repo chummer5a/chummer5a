@@ -2157,7 +2157,7 @@ namespace Chummer
                             decimal decInnerReturn = 0;
                             foreach (Weapon objDeleteWeapon in objVehicle.Weapons
                                                                          .DeepWhere(x => x.Children,
-                                                                                    x => x.ParentID == InternalId).ToList())
+                                                                                    x => x.ParentID == InternalId, token).ToList())
                             {
                                 token.ThrowIfCancellationRequested();
                                 decInnerReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
@@ -2169,7 +2169,7 @@ namespace Chummer
                                 decimal decInnerReturn2 = 0;
                                 foreach (Weapon objDeleteWeapon in objMod.Weapons
                                                                          .DeepWhere(x => x.Children,
-                                                                                    x => x.ParentID == InternalId).ToList())
+                                                                                    x => x.ParentID == InternalId, token).ToList())
                                 {
                                     token.ThrowIfCancellationRequested();
                                     decInnerReturn2 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
@@ -2184,7 +2184,7 @@ namespace Chummer
                                 decimal decInnerReturn2 = 0;
                                 foreach (Weapon objDeleteWeapon in objMount.Weapons
                                                                            .DeepWhere(x => x.Children,
-                                                                                      x => x.ParentID == InternalId).ToList())
+                                                                                      x => x.ParentID == InternalId, token).ToList())
                                 {
                                     token.ThrowIfCancellationRequested();
                                     decInnerReturn2 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
@@ -2196,7 +2196,7 @@ namespace Chummer
                                     decimal decInnerReturn3 = 0;
                                     foreach (Weapon objDeleteWeapon in objMod.Weapons
                                                                              .DeepWhere(x => x.Children,
-                                                                                 x => x.ParentID == InternalId).ToList())
+                                                                                 x => x.ParentID == InternalId, token).ToList())
                                     {
                                         token.ThrowIfCancellationRequested();
                                         decInnerReturn3 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();

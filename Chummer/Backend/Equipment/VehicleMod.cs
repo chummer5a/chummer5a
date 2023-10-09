@@ -1226,7 +1226,6 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
                     return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
-
                 }, token).ConfigureAwait(false) + await Weapons.SumAsync(async objChild =>
                 {
                     if (objChild.ParentID == InternalId)

@@ -2009,45 +2009,40 @@ namespace Chummer
                 }
             }
 
-            if (xmlProgram != null)
+            // Check for SelectText.
+            string strExtra = string.Empty;
+            XPathNavigator xmlSelectText = xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext");
+            if (xmlSelectText != null)
             {
-                // Check for SelectText.
-                string strExtra = string.Empty;
-                XPathNavigator xmlSelectText = xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext");
-                if (xmlSelectText != null)
+                using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
+                       {
+                           Description = string.Format(GlobalSettings.CultureInfo,
+                               LanguageManager.GetString("String_Improvement_SelectText"),
+                               xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                       }))
                 {
-                    using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
-                           {
-                               Description = string.Format(GlobalSettings.CultureInfo,
-                                   LanguageManager.GetString("String_Improvement_SelectText"),
-                                   xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
-                           }))
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                        {
-                            throw new AbortedException();
-                        }
-
-                        strExtra = frmPickText.MyForm.SelectedValue;
+                        throw new AbortedException();
                     }
+
+                    strExtra = frmPickText.MyForm.SelectedValue;
                 }
-
-                AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(xmlProgram, strExtra, false);
-                if (objProgram.InternalId.IsEmptyGuid())
-                    throw new AbortedException();
-
-                _objCharacter.AIPrograms.Add(objProgram);
-
-                SelectedValue = objProgram.CurrentDisplayNameShort;
-
-                CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.AIProgram,
-                    _strUnique);
             }
-            else
+
+            AIProgram objProgram = new AIProgram(_objCharacter);
+            objProgram.Create(xmlProgram, strExtra, false);
+            if (objProgram.InternalId.IsEmptyGuid())
                 throw new AbortedException();
+
+            _objCharacter.AIPrograms.Add(objProgram);
+
+            SelectedValue = objProgram.CurrentDisplayNameShort;
+
+            CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.AIProgram,
+                _strUnique);
         }
 
         // Select an AI program.
@@ -2081,45 +2076,40 @@ namespace Chummer
                 }
             }
 
-            if (xmlProgram != null)
+            // Check for SelectText.
+            string strExtra = string.Empty;
+            XPathNavigator xmlSelectText = xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext");
+            if (xmlSelectText != null)
             {
-                // Check for SelectText.
-                string strExtra = string.Empty;
-                XPathNavigator xmlSelectText = xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext");
-                if (xmlSelectText != null)
+                using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
+                       {
+                           Description = string.Format(GlobalSettings.CultureInfo,
+                               LanguageManager.GetString("String_Improvement_SelectText"),
+                               xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                       }))
                 {
-                    using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
-                           {
-                               Description = string.Format(GlobalSettings.CultureInfo,
-                                   LanguageManager.GetString("String_Improvement_SelectText"),
-                                   xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
-                           }))
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                        {
-                            throw new AbortedException();
-                        }
-
-                        strExtra = frmPickText.MyForm.SelectedValue;
+                        throw new AbortedException();
                     }
+
+                    strExtra = frmPickText.MyForm.SelectedValue;
                 }
-
-                AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(xmlProgram, strExtra, false);
-                if (objProgram.InternalId.IsEmptyGuid())
-                    throw new AbortedException();
-
-                SelectedValue = objProgram.CurrentDisplayNameShort;
-
-                _objCharacter.AIPrograms.Add(objProgram);
-
-                CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.AIProgram,
-                    _strUnique);
             }
-            else
+
+            AIProgram objProgram = new AIProgram(_objCharacter);
+            objProgram.Create(xmlProgram, strExtra, false);
+            if (objProgram.InternalId.IsEmptyGuid())
                 throw new AbortedException();
+
+            SelectedValue = objProgram.CurrentDisplayNameShort;
+
+            _objCharacter.AIPrograms.Add(objProgram);
+
+            CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.AIProgram,
+                _strUnique);
         }
 
         // Select a Contact

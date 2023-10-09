@@ -55,11 +55,13 @@ namespace Chummer.Backend.Skills
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlWriter objWriter)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void Save(XmlWriter objWriter, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objWriter == null)
                 return;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
                 objWriter.WriteStartElement("spec");
                 objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
@@ -150,13 +152,13 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (LockObject.EnterReadLock())
-                return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? Name;
+            using (LockObject.EnterReadLock(token))
+                return this.GetNodeXPath(strLanguage, token)?.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? Name;
         }
 
         /// <summary>
@@ -470,7 +472,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public void Dispose()
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(CancellationToken.None))
             {
                 CancellationTokenSource objSource
                     = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, null);
@@ -482,7 +484,7 @@ namespace Chummer.Backend.Skills
 
                 Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, null);
                 if (tskOld != null)
-                    Utils.SafelyRunSynchronously(() => tskOld);
+                    Utils.SafelyRunSynchronously(() => tskOld, CancellationToken.None);
             }
             LockObject.Dispose();
         }
@@ -490,7 +492,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
             try
             {
                 CancellationTokenSource objSource

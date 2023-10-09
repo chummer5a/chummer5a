@@ -409,8 +409,8 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Load a skill from a xml node from a saved .chum5 file
         /// </summary>
-        /// <param name="xmlSkillNode">The XML node describing the skill</param>
         /// <param name="objCharacter">The character this skill belongs to</param>
+        /// <param name="xmlSkillNode">The XML node describing the skill</param>
         /// <returns></returns>
         public static Skill Load(Character objCharacter, XmlNode xmlSkillNode)
         {
@@ -1474,9 +1474,9 @@ namespace Chummer.Backend.Skills
         /// value for the attribute part of the test. This allows calculation of dice pools
         /// while using cyberlimbs or while rigging
         /// </summary>
-        /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. int.MinValue is equivalent to not overriding.</param>
         /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
         /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
+        /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. int.MinValue is equivalent to not overriding.</param>
         /// <returns></returns>
         public int PoolOtherAttribute(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue)
         {
@@ -1510,9 +1510,9 @@ namespace Chummer.Backend.Skills
         /// value for the attribute part of the test. This allows calculation of dice pools
         /// while using cyberlimbs or while rigging
         /// </summary>
-        /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. int.MinValue is equivalent to not overriding.</param>
         /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
         /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
+        /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. int.MinValue is equivalent to not overriding.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
         public async ValueTask<int> PoolOtherAttributeAsync(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue, CancellationToken token = default)
@@ -4173,7 +4173,6 @@ namespace Chummer.Backend.Skills
                                 return;
                             }
 
-
                             sb.AppendLine().AppendLine().Append(strExtraStart)
                                 .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                             if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
@@ -4275,7 +4274,6 @@ namespace Chummer.Backend.Skills
                                 await objCyberware.Children.ForEachAsync(objChild => BuildTooltipAsync(sbdReturn, objChild), token).ConfigureAwait(false);
                                 return;
                             }
-
 
                             sb.AppendLine().AppendLine().Append(strExtraStart).Append(await LanguageManager
                                     .GetStringAsync("String_Colon", token: token)

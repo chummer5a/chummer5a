@@ -107,8 +107,8 @@ namespace Chummer
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -123,8 +123,8 @@ namespace Chummer
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -140,8 +140,8 @@ namespace Chummer
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         private static async Task TranslateWinFormCoreAsync(bool blnSync, Control objObject, string strIntoLanguage,
@@ -284,8 +284,8 @@ namespace Chummer
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
-        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private static void UpdateControls(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
@@ -486,8 +486,8 @@ namespace Chummer
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
-        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private static async ValueTask UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
@@ -997,8 +997,8 @@ namespace Chummer
         /// Processes a compound string that contains both plaintext and references to localized strings
         /// </summary>
         /// <param name="strInput">Input string to process.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
@@ -1472,8 +1472,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1498,8 +1498,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1519,8 +1519,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         private static async Task<string> TranslateExtraCoreAsync(bool blnSync, string strExtra, string strIntoLanguage,
@@ -1928,7 +1928,7 @@ namespace Chummer
                                         }
 
                                         foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                                     objXPathPair.Item2))
+                                                     objXPathPair.Item2, innerToken))
                                         {
                                             if (objState.ShouldExitCurrentIteration)
                                                 return string.Empty;
@@ -1983,8 +1983,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item from a foreign language to the default one.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2010,8 +2010,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item from a foreign language to the default one.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2032,8 +2032,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         public static async Task<string> ReverseTranslateExtraCoreAsync(bool blnSync, string strExtra,
@@ -2381,7 +2381,7 @@ namespace Chummer
                             }
 
                             foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                         objXPathPair.Item2))
+                                         objXPathPair.Item2, innerToken))
                             {
                                 if (objState.ShouldExitCurrentIteration)
                                     return string.Empty;

@@ -1346,18 +1346,18 @@ namespace Chummer.Backend.Attributes
                                 .CheapReplace('{' + strCharAttributeName + '}', () =>
                                                   (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
                                                       ? dicValueOverrides[strCharAttributeName]
-                                                      : _objCharacter.GetAttribute(strCharAttributeName).TotalValue)
+                                                      : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue)
                                                   .ToString(GlobalSettings.InvariantCultureInfo))
                                 .CheapReplace('{' + strCharAttributeName + "Unaug}", () =>
                                                   (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug")
                                                    == true
                                                       ? dicValueOverrides[strCharAttributeName + "Unaug"]
-                                                      : _objCharacter.GetAttribute(strCharAttributeName).Value)
+                                                      : _objCharacter.GetAttribute(strCharAttributeName, token: token).Value)
                                                   .ToString(GlobalSettings.InvariantCultureInfo))
                                 .CheapReplace('{' + strCharAttributeName + "Base}", () =>
                                                   (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
                                                       ? dicValueOverrides[strCharAttributeName + "Base"]
-                                                      : _objCharacter.GetAttribute(strCharAttributeName).TotalBase)
+                                                      : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
                                                   .ToString(GlobalSettings.InvariantCultureInfo));
                 }
 
@@ -1378,17 +1378,17 @@ namespace Chummer.Backend.Attributes
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () =>
                                               (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
                                                   ? dicValueOverrides[strCharAttributeName]
-                                                  : _objCharacter.GetAttribute(strCharAttributeName).TotalValue)
+                                                  : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue)
                                               .ToString(GlobalSettings.InvariantCultureInfo));
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () =>
                                               (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
                                                   ? dicValueOverrides[strCharAttributeName + "Unaug"]
-                                                  : _objCharacter.GetAttribute(strCharAttributeName).Value)
+                                                  : _objCharacter.GetAttribute(strCharAttributeName, token: token).Value)
                                               .ToString(GlobalSettings.InvariantCultureInfo));
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () =>
                                               (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
                                                   ? dicValueOverrides[strCharAttributeName + "Base"]
-                                                  : _objCharacter.GetAttribute(strCharAttributeName).TotalBase)
+                                                  : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
                                               .ToString(GlobalSettings.InvariantCultureInfo));
                 }
             }
@@ -1474,14 +1474,14 @@ namespace Chummer.Backend.Attributes
                     strReturn = strReturn
                                 .CheapReplace('{' + strCharAttributeName + '}', () =>
                                 {
-                                    string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                    string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                                          .DisplayNameShort(strLanguage);
                                     if (blnShowValues)
                                     {
                                         if (dicValueOverrides == null
                                             || !dicValueOverrides.TryGetValue(
                                                 strCharAttributeName, out int intAttributeValue))
-                                            intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName)
+                                            intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                                              .TotalValue;
                                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
                                                           + ')';
@@ -1491,39 +1491,39 @@ namespace Chummer.Backend.Attributes
                                 })
                                 .CheapReplace('{' + strCharAttributeName + "Unaug}", () =>
                                 {
-                                    string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                    string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                                          .DisplayNameShort(strLanguage);
                                     if (blnShowValues)
                                     {
                                         if (dicValueOverrides == null
                                             || !dicValueOverrides.TryGetValue(
                                                 strCharAttributeName + "Unaug", out int intAttributeValue))
-                                            intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).Value;
+                                            intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token).Value;
                                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
                                                           + ')';
                                     }
 
                                     return string.Format(objCultureInfo,
                                                          LanguageManager.GetString(
-                                                             "String_NaturalAttribute", strLanguage), strInnerReturn);
+                                                             "String_NaturalAttribute", strLanguage, token: token), strInnerReturn);
                                 })
                                 .CheapReplace('{' + strCharAttributeName + "Base}", () =>
                                 {
-                                    string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                    string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                                          .DisplayNameShort(strLanguage);
                                     if (blnShowValues)
                                     {
                                         if (dicValueOverrides == null
                                             || !dicValueOverrides.TryGetValue(
                                                 strCharAttributeName + "Base", out int intAttributeValue))
-                                            intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName)
+                                            intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                                              .TotalBase;
                                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
                                                           + ')';
                                     }
 
                                     return string.Format(objCultureInfo,
-                                                         LanguageManager.GetString("String_BaseAttribute", strLanguage),
+                                                         LanguageManager.GetString("String_BaseAttribute", strLanguage, token: token),
                                                          strInnerReturn);
                                 });
                 }
@@ -1549,13 +1549,13 @@ namespace Chummer.Backend.Attributes
                 {
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () =>
                     {
-                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                              .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName, out int intAttributeValue))
-                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalValue;
+                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
@@ -1563,36 +1563,36 @@ namespace Chummer.Backend.Attributes
                     });
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () =>
                     {
-                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                              .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug",
                                                                   out int intAttributeValue))
-                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).Value;
+                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token).Value;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
                         return string.Format(objCultureInfo,
-                                             LanguageManager.GetString("String_NaturalAttribute", strLanguage),
+                                             LanguageManager.GetString("String_NaturalAttribute", strLanguage, token: token),
                                              strInnerReturn);
                     });
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () =>
                     {
-                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                              .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Base",
                                                                   out int intAttributeValue))
-                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalBase;
+                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
                         return string.Format(objCultureInfo,
-                                             LanguageManager.GetString("String_BaseAttribute", strLanguage),
+                                             LanguageManager.GetString("String_BaseAttribute", strLanguage, token: token),
                                              strInnerReturn);
                     });
                 }
