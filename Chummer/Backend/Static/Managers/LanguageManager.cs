@@ -1771,10 +1771,6 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else if (blnSync)
-                                {
-                                    strTemp = FindString(strPreferFile, token);
-                                }
                                 else
                                 {
                                     using (CancellationTokenSource objCombinedCancellationTokenSource
@@ -1784,9 +1780,11 @@ namespace Chummer
                                         CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                                         try
                                         {
-                                            strTemp = await Task.Run(
-                                                () => FindString(strPreferFile, objCombinedToken),
-                                                objCombinedToken).ConfigureAwait(false);
+                                            strTemp = blnSync
+                                                ? FindString(strPreferFile, objCombinedToken)
+                                                : await Task.Run(
+                                                    () => FindString(strPreferFile, objCombinedToken),
+                                                    objCombinedToken).ConfigureAwait(false);
                                         }
                                         catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
                                         {
@@ -1857,27 +1855,23 @@ namespace Chummer
                                 }
                             }
 
-                            if (blnSync)
+
+                            using (CancellationTokenSource objCombinedCancellationTokenSource
+                                   = CancellationTokenSource.CreateLinkedTokenSource(
+                                       objCancellationToken, token))
                             {
-                                strTemp = FindString(innerToken: token);
-                            }
-                            else
-                            {
-                                using (CancellationTokenSource objCombinedCancellationTokenSource
-                                       = CancellationTokenSource.CreateLinkedTokenSource(
-                                           objCancellationToken, token))
+                                CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
+                                try
                                 {
-                                    CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
-                                    try
-                                    {
-                                        strTemp = await Task.Run(
+                                    strTemp = blnSync
+                                        ? FindString(innerToken: objCombinedToken)
+                                        : await Task.Run(
                                             () => FindString(innerToken: objCombinedToken),
                                             objCombinedToken).ConfigureAwait(false);
-                                    }
-                                    catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
-                                    {
-                                        //swallow this
-                                    }
+                                }
+                                catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                                {
+                                    //swallow this
                                 }
                             }
 
@@ -1927,23 +1921,32 @@ namespace Chummer
                                             return string.Empty;
                                         }
 
-                                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                                     objXPathPair.Item2, innerToken))
+                                        try
                                         {
-                                            if (objState.ShouldExitCurrentIteration)
-                                                return string.Empty;
-                                            if (innerToken.IsCancellationRequested)
+                                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                                         objXPathPair.Item2, innerToken))
                                             {
-                                                objState.Stop();
-                                                return string.Empty;
-                                            }
+                                                if (objState.ShouldExitCurrentIteration)
+                                                    return string.Empty;
+                                                if (innerToken.IsCancellationRequested)
+                                                {
+                                                    objState.Stop();
+                                                    return string.Empty;
+                                                }
 
-                                            if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                                continue;
-                                            string strTranslate = objXPathPair.Item4(objNode);
-                                            if (string.IsNullOrEmpty(strTranslate))
-                                                continue;
-                                            return strTranslate;
+                                                if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                                    continue;
+                                                string strTranslate = objXPathPair.Item4(objNode);
+                                                if (string.IsNullOrEmpty(strTranslate))
+                                                    continue;
+                                                objState.Stop();
+                                                return strTranslate;
+                                            }
+                                        }
+                                        catch (OperationCanceledException)
+                                        {
+                                            objState.Stop();
+                                            return string.Empty;
                                         }
 
                                         return string.Empty;
@@ -2230,10 +2233,6 @@ namespace Chummer
                             }
                         }
                     }
-                    else if (blnSync)
-                    {
-                        strTemp = FindString(strPreferFile, token);
-                    }
                     else
                     {
                         using (CancellationTokenSource objCombinedCancellationTokenSource
@@ -2243,9 +2242,11 @@ namespace Chummer
                             CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                             try
                             {
-                                strTemp = await Task.Run(
-                                    () => FindString(strPreferFile, objCombinedToken),
-                                    objCombinedToken).ConfigureAwait(false);
+                                strTemp = blnSync
+                                    ? FindString(strPreferFile, token)
+                                    : await Task.Run(
+                                        () => FindString(strPreferFile, objCombinedToken),
+                                        objCombinedToken).ConfigureAwait(false);
                             }
                             catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
                             {
@@ -2310,27 +2311,23 @@ namespace Chummer
                     }
                 }
 
-                if (blnSync)
+
+                using (CancellationTokenSource objCombinedCancellationTokenSource
+                       = CancellationTokenSource.CreateLinkedTokenSource(
+                           objCancellationToken, token))
                 {
-                    strTemp = FindString(innerToken: token);
-                }
-                else
-                {
-                    using (CancellationTokenSource objCombinedCancellationTokenSource
-                           = CancellationTokenSource.CreateLinkedTokenSource(
-                               objCancellationToken, token))
+                    CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
+                    try
                     {
-                        CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
-                        try
-                        {
-                            strTemp = await Task.Run(
+                        strTemp = blnSync
+                            ? FindString(innerToken: token)
+                            : await Task.Run(
                                 () => FindString(innerToken: objCombinedToken),
                                 objCombinedToken).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
-                        {
-                            //swallow this
-                        }
+                    }
+                    catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                    {
+                        //swallow this
                     }
                 }
 
@@ -2380,23 +2377,32 @@ namespace Chummer
                                 return string.Empty;
                             }
 
-                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                         objXPathPair.Item2, innerToken))
+                            try
                             {
-                                if (objState.ShouldExitCurrentIteration)
-                                    return string.Empty;
-                                if (innerToken.IsCancellationRequested)
+                                foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                             objXPathPair.Item2, innerToken))
                                 {
-                                    objState.Stop();
-                                    return string.Empty;
-                                }
+                                    if (objState.ShouldExitCurrentIteration)
+                                        return string.Empty;
+                                    if (innerToken.IsCancellationRequested)
+                                    {
+                                        objState.Stop();
+                                        return string.Empty;
+                                    }
 
-                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                    continue;
-                                string strOriginal = objXPathPair.Item3(objNode);
-                                if (string.IsNullOrEmpty(strOriginal))
-                                    continue;
-                                return strOriginal;
+                                    if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                        continue;
+                                    string strOriginal = objXPathPair.Item3(objNode);
+                                    if (string.IsNullOrEmpty(strOriginal))
+                                        continue;
+                                    objState.Stop();
+                                    return strOriginal;
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                objState.Stop();
+                                return string.Empty;
                             }
 
                             return string.Empty;
