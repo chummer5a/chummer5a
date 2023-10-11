@@ -1072,14 +1072,15 @@ namespace Chummer
                                                                                GlobalSettings.InvariantCultureInfo), token: token),
                                                                        token: token).ConfigureAwait(false), _intAvailModifier);
                         await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
-                        await lblAvail.DoThreadSafeAsync(x => x.Text = objTotalAvail.ToString(), token: token).ConfigureAwait(false);
+                        string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
+                        await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
 
                         // Cost.
                         decimal decItemCost = 0;
                         string strCost;
                         if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
-                            strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                            strCost = 0.0m.ToString(_objCharacter.Settings.NuyenFormat,
                                                               GlobalSettings.CultureInfo)
                                               + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         }
@@ -1180,7 +1181,7 @@ namespace Chummer
                             }
                             else
                             {
-                                strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                                strCost = 0.0m.ToString(_objCharacter.Settings.NuyenFormat,
                                                           GlobalSettings.CultureInfo)
                                           + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                                  .ConfigureAwait(false);
@@ -1285,7 +1286,7 @@ namespace Chummer
                         else
                         {
                             await lblEssence.DoThreadSafeAsync(x => x.Text
-                                                                   = (0.0m).ToString(
+                                                                   = 0.0m.ToString(
                                                                        _objCharacter.Settings.EssenceFormat,
                                                                        GlobalSettings.CultureInfo), token: token)
                                             .ConfigureAwait(false);

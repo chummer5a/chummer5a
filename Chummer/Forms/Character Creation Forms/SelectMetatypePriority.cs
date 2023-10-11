@@ -674,15 +674,15 @@ namespace Chummer
                             switch (strSkillType)
                             {
                                 case "magic":
-                                    xmlSkillsList = GetMagicalSkillList();
+                                    xmlSkillsList = await GetMagicalSkillListAsync(token).ConfigureAwait(false);
                                     break;
 
                                 case "resonance":
-                                    xmlSkillsList = GetResonanceSkillList();
+                                    xmlSkillsList = await GetResonanceSkillListAsync(token).ConfigureAwait(false);
                                     break;
 
                                 case "matrix":
-                                    xmlSkillsList = GetMatrixSkillList();
+                                    xmlSkillsList = await GetMatrixSkillListAsync(token).ConfigureAwait(false);
                                     break;
 
                                 case "grouped":
@@ -697,18 +697,18 @@ namespace Chummer
                                     break;
 
                                 case "xpath":
-                                    xmlSkillsList = GetActiveSkillList(
+                                    xmlSkillsList = await GetActiveSkillListAsync(
                                         xmlSkillTypeNode != null
                                             ? (await xmlSkillTypeNode
-                                                     .SelectSingleNodeAndCacheExpressionAsync("@xpath", token)
-                                                     .ConfigureAwait(false))
+                                                .SelectSingleNodeAndCacheExpressionAsync("@xpath", token)
+                                                .ConfigureAwait(false))
                                             ?.Value
-                                            : null);
+                                            : null, token).ConfigureAwait(false);
                                     strSkillType = "active";
                                     break;
 
                                 default:
-                                    xmlSkillsList = GetActiveSkillList();
+                                    xmlSkillsList = await GetActiveSkillListAsync(token: token).ConfigureAwait(false);
                                     break;
                             }
 
@@ -3593,26 +3593,48 @@ namespace Chummer
             }
         }
 
-        private XPathNodeIterator GetMatrixSkillList()
+        private XPathNodeIterator GetMatrixSkillList(CancellationToken token = default)
         {
-            return _xmlBaseSkillDataNode.SelectAndCacheExpression("skills/skill[skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
+            return _xmlBaseSkillDataNode.SelectAndCacheExpression("skills/skill[skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]", token);
         }
 
-        private XPathNodeIterator GetMagicalSkillList()
+        private XPathNodeIterator GetMagicalSkillList(CancellationToken token = default)
         {
-            return _xmlBaseSkillDataNode.SelectAndCacheExpression("skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]");
+            return _xmlBaseSkillDataNode.SelectAndCacheExpression("skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]", token);
         }
 
-        private XPathNodeIterator GetResonanceSkillList()
+        private XPathNodeIterator GetResonanceSkillList(CancellationToken token = default)
         {
-            return _xmlBaseSkillDataNode.SelectAndCacheExpression("skills/skill[category = \"Resonance Active\" or skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
+            return _xmlBaseSkillDataNode.SelectAndCacheExpression("skills/skill[category = \"Resonance Active\" or skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]", token);
         }
 
-        private XPathNodeIterator GetActiveSkillList(string strXPathFilter = "")
+        private XPathNodeIterator GetActiveSkillList(string strXPathFilter = "", CancellationToken token = default)
         {
             return _xmlBaseSkillDataNode.SelectAndCacheExpression(!string.IsNullOrEmpty(strXPathFilter)
                 ? "skills/skill[" + strXPathFilter + ']'
-                : "skills/skill");
+                : "skills/skill", token);
+        }
+
+        private Task<XPathNodeIterator> GetMatrixSkillListAsync(CancellationToken token = default)
+        {
+            return _xmlBaseSkillDataNode.SelectAndCacheExpressionAsync("skills/skill[skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]", token);
+        }
+
+        private Task<XPathNodeIterator> GetMagicalSkillListAsync(CancellationToken token = default)
+        {
+            return _xmlBaseSkillDataNode.SelectAndCacheExpressionAsync("skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]", token);
+        }
+
+        private Task<XPathNodeIterator> GetResonanceSkillListAsync(CancellationToken token = default)
+        {
+            return _xmlBaseSkillDataNode.SelectAndCacheExpressionAsync("skills/skill[category = \"Resonance Active\" or skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]", token);
+        }
+
+        private Task<XPathNodeIterator> GetActiveSkillListAsync(string strXPathFilter = "", CancellationToken token = default)
+        {
+            return _xmlBaseSkillDataNode.SelectAndCacheExpressionAsync(!string.IsNullOrEmpty(strXPathFilter)
+                ? "skills/skill[" + strXPathFilter + ']'
+                : "skills/skill", token);
         }
 
         private XPathNodeIterator BuildSkillCategoryList(XPathNodeIterator objSkillList)

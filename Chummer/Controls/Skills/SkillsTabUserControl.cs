@@ -53,7 +53,7 @@ namespace Chummer.UI.Skills
         {
             InitializeComponent();
 
-            Disposed += (sender, args) => UnbindSkillsTabUserControl();
+            Disposed += (sender, args) => UnbindSkillsTabUserControl(CancellationToken.None);
 
             lblGroupKarma.Margin = new Padding(
                 lblGroupKarma.Margin.Left,
@@ -556,13 +556,13 @@ namespace Chummer.UI.Skills
                 RefreshKnowledgeSkillLabels();
         }
 
-        private void UnbindSkillsTabUserControl()
+        private void UnbindSkillsTabUserControl(CancellationToken token = default)
         {
             if (_objCharacter?.IsDisposed == false)
             {
                 try
                 {
-                    using (_objCharacter.SkillsSection.LockObject.EnterWriteLock())
+                    using (_objCharacter.SkillsSection.LockObject.EnterWriteLock(token))
                     {
                         _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
                         _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;

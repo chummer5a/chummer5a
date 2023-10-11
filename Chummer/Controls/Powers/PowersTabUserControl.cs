@@ -48,7 +48,7 @@ namespace Chummer.UI.Powers
             _objMyToken = objMyToken;
             InitializeComponent();
 
-            Disposed += (sender, args) => UnbindPowersTabUserControl();
+            Disposed += (sender, args) => UnbindPowersTabUserControl(CancellationToken.None);
 
             this.UpdateLightDarkMode(token: objMyToken);
             this.TranslateWinForm(token: objMyToken);
@@ -197,12 +197,12 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private void UnbindPowersTabUserControl()
+        private void UnbindPowersTabUserControl(CancellationToken token = default)
         {
             if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.Powers.ListChanged -= OnPowersListChanged;
-                using (_objCharacter.LockObject.EnterWriteLock())
+                using (_objCharacter.LockObject.EnterWriteLock(token))
                     _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
             }
         }

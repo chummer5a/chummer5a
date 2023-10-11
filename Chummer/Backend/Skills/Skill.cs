@@ -76,12 +76,16 @@ namespace Chummer.Backend.Skills
             using (LockObject.EnterReadLock())
             {
                 string strAttributeString = DefaultAttribute;
-                Improvement objImprovementOverride = ImprovementManager
-                    .GetCachedImprovementListForValueOf(
-                        CharacterObject, Improvement.ImprovementType.SwapSkillAttribute)
-                    .Find(x => x.Target == DictionaryKey);
-                if (objImprovementOverride != null)
-                    strAttributeString = objImprovementOverride.ImprovedName;
+                if (CharacterObject.SkillsSection?.IsLoading != true)
+                {
+                    Improvement objImprovementOverride = ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            CharacterObject, Improvement.ImprovementType.SwapSkillAttribute)
+                        .Find(x => x.Target == DictionaryKey);
+                    if (objImprovementOverride != null)
+                        strAttributeString = objImprovementOverride.ImprovedName;
+                }
+
                 CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strAttributeString);
                 objNewAttribute?.LockObject.SimpleEnterReadLock();
                 try
@@ -118,7 +122,7 @@ namespace Chummer.Backend.Skills
                     objNewAttribute?.LockObject.ExitReadLock();
                 }
             }
-            if (CharacterObject?.SkillsSection?.IsLoading != true)
+            if (CharacterObject.SkillsSection?.IsLoading != true)
                 this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
         }
 
@@ -127,15 +131,19 @@ namespace Chummer.Backend.Skills
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 string strAttributeString = DefaultAttribute;
-                string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                Improvement objImprovementOverride = (await ImprovementManager
-                                                            .GetCachedImprovementListForValueOfAsync(
-                                                                CharacterObject,
-                                                                Improvement.ImprovementType.SwapSkillAttribute,
-                                                                token: token).ConfigureAwait(false))
-                    .Find(x => x.Target == strDictionaryKey);
-                if (objImprovementOverride != null)
-                    strAttributeString = objImprovementOverride.ImprovedName;
+                if (CharacterObject.SkillsSection?.IsLoading != true)
+                {
+                    string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                    Improvement objImprovementOverride = (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                CharacterObject,
+                                Improvement.ImprovementType.SwapSkillAttribute,
+                                token: token).ConfigureAwait(false))
+                        .Find(x => x.Target == strDictionaryKey);
+                    if (objImprovementOverride != null)
+                        strAttributeString = objImprovementOverride.ImprovedName;
+                }
+
                 CharacterAttrib objNewAttribute
                     = await CharacterObject.GetAttributeAsync(strAttributeString, token: token).ConfigureAwait(false);
                 if (objNewAttribute != null)
@@ -193,7 +201,7 @@ namespace Chummer.Backend.Skills
                     objNewAttribute?.LockObject.ExitReadLock();
                 }
             }
-            if (CharacterObject?.SkillsSection?.IsLoading != true)
+            if (CharacterObject.SkillsSection?.IsLoading != true)
                 this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
         }
 
@@ -411,8 +419,9 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="objCharacter">The character this skill belongs to</param>
         /// <param name="xmlSkillNode">The XML node describing the skill</param>
+        /// <param name="objLoadingSkill">Pre-existing skill object into which to load (if it exists)</param>
         /// <returns></returns>
-        public static Skill Load(Character objCharacter, XmlNode xmlSkillNode)
+        public static Skill Load(Character objCharacter, XmlNode xmlSkillNode, Skill objLoadingSkill = null)
         {
             if (!xmlSkillNode.TryGetField("suid", Guid.TryParse, out Guid suid))
             {
@@ -420,30 +429,35 @@ namespace Chummer.Backend.Skills
             }
 
             Guid guidSkillId = xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid guiTemp) ? guiTemp : suid;
-            Skill objLoadingSkill = null;
+
             bool blnIsKnowledgeSkill = false;
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
-                KnowledgeSkill objKnowledgeSkill = null;
-                if (guidSkillId != Guid.Empty)
-                    objKnowledgeSkill = objCharacter.SkillsSection.KnowledgeSkills.Find(x => x.SkillId == guidSkillId);
-                if (objKnowledgeSkill == null)
+                if (!(objLoadingSkill is KnowledgeSkill objKnowledgeSkill))
                 {
-                    if (xmlSkillNode["forced"] != null)
-                        objKnowledgeSkill = new KnowledgeSkill(objCharacter,
-                                                               xmlSkillNode["name"]?.InnerText ?? string.Empty,
-                                                               !Convert.ToBoolean(
-                                                                   xmlSkillNode["disableupgrades"]?.InnerText,
-                                                                   GlobalSettings.InvariantCultureInfo));
-                    else
+                    objKnowledgeSkill = null;
+                    if (guidSkillId != Guid.Empty)
+                        objKnowledgeSkill =
+                            objCharacter.SkillsSection.KnowledgeSkills.Find(x => x.SkillId == guidSkillId);
+                    if (objKnowledgeSkill == null)
                     {
-                        objKnowledgeSkill = new KnowledgeSkill(objCharacter);
+                        if (xmlSkillNode["forced"] != null)
+                            objKnowledgeSkill = new KnowledgeSkill(objCharacter,
+                                xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                                !Convert.ToBoolean(
+                                    xmlSkillNode["disableupgrades"]?.InnerText,
+                                    GlobalSettings.InvariantCultureInfo));
+                        else
+                        {
+                            objKnowledgeSkill = new KnowledgeSkill(objCharacter);
+                        }
                     }
                 }
+
                 objKnowledgeSkill.Load(xmlSkillNode);
                 objLoadingSkill = objKnowledgeSkill;
             }
-            else if (suid != Guid.Empty)
+            else if (objLoadingSkill == null && suid != Guid.Empty)
             {
                 if (guidSkillId != Guid.Empty)
                 {
@@ -456,7 +470,8 @@ namespace Chummer.Backend.Skills
                         if (xmlSkillNode.TryGetStringFieldQuickly("specific", ref strSpecific))
                         {
                             objLoadingSkill
-                                = objCharacter.SkillsSection.Skills.Find(x => x.SkillId == guidSkillId && x is ExoticSkill y && y.Specific == strSpecific);
+                                = objCharacter.SkillsSection.Skills.Find(x =>
+                                    x.SkillId == guidSkillId && x is ExoticSkill y && y.Specific == strSpecific);
                             if (objLoadingSkill is ExoticSkill objLoadingExoticSkill)
                             {
                                 objLoadingExoticSkill.Load(xmlSkillNode);
@@ -467,7 +482,8 @@ namespace Chummer.Backend.Skills
 
                 if (objLoadingSkill == null)
                 {
-                    XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml").TryGetNodeById("/chummer/skills/skill", suid);
+                    XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml")
+                        .TryGetNodeById("/chummer/skills/skill", suid);
 
                     if (xmlSkillDataNode == null)
                         return null;
@@ -486,6 +502,7 @@ namespace Chummer.Backend.Skills
                     }
                 }
             }
+
             /*
             else //This is ugly but i'm not sure how to make it pretty
             {
@@ -505,10 +522,11 @@ namespace Chummer.Backend.Skills
             if (objLoadingSkill == null)
             {
                 if (xmlSkillNode["forced"] != null)
-                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty,
-                                                         !Convert.ToBoolean(
-                                                             xmlSkillNode["disableupgrades"]?.InnerText,
-                                                             GlobalSettings.InvariantCultureInfo));
+                    objLoadingSkill = new KnowledgeSkill(objCharacter,
+                        xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                        !Convert.ToBoolean(
+                            xmlSkillNode["disableupgrades"]?.InnerText,
+                            GlobalSettings.InvariantCultureInfo));
                 else
                 {
                     KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter);

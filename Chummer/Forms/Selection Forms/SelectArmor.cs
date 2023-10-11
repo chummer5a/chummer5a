@@ -842,7 +842,7 @@ namespace Chummer
                     string strCost;
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                     {
-                        strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                        strCost = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                         + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                     }
                     else
@@ -853,7 +853,7 @@ namespace Chummer
                     await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
 
                     AvailabilityValue objTotalAvail = await objSelectedArmor.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-                    string strAvail = objTotalAvail.ToString();
+                    string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
                     await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token)
                                         .ConfigureAwait(false);
                     await lblAvailLabel

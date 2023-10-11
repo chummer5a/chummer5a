@@ -449,7 +449,7 @@ namespace Chummer
                     AvailabilityValue objTotalAvail
                         = new AvailabilityValue(0, (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value,
                                                 await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? -4 : 0);
-                    string strAvail = objTotalAvail.ToString();
+                    string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
                     await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblVehicleAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
 

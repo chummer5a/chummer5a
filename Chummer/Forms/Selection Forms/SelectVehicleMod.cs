@@ -724,25 +724,26 @@ namespace Chummer
 
                     // Avail.
                     string strAvail
-                        = new AvailabilityValue(
+                        = await new AvailabilityValue(
                                 intRating,
                                 (await xmlVehicleMod.SelectSingleNodeAndCacheExpressionAsync("avail", token)
-                                                    .ConfigureAwait(false))?.Value)
-                            .ToString();
+                                    .ConfigureAwait(false))?.Value)
+                            .ToStringAsync(token).ConfigureAwait(false);
                     await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblAvailLabel
                           .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token)
                           .ConfigureAwait(false);
 
                     // Cost.
+                    string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                     decimal decItemCost = 0;
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                     {
                         await lblCost
                               .DoThreadSafeAsync(
-                                  x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                                  x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat,
                                                                 GlobalSettings.CultureInfo)
-                                                + LanguageManager.GetString("String_NuyenSymbol"), token: token)
+                                                + strNuyen, token: token)
                               .ConfigureAwait(false);
                     }
                     else
@@ -772,7 +773,7 @@ namespace Chummer
                                 await lblCost.DoThreadSafeAsync(
                                                  x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                                GlobalSettings.CultureInfo)
-                                                               + LanguageManager.GetString("String_NuyenSymbol") + '+',
+                                                               + strNuyen + '+',
                                                  token: token)
                                              .ConfigureAwait(false);
                             }
@@ -786,7 +787,7 @@ namespace Chummer
                                                                + strSpace + '-' + strSpace
                                                                + decMax.ToString(_objCharacter.Settings.NuyenFormat,
                                                                    GlobalSettings.CultureInfo)
-                                                               + LanguageManager.GetString("String_NuyenSymbol"),
+                                                               + strNuyen,
                                                  token: token)
                                              .ConfigureAwait(false);
                             }
@@ -826,7 +827,7 @@ namespace Chummer
                               .DoThreadSafeAsync(
                                   x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat,
                                                                      GlobalSettings.CultureInfo)
-                                                + LanguageManager.GetString("String_NuyenSymbol"), token: token)
+                                                + strNuyen, token: token)
                               .ConfigureAwait(false);
                     }
 

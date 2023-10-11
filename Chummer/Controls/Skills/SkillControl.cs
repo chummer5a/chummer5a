@@ -81,7 +81,7 @@ namespace Chummer.UI.Skills
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
-            Disposed += (sender, args) => UnbindSkillControl();
+            Disposed += (sender, args) => UnbindSkillControl(CancellationToken.None);
             SuspendLayout();
             pnlAttributes.SuspendLayout();
             tlpMain.SuspendLayout();
@@ -1130,12 +1130,12 @@ namespace Chummer.UI.Skills
             lblName.DoThreadSafe(x => x.MinimumSize = new Size(intNewNameWidth - x.Margin.Right - pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width), x.MinimumSize.Height));
         }
 
-        private void UnbindSkillControl()
+        private void UnbindSkillControl(CancellationToken token = default)
         {
             _tmrSpecChangeTimer?.Dispose();
             try
             {
-                using (_objSkill.LockObject.EnterWriteLock())
+                using (_objSkill.LockObject.EnterWriteLock(token))
                     _objSkill.PropertyChanged -= Skill_PropertyChanged;
             }
             catch (ObjectDisposedException)
@@ -1146,7 +1146,7 @@ namespace Chummer.UI.Skills
             {
                 try
                 {
-                    using (AttributeActive.LockObject.EnterWriteLock())
+                    using (AttributeActive.LockObject.EnterWriteLock(token))
                         AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
                 }
                 catch (ObjectDisposedException)

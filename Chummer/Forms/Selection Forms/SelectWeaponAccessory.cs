@@ -536,7 +536,7 @@ namespace Chummer
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail
                 = await new AvailabilityValue(intRating, (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value)
-                    .ToStringAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token).ConfigureAwait(false);
+                    .ToStringAsync(token).ConfigureAwait(false);
             await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
             await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token)
                                .ConfigureAwait(false);

@@ -4164,7 +4164,14 @@ namespace Chummer
                 selectedObject = treVehicles.SelectedNode?.Tag;
             }
 
-            CopyObject(selectedObject);
+            try
+            {
+                CopyObject(selectedObject, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void mnuEditPaste_Click(object sender, EventArgs e)
@@ -17316,8 +17323,8 @@ namespace Chummer
         /// <summary>
         /// Select a piece of Gear and add it to a piece of Armor.
         /// </summary>
-        /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
+        /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private async ValueTask<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false,
                                                     CancellationToken token = default)

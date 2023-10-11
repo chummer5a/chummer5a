@@ -2215,10 +2215,10 @@ namespace Chummer
         /// </summary>
         /// <param name="treQualities">TreeView to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
+        /// <param name="fntNormal">Normal font to use for qualities.</param>
         /// <param name="fntStrikeout">Font to use for disabled qualities (e.g. cybereyes-disabled Low Light Vision).</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <param name="fntNormal">Normal font to use for qualities.</param>
         protected async ValueTask RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, Font fntNormal, Font fntStrikeout, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treQualities == null)
@@ -4612,7 +4612,7 @@ namespace Chummer
                                                                 () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0).ToInt32()
                                                                     + objVehicle.GearChildren.Count(
-                                                                        z => z.Location == null), y, token)
+                                                                        z => z.Location == null, token), y, token)
                                     .ConfigureAwait(false);
 
                             await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
@@ -4832,7 +4832,7 @@ namespace Chummer
                                                                           + (objVehicle.WeaponMounts.Count > 0)
                                                                           .ToInt32()
                                                                           + objVehicle.GearChildren.Count(
-                                                                              z => z.Location == null), y, token)
+                                                                              z => z.Location == null, token), y, token)
                                         .ConfigureAwait(false);
 
                                 await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
@@ -5191,7 +5191,7 @@ namespace Chummer
                                                                           + (objVehicle.WeaponMounts.Count > 0)
                                                                           .ToInt32()
                                                                           + objVehicle.GearChildren.Count(
-                                                                              z => z.Location == null), y, token)
+                                                                              z => z.Location == null, token), y, token)
                                         .ConfigureAwait(false);
 
                                 await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
@@ -7595,9 +7595,9 @@ namespace Chummer
         /// <summary>
         /// Adds the selected Object and child items to the clipboard as appropriate.
         /// </summary>
-        /// <param name="selectedObject"></param>
-        public void CopyObject(object selectedObject)
+        public void CopyObject(object selectedObject, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 switch (selectedObject)
@@ -7624,7 +7624,7 @@ namespace Chummer
                                         // Copy any Weapon that comes with the Gear.
                                         foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
                                                      x => x.Children,
-                                                     x => x.ParentID == objCopyArmor.InternalId))
+                                                     x => x.ParentID == objCopyArmor.InternalId, token))
                                         {
                                             objCopyWeapon.Save(objWriter);
                                         }
@@ -7675,7 +7675,7 @@ namespace Chummer
                                         // Copy any Weapon that comes with the Gear.
                                         foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
                                                      x => x.Children,
-                                                     x => x.ParentID == objCopyArmorMod.InternalId))
+                                                     x => x.ParentID == objCopyArmorMod.InternalId, token))
                                         {
                                             objCopyWeapon.Save(objWriter);
                                         }
@@ -7726,7 +7726,7 @@ namespace Chummer
                                         // Copy any Weapon that comes with the Gear.
                                         foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
                                                      x => x.Children,
-                                                     x => x.ParentID == objCopyCyberware.InternalId))
+                                                     x => x.ParentID == objCopyCyberware.InternalId, token))
                                         {
                                             objCopyWeapon.Save(objWriter);
                                         }
@@ -7795,7 +7795,7 @@ namespace Chummer
                                         // Copy any Weapon that comes with the Gear.
                                         foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
                                                      x => x.Children,
-                                                     x => x.ParentID == objCopyGear.InternalId))
+                                                     x => x.ParentID == objCopyGear.InternalId, token))
                                         {
                                             objCopyWeapon.Save(objWriter);
                                         }

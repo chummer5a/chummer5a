@@ -76,20 +76,13 @@ namespace Chummer
             try
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace
-                                                                + Extra.ToString("#,0", GlobalSettings.CultureInfo)
-                                                                + ')' +
-                                                                strSpace + '×'
-                                                                + strSpace + (SelectedLifestyle?.Multiplier ?? 0)
-                                                                .ToString(
-                                                                    _objCharacter.Settings.NuyenFormat
-                                                                    + LanguageManager.GetString("String_NuyenSymbol"),
-                                                                    GlobalSettings.CultureInfo)
-                                                                + strSpace + '=' + strSpace +
-                                                                StartingNuyen.ToString(
-                                                                    _objCharacter.Settings.NuyenFormat
-                                                                    + LanguageManager.GetString("String_NuyenSymbol"),
-                                                                    GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+                string strFormat = _objCharacter.Settings.NuyenFormat + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                string strText = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
+                                 strSpace + '×' + strSpace +
+                                 (SelectedLifestyle?.Multiplier ?? 0).ToString(strFormat, GlobalSettings.CultureInfo) +
+                                 strSpace + '=' + strSpace +
+                                 StartingNuyen.ToString(strFormat, GlobalSettings.CultureInfo);
+                await lblResult.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
             }
             finally
             {

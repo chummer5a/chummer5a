@@ -5399,7 +5399,14 @@ namespace Chummer
                 selectedObject = treVehicles.SelectedNode?.Tag;
             }
 
-            CopyObject(selectedObject);
+            try
+            {
+                CopyObject(selectedObject, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
@@ -19269,8 +19276,8 @@ namespace Chummer
         /// Changes which boxes are filled and unfilled in a condition monitor when a box in that condition monitor is clicked.
         /// </summary>
         /// <param name="chkSender">Checkbox we're currently changing.</param>
-        /// <param name="blnDoUIUpdate">Whether to update all the other boxes in the UI or not. If something like ProcessEquipmentConditionMonitorBoxDisplays would be called later, this can be false.</param>
         /// <param name="funcPropertyToUpdate">Function to run once the condition monitor has been processed, probably a property setter. Uses the amount of filled boxes as its argument.</param>
+        /// <param name="blnDoUIUpdate">Whether to update all the other boxes in the UI or not. If something like ProcessEquipmentConditionMonitorBoxDisplays would be called later, this can be false.</param>
         /// <param name="token">Cancellation token to use.</param>
         private async ValueTask ProcessConditionMonitorCheckedChanged(DpiFriendlyCheckBoxDisguisedAsButton chkSender,
                                                                       Action<int> funcPropertyToUpdate = null,
@@ -22819,8 +22826,8 @@ namespace Chummer
         /// <summary>
         /// Select a piece of Gear and add it to a piece of Armor.
         /// </summary>
-        /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
+        /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private async ValueTask<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false,
                                                     CancellationToken token = default)

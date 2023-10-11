@@ -969,9 +969,22 @@ namespace Chummer
                 for (int i = 0; i < length; ++i)
                     aobjSorted[i] = _lstData[index + i];
                 Array.Sort(aobjSorted, objComparer);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    using (LockObject.EnterWriteLock())
+                    {
+                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        {
+                            _lstData[index + i] = aobjSorted[i];
+                        }
+                    }
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = aobjSorted.Length / 2;
+                int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
+                bool[] ablnItemChanged = new bool[aobjSorted.Length];
                 using (LockObject.EnterWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
@@ -981,63 +994,29 @@ namespace Chummer
                         for (int i = 0; i < aobjSorted.Length; ++i)
                         {
                             T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = index + i;
-                            if (intOldIndex == intNewIndex)
+                            if (ReferenceEquals(objLoop, _lstData[index + i]))
                                 continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                            ablnItemChanged[i] = true;
+                            ++intCountChanges;
+                            _lstData[index + i] = objLoop;
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                        _lstData.RaiseListChangedEvents = true;
                     }
 
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    if (intCountChanges >= intResetThreshold)
                     {
-                        if (ablnItemChanged[i])
+                        _lstData.ResetBindings();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
-                            {
-                                _lstData.ResetBindings();
-                                return;
-                            }
+                            if (ablnItemChanged[i])
+                                _lstData.ResetItem(index + i);
                         }
-                    }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
                     }
                 }
             }
@@ -1057,9 +1036,22 @@ namespace Chummer
                 for (int i = 0; i < _lstData.Count; ++i)
                     aobjSorted[i] = this[i];
                 Array.Sort(aobjSorted, funcComparison);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    using (LockObject.EnterWriteLock())
+                    {
+                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        {
+                            _lstData[i] = aobjSorted[i];
+                        }
+                    }
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = aobjSorted.Length / 2;
+                int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
+                bool[] ablnItemChanged = new bool[aobjSorted.Length];
                 using (LockObject.EnterWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
@@ -1069,63 +1061,29 @@ namespace Chummer
                         for (int i = 0; i < aobjSorted.Length; ++i)
                         {
                             T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = i;
-                            if (intOldIndex == intNewIndex)
+                            if (ReferenceEquals(objLoop, _lstData[i]))
                                 continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                            ablnItemChanged[i] = true;
+                            ++intCountChanges;
+                            _lstData[i] = objLoop;
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                        _lstData.RaiseListChangedEvents = true;
                     }
 
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    if (intCountChanges >= intResetThreshold)
                     {
-                        if (ablnItemChanged[i])
+                        _lstData.ResetBindings();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
-                            {
-                                _lstData.ResetBindings();
-                                return;
-                            }
+                            if (ablnItemChanged[i])
+                                _lstData.ResetItem(i);
                         }
-                    }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
                     }
                 }
             }
@@ -1146,9 +1104,22 @@ namespace Chummer
                 for (int i = 0; i < _lstData.Count; ++i)
                     aobjSorted[i] = this[i];
                 Array.Sort(aobjSorted, objComparer);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    using (LockObject.EnterWriteLock())
+                    {
+                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        {
+                            _lstData[i] = aobjSorted[i];
+                        }
+                    }
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = aobjSorted.Length / 2;
+                int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
+                bool[] ablnItemChanged = new bool[aobjSorted.Length];
                 using (LockObject.EnterWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
@@ -1158,63 +1129,29 @@ namespace Chummer
                         for (int i = 0; i < aobjSorted.Length; ++i)
                         {
                             T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = i;
-                            if (intOldIndex == intNewIndex)
+                            if (ReferenceEquals(objLoop, _lstData[i]))
                                 continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                            ablnItemChanged[i] = true;
+                            ++intCountChanges;
+                            _lstData[i] = objLoop;
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                        _lstData.RaiseListChangedEvents = true;
                     }
 
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    if (intCountChanges >= intResetThreshold)
                     {
-                        if (ablnItemChanged[i])
+                        _lstData.ResetBindings();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
-                            {
-                                _lstData.ResetBindings();
-                                return;
-                            }
+                            if (ablnItemChanged[i])
+                                _lstData.ResetItem(i);
                         }
-                    }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
                     }
                 }
             }
@@ -1245,10 +1182,30 @@ namespace Chummer
                 T[] aobjSorted = new T[length];
                 for (int i = 0; i < length; ++i)
                     aobjSorted[i] = _lstData[index + i];
+                token.ThrowIfCancellationRequested();
                 Array.Sort(aobjSorted, objComparer);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                token.ThrowIfCancellationRequested();
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        {
+                            _lstData[index + i] = aobjSorted[i];
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = aobjSorted.Length / 2;
+                int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
+                bool[] ablnItemChanged = new bool[aobjSorted.Length];
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1260,63 +1217,29 @@ namespace Chummer
                         for (int i = 0; i < aobjSorted.Length; ++i)
                         {
                             T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = index + i;
-                            if (intOldIndex == intNewIndex)
+                            if (ReferenceEquals(objLoop, _lstData[index + i]))
                                 continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                            ablnItemChanged[i] = true;
+                            ++intCountChanges;
+                            _lstData[index + i] = objLoop;
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                        _lstData.RaiseListChangedEvents = true;
                     }
 
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    if (intCountChanges >= intResetThreshold)
                     {
-                        if (ablnItemChanged[i])
+                        _lstData.ResetBindings();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
-                            {
-                                _lstData.ResetBindings();
-                                return;
-                            }
+                            if (ablnItemChanged[i])
+                                _lstData.ResetItem(index + i);
                         }
-                    }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
                     }
                 }
                 finally
@@ -1340,10 +1263,30 @@ namespace Chummer
                 T[] aobjSorted = new T[_lstData.Count];
                 for (int i = 0; i < _lstData.Count; ++i)
                     aobjSorted[i] = this[i];
+                token.ThrowIfCancellationRequested();
                 Array.Sort(aobjSorted, funcComparison);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                token.ThrowIfCancellationRequested();
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        {
+                            _lstData[i] = aobjSorted[i];
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = aobjSorted.Length / 2;
+                int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
+                bool[] ablnItemChanged = new bool[aobjSorted.Length];
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1355,63 +1298,29 @@ namespace Chummer
                         for (int i = 0; i < aobjSorted.Length; ++i)
                         {
                             T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = i;
-                            if (intOldIndex == intNewIndex)
+                            if (ReferenceEquals(objLoop, _lstData[i]))
                                 continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                            ablnItemChanged[i] = true;
+                            ++intCountChanges;
+                            _lstData[i] = objLoop;
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                        _lstData.RaiseListChangedEvents = true;
                     }
 
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    if (intCountChanges >= intResetThreshold)
                     {
-                        if (ablnItemChanged[i])
+                        _lstData.ResetBindings();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
-                            {
-                                _lstData.ResetBindings();
-                                return;
-                            }
+                            if (ablnItemChanged[i])
+                                _lstData.ResetItem(i);
                         }
-                    }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
                     }
                 }
                 finally
@@ -1436,10 +1345,30 @@ namespace Chummer
                 T[] aobjSorted = new T[_lstData.Count];
                 for (int i = 0; i < _lstData.Count; ++i)
                     aobjSorted[i] = this[i];
+                token.ThrowIfCancellationRequested();
                 Array.Sort(aobjSorted, objComparer);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                token.ThrowIfCancellationRequested();
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        {
+                            _lstData[i] = aobjSorted[i];
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = aobjSorted.Length / 2;
+                int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
+                bool[] ablnItemChanged = new bool[aobjSorted.Length];
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1451,63 +1380,29 @@ namespace Chummer
                         for (int i = 0; i < aobjSorted.Length; ++i)
                         {
                             T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = i;
-                            if (intOldIndex == intNewIndex)
+                            if (ReferenceEquals(objLoop, _lstData[i]))
                                 continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                            ablnItemChanged[i] = true;
+                            ++intCountChanges;
+                            _lstData[i] = objLoop;
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                        _lstData.RaiseListChangedEvents = true;
                     }
 
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    if (intCountChanges >= intResetThreshold)
                     {
-                        if (ablnItemChanged[i])
+                        _lstData.ResetBindings();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
-                            {
-                                _lstData.ResetBindings();
-                                return;
-                            }
+                            if (ablnItemChanged[i])
+                                _lstData.ResetItem(i);
                         }
-                    }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
                     }
                 }
                 finally
@@ -1528,6 +1423,7 @@ namespace Chummer
                     int intParity = intOldIndex < intNewIndex ? 1 : -1;
                     for (int i = intOldIndex; i != intNewIndex; i += intParity)
                     {
+                        token.ThrowIfCancellationRequested();
                         (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
                             _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
                     }
@@ -1552,6 +1448,7 @@ namespace Chummer
                     int intParity = intOldIndex < intNewIndex ? 1 : -1;
                     for (int i = intOldIndex; i != intNewIndex; i += intParity)
                     {
+                        token.ThrowIfCancellationRequested();
                         (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
                             _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
                     }

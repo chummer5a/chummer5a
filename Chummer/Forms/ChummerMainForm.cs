@@ -4146,9 +4146,9 @@ namespace Chummer
                                             objMostRecentAutosave = objAutosave;
                                         string strAutosaveName = Path.GetFileNameWithoutExtension(objAutosave.Name);
                                         if (GlobalSettings.MostRecentlyUsedCharacters.Any(
-                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName) ||
+                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken) ||
                                             GlobalSettings.FavoriteCharacters.Any(
-                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName))
+                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken))
                                             blnAnyAutosaveInMru = true;
                                     }
 
@@ -4162,9 +4162,9 @@ namespace Chummer
                                         string strAutosaveName
                                             = Path.GetFileNameWithoutExtension(objMostRecentAutosave.Name);
                                         if (GlobalSettings.MostRecentlyUsedCharacters.All(
-                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName)
+                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName, _objGenericToken)
                                             && GlobalSettings.FavoriteCharacters.All(
-                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName)
+                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName, _objGenericToken)
                                             && Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                           LanguageManager.GetString(
                                                                               "Message_PossibleCrashAutosaveFound", token: _objGenericToken),

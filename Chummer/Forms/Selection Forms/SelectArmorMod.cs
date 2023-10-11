@@ -299,8 +299,8 @@ namespace Chummer
                     await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
                 }
 
-                string strAvail = new AvailabilityValue(Convert.ToInt32(nudRating.Value),
-                                                        (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value).ToString();
+                string strAvail = await new AvailabilityValue(Convert.ToInt32(nudRating.Value),
+                    (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value).ToStringAsync(token).ConfigureAwait(false);
                 await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                 await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
 
@@ -326,7 +326,7 @@ namespace Chummer
                 bool blnIsSuccess;
                 if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                 {
-                    await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                    await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                                                   + strNuyenSymbol, token: token).ConfigureAwait(false);
                     string strTest = await _objCharacter.AvailTestAsync(0, strAvail, token).ConfigureAwait(false);
                     await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
