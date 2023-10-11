@@ -23,7 +23,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -119,7 +118,7 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test01_LoadContent()
         {
-            Debug.WriteLine("Unit test initialized for: Test02_LoadContent()");
+            Debug.WriteLine("Unit test initialized for: Test01_LoadContent()");
             try
             {
                 bool blnTemp = Utils.IsUnitTestForUI;
@@ -174,7 +173,7 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test02_BasicStartup()
         {
-            Debug.WriteLine("Unit test initialized for: Test01_BasicStartup()");
+            Debug.WriteLine("Unit test initialized for: Test02_BasicStartup()");
             ChummerMainForm frmOldMainForm = Program.MainForm;
             ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren

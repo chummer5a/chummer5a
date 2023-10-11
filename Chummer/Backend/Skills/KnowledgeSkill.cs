@@ -58,23 +58,28 @@ namespace Chummer.Backend.Skills
                     }
                     if (_dicCategoriesSkillMap == null)
                     {
-                        using (LockObject.EnterReadLock())
+                        using (LockObject.EnterWriteLock())
                         {
-                            XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
-                                                                            .SelectAndCacheExpression(
-                                                                                "/chummer/knowledgeskills/skill");
-                            Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
-                            foreach (XPathNavigator objXmlSkill in lstXmlSkills)
+                            if (_dicCategoriesSkillMap == null)
                             {
-                                string strCategory = objXmlSkill.SelectSingleNodeAndCacheExpression("category")?.Value;
-                                if (!string.IsNullOrWhiteSpace(strCategory))
+                                XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
+                                    .SelectAndCacheExpression(
+                                        "/chummer/knowledgeskills/skill");
+                                Dictionary<string, string> dicReturn =
+                                    new Dictionary<string, string>(lstXmlSkills.Count);
+                                foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                                 {
-                                    dicReturn[strCategory] =
-                                        objXmlSkill.SelectSingleNodeAndCacheExpression("attribute")?.Value;
+                                    string strCategory = objXmlSkill.SelectSingleNodeAndCacheExpression("category")
+                                        ?.Value;
+                                    if (!string.IsNullOrWhiteSpace(strCategory))
+                                    {
+                                        dicReturn[strCategory] =
+                                            objXmlSkill.SelectSingleNodeAndCacheExpression("attribute")?.Value;
+                                    }
                                 }
-                            }
 
-                            return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
+                                return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
+                            }
                         }
                     }
 
@@ -108,23 +113,36 @@ namespace Chummer.Backend.Skills
 
                 if (_dicCategoriesSkillMap == null)
                 {
-                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        XPathNodeIterator lstXmlSkills = await (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
-                                                               .SelectAndCacheExpressionAsync(
-                                                                   "/chummer/knowledgeskills/skill", token).ConfigureAwait(false);
-                        Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
-                        foreach (XPathNavigator objXmlSkill in lstXmlSkills)
+                        if (_dicCategoriesSkillMap == null)
                         {
-                            string strCategory = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value;
-                            if (!string.IsNullOrWhiteSpace(strCategory))
+                            XPathNodeIterator lstXmlSkills =
+                                await (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token)
+                                        .ConfigureAwait(false))
+                                    .SelectAndCacheExpressionAsync(
+                                        "/chummer/knowledgeskills/skill", token).ConfigureAwait(false);
+                            Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
+                            foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                             {
-                                dicReturn[strCategory] =
-                                    (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("attribute", token).ConfigureAwait(false))?.Value;
+                                string strCategory =
+                                    (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("category", token)
+                                        .ConfigureAwait(false))?.Value;
+                                if (!string.IsNullOrWhiteSpace(strCategory))
+                                {
+                                    dicReturn[strCategory] =
+                                        (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("attribute", token)
+                                            .ConfigureAwait(false))?.Value;
+                                }
                             }
-                        }
 
-                        return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
+                            return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 
