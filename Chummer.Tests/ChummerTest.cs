@@ -76,7 +76,7 @@ namespace Chummer.Tests
             {
                 Debug.WriteLine("Loading " + objFileInfo.Name);
                 string strFile = objFileInfo.FullName;
-                Character objLoopCharacter = _lstCharacters.FirstOrDefault(x => x.FileName == strFile);
+                Character objLoopCharacter = _lstCharacters.Find(x => x.FileName == strFile);
                 if (objLoopCharacter == null)
                 {
                     objLoopCharacter = LoadCharacter(objFileInfo);
@@ -117,47 +117,7 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test01_BasicStartup()
-        {
-            Debug.WriteLine("Unit test initialized for: Test01_BasicStartup()");
-            ChummerMainForm frmOldMainForm = Program.MainForm;
-            ChummerMainForm frmTestForm = null;
-            // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
-            try
-            {
-                frmTestForm = new ChummerMainForm(true, true)
-                {
-                    ShowInTaskbar =
-                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
-                };
-                Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
-#if DEBUG
-                frmTestForm.SendToBack();
-#endif
-                while
-                    (!frmTestForm
-                        .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                {
-                    Utils.SafeSleep();
-                }
-
-                frmTestForm.Close();
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail(ex.Message);
-            }
-            finally
-            {
-                frmTestForm?.Dispose();
-            }
-            Program.MainForm = frmOldMainForm;
-        }
-
-        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
-        public void Test02_LoadContent()
+        public void Test01_LoadContent()
         {
             Debug.WriteLine("Unit test initialized for: Test02_LoadContent()");
             try
@@ -203,8 +163,6 @@ namespace Chummer.Tests
                 {
                     Utils.IsUnitTestForUI = blnTemp;
                 }
-
-                _lstCharacters.Capacity = GetTestCharacters().ToList().Count; // Dummy command used purely to initialize CharacterList
             }
             catch (Exception ex)
             {
@@ -214,9 +172,64 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test03_LoadThenSaveAsChum5lz()
+        public void Test02_BasicStartup()
         {
-            Debug.WriteLine("Unit test initialized for: Test03_LoadThenSave()");
+            Debug.WriteLine("Unit test initialized for: Test01_BasicStartup()");
+            ChummerMainForm frmOldMainForm = Program.MainForm;
+            ChummerMainForm frmTestForm = null;
+            // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
+            try
+            {
+                frmTestForm = new ChummerMainForm(true, true)
+                {
+                    ShowInTaskbar =
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
+                };
+                Program.MainForm = frmTestForm; // Set program Main form to Unit test version
+                frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                frmTestForm.SendToBack();
+#endif
+                while
+                    (!frmTestForm
+                        .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                {
+                    Utils.SafeSleep();
+                }
+
+                frmTestForm.Close();
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+            finally
+            {
+                frmTestForm?.Dispose();
+            }
+            Program.MainForm = frmOldMainForm;
+        }
+
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
+        [TestMethod]
+        public void Test03_LoadCharacters()
+        {
+            Debug.WriteLine("Unit test initialized for: Test03_LoadCharacters()");
+            List<Character> lstCharacters = new List<Character>();
+            foreach (Character objCharacter in GetTestCharacters())
+            {
+                Debug.WriteLine("Finished loading " + objCharacter.FileName);
+                lstCharacters.Add(objCharacter);
+            }
+
+            lstCharacters.Capacity = lstCharacters.Count; // Dummy command to make sure the test isn't optimized away.
+        }
+
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
+        [TestMethod]
+        public void Test04_SaveAsChum5lzThenLoad()
+        {
+            Debug.WriteLine("Unit test initialized for: Test04_SaveAsChum5lzThenLoad()");
             LzmaHelper.ChummerCompressionPreset eOldSetting = GlobalSettings.Chum5lzCompressionLevel;
             try
             {
@@ -226,7 +239,7 @@ namespace Chummer.Tests
                     string strFileName = Path.GetFileName(objCharacter.FileName)
                                          ?? LanguageManager.GetString("String_Unknown");
                     Debug.WriteLine("Checking " + strFileName);
-                    string strDestination = Path.Combine(TestPathInfo.FullName, strFileName);
+                    string strDestination = Path.Combine(TestPathInfo.FullName, "(Compressed) " + strFileName);
                     if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                     {
                         if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
@@ -250,9 +263,9 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test04_LoadThenSaveIsDeterministic()
+        public void Test05_LoadThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: Test04_LoadThenSaveIsDeterministic()");
+            Debug.WriteLine("Unit test initialized for: Test05_LoadThenSaveIsDeterministic()");
             foreach (Character objCharacterControl in GetTestCharacters())
             {
                 string strFileName = Path.GetFileName(objCharacterControl.FileName) ?? LanguageManager.GetString("String_Unknown");
@@ -308,9 +321,9 @@ namespace Chummer.Tests
         }
 
         [TestMethod]
-        public void Test05_LoadThenPrint()
+        public void Test06_LoadThenPrint()
         {
-            Debug.WriteLine("Unit test initialized for: Test05_LoadThenPrint()");
+            Debug.WriteLine("Unit test initialized for: Test06_LoadThenPrint()");
             List<string> lstExportLanguages = new List<string>();
             foreach (string strFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "lang"), "*.xml"))
             {
@@ -342,9 +355,9 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test06_LoadCharacterForms()
+        public void Test07_LoadCharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: Test06_LoadCharacterForms()");
+            Debug.WriteLine("Unit test initialized for: Test07_LoadCharacterForms()");
             ChummerMainForm frmOldMainForm = Program.MainForm;
             ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
