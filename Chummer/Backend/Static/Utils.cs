@@ -460,11 +460,13 @@ namespace Chummer
 
         public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(CurrentChummerVersion) ?? 0;
 
-        public const int DefaultSleepDuration = 15;
+        private static ThreadLocal<Stopwatch> s_objThreadStopwatch = new ThreadLocal<Stopwatch>(() => new Stopwatch());
 
-        public const int SleepEmergencyReleaseMaxTicks = 60000 / DefaultSleepDuration; // 1 minute in ticks
+        public const int DefaultSleepDuration = 1;
 
-        public const int WaitEmergencyReleaseMaxTicks = 1800000 / DefaultSleepDuration; // 30 minutes in ticks
+        public const int SleepEmergencyReleaseMaxTicks = 60000 / 15; // About 1 minute in ticks (assuming 15 ms timer frequency)
+
+        public const int WaitEmergencyReleaseMaxTicks = 1800000 / 15; // About 30 minutes in ticks (assuming 15 ms timer frequency)
 
         /// <summary>
         /// Can the current user context write to a given file path?
@@ -1383,7 +1385,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task SafeSleepAsync(int intDurationMilliseconds)
         {
-            return Task.Delay(intDurationMilliseconds);
+            return Task.Delay(Math.Min(intDurationMilliseconds, 1));
         }
 
         /// <summary>
@@ -1396,7 +1398,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task SafeSleepAsync(int intDurationMilliseconds, CancellationToken token)
         {
-            return Task.Delay(intDurationMilliseconds, token);
+            return Task.Delay(Math.Min(intDurationMilliseconds, 1), token);
         }
 
         /// <summary>
@@ -1454,34 +1456,27 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, bool blnForceDoEvents = false)
         {
-            if (!EverDoEvents)
+            if (Program.IsMainThread && EverDoEvents)
             {
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(intDurationMilliseconds),
-                                            intDurationMilliseconds > 1000
-                                                ? JoinableTaskCreationOptions.LongRunning
-                                                : JoinableTaskCreationOptions.None);
-                else
-                    Thread.Sleep(intDurationMilliseconds);
-                return;
+                s_objThreadStopwatch.Value.Restart();
+                try
+                {
+                    while (s_objThreadStopwatch.Value.ElapsedMilliseconds <= intDurationMilliseconds)
+                    {
+                        DoEventsSafe(blnForceDoEvents);
+                        int intDuration = DefaultSleepDuration - (int)s_objThreadStopwatch.Value.ElapsedMilliseconds;
+                        if (intDuration >= 0)
+                            Thread.Sleep(intDuration);
+                    }
+                }
+                finally
+                {
+                    s_objThreadStopwatch.Value.Stop();
+                }
             }
-
-            int i = intDurationMilliseconds;
-            for (; i >= DefaultSleepDuration; i -= DefaultSleepDuration)
+            else
             {
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(DefaultSleepDuration));
-                else
-                    Thread.Sleep(DefaultSleepDuration);
-                DoEventsSafe(blnForceDoEvents);
-            }
-            if (i > 0)
-            {
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(i));
-                else
-                    Thread.Sleep(i);
-                DoEventsSafe(blnForceDoEvents);
+                Thread.Sleep(intDurationMilliseconds);
             }
         }
 
@@ -1507,31 +1502,33 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, CancellationToken token, bool blnForceDoEvents = false)
         {
-            int i = intDurationMilliseconds;
-            for (; i >= DefaultSleepDuration; i -= DefaultSleepDuration)
+            token.ThrowIfCancellationRequested();
+            if (Program.IsMainThread && EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(DefaultSleepDuration, token));
-                else
-                    Thread.Sleep(DefaultSleepDuration);
-                if (EverDoEvents)
+                s_objThreadStopwatch.Value.Restart();
+                try
                 {
-                    token.ThrowIfCancellationRequested();
-                    DoEventsSafe(blnForceDoEvents);
+                    while (s_objThreadStopwatch.Value.ElapsedMilliseconds <= intDurationMilliseconds)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        DoEventsSafe(blnForceDoEvents);
+                        token.ThrowIfCancellationRequested();
+                        int intDuration = DefaultSleepDuration - (int)s_objThreadStopwatch.Value.ElapsedMilliseconds;
+                        if (intDuration >= 0)
+                            Thread.Sleep(intDuration);
+                    }
+                }
+                finally
+                {
+                    s_objThreadStopwatch.Value.Stop();
                 }
             }
-            if (i > 0)
+            else
             {
-                token.ThrowIfCancellationRequested();
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(i, token));
-                else
-                    Thread.Sleep(i);
-                if (EverDoEvents)
+                for (int i = 0; i < intDurationMilliseconds; i += DefaultSleepDuration)
                 {
                     token.ThrowIfCancellationRequested();
-                    DoEventsSafe(blnForceDoEvents);
+                    Thread.Sleep(DefaultSleepDuration);
                 }
             }
         }
