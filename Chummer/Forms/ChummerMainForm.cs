@@ -2695,7 +2695,7 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterEditorForms, null);
             if (lstToClose1 != null)
             {
-                using (lstToClose1.LockObject.EnterWriteLock(CancellationToken.None))
+                using (lstToClose1.LockObject.EnterWriteLock())
                 {
                     for (int i = lstToClose1.Count - 1; i >= 0; --i)
                     {
@@ -2713,7 +2713,7 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterExportForms, null);
             if (lstToClose2 != null)
             {
-                using (lstToClose2.LockObject.EnterWriteLock(CancellationToken.None))
+                using (lstToClose2.LockObject.EnterWriteLock())
                 {
                     for (int i = lstToClose2.Count - 1; i >= 0; --i)
                     {
@@ -2731,7 +2731,7 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterSheetViewers, null);
             if (lstToClose3 != null)
             {
-                using (lstToClose3.LockObject.EnterWriteLock(CancellationToken.None))
+                using (lstToClose3.LockObject.EnterWriteLock())
                 {
                     for (int i = lstToClose3.Count - 1; i >= 0; --i)
                     {

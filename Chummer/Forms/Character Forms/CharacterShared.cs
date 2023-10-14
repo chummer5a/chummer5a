@@ -9345,7 +9345,7 @@ namespace Chummer
             {
                 if (_objCharacter?.IsDisposed == false)
                 {
-                    using (_objCharacter.LockObject.EnterWriteLock(CancellationToken.None))
+                    using (_objCharacter.LockObject.EnterWriteLock())
                         _objCharacter.PropertyChanged -= CharacterPropertyChanged;
                 }
 

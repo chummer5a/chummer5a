@@ -1531,7 +1531,7 @@ namespace Chummer
                         CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
                         CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
                         CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
-                        using (CharacterObject.LockObject.EnterWriteLock(CancellationToken.None))
+                        using (CharacterObject.LockObject.EnterWriteLock())
                         {
                             CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
                             CharacterObject.SettingsPropertyChanged -= OnCharacterSettingsPropertyChanged;

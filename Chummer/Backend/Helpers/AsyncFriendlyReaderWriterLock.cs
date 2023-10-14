@@ -390,27 +390,33 @@ namespace Chummer
         /// </summary>
         private async Task SimpleTakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, CancellationTokenRegistration objLocalReaderUndo, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
-            await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
-                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
+                token.ThrowIfCancellationRequested();
+                await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
+                try
                 {
-                    try
+                    if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                     {
-                        await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            Interlocked.Decrement(ref _intCountActiveReaders);
+                            throw;
+                        }
                     }
-                    catch
-                    {
-                        Interlocked.Decrement(ref _intCountActiveReaders);
-                        throw;
-                    }
+                }
+                finally
+                {
+                    objCurrentSemaphore.Release();
                 }
             }
             finally
             {
                 objLocalReaderUndo.Dispose();
-                objCurrentSemaphore.Release();
             }
         }
 
@@ -438,20 +444,26 @@ namespace Chummer
         /// </summary>
         private async Task SimpleTakeReadLockCoreLightAsync(CancellationTokenRegistration objLocalReaderUndo, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
-            if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
+            try
             {
-                try
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
-                    await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                }
-                catch
-                {
-                    Interlocked.Decrement(ref _intCountActiveReaders);
-                    throw;
+                    try
+                    {
+                        await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _intCountActiveReaders);
+                        throw;
+                    }
                 }
             }
-            objLocalReaderUndo.Dispose();
+            finally
+            {
+                objLocalReaderUndo.Dispose();
+            }
         }
 
         /// <summary>
@@ -619,28 +631,35 @@ namespace Chummer
         /// </summary>
         private async Task<IDisposable> TakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, CancellationTokenRegistration objLocalReaderUndo, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
-            await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
-                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
+                token.ThrowIfCancellationRequested();
+                await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
+                try
                 {
-                    try
+                    if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                     {
-                        await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            Interlocked.Decrement(ref _intCountActiveReaders);
+                            throw;
+                        }
                     }
-                    catch
-                    {
-                        Interlocked.Decrement(ref _intCountActiveReaders);
-                        throw;
-                    }
+
+                    return new SafeReaderSemaphoreRelease(this);
                 }
-                return new SafeReaderSemaphoreRelease(this);
+                finally
+                {
+                    objCurrentSemaphore.Release();
+                }
             }
             finally
             {
                 objLocalReaderUndo.Dispose();
-                objCurrentSemaphore.Release();
             }
         }
 
@@ -669,21 +688,28 @@ namespace Chummer
         /// </summary>
         private async Task<IDisposable> TakeReadLockCoreLightAsync(CancellationTokenRegistration objLocalReaderUndo, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
-            if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
+            try
             {
-                try
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
-                    await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _intCountActiveReaders);
+                        throw;
+                    }
                 }
-                catch
-                {
-                    Interlocked.Decrement(ref _intCountActiveReaders);
-                    throw;
-                }
+
+                return new SafeReaderSemaphoreRelease(this);
             }
-            objLocalReaderUndo.Dispose();
-            return new SafeReaderSemaphoreRelease(this);
+            finally
+            {
+                objLocalReaderUndo.Dispose();
+            }
         }
 
         /// <summary>

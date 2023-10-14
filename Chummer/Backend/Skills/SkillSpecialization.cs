@@ -472,7 +472,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public void Dispose()
         {
-            using (LockObject.EnterWriteLock(CancellationToken.None))
+            using (LockObject.EnterWriteLock())
             {
                 CancellationTokenSource objSource
                     = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, null);
