@@ -2753,19 +2753,23 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterEditorForms, null);
             if (lstToClose1 != null)
             {
-                IAsyncDisposable objLocker = await lstToClose1.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                // ReSharper disable once MethodSupportsCancellation
+                IAsyncDisposable objLocker = await lstToClose1.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    for (int i = await lstToClose1.GetCountAsync(CancellationToken.None)
-                                                  .ConfigureAwait(false) - 1;
+                    // ReSharper disable once MethodSupportsCancellation
+                    for (int i = await lstToClose1.GetCountAsync()
+                             .ConfigureAwait(false) - 1;
                          i >= 0;
                          --i)
                     {
                         CharacterShared frmToClose = await lstToClose1
-                                                           .GetValueAtAsync(i, CancellationToken.None)
+                            // ReSharper disable once MethodSupportsCancellation
+                            .GetValueAtAsync(i)
                                                            .ConfigureAwait(false);
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None)
+                        // ReSharper disable once MethodSupportsCancellation
+                        await frmToClose.DoThreadSafeAsync(x => x.Close())
                                         .ConfigureAwait(false);
                         await objFormCharacter.DisposeAsync().ConfigureAwait(false);
                     }
@@ -2782,18 +2786,22 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterExportForms, null);
             if (lstToClose2 != null)
             {
-                IAsyncDisposable objLocker = await lstToClose2.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                // ReSharper disable once MethodSupportsCancellation
+                IAsyncDisposable objLocker = await lstToClose2.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    for (int i = await lstToClose2.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1;
+                    // ReSharper disable once MethodSupportsCancellation
+                    for (int i = await lstToClose2.GetCountAsync().ConfigureAwait(false) - 1;
                          i >= 0;
                          --i)
                     {
                         ExportCharacter frmToClose = await lstToClose2
-                                                           .GetValueAtAsync(i, CancellationToken.None)
+                            // ReSharper disable once MethodSupportsCancellation
+                            .GetValueAtAsync(i)
                                                            .ConfigureAwait(false);
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None)
+                        // ReSharper disable once MethodSupportsCancellation
+                        await frmToClose.DoThreadSafeAsync(x => x.Close())
                                         .ConfigureAwait(false);
                         await objFormCharacter.DisposeAsync().ConfigureAwait(false);
                     }
@@ -2810,19 +2818,23 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterSheetViewers, null);
             if (lstToClose3 != null)
             {
-                IAsyncDisposable objLocker = await lstToClose3.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                // ReSharper disable once MethodSupportsCancellation
+                IAsyncDisposable objLocker = await lstToClose3.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    for (int i = await lstToClose3.GetCountAsync(CancellationToken.None)
-                                                  .ConfigureAwait(false) - 1;
+                    // ReSharper disable once MethodSupportsCancellation
+                    for (int i = await lstToClose3.GetCountAsync()
+                             .ConfigureAwait(false) - 1;
                          i >= 0;
                          --i)
                     {
                         CharacterSheetViewer frmToClose = await lstToClose3
-                                                                .GetValueAtAsync(i, CancellationToken.None)
+                            // ReSharper disable once MethodSupportsCancellation
+                            .GetValueAtAsync(i)
                                                                 .ConfigureAwait(false);
                         List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
-                        await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None)
+                        // ReSharper disable once MethodSupportsCancellation
+                        await frmToClose.DoThreadSafeAsync(x => x.Close())
                                         .ConfigureAwait(false);
                         foreach (Character objFormCharacter in lstFormCharacters)
                             await objFormCharacter.DisposeAsync().ConfigureAwait(false);

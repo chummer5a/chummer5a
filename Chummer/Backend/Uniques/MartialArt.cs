@@ -913,6 +913,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 await _objCharacter.MartialArts.RemoveAsync(this, token).ConfigureAwait(false);
 
                 // Remove the Improvements for any Techniques for the Martial Art that is being removed.

@@ -1490,6 +1490,7 @@ namespace Chummer
                     = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
                     for (int i = await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1;
                          i >= 0;

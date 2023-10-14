@@ -108,6 +108,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
                 }
                 finally
@@ -191,6 +192,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
                 }
                 finally
@@ -274,6 +276,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
                 }
                 finally
@@ -452,6 +455,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
                 }
                 finally
@@ -535,6 +539,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
                 }
                 finally
@@ -618,6 +623,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
                 }
                 finally
@@ -701,6 +707,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
                 }
                 finally
@@ -784,6 +791,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
                 }
                 finally
@@ -983,6 +991,7 @@ namespace Chummer
                 objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 for (int i = Math.Min(index + count - 1,
                                       await lstCollection.GetCountAsync(token).ConfigureAwait(false));
                      i >= index;
@@ -1008,6 +1017,7 @@ namespace Chummer
                 objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                 {
                     if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
@@ -1035,6 +1045,7 @@ namespace Chummer
                 objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                 {
                     if (await predicate.Invoke(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false))
@@ -1061,6 +1072,7 @@ namespace Chummer
                 objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (T item in collection.Reverse())
                 {
                     await lstCollection.InsertAsync(index, item, token).ConfigureAwait(false);
@@ -1085,6 +1097,7 @@ namespace Chummer
                 objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (T item in lstToAdd)
                 {
                     await lstCollection.InsertAsync(index, item, token).ConfigureAwait(false);

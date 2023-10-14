@@ -121,9 +121,9 @@ namespace Chummer.Backend.Skills
                 {
                     objNewAttribute?.LockObject.ExitReadLock();
                 }
+                if (CharacterObject.SkillsSection?.IsLoading != true)
+                    this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
             }
-            if (CharacterObject.SkillsSection?.IsLoading != true)
-                this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
         }
 
         private async ValueTask RecacheAttributeAsync(CancellationToken token = default)
@@ -166,6 +166,7 @@ namespace Chummer.Backend.Skills
                                         .EnterWriteLockAsync(token).ConfigureAwait(false);
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         objOldAttribute.PropertyChanged -= OnLinkedAttributeChanged;
                                     }
                                     finally
@@ -182,6 +183,7 @@ namespace Chummer.Backend.Skills
                                         .EnterWriteLockAsync(token).ConfigureAwait(false);
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         objNewAttribute.PropertyChanged -= OnLinkedAttributeChanged;
                                     }
                                     finally
@@ -200,9 +202,9 @@ namespace Chummer.Backend.Skills
                 {
                     objNewAttribute?.LockObject.ExitReadLock();
                 }
+                if (CharacterObject.SkillsSection?.IsLoading != true)
+                    this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
             }
-            if (CharacterObject.SkillsSection?.IsLoading != true)
-                this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
         }
 
         private string _strName = string.Empty; //English name of this skill
@@ -1161,6 +1163,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (intOverMax > 0) //Too much
                     {
                         int intKarmaPoints = await GetKarmaPointsAsync(token).ConfigureAwait(false);
@@ -1278,6 +1281,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (intOverMax > 0) //Too much
                     {
                         int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
@@ -1423,6 +1427,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _blnBuyWithKarma = value;
                     OnPropertyChanged(nameof(BuyWithKarma));
                 }
@@ -3142,6 +3147,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _strDictionaryKey = null;
                     _intCachedFreeBase = int.MinValue;
                     _intCachedFreeKarma = int.MinValue;
@@ -3267,6 +3273,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _guidSkillId = value;
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
@@ -3354,6 +3361,7 @@ namespace Chummer.Backend.Skills
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_blnRecalculateCachedSuggestedSpecializations) // Just in case
                         {
                             _blnRecalculateCachedSuggestedSpecializations = false;
@@ -3540,11 +3548,13 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
                     = await GetSpecializationsAsync(token).ConfigureAwait(false);
                 IAsyncDisposable objLocker2 = await lstSpecs.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     int intIndexToReplace = await lstSpecs.FindIndexAsync(x => !x.Free, token).ConfigureAwait(false);
                     if (intIndexToReplace < 0)
                     {
@@ -6442,6 +6452,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(nspec, token).ConfigureAwait(false);
                 }
                 finally
@@ -6742,6 +6753,7 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 SkillGroup objGroup = SkillGroupObject;
                 if (objGroup != null)
                     await objGroup.RemoveAsync(this, token).ConfigureAwait(false);

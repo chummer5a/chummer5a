@@ -1702,6 +1702,7 @@ namespace Chummer
                 .EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 await _dicCharacterCustomDataDirectoryInfos.ClearAsync(token).ConfigureAwait(false);
                 await _objCharacterSettings.CustomDataDirectoryKeys.ForEachAsync(
                     async kvpCustomDataDirectory =>

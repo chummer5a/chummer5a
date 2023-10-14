@@ -288,6 +288,7 @@ namespace Chummer
                         IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
                         try
                         {
+                            _objGenericToken.ThrowIfCancellationRequested();
                             objSettings.PropertyChanged += OnSelectedSettingChanged;
                         }
                         finally
@@ -320,6 +321,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await _objSelectedSetting.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
                     try
                     {
+                        _objGenericToken.ThrowIfCancellationRequested();
                         _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
                     }
                     finally
@@ -470,6 +472,7 @@ namespace Chummer
                                 IAsyncDisposable objLocker = await objPreviousSettings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objPreviousSettings.PropertyChanged -= OnSelectedSettingChanged;
                                 }
                                 finally
@@ -483,6 +486,7 @@ namespace Chummer
                                 IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objSettings.PropertyChanged += OnSelectedSettingChanged;
                                 }
                                 finally

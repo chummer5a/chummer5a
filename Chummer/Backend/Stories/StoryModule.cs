@@ -86,6 +86,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 

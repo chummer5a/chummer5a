@@ -66,6 +66,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 HashSet<NotifyCollectionChangedEventHandler> setFuncs
                     = await _dicTaggedAddedDelegates
                             .AddOrGetAsync(objTag, x => new HashSet<NotifyCollectionChangedEventHandler>(), token)
@@ -117,6 +118,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 (bool blnSuccess, HashSet<NotifyCollectionChangedEventHandler> setFuncs)
                     = await _dicTaggedAddedDelegates.TryGetValueAsync(objTag, token).ConfigureAwait(false);
                 if (!blnSuccess)
@@ -178,6 +180,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 HashSet<NotifyCollectionChangedEventHandler> setFuncs
                     = await _dicTaggedAddedBeforeClearDelegates
                             .AddOrGetAsync(objTag, x => new HashSet<NotifyCollectionChangedEventHandler>(), token)
@@ -229,6 +232,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 (bool blnSuccess, HashSet<NotifyCollectionChangedEventHandler> setFuncs)
                     = await _dicTaggedAddedBeforeClearDelegates.TryGetValueAsync(objTag, token).ConfigureAwait(false);
                 if (!blnSuccess)

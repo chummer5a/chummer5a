@@ -1365,6 +1365,7 @@ namespace Chummer
                                         .EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     if (!(blnSync
@@ -2148,6 +2149,7 @@ namespace Chummer
                 }
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (nodBonus == null)
                     {
                         _strForcedValue = string.Empty;
@@ -2665,6 +2667,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         objImprovementMethod.Invoke(bonusNode);
                     }
                     finally
@@ -2749,6 +2752,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Enable the Improvement.
@@ -3385,6 +3389,7 @@ namespace Chummer
                 objAsyncLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Disable the Improvement.
@@ -4149,6 +4154,7 @@ namespace Chummer
                 objLockerAsync = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
 
                 // Now that we have all of the applicable Improvements, remove them from the character.
@@ -5173,6 +5179,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // Record the improvement.
                     // ReSharper disable once UseObjectOrCollectionInitializer
 #pragma warning disable IDE0017
@@ -5269,6 +5276,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // Remove all of the Improvements that were added.
                     foreach (Improvement objTransactingImprovement in lstTransactions)
                     {

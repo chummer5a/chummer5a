@@ -402,6 +402,7 @@ namespace Chummer.UI.Skills
                                                                 .EnterWriteLockAsync(objMyToken).ConfigureAwait(false);
                 try
                 {
+                    objMyToken.ThrowIfCancellationRequested();
                     _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
                     _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
                     _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;

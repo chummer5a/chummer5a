@@ -72,6 +72,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (index >= _intMaxSize)
                     return;
                 for (int intCount = await GetCountAsync(token).ConfigureAwait(false); intCount >= _intMaxSize; --intCount)

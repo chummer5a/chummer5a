@@ -1165,6 +1165,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         objDataSource.PropertyChanged += OnPropertyChangedAsync;
                     }
                     finally

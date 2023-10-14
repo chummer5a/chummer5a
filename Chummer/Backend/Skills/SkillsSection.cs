@@ -538,6 +538,7 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (Skill objSkill in lstSkillsToAdd)
                 {
                     Guid guidLoop = await objSkill.GetSkillIdAsync(token).ConfigureAwait(false);
@@ -588,6 +589,7 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
                 {
                     Specific = strSpecific
@@ -735,6 +737,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     ThreadSafeBindingList<Skill> lstSkills = await GetSkillsAsync(token).ConfigureAwait(false);
                     for (int i = await lstSkills.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
@@ -823,6 +826,7 @@ namespace Chummer.Backend.Skills
                 objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
@@ -870,6 +874,7 @@ namespace Chummer.Backend.Skills
                                                     .ConfigureAwait(false);
                                             try
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (!_blnSkillsInitialized)
                                                 {
                                                     blnDidInitializeInLoad = true;
@@ -1437,6 +1442,7 @@ namespace Chummer.Backend.Skills
                                                 .ConfigureAwait(false);
                                         try
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             objKnoSkill.PropertyChanged
                                                 += OnKnowledgeSkillPropertyChanged;
                                         }
@@ -1922,6 +1928,7 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 //Hacky way of converting Expense entries to guid based skill identification
                 //specs already did?
                 //First create dictionary mapping name=>guid
@@ -2095,6 +2102,7 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
@@ -2106,6 +2114,7 @@ namespace Chummer.Backend.Skills
                             = await objSkill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             objSkill.PropertyChanged -= OnKnowledgeSkillPropertyChanged;
                         }
                         finally
@@ -2219,6 +2228,7 @@ namespace Chummer.Backend.Skills
                         = await _objSkillsInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!_blnSkillsInitialized
                             && await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)
                             == this) // repeat check to avoid redoing calculations if another thread read Skills before first one acquired write lock
@@ -2509,6 +2519,7 @@ namespace Chummer.Backend.Skills
                     IAsyncDisposable objLocker = await _objCachedKnowledgePointsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_intCachedKnowledgePoints == int.MinValue) // Just in case
                         {
                             string strExpression = _objCharacter.Settings.KnowledgePointsExpression;

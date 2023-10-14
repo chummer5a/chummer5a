@@ -1916,10 +1916,10 @@ namespace Chummer
                         CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
                         CharacterObject.SustainedCollection.CollectionChanged -= SustainedSpellCollectionChanged;
                         CharacterObject.ExpenseEntries.CollectionChanged -= ExpenseEntriesCollectionChanged;
-                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
-                            IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                            IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                             try
                             {
                                 CharacterObject.AttributeSection.PropertyChanged -= MakeDirtyWithCharacterUpdate;
@@ -7847,6 +7847,7 @@ namespace Chummer
                                                                       .ConfigureAwait(false);
                     try
                     {
+                        GenericToken.ThrowIfCancellationRequested();
                         for (int i = 1; i <= intRatingToAdd; ++i)
                         {
                             // Positive Metagenetic Qualities are free if you're a Changeling.
@@ -8232,6 +8233,7 @@ namespace Chummer
                                                                   .ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objSelectedQuality.Type == QualityType.Positive)
                     {
                         if (await objXmlDeleteQuality
@@ -8469,6 +8471,7 @@ namespace Chummer
                                                                       .ConfigureAwait(false);
                     try
                     {
+                        GenericToken.ThrowIfCancellationRequested();
                         // Adding a new level
                         for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
                         {
@@ -12198,9 +12201,10 @@ namespace Chummer
                                                                        .ConfigureAwait(false);
                             try
                             {
+                                GenericToken.ThrowIfCancellationRequested();
                                 await objSkill
-                                      .SetKarmaAsync(await objSkill.GetKarmaAsync(GenericToken).ConfigureAwait(false)
-                                                     - 1, token: GenericToken).ConfigureAwait(false);
+                                    .SetKarmaAsync(await objSkill.GetKarmaAsync(GenericToken).ConfigureAwait(false)
+                                                   - 1, token: GenericToken).ConfigureAwait(false);
                             }
                             finally
                             {

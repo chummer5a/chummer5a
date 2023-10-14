@@ -3937,6 +3937,7 @@ namespace Chummer.Backend.Equipment
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (blnEquip)
                 {
                     await ImprovementManager.EnableImprovementsAsync(_objCharacter,
@@ -4887,6 +4888,7 @@ namespace Chummer.Backend.Equipment
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         _decExtraESSAdditiveMultiplier = 0;
                         _decExtraESSMultiplicativeMultiplier = 1;
                         switch (_eImprovementSource)
@@ -8042,6 +8044,7 @@ namespace Chummer.Backend.Equipment
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Unequip all modular children first so that we don't delete them
                 Cyberware objModularChild
                     = Children.DeepFirstOrDefault(x => x.Children, x => !string.IsNullOrEmpty(x.PlugsIntoModularMount));

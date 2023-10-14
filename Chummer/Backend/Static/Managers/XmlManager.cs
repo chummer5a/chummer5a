@@ -155,6 +155,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (objContent != null)
                         {
                             Interlocked.Increment(ref _intInitialLoadComplete);
@@ -308,6 +309,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 await s_DicXmlDocuments.ForEachAsync(kvpDocument => kvpDocument.Value.DisposeAsync().AsTask(), token: token).ConfigureAwait(false);
                 await s_DicXmlDocuments.ClearAsync(token).ConfigureAwait(false);
                 s_SetDataDirectories.Clear();

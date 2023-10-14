@@ -132,6 +132,7 @@ namespace Chummer.Backend.Attributes
                             .ConfigureAwait(false);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             await InitializeAttributesListAsync(token).ConfigureAwait(false);
                         }
                         finally
@@ -193,6 +194,7 @@ namespace Chummer.Backend.Attributes
                 IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _blnAttributesInitialized = true;
 
                     // Not creating a new collection here so that CollectionChanged events from previous list are kept
@@ -689,6 +691,7 @@ namespace Chummer.Backend.Attributes
                 objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
@@ -1804,6 +1807,7 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
@@ -1897,9 +1901,11 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker1 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await _dicBindings.ForEachAsync(
                         async objBindingEntry => objBindingEntry.Value.DataSource =
                             await GetAttributeByNameAsync(objBindingEntry.Key, token).ConfigureAwait(false), token: token).ConfigureAwait(false);

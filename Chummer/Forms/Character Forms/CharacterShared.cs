@@ -2244,6 +2244,7 @@ namespace Chummer
                             = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                         }
                         finally
@@ -2330,6 +2331,7 @@ namespace Chummer
                                         = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                     }
                                     finally
@@ -2366,6 +2368,7 @@ namespace Chummer
                                             = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                         try
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                         }
                                         finally
@@ -2501,6 +2504,7 @@ namespace Chummer
                         = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
                     }
                     finally
@@ -9387,7 +9391,7 @@ namespace Chummer
             {
                 if (_objCharacter?.IsDisposed == false)
                 {
-                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
                         _objCharacter.PropertyChanged -= CharacterPropertyChanged;

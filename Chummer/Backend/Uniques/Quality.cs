@@ -1876,6 +1876,7 @@ namespace Chummer
                                                                 .ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Create(objXmlQuality, QualitySource.Selected, lstWeapons);
 
@@ -2234,6 +2235,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     decimal decReturn = 0;
                     if (blnFullRemoval)
                     {

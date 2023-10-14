@@ -748,6 +748,7 @@ namespace Chummer
                         foreach (CharacterAttrib objAttribute in GetAllAttributes(token))
                         {
                             stkLockers.Push(await objAttribute.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false));
+                            token.ThrowIfCancellationRequested();
                             switch (objAttribute.Abbrev)
                             {
                                 case "BOD":
@@ -11374,6 +11375,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _intFreeSpells = 0;
                 _intCFPLimit = 0;
                 _intAINormalProgramLimit = 0;
@@ -12949,6 +12951,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 int intNewImprovementCount = 0;
                 int intOldImprovementCount = await Improvements.GetCountAsync(token).ConfigureAwait(false);
                 // Loop this until we remove every single orphaned improvement (necessary because orphaned improvements can add other improvements)
@@ -13420,6 +13423,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (eResult != DialogResult.OK)
                 {
                     await SetSettingsKeyAsync(strOldSettingsKey, token).ConfigureAwait(false);
@@ -13432,6 +13436,7 @@ namespace Chummer
                     IAsyncDisposable objLocker2 = await lstQualities.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         for (int i = await lstQualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
                             if (i >= await lstQualities.GetCountAsync(token).ConfigureAwait(false))
@@ -14708,6 +14713,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Do not update grade numbers until after we're done processing everything
                 _blnClearingInitiations = true;
                 try
@@ -14852,6 +14858,7 @@ namespace Chummer
                                                                              .ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
                             }
                             finally
@@ -14866,6 +14873,7 @@ namespace Chummer
                                 = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 value.PropertyChanged += OptionsOnPropertyChanged;
                             }
                             finally
@@ -14986,14 +14994,15 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _blnCreated = value;
-                    if (blnDoOnPropertyChanged)
-                        OnPropertyChanged(nameof(Created));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                if (blnDoOnPropertyChanged)
+                    OnPropertyChanged(nameof(Created));
             }
         }
 
@@ -15225,6 +15234,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = await xmlSavedNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token).ConfigureAwait(false);
                 List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
@@ -15413,15 +15423,16 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _strSettingsKey, value) == value)
                         return;
                     await SetSettingsAsync(objNewSettings, token).ConfigureAwait(false);
-                    OnPropertyChanged(nameof(SettingsKey));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(SettingsKey));
             }
         }
 
@@ -18121,18 +18132,20 @@ namespace Chummer
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         _blnMAGEnabled = value;
-                        OnPropertyChanged(nameof(MAGEnabled));
                     }
                     finally
                     {
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+                    OnPropertyChanged(nameof(MAGEnabled));
                     return;
                 }
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _blnMAGEnabled = value;
                     if (value)
                     {
@@ -18368,12 +18381,12 @@ namespace Chummer
                             && !await GetDEPEnabledAsync(token).ConfigureAwait(false))
                             await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
                     }
-                    OnPropertyChanged(nameof(MAGEnabled));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(MAGEnabled));
             }
         }
 
@@ -18824,6 +18837,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     int intOldValue = Interlocked.Exchange(ref _intInitiateGrade, value);
                     if (intOldValue == value)
                         return;
@@ -18969,13 +18983,12 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
                     }
-
-                    OnPropertyChanged(nameof(InitiateGrade));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(InitiateGrade));
             }
         }
 
@@ -19276,18 +19289,20 @@ namespace Chummer
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         _blnRESEnabled = value;
-                        OnPropertyChanged(nameof(RESEnabled));
                     }
                     finally
                     {
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+                    OnPropertyChanged(nameof(RESEnabled));
                     return;
                 }
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _blnRESEnabled = value;
                     if (value)
                     {
@@ -19525,12 +19540,12 @@ namespace Chummer
                     }
 
                     await ImprovementManager.ClearCachedValueAsync(this, Improvement.ImprovementType.MatrixInitiativeDice, token: token).ConfigureAwait(false);
-                    OnPropertyChanged(nameof(RESEnabled));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(RESEnabled));
             }
         }
 
@@ -19779,18 +19794,20 @@ namespace Chummer
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         _blnDEPEnabled = value;
-                        OnPropertyChanged(nameof(DEPEnabled));
                     }
                     finally
                     {
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+                    OnPropertyChanged(nameof(DEPEnabled));
                     return;
                 }
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _blnDEPEnabled = value;
                     if (value)
                     {
@@ -19997,12 +20014,12 @@ namespace Chummer
                              && !await GetRESEnabledAsync(token).ConfigureAwait(false)
                              && !await GetMAGEnabledAsync(token).ConfigureAwait(false))
                         await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
-                    OnPropertyChanged(nameof(DEPEnabled));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(DEPEnabled));
             }
         }
 
@@ -20187,6 +20204,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     int intOldValue = Interlocked.Exchange(ref _intSubmersionGrade, value);
                     if (intOldValue == value)
                         return;
@@ -20321,12 +20339,12 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
                     }
-                    OnPropertyChanged(nameof(SubmersionGrade));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(SubmersionGrade));
             }
         }
 
@@ -20453,6 +20471,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _decEssenceAtSpecialStart = value;
                     await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
                 }
@@ -20477,6 +20496,7 @@ namespace Chummer
             IAsyncDisposable objLocker2 = await _objCachedEssenceLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _decCachedEssence = decimal.MinValue;
             }
             finally
@@ -20636,6 +20656,7 @@ namespace Chummer
 
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         // Another check in case this was already cached in between requesting the lock and obtaining the lock
                         decimal decReturn = _decCachedEssence;
                         if (decReturn != decimal.MinValue && !blnAttributeSpecific)
@@ -26185,8 +26206,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _decNuyen = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26212,13 +26233,14 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _decNuyen = value;
-                    OnPropertyChanged(nameof(Nuyen));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(Nuyen));
             }
         }
 
@@ -26238,8 +26260,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _decStolenNuyen = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26259,13 +26281,14 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _decStolenNuyen = value;
-                    OnPropertyChanged(nameof(StolenNuyen));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(StolenNuyen));
             }
         }
 
@@ -26306,8 +26329,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _decStartingNuyen = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26455,8 +26478,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _decNuyenBP = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -29829,6 +29852,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
                         {
                             SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
@@ -31119,6 +31143,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
                         ? intCount
                         : 0;
@@ -32051,6 +32076,7 @@ namespace Chummer
                         IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             await ImprovementManager.RemoveImprovementsAsync(
                                                         this, Improvement.ImprovementSource.EssenceLoss,
                                                         token: token)
@@ -32257,6 +32283,7 @@ namespace Chummer
                         IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
                             await ImprovementManager.RemoveImprovementsAsync(
                                                         this, Improvement.ImprovementSource.EssenceLoss,
@@ -32641,6 +32668,7 @@ namespace Chummer
                             = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             await ImprovementManager.RemoveImprovementsAsync(
                                                         this, Improvement.ImprovementSource.EssenceLoss,
                                                         token: token)
@@ -32814,6 +32842,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         try
                         {
                             await ImprovementManager.RemoveImprovementsAsync(
@@ -32846,6 +32875,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         await ImprovementManager.RemoveImprovementsAsync(
                             this,
                             await (await GetImprovementsAsync(token).ConfigureAwait(false)).ToListAsync(
@@ -33683,6 +33713,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // Remove any Improvements from Armor Encumbrance.
                     await ImprovementManager
                           .RemoveImprovementsAsync(this, Improvement.ImprovementSource.Encumbrance, token: token)
@@ -33858,6 +33889,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // Remove any Improvements from Armor Encumbrance.
                     await ImprovementManager
                           .RemoveImprovementsAsync(this, Improvement.ImprovementSource.ArmorEncumbrance, token: token)
@@ -35392,6 +35424,7 @@ namespace Chummer
                 objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>(1);
                 XPathNavigator xmlStatBlockDocument = null;
                 XPathNavigator xmlLeadsDocument = null;

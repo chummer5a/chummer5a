@@ -534,6 +534,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 objNode.TryGetStringFieldQuickly("role", ref _strRole);
                 objNode.TryGetStringFieldQuickly("location", ref _strLocation);
@@ -2070,6 +2071,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await CharacterObject.LinkedCharacters.RemoveAsync(_objLinkedCharacter, token)
                                          .ConfigureAwait(false);
                     bool blnError = false;
@@ -2124,6 +2126,7 @@ namespace Chummer
                             IAsyncDisposable objLocker2 = await objOldLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
                             }
                             finally
@@ -2161,6 +2164,7 @@ namespace Chummer
                                 IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                                 }
                                 finally
@@ -2407,6 +2411,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = await xmlSavedNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token).ConfigureAwait(false);
                 List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);

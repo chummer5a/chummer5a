@@ -116,6 +116,7 @@ namespace Chummer.Backend.Skills
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_dicCategoriesSkillMap == null)
                         {
                             XPathNodeIterator lstXmlSkills =
@@ -301,6 +302,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await LoadSkillFromDataAsync(value, token).ConfigureAwait(false);
                     await SetNameAsync(value, token).ConfigureAwait(false);
                     OnPropertyChanged(nameof(WritableName));
@@ -351,6 +353,7 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 string strSkillName = await GetSkillNameFromDataAsync(strInputSkillName, token).ConfigureAwait(false);
                 XPathNavigator xmlSkillNode = (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                              .SelectSingleNode(
@@ -514,6 +517,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_intCachedCyberwareRating != int.MinValue)
                         return _intCachedCyberwareRating;
                     string strTranslatedName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -631,6 +635,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                     //default skills to reset to the default Type for that skill. If we want to disable
                     //that behavior, better to disable it via the control.
@@ -715,6 +720,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (value)
                     {
                         await SetBaseAsync(0, token).ConfigureAwait(false);

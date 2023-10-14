@@ -993,6 +993,7 @@ namespace Chummer.UI.Skills
                 IAsyncDisposable objLocker = await objOldAttrib.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
                 }
                 finally
@@ -1006,6 +1007,7 @@ namespace Chummer.UI.Skills
                 IAsyncDisposable objLocker = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     value.PropertyChanged += Attribute_PropertyChanged;
                 }
                 finally

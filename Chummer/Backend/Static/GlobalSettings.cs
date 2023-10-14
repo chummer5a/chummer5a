@@ -1662,6 +1662,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await s_DicSourcebookInfos.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await s_DicSourcebookInfos.ClearAsync(token).ConfigureAwait(false);
                     foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token)
                                                                               .ConfigureAwait(false))

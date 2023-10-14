@@ -547,6 +547,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 bool blnOldDoingCopy = _blnDoingCopy;
                 _blnDoingCopy = true;
                 List<string> lstPropertiesToUpdate;
@@ -619,6 +620,7 @@ namespace Chummer
                                     .EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
                                     await objOther._dicCustomDataDirectoryKeys
                                                   .ForEachAsync(
@@ -3530,6 +3532,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _strFileName = strFileName;
                 string strFilePath = Path.Combine(Utils.GetSettingsFolderPath, _strFileName);
                 XPathDocument objXmlDocument;
@@ -3599,6 +3602,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
                     _guiSourceId = guidTemp;
                 // Setting name.
@@ -4101,6 +4105,7 @@ namespace Chummer
                                                                                .ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
                     for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
                     {
@@ -5082,6 +5087,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _setEnabledCustomDataDirectoryGuids.Clear();
                 _setEnabledCustomDataDirectories.Clear();
                 _lstEnabledCustomDataDirectoryPaths.Clear();

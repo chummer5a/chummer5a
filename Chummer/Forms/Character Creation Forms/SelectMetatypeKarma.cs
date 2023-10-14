@@ -438,6 +438,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
                     for (int i = await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {

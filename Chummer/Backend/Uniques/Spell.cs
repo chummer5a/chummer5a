@@ -2101,6 +2101,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 await _objCharacter.Spells.RemoveAsync(this, token).ConfigureAwait(false);
                 await ImprovementManager
                       .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Spell, InternalId, token)

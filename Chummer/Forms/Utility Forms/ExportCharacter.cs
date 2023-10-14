@@ -89,6 +89,7 @@ namespace Chummer
                                                                      .ConfigureAwait(false);
                 try
                 {
+                    _objGenericToken.ThrowIfCancellationRequested();
                     _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
                     _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
                     // TODO: Make these also work for any children collection changes
@@ -239,7 +240,8 @@ namespace Chummer
                 objTemp.Dispose();
             }
 
-            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None)
+            // ReSharper disable once MethodSupportsCancellation
+            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync()
                                                                  .ConfigureAwait(false);
             try
             {

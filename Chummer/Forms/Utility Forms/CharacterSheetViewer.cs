@@ -1274,6 +1274,7 @@ namespace Chummer
                     IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
                         objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
                         objCharacter.Cyberware.CollectionChanged -= OnCharacterCollectionChanged;
@@ -1306,6 +1307,7 @@ namespace Chummer
                     IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
                         objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
                         // TODO: Make these also work for any children collection changes

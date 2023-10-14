@@ -433,6 +433,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 using (await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     _strBackground = objExistingCache.Background;
@@ -593,6 +594,7 @@ namespace Chummer
                 objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
                 if (tskOld != null)
                 {

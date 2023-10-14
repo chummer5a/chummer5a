@@ -168,22 +168,25 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterReadLock())
                 {
                     if (!BaseUnbroken)
                         return;
-                    //Calculate how far above maximum we are.
-                    int intOverMax = (value + KarmaPoints + FreeLevels) - RatingMaximum;
-
-                    //reduce value by max or 0
-                    value -= Math.Max(0, intOverMax);
-
-                    //and save back, cannot go under 0
-                    BasePoints = Math.Max(0, value - FreeBase);
-                    foreach (Skill skill in SkillList)
+                    using (LockObject.EnterWriteLock())
                     {
-                        //To trigger new calculation of skill.KarmaPoints
-                        skill.OnPropertyChanged();
+                        //Calculate how far above maximum we are.
+                        int intOverMax = (value + KarmaPoints + FreeLevels) - RatingMaximum;
+
+                        //reduce value by max or 0
+                        value -= Math.Max(0, intOverMax);
+
+                        //and save back, cannot go under 0
+                        BasePoints = Math.Max(0, value - FreeBase);
+                        foreach (Skill skill in SkillList)
+                        {
+                            //To trigger new calculation of skill.KarmaPoints
+                            skill.OnPropertyChanged();
+                        }
                     }
                 }
             }
@@ -202,30 +205,36 @@ namespace Chummer.Backend.Skills
         
         public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!await GetBaseUnbrokenAsync(token).ConfigureAwait(false))
                     return;
-                //Calculate how far above maximum we are.
-                int intOverMax = value + await GetKarmaPointsAsync(token).ConfigureAwait(false) + await GetFreeLevelsAsync(token).ConfigureAwait(false) - await GetRatingMaximumAsync(token).ConfigureAwait(false);
-
-                //reduce value by max or 0
-                value -= Math.Max(0, intOverMax);
-
-                //and save back, cannot go under 0
-                int intValue = Math.Max(0, value - await GetFreeBaseAsync(token).ConfigureAwait(false));
-                if (Interlocked.Exchange(ref _intSkillFromSp, intValue) != intValue)
-                    OnPropertyChanged(nameof(BasePoints));
-                foreach (Skill skill in SkillList)
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    //To trigger new calculation of skill.BasePoints
-                    skill.OnPropertyChanged(nameof(Skill.Base));
+                    token.ThrowIfCancellationRequested();
+                    //Calculate how far above maximum we are.
+                    int intOverMax = value + await GetKarmaPointsAsync(token).ConfigureAwait(false) +
+                                     await GetFreeLevelsAsync(token).ConfigureAwait(false) -
+                                     await GetRatingMaximumAsync(token).ConfigureAwait(false);
+
+                    //reduce value by max or 0
+                    value -= Math.Max(0, intOverMax);
+
+                    //and save back, cannot go under 0
+                    int intValue = Math.Max(0, value - await GetFreeBaseAsync(token).ConfigureAwait(false));
+                    if (Interlocked.Exchange(ref _intSkillFromSp, intValue) != intValue)
+                        OnPropertyChanged(nameof(BasePoints));
+                    foreach (Skill skill in SkillList)
+                    {
+                        //To trigger new calculation of skill.BasePoints
+                        skill.OnPropertyChanged(nameof(Skill.Base));
+                    }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -245,22 +254,25 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterReadLock())
                 {
                     if (!KarmaUnbroken)
                         return;
-                    //Calculate how far above maximum we are.
-                    int intOverMax = value + BasePoints + FreeBase - RatingMaximum;
-
-                    //reduce value by max or 0
-                    value -= Math.Max(0, intOverMax);
-
-                    //and save back, cannot go under 0
-                    KarmaPoints = Math.Max(0, value - FreeLevels);
-                    foreach (Skill skill in SkillList)
+                    using (LockObject.EnterWriteLock())
                     {
-                        //To trigger new calculation of skill.KarmaPoints
-                        skill.OnPropertyChanged();
+                        //Calculate how far above maximum we are.
+                        int intOverMax = value + BasePoints + FreeBase - RatingMaximum;
+
+                        //reduce value by max or 0
+                        value -= Math.Max(0, intOverMax);
+
+                        //and save back, cannot go under 0
+                        KarmaPoints = Math.Max(0, value - FreeLevels);
+                        foreach (Skill skill in SkillList)
+                        {
+                            //To trigger new calculation of skill.KarmaPoints
+                            skill.OnPropertyChanged();
+                        }
                     }
                 }
             }
@@ -287,30 +299,36 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!await GetKarmaUnbrokenAsync(token).ConfigureAwait(false))
                     return;
-                //Calculate how far above maximum we are.
-                int intOverMax = value + await GetBasePointsAsync(token).ConfigureAwait(false) + await GetFreeBaseAsync(token).ConfigureAwait(false) - await GetRatingMaximumAsync(token).ConfigureAwait(false);
-
-                //reduce value by max or 0
-                value -= Math.Max(0, intOverMax);
-
-                //and save back, cannot go under 0
-                int intValue = Math.Max(0, value - await GetFreeLevelsAsync(token).ConfigureAwait(false));
-                if (Interlocked.Exchange(ref _intSkillFromKarma, intValue) != intValue)
-                    OnPropertyChanged(nameof(KarmaPoints));
-                foreach (Skill skill in SkillList)
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    //To trigger new calculation of skill.KarmaPoints
-                    skill.OnPropertyChanged(nameof(Skill.Karma));
+                    token.ThrowIfCancellationRequested();
+                    //Calculate how far above maximum we are.
+                    int intOverMax = value + await GetBasePointsAsync(token).ConfigureAwait(false) +
+                                     await GetFreeBaseAsync(token).ConfigureAwait(false) -
+                                     await GetRatingMaximumAsync(token).ConfigureAwait(false);
+
+                    //reduce value by max or 0
+                    value -= Math.Max(0, intOverMax);
+
+                    //and save back, cannot go under 0
+                    int intValue = Math.Max(0, value - await GetFreeLevelsAsync(token).ConfigureAwait(false));
+                    if (Interlocked.Exchange(ref _intSkillFromKarma, intValue) != intValue)
+                        OnPropertyChanged(nameof(KarmaPoints));
+                    foreach (Skill skill in SkillList)
+                    {
+                        //To trigger new calculation of skill.KarmaPoints
+                        skill.OnPropertyChanged(nameof(Skill.Karma));
+                    }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -485,6 +503,7 @@ namespace Chummer.Backend.Skills
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_intCachedBaseUnbroken < 0)
                         {
                             if (await GetIsDisabledAsync(token).ConfigureAwait(false) || SkillList.Count == 0
@@ -586,6 +605,7 @@ namespace Chummer.Backend.Skills
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_intCachedKarmaUnbroken < 0) // Just in case
                         {
                             if (await GetIsDisabledAsync(token).ConfigureAwait(false) || SkillList.Count == 0)
@@ -680,6 +700,7 @@ namespace Chummer.Backend.Skills
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_intCachedIsDisabled < 0)
                         {
                             _intCachedIsDisabled = ((await ImprovementManager
@@ -755,6 +776,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _blnIsBroken = value;
                     OnPropertyChanged(nameof(IsBroken));
                 }
@@ -847,6 +869,7 @@ namespace Chummer.Backend.Skills
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_intCachedHasAnyBreakingSkills < 0) // Just in case
                         {
                             if (SkillList.Count <= 1)
@@ -1022,6 +1045,7 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                 {
                     if (await GetIsBrokenAsync(token).ConfigureAwait(false))
@@ -1141,100 +1165,114 @@ namespace Chummer.Backend.Skills
 
         public void Add(Skill skill)
         {
-            using (skill.LockObject.EnterReadLock())
             using (LockObject.EnterReadLock())
             {
-                Guid guidAddedSkillId = skill.SkillId;
-                // Do not add duplicate skills that we are still in the process of loading
-                if (_lstAffectedSkills.Any(x => x.SkillId == guidAddedSkillId))
-                    return;
-                using (LockObject.EnterWriteLock())
+                using (skill.LockObject.EnterReadLock())
                 {
-                    _lstAffectedSkills.Add(skill);
-                    using (skill.LockObject.EnterWriteLock())
-                        skill.PropertyChanged += SkillOnPropertyChanged;
-                    if (_objCharacter?.SkillsSection?.IsLoading != true)
-                        OnPropertyChanged(nameof(SkillList));
+                    Guid guidAddedSkillId = skill.SkillId;
+                    // Do not add duplicate skills that we are still in the process of loading
+                    if (_lstAffectedSkills.Any(x => x.SkillId == guidAddedSkillId))
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _lstAffectedSkills.Add(skill);
+                        using (skill.LockObject.EnterWriteLock())
+                            skill.PropertyChanged += SkillOnPropertyChanged;
+                        if (_objCharacter?.SkillsSection?.IsLoading != true)
+                            OnPropertyChanged(nameof(SkillList));
+                    }
                 }
             }
         }
 
         public async ValueTask AddAsync(Skill skill, CancellationToken token = default)
         {
-            using (await skill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                Guid guidAddedSkillId = await skill.GetSkillIdAsync(token).ConfigureAwait(false);
-                // Do not add duplicate skills that we are still in the process of loading
-                if (await _lstAffectedSkills
-                          .AnyAsync(
-                              async x => await x.GetSkillIdAsync(token).ConfigureAwait(false)
-                                         == guidAddedSkillId, token: token)
-                          .ConfigureAwait(false))
-                    return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                using (await skill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
-                    _lstAffectedSkills.Add(skill);
-                    IAsyncDisposable objLocker2 = await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    Guid guidAddedSkillId = await skill.GetSkillIdAsync(token).ConfigureAwait(false);
+                    // Do not add duplicate skills that we are still in the process of loading
+                    if (await _lstAffectedSkills
+                            .AnyAsync(
+                                async x => await x.GetSkillIdAsync(token).ConfigureAwait(false)
+                                           == guidAddedSkillId, token: token)
+                            .ConfigureAwait(false))
+                        return;
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        skill.PropertyChanged += SkillOnPropertyChanged;
+                        token.ThrowIfCancellationRequested();
+                        _lstAffectedSkills.Add(skill);
+                        IAsyncDisposable objLocker2 =
+                            await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            skill.PropertyChanged += SkillOnPropertyChanged;
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                        if (_objCharacter?.SkillsSection?.IsLoading != true)
+                            OnPropertyChanged(nameof(SkillList));
                     }
                     finally
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
-                    if (_objCharacter?.SkillsSection?.IsLoading != true)
-                        OnPropertyChanged(nameof(SkillList));
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
 
         public void Remove(Skill skill)
         {
-            using (skill.LockObject.EnterReadLock())
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterReadLock())
             {
-                if (!_lstAffectedSkills.Remove(skill))
-                    return;
-                using (skill.LockObject.EnterWriteLock())
-                    skill.PropertyChanged -= SkillOnPropertyChanged;
-                if (_objCharacter?.SkillsSection?.IsLoading != true)
-                    OnPropertyChanged(nameof(SkillList));
+                using (skill.LockObject.EnterReadLock())
+                using (LockObject.EnterWriteLock())
+                {
+                    if (!_lstAffectedSkills.Remove(skill))
+                        return;
+                    using (skill.LockObject.EnterWriteLock())
+                        skill.PropertyChanged -= SkillOnPropertyChanged;
+                    if (_objCharacter?.SkillsSection?.IsLoading != true)
+                        OnPropertyChanged(nameof(SkillList));
+                }
             }
         }
 
         public async ValueTask RemoveAsync(Skill skill, CancellationToken token = default)
         {
-            using (await skill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                using (await skill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
-                    if (!_lstAffectedSkills.Remove(skill))
-                        return;
-                    IAsyncDisposable objLocker2
-                        = await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        skill.PropertyChanged -= SkillOnPropertyChanged;
+                        token.ThrowIfCancellationRequested();
+                        if (!_lstAffectedSkills.Remove(skill))
+                            return;
+                        IAsyncDisposable objLocker2
+                            = await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            skill.PropertyChanged -= SkillOnPropertyChanged;
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                        if (_objCharacter?.SkillsSection?.IsLoading != true)
+                            OnPropertyChanged(nameof(SkillList));
                     }
                     finally
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
-
-                    if (_objCharacter?.SkillsSection?.IsLoading != true)
-                        OnPropertyChanged(nameof(SkillList));
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -1607,6 +1645,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!string.IsNullOrEmpty(_strToolTip)) // Just in case
                         return _strToolTip;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,

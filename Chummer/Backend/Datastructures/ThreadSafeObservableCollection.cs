@@ -97,6 +97,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 return _lstData.Remove(item);
             }
             finally
@@ -118,6 +119,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _lstData.RemoveAt(index);
             }
             finally
@@ -167,6 +169,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _lstData[index] = value;
                 }
                 finally
@@ -199,6 +202,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _lstData.Add(item);
             }
             finally
@@ -226,6 +230,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _lstData.Clear();
             }
             finally
@@ -252,6 +257,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _lstData.Insert(index, item);
             }
             finally
@@ -273,6 +279,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _lstData.Move(oldIndex, newIndex);
             }
             finally
@@ -368,6 +375,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (_lstData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
@@ -506,6 +514,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 T[] aobjSorted = new T[_lstData.Count];
                 token.ThrowIfCancellationRequested();
                 for (int i = 0; i < _lstData.Count; ++i)
@@ -528,6 +537,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 T[] aobjSorted = new T[_lstData.Count];
                 token.ThrowIfCancellationRequested();
                 for (int i = 0; i < _lstData.Count; ++i)
@@ -550,6 +560,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 T[] aobjSorted = new T[count];
                 token.ThrowIfCancellationRequested();
                 for (int i = 0; i < count; ++i)
@@ -572,6 +583,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 T[] aobjSorted = new T[_lstData.Count];
                 token.ThrowIfCancellationRequested();
                 for (int i = 0; i < _lstData.Count; ++i)

@@ -1790,6 +1790,7 @@ namespace Chummer.Backend.Attributes
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
@@ -1874,6 +1875,7 @@ namespace Chummer.Backend.Attributes
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _intBase = intBase;
                     _intKarma = intKarma;
                     _intMetatypeMin = intMin;
@@ -2967,6 +2969,7 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
                 for (int i = 0; i < intAmount; ++i)
                 {
@@ -3048,6 +3051,7 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
                 for (int i = intAmount; i > 0; --i)
                 {

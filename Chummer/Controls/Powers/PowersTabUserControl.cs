@@ -189,6 +189,7 @@ namespace Chummer.UI.Powers
                 = await _objCharacter.LockObject.EnterWriteLockAsync(MyToken).ConfigureAwait(false);
             try
             {
+                MyToken.ThrowIfCancellationRequested();
                 _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
             }
             finally

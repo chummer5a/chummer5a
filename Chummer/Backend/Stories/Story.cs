@@ -189,10 +189,10 @@ namespace Chummer
 
         public async ValueTask GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = null;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
                 List<string> lstPersistentKeysToRemove
                     = new List<string>(await _dicPersistentModules.GetCountAsync(token).ConfigureAwait(false));
                 await _dicPersistentModules.ForEachAsync(x =>
@@ -210,8 +210,7 @@ namespace Chummer
             }
             finally
             {
-                if (objLocker != null)
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

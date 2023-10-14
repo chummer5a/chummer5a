@@ -5635,6 +5635,7 @@ namespace Chummer
                                                                .ConfigureAwait(false);
                             try
                             {
+                                GenericToken.ThrowIfCancellationRequested();
                                 for (int i = 1; i <= intRatingToAdd; ++i)
                                 {
                                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -5999,6 +6000,7 @@ namespace Chummer
                                                               .ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
                 {
                     Quality objLoopQuality = CharacterObject.Qualities[i];
@@ -9677,6 +9679,7 @@ namespace Chummer
                                                                       .ConfigureAwait(false);
                     try
                     {
+                        GenericToken.ThrowIfCancellationRequested();
                         // Adding new levels
                         for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
                         {
