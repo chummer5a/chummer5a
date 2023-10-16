@@ -320,7 +320,6 @@ namespace Chummer
                 : _xmlBaseVehicleDataNode.Select("mods/mod[" + strFilter + ']');
             // Update the list of Mods based on the selected Category.
             int intOverLimit = 0;
-            XPathNavigator objXmlVehicleNode = await _objVehicle.GetNodeXPathAsync(token: token).ConfigureAwait(false);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMods))
             {
                 bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
@@ -329,65 +328,8 @@ namespace Chummer
                 decimal decBaseCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
                 foreach (XPathNavigator objXmlMod in objXmlModList)
                 {
-                    XPathNavigator xmlTestNode
-                        = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("forbidden/vehicledetails", token: token).ConfigureAwait(false);
-                    if (xmlTestNode != null && await objXmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
-                    {
-                        // Assumes topmost parent is an AND node
+                    if (!await _objVehicle.CheckModRequirementsAsync(objXmlMod, token).ConfigureAwait(false))
                         continue;
-                    }
-
-                    xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails", token: token).ConfigureAwait(false);
-                    if (xmlTestNode != null && !await objXmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
-                    {
-                        // Assumes topmost parent is an AND node
-                        continue;
-                    }
-
-                    xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("forbidden/oneof", token: token).ConfigureAwait(false);
-                    if (xmlTestNode != null)
-                    {
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                        out HashSet<string> setForbiddenAccessory))
-                        {
-                            foreach (XPathNavigator node in await xmlTestNode.SelectAndCacheExpressionAsync("mods", token: token).ConfigureAwait(false))
-                            {
-                                setForbiddenAccessory.Add(node.Value);
-                            }
-
-                            if (_lstMods.Any(objAccessory => setForbiddenAccessory.Contains(objAccessory.Name)))
-                            {
-                                continue;
-                            }
-                        }
-                    }
-
-                    xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("required/oneof", token: token).ConfigureAwait(false);
-                    if (xmlTestNode != null)
-                    {
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                        out HashSet<string> setRequiredAccessory))
-                        {
-                            foreach (XPathNavigator node in await xmlTestNode.SelectAndCacheExpressionAsync("mods", token: token).ConfigureAwait(false))
-                            {
-                                setRequiredAccessory.Add(node.Value);
-                            }
-
-                            if (!_lstMods.Any(objAccessory => setRequiredAccessory.Contains(objAccessory.Name)))
-                            {
-                                continue;
-                            }
-                        }
-                    }
-
-                    xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("requires", token: token).ConfigureAwait(false);
-                    if (xmlTestNode != null && _objVehicle.Seats
-                        < ((await xmlTestNode.SelectSingleNodeAndCacheExpressionAsync("seats", token: token).ConfigureAwait(false))?.ValueAsInt ?? 0))
-                    {
-                        continue;
-                    }
 
                     int intMinRating = 1;
                     string strMinRating = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("minrating", token: token).ConfigureAwait(false))?.Value;

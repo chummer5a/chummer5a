@@ -55,6 +55,7 @@ Application Changes:
 - Stolen vehicles now properly remain stolen after saving and reloading a character.
 - When skills associated with a certain skill group unlock for a character, the skill group now always immediately shows up in the list of skill groups instead of sometimes requiring one of those associated skills to be changed before showing up. Fixes #5035.
 - Choices taken for mentor spirit or paragon bonuses are now always displayed under their respective description boxes. Pre-existing characters with issues related to the display of these choices will need to re-apply improvements for their Mentor Spirit or Paragon quality (or whatever granted them the mentor spirit or paragon).
+- Added RequirementsMet support for vehicle mods to validate against character properties. This allows for having a vehicle mod require a character quality, for example. 
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
