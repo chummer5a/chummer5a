@@ -883,25 +883,27 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync()
             {
-                try
+                if (_objCurrentSemaphore.CurrentCount == 0)
                 {
-                    if (_objCurrentSemaphore.CurrentCount == 0)
+                    try
                     {
                         await _objNextSemaphore.WaitAsync().ConfigureAwait(false);
-                        try
-                        {
-                            _objCurrentSemaphore.Release();
-                        }
-                        finally
-                        {
-                            _objNextSemaphore.Release();
-                        }
+                    }
+                    catch
+                    {
+                        _objCurrentSemaphore.Release();
+                        throw;
+                    }
+                    try
+                    {
+                        _objCurrentSemaphore.Release();
+                    }
+                    finally
+                    {
+                        _objNextSemaphore.Release();
                     }
                 }
-                finally
-                {
-                    Utils.SemaphorePool.Return(ref _objNextSemaphore);
-                }
+                Utils.SemaphorePool.Return(ref _objNextSemaphore);
             }
 
             /// <inheritdoc />
@@ -940,25 +942,27 @@ namespace Chummer
 
                 _objReaderWriterLock._objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(_objLastSemaphore, objCurrentSemaphoreSlim);
 
-                try
+                if (_objCurrentSemaphore.CurrentCount == 0)
                 {
-                    if (_objCurrentSemaphore.CurrentCount == 0)
+                    try
                     {
                         _objNextSemaphore.SafeWait();
-                        try
-                        {
-                            _objCurrentSemaphore.Release();
-                        }
-                        finally
-                        {
-                            _objNextSemaphore.Release();
-                        }
+                    }
+                    catch
+                    {
+                        _objCurrentSemaphore.Release();
+                        throw;
+                    }
+                    try
+                    {
+                        _objCurrentSemaphore.Release();
+                    }
+                    finally
+                    {
+                        _objNextSemaphore.Release();
                     }
                 }
-                finally
-                {
-                    Utils.SemaphorePool.Return(ref _objNextSemaphore);
-                }
+                Utils.SemaphorePool.Return(ref _objNextSemaphore);
             }
         }
     }
