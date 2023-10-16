@@ -31,25 +31,34 @@ namespace Chummer
     /// <typeparam name="T"></typeparam>
     public sealed class LockingEnumerator<T> : IEnumerator<T>
     {
-        private readonly IHasLockObject _objMyParent;
+        private readonly IDisposable _objMyRelease;
 
         private IEnumerator<T> _objInternalEnumerator;
 
         public static LockingEnumerator<T> Get(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            objMyParent.LockObject.SimpleEnterReadLock(token);
-            return new LockingEnumerator<T>(objMyParent);
+            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLock(token);
+            return new LockingEnumerator<T>(objMyRelease);
         }
 
         public static async ValueTask<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            await objMyParent.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
-            return new LockingEnumerator<T>(objMyParent);
+            IDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+            }
+            catch
+            {
+                objMyRelease.Dispose();
+                throw;
+            }
+            return new LockingEnumerator<T>(objMyRelease);
         }
 
-        private LockingEnumerator(IHasLockObject objMyParent)
+        private LockingEnumerator(IDisposable objMyRelease)
         {
-            _objMyParent = objMyParent;
+            _objMyRelease = objMyRelease;
         }
 
         public void SetEnumerator(IEnumerator<T> objInternalEnumerator)
@@ -63,7 +72,7 @@ namespace Chummer
         public void Dispose()
         {
             _objInternalEnumerator.Dispose();
-            _objMyParent.LockObject.ExitReadLock();
+            _objMyRelease.Dispose();
         }
 
         /// <inheritdoc />

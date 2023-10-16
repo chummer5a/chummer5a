@@ -14762,11 +14762,11 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    value?.LockObject.SimpleEnterReadLock();
+                    IDisposable objReaderLock = value?.LockObject.EnterReadLock();
                     try
                     {
                         CharacterSettings objOldSettings = Interlocked.Exchange(ref _objSettings, value);
-                        objOldSettings?.LockObject.SimpleEnterReadLock();
+                        IDisposable objReaderLock2 = objOldSettings?.LockObject.EnterReadLock();
                         try
                         {
                             if (ReferenceEquals(objOldSettings, value))
@@ -14811,12 +14811,12 @@ namespace Chummer
                         }
                         finally
                         {
-                            objOldSettings?.LockObject.ExitReadLock();
+                            objReaderLock2?.Dispose();
                         }
                     }
                     finally
                     {
-                        value?.LockObject.ExitReadLock();
+                        objReaderLock?.Dispose();
                     }
                 }
             }
@@ -14838,15 +14838,19 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                IDisposable objReadLocker = null;
                 if (value != null)
-                    await value.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+                    objReadLocker = await value.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     CharacterSettings objOldSettings = Interlocked.Exchange(ref _objSettings, value);
+                    IDisposable objReadLocker2 = null;
                     if (objOldSettings != null)
-                        await objOldSettings.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+                        objReadLocker2 = await objOldSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (ReferenceEquals(objOldSettings, value))
                             return;
                         bool blnActuallyDifferentSettings = true;
@@ -14900,12 +14904,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        objOldSettings?.LockObject.ExitReadLock();
+                        objReadLocker2?.Dispose();
                     }
                 }
                 finally
                 {
-                    value?.LockObject.ExitReadLock();
+                    objReadLocker?.Dispose();
                 }
             }
         }

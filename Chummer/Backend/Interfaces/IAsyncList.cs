@@ -47,12 +47,14 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -103,8 +105,8 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                IAsyncDisposable objLocker2 = objHasLock != null
+                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -119,7 +121,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -131,12 +133,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -187,8 +191,8 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                IAsyncDisposable objLocker2 = objHasLock != null
+                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -203,7 +207,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -215,12 +219,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -271,8 +277,8 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                IAsyncDisposable objLocker2 = objHasLock != null
+                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -287,7 +293,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -394,12 +400,14 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -450,8 +458,8 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                IAsyncDisposable objLocker2 = objHasLock != null
+                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -466,7 +474,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -478,12 +486,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -534,8 +544,8 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                IAsyncDisposable objLocker2 = objHasLock != null
+                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -550,7 +560,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -562,12 +572,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -618,8 +630,8 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                IAsyncDisposable objLocker2 = objHasLock != null
+                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -634,7 +646,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -646,12 +658,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -702,8 +716,8 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                IAsyncDisposable objLocker2 = objHasLock != null
+                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -718,7 +732,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -730,12 +744,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            if (lstCollection is IHasLockObject objLocker)
-                await objLocker.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -786,8 +802,8 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objLocker != null
-                    ? await objLocker.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                IAsyncDisposable objLocker2 = objHasLock != null
+                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -802,7 +818,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 

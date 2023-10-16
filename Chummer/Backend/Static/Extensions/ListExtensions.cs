@@ -32,12 +32,14 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.SimpleEnterReadLock(token);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = objHasLock.LockObject.EnterReadLock(token);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = lstCollection.Count - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -85,7 +87,7 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IDisposable objLocker2 = objLocker?.LockObject.EnterWriteLock(token);
+                IDisposable objLocker2 = objHasLock?.LockObject.EnterWriteLock(token);
                 try
                 {
                     lstCollection.Insert(intTargetIndex, objNewItem);
@@ -97,7 +99,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -108,12 +110,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.SimpleEnterReadLock(token);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = objHasLock.LockObject.EnterReadLock(token);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = lstCollection.Count - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -161,7 +165,7 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IDisposable objLocker2 = objLocker?.LockObject.EnterWriteLock(token);
+                IDisposable objLocker2 = objHasLock?.LockObject.EnterWriteLock(token);
                 try
                 {
                     lstCollection.Insert(intTargetIndex, objNewItem);
@@ -173,7 +177,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 
@@ -184,12 +188,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.SimpleEnterReadLock(token);
+            IDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = objHasLock.LockObject.EnterReadLock(token);
             else
-                objLocker = null;
+                objHasLock = null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Binary search for the place where item should be inserted
                 int intIntervalEnd = lstCollection.Count - 1;
                 int intTargetIndex = intIntervalEnd / 2;
@@ -237,7 +243,7 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IDisposable objLocker2 = objLocker?.LockObject.EnterWriteLock(token);
+                IDisposable objLocker2 = objHasLock?.LockObject.EnterWriteLock(token);
                 try
                 {
                     lstCollection.Insert(intTargetIndex, objNewItem);
@@ -249,7 +255,7 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.LockObject.ExitReadLock();
+                objLocker?.Dispose();
             }
         }
 

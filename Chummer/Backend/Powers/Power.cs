@@ -535,11 +535,11 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                 {
-                    value?.LockObject.SimpleEnterReadLock();
+                    IDisposable objReaderLock = value?.LockObject.EnterReadLock();
                     try
                     {
                         CharacterAttrib objOldValue = Interlocked.Exchange(ref _objMAGAttribute, value);
-                        objOldValue?.LockObject.SimpleEnterReadLock();
+                        IDisposable objReaderLock2 = objOldValue?.LockObject.EnterReadLock();
                         try
                         {
                             if (objOldValue == value)
@@ -562,12 +562,12 @@ namespace Chummer
                         }
                         finally
                         {
-                            objOldValue?.LockObject.ExitReadLock();
+                            objReaderLock2?.Dispose();
                         }
                     }
                     finally
                     {
-                        value?.LockObject.ExitReadLock();
+                        objReaderLock?.Dispose();
                     }
 
                     OnPropertyChanged();
@@ -588,11 +588,11 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                 {
-                    value?.LockObject.SimpleEnterReadLock();
+                    IDisposable objReaderLock = value?.LockObject.EnterReadLock();
                     try
                     {
                         Skill objOldValue = Interlocked.Exchange(ref _objBoostedSkill, value);
-                        objOldValue?.LockObject.SimpleEnterReadLock();
+                        IDisposable objReaderLock2 = objOldValue?.LockObject.EnterReadLock();
                         try
                         {
                             if (objOldValue == value)
@@ -615,12 +615,12 @@ namespace Chummer
                         }
                         finally
                         {
-                            objOldValue?.LockObject.ExitReadLock();
+                            objReaderLock2?.Dispose();
                         }
                     }
                     finally
                     {
-                        value?.LockObject.ExitReadLock();
+                        objReaderLock?.Dispose();
                     }
 
                     OnPropertyChanged();

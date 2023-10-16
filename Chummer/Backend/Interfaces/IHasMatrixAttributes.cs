@@ -661,10 +661,11 @@ namespace Chummer
         {
             if (objThis == null)
                 return;
-            if (objThis is IHasLockObject objThisLocker)
-                objThisLocker.LockObject.SimpleEnterReadLock();
+            IDisposable objThisLocker = null;
+            if (objThis is IHasLockObject objHasLock)
+                objThisLocker = objHasLock.LockObject.EnterReadLock();
             else
-                objThisLocker = null;
+                objHasLock = null;
             try
             {
                 if (objThis.CanSwapAttributes)
@@ -717,8 +718,8 @@ namespace Chummer
                         }
 
                         IDisposable objLocker = null;
-                        if (objThisLocker != null)
-                            objLocker = objThisLocker.LockObject.EnterWriteLock();
+                        if (objHasLock != null)
+                            objLocker = objHasLock.LockObject.EnterWriteLock();
                         try
                         {
                             for (int i = 0; i < 4; ++i)
@@ -785,7 +786,7 @@ namespace Chummer
             }
             finally
             {
-                objThisLocker?.LockObject.ExitReadLock();
+                objThisLocker?.Dispose();
             }
         }
     }

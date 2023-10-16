@@ -87,11 +87,11 @@ namespace Chummer.Backend.Skills
                 }
 
                 CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strAttributeString);
-                objNewAttribute?.LockObject.SimpleEnterReadLock();
+                IDisposable objLocker = objNewAttribute?.LockObject.EnterReadLock();
                 try
                 {
                     CharacterAttrib objOldAttribute = Interlocked.Exchange(ref _objAttribute, objNewAttribute);
-                    objOldAttribute?.LockObject.SimpleEnterReadLock();
+                    IDisposable objLocker2 = objOldAttribute?.LockObject.EnterReadLock();
                     try
                     {
                         if (objOldAttribute == objNewAttribute)
@@ -114,12 +114,12 @@ namespace Chummer.Backend.Skills
                     }
                     finally
                     {
-                        objOldAttribute?.LockObject.ExitReadLock();
+                        objLocker2?.Dispose();
                     }
                 }
                 finally
                 {
-                    objNewAttribute?.LockObject.ExitReadLock();
+                    objLocker?.Dispose();
                 }
                 if (CharacterObject.SkillsSection?.IsLoading != true)
                     this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
@@ -146,15 +146,19 @@ namespace Chummer.Backend.Skills
 
                 CharacterAttrib objNewAttribute
                     = await CharacterObject.GetAttributeAsync(strAttributeString, token: token).ConfigureAwait(false);
+                IDisposable objReadLocker = null;
                 if (objNewAttribute != null)
-                    await objNewAttribute.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+                    objReadLocker = await objNewAttribute.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     CharacterAttrib objOldAttribute = Interlocked.Exchange(ref _objAttribute, objNewAttribute);
+                    IDisposable objReadLocker2 = null;
                     if (objOldAttribute != null)
-                        await objOldAttribute.LockObject.SimpleEnterReadLockAsync(token).ConfigureAwait(false);
+                        objReadLocker2 = await objOldAttribute.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (objOldAttribute == objNewAttribute)
                             return;
                         await Task.WhenAll(
@@ -195,12 +199,12 @@ namespace Chummer.Backend.Skills
                     }
                     finally
                     {
-                        objOldAttribute?.LockObject.ExitReadLock();
+                        objReadLocker2?.Dispose();
                     }
                 }
                 finally
                 {
-                    objNewAttribute?.LockObject.ExitReadLock();
+                    objReadLocker?.Dispose();
                 }
                 if (CharacterObject.SkillsSection?.IsLoading != true)
                     this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
