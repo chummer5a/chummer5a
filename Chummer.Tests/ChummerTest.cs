@@ -248,10 +248,9 @@ namespace Chummer.Tests
                     }
 
                     SaveCharacter(objCharacter, strDestination);
-                    using (LoadCharacter(new FileInfo(strDestination)))
-                    {
-                        // Assert on failed load will already happen inside LoadCharacter
-                    }
+                    // If our compression is malformed, we should run into a parse error when we try to load the XML data (don't load the full character because it's unnecessary)
+                    XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
+                    objXmlDocument.LoadStandardFromLzmaCompressed(strDestination);
                 }
             }
             finally
