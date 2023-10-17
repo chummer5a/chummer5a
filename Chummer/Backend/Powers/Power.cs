@@ -68,7 +68,7 @@ namespace Chummer
         private string _strCachedPowerPoints = string.Empty;
         private bool _blnLevelsEnabled;
         private int _intRating = 1;
-        private int _cachedLearnedRating;
+        private int _intCachedLearnedRating = int.MinValue;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -535,11 +535,11 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                 {
-                    IDisposable objReaderLock = value?.LockObject.EnterReadLock();
+                    IDisposable objReaderLock = value?.LockObject.EnterUpgradeableReadLock();
                     try
                     {
                         CharacterAttrib objOldValue = Interlocked.Exchange(ref _objMAGAttribute, value);
-                        IDisposable objReaderLock2 = objOldValue?.LockObject.EnterReadLock();
+                        IDisposable objReaderLock2 = objOldValue?.LockObject.EnterUpgradeableReadLock();
                         try
                         {
                             if (objOldValue == value)
@@ -588,11 +588,11 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                 {
-                    IDisposable objReaderLock = value?.LockObject.EnterReadLock();
+                    IDisposable objReaderLock = value?.LockObject.EnterUpgradeableReadLock();
                     try
                     {
                         Skill objOldValue = Interlocked.Exchange(ref _objBoostedSkill, value);
-                        IDisposable objReaderLock2 = objOldValue?.LockObject.EnterReadLock();
+                        IDisposable objReaderLock2 = objOldValue?.LockObject.EnterUpgradeableReadLock();
                         try
                         {
                             if (objOldValue == value)
@@ -676,7 +676,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     string strOldValue = Interlocked.Exchange(ref _strName, value);
                     if (strOldValue == value)
@@ -691,9 +691,8 @@ namespace Chummer
                         {
                             BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
                         }
-
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -710,7 +709,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) == value)
                         return;
@@ -718,8 +717,8 @@ namespace Chummer
                     {
                         if (Name == "Improved Ability (skill)")
                             BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(value);
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -845,7 +844,7 @@ namespace Chummer
             set
             {
                 string strNewValue = value.ToString(GlobalSettings.InvariantCultureInfo);
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPointsPerLevel, strNewValue) == strNewValue)
                         return;
@@ -867,15 +866,15 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decExtraPointCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _decExtraPointCost = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -896,7 +895,7 @@ namespace Chummer
             set
             {
                 string strNewValue = value.ToString(GlobalSettings.InvariantCultureInfo);
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strAdeptWayDiscount, strNewValue) == strNewValue)
                         return;
@@ -937,7 +936,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intRating, value) == value)
                         return;
@@ -973,7 +972,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Rating = Math.Max(value - FreeLevels, 0);
             }
         }
@@ -996,6 +995,8 @@ namespace Chummer
 
         private int _intCachedFreeLevels = int.MinValue;
 
+        private readonly AsyncFriendlyReaderWriterLock _objCachedFreeLevelsLock = new AsyncFriendlyReaderWriterLock();
+
         /// <summary>
         /// Free levels of the power.
         /// </summary>
@@ -1004,19 +1005,83 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedFreeLevelsLock.EnterUpgradeableReadLock())
                 {
                     if (_intCachedFreeLevels != int.MinValue)
                         return _intCachedFreeLevels;
 
+                    using (_objCachedFreeLevelsLock.EnterWriteLock())
+                    {
+                        if (_intCachedFreeLevels != int.MinValue)
+                            return _intCachedFreeLevels;
+                        decimal decExtraCost = FreePoints;
+                        // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
+                        int intReturn = ImprovementManager
+                            .GetCachedImprovementListForValueOf(CharacterObject,
+                                Improvement.ImprovementType
+                                    .AdeptPowerFreeLevels,
+                                Name)
+                            .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                objImprovement => objImprovement.Rating);
+                        // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
+                        if (Rating + intReturn == 0 && ExtraPointCost > 0)
+                        {
+                            decExtraCost -= (PointsPerLevel + ExtraPointCost);
+                            if (decExtraCost >= 0)
+                            {
+                                ++intReturn;
+                            }
+
+                            for (decimal i = decExtraCost; i >= 1; --i)
+                            {
+                                ++intReturn;
+                            }
+                        }
+                        else if (PointsPerLevel == 0)
+                        {
+                            Utils.BreakIfDebug();
+                            // power costs no PP, just return free levels
+                        }
+                        //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
+                        else
+                        {
+                            for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
+                            {
+                                ++intReturn;
+                            }
+                        }
+
+                        return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Free levels of the power.
+        /// </summary>
+        public async ValueTask<int> GetFreeLevelsAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedFreeLevelsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (_intCachedFreeLevels != int.MinValue)
+                    return _intCachedFreeLevels;
+
+                IAsyncDisposable objLocker = await _objCachedFreeLevelsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (_intCachedFreeLevels != int.MinValue)
+                        return _intCachedFreeLevels;
                     decimal decExtraCost = FreePoints;
                     // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
-                    int intReturn = ImprovementManager
-                                    .GetCachedImprovementListForValueOf(CharacterObject,
-                                                                        Improvement.ImprovementType
-                                                                            .AdeptPowerFreeLevels,
-                                                                        Name)
-                                    .Sum(objImprovement => objImprovement.UniqueName == Extra,
-                                         objImprovement => objImprovement.Rating);
+                    int intReturn = (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                Improvement.ImprovementType.AdeptPowerFreeLevels,
+                                Name, token: token).ConfigureAwait(false))
+                        .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                            objImprovement => objImprovement.Rating, token);
                     // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
                     if (Rating + intReturn == 0 && ExtraPointCost > 0)
                     {
@@ -1045,66 +1110,22 @@ namespace Chummer
                         }
                     }
 
-                    return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
+                    return _intCachedFreeLevels
+                        = Math.Min(intReturn,
+                            MAGAttributeObject != null
+                                ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false)
+                                : 0);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Free levels of the power.
-        /// </summary>
-        public async ValueTask<int> GetFreeLevelsAsync(CancellationToken token = default)
-        {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                if (_intCachedFreeLevels != int.MinValue)
-                    return _intCachedFreeLevels;
-
-                decimal decExtraCost = FreePoints;
-                // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
-                int intReturn = (await ImprovementManager
-                                       .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                           Improvement.ImprovementType.AdeptPowerFreeLevels,
-                                           Name, token: token).ConfigureAwait(false))
-                    .Sum(objImprovement => objImprovement.UniqueName == Extra,
-                         objImprovement => objImprovement.Rating, token);
-                // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
-                if (Rating + intReturn == 0 && ExtraPointCost > 0)
+                finally
                 {
-                    decExtraCost -= (PointsPerLevel + ExtraPointCost);
-                    if (decExtraCost >= 0)
-                    {
-                        ++intReturn;
-                    }
-
-                    for (decimal i = decExtraCost; i >= 1; --i)
-                    {
-                        ++intReturn;
-                    }
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                else if (PointsPerLevel == 0)
-                {
-                    Utils.BreakIfDebug();
-                    // power costs no PP, just return free levels
-                }
-                //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
-                else
-                {
-                    for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
-                    {
-                        ++intReturn;
-                    }
-                }
-
-                return _intCachedFreeLevels
-                    = Math.Min(intReturn,
-                               MAGAttributeObject != null
-                                   ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false)
-                                   : 0);
             }
         }
 
         private decimal _decCachedPowerPoints = decimal.MinValue;
+
+        private readonly AsyncFriendlyReaderWriterLock _objCachedPowerPointsLock = new AsyncFriendlyReaderWriterLock();
 
         /// <summary>
         /// Total number of Power Points the Power costs.
@@ -1114,29 +1135,35 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedPowerPointsLock.EnterUpgradeableReadLock())
                 {
                     if (_decCachedPowerPoints != decimal.MinValue)
                         return _decCachedPowerPoints;
 
-                    if (Rating == 0 || !LevelsEnabled && FreeLevels > 0)
+                    using (_objCachedPowerPointsLock.EnterWriteLock())
                     {
-                        return _decCachedPowerPoints = 0;
-                    }
+                        if (_decCachedPowerPoints != decimal.MinValue)
+                            return _decCachedPowerPoints;
+                        if (Rating == 0 || !LevelsEnabled && FreeLevels > 0)
+                        {
+                            return _decCachedPowerPoints = 0;
+                        }
 
-                    decimal decReturn;
-                    if (FreeLevels * PointsPerLevel >= FreePoints)
-                    {
-                        decReturn = Rating * PointsPerLevel;
-                        decReturn += ExtraPointCost;
-                    }
-                    else
-                    {
-                        decReturn = TotalRating * PointsPerLevel + ExtraPointCost;
-                        decReturn -= FreePoints;
-                    }
+                        decimal decReturn;
+                        if (FreeLevels * PointsPerLevel >= FreePoints)
+                        {
+                            decReturn = Rating * PointsPerLevel;
+                            decReturn += ExtraPointCost;
+                        }
+                        else
+                        {
+                            decReturn = TotalRating * PointsPerLevel + ExtraPointCost;
+                            decReturn -= FreePoints;
+                        }
 
-                    decReturn -= Discount;
-                    return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
+                        decReturn -= Discount;
+                        return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
+                    }
                 }
             }
         }
@@ -1147,33 +1174,46 @@ namespace Chummer
         public async ValueTask<decimal> GetPowerPointsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedPowerPointsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                if (_decCachedPowerPoints != decimal.MinValue)
+                if (_decCachedPowerPoints != int.MinValue)
                     return _decCachedPowerPoints;
 
-                int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
-                int intRating = await GetRatingAsync(token).ConfigureAwait(false);
-                if (intRating == 0 || !LevelsEnabled && intFreeLevels > 0)
+                IAsyncDisposable objLocker =
+                    await _objCachedPowerPointsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    return _decCachedPowerPoints = 0;
-                }
+                    token.ThrowIfCancellationRequested();
+                    if (_decCachedPowerPoints != int.MinValue)
+                        return _decCachedPowerPoints;
+                    int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
+                    int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                    if (intRating == 0 || !LevelsEnabled && intFreeLevels > 0)
+                    {
+                        return _decCachedPowerPoints = 0;
+                    }
 
-                decimal decReturn;
-                decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
-                if (intFreeLevels * PointsPerLevel >= decFreePoints)
-                {
-                    decReturn = intRating * PointsPerLevel;
-                    decReturn += ExtraPointCost;
-                }
-                else
-                {
-                    decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * PointsPerLevel
-                                + ExtraPointCost;
-                    decReturn -= decFreePoints;
-                }
+                    decimal decReturn;
+                    decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
+                    if (intFreeLevels * PointsPerLevel >= decFreePoints)
+                    {
+                        decReturn = intRating * PointsPerLevel;
+                        decReturn += ExtraPointCost;
+                    }
+                    else
+                    {
+                        decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * PointsPerLevel
+                                    + ExtraPointCost;
+                        decReturn -= decFreePoints;
+                    }
 
-                decReturn -= Discount;
-                return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
+                    decReturn -= Discount;
+                    return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -1213,7 +1253,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strBonusSource, value) == value)
                         return;
@@ -1274,7 +1314,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSource, value) == value)
                         return;
@@ -1295,7 +1335,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPage, value) == value)
                         return;
@@ -1355,7 +1395,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _xmlBonus, value) == value)
                         return;
@@ -1376,15 +1416,15 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnLevelsEnabled == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnLevelsEnabled = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1401,7 +1441,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxLevels, value) == value)
                         return;
@@ -1422,15 +1462,15 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDiscountedAdeptWay == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnDiscountedAdeptWay = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1447,15 +1487,15 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDiscountedGeas == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnDiscountedGeas = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1472,7 +1512,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNotes, value) == value)
                         return;
@@ -1493,15 +1533,15 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _colNotes = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1518,7 +1558,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strAction, value) == value)
                         return;
@@ -1719,7 +1759,7 @@ namespace Chummer
 
         public void RefreshDiscountedAdeptWay(bool blnAdeptWayDiscountEnabled)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (DiscountedAdeptWay && !blnAdeptWayDiscountEnabled)
                 {
@@ -1787,7 +1827,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -1875,17 +1915,19 @@ namespace Chummer
 
         private void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
-                if (e?.PropertyName == nameof(Skill.LearnedRating) && sender is Skill objSkill
-                                                                   && BoostedSkill.LearnedRating != _cachedLearnedRating
-                                                                   && _cachedLearnedRating != TotalMaximumLevels)
+                if (e?.PropertyName == nameof(Skill.LearnedRating)
+                    && sender is Skill objSkill
+                    && BoostedSkill.LearnedRating != _intCachedLearnedRating
+                    && _intCachedLearnedRating != TotalMaximumLevels)
                 {
                     using (LockObject.EnterWriteLock())
                     {
-                        _cachedLearnedRating = objSkill.LearnedRating;
-                        OnPropertyChanged(nameof(TotalMaximumLevels));
+                        _intCachedLearnedRating = objSkill.LearnedRating;
                     }
+
+                    OnPropertyChanged(nameof(TotalMaximumLevels));
                 }
             }
         }

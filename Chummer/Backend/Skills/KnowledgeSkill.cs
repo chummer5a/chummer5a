@@ -246,15 +246,15 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowUpgrade == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnAllowUpgrade = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -273,7 +273,7 @@ namespace Chummer.Backend.Skills
             get => CurrentDisplayName;
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (ForcedName)
                         return;
@@ -283,8 +283,8 @@ namespace Chummer.Backend.Skills
                     {
                         LoadSkillFromData(value);
                         Name = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -293,7 +293,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask SetWritableNameAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (ForcedName)
                     return;
@@ -305,12 +305,12 @@ namespace Chummer.Backend.Skills
                     token.ThrowIfCancellationRequested();
                     await LoadSkillFromDataAsync(value, token).ConfigureAwait(false);
                     await SetNameAsync(value, token).ConfigureAwait(false);
-                    OnPropertyChanged(nameof(WritableName));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(WritableName));
             }
         }
 
@@ -446,7 +446,7 @@ namespace Chummer.Backend.Skills
 
         protected override void ResetCachedCyberwareRating()
         {
-            using (LockObject.EnterWriteLock())
+            using (_objCachedCyberwareRatingLock.EnterWriteLock())
                 _intCachedCyberwareRating = int.MinValue;
         }
 
@@ -459,10 +459,11 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedCyberwareRatingLock.EnterUpgradeableReadLock())
                 {
                     if (_intCachedCyberwareRating != int.MinValue)
                         return _intCachedCyberwareRating;
-                    using (LockObject.EnterWriteLock())
+                    using (_objCachedCyberwareRatingLock.EnterWriteLock())
                     {
                         if (_intCachedCyberwareRating != int.MinValue) // Just in case
                             return _intCachedCyberwareRating;
@@ -510,11 +511,12 @@ namespace Chummer.Backend.Skills
         public override async ValueTask<int> GetCyberwareRatingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedCyberwareRatingLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -587,7 +589,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // Interlocked guarantees thread safety here without write lock
                     if (Interlocked.Exchange(ref _strType, value) == value)
@@ -627,7 +629,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask SetTypeAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // Interlocked guarantees thread safety here without write lock
                 if (Interlocked.Exchange(ref _strType, value) == value)
@@ -682,7 +684,7 @@ namespace Chummer.Backend.Skills
             set
             {
                 int intNewValue = value.ToInt32();
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // Interlocked guarantees thread safety here without write lock
                     if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
@@ -712,7 +714,7 @@ namespace Chummer.Backend.Skills
         public override async ValueTask SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
         {
             int intNewValue = value.ToInt32();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // Interlocked guarantees thread safety here without write lock
                 if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)

@@ -285,7 +285,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_blnDoingCopy)
                     return;
@@ -473,7 +473,7 @@ namespace Chummer
                         }
 
                         using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
-                        using (_dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
+                        using (_dicCustomDataDirectoryKeys.LockObject.EnterUpgradeableReadLock(token))
                         {
                             int intMyCount = _dicCustomDataDirectoryKeys.Count;
                             bool blnDoRebuildDirectoryKeys = intMyCount != objOther._dicCustomDataDirectoryKeys.Count;
@@ -589,7 +589,7 @@ namespace Chummer
                         }
 
                         using (await objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-                        using (await _dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                        using (await _dicCustomDataDirectoryKeys.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                         {
                             int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token)
                                                                               .ConfigureAwait(false);
@@ -4331,7 +4331,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eBuildMethod, value) != value)
                         OnPropertyChanged();
@@ -4390,7 +4390,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPriorityArray, value) != value)
                         OnPropertyChanged();
@@ -4410,7 +4410,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPriorityTable, value) != value)
                         OnPropertyChanged();
@@ -4430,7 +4430,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intSumtoTen, value) != value)
                         OnPropertyChanged();
@@ -4450,7 +4450,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intBuildPoints, value) != value)
                         OnPropertyChanged();
@@ -4479,7 +4479,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intQualityKarmaLimit, value) != value)
                         OnPropertyChanged();
@@ -4508,7 +4508,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intAvailability, value) != value)
                         OnPropertyChanged();
@@ -4528,7 +4528,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxMartialArts, value) != value)
                         OnPropertyChanged();
@@ -4548,7 +4548,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxMartialTechniques, value) != value)
                         OnPropertyChanged();
@@ -4568,7 +4568,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decNuyenMaximumBP == value)
                         return;
@@ -4623,7 +4623,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (value)
                     {
@@ -4658,7 +4658,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (value)
                     {
@@ -4693,7 +4693,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (value)
                     {
@@ -4728,7 +4728,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (value)
                     {
@@ -5204,7 +5204,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnMoreLethalGameplay == value)
                         return;
@@ -5229,7 +5229,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnLicenseRestrictedItems == value)
                         return;
@@ -5254,7 +5254,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnSpiritForceBasedOnTotalMAG == value)
                         return;
@@ -5279,7 +5279,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decNuyenPerBPWftM == value)
                         return;
@@ -5304,7 +5304,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decNuyenPerBPWftP == value)
                         return;
@@ -5329,7 +5329,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnUnarmedImprovementsApplyToWeapons == value)
                         return;
@@ -5354,7 +5354,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowInitiationInCreateMode == value)
                         return;
@@ -5379,7 +5379,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnUsePointsOnBrokenGroups == value)
                         return;
@@ -5413,7 +5413,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDontDoubleQualityPurchaseCost == value)
                         return;
@@ -5438,7 +5438,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDontDoubleQualityRefundCost == value)
                         return;
@@ -5463,7 +5463,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIgnoreArt == value)
                         return;
@@ -5488,7 +5488,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIgnoreComplexFormLimit == value)
                         return;
@@ -5513,7 +5513,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnCyberlegMovement == value)
                         return;
@@ -5547,7 +5547,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnMysAdeptAllowPpCareer == value)
                         return;
@@ -5580,7 +5580,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnMysAdeptSecondMAGAttribute == value)
                         return;
@@ -5633,7 +5633,7 @@ namespace Chummer
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strContactPointsExpression, value) == value)
                         return;
@@ -5664,7 +5664,7 @@ namespace Chummer
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strKnowledgePointsExpression, value) == value)
                         return;
@@ -5701,7 +5701,7 @@ namespace Chummer
                 {
                     value = '(' + value + ") + {PriorityNuyen}";
                 }
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
                         return;
@@ -5735,7 +5735,7 @@ namespace Chummer
                     = '(' + value + ") + {PriorityNuyen}";
             }
 
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
                     return;
@@ -5756,7 +5756,7 @@ namespace Chummer
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strBoundSpiritExpression, value) == value)
                         return;
@@ -5778,7 +5778,7 @@ namespace Chummer
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strRegisteredSpriteExpression, value) == value)
                         return;
@@ -5800,7 +5800,7 @@ namespace Chummer
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEssenceModifierPostExpression, value) == value)
                         return;
@@ -5821,7 +5821,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intDroneArmorMultiplier, value) != value)
                         OnPropertyChanged();
@@ -5841,7 +5841,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDroneArmorMultiplierEnabled == value)
                         return;
@@ -5877,7 +5877,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnNoArmorEncumbrance == value)
                         return;
@@ -5902,7 +5902,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnUncappedArmorAccessoryBonuses == value)
                         return;
@@ -5927,7 +5927,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnESSLossReducesMaximumOnly == value)
                         return;
@@ -5952,7 +5952,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowSkillRegrouping == value)
                         return;
@@ -5977,7 +5977,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnSpecializationsBreakSkillGroups == value)
                         return;
@@ -6074,7 +6074,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) != value)
                         OnPropertyChanged();
@@ -6160,7 +6160,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnMetatypeCostsKarma == value)
                         return;
@@ -6185,7 +6185,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMetatypeCostMultiplier, value) != value)
                         OnPropertyChanged();
@@ -6211,7 +6211,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intLimbCount, value) != value)
                         OnPropertyChanged();
@@ -6231,7 +6231,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExcludeLimbSlot, value) != value)
                         OnPropertyChanged();
@@ -6251,7 +6251,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowCyberwareESSDiscounts == value)
                         return;
@@ -6276,7 +6276,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnArmorDegradation == value)
                         return;
@@ -6301,7 +6301,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnSpecialKarmaCostBasedOnShownValue == value)
                         return;
@@ -6326,7 +6326,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnExceedPositiveQualities == value)
                         return;
@@ -6362,7 +6362,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnExceedPositiveQualitiesCostDoubled == value)
                         return;
@@ -6396,7 +6396,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnExceedNegativeQualities == value)
                         return;
@@ -6432,7 +6432,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnExceedNegativeQualitiesNoBonus == value)
                         return;
@@ -6466,7 +6466,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnMultiplyRestrictedCost == value)
                         return;
@@ -6491,7 +6491,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnMultiplyForbiddenCost == value)
                         return;
@@ -6516,7 +6516,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intRestrictedCostMultiplier, value) != value)
                         OnPropertyChanged();
@@ -6536,7 +6536,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intForbiddenCostMultiplier, value) != value)
                         OnPropertyChanged();
@@ -6678,7 +6678,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNuyenFormat, value) != value)
                         OnPropertyChanged();
@@ -6698,7 +6698,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strWeightFormat, value) != value)
                         OnPropertyChanged();
@@ -6729,7 +6729,7 @@ namespace Chummer
             set
             {
                 int intNewWeightDecimals = Math.Max(value, 0);
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     int intCurrentWeightDecimals = WeightDecimals;
                     if (intNewWeightDecimals < intCurrentWeightDecimals)
@@ -6776,7 +6776,7 @@ namespace Chummer
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strLiftLimitExpression, value) == value)
                         return;
@@ -6798,7 +6798,7 @@ namespace Chummer
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strCarryLimitExpression, value) == value)
                         return;
@@ -6820,7 +6820,7 @@ namespace Chummer
             set
             {
                 value = value.CleanXPath().Trim('\"');
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEncumbranceIntervalExpression, value) == value)
                         return;
@@ -6841,7 +6841,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyPhysicalLimit == value)
                         return;
@@ -6866,7 +6866,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyPhysicalLimit, value) != value)
                         OnPropertyChanged();
@@ -6886,7 +6886,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyMovementSpeed == value)
                         return;
@@ -6911,7 +6911,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyMovementSpeed, value) != value)
                         OnPropertyChanged();
@@ -6931,7 +6931,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyAgility == value)
                         return;
@@ -6956,7 +6956,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyAgility, value) != value)
                         OnPropertyChanged();
@@ -6976,7 +6976,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyReaction == value)
                         return;
@@ -7001,7 +7001,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyReaction, value) != value)
                         OnPropertyChanged();
@@ -7021,7 +7021,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDoEncumbrancePenaltyWoundModifier == value)
                         return;
@@ -7046,7 +7046,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyWoundModifier, value) != value)
                         OnPropertyChanged();
@@ -7077,7 +7077,7 @@ namespace Chummer
             set
             {
                 int intNewEssenceDecimals = Math.Max(value, 2);
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     int intCurrentEssenceDecimals = EssenceDecimals;
                     if (intNewEssenceDecimals < intCurrentEssenceDecimals)
@@ -7141,7 +7141,7 @@ namespace Chummer
                     }
                 }
 
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEssenceFormat, value) != value)
                         OnPropertyChanged();
@@ -7161,7 +7161,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDoNotRoundEssenceInternally == value)
                         return;
@@ -7186,7 +7186,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnEnableEnemyTracking == value)
                         return;
@@ -7220,7 +7220,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnEnemyKarmaQualityLimit == value)
                         return;
@@ -7245,7 +7245,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnEnforceCapacity == value)
                         return;
@@ -7270,7 +7270,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnRestrictRecoil == value)
                         return;
@@ -7295,7 +7295,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnUnrestrictedNuyen == value)
                         return;
@@ -7329,7 +7329,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowHigherStackedFoci == value)
                         return;
@@ -7354,7 +7354,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowEditPartOfBaseWeapon == value)
                         return;
@@ -7379,7 +7379,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnStrictSkillGroupsInCreateMode == value)
                         return;
@@ -7413,7 +7413,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowPointBuySpecializationsOnKarmaSkills == value)
                         return;
@@ -7448,7 +7448,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnExtendAnyDetectionSpell == value)
                         return;
@@ -7473,7 +7473,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDontUseCyberlimbCalculation == value)
                         return;
@@ -7498,7 +7498,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAlternateMetatypeAttributeKarma == value)
                         return;
@@ -7523,7 +7523,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnCompensateSkillGroupKarmaDifference == value)
                         return;
@@ -7557,7 +7557,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowObsolescentUpgrade == value)
                         return;
@@ -7582,7 +7582,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowBiowareSuites == value)
                         return;
@@ -7607,7 +7607,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFreeSpiritPowerPointsMAG == value)
                         return;
@@ -7641,7 +7641,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnUnclampAttributeMinimum == value)
                         return;
@@ -7666,7 +7666,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDroneMods == value)
                         return;
@@ -7700,7 +7700,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDroneModsMaximumPilot == value)
                         return;
@@ -7725,7 +7725,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxNumberMaxAttributesCreate, value) != value)
                         OnPropertyChanged();
@@ -7745,7 +7745,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxSkillRatingCreate, value) != value)
                         OnPropertyChanged();
@@ -7774,7 +7774,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxKnowledgeSkillRatingCreate, value) != value)
                         OnPropertyChanged();
@@ -7803,7 +7803,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_intMaxSkillRating == value)
                         return;
@@ -7839,7 +7839,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_intMaxKnowledgeSkillRating == value)
                         return;
@@ -7875,7 +7875,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAutomaticBackstory == value)
                         return;
@@ -7900,7 +7900,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnUseCalculatedPublicAwareness == value)
                         return;
@@ -7925,7 +7925,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFreeMartialArtSpecialization == value)
                         return;
@@ -7950,7 +7950,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnPrioritySpellsAsAdeptPowers == value)
                         return;
@@ -7983,7 +7983,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnReverseAttributePriorityOrder == value)
                         return;
@@ -8008,7 +8008,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIncreasedImprovedAbilityMultiplier == value)
                         return;
@@ -8042,7 +8042,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowFreeGrids == value)
                         return;
@@ -8067,7 +8067,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnAllowTechnomancerSchooling == value)
                         return;
@@ -8092,7 +8092,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnCyberlimbAttributeBonusCapOverride == value)
                         return;
@@ -8128,7 +8128,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intCyberlimbAttributeBonusCap, value) != value)
                         OnPropertyChanged();
@@ -8148,7 +8148,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intDicePenaltySustaining, value) != value)
                         OnPropertyChanged();
@@ -8172,7 +8172,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMinInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8192,7 +8192,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8212,7 +8212,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMinAstralInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8232,7 +8232,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxAstralInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8252,7 +8252,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMinColdSimInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8272,7 +8272,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxColdSimInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8292,7 +8292,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMinHotSimInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8312,7 +8312,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMaxHotSimInitiativeDice, value) != value)
                         OnPropertyChanged();
@@ -8336,7 +8336,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaAttribute, value) != value)
                         OnPropertyChanged();
@@ -8365,7 +8365,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaQuality, value) != value)
                         OnPropertyChanged();
@@ -8394,7 +8394,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpecialization, value) != value)
                         OnPropertyChanged();
@@ -8423,7 +8423,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaKnoSpecialization, value) != value)
                         OnPropertyChanged();
@@ -8452,7 +8452,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewKnowledgeSkill, value) != value)
                         OnPropertyChanged();
@@ -8481,7 +8481,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewActiveSkill, value) != value)
                         OnPropertyChanged();
@@ -8510,7 +8510,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewSkillGroup, value) != value)
                         OnPropertyChanged();
@@ -8539,7 +8539,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaImproveKnowledgeSkill, value) != value)
                         OnPropertyChanged();
@@ -8568,7 +8568,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaImproveActiveSkill, value) != value)
                         OnPropertyChanged();
@@ -8597,7 +8597,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaImproveSkillGroup, value) != value)
                         OnPropertyChanged();
@@ -8626,7 +8626,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpell, value) != value)
                         OnPropertyChanged();
@@ -8655,7 +8655,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaEnhancement, value) != value)
                         OnPropertyChanged();
@@ -8675,7 +8675,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewComplexForm, value) != value)
                         OnPropertyChanged();
@@ -8704,7 +8704,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewAIProgram, value) != value)
                         OnPropertyChanged();
@@ -8733,7 +8733,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaNewAIAdvancedProgram, value) != value)
                         OnPropertyChanged();
@@ -8762,7 +8762,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaContact, value) != value)
                         OnPropertyChanged();
@@ -8791,7 +8791,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaEnemy, value) != value)
                         OnPropertyChanged();
@@ -8820,7 +8820,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaCarryover, value) != value)
                         OnPropertyChanged();
@@ -8849,7 +8849,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpirit, value) != value)
                         OnPropertyChanged();
@@ -8878,7 +8878,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaTechnique, value) != value)
                         OnPropertyChanged();
@@ -8907,7 +8907,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaInitiation, value) != value)
                         OnPropertyChanged();
@@ -8936,7 +8936,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaInitiationFlat, value) != value)
                         OnPropertyChanged();
@@ -8965,7 +8965,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaMetamagic, value) != value)
                         OnPropertyChanged();
@@ -8994,7 +8994,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaJoinGroup, value) != value)
                         OnPropertyChanged();
@@ -9023,7 +9023,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaLeaveGroup, value) != value)
                         OnPropertyChanged();
@@ -9052,7 +9052,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaAlchemicalFocus, value) != value)
                         OnPropertyChanged();
@@ -9081,7 +9081,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaBanishingFocus, value) != value)
                         OnPropertyChanged();
@@ -9110,7 +9110,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaBindingFocus, value) != value)
                         OnPropertyChanged();
@@ -9139,7 +9139,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaCenteringFocus, value) != value)
                         OnPropertyChanged();
@@ -9168,7 +9168,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaCounterspellingFocus, value) != value)
                         OnPropertyChanged();
@@ -9197,7 +9197,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaDisenchantingFocus, value) != value)
                         OnPropertyChanged();
@@ -9226,7 +9226,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaFlexibleSignatureFocus, value) != value)
                         OnPropertyChanged();
@@ -9255,7 +9255,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaMaskingFocus, value) != value)
                         OnPropertyChanged();
@@ -9336,7 +9336,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaRitualSpellcastingFocus, value) != value)
                         OnPropertyChanged();
@@ -9365,7 +9365,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpellcastingFocus, value) != value)
                         OnPropertyChanged();
@@ -9394,7 +9394,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpellShapingFocus, value) != value)
                         OnPropertyChanged();
@@ -9423,7 +9423,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSummoningFocus, value) != value)
                         OnPropertyChanged();
@@ -9452,7 +9452,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSustainingFocus, value) != value)
                         OnPropertyChanged();
@@ -9481,7 +9481,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaWeaponFocus, value) != value)
                         OnPropertyChanged();
@@ -9510,7 +9510,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaMysticAdeptPowerPoint, value) != value)
                         OnPropertyChanged();
@@ -9539,7 +9539,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intKarmaSpiritFettering, value) != value)
                         OnPropertyChanged();
@@ -9572,7 +9572,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decKarmaMAGInitiationGroupPercent == value)
                         return;
@@ -9597,7 +9597,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decKarmaRESInitiationGroupPercent == value)
                         return;
@@ -9622,7 +9622,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decKarmaMAGInitiationOrdealPercent == value)
                         return;
@@ -9647,7 +9647,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decKarmaRESInitiationOrdealPercent == value)
                         return;
@@ -9672,7 +9672,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decKarmaMAGInitiationSchoolingPercent == value)
                         return;
@@ -9697,7 +9697,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decKarmaRESInitiationSchoolingPercent == value)
                         return;

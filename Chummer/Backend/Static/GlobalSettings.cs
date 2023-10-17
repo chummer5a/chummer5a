@@ -933,7 +933,7 @@ namespace Chummer
                     if (objSourceRegistry != null)
                     {
                         LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
-                        using (await dicSourcebookInfos.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                        using (await dicSourcebookInfos.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                         {
                             await dicSourcebookInfos.ForEachAsync(x =>
                             {

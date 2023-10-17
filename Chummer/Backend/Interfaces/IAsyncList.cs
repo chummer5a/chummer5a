@@ -49,7 +49,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try
@@ -135,7 +135,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(comparer));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try
@@ -221,7 +221,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try
@@ -402,7 +402,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try
@@ -488,7 +488,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(comparer));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try
@@ -574,7 +574,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try
@@ -660,7 +660,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try
@@ -746,7 +746,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try

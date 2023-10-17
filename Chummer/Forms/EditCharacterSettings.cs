@@ -822,7 +822,7 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
                 if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
@@ -849,7 +849,7 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
                 int intCount = await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false);
                 if (intIndex >= intCount - 1)
@@ -1229,7 +1229,7 @@ namespace Chummer
                 string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
                                                               .ConfigureAwait(false);
                 Color objGrayTextColor = await ColorManager.GetGrayTextAsync(token).ConfigureAwait(false);
-                using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync(token)
+                using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync(token)
                                           .ConfigureAwait(false))
                 {
                     int intNewCount

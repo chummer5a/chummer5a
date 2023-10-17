@@ -45,7 +45,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strLanguage))
                 strLanguage = GlobalSettings.Language;
 
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 //Little bit of data required for following steps
                 XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage, token: token)
@@ -124,7 +124,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (levels <= 0)
                 return story;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 int startingLength = story.Length;
 
@@ -198,7 +198,7 @@ namespace Chummer
                 macroName = macroPool = endString;
             }
 
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 switch (macroName)
                 {

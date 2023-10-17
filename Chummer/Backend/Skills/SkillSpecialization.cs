@@ -199,7 +199,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _objParent = value;
             }
         }
@@ -324,7 +324,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Name == value)
                         return;

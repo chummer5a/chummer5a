@@ -531,7 +531,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) != value)
                     {
@@ -648,7 +648,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) != value && _objCharacter.MentorSpirits.Count > 0
                                                                             && _objCharacter.MentorSpirits[0] == this)
@@ -669,7 +669,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtraChoice1, value) != value && _objCharacter.MentorSpirits.Count > 0
                                                                             && _objCharacter.MentorSpirits[0] == this)
@@ -690,7 +690,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtraChoice2, value) != value && _objCharacter.MentorSpirits.Count > 0
                                                                             && _objCharacter.MentorSpirits[0] == this)
@@ -711,7 +711,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _blnMentorMask = value;
             }
         }
@@ -876,7 +876,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _strSource = value;
             }
         }
@@ -893,7 +893,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _strPage = value;
             }
         }
@@ -949,7 +949,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _strNotes = value;
             }
         }
@@ -966,7 +966,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _colNotes = value;
             }
         }

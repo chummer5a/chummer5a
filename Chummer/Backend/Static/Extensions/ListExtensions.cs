@@ -34,7 +34,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = objHasLock.LockObject.EnterReadLock(token);
+                objLocker = objHasLock.LockObject.EnterUpgradeableReadLock(token);
             else
                 objHasLock = null;
             try
@@ -112,7 +112,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(comparer));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = objHasLock.LockObject.EnterReadLock(token);
+                objLocker = objHasLock.LockObject.EnterUpgradeableReadLock(token);
             else
                 objHasLock = null;
             try
@@ -190,7 +190,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = objHasLock.LockObject.EnterReadLock(token);
+                objLocker = objHasLock.LockObject.EnterUpgradeableReadLock(token);
             else
                 objHasLock = null;
             try

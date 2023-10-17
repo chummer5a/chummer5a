@@ -128,7 +128,7 @@ namespace Chummer
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
                 {
-                    using (LockObject.EnterReadLock())
+                    using (LockObject.EnterUpgradeableReadLock())
                         _guiGearId = guiTemp;
                 }
             }
@@ -146,7 +146,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _blnBonded = value;
             }
         }

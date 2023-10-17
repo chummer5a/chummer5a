@@ -83,6 +83,11 @@ namespace Chummer.Backend.Skills
                         // swallow this
                     }
                 }
+
+                _objCachedBaseUnbrokenLock.Dispose();
+                _objCachedKarmaUnbrokenLock.Dispose();
+                _objCachedIsDisabledLock.Dispose();
+                _objCachedHasAnyBreakingSkillsLock.Dispose();
             }
             LockObject.Dispose();
         }
@@ -151,6 +156,11 @@ namespace Chummer.Backend.Skills
                         // swallow this
                     }
                 }
+
+                await _objCachedBaseUnbrokenLock.DisposeAsync();
+                await _objCachedKarmaUnbrokenLock.DisposeAsync();
+                await _objCachedIsDisabledLock.DisposeAsync();
+                await _objCachedHasAnyBreakingSkillsLock.DisposeAsync();
             }
             finally
             {
@@ -168,7 +178,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (!BaseUnbroken)
                         return;
@@ -205,7 +215,7 @@ namespace Chummer.Backend.Skills
         
         public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!await GetBaseUnbrokenAsync(token).ConfigureAwait(false))
                     return;
@@ -254,7 +264,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (!KarmaUnbroken)
                         return;
@@ -299,7 +309,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!await GetKarmaUnbrokenAsync(token).ConfigureAwait(false))
                     return;
@@ -344,7 +354,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intSkillFromSp, value) == value)
@@ -368,7 +378,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetBasePointsAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intSkillFromSp, value) == value)
@@ -384,7 +394,7 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intSkillFromSp, value);
@@ -404,7 +414,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intSkillFromKarma, value) == value)
@@ -428,7 +438,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetKarmaPointsAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intSkillFromKarma, value) == value)
@@ -444,7 +454,7 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intSkillFromKarma, value);
@@ -453,6 +463,7 @@ namespace Chummer.Backend.Skills
         }
 
         private int _intCachedBaseUnbroken = int.MinValue;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedBaseUnbrokenLock = new AsyncFriendlyReaderWriterLock();
 
         /// <summary>
         /// Is it possible to increment this skill group from points
@@ -463,10 +474,11 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedBaseUnbrokenLock.EnterUpgradeableReadLock())
                 {
                     if (_intCachedBaseUnbroken < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (_objCachedBaseUnbrokenLock.EnterWriteLock())
                         {
                             if (_intCachedBaseUnbroken < 0) // Just in case
                             {
@@ -497,10 +509,11 @@ namespace Chummer.Backend.Skills
         public async ValueTask<bool> GetBaseUnbrokenAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedBaseUnbrokenLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedBaseUnbroken < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCachedBaseUnbrokenLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -551,6 +564,7 @@ namespace Chummer.Backend.Skills
         }
 
         private int _intCachedKarmaUnbroken = int.MinValue;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedKarmaUnbrokenLock = new AsyncFriendlyReaderWriterLock();
 
         /// <summary>
         /// Is it possible to increment this skill group from karma
@@ -561,10 +575,11 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedKarmaUnbrokenLock.EnterUpgradeableReadLock())
                 {
                     if (_intCachedKarmaUnbroken < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (_objCachedKarmaUnbrokenLock.EnterWriteLock())
                         {
                             if (_intCachedKarmaUnbroken < 0) // Just in case
                             {
@@ -599,10 +614,11 @@ namespace Chummer.Backend.Skills
         public async ValueTask<bool> GetKarmaUnbrokenAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedKarmaUnbrokenLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedKarmaUnbroken < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCachedKarmaUnbrokenLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -656,16 +672,18 @@ namespace Chummer.Backend.Skills
         }
 
         private int _intCachedIsDisabled = int.MinValue;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedIsDisabledLock = new AsyncFriendlyReaderWriterLock();
 
         public bool IsDisabled
         {
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedIsDisabledLock.EnterUpgradeableReadLock())
                 {
                     if (_intCachedIsDisabled < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (_objCachedIsDisabledLock.EnterWriteLock())
                         {
                             if (_intCachedIsDisabled < 0) // Just in case
                             {
@@ -694,10 +712,11 @@ namespace Chummer.Backend.Skills
         public async ValueTask<bool> GetIsDisabledAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedIsDisabledLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedIsDisabled < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCachedIsDisabledLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -742,15 +761,15 @@ namespace Chummer.Backend.Skills
             }
             private set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIsBroken == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnIsBroken = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -769,7 +788,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         private async ValueTask SetIsBrokenAsync(bool value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_blnIsBroken == value)
                     return;
@@ -778,18 +797,18 @@ namespace Chummer.Backend.Skills
                 {
                     token.ThrowIfCancellationRequested();
                     _blnIsBroken = value;
-                    OnPropertyChanged(nameof(IsBroken));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(IsBroken));
             }
         }
 
         private void UpdateIsBroken()
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (!_objCharacter.Created)
                     return;
@@ -801,7 +820,7 @@ namespace Chummer.Backend.Skills
 
         private async ValueTask UpdateIsBrokenAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     return;
@@ -814,16 +833,18 @@ namespace Chummer.Backend.Skills
         }
 
         private int _intCachedHasAnyBreakingSkills = int.MinValue;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedHasAnyBreakingSkillsLock = new AsyncFriendlyReaderWriterLock();
 
         public bool HasAnyBreakingSkills
         {
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedHasAnyBreakingSkillsLock.EnterUpgradeableReadLock())
                 {
                     if (_intCachedHasAnyBreakingSkills < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (_objCachedHasAnyBreakingSkillsLock.EnterWriteLock())
                         {
                             if (_intCachedHasAnyBreakingSkills < 0) // Just in case
                             {
@@ -863,10 +884,11 @@ namespace Chummer.Backend.Skills
         public async ValueTask<bool> GetHasAnyBreakingSkillsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedHasAnyBreakingSkillsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_intCachedHasAnyBreakingSkills < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCachedHasAnyBreakingSkillsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1165,9 +1187,9 @@ namespace Chummer.Backend.Skills
 
         public void Add(Skill skill)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
-                using (skill.LockObject.EnterReadLock())
+                using (skill.LockObject.EnterUpgradeableReadLock())
                 {
                     Guid guidAddedSkillId = skill.SkillId;
                     // Do not add duplicate skills that we are still in the process of loading
@@ -1187,9 +1209,9 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask AddAsync(Skill skill, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                using (await skill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                using (await skill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     Guid guidAddedSkillId = await skill.GetSkillIdAsync(token).ConfigureAwait(false);
                     // Do not add duplicate skills that we are still in the process of loading
@@ -1228,9 +1250,9 @@ namespace Chummer.Backend.Skills
 
         public void Remove(Skill skill)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
-                using (skill.LockObject.EnterReadLock())
+                using (skill.LockObject.EnterUpgradeableReadLock())
                 using (LockObject.EnterWriteLock())
                 {
                     if (!_lstAffectedSkills.Remove(skill))
@@ -1245,9 +1267,9 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask RemoveAsync(Skill skill, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                using (await skill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                using (await skill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
@@ -1499,7 +1521,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _strGroupName, value) == value)
@@ -1838,7 +1860,7 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try

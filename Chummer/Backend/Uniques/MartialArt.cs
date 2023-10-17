@@ -65,7 +65,7 @@ namespace Chummer
 
         private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 List<MartialArtTechnique> lstImprovementSourcesToProcess
                     = new List<MartialArtTechnique>(e.NewItems?.Count ?? 0);
@@ -411,7 +411,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
@@ -438,7 +438,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guiSourceID == value)
                         return;
@@ -468,7 +468,7 @@ namespace Chummer
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -543,7 +543,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _strSource = value;
             }
         }
@@ -560,7 +560,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _strPage = value;
             }
         }
@@ -616,7 +616,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _intKarmaCost = value;
             }
         }
@@ -633,7 +633,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _blnIsQuality = value;
             }
         }
@@ -664,7 +664,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _strNotes = value;
             }
         }
@@ -681,7 +681,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     _colNotes = value;
             }
         }

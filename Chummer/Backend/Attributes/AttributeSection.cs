@@ -49,7 +49,7 @@ namespace Chummer.Backend.Attributes
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -107,7 +107,7 @@ namespace Chummer.Backend.Attributes
             {
                 using (LockObject.EnterReadLock())
                 {
-                    using (_objAttributesInitializerLock.EnterReadLock())
+                    using (_objAttributesInitializerLock.EnterUpgradeableReadLock())
                     {
                         if (!_blnAttributesInitialized)
                         {
@@ -124,7 +124,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                using (await _objAttributesInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false))
+                using (await _objAttributesInitializerLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     if (!_blnAttributesInitialized)
                     {
@@ -189,7 +189,7 @@ namespace Chummer.Backend.Attributes
         private async ValueTask InitializeAttributesListAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
@@ -716,10 +716,10 @@ namespace Chummer.Backend.Attributes
                     // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
                     XPathNavigator xmlCharNodeAnimalForm =
                         _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
-                            ? (blnSync
+                            ? blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? _objCharacter.GetNodeXPath(true, token: token)
-                                : await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false))
+                                : await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false)
                             : null;
                     foreach (string strAttribute in AttributeStrings)
                     {
@@ -2003,7 +2003,7 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (InterlockedExtensions.Exchange(ref _eAttributeCategory, value) == value)

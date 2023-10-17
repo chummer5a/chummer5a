@@ -658,7 +658,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _nodBonus, value) == value)
                         return;
@@ -679,7 +679,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eTraditionType, value) == value)
                         return;
@@ -732,7 +732,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
@@ -887,7 +887,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 value = _objCharacter.ReverseTranslateExtra(value);
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSpiritForm, value) == value)
                         return;
@@ -925,7 +925,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 value = _objCharacter.ReverseTranslateExtra(value);
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) == value)
                         return;
@@ -953,7 +953,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     string strOldExpression = Interlocked.Exchange(ref _strDrainExpression, value);
                     if (strOldExpression == value)
@@ -1110,7 +1110,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritCombat, value) != value)
                         OnPropertyChanged();
@@ -1148,7 +1148,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritCombatMethod(GlobalSettings.Language);
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None)
                     {
@@ -1170,7 +1170,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritDetection, value) != value)
                         OnPropertyChanged();
@@ -1208,7 +1208,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritDetectionMethod(GlobalSettings.Language);
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None)
                         SpiritDetection
@@ -1229,7 +1229,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritHealth, value) != value)
                         OnPropertyChanged();
@@ -1267,7 +1267,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritHealthMethod(GlobalSettings.Language);
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None)
                         SpiritHealth
@@ -1288,7 +1288,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritIllusion, value) != value)
                         OnPropertyChanged();
@@ -1326,7 +1326,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritIllusionMethod(GlobalSettings.Language);
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None)
                         SpiritIllusion
@@ -1347,7 +1347,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritManipulation, value) != value)
                         OnPropertyChanged();
@@ -1385,7 +1385,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritManipulationMethod(GlobalSettings.Language);
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Type != TraditionType.None)
                         SpiritManipulation
@@ -1406,7 +1406,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSource, value) == value)
                         return;
@@ -1427,7 +1427,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPage, value) == value)
                         return;
@@ -1448,7 +1448,7 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNotes, value) == value)
                         return;
@@ -1673,7 +1673,7 @@ namespace Chummer.Backend.Uniques
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try

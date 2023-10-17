@@ -663,7 +663,7 @@ namespace Chummer
                 return;
             IDisposable objThisLocker = null;
             if (objThis is IHasLockObject objHasLock)
-                objThisLocker = objHasLock.LockObject.EnterReadLock();
+                objThisLocker = objHasLock.LockObject.EnterUpgradeableReadLock();
             else
                 objHasLock = null;
             try

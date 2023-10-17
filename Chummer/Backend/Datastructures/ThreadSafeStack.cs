@@ -301,7 +301,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(T item)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (ReferenceEquals(Peek(), item))
                 {
@@ -336,7 +336,7 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask<bool> RemoveAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (ReferenceEquals(await PeekAsync(token).ConfigureAwait(false), item))
                 {

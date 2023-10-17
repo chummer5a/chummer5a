@@ -644,7 +644,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     T objOldItem = _lstOrderedData[index];
                     if (objOldItem.Equals(value))
@@ -667,7 +667,7 @@ namespace Chummer
 
         public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 T objOldItem = _lstOrderedData[index];
                 if (objOldItem.Equals(value))
@@ -704,7 +704,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort()" />
         public void Sort(CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                 {
@@ -743,7 +743,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort()" />
         public async ValueTask SortAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                 {

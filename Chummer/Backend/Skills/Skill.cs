@@ -61,7 +61,7 @@ namespace Chummer.Backend.Skills
             }
             private set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _objAttribute, value) == value)
@@ -73,7 +73,7 @@ namespace Chummer.Backend.Skills
 
         private void RecacheAttribute()
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 string strAttributeString = DefaultAttribute;
                 if (CharacterObject.SkillsSection?.IsLoading != true)
@@ -87,11 +87,11 @@ namespace Chummer.Backend.Skills
                 }
 
                 CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strAttributeString);
-                IDisposable objLocker = objNewAttribute?.LockObject.EnterReadLock();
+                IDisposable objLocker = objNewAttribute?.LockObject.EnterUpgradeableReadLock();
                 try
                 {
                     CharacterAttrib objOldAttribute = Interlocked.Exchange(ref _objAttribute, objNewAttribute);
-                    IDisposable objLocker2 = objOldAttribute?.LockObject.EnterReadLock();
+                    IDisposable objLocker2 = objOldAttribute?.LockObject.EnterUpgradeableReadLock();
                     try
                     {
                         if (objOldAttribute == objNewAttribute)
@@ -128,7 +128,7 @@ namespace Chummer.Backend.Skills
 
         private async ValueTask RecacheAttributeAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 string strAttributeString = DefaultAttribute;
                 if (CharacterObject.SkillsSection?.IsLoading != true)
@@ -148,14 +148,14 @@ namespace Chummer.Backend.Skills
                     = await CharacterObject.GetAttributeAsync(strAttributeString, token: token).ConfigureAwait(false);
                 IDisposable objReadLocker = null;
                 if (objNewAttribute != null)
-                    objReadLocker = await objNewAttribute.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    objReadLocker = await objNewAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
                     CharacterAttrib objOldAttribute = Interlocked.Exchange(ref _objAttribute, objNewAttribute);
                     IDisposable objReadLocker2 = null;
                     if (objOldAttribute != null)
-                        objReadLocker2 = await objOldAttribute.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                        objReadLocker2 = await objOldAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -777,7 +777,7 @@ namespace Chummer.Backend.Skills
 
         private async void OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
                 switch (e.Action)
                 {
@@ -822,7 +822,7 @@ namespace Chummer.Backend.Skills
         {
             if (e.PropertyName != nameof(AttributeSection.AttributeCategory))
                 return;
-            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
                 await RecacheAttributeAsync().ConfigureAwait(false);
         }
 
@@ -884,7 +884,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intBase, value) == value)
@@ -908,7 +908,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetBasePointsAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intBase, value) == value)
@@ -924,7 +924,7 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
@@ -944,7 +944,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intKarma, value) == value)
@@ -968,7 +968,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetKarmaPointsAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intKarma, value) == value)
@@ -984,7 +984,7 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
@@ -1088,7 +1088,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (SkillGroupObject?.Base > 0
                         && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
@@ -1152,7 +1152,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 int intSkillGroupBase = SkillGroupObject != null ? await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) : 0;
                 if (intSkillGroupBase > 0
@@ -1213,7 +1213,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     //Calculate how far above maximum we are.
                     int intOverMax = value + Base - RatingMaximum + RatingModifiers(Attribute);
@@ -1276,7 +1276,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 //Calculate how far above maximum we are.
                 int intOverMax = value + await GetBaseAsync(token).ConfigureAwait(false)
@@ -1396,7 +1396,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     value = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma &&
                             Specializations.Any(x => !x.Free);
@@ -1421,7 +1421,7 @@ namespace Chummer.Backend.Skills
 
         public virtual async ValueTask SetBuyWithKarmaAsync(bool value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 value = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                         && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
@@ -1770,126 +1770,122 @@ namespace Chummer.Backend.Skills
                 string strNameToUse = DictionaryKey;
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = Attribute;
-                // Special read lock makes sure we keep the lock while this function is enumerating
-                using (CharacterObject.Improvements.LockObject.EnterReadLock())
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
+                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
+                    if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
+                    switch (objImprovement.ImproveType)
                     {
-                        if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
-                        if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
-                        switch (objImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.SwapSkillAttribute:
-                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                                if (objImprovement.Target == strNameToUse)
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.SwapSkillAttribute:
+                        case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                            if (objImprovement.Target == strNameToUse)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.Skill:
-                            case Improvement.ImprovementType.SkillDisable:
-                                if (objImprovement.ImprovedName == strNameToUse)
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.Skill:
+                        case Improvement.ImprovementType.SkillDisable:
+                            if (objImprovement.ImprovedName == strNameToUse)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.BlockSkillDefault:
-                            case Improvement.ImprovementType.AllowSkillDefault:
-                                if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
-                                    objImprovement.ImprovedName == strNameToUse)
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.BlockSkillDefault:
+                        case Improvement.ImprovementType.AllowSkillDefault:
+                            if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
+                                objImprovement.ImprovedName == strNameToUse)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.SkillGroup:
-                            case Improvement.ImprovementType.SkillGroupDisable:
-                                if (objImprovement.ImprovedName == SkillGroup &&
-                                    !objImprovement.Exclude.Contains(strNameToUse) &&
-                                    !objImprovement.Exclude.Contains(SkillCategory))
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.SkillGroup:
+                        case Improvement.ImprovementType.SkillGroupDisable:
+                            if (objImprovement.ImprovedName == SkillGroup &&
+                                !objImprovement.Exclude.Contains(strNameToUse) &&
+                                !objImprovement.Exclude.Contains(SkillCategory))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.SkillCategory:
-                                if (objImprovement.ImprovedName == SkillCategory &&
-                                    !objImprovement.Exclude.Contains(strNameToUse))
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.SkillCategory:
+                            if (objImprovement.ImprovedName == SkillCategory &&
+                                !objImprovement.Exclude.Contains(strNameToUse))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.SkillAttribute:
-                                if (objImprovement.ImprovedName == strUseAttribute &&
-                                    !objImprovement.Exclude.Contains(strNameToUse))
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.SkillAttribute:
+                            if (objImprovement.ImprovedName == strUseAttribute &&
+                                !objImprovement.Exclude.Contains(strNameToUse))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.SkillLinkedAttribute:
-                                if (objImprovement.ImprovedName == Attribute &&
-                                    !objImprovement.Exclude.Contains(strNameToUse))
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.SkillLinkedAttribute:
+                            if (objImprovement.ImprovedName == Attribute &&
+                                !objImprovement.Exclude.Contains(strNameToUse))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.BlockSkillCategoryDefault:
-                                if (objImprovement.ImprovedName == SkillCategory)
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                            if (objImprovement.ImprovedName == SkillCategory)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.BlockSkillGroupDefault:
-                                if (objImprovement.ImprovedName == SkillGroup)
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.BlockSkillGroupDefault:
+                            if (objImprovement.ImprovedName == SkillGroup)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
+                            break;
 
-                            case Improvement.ImprovementType.EnhancedArticulation:
-                                if (SkillCategory == "Physical Active" &&
-                                    AttributeSection.PhysicalAttributes.Contains(Attribute))
-                                {
-                                    yield return objImprovement;
-                                    if (blnExitAfterFirst)
-                                        yield break;
-                                }
+                        case Improvement.ImprovementType.EnhancedArticulation:
+                            if (SkillCategory == "Physical Active" &&
+                                AttributeSection.PhysicalAttributes.Contains(Attribute))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
 
-                                break;
-                        }
+                            break;
                     }
                 }
             }
@@ -2547,7 +2543,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
@@ -2568,7 +2564,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask SetDefaultAttributeAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
@@ -2824,7 +2820,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnForceDisabled == value)
                         return;
@@ -2846,7 +2842,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnRequiresGroundMovement == value)
                         return;
@@ -2868,7 +2864,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnRequiresSwimMovement == value)
                         return;
@@ -2890,7 +2886,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnRequiresFlyMovement == value)
                         return;
@@ -2983,15 +2979,15 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDefault == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnDefault = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -3119,7 +3115,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // Interlocked guarantees thread safety here without write lock
                     if (Interlocked.Exchange(ref _strName, value) == value)
@@ -3129,8 +3125,8 @@ namespace Chummer.Backend.Skills
                         _strDictionaryKey = null;
                         _intCachedFreeBase = int.MinValue;
                         _intCachedFreeKarma = int.MinValue;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -3143,7 +3139,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask SetNameAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // Interlocked guarantees thread safety here without write lock
                 if (Interlocked.Exchange(ref _strName, value) == value)
@@ -3155,12 +3151,12 @@ namespace Chummer.Backend.Skills
                     _strDictionaryKey = null;
                     _intCachedFreeBase = int.MinValue;
                     _intCachedFreeKarma = int.MinValue;
-                    OnPropertyChanged(nameof(Name));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(Name));
             }
         }
 
@@ -3179,15 +3175,15 @@ namespace Chummer.Backend.Skills
             }
             private set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guidInternalId == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _guidInternalId = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -3236,7 +3232,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guidSkillId == value)
                         return;
@@ -3246,8 +3242,8 @@ namespace Chummer.Backend.Skills
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
                         _blnRecalculateCachedSuggestedSpecializations = true;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -3270,7 +3266,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetSkillIdAsync(Guid value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_guidSkillId == value)
                     return;
@@ -3282,12 +3278,12 @@ namespace Chummer.Backend.Skills
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                     _blnRecalculateCachedSuggestedSpecializations = true;
-                    OnPropertyChanged(nameof(SkillId));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(SkillId));
             }
         }
 
@@ -3296,7 +3292,7 @@ namespace Chummer.Backend.Skills
         public virtual string SkillCategory { get; } = string.Empty;
 
         private bool _blnRecalculateCachedSuggestedSpecializations = true;
-
+        private readonly AsyncFriendlyReaderWriterLock _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock();
         private List<ListItem> _lstCachedSuggestedSpecializations;
 
         // ReSharper disable once InconsistentNaming
@@ -3305,10 +3301,11 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedSuggestedSpecializationsLock.EnterUpgradeableReadLock())
                 {
                     if (_blnRecalculateCachedSuggestedSpecializations)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (_objCachedSuggestedSpecializationsLock.EnterWriteLock())
                         {
                             if (_blnRecalculateCachedSuggestedSpecializations) // Just in case
                             {
@@ -3359,10 +3356,11 @@ namespace Chummer.Backend.Skills
         public async ValueTask<IReadOnlyList<ListItem>> GetCGLSpecializationsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedSuggestedSpecializationsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_blnRecalculateCachedSuggestedSpecializations)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCachedSuggestedSpecializationsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -4529,7 +4527,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _strNotes, value) == value)
@@ -4557,7 +4555,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
@@ -4928,9 +4926,12 @@ namespace Chummer.Backend.Skills
         // ReSharper disable once InconsistentNaming
         private int _intCachedCyberwareRating = int.MinValue;
 
+        protected readonly AsyncFriendlyReaderWriterLock _objCachedCyberwareRatingLock =
+            new AsyncFriendlyReaderWriterLock();
+
         protected virtual void ResetCachedCyberwareRating()
         {
-            using (LockObject.EnterWriteLock())
+            using (_objCachedCyberwareRatingLock.EnterWriteLock())
                 _intCachedCyberwareRating = int.MinValue;
         }
 
@@ -4943,47 +4944,51 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedCyberwareRatingLock.EnterUpgradeableReadLock())
                 {
-                    // intReturn for thread safety
-                    int intReturn = _intCachedCyberwareRating;
-                    if (intReturn != int.MinValue)
-                        return intReturn;
-
-                    //TODO: method is here, but not used in any form, needs testing (worried about child items...)
-                    //this might do hardwires if i understand how they works correctly
-                    int intMaxHardwire = -1;
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 CharacterObject, Improvement.ImprovementType.Hardwire, DictionaryKey))
+                    if (_intCachedCyberwareRating != int.MinValue)
+                        return _intCachedCyberwareRating;
+                    using (_objCachedCyberwareRatingLock.EnterWriteLock())
                     {
-                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                    }
+                        if (_intCachedCyberwareRating != int.MinValue) // Just in case
+                            return _intCachedCyberwareRating;
 
-                    if (intMaxHardwire >= 0)
-                    {
-                        return _intCachedCyberwareRating = intMaxHardwire;
-                    }
-
-                    int intMaxActivesoftRating =
-                        Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire),
-                                 ImprovementManager.ValueOf(CharacterObject,
-                                                            Improvement.ImprovementType.SkillsoftAccess))
-                            .StandardRound();
-                    if (intMaxActivesoftRating > 0)
-                    {
-                        int intMax = 0;
-                        //TODO this works with translate?
-                        foreach (Improvement objSkillsoftImprovement in ImprovementManager
-                                     .GetCachedImprovementListForValueOf(CharacterObject,
-                                                                         Improvement.ImprovementType.Activesoft,
-                                                                         DictionaryKey))
+                        //TODO: method is here, but not used in any form, needs testing (worried about child items...)
+                        //this might do hardwires if i understand how they works correctly
+                        int intMaxHardwire = -1;
+                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                     CharacterObject, Improvement.ImprovementType.Hardwire, DictionaryKey))
                         {
-                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                         }
 
-                        return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
-                    }
+                        if (intMaxHardwire >= 0)
+                        {
+                            return _intCachedCyberwareRating = intMaxHardwire;
+                        }
 
-                    return _intCachedCyberwareRating = 0;
+                        int intMaxActivesoftRating =
+                            Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire),
+                                    ImprovementManager.ValueOf(CharacterObject,
+                                        Improvement.ImprovementType.SkillsoftAccess))
+                                .StandardRound();
+                        if (intMaxActivesoftRating > 0)
+                        {
+                            int intMax = 0;
+                            //TODO this works with translate?
+                            foreach (Improvement objSkillsoftImprovement in ImprovementManager
+                                         .GetCachedImprovementListForValueOf(CharacterObject,
+                                             Improvement.ImprovementType.Activesoft,
+                                             DictionaryKey))
+                            {
+                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                            }
+
+                            return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
+                        }
+
+                        return _intCachedCyberwareRating = 0;
+                    }
                 }
             }
         }
@@ -5316,7 +5321,7 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -6226,7 +6231,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask Upgrade(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                 {
@@ -6393,7 +6398,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask AddSpecialization(string strName, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
                 bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
@@ -6819,6 +6824,8 @@ namespace Chummer.Backend.Skills
                 }
 
                 _lstSpecializations.Dispose();
+                _objCachedCyberwareRatingLock.Dispose();
+                _objCachedSuggestedSpecializationsLock.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
             }
@@ -6923,6 +6930,8 @@ namespace Chummer.Backend.Skills
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
                 await _lstSpecializations.DisposeAsync().ConfigureAwait(false);
+                await _objCachedCyberwareRatingLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedSuggestedSpecializationsLock.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
             }

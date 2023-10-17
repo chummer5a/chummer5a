@@ -8151,7 +8151,7 @@ namespace Chummer
         private async ValueTask<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true,
                                                     bool blnCompleteDelete = true, CancellationToken token = default)
         {
-            using (await objSelectedQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 XPathNavigator objXmlDeleteQuality
                     = await objSelectedQuality.GetNodeXPathAsync(token).ConfigureAwait(false);
@@ -8404,7 +8404,7 @@ namespace Chummer
                 return;
             }
 
-            using (await objSelectedQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (objSelectedQuality.OriginSource == QualitySource.Improvement
                     || objSelectedQuality.OriginSource == QualitySource.Metatype
@@ -8459,7 +8459,7 @@ namespace Chummer
                     return;
 
                 bool blnDoRemoveQuality = false;
-                using (await objSelectedQuality.LockObject.EnterReadLockAsync(GenericToken).ConfigureAwait(false))
+                using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                 {
                     int intCurrentLevels = objSelectedQuality.Levels;
                     int intSelectedLevels
@@ -15056,7 +15056,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (await objQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    using (await objQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                    .ConfigureAwait(false);
@@ -19704,7 +19704,7 @@ namespace Chummer
         protected override async Task DoUpdateCharacterInfo(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 while (SkipUpdate)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);

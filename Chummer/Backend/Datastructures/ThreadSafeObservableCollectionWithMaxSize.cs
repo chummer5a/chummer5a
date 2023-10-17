@@ -89,7 +89,7 @@ namespace Chummer
 
         public override int Add(object value)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
                     return -1;
@@ -100,7 +100,7 @@ namespace Chummer
         /// <inheritdoc />
         public override void Add(T item)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
                     return;
@@ -110,7 +110,7 @@ namespace Chummer
 
         public override async ValueTask AddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
                     return;
@@ -121,7 +121,7 @@ namespace Chummer
         /// <inheritdoc />
         public override bool TryAdd(T item)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
                     return false;
@@ -133,7 +133,7 @@ namespace Chummer
         /// <inheritdoc />
         public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
                     return false;

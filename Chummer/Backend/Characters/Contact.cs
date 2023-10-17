@@ -98,7 +98,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -738,7 +738,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) != value)
                         OnPropertyChanged();
@@ -814,7 +814,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strRole, value) != value)
                         OnPropertyChanged();
@@ -834,7 +834,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strLocation, value) != value)
                         OnPropertyChanged();
@@ -855,7 +855,7 @@ namespace Chummer
             set
             {
                 value = Math.Max(Math.Min(value, ConnectionMaximum), 1);
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intConnection, value) != value)
                         OnPropertyChanged();
@@ -889,7 +889,7 @@ namespace Chummer
             set
             {
                 value = Math.Max(value, 1);
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intLoyalty, value) != value)
                         OnPropertyChanged();
@@ -1035,7 +1035,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strMetatype, value) != value)
                         OnPropertyChanged();
@@ -1119,7 +1119,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strGender, value) != value)
                         OnPropertyChanged();
@@ -1189,7 +1189,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strAge, value) != value)
                         OnPropertyChanged();
@@ -1259,7 +1259,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strType, value) != value)
                         OnPropertyChanged();
@@ -1321,7 +1321,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPreferredPayment, value) != value)
                         OnPropertyChanged();
@@ -1382,7 +1382,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strHobbiesVice, value) != value)
                         OnPropertyChanged();
@@ -1443,7 +1443,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPersonalLife, value) != value)
                         OnPropertyChanged();
@@ -1463,7 +1463,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIsGroup == value)
                         return;
@@ -1543,7 +1543,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eContactType, value) != value)
                         OnPropertyChanged();
@@ -1565,7 +1565,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strFileName, value) != value)
                         RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
@@ -1585,7 +1585,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strRelativeName, value) != value)
                         RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
@@ -1605,7 +1605,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNotes, value) != value)
                         OnPropertyChanged();
@@ -1625,7 +1625,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
@@ -1650,7 +1650,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strGroupName, value) != value)
                         OnPropertyChanged();
@@ -1670,7 +1670,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_objColor == value)
                         return;
@@ -1711,15 +1711,15 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFree == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnFree = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1859,7 +1859,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnBlackmail == value)
                         return;
@@ -1881,7 +1881,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFamily == value)
                         return;
@@ -1968,7 +1968,7 @@ namespace Chummer
 
         public void RefreshLinkedCharacter(bool blnShowError = false, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
                 using (LockObject.EnterWriteLock(token))
@@ -2040,7 +2040,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (_objLinkedCharacter.LockObject.EnterReadLock(token))
+                            using (_objLinkedCharacter.LockObject.EnterUpgradeableReadLock(token))
                             {
                                 if (string.IsNullOrEmpty(_strName)
                                     && Name != LanguageManager.GetString("String_UnnamedCharacter", token: token))
@@ -2065,7 +2065,7 @@ namespace Chummer
 
         public async Task RefreshLinkedCharacterAsync(bool blnShowError = false, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -2149,7 +2149,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (await _objLinkedCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                            using (await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                             {
                                 if (string.IsNullOrEmpty(_strName)
                                     && Name != await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
@@ -2253,7 +2253,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (LinkedCharacter != null)
                         LinkedCharacter.MainMugshot = value;
@@ -2295,7 +2295,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (LinkedCharacter != null)
                         LinkedCharacter.MainMugshotIndex = value;

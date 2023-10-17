@@ -56,7 +56,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.Capacity == value)
                         return;
@@ -130,7 +130,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
                         return;
@@ -148,7 +148,7 @@ namespace Chummer
 
         public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_lstData[index].Equals(value))
                     return;
@@ -174,7 +174,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
                         return;
@@ -286,7 +286,7 @@ namespace Chummer
         {
             if (!(value is T objValue))
                 return -1;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 Add(objValue);
                 return _lstData.Count - 1;

@@ -589,7 +589,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
@@ -597,8 +597,8 @@ namespace Chummer.Backend.Equipment
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -627,7 +627,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) != value)
                         OnPropertyChanged();
@@ -647,7 +647,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSource, value) != value)
                         OnPropertyChanged();
@@ -667,7 +667,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPage, value) != value)
                         OnPropertyChanged();
@@ -726,7 +726,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _xmlBonus, value) != value)
                         OnPropertyChanged();
@@ -758,7 +758,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eOriginSource, value) != value)
                         OnPropertyChanged();
@@ -778,7 +778,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intLP, value) != value)
                         OnPropertyChanged();
@@ -925,15 +925,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnPrint == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnPrint = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -950,7 +950,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNotes, value) != value)
                         OnPropertyChanged();
@@ -970,15 +970,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _colNotes = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1021,7 +1021,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strCost, value) != value)
                         OnPropertyChanged();
@@ -1041,15 +1041,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFree == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnFree = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1063,7 +1063,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIsFreeGrid == value)
                         return;
@@ -1080,9 +1080,8 @@ namespace Chummer.Backend.Equipment
                                 OriginSource = QualitySource.Selected;
                                 break;
                         }
-
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1099,7 +1098,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (!value && !CanBeFreeByLifestyle)
                         return;
@@ -1108,8 +1107,8 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _blnUseLPCost = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1150,7 +1149,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intComforts, value) != value)
                         OnPropertyChanged();
@@ -1170,7 +1169,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intComfortsMaximum, value) != value)
                         OnPropertyChanged();
@@ -1190,7 +1189,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intSecurityMaximum, value) != value)
                         OnPropertyChanged();
@@ -1210,7 +1209,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intSecurity, value) != value)
                         OnPropertyChanged();
@@ -1230,7 +1229,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMultiplier, value) != value)
                         OnPropertyChanged();
@@ -1250,7 +1249,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intBaseMultiplier, value) != value)
                         OnPropertyChanged();
@@ -1270,7 +1269,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strCategory, value) != value)
                         OnPropertyChanged();
@@ -1290,7 +1289,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intAreaMaximum, value) != value)
                         OnPropertyChanged();
@@ -1310,7 +1309,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intArea, value) != value)
                         OnPropertyChanged();
@@ -1552,7 +1551,7 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try

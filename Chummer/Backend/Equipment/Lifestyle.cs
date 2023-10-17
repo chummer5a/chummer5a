@@ -794,15 +794,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guiSourceID == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _guiSourceID = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -824,7 +824,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) != value)
                         OnPropertyChanged();
@@ -926,7 +926,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSource, value) != value)
                         OnPropertyChanged();
@@ -946,7 +946,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPage, value) != value)
                         OnPropertyChanged();
@@ -1005,15 +1005,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _decCost = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1030,7 +1030,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intDice, value) != value)
                         OnPropertyChanged();
@@ -1050,15 +1050,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decMultiplier == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _decMultiplier = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1075,7 +1075,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intIncrements, value) != value)
                         OnPropertyChanged();
@@ -1123,7 +1123,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strBaseLifestyle, value) == value)
                         return;
@@ -1185,9 +1185,8 @@ namespace Chummer.Backend.Equipment
                                 nameof(SecurityMaximum), nameof(LifestyleQualities));
                             return;
                         }
-
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1237,7 +1236,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intBonusLP, value) != value)
                         OnPropertyChanged();
@@ -1266,7 +1265,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intComforts, value) != value)
                         OnPropertyChanged();
@@ -1286,7 +1285,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intBaseComforts, value) != value)
                         OnPropertyChanged();
@@ -1306,7 +1305,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intBaseArea, value) != value)
                         OnPropertyChanged();
@@ -1326,7 +1325,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intBaseSecurity, value) != value)
                         OnPropertyChanged();
@@ -1346,7 +1345,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intArea, value) != value)
                         OnPropertyChanged();
@@ -1375,7 +1374,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intSecurity, value) != value)
                         OnPropertyChanged();
@@ -1410,7 +1409,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intAreaMaximum, value) != value)
                         OnPropertyChanged();
@@ -1427,7 +1426,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intComfortsMaximum, value) != value)
                         OnPropertyChanged();
@@ -1444,7 +1443,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intSecurityMaximum, value) != value)
                         OnPropertyChanged();
@@ -1550,7 +1549,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNotes, value) != value)
                         OnPropertyChanged();
@@ -1570,15 +1569,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _colNotes = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1595,7 +1594,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eType, value) != value)
                         OnPropertyChanged();
@@ -1615,7 +1614,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eIncrement, value) != value)
                         OnPropertyChanged();
@@ -1635,7 +1634,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intRoommates, value) != value)
                         OnPropertyChanged();
@@ -1655,15 +1654,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decPercentage == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _decPercentage = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1680,15 +1679,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnTrustFund == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnTrustFund = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1724,15 +1723,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIsPrimaryTenant == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _blnIsPrimaryTenant = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1749,15 +1748,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decCostForArea == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _decCostForArea = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1774,15 +1773,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decCostForComforts == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _decCostForComforts = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1799,15 +1798,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decCostForSecurity == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
                         _decCostForSecurity = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1824,7 +1823,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intSortOrder, value) != value)
                         OnPropertyChanged();
@@ -1910,7 +1909,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strCity, value) != value)
                         OnPropertyChanged();
@@ -1926,7 +1925,7 @@ namespace Chummer.Backend.Equipment
 
         public async ValueTask SetCityAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (Interlocked.Exchange(ref _strCity, value) != value)
                     OnPropertyChanged(nameof(City));
@@ -1942,7 +1941,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strDistrict, value) != value)
                         OnPropertyChanged();
@@ -1958,7 +1957,7 @@ namespace Chummer.Backend.Equipment
 
         public async ValueTask SetDistrictAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (Interlocked.Exchange(ref _strDistrict, value) != value)
                     OnPropertyChanged(nameof(District));
@@ -1974,7 +1973,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strBorough, value) != value)
                         OnPropertyChanged();
@@ -1990,7 +1989,7 @@ namespace Chummer.Backend.Equipment
 
         public async ValueTask SetBoroughAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (Interlocked.Exchange(ref _strBorough, value) != value)
                     OnPropertyChanged(nameof(Borough));
@@ -2557,7 +2556,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void IncrementMonths()
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 // Create the Expense Log Entry.
                 decimal decAmount = TotalMonthlyCost;
@@ -2569,18 +2568,21 @@ namespace Chummer.Backend.Equipment
                     return;
                 }
 
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                objExpense.Create(decAmount * -1,
-                                  LanguageManager.GetString("String_ExpenseLifestyle") + ' ' + CurrentDisplayNameShort,
-                                  ExpenseType.Nuyen, DateTime.Now);
-                _objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                _objCharacter.Nuyen -= decAmount;
+                using (LockObject.EnterWriteLock())
+                {
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                    objExpense.Create(decAmount * -1,
+                        LanguageManager.GetString("String_ExpenseLifestyle") + ' ' + CurrentDisplayNameShort,
+                        ExpenseType.Nuyen, DateTime.Now);
+                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    _objCharacter.Nuyen -= decAmount;
 
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
-                objExpense.Undo = objUndo;
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
+                    objExpense.Undo = objUndo;
 
-                Interlocked.Increment(ref _intIncrements);
+                    Interlocked.Increment(ref _intIncrements);
+                }
             }
         }
 
@@ -2796,7 +2798,7 @@ namespace Chummer.Backend.Equipment
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -2850,12 +2852,12 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (blnConfirmDelete
                     && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
                     return false;
-                using (_objCharacter.Lifestyles.LockObject.EnterReadLock())
+                using (_objCharacter.Lifestyles.LockObject.EnterUpgradeableReadLock())
                 {
                     if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
                         return false;
@@ -2868,13 +2870,13 @@ namespace Chummer.Backend.Equipment
 
         public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
                         await LanguageManager.GetStringAsync("Message_DeleteLifestyle", token: token)
                                              .ConfigureAwait(false), token).ConfigureAwait(false))
                     return false;
-                using (await _objCharacter.Lifestyles.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                using (await _objCharacter.Lifestyles.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     if (await _objCharacter.Lifestyles.ContainsAsync(this, token).ConfigureAwait(false)
                         && !await _objCharacter.Lifestyles.RemoveAsync(this, token).ConfigureAwait(false))

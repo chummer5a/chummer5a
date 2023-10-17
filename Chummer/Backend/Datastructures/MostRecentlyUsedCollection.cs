@@ -130,7 +130,7 @@ namespace Chummer
         /// <inheritdoc />
         public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)

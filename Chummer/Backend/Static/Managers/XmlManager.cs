@@ -119,7 +119,7 @@ namespace Chummer
             /// </summary>
             public void SetXmlContent(XmlDocument objContent, CancellationToken token = default)
             {
-                using (LockObject.EnterReadLock(token))
+                using (LockObject.EnterUpgradeableReadLock(token))
                 {
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
@@ -148,7 +148,7 @@ namespace Chummer
             /// </summary>
             public async ValueTask SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
@@ -395,7 +395,7 @@ namespace Chummer
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? s_objDataDirectoriesLock.EnterReadLock(token) : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;
@@ -583,7 +583,7 @@ namespace Chummer
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? s_objDataDirectoriesLock.EnterReadLock(token) : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 foreach (string strDirectory in s_SetDataDirectories)
                 {

@@ -89,7 +89,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
                         return;
@@ -107,7 +107,7 @@ namespace Chummer
 
         public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_lstData[index].Equals(value))
                     return;
@@ -133,7 +133,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
                         return;
@@ -147,7 +147,7 @@ namespace Chummer
         {
             if (!(value is T objValue))
                 return -1;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 Add(objValue);
                 return _lstData.Count - 1;
@@ -754,7 +754,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.RaiseListChangedEvents.Equals(value))
                         return;
@@ -804,7 +804,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowNew.Equals(value))
                         return;
@@ -824,7 +824,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowEdit.Equals(value))
                         return;
@@ -844,7 +844,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowRemove.Equals(value))
                         return;
@@ -967,7 +967,7 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (index + length > _lstData.Count)
                     throw new InvalidOperationException(nameof(length));
@@ -1038,7 +1038,7 @@ namespace Chummer
         {
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 T[] aobjSorted = new T[_lstData.Count];
                 for (int i = 0; i < _lstData.Count; ++i)
@@ -1106,7 +1106,7 @@ namespace Chummer
         /// interface implementation of each element.</param>
         public void Sort(IComparer<T> objComparer = null)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 T[] aobjSorted = new T[_lstData.Count];
                 for (int i = 0; i < _lstData.Count; ++i)
@@ -1181,7 +1181,7 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (index + length > _lstData.Count)
                     throw new InvalidOperationException(nameof(length));
@@ -1267,7 +1267,7 @@ namespace Chummer
         {
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 T[] aobjSorted = new T[_lstData.Count];
                 for (int i = 0; i < _lstData.Count; ++i)
@@ -1350,7 +1350,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task SortAsync(IComparer<T> objComparer = null, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 T[] aobjSorted = new T[_lstData.Count];
                 for (int i = 0; i < _lstData.Count; ++i)

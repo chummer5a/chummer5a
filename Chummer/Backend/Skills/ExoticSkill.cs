@@ -132,7 +132,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _strSpecific, value) == value)
@@ -150,7 +150,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask SetSpecificAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _strSpecific, value) == value)

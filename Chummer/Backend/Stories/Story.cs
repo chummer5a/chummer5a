@@ -51,7 +51,7 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        using (LockObject.EnterReadLock())
+                        using (LockObject.EnterUpgradeableReadLock())
                         {
                             _blnNeedToRegeneratePersistents = true;
                             foreach (StoryModule objModule in e.NewItems)
@@ -62,7 +62,7 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        using (LockObject.EnterReadLock())
+                        using (LockObject.EnterUpgradeableReadLock())
                         {
                             _blnNeedToRegeneratePersistents = true;
                             foreach (StoryModule objModule in e.OldItems)
@@ -79,7 +79,7 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        using (LockObject.EnterReadLock())
+                        using (LockObject.EnterUpgradeableReadLock())
                         {
                             _blnNeedToRegeneratePersistents = true;
                             foreach (StoryModule objModule in e.OldItems)
@@ -99,7 +99,7 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        using (LockObject.EnterReadLock())
+                        using (LockObject.EnterUpgradeableReadLock())
                             _blnNeedToRegeneratePersistents = true;
                         break;
                     }

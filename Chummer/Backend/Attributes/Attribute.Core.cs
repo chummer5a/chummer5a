@@ -280,7 +280,7 @@ namespace Chummer.Backend.Attributes
             // DO NOT MAKE THIS NOT PRIVATE! Instead, create improvements to adjust this because that will play nice with ReplaceAttribute improvements
             private set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intMetatypeMin, value) == value)
@@ -350,7 +350,7 @@ namespace Chummer.Backend.Attributes
             // DO NOT MAKE THIS NOT PRIVATE! Instead, create improvements to adjust this because that will play nice with ReplaceAttribute improvements
             private set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intMetatypeMax, value) == value)
@@ -439,7 +439,7 @@ namespace Chummer.Backend.Attributes
             // DO NOT MAKE THIS NOT PRIVATE! Instead, create improvements to adjust this because that will play nice with ReplaceAttribute improvements
             private set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intMetatypeAugMax, value) == value)
@@ -509,7 +509,7 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intBase, value) == value)
@@ -533,7 +533,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intBase, value) == value)
@@ -549,7 +549,7 @@ namespace Chummer.Backend.Attributes
         {
             if (value == 0)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
@@ -622,7 +622,7 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _intKarma, value) == value)
@@ -646,7 +646,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intKarma, value) == value)
@@ -662,7 +662,7 @@ namespace Chummer.Backend.Attributes
         {
             if (value == 0)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
@@ -1747,7 +1747,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
         public void AssignLimits(int intMin, int intMax, int intAug)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 bool blnMinChanged = _intMetatypeMin != intMin;
                 bool blnMaxChanged = _intMetatypeMax != intMax;
@@ -1780,7 +1780,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="token">Cancellation token to listen to.</param>
         public async ValueTask AssignLimitsAsync(int intMin, int intMax, int intAug, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 bool blnMinChanged = _intMetatypeMin != intMin;
                 bool blnMaxChanged = _intMetatypeMax != intMax;
@@ -1820,7 +1820,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
         public void AssignBaseKarmaLimits(int intBase, int intKarma, int intMin, int intMax, int intAug)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 bool blnBaseChanged = _intBase != intBase;
                 bool blnKarmaChanged = _intKarma != intKarma;
@@ -1863,7 +1863,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="token">Cancellation token to listen to.</param>
         public async ValueTask AssignBaseKarmaLimitsAsync(int intBase, int intKarma, int intMin, int intMax, int intAug, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 bool blnBaseChanged = _intBase != intBase;
                 bool blnKarmaChanged = _intKarma != intKarma;
@@ -2744,7 +2744,7 @@ namespace Chummer.Backend.Attributes
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try

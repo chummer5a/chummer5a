@@ -144,7 +144,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
                         return;
@@ -162,7 +162,7 @@ namespace Chummer
 
         public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (_lstData[index].Equals(value))
                     return;
@@ -640,7 +640,7 @@ namespace Chummer
         {
             Utils.RunOnMainThread(() =>
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName));
                 }
