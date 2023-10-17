@@ -47,11 +47,13 @@ namespace Chummer
 
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list. Each lock creates a disposable SafeWriterSemaphoreRelease, and only disposing it frees the lock.
-        private readonly AsyncLocal<Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> _objCurrentWriterSemaphore = new AsyncLocal<Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>();
+        // Because .NET Framework doesn't have dictionary optimizations for dealing with multiple AsyncLocals stored per context, we need scrape together something similar.
+        // Therefore, we store a nested tuple where the first element is the number of active local readers and the second element is the tuple containing our writer lock semaphores
+        // TODO: Revert this cursed bodge once we migrate to a version of .NET that has these AsyncLocal optimizations
+        private readonly AsyncLocal<Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>> _objAsyncLocalCurrentsContainer = new AsyncLocal<Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>>();
 
         private readonly DebuggableSemaphoreSlim _objTopLevelWriterSemaphore = new DebuggableSemaphoreSlim();
 
-        private readonly AsyncLocal<int> _intCountLocalReaders = new AsyncLocal<int>();
         private int _intCountActiveReaders;
         private int _intDisposedStatus;
 
@@ -66,7 +68,7 @@ namespace Chummer
 
             token.ThrowIfCancellationRequested();
             (DebuggableSemaphoreSlim objLastSemaphore, DebuggableSemaphoreSlim objCurrentSemaphore)
-                = _objCurrentWriterSemaphore.Value
+                = _objAsyncLocalCurrentsContainer.Value?.Item2
                   ?? new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore);
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
@@ -75,7 +77,9 @@ namespace Chummer
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
-            _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
+            _objAsyncLocalCurrentsContainer.Value = new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                _objAsyncLocalCurrentsContainer.Value?.Item1 ?? 0,
+                new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore));
             SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objLastSemaphore, objCurrentSemaphore, objNextSemaphore, this);
             try
             {
@@ -83,7 +87,9 @@ namespace Chummer
             }
             catch
             {
-                _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objLastSemaphore, objCurrentSemaphore);
+                _objAsyncLocalCurrentsContainer.Value = new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                    _objAsyncLocalCurrentsContainer.Value?.Item1 ?? 0,
+                    new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objLastSemaphore, objCurrentSemaphore));
                 Utils.SemaphorePool.Return(ref objNextSemaphore);
                 throw;
             }
@@ -92,7 +98,7 @@ namespace Chummer
                 // Wait for the reader lock only if there have been no other write locks before us
                 if (_objTopLevelWriterSemaphore.CurrentCount != 0 || objCurrentSemaphore == _objTopLevelWriterSemaphore)
                 {
-                    if (_intCountLocalReaders.Value == 0)
+                    if (_objAsyncLocalCurrentsContainer.Value.Item1 == 0)
                     {
                         _objReaderSemaphore.SafeWait(token);
                         _objReaderSemaphore.Release();
@@ -100,14 +106,16 @@ namespace Chummer
                     else
                     {
                         // It's OK that this isn't atomic because we should already handle race condition issues by having acquired the writer lock
-                        while (_intCountLocalReaders.Value != _intCountActiveReaders)
+                        while (_objAsyncLocalCurrentsContainer.Value.Item1 != _intCountActiveReaders)
                             Utils.SafeSleep(token);
                     }
                 }
             }
             catch
             {
-                _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objLastSemaphore, objCurrentSemaphore);
+                _objAsyncLocalCurrentsContainer.Value = new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                    _objAsyncLocalCurrentsContainer.Value.Item1,
+                    new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objLastSemaphore, objCurrentSemaphore));
                 try
                 {
                     // ReSharper disable once MethodSupportsCancellation
@@ -139,7 +147,7 @@ namespace Chummer
             if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
             (DebuggableSemaphoreSlim objLastSemaphore, DebuggableSemaphoreSlim objCurrentSemaphore)
-                = _objCurrentWriterSemaphore.Value
+                = _objAsyncLocalCurrentsContainer.Value?.Item2
                   ?? new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore);
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
@@ -148,9 +156,11 @@ namespace Chummer
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
-            _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
+            int intLocalReadersValue = _objAsyncLocalCurrentsContainer.Value?.Item1 ?? 0;
+            _objAsyncLocalCurrentsContainer.Value = new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                intLocalReadersValue,
+                new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore));
             SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objLastSemaphore, objCurrentSemaphore, objNextSemaphore, this);
-            int intLocalReadersValue = _intCountLocalReaders.Value;
             return TakeWriteLockCoreAsync(objCurrentSemaphore, objRelease, intLocalReadersValue);
         }
 
@@ -166,7 +176,7 @@ namespace Chummer
             if (token.IsCancellationRequested)
                 return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
             (DebuggableSemaphoreSlim objLastSemaphore, DebuggableSemaphoreSlim objCurrentSemaphore)
-                = _objCurrentWriterSemaphore.Value
+                = _objAsyncLocalCurrentsContainer.Value?.Item2
                   ?? new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore);
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
@@ -175,9 +185,11 @@ namespace Chummer
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
-            _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
+            int intLocalReadersValue = _objAsyncLocalCurrentsContainer.Value?.Item1 ?? 0;
+            _objAsyncLocalCurrentsContainer.Value = new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                intLocalReadersValue,
+                new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore));
             SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objLastSemaphore, objCurrentSemaphore, objNextSemaphore, this);
-            int intLocalReadersValue = _intCountLocalReaders.Value;
             return TakeWriteLockCoreAsync(objCurrentSemaphore, objRelease, intLocalReadersValue, token);
         }
 
@@ -259,12 +271,17 @@ namespace Chummer
                         throw;
                     }
                 }
-                ++_intCountLocalReaders.Value;
+                Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> objCurrentSemaphoreValue = _objAsyncLocalCurrentsContainer.Value;
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                        objCurrentSemaphoreValue?.Item1 + 1 ?? 1,
+                        objCurrentSemaphoreValue?.Item2 ??
+                        new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore));
                 return new SafeReaderSemaphoreRelease(this);
             }
             token.ThrowIfCancellationRequested();
             // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
-            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objAsyncLocalCurrentsContainer.Value?.Item2.Item2 ?? _objTopLevelWriterSemaphore;
             if (objCurrentSemaphore.CurrentCount != 0)
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -279,7 +296,12 @@ namespace Chummer
                         throw;
                     }
                 }
-                ++_intCountLocalReaders.Value;
+                Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> objCurrentSemaphoreValue = _objAsyncLocalCurrentsContainer.Value;
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                        objCurrentSemaphoreValue?.Item1 + 1 ?? 1,
+                        objCurrentSemaphoreValue?.Item2 ??
+                        new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore));
                 return new SafeReaderSemaphoreRelease(this);
             }
 
@@ -299,7 +321,12 @@ namespace Chummer
                         throw;
                     }
                 }
-                ++_intCountLocalReaders.Value;
+                Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> objCurrentSemaphoreValue = _objAsyncLocalCurrentsContainer.Value;
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                        objCurrentSemaphoreValue?.Item1 + 1 ?? 1,
+                        objCurrentSemaphoreValue?.Item2 ??
+                        new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore));
                 return new SafeReaderSemaphoreRelease(this);
             }
             finally
@@ -322,12 +349,13 @@ namespace Chummer
                 return Task.FromResult<IDisposable>(null);
             }
             // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
-            ++_intCountLocalReaders.Value;
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (_objTopLevelWriterSemaphore.CurrentCount != 0)
-                return TakeReadLockCoreLightAsync();
-            // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
-            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
+            Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> objCurrentSemaphoreValue = _objAsyncLocalCurrentsContainer.Value;
+            _objAsyncLocalCurrentsContainer.Value =
+                new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                    objCurrentSemaphoreValue?.Item1 + 1 ?? 1,
+                    objCurrentSemaphoreValue?.Item2 ??
+                    new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore));
+            DebuggableSemaphoreSlim objCurrentSemaphore = objCurrentSemaphoreValue?.Item2.Item2 ?? _objTopLevelWriterSemaphore;
             return objCurrentSemaphore.CurrentCount != 0
                 ? TakeReadLockCoreLightAsync()
                 : TakeReadLockCoreAsync(objCurrentSemaphore);
@@ -350,13 +378,21 @@ namespace Chummer
                 return Task.FromException<IDisposable>(new OperationCanceledException(token));
             // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
             // To undo this change in case the request is canceled, we will register a callback that will only be disposed at the end of the async methods
-            CancellationTokenRegistration objLocalReaderUndo = token.Register(x => --_intCountLocalReaders.Value, true);
-            ++_intCountLocalReaders.Value;
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (_objTopLevelWriterSemaphore.CurrentCount != 0)
-                return TakeReadLockCoreLightAsync(objLocalReaderUndo, token);
-            // Check the top writer first to avoid unnecessary AsyncLocal copy-on-write calls
-            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
+            Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> objCurrentSemaphoreValue = _objAsyncLocalCurrentsContainer.Value;
+            _objAsyncLocalCurrentsContainer.Value =
+                new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                    objCurrentSemaphoreValue?.Item1 + 1 ?? 1,
+                    objCurrentSemaphoreValue?.Item2 ??
+                    new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore));
+            CancellationTokenRegistration objLocalReaderUndo = token.Register(x =>
+            {
+                Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> objInnerCurrentSemaphoreValue =
+                    _objAsyncLocalCurrentsContainer.Value;
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                        objInnerCurrentSemaphoreValue.Item1 - 1, objInnerCurrentSemaphoreValue.Item2);
+            }, true);
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objAsyncLocalCurrentsContainer.Value?.Item2.Item2 ?? _objTopLevelWriterSemaphore;
             return objCurrentSemaphore.CurrentCount != 0
                 ? TakeReadLockCoreLightAsync(objLocalReaderUndo, token)
                 : TakeReadLockCoreAsync(objCurrentSemaphore, objLocalReaderUndo, token);
@@ -491,13 +527,18 @@ namespace Chummer
             }
             if (Interlocked.Decrement(ref _intCountActiveReaders) == 0)
                 _objReaderSemaphore.Release();
-            --_intCountLocalReaders.Value;
+            Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> objCurrentSemaphoreValue = _objAsyncLocalCurrentsContainer.Value;
+            _objAsyncLocalCurrentsContainer.Value =
+                new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                    objCurrentSemaphoreValue?.Item1 - 1 ?? 0,
+                    objCurrentSemaphoreValue?.Item2 ??
+                    new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore));
         }
 
         /// <summary>
         /// Are there any async locks held below this one?
         /// </summary>
-        public bool IsWriteLockHeldRecursively => IsWriteLockHeld && _objCurrentWriterSemaphore.Value.Item1 != null;
+        public bool IsWriteLockHeldRecursively => IsWriteLockHeld && _objAsyncLocalCurrentsContainer.Value?.Item2.Item1 != null;
 
         /// <summary>
         /// Is there anything holding the lock?
@@ -609,7 +650,7 @@ namespace Chummer
                 if (_objReaderWriterLock._intDisposedStatus > 1)
                     throw new ObjectDisposedException(nameof(_objReaderWriterLock));
                 (DebuggableSemaphoreSlim objCurrentSemaphoreSlim, DebuggableSemaphoreSlim objNextSemaphoreSlim)
-                    = _objReaderWriterLock._objCurrentWriterSemaphore.Value;
+                    = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value.Item2;
                 if (_objNextSemaphore != objNextSemaphoreSlim)
                 {
                     if (objNextSemaphoreSlim == null)
@@ -640,7 +681,9 @@ namespace Chummer
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the
                 // update will happen in a copy of the ExecutionContext and the caller
                 // won't see the changes.
-                _objReaderWriterLock._objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(_objLastSemaphore, objCurrentSemaphoreSlim);
+                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value = new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                    _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value.Item1,
+                    new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(_objLastSemaphore, objCurrentSemaphoreSlim));
 
                 return DisposeCoreAsync();
             }
@@ -676,7 +719,7 @@ namespace Chummer
                 if (_objReaderWriterLock._intDisposedStatus > 1)
                     throw new ObjectDisposedException(nameof(_objReaderWriterLock));
                 (DebuggableSemaphoreSlim objCurrentSemaphoreSlim, DebuggableSemaphoreSlim objNextSemaphoreSlim)
-                    = _objReaderWriterLock._objCurrentWriterSemaphore.Value;
+                    = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value.Item2;
                 if (_objNextSemaphore != objNextSemaphoreSlim)
                 {
                     if (objNextSemaphoreSlim == null)
@@ -704,7 +747,9 @@ namespace Chummer
                         "_objCurrentSemaphore was expected to be the previous semaphore");
                 }
 
-                _objReaderWriterLock._objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(_objLastSemaphore, objCurrentSemaphoreSlim);
+                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value = new Tuple<int, Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>(
+                    _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value.Item1,
+                    new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(_objLastSemaphore, objCurrentSemaphoreSlim));
 
                 if (_objCurrentSemaphore.CurrentCount == 0)
                 {
