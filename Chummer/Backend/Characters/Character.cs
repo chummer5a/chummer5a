@@ -3118,11 +3118,11 @@ namespace Chummer
                 }
             }
 
+            bool blnErrorFree = true;
+
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                bool blnErrorFree = true;
-
                 if (blnSync)
                     DoSave();
                 else
@@ -4616,7 +4616,10 @@ namespace Chummer
                         await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, FileName, token)
                                             .ConfigureAwait(false);
                 }
+            }
 
+            using (blnSync ? LockObject.EnterUpgradeableReadLock(token) : await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
                 if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverload
@@ -4775,9 +4778,9 @@ namespace Chummer
                         }
                     }
                 }
-
-                return blnErrorFree;
             }
+
+            return blnErrorFree;
         }
 
         /// <summary>
@@ -11122,6 +11125,8 @@ namespace Chummer
                 if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
                     _objSettings.Dispose();
                 _objCachedEssenceLock.Dispose();
+                _objCachedSourceDetailLock.Dispose();
+                _objCachedPowerPointsUsedLock.Dispose();
                 _objTradition.Dispose();
                 if (_lstCachedContactArchetypes != null)
                     Utils.ListItemListPool.Return(ref _lstCachedContactArchetypes);
@@ -11219,6 +11224,8 @@ namespace Chummer
                            .ContainsKeyAsync(await _objSettings.GetDictionaryKeyAsync().ConfigureAwait(false)).ConfigureAwait(false))
                     await _objSettings.DisposeAsync().ConfigureAwait(false);
                 await _objCachedEssenceLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedSourceDetailLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedPowerPointsUsedLock.DisposeAsync().ConfigureAwait(false);
                 await _objTradition.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedContactArchetypes != null)
                     Utils.ListItemListPool.Return(ref _lstCachedContactArchetypes);
@@ -18570,16 +18577,26 @@ namespace Chummer
 
         private decimal _decCachedPowerPointsUsed = decimal.MinValue;
 
+        private readonly AsyncFriendlyReaderWriterLock _objCachedPowerPointsUsedLock =
+            new AsyncFriendlyReaderWriterLock();
+
         public decimal PowerPointsUsed
         {
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedPowerPointsUsedLock.EnterUpgradeableReadLock())
                 {
                     decimal decReturn = _decCachedPowerPointsUsed;
                     if (decReturn != decimal.MinValue)
                         return decReturn;
-                    return _decCachedPowerPointsUsed = Powers.Sum(objPower => objPower.PowerPoints);
+                    using (_objCachedPowerPointsUsedLock.EnterWriteLock())
+                    {
+                        decReturn = _decCachedPowerPointsUsed;
+                        if (decReturn != decimal.MinValue)
+                            return decReturn;
+                        return _decCachedPowerPointsUsed = Powers.Sum(objPower => objPower.PowerPoints);
+                    }
                 }
             }
         }
@@ -18587,14 +18604,29 @@ namespace Chummer
         public async ValueTask<decimal> GetPowerPointsUsedAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedPowerPointsUsedLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 decimal decReturn = _decCachedPowerPointsUsed;
                 if (decReturn != decimal.MinValue)
                     return decReturn;
-                return _decCachedPowerPointsUsed = await (await GetPowersAsync(token).ConfigureAwait(false))
-                                                         .SumAsync(
-                                                             objPower => objPower.GetPowerPointsAsync(token).AsTask(),
-                                                             token).ConfigureAwait(false);
+                IAsyncDisposable objLocker =
+                    await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    decReturn = _decCachedPowerPointsUsed;
+                    if (decReturn != decimal.MinValue)
+                        return decReturn;
+                    return _decCachedPowerPointsUsed = await (await GetPowersAsync(token).ConfigureAwait(false))
+                        .SumAsync(
+                            objPower => objPower.GetPowerPointsAsync(token).AsTask(),
+                            token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -39128,6 +39160,7 @@ namespace Chummer
         #region Source
 
         private SourceString _objCachedSourceDetail;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedSourceDetailLock = new AsyncFriendlyReaderWriterLock();
         private readonly SkillsSection _objSkillsSection;
         private readonly AttributeSection _objAttributeSection;
         private readonly ConcurrentHashSet<Func<CancellationToken, bool>> _setPostLoadMethods = new ConcurrentHashSet<Func<CancellationToken, bool>>();
@@ -39139,17 +39172,32 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (_objCachedSourceDetail == default || _objCachedSourceDetail.Language != GlobalSettings.Language)
+                    if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                                DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
-                                GlobalSettings.CultureInfo,
-                                this);
-                        }
+                        return _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                            DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
+                            GlobalSettings.CultureInfo,
+                            this);
                     }
-                    return _objCachedSourceDetail;
+
+                    using (_objCachedSourceDetailLock.EnterUpgradeableReadLock())
+                    {
+                        if (_objCachedSourceDetail == default)
+                        {
+                            using (_objCachedSourceDetailLock.EnterWriteLock())
+                            {
+                                if (_objCachedSourceDetail == default)
+                                {
+                                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
+                                        GlobalSettings.CultureInfo,
+                                        this);
+                                }
+                            }
+                        }
+
+                        return _objCachedSourceDetail;
+                    }
                 }
             }
         }

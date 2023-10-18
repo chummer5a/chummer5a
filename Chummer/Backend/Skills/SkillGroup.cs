@@ -88,6 +88,7 @@ namespace Chummer.Backend.Skills
                 _objCachedKarmaUnbrokenLock.Dispose();
                 _objCachedIsDisabledLock.Dispose();
                 _objCachedHasAnyBreakingSkillsLock.Dispose();
+                _objCachedToolTipLock.Dispose();
             }
             LockObject.Dispose();
         }
@@ -157,10 +158,11 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                await _objCachedBaseUnbrokenLock.DisposeAsync();
-                await _objCachedKarmaUnbrokenLock.DisposeAsync();
-                await _objCachedIsDisabledLock.DisposeAsync();
-                await _objCachedHasAnyBreakingSkillsLock.DisposeAsync();
+                await _objCachedBaseUnbrokenLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedKarmaUnbrokenLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedIsDisabledLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedHasAnyBreakingSkillsLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedToolTipLock.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
@@ -1112,7 +1114,7 @@ namespace Chummer.Backend.Skills
         {
             if (objSkill == null)
                 return null;
-            using (objSkill.LockObject.EnterReadLock())
+            using (objSkill.LockObject.EnterUpgradeableReadLock())
             {
                 if (objSkill.SkillGroupObject != null)
                     return objSkill.SkillGroupObject;
@@ -1150,7 +1152,7 @@ namespace Chummer.Backend.Skills
         {
             if (objSkill == null)
                 return null;
-            using (await objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await objSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (objSkill.SkillGroupObject != null)
                     return objSkill.SkillGroupObject;
@@ -1612,20 +1614,22 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private string _strToolTip = string.Empty;
+        private string _strCachedToolTip = string.Empty;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedToolTipLock = new AsyncFriendlyReaderWriterLock();
 
         public string ToolTip
         {
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedToolTipLock.EnterUpgradeableReadLock())
                 {
-                    if (!string.IsNullOrEmpty(_strToolTip))
-                        return _strToolTip;
-                    using (LockObject.EnterWriteLock())
+                    if (!string.IsNullOrEmpty(_strCachedToolTip))
+                        return _strCachedToolTip;
+                    using (_objCachedToolTipLock.EnterWriteLock())
                     {
-                        if (!string.IsNullOrEmpty(_strToolTip)) // Just in case
-                            return _strToolTip;
+                        if (!string.IsNullOrEmpty(_strCachedToolTip)) // Just in case
+                            return _strCachedToolTip;
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdTooltip))
                         {
@@ -1651,7 +1655,7 @@ namespace Chummer.Backend.Skills
                                 }
                             }
 
-                            return _strToolTip = sbdTooltip.ToString();
+                            return _strCachedToolTip = sbdTooltip.ToString();
                         }
                     }
                 }
@@ -1661,15 +1665,16 @@ namespace Chummer.Backend.Skills
         public async ValueTask<string> GetToolTipAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedToolTipLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                if (!string.IsNullOrEmpty(_strToolTip))
-                    return _strToolTip;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(_strCachedToolTip))
+                    return _strCachedToolTip;
+                IAsyncDisposable objLocker = await _objCachedToolTipLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (!string.IsNullOrEmpty(_strToolTip)) // Just in case
-                        return _strToolTip;
+                    if (!string.IsNullOrEmpty(_strCachedToolTip)) // Just in case
+                        return _strCachedToolTip;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdTooltip))
                     {
@@ -1709,7 +1714,7 @@ namespace Chummer.Backend.Skills
                             }
                         }
 
-                        return _strToolTip = sbdTooltip.ToString();
+                        return _strCachedToolTip = sbdTooltip.ToString();
                     }
                 }
                 finally
@@ -1890,7 +1895,7 @@ namespace Chummer.Backend.Skills
                         if (setNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
                             _intCachedBaseUnbroken = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
-                            _strToolTip = string.Empty;
+                            _strCachedToolTip = string.Empty;
                         if (setNamesOfChangedProperties.Contains(nameof(HasAnyBreakingSkills)))
                         {
                             _intCachedHasAnyBreakingSkills = int.MinValue;

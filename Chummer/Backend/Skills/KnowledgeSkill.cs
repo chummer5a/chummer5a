@@ -31,12 +31,14 @@ namespace Chummer.Backend.Skills
     public class KnowledgeSkill : Skill
     {
         private ReadOnlyDictionary<string, string> _dicCategoriesSkillMap;  //Categories to their attribute
+        private readonly AsyncFriendlyReaderWriterLock _objCategoriesSkillMapLock = new AsyncFriendlyReaderWriterLock();
 
         private IReadOnlyDictionary<string, string> CategoriesSkillMap
         {
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCategoriesSkillMapLock.EnterUpgradeableReadLock())
                 {
                     if (GlobalSettings.LiveCustomData)
                     {
@@ -58,7 +60,7 @@ namespace Chummer.Backend.Skills
                     }
                     if (_dicCategoriesSkillMap == null)
                     {
-                        using (LockObject.EnterWriteLock())
+                        using (_objCategoriesSkillMapLock.EnterWriteLock())
                         {
                             if (_dicCategoriesSkillMap == null)
                             {
@@ -91,6 +93,7 @@ namespace Chummer.Backend.Skills
         private async ValueTask<IReadOnlyDictionary<string, string>> GetCategoriesSkillMapAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCategoriesSkillMapLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 if (GlobalSettings.LiveCustomData)
                 {
@@ -113,7 +116,7 @@ namespace Chummer.Backend.Skills
 
                 if (_dicCategoriesSkillMap == null)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCategoriesSkillMapLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1322,6 +1325,24 @@ namespace Chummer.Backend.Skills
 
                 _intIsNativeLanguage = blnTemp.ToInt32();
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _objCategoriesSkillMapLock.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await _objCategoriesSkillMapLock.DisposeAsync().ConfigureAwait(false);
+            }
+            await base.DisposeAsync(disposing).ConfigureAwait(false);
         }
     }
 }
