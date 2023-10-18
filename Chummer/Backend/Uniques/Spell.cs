@@ -365,7 +365,7 @@ namespace Chummer
                           .WriteElementStringAsync(
                               "dv", await DisplayDvAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                           .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("dv_english", DV, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("dv_english", CalculatedDv, token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo),
                                                    token).ConfigureAwait(false);
