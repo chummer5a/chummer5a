@@ -264,14 +264,24 @@ namespace Chummer.Tests
         public void Test05_LoadThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Test05_LoadThenSaveIsDeterministic()");
+            // Two separate loops because it's slightly faster this way
+            List<string> lstBaseFileNames = new List<string>();
             foreach (Character objCharacterControl in GetTestCharacters())
             {
-                string strFileName = Path.GetFileName(objCharacterControl.FileName) ?? LanguageManager.GetString("String_Unknown");
-                Debug.WriteLine("Checking " + strFileName);
+                string strFileName = Path.GetFileName(objCharacterControl.FileName) ??
+                                     LanguageManager.GetString("String_Unknown");
+                Debug.WriteLine("Saving Control for " + strFileName);
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
                 SaveCharacter(objCharacterControl, strDestinationControl);
+                lstBaseFileNames.Add(strFileName);
+            }
+
+            foreach (string strFileName in lstBaseFileNames)
+            {
+                Debug.WriteLine("Checking " + strFileName);
                 // Second Load-Save cycle
+                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
                 string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + strFileName);
                 using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
                 {

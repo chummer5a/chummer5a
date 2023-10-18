@@ -1176,7 +1176,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             using (await _objCachedPowerPointsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                if (_decCachedPowerPoints != int.MinValue)
+                if (_decCachedPowerPoints != decimal.MinValue)
                     return _decCachedPowerPoints;
 
                 IAsyncDisposable objLocker =
@@ -1184,7 +1184,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_decCachedPowerPoints != int.MinValue)
+                    if (_decCachedPowerPoints != decimal.MinValue)
                         return _decCachedPowerPoints;
                     int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
                     int intRating = await GetRatingAsync(token).ConfigureAwait(false);

@@ -4926,6 +4926,7 @@ namespace Chummer.Backend.Skills
         // ReSharper disable once InconsistentNaming
         private int _intCachedCyberwareRating = int.MinValue;
 
+        [CLSCompliant(false)]
         protected readonly AsyncFriendlyReaderWriterLock _objCachedCyberwareRatingLock =
             new AsyncFriendlyReaderWriterLock();
 

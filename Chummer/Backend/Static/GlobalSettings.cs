@@ -94,6 +94,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strPath">Path to the file.</param>
         /// <param name="objPdfReader">PdfReader object associated with the file.</param>
+        [CLSCompliant(false)]
         public SourcebookInfo(string strPath, PdfReader objPdfReader)
         {
             if (string.IsNullOrEmpty(strPath))
@@ -108,6 +109,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strPath">Path to the file.</param>
         /// <param name="objPdfDocument">PdfDocument object associated with the file.</param>
+        [CLSCompliant(false)]
         public SourcebookInfo(string strPath, PdfDocument objPdfDocument)
         {
             if (string.IsNullOrEmpty(strPath))
@@ -124,6 +126,7 @@ namespace Chummer
         /// <param name="objPdfReader">PdfReader object associated with the file.</param>
         /// <param name="objPdfDocument">PdfDocument object associated with the file.</param>
         /// <exception cref="ArgumentException"><paramref name="objPdfDocument"/>'s associated reader is not the same value as<paramref name="objPdfReader"/>.</exception>
+        [CLSCompliant(false)]
         public SourcebookInfo(string strPath, PdfReader objPdfReader, PdfDocument objPdfDocument)
         {
             if (string.IsNullOrEmpty(strPath))
