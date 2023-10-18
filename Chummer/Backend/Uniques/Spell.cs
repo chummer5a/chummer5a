@@ -334,6 +334,7 @@ namespace Chummer
                           .WriteElementStringAsync("descriptors",
                                                    await DisplayDescriptorsAsync(strLanguageToPrint, token)
                                                        .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("descriptors_english", Descriptors, token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync(
                               "category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false),
@@ -343,23 +344,28 @@ namespace Chummer
                           .WriteElementStringAsync(
                               "type", await DisplayTypeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                           .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type_english", Type, token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync(
                               "range", await DisplayRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                           .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("range_english", Range, token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync(
                               "damage", await DisplayDamageAsync(strLanguageToPrint, token).ConfigureAwait(false),
                               token)
                           .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("damage_english", Damage, token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync(
                               "duration", await DisplayDurationAsync(strLanguageToPrint, token).ConfigureAwait(false),
                               token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("duration_english", Duration, token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync(
                               "dv", await DisplayDvAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                           .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("dv_english", DV, token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo),
                                                    token).ConfigureAwait(false);
