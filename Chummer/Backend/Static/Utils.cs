@@ -460,7 +460,7 @@ namespace Chummer
 
         public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(CurrentChummerVersion) ?? 0;
 
-        private static ThreadLocal<Stopwatch> s_objThreadStopwatch = new ThreadLocal<Stopwatch>(() => new Stopwatch());
+        private static readonly ThreadLocal<Stopwatch> s_objThreadStopwatch = new ThreadLocal<Stopwatch>(() => new Stopwatch());
 
         public const int DefaultSleepDuration = 1;
 

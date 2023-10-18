@@ -19,7 +19,7 @@
 
 // Uncomment this define to control whether or not write locks check if they have been called from within a non-upgradeable read lock.
 #if DEBUG
-#define UPGRADEABLEREADLOCKCHECK
+//#define UPGRADEABLEREADLOCKCHECK
 #endif
 
 using System;
