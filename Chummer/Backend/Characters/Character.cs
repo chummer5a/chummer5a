@@ -31085,8 +31085,6 @@ namespace Chummer
                                 lstSeekerImprovements.Remove(objImprovement);
                             }
                         }
-                        if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
-                            return true;
                     }
 
                     //Improvement manager defines the functions needed to manipulate improvements
@@ -31199,9 +31197,6 @@ namespace Chummer
                                 lstSeekerImprovements.Remove(objImprovement);
                             }
                         }
-
-                        if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
-                            return true;
                     }
 
                     //Improvement manager defines the functions needed to manipulate improvements

@@ -2167,36 +2167,46 @@ namespace Chummer.Backend.Skills
                                 && _objCharacter.SkillsSection
                                 == this) // repeat check to avoid redoing calculations if another thread read Skills before first one acquired write lock
                             {
-                                XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
-                                using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
-                                                        + _objCharacter.Settings.BookXPath() + ')'
-                                                        + SkillFilter(FilterOption.NonSpecial) + ']'))
+                                _lstSkills.RaiseListChangedEvents = false;
+                                try
                                 {
-                                    if (xmlSkillList?.Count > 0)
+                                    XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
+                                    using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                                               .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
+                                                            + _objCharacter.Settings.BookXPath() + ')'
+                                                            + SkillFilter(FilterOption.NonSpecial) + ']'))
                                     {
-                                        foreach (XmlNode xmlSkill in xmlSkillList)
+                                        if (xmlSkillList?.Count > 0)
                                         {
-                                            bool blnIsKnowledgeSkill
-                                                = xmlSkillsDocument
-                                                  .SelectSingleNodeAndCacheExpressionAsNavigator("/chummer/categories/category[. = "
-                                                                    + xmlSkill["category"]?.InnerText.CleanXPath()
-                                                                    + "]/@type")
-                                                  ?.Value
-                                                  != "active";
-                                            Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
-                                                                            blnIsKnowledgeSkill);
-                                            string strKey = objSkill.DictionaryKey;
-                                            if (_dicSkills.TryAdd(strKey, objSkill))
-                                                _lstSkills.Add(objSkill);
-                                            else if (_dicSkills.TryGetValue(strKey, out Skill objExistingSkill))
-                                                MergeSkills(objExistingSkill, objSkill);
-                                            else
-                                                Utils.BreakIfDebug();
+                                            foreach (XmlNode xmlSkill in xmlSkillList)
+                                            {
+                                                bool blnIsKnowledgeSkill
+                                                    = xmlSkillsDocument
+                                                          .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                              "/chummer/categories/category[. = "
+                                                              + xmlSkill["category"]?.InnerText.CleanXPath()
+                                                              + "]/@type")
+                                                          ?.Value
+                                                      != "active";
+                                                Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
+                                                    blnIsKnowledgeSkill);
+                                                string strKey = objSkill.DictionaryKey;
+                                                if (_dicSkills.TryAdd(strKey, objSkill))
+                                                    _lstSkills.Add(objSkill);
+                                                else if (_dicSkills.TryGetValue(strKey, out Skill objExistingSkill))
+                                                    MergeSkills(objExistingSkill, objSkill);
+                                                else
+                                                    Utils.BreakIfDebug();
+                                            }
                                         }
                                     }
+
+                                    _lstSkills.Sort(CompareSkills);
                                 }
-                                _lstSkills.Sort(CompareSkills);
+                                finally
+                                {
+                                    _lstSkills.RaiseListChangedEvents = true;
+                                }
 
                                 _blnSkillsInitialized = true;
                             }
@@ -2231,47 +2241,58 @@ namespace Chummer.Backend.Skills
                             XmlDocument xmlSkillsDocument = await _objCharacter
                                                                   .LoadDataAsync("skills.xml", token: token)
                                                                   .ConfigureAwait(false);
-                            using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                                       .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
-                                                    + await (await _objCharacter.GetSettingsAsync(token)
-                                                            .ConfigureAwait(false)).BookXPathAsync(token: token)
-                                                        .ConfigureAwait(false) + ')'
-                                                    + SkillFilter(FilterOption.NonSpecial) + ']'))
+                            _lstSkills.RaiseListChangedEvents = false;
+                            try
                             {
-                                if (xmlSkillList?.Count > 0)
+                                using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
+                                                        + await (await _objCharacter.GetSettingsAsync(token)
+                                                                .ConfigureAwait(false)).BookXPathAsync(token: token)
+                                                            .ConfigureAwait(false) + ')'
+                                                        + SkillFilter(FilterOption.NonSpecial) + ']'))
                                 {
-                                    foreach (XmlNode xmlSkill in xmlSkillList)
+                                    if (xmlSkillList?.Count > 0)
                                     {
-                                        bool blnIsKnowledgeSkill
-                                            = (await xmlSkillsDocument
-                                                  .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("/chummer/categories/category[. = "
-                                                      + xmlSkill["category"]?.InnerText.CleanXPath()
-                                                      + "]/@type", token).ConfigureAwait(false))
-                                              ?.Value
-                                              != "active";
-                                        Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
-                                                                        blnIsKnowledgeSkill);
-                                        string strKey = await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                                        if (await _dicSkills.TryAddAsync(strKey, objSkill, token).ConfigureAwait(false))
+                                        foreach (XmlNode xmlSkill in xmlSkillList)
                                         {
-                                            await _lstSkills.AddAsync(objSkill, token).ConfigureAwait(false);
-                                        }
-                                        else
-                                        {
-                                            (bool blnSuccess, Skill objExistingSkill) =
-                                                await _dicSkills.TryGetValueAsync(strKey,
-                                                    token).ConfigureAwait(false);
-                                            if (blnSuccess)
-                                                await MergeSkillsAsync(objExistingSkill,
-                                                    objSkill, token).ConfigureAwait(false);
+                                            bool blnIsKnowledgeSkill
+                                                = (await xmlSkillsDocument
+                                                      .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                          "/chummer/categories/category[. = "
+                                                          + xmlSkill["category"]?.InnerText.CleanXPath()
+                                                          + "]/@type", token).ConfigureAwait(false))
+                                                  ?.Value
+                                                  != "active";
+                                            Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
+                                                blnIsKnowledgeSkill);
+                                            string strKey = await objSkill.GetDictionaryKeyAsync(token)
+                                                .ConfigureAwait(false);
+                                            if (await _dicSkills.TryAddAsync(strKey, objSkill, token)
+                                                    .ConfigureAwait(false))
+                                            {
+                                                await _lstSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                            }
                                             else
-                                                Utils.BreakIfDebug();
+                                            {
+                                                (bool blnSuccess, Skill objExistingSkill) =
+                                                    await _dicSkills.TryGetValueAsync(strKey,
+                                                        token).ConfigureAwait(false);
+                                                if (blnSuccess)
+                                                    await MergeSkillsAsync(objExistingSkill,
+                                                        objSkill, token).ConfigureAwait(false);
+                                                else
+                                                    Utils.BreakIfDebug();
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            await _lstSkills.SortAsync(CompareSkills, token).ConfigureAwait(false);
+                                await _lstSkills.SortAsync(CompareSkills, token).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                _lstSkills.RaiseListChangedEvents = true;
+                            }
 
                             _blnSkillsInitialized = true;
                         }
