@@ -113,24 +113,21 @@ namespace Chummer
             }
             try
             {
-                // Wait for the reader lock only if there have been no other write locks before us
-                if (_objTopLevelWriterSemaphore.CurrentCount != 0 || objCurrentSemaphore == _objTopLevelWriterSemaphore)
+                // Wait for existing reader locks to finish and exit
+                if (intCountLocalReaders == 0)
                 {
-                    if (intCountLocalReaders == 0)
-                    {
-                        _objReaderSemaphore.SafeWait(token);
-                        _objReaderSemaphore.Release();
-                    }
-                    else
-                    {
-                        // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                        while (intCountLocalReaders < _intCountActiveReaders)
-                            Utils.SafeSleep(token);
+                    _objReaderSemaphore.SafeWait(token);
+                    _objReaderSemaphore.Release();
+                }
+                else
+                {
+                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
+                    while (intCountLocalReaders < _intCountActiveReaders)
+                        Utils.SafeSleep(token);
 #if DEBUG
-                        if (intCountLocalReaders > _intCountActiveReaders)
-                            Utils.BreakIfDebug();
+                    if (intCountLocalReaders > _intCountActiveReaders)
+                        Utils.BreakIfDebug();
 #endif
-                    }
                 }
             }
             catch
@@ -234,24 +231,21 @@ namespace Chummer
         private async Task<IAsyncDisposable> TakeWriteLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, SafeWriterSemaphoreRelease objRelease, int intCountLocalReaders)
         {
             await objCurrentSemaphore.WaitAsync().ConfigureAwait(false);
-            // Wait for the reader lock only if there have been no other write locks before us
-            if (_objTopLevelWriterSemaphore.CurrentCount != 0 || objCurrentSemaphore == _objTopLevelWriterSemaphore)
+            // Wait for existing reader locks to finish and exit
+            if (intCountLocalReaders == 0)
             {
-                if (intCountLocalReaders == 0)
-                {
-                    await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
-                    _objReaderSemaphore.Release();
-                }
-                else
-                {
-                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                    while (intCountLocalReaders < _intCountActiveReaders)
-                        await Utils.SafeSleepAsync().ConfigureAwait(false);
+                await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
+                _objReaderSemaphore.Release();
+            }
+            else
+            {
+                // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
+                while (intCountLocalReaders < _intCountActiveReaders)
+                    await Utils.SafeSleepAsync().ConfigureAwait(false);
 #if DEBUG
-                    if (intCountLocalReaders > _intCountActiveReaders)
-                        Utils.BreakIfDebug();
+                if (intCountLocalReaders > _intCountActiveReaders)
+                    Utils.BreakIfDebug();
 #endif
-                }
             }
             return objRelease;
         }
@@ -261,24 +255,21 @@ namespace Chummer
             try
             {
                 await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
-                // Wait for the reader lock only if there have been no other write locks before us
-                if (_objTopLevelWriterSemaphore.CurrentCount != 0 || objCurrentSemaphore == _objTopLevelWriterSemaphore)
+                // Wait for existing reader locks to finish and exit
+                if (intCountLocalReaders == 0)
                 {
-                    if (intCountLocalReaders == 0)
-                    {
-                        await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                        _objReaderSemaphore.Release();
-                    }
-                    else
-                    {
-                        // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                        while (intCountLocalReaders < _intCountActiveReaders)
-                            await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                    await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    _objReaderSemaphore.Release();
+                }
+                else
+                {
+                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
+                    while (intCountLocalReaders < _intCountActiveReaders)
+                        await Utils.SafeSleepAsync(token).ConfigureAwait(false);
 #if DEBUG
-                        if (intCountLocalReaders > _intCountActiveReaders)
-                            Utils.BreakIfDebug();
+                    if (intCountLocalReaders > _intCountActiveReaders)
+                        Utils.BreakIfDebug();
 #endif
-                    }
                 }
             }
             catch (OperationCanceledException)
@@ -309,28 +300,8 @@ namespace Chummer
                 _objAsyncLocalCurrentsContainer.Value;
             if (objAsyncLocals != null)
                 (intCountLocalReaders, objLastSemaphore, objCurrentSemaphore) = objAsyncLocals;
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (_objTopLevelWriterSemaphore.CurrentCount != 0)
-            {
-                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
-                {
-                    try
-                    {
-                        _objReaderSemaphore.SafeWait(token);
-                    }
-                    catch
-                    {
-                        Interlocked.Decrement(ref _intCountActiveReaders);
-                        throw;
-                    }
-                }
-
-                _objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(intCountLocalReaders + 1,
-                        objLastSemaphore, objCurrentSemaphore);
-                return new SafeUpgradeableReaderSemaphoreRelease(this);
-            }
             token.ThrowIfCancellationRequested();
+            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (objCurrentSemaphore.CurrentCount != 0)
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)

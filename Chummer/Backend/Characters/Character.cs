@@ -14778,19 +14778,22 @@ namespace Chummer
                         {
                             if (ReferenceEquals(objOldSettings, value))
                                 return;
-                            bool blnActuallyDifferentSettings = true;
-                            if (objOldSettings != null)
-                            {
-                                blnActuallyDifferentSettings = !objOldSettings.HasIdenticalSettings(value);
-                                using (objOldSettings.LockObject.EnterWriteLock())
-                                    objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
-                            }
-
-                            if (value != null)
-                            {
-                                using (value.LockObject.EnterWriteLock())
-                                    value.PropertyChanged += OptionsOnPropertyChanged;
-                            }
+                            bool blnActuallyDifferentSettings = objOldSettings?.HasIdenticalSettings(value) != false;
+                            Utils.RunWithoutThreadLock(
+                                () =>
+                                {
+                                    if (objOldSettings == null)
+                                        return;
+                                    using (objOldSettings.LockObject.EnterWriteLock())
+                                        objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                                },
+                                () =>
+                                {
+                                    if (value == null)
+                                        return;
+                                    using (value.LockObject.EnterWriteLock())
+                                        value.PropertyChanged += OptionsOnPropertyChanged;
+                                });
 
                             if (!blnActuallyDifferentSettings || IsLoading)
                                 return;

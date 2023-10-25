@@ -1086,7 +1086,8 @@ namespace Chummer
             }, token);
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), objGetterToken);
-            if (objDataSource is IHasLockObject objHasLock)
+            IHasLockObject objHasLock = objDataSource as IHasLockObject;
+            if (objHasLock != null)
             {
                 try
                 {
@@ -1102,11 +1103,11 @@ namespace Chummer
                 objDataSource.PropertyChanged += OnPropertyChangedAsync;
             Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
             {
-                if (objDataSource is IHasLockObject objHasLock2)
+                if (objHasLock != null)
                 {
                     try
                     {
-                        using (objHasLock2.LockObject.EnterWriteLock())
+                        using (objHasLock.LockObject.EnterWriteLock())
                             objDataSource.PropertyChanged -= OnPropertyChangedAsync;
                     }
                     catch (ObjectDisposedException)
@@ -1158,7 +1159,8 @@ namespace Chummer
             }, token).ConfigureAwait(false);
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
             await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), objGetterToken).ConfigureAwait(false);
-            if (objDataSource is IHasLockObject objHasLock)
+            IHasLockObject objHasLock = objDataSource as IHasLockObject;
+            if (objHasLock != null)
             {
                 try
                 {
@@ -1182,11 +1184,11 @@ namespace Chummer
                 objDataSource.PropertyChanged += OnPropertyChangedAsync;
             await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) =>
             {
-                if (objDataSource is IHasLockObject objHasLock2)
+                if (objHasLock != null)
                 {
                     try
                     {
-                        using (objHasLock2.LockObject.EnterWriteLock())
+                        using (objHasLock.LockObject.EnterWriteLock())
                             objDataSource.PropertyChanged -= OnPropertyChangedAsync;
                     }
                     catch (ObjectDisposedException)
