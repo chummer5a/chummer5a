@@ -466,6 +466,7 @@ namespace Chummer.Backend.Equipment
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!AllowPrint)
                     return;
                 // <quality>
@@ -705,6 +706,7 @@ namespace Chummer.Backend.Equipment
                 return Page;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
@@ -808,6 +810,7 @@ namespace Chummer.Backend.Equipment
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
@@ -845,6 +848,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(Extra))
@@ -887,6 +891,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                        .ConfigureAwait(false);
@@ -1322,6 +1327,7 @@ namespace Chummer.Backend.Equipment
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1355,6 +1361,7 @@ namespace Chummer.Backend.Equipment
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1436,6 +1443,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
                 await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);

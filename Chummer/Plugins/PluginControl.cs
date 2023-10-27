@@ -442,6 +442,7 @@ namespace Chummer.Plugins
                 return Array.Empty<IPlugin>();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
                 await MyPlugins.ForEachAsync(async plugin =>
                 {
@@ -547,6 +548,7 @@ namespace Chummer.Plugins
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
@@ -578,6 +580,7 @@ namespace Chummer.Plugins
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
@@ -608,6 +611,7 @@ namespace Chummer.Plugins
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,

@@ -2081,6 +2081,7 @@ namespace Chummer.Backend.Equipment
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // <cyberware>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("cyberware", token: token).ConfigureAwait(false);
@@ -2634,6 +2635,7 @@ namespace Chummer.Backend.Equipment
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
@@ -2701,6 +2703,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                     .ConfigureAwait(false);
@@ -2781,6 +2784,7 @@ namespace Chummer.Backend.Equipment
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return (await (await _objCharacter
                             .LoadDataXPathAsync(
                                 SourceType == Improvement.ImprovementSource.Cyberware
@@ -2923,6 +2927,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (string.Equals(_strLimbSlotCount, "all", StringComparison.OrdinalIgnoreCase))
                 {
                     return await _objCharacter.LimbCountAsync(LimbSlot, token).ConfigureAwait(false);
@@ -2962,6 +2967,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intCount = 0;
                 if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs?.All(l => l != LimbSlot) != false)
                 {
@@ -3176,6 +3182,7 @@ namespace Chummer.Backend.Equipment
                 return Page;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
@@ -3292,6 +3299,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // Cyberware always equipped if it's not a modular one
                 bool blnReturn = string.IsNullOrEmpty(PlugsIntoModularMount);
                 Cyberware objCurrentParent = Parent;
@@ -3300,6 +3308,7 @@ namespace Chummer.Backend.Equipment
                 {
                     using (await objCurrentParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!string.IsNullOrEmpty(objCurrentParent.HasModularMount))
                             blnReturn = true;
                         if (!string.IsNullOrEmpty(objCurrentParent.PlugsIntoModularMount))
@@ -3531,6 +3540,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(WirelessBonus?.InnerText)
                     || !string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
                 {
@@ -4188,6 +4198,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Max(Math.Min(_intRating, await GetMaxRatingAsync(token).ConfigureAwait(false)),
                                 await GetMinRatingAsync(token).ConfigureAwait(false));
             }
@@ -4412,6 +4423,7 @@ namespace Chummer.Backend.Equipment
             int intReturn = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strRating = MinRatingString;
 
                 // Not a simple integer, so we need to start mucking around with strings
@@ -4542,6 +4554,7 @@ namespace Chummer.Backend.Equipment
             int intReturn = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strRating = MaxRatingString;
 
                 // Not a simple integer, so we need to start mucking around with strings
@@ -4880,6 +4893,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                 if (objNode == null
                     || (await objNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token)
@@ -5343,6 +5357,7 @@ namespace Chummer.Backend.Equipment
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -5381,6 +5396,7 @@ namespace Chummer.Backend.Equipment
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -5433,6 +5449,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return !string.IsNullOrWhiteSpace(LimbSlot)
                        || (InheritAttributes && await Children
                            .AnyAsync(objChild => objChild.GetIsLimbAsync(token), token).ConfigureAwait(false));
@@ -5592,6 +5609,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 bool blnModifyParentAvail = false;
                 string strAvail = Avail;
                 char chrLastAvailChar = ' ';
@@ -5914,6 +5932,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return await _objCharacter.GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false)
                        && PrototypeTranshuman
                     ? 0
@@ -5955,6 +5974,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (Parent != null && !AddToParentESS)
                     return 0;
                 if (SourceID == EssenceHoleGUID) // Essence hole
@@ -6534,6 +6554,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strCostExpression = Cost;
 
                 if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
@@ -6639,6 +6660,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 decimal decReturn = await CalculatedTotalCostWithoutModifiersAsync(intRating, objGrade, token).ConfigureAwait(false);
 
                 if (_blnSuite)
@@ -6655,6 +6677,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 decimal decCost = await CalculatedOwnCostPreMultipliersAsync(intRating, objGrade, token).ConfigureAwait(false);
                 decimal decReturn = decCost;
 
@@ -6775,13 +6798,17 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await CalculatedStolenTotalCostAsync(Rating, Grade, blnStolen, token).ConfigureAwait(false);
+            }
         }
 
         public async ValueTask<decimal> CalculatedStolenTotalCostAsync(int intRating, Grade objGrade, bool blnStolen, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 AsyncLazy<decimal> decCost = new AsyncLazy<decimal>(
                     () => CalculatedOwnCostPreMultipliersAsync(intRating, objGrade, token).AsTask(),
                     Utils.JoinableTaskFactory);
@@ -6856,6 +6883,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 decimal decReturn = await CalculatedOwnCostPreMultipliersAsync(intRating, objGrade, token).ConfigureAwait(false);
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
@@ -6883,7 +6911,10 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await CalculatedTotalCostAsync(Rating, Grade, token).ConfigureAwait(false);
+            }
         }
 
         public decimal OwnCost
@@ -6898,7 +6929,10 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await CalculatedOwnCostAsync(Rating, Grade, token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -7197,6 +7231,7 @@ namespace Chummer.Backend.Equipment
                 return 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!await GetIsLimbAsync(token).ConfigureAwait(false))
                     return 0;
                 switch (strAbbrev)
@@ -7264,6 +7299,7 @@ namespace Chummer.Backend.Equipment
                 return 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intValue = await GetAttributeBaseValueAsync(strAbbrev, token).ConfigureAwait(false);
                 if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0
                     && s_AttributeCustomizationCyberwares.TryGetValue(
@@ -7376,6 +7412,7 @@ namespace Chummer.Backend.Equipment
                 return 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (InheritAttributes)
                 {
                     int intAverageAttribute = 0;
@@ -8388,6 +8425,7 @@ namespace Chummer.Backend.Equipment
             int intRestrictedCount = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (string.IsNullOrEmpty(ParentID))
                 {
                     AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
@@ -8481,6 +8519,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (string.IsNullOrEmpty(ParentID)
                     && (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BannedWareGrades.Any(
                         s => Grade.Name.Contains(s)))
@@ -9351,6 +9390,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
                 await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);

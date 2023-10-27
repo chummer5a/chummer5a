@@ -8153,6 +8153,7 @@ namespace Chummer
         {
             using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objXmlDeleteQuality
                     = await objSelectedQuality.GetNodeXPathAsync(token).ConfigureAwait(false);
                 bool blnMetatypeQuality = false;
@@ -8406,6 +8407,7 @@ namespace Chummer
 
             using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (objSelectedQuality.OriginSource == QualitySource.Improvement
                     || objSelectedQuality.OriginSource == QualitySource.Metatype
                     || objSelectedQuality.Levels == 0)
@@ -8461,6 +8463,7 @@ namespace Chummer
                 bool blnDoRemoveQuality = false;
                 using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                 {
+                    GenericToken.ThrowIfCancellationRequested();
                     int intCurrentLevels = objSelectedQuality.Levels;
                     int intSelectedLevels
                         = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
@@ -15056,8 +15059,9 @@ namespace Chummer
                 }
                 else
                 {
-                    using (await objQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                    using (await objQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                    .ConfigureAwait(false);
                         await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
@@ -19706,6 +19710,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 while (SkipUpdate)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 SkipUpdate = true;

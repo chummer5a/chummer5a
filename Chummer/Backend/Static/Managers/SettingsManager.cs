@@ -457,6 +457,7 @@ namespace Chummer
                 {
                     using (await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                             await objCharacter
                                   .SetSettingsKeyAsync(

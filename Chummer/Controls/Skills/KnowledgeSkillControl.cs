@@ -800,6 +800,7 @@ namespace Chummer.UI.Skills
             {
                 using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     int intKarmaCost = await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken).ConfigureAwait(false);
 
                     if (intKarmaCost == -1)
@@ -837,6 +838,7 @@ namespace Chummer.UI.Skills
             {
                 using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
 
                     decimal decExtraSpecCost = 0;

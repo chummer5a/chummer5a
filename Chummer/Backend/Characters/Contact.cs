@@ -377,6 +377,7 @@ namespace Chummer
                 // <contact>
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     XmlElementWriteHelper objBaseElement
                         = await objWriter.StartElementAsync("contact", token: token).ConfigureAwait(false);
                     try
@@ -603,6 +604,7 @@ namespace Chummer
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // <contact>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("contact", token: token).ConfigureAwait(false);
@@ -753,6 +755,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return LinkedCharacter != null
                     ? await LinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
                     : _strName;
@@ -869,7 +872,10 @@ namespace Chummer
         public async ValueTask<int> GetConnectionAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return Math.Min(_intConnection, await GetConnectionMaximumAsync(token).ConfigureAwait(false));
+            }
         }
 
         /// <summary>
@@ -904,6 +910,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intForced = await GetForcedLoyaltyAsync(token).ConfigureAwait(false);
                 if (intForced > 0)
                     return intForced;
@@ -950,6 +957,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = Metatype;
                 if (LinkedCharacter != null)
                 {
@@ -1050,6 +1058,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (LinkedCharacter != null)
                 {
                     string strMetatype = await LinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
@@ -1134,6 +1143,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return LinkedCharacter != null
                     ? await LinkedCharacter.GetGenderAsync(token).ConfigureAwait(false)
                     : _strGender;
@@ -1204,6 +1214,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return LinkedCharacter != null
                     ? await LinkedCharacter.GetAgeAsync(token).ConfigureAwait(false)
                     : _strGender;
@@ -1488,7 +1499,10 @@ namespace Chummer
         public async ValueTask<bool> GetLoyaltyEnabledAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return !ReadOnly && !IsGroup && await GetForcedLoyaltyAsync(token).ConfigureAwait(false) <= 0;
+            }
         }
 
         public int ConnectionMaximum
@@ -1504,6 +1518,7 @@ namespace Chummer
         {
             using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                        || await CharacterObject.GetFriendsInHighPlacesAsync(token).ConfigureAwait(false)
                     ? 12
@@ -1525,6 +1540,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})",
                                      await GetConnectionAsync(token).ConfigureAwait(false),
                                      await GetLoyaltyAsync(token).ConfigureAwait(false));
@@ -1731,6 +1747,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_blnFree)
                     return _blnFree;
 
@@ -1773,6 +1790,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_intCachedFreeFromImprovement < 0)
                 {
                     _intCachedFreeFromImprovement = ((await ImprovementManager
@@ -1835,6 +1853,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_intCachedGroupEnabled < 0)
                 {
                     _intCachedGroupEnabled = (!ReadOnly && (await ImprovementManager
@@ -1921,6 +1940,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_intCachedForcedLoyalty != int.MinValue)
                     return _intCachedForcedLoyalty;
 
@@ -2067,6 +2087,7 @@ namespace Chummer
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 Character objOldLinkedCharacter = _objLinkedCharacter;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
@@ -2151,6 +2172,7 @@ namespace Chummer
                         {
                             using (await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (string.IsNullOrEmpty(_strName)
                                     && Name != await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
                                     _strName = Name;
@@ -2328,6 +2350,7 @@ namespace Chummer
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (blnSync)
                 {
                     objWriter.WriteElementString("mainmugshotindex",
@@ -2452,6 +2475,7 @@ namespace Chummer
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (LinkedCharacter != null)
                     await LinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
                 else if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 0)

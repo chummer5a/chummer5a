@@ -936,17 +936,14 @@ namespace Chummer
                     if (objSourceRegistry != null)
                     {
                         LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
-                        using (await dicSourcebookInfos.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                        await dicSourcebookInfos.ForEachAsync(x =>
                         {
-                            await dicSourcebookInfos.ForEachAsync(x =>
-                            {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objSourceRegistry.SetValue(x.Value.Code,
-                                                           x.Value.Path + '|'
-                                                                        + x.Value.Offset.ToString(
-                                                                            InvariantCultureInfo));
-                            }, token).ConfigureAwait(false);
-                        }
+                            // ReSharper disable once AccessToDisposedClosure
+                            objSourceRegistry.SetValue(x.Value.Code,
+                                                       x.Value.Path + '|'
+                                                                    + x.Value.Offset.ToString(
+                                                                        InvariantCultureInfo));
+                        }, token).ConfigureAwait(false);
                     }
                 }
 

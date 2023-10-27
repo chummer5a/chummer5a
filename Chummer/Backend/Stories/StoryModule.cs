@@ -215,6 +215,7 @@ namespace Chummer
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
@@ -265,6 +266,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn;
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
@@ -284,6 +286,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return await ResolveMacros(await DisplayTextAsync(DefaultKey, strLanguage, token).ConfigureAwait(false),
                                            objCulture, strLanguage, true, token).ConfigureAwait(false);
             }
@@ -293,6 +296,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return (await ResolveMacros(
                     await DisplayTextAsync(DefaultKey, strLanguage, token).ConfigureAwait(false), objCulture,
                     strLanguage, token: token).ConfigureAwait(false)).NormalizeWhiteSpace();
@@ -306,6 +310,7 @@ namespace Chummer
             List<Tuple<string, bool>> lstSubstrings = new List<Tuple<string, bool>>(1);
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 while (!string.IsNullOrEmpty(strReturn))
                 {
                     int intOpeningBracketIndex = strReturn.IndexOf('{');
@@ -403,6 +408,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // Process Macros nested inside of single macro
                 strInput = await ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents, token)
                     .ConfigureAwait(false);
@@ -661,6 +667,7 @@ namespace Chummer
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -691,6 +698,7 @@ namespace Chummer
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)

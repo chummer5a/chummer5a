@@ -62,7 +62,10 @@ namespace Chummer
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.Count;
+            }
         }
 
         /// <inheritdoc />
@@ -102,13 +105,17 @@ namespace Chummer
         public async ValueTask<T> GetValueAtAsync(int index, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData[index];
+            }
         }
 
         public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_lstData[index].Equals(value))
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -214,14 +221,20 @@ namespace Chummer
         public async ValueTask<int> BinarySearchAsync(int index, int count, T item, IComparer<T> comparer, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.BinarySearch(index, count, item, comparer);
+            }
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
         public async ValueTask<int> BinarySearchAsync(T item, IComparer<T> comparer, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.BinarySearch(item, comparer);
+            }
         }
 
         /// <inheritdoc cref="List{T}.Clear" />
@@ -264,7 +277,10 @@ namespace Chummer
         public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.Contains(item);
+            }
         }
 
         public void CopyTo(Array array, int index)
@@ -283,6 +299,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (T objItem in _lstData)
                 {
                     array.SetValue(objItem, index);
@@ -302,7 +319,10 @@ namespace Chummer
         public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 _lstData.CopyTo(array, index);
+            }
         }
 
         /// <inheritdoc />
@@ -323,6 +343,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_lstData.Count == 0)
                     return new Tuple<bool, T>(false, default);
             }
@@ -383,7 +404,10 @@ namespace Chummer
         public async ValueTask<bool> ExistsAsync(Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.Exists(match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.Find" />
@@ -397,7 +421,10 @@ namespace Chummer
         public async ValueTask<T> FindAsync(Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.Find(match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />
@@ -411,7 +438,10 @@ namespace Chummer
         public async ValueTask<List<T>> FindAllAsync(Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindAll(match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
@@ -439,21 +469,30 @@ namespace Chummer
         public async ValueTask<int> FindIndexAsync(Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindIndex(match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
         public async ValueTask<int> FindIndexAsync(int startIndex, Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindIndex(startIndex, match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, int, Predicate{T})" />
         public async ValueTask<int> FindIndexAsync(int startIndex, int count, Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindIndex(startIndex, count, match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindLast" />
@@ -467,7 +506,10 @@ namespace Chummer
         public async ValueTask<T> FindLastAsync(Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindLast(match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
@@ -495,21 +537,30 @@ namespace Chummer
         public async ValueTask<int> FindLastIndexAsync(Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindIndex(match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
         public async ValueTask<int> FindLastIndexAsync(int startIndex, Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindIndex(startIndex, match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, int, Predicate{T})" />
         public async ValueTask<int> FindLastIndexAsync(int startIndex, int count, Predicate<T> match, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindLastIndex(startIndex, count, match);
+            }
         }
 
         /// <inheritdoc cref="List{T}.GetEnumerator" />
@@ -545,7 +596,10 @@ namespace Chummer
         public async ValueTask<int> IndexOfAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.IndexOf(item);
+            }
         }
 
         public void Insert(int index, object value)
@@ -588,7 +642,10 @@ namespace Chummer
         public async ValueTask<int> LastIndexOfAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.LastIndexOf(item);
+            }
         }
 
         public void Remove(object value)
@@ -651,7 +708,10 @@ namespace Chummer
         public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.ToArray();
+            }
         }
 
         private int _intIsDisposed;
@@ -1183,6 +1243,7 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(length));
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (index + length > _lstData.Count)
                     throw new InvalidOperationException(nameof(length));
                 if (length == 0)
@@ -1269,6 +1330,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 T[] aobjSorted = new T[_lstData.Count];
                 for (int i = 0; i < _lstData.Count; ++i)
                     aobjSorted[i] = this[i];
@@ -1352,6 +1414,7 @@ namespace Chummer
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 T[] aobjSorted = new T[_lstData.Count];
                 for (int i = 0; i < _lstData.Count; ++i)
                     aobjSorted[i] = this[i];

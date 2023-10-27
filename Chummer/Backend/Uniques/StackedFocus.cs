@@ -304,7 +304,8 @@ namespace Chummer
             decimal decCost = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                foreach (Gear objFocus in Gear)
+                token.ThrowIfCancellationRequested();
+                decCost += await Gear.SumAsync(async objFocus =>
                 {
                     // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
                     string strFocusName = objFocus.Name;
@@ -342,7 +343,7 @@ namespace Chummer
 
                         case "Counterspelling Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaCounterspellingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Banishing Focus":
@@ -362,7 +363,7 @@ namespace Chummer
 
                         case "Spellcasting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaSpellcastingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Summoning Focus":
@@ -387,7 +388,7 @@ namespace Chummer
 
                         case "Disenchanting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaDisenchantingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Power Focus":
@@ -396,17 +397,17 @@ namespace Chummer
 
                         case "Flexible Signature Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaFlexibleSignatureFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Ritual Spellcasting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaRitualSpellcastingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Spell Shaping Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaSpellShapingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         default:
@@ -435,8 +436,8 @@ namespace Chummer
                             }
                         }, token: token).ConfigureAwait(false);
 
-                    decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
-                }
+                    return objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
+                }, token).ConfigureAwait(false);
             }
 
             return decCost.StandardRound();
@@ -476,6 +477,7 @@ namespace Chummer
             {
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     await Gear.ForEachAsync(async objGear =>
                     {
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)

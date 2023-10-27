@@ -146,7 +146,10 @@ namespace Chummer
         public async ValueTask<bool> ContainsAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData.Contains(item);
+            }
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
@@ -180,6 +183,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
                     array[index] = kvpItem;
@@ -193,6 +197,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
                     array.SetValue(kvpItem, index);
@@ -222,6 +227,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.Count == 0)
                     return new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
             }
@@ -257,6 +263,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[_dicData.Count];
                 int i = 0;
                 foreach (KeyValuePair<TKey, TValue> kvpLoop in _dicData)
@@ -297,6 +304,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!_dicData.TryGetValue(item.Key, out TValue _))
                     return false;
             }
@@ -350,6 +358,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!_dicData.TryGetValue(key, out TValue value))
                     return new Tuple<bool, TValue>(false, value);
             }
@@ -415,7 +424,10 @@ namespace Chummer
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData.Count;
+            }
         }
 
         /// <inheritdoc />
@@ -438,7 +450,10 @@ namespace Chummer
         public async ValueTask<bool> ContainsKeyAsync(TKey key, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData.ContainsKey(key);
+            }
         }
 
         /// <inheritdoc cref="Dictionary{TKey, TValue}.ContainsValue" />
@@ -452,7 +467,10 @@ namespace Chummer
         public async ValueTask<bool> ContainsValueAsync(TValue value, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData.ContainsValue(value);
+            }
         }
 
         /// <inheritdoc />
@@ -496,6 +514,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.ContainsKey(key))
                     return false;
             }
@@ -545,6 +564,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!_dicData.ContainsKey(key))
                     return false;
             }
@@ -631,6 +651,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
@@ -661,6 +682,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
@@ -690,6 +712,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
@@ -720,6 +743,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
@@ -778,6 +802,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
@@ -810,6 +835,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
@@ -914,6 +940,7 @@ namespace Chummer
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
@@ -965,6 +992,7 @@ namespace Chummer
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
@@ -1016,6 +1044,7 @@ namespace Chummer
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
@@ -1067,6 +1096,7 @@ namespace Chummer
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
@@ -1119,6 +1149,7 @@ namespace Chummer
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
@@ -1170,6 +1201,7 @@ namespace Chummer
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
@@ -1221,6 +1253,7 @@ namespace Chummer
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
@@ -1272,6 +1305,7 @@ namespace Chummer
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
@@ -1325,6 +1359,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value);
                 return new Tuple<bool, TValue>(blnSuccess, value);
             }
@@ -1362,13 +1397,17 @@ namespace Chummer
         public async ValueTask<TValue> GetValueAtAsync(TKey key, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData[key];
+            }
         }
 
         public async ValueTask SetValueAtAsync(TKey key, TValue value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objValue))
                 {
                     if (objValue == null)
@@ -1420,13 +1459,19 @@ namespace Chummer
         public async ValueTask<ICollection<TKey>> GetKeysAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData.Keys;
+            }
         }
 
         public async ValueTask<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData.Keys;
+            }
         }
 
         /// <inheritdoc />
@@ -1456,13 +1501,19 @@ namespace Chummer
         public async ValueTask<ICollection<TValue>> GetValuesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData.Values;
+            }
         }
 
         public async ValueTask<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _dicData.Values;
+            }
         }
 
         private int _intIsDisposed;

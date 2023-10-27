@@ -112,6 +112,7 @@ namespace Chummer
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
                     return;
                 await base.AddAsync(item, token).ConfigureAwait(false);
@@ -135,6 +136,7 @@ namespace Chummer
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
                     return false;
                 await base.AddAsync(item, token).ConfigureAwait(false);

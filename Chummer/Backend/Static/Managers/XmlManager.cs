@@ -62,13 +62,19 @@ namespace Chummer
             public async ValueTask<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
                     return _intDuplicatesChecked > 0;
+                }
             }
 
             public async ValueTask SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
                     Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
+                }
             }
 
             private XmlDocument _xmlContent = new XmlDocument { XmlResolver = null };
@@ -105,13 +111,20 @@ namespace Chummer
                 {
                     int intLoadComplete;
                     using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
                         intLoadComplete = _intInitialLoadComplete;
+                    }
+
                     if (intLoadComplete > 0)
                         break;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
                     return _xmlContent;
+                }
             }
 
             /// <summary>
@@ -150,6 +163,7 @@ namespace Chummer
             {
                 using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -206,13 +220,20 @@ namespace Chummer
                 {
                     int intLoadComplete;
                     using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
                         intLoadComplete = _intInitialLoadComplete;
+                    }
+
                     if (intLoadComplete > 0)
                         break;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
                     return _objXPathContent;
+                }
             }
 
             /// <inheritdoc />
@@ -397,6 +418,7 @@ namespace Chummer
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;
 
@@ -585,6 +607,7 @@ namespace Chummer
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (string strDirectory in s_SetDataDirectories)
                 {
                     if (strDirectory.StartsWith(Utils.GetPacksFolderPath) && strFileName != "packs.xml")

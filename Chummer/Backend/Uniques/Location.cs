@@ -211,6 +211,7 @@ namespace Chummer
                 return Name;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return await _objCharacter.TranslateExtraAsync(
                     !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                         ? await LanguageManager

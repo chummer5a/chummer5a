@@ -132,6 +132,7 @@ namespace Chummer
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
                     return await base.TryAddAsync(item, token).ConfigureAwait(false);

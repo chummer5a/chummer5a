@@ -542,6 +542,7 @@ namespace Chummer
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!AllowPrint)
                     return;
 
@@ -808,6 +809,7 @@ namespace Chummer
                 return Page;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
@@ -852,7 +854,10 @@ namespace Chummer
         public async Task<string> GetSourceNameAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await _objCharacter.TranslateExtraAsync(_strSourceName, strLanguage, token: token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1018,6 +1023,7 @@ namespace Chummer
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
@@ -1078,6 +1084,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                        .ConfigureAwait(false);
@@ -1502,6 +1509,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1531,6 +1539,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1871,6 +1880,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objOldQuality));
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // Helps to capture a write lock here for performance purposes
                 IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token)
                                                                 .ConfigureAwait(false);
@@ -1883,6 +1893,7 @@ namespace Chummer
                     int intKarmaCost;
                     using (await objOldQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         bool blnAddItem = true;
                         intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels)
                                        * _objCharacter.Settings.KarmaQuality;

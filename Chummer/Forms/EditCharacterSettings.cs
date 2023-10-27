@@ -1232,6 +1232,7 @@ namespace Chummer
                 using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync(token)
                                           .ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     int intNewCount
                         = await _dicCharacterCustomDataDirectoryInfos.GetCountAsync(token).ConfigureAwait(false);
                     if (intNewCount != await treCustomDataDirectories

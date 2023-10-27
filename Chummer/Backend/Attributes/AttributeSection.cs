@@ -124,8 +124,10 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 using (await _objAttributesInitializerLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!_blnAttributesInitialized)
                     {
                         IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token)
@@ -191,6 +193,7 @@ namespace Chummer.Backend.Attributes
             token.ThrowIfCancellationRequested();
             using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1188,6 +1191,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_objCharacter.MetatypeCategory == "Shapeshifter")
                 {
                     XPathNavigator xmlNode = await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false);
@@ -1247,6 +1251,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 bool blnGetShifterAttribute = await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Shapeshifter" && await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
                     && await GetAttributeCategoryAsync(token).ConfigureAwait(false) == CharacterAttrib.AttributeCategory.Shapeshifter;
                 CharacterAttrib objReturn
@@ -1269,6 +1274,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 (bool blnSuccess, BindingSource objAttributeBinding) = await _dicBindings.TryGetValueAsync(abbrev, token).ConfigureAwait(false);
                 return blnSuccess ? objAttributeBinding : null;
             }
@@ -1315,6 +1321,7 @@ namespace Chummer.Backend.Attributes
                 return;
             using (await objSource.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
                 if (strSourceAbbrev == "magadept")
                     strSourceAbbrev = "mag";
@@ -1403,6 +1410,7 @@ namespace Chummer.Backend.Attributes
                 return strInput;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = strInput;
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1438,6 +1446,7 @@ namespace Chummer.Backend.Attributes
                 strOriginal = sbdInput.ToString();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
@@ -1614,6 +1623,7 @@ namespace Chummer.Backend.Attributes
             string strReturn = strInput;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     strReturn = await strReturn
@@ -1696,6 +1706,7 @@ namespace Chummer.Backend.Attributes
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
@@ -1936,6 +1947,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
                     || await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     return true;
@@ -1973,7 +1985,10 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributeListAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstNormalAttributes;
+            }
         }
 
         /// <summary>
@@ -1991,7 +2006,10 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetSpecialAttributeListAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstSpecialAttributes;
+            }
         }
 
         public CharacterAttrib.AttributeCategory AttributeCategory
@@ -2024,7 +2042,10 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<CharacterAttrib.AttributeCategory> GetAttributeCategoryAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _eAttributeCategory;
+            }
         }
 
         #endregion Properties

@@ -47,6 +47,7 @@ namespace Chummer
 
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 //Little bit of data required for following steps
                 XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage, token: token)
                                                         .ConfigureAwait(false);
@@ -126,6 +127,7 @@ namespace Chummer
                 return story;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int startingLength = story.Length;
 
                 IEnumerable<string> words;
@@ -200,6 +202,7 @@ namespace Chummer
 
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 switch (macroName)
                 {
                     //$DOLLAR is defined elsewhere to prevent recursive calling

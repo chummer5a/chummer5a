@@ -103,10 +103,13 @@ namespace Chummer.Backend.Skills
         public override async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                        && await GetFreeBaseAsync(token).ConfigureAwait(false)
                        + await GetFreeKarmaAsync(token).ConfigureAwait(false)
                        + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0;
+            }
         }
 
         public override bool BuyWithKarma
@@ -145,13 +148,17 @@ namespace Chummer.Backend.Skills
         public async ValueTask<string> GetSpecificAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _strSpecific;
+            }
         }
 
         public async ValueTask SetSpecificAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _strSpecific, value) == value)
                     return;
@@ -173,6 +180,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? Specific
                     : await CharacterObject.TranslateExtraAsync(Specific, strLanguage, token: token)

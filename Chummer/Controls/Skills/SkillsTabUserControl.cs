@@ -974,6 +974,7 @@ namespace Chummer.UI.Skills
 
                 using (await objSkill.LockObject.EnterUpgradeableReadLockAsync(MyToken).ConfigureAwait(false))
                 {
+                    MyToken.ThrowIfCancellationRequested();
                     // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
                     if (await _objCharacter.GetCreatedAsync(MyToken).ConfigureAwait(false)
                         && await objSkill.GetUpgradeKarmaCostAsync(MyToken).ConfigureAwait(false)

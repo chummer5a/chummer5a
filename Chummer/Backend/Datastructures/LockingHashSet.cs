@@ -235,37 +235,55 @@ namespace Chummer
         public async ValueTask<bool> IsSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _setData.IsSubsetOf(other);
+            }
         }
 
         public async ValueTask<bool> IsSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _setData.IsSupersetOf(other);
+            }
         }
 
         public async ValueTask<bool> IsProperSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _setData.IsProperSupersetOf(other);
+            }
         }
 
         public async ValueTask<bool> IsProperSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _setData.IsProperSubsetOf(other);
+            }
         }
 
         public async ValueTask<bool> OverlapsAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _setData.Overlaps(other);
+            }
         }
 
         public async ValueTask<bool> SetEqualsAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _setData.SetEquals(other);
+            }
         }
 
         /// <inheritdoc />
@@ -306,7 +324,10 @@ namespace Chummer
         public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _setData.Contains(item);
+            }
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
@@ -340,6 +361,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (T objItem in _setData)
                 {
                     array[index] = objItem;
@@ -352,6 +374,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (T objItem in _setData)
                 {
                     array.SetValue(objItem, index);
@@ -377,6 +400,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_setData.Count == 0)
                     return new Tuple<bool, T>(false, default);
             }
@@ -444,6 +468,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 T[] aobjReturn = new T[_setData.Count];
                 int i = 0;
                 foreach (T objLoop in _setData)
@@ -489,7 +514,10 @@ namespace Chummer
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _setData.Count;
+            }
         }
 
         /// <inheritdoc />

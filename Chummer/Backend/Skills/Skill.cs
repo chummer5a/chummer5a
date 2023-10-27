@@ -130,6 +130,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strAttributeString = DefaultAttribute;
                 if (CharacterObject.SkillsSection?.IsLoading != true)
                 {
@@ -275,6 +276,7 @@ namespace Chummer.Backend.Skills
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // <skill>
                 XmlElementWriteHelper objBaseElement =
                     await objWriter.StartElementAsync("skill", token: token).ConfigureAwait(false);
@@ -900,7 +902,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<int> GetBasePointsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _intBase;
+            }
         }
 
         /// <summary>
@@ -910,6 +915,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intBase, value) == value)
                     return;
@@ -926,6 +932,7 @@ namespace Chummer.Backend.Skills
                 return;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
                 OnPropertyChanged(nameof(BasePoints));
@@ -960,7 +967,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<int> GetKarmaPointsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _intKarma;
+            }
         }
 
         /// <summary>
@@ -970,6 +980,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intKarma, value) == value)
                     return;
@@ -986,6 +997,7 @@ namespace Chummer.Backend.Skills
                 return;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
                 OnPropertyChanged(nameof(KarmaPoints));
@@ -1015,14 +1027,17 @@ namespace Chummer.Backend.Skills
         public async ValueTask<bool> GetBaseUnlockedAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
                        && (SkillGroupObject == null
                            || await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) <= 0
                            || (CharacterObject.Settings.UsePointsOnBrokenGroups
                                && (!await CharacterObject.Settings.GetStrictSkillGroupsInCreateModeAsync(token)
-                                                         .ConfigureAwait(false)
+                                       .ConfigureAwait(false)
                                    || await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                                    || await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))));
+            }
         }
 
         /// <summary>
@@ -1052,6 +1067,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (await CharacterObject.Settings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                     && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                     && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
@@ -1124,6 +1140,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (SkillGroupObject != null)
                 {
                     int intGroupBase = await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false);
@@ -1154,6 +1171,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intSkillGroupBase = SkillGroupObject != null ? await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) : 0;
                 if (intSkillGroupBase > 0
                     && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
@@ -1243,6 +1261,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intGroupKarma = 0;
                 if (SkillGroupObject != null)
                 {
@@ -1278,6 +1297,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 //Calculate how far above maximum we are.
                 int intOverMax = value + await GetBaseAsync(token).ConfigureAwait(false)
                                  - await GetRatingMaximumAsync(token).ConfigureAwait(false)
@@ -1334,7 +1354,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return Math.Max(await GetCyberwareRatingAsync(token).ConfigureAwait(false), await GetTotalBaseRatingAsync(token).ConfigureAwait(false));
+            }
         }
 
         /// <summary>
@@ -1355,7 +1378,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<int> GetTotalBaseRatingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await GetLearnedRatingAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1380,7 +1406,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<int> GetLearnedRatingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1414,15 +1443,19 @@ namespace Chummer.Backend.Skills
         public virtual async ValueTask<bool> GetBuyWithKarmaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return (_blnBuyWithKarma || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                        && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
                        && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+            }
         }
 
         public virtual async ValueTask SetBuyWithKarmaAsync(bool value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 value = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                         && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
                         && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
@@ -1476,6 +1509,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intOtherBonus =
                     (await RelevantImprovementsAsync(
                             x => x.ImproveType == Improvement.ImprovementType.Skill, token: token)
@@ -1546,6 +1580,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 bool blnIsNativeLanguage = await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
                 if (!await GetEnabledAsync(token).ConfigureAwait(false) && !blnIsNativeLanguage)
                     return 0;
@@ -1614,6 +1649,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if ((await ImprovementManager
                         .GetCachedImprovementListForValueOfAsync(CharacterObject,
                             Improvement.ImprovementType.ReflexRecorderOptimization, token: token).ConfigureAwait(false))
@@ -1724,6 +1760,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
                 List<Improvement> lstImprovements = await RelevantImprovementsAsync(
                     x => x.AddToRating == blnAddToRating,
@@ -1895,6 +1932,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strNameToUse = DictionaryKey;
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = Attribute;
@@ -2107,6 +2145,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
                 int cost = intBasePoints;
                 if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
@@ -2272,6 +2311,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 //No rating can obv not cost anything
                 //Makes debugging easier as we often only care about value calculation
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
@@ -2409,7 +2449,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<bool> GetLeveledAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await GetRatingAsync(token).ConfigureAwait(false) > 0;
+            }
         }
 
         public Color PreferredControlColor
@@ -2424,10 +2467,13 @@ namespace Chummer.Backend.Skills
         public async ValueTask<Color> GetPreferredControlColorAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await GetLeveledAsync(token).ConfigureAwait(false)
                        && await GetEnabledAsync(token).ConfigureAwait(false)
                     ? await ColorManager.GetControlAsync(token).ConfigureAwait(false)
                     : await ColorManager.GetControlLighterAsync(token).ConfigureAwait(false);
+            }
         }
 
         private int _intCachedCanHaveSpecs = -1;
@@ -2477,6 +2523,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if ((this as KnowledgeSkill)?.AllowUpgrade == false)
                     return false;
                 // intReturn for thread safety
@@ -2559,13 +2606,17 @@ namespace Chummer.Backend.Skills
         public async ValueTask<string> GetDefaultAttributeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _strDefaultAttribute;
+            }
         }
 
         public async ValueTask SetDefaultAttributeAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
                     return;
@@ -2591,8 +2642,11 @@ namespace Chummer.Backend.Skills
         public async ValueTask<string> DisplayAttributeMethodAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await LanguageManager.GetStringAsync("String_Attribute" + Attribute + "Short", strLanguage,
                     token: token).ConfigureAwait(false);
+            }
         }
 
         public string DisplayAttribute => DisplayAttributeMethod(GlobalSettings.Language);
@@ -2705,6 +2759,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedEnabled;
                 if (intReturn >= 0)
@@ -2925,6 +2980,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedCanUpgradeCareer;
                 if (intReturn < 0)
@@ -2996,6 +3052,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (RelevantImprovements(
                         x => x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
                              || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
@@ -3097,6 +3154,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return _strDictionaryKey = _strDictionaryKey
                                            ?? (IsExoticSkill
                                                ? await GetNameAsync(token).ConfigureAwait(false) + " (" +
@@ -3134,13 +3192,17 @@ namespace Chummer.Backend.Skills
         public async ValueTask<string> GetNameAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _strName;
+            }
         }
 
         public async ValueTask SetNameAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // Interlocked guarantees thread safety here without write lock
                 if (Interlocked.Exchange(ref _strName, value) == value)
                     return;
@@ -3256,7 +3318,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<Guid> GetSkillIdAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _guidSkillId;
+            }
         }
 
         /// <summary>
@@ -3268,6 +3333,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_guidSkillId == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -3356,66 +3422,70 @@ namespace Chummer.Backend.Skills
         public async ValueTask<IReadOnlyList<ListItem>> GetCGLSpecializationsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            using (await _objCachedSuggestedSpecializationsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                if (_blnRecalculateCachedSuggestedSpecializations)
+                token.ThrowIfCancellationRequested();
+                using (await _objCachedSuggestedSpecializationsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
-                    IAsyncDisposable objLocker = await _objCachedSuggestedSpecializationsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    token.ThrowIfCancellationRequested();
+                    if (_blnRecalculateCachedSuggestedSpecializations)
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (_blnRecalculateCachedSuggestedSpecializations) // Just in case
+                        IAsyncDisposable objLocker = await _objCachedSuggestedSpecializationsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            _blnRecalculateCachedSuggestedSpecializations = false;
-                            if (_lstCachedSuggestedSpecializations == null)
-                                _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
-                            else
-                                _lstCachedSuggestedSpecializations.Clear();
-                            XPathNavigator objBaseNode = await this
-                                                               .GetNodeXPathAsync(GlobalSettings.Language, token: token)
-                                                               .ConfigureAwait(false);
-                            XPathNodeIterator xmlSpecList = objBaseNode != null
-                                ? await objBaseNode.SelectAndCacheExpressionAsync("specs/spec", token).ConfigureAwait(false)
-                                : null;
-                            if (xmlSpecList?.Count > 0)
+                            token.ThrowIfCancellationRequested();
+                            if (_blnRecalculateCachedSuggestedSpecializations) // Just in case
                             {
-                                foreach (XPathNavigator xmlSpecNode in xmlSpecList)
+                                _blnRecalculateCachedSuggestedSpecializations = false;
+                                if (_lstCachedSuggestedSpecializations == null)
+                                    _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
+                                else
+                                    _lstCachedSuggestedSpecializations.Clear();
+                                XPathNavigator objBaseNode = await this
+                                    .GetNodeXPathAsync(GlobalSettings.Language, token: token)
+                                    .ConfigureAwait(false);
+                                XPathNodeIterator xmlSpecList = objBaseNode != null
+                                    ? await objBaseNode.SelectAndCacheExpressionAsync("specs/spec", token).ConfigureAwait(false)
+                                    : null;
+                                if (xmlSpecList?.Count > 0)
                                 {
-                                    string strInnerText = xmlSpecNode.Value;
-                                    if (string.IsNullOrEmpty(strInnerText))
+                                    foreach (XPathNavigator xmlSpecNode in xmlSpecList)
+                                    {
+                                        string strInnerText = xmlSpecNode.Value;
+                                        if (string.IsNullOrEmpty(strInnerText))
+                                            continue;
+                                        _lstCachedSuggestedSpecializations.Add(
+                                            new ListItem(strInnerText,
+                                                (await xmlSpecNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
+                                                ?? strInnerText));
+                                    }
+                                }
+
+                                foreach (string strSpecializationName in (await ImprovementManager
+                                             .GetCachedImprovementListForValueOfAsync(
+                                                 CharacterObject,
+                                                 Improvement.ImprovementType
+                                                     .SkillSpecializationOption,
+                                                 await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).Select(x => x.UniqueName))
+                                {
+                                    if (_lstCachedSuggestedSpecializations.Any(
+                                            y => y.Value?.ToString() == strSpecializationName))
                                         continue;
                                     _lstCachedSuggestedSpecializations.Add(
-                                        new ListItem(strInnerText,
-                                                     (await xmlSpecNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
-                                                     ?? strInnerText));
+                                        new ListItem(strSpecializationName,
+                                            await CharacterObject.TranslateExtraAsync(strSpecializationName, token: token).ConfigureAwait(false)));
                                 }
-                            }
 
-                            foreach (string strSpecializationName in (await ImprovementManager
-                                                                            .GetCachedImprovementListForValueOfAsync(
-                                                                                CharacterObject,
-                                                                                Improvement.ImprovementType
-                                                                                    .SkillSpecializationOption,
-                                                                                await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).Select(x => x.UniqueName))
-                            {
-                                if (_lstCachedSuggestedSpecializations.Any(
-                                        y => y.Value?.ToString() == strSpecializationName))
-                                    continue;
-                                _lstCachedSuggestedSpecializations.Add(
-                                    new ListItem(strSpecializationName,
-                                                 await CharacterObject.TranslateExtraAsync(strSpecializationName, token: token).ConfigureAwait(false)));
+                                _lstCachedSuggestedSpecializations.Sort(CompareListItems.CompareNames);
                             }
-
-                            _lstCachedSuggestedSpecializations.Sort(CompareListItems.CompareNames);
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
 
-                return _lstCachedSuggestedSpecializations;
+                    return _lstCachedSuggestedSpecializations;
+                }
             }
         }
 
@@ -3439,6 +3509,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                     return strReturn;
                 strReturn = await StringExtensions
@@ -3471,7 +3542,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<ThreadSafeObservableCollection<SkillSpecialization>> GetSpecializationsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstSpecializations;
+            }
         }
 
         public string TopMostDisplaySpecialization
@@ -3530,6 +3604,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsExoticSkill)
                 {
                     return await ((ExoticSkill) this).GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false);
@@ -3617,6 +3692,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsExoticSkill)
                 {
                     return ((ExoticSkill)this).Specific == strSpecialization;
@@ -3653,6 +3729,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
                 {
                     return await (await GetSpecializationsAsync(token).ConfigureAwait(false)).GetValueAtAsync(0, token).ConfigureAwait(false);
@@ -4001,6 +4078,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 bool blnIsNativeLanguage = await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
                 if (!await GetDefaultAsync(token).ConfigureAwait(false)
                     && !await GetLeveledAsync(token).ConfigureAwait(false)
@@ -4373,6 +4451,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intCost = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
                 return intCost < 0
                     ? await LanguageManager.GetStringAsync("Tip_ImproveItemAtMaximum", token: token)
@@ -4433,6 +4512,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intPrice = IsKnowledgeSkill
                     ? CharacterObject.Settings.KarmaKnowledgeSpecialization
                     : CharacterObject.Settings.KarmaSpecialization;
@@ -4500,6 +4580,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strNotes = await GetNotesAsync(token).ConfigureAwait(false);
                 string strReturn = !string.IsNullOrEmpty(strNotes)
@@ -4540,7 +4621,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<string> GetNotesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _strNotes;
+            }
         }
 
         /// <summary>
@@ -4582,9 +4666,12 @@ namespace Chummer.Backend.Skills
         public async ValueTask<Color> GetPreferredColorAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
                     ? await ColorManager.GenerateCurrentModeColorAsync(NotesColor, token).ConfigureAwait(false)
                     : await ColorManager.GetControlTextAsync(token).ConfigureAwait(false);
+            }
         }
 
         public SkillGroup SkillGroupObject { get; }
@@ -4619,6 +4706,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
@@ -4661,6 +4749,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Name;
 
@@ -4702,6 +4791,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return SkillCategory;
 
@@ -4727,9 +4817,12 @@ namespace Chummer.Backend.Skills
         public async Task<string> GetDisplayPoolAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await GetIsNativeLanguageAsync(token).ConfigureAwait(false)
                     ? await LanguageManager.GetStringAsync("Skill_NativeLanguageShort", token: token).ConfigureAwait(false)
                     : await DisplayOtherAttributeAsync(Attribute, token).ConfigureAwait(false);
+            }
         }
 
         public string DisplayOtherAttribute(string strAttribute)
@@ -4770,6 +4863,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intPool = await PoolOtherAttributeAsync(strAttribute, token: token).ConfigureAwait(false);
                 int intConditionalBonus =
                     await PoolOtherAttributeAsync(strAttribute, true, token: token).ConfigureAwait(false);
@@ -4838,6 +4932,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsExoticSkill || await GetTotalBaseRatingAsync(token).ConfigureAwait(false) == 0 ||
                     await Specializations.GetCountAsync(token).ConfigureAwait(false) == 0)
                     return 0;
@@ -4881,6 +4976,7 @@ namespace Chummer.Backend.Skills
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -4906,6 +5002,7 @@ namespace Chummer.Backend.Skills
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -5002,6 +5099,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedCyberwareRating;
                 if (intReturn != int.MinValue)
@@ -5873,6 +5971,7 @@ namespace Chummer.Backend.Skills
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intSkillGroupCostAdjustment = 0;
                 if (!blnForceOffCompensateSkillGroupKarmaDifference
                     && await objSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false)
@@ -6118,6 +6217,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                 if (intTotalBaseRating >= await GetRatingMaximumAsync(token).ConfigureAwait(false))
                 {
@@ -6234,6 +6334,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                 {
                     if (!await GetCanUpgradeCareerAsync(token).ConfigureAwait(false))
@@ -6340,6 +6441,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedCanAffordSpecialization;
                 if (intReturn < 0)
@@ -6401,6 +6503,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
                 bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 if (blnCreated)
@@ -6503,6 +6606,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedFreeKarma;
                 if (intReturn != int.MinValue)
@@ -6550,6 +6654,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedFreeBase;
                 if (intReturn != int.MinValue)
@@ -6605,6 +6710,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedForcedBuyWithKarma;
                 if (intReturn < 0)
@@ -6669,6 +6775,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedForcedNotBuyWithKarma;
                 if (intReturn < 0)
@@ -6731,6 +6838,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strReturn = string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                                  strSpace, intPool);

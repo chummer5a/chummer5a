@@ -218,11 +218,13 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
                 string[] strModuleOutputStrings;
                 using (await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
                     strModuleOutputStrings = new string[intCount];
                     for (int i = 0; i < intCount; ++i)

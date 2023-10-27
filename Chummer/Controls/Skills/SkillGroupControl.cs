@@ -278,6 +278,7 @@ namespace Chummer.UI.Skills
             {
                 using (await _skillGroup.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager
                                                             .GetStringAsync(

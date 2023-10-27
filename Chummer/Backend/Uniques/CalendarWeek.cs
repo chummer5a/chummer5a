@@ -135,6 +135,7 @@ namespace Chummer
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // <week>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("week", token: token).ConfigureAwait(false);
@@ -376,6 +377,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = string.Format(
                     objCulture, await LanguageManager.GetStringAsync("String_WeekDisplay", strLanguage, token: token)
                                                      .ConfigureAwait(false)

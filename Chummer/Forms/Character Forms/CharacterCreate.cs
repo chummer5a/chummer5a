@@ -5816,6 +5816,7 @@ namespace Chummer
             {
                 using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
                     {
                         int intBP = 0;
@@ -9671,6 +9672,7 @@ namespace Chummer
                 bool blnDoRemoveQuality = false;
                 using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                 {
+                    GenericToken.ThrowIfCancellationRequested();
                     int intCurrentLevels = objSelectedQuality.Levels;
                     int intSelectedLevels = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
                                                                  .ConfigureAwait(false);
@@ -14118,6 +14120,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 while (SkipUpdate)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 SkipUpdate = true;

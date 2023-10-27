@@ -175,6 +175,7 @@ namespace Chummer.Backend.Attributes
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 switch (Abbrev)
                 {
                     case "MAGAdept":
@@ -322,6 +323,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
                     return RawMetatypeMinimum;
                 int intReturn = RawMetatypeMinimum;
@@ -400,6 +402,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (Abbrev == "EDG" && await _objCharacter.GetIsAIAsync(token).ConfigureAwait(false))
                     return await (await _objCharacter.GetAttributeAsync("DEP", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
@@ -481,6 +484,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
                     return RawMetatypeAugmentedMaximum;
                 int intReturn = RawMetatypeAugmentedMaximum;
@@ -525,7 +529,10 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<int> GetBaseAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _intBase;
+            }
         }
 
         /// <summary>
@@ -535,6 +542,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intBase, value) == value)
                     return;
@@ -551,6 +559,7 @@ namespace Chummer.Backend.Attributes
                 return;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
                 OnPropertyChanged(nameof(Base));
@@ -576,6 +585,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Max(
                     Base + await GetFreeBaseAsync(token).ConfigureAwait(false) +
                     await GetRawMinimumAsync(token).ConfigureAwait(false),
@@ -601,6 +611,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Min(
                     await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Attributelevel,
                         false,
@@ -638,7 +649,10 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<int> GetKarmaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _intKarma;
+            }
         }
 
         /// <summary>
@@ -648,6 +662,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intKarma, value) == value)
                     return;
@@ -664,6 +679,7 @@ namespace Chummer.Backend.Attributes
                 return;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
                 OnPropertyChanged(nameof(Karma));
@@ -701,6 +717,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedValue;
                 if (intReturn != int.MinValue)
@@ -801,6 +818,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 {
@@ -896,6 +914,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intValue = await GetValueAsync(token).ConfigureAwait(false);
                 return await HasModifiersAsync(token).ConfigureAwait(false)
                     ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", intValue,
@@ -936,6 +955,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intReturn = (await ImprovementManager
                         .AugmentedValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev,
                             token: token).ConfigureAwait(false))
@@ -974,6 +994,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return (await ImprovementManager.AugmentedValueOfAsync(_objCharacter,
                         Improvement.ImprovementType.Attribute, false, Abbrev + "Base", token: token)
                     .ConfigureAwait(false))
@@ -1036,6 +1057,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (Improvement objImprovement in await ImprovementManager
                              .GetCachedImprovementListForAugmentedValueOfAsync(
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token)
@@ -1120,6 +1142,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intModifier = 0;
                 List<Improvement> lstModifiers = await ImprovementManager
                     .GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute,
@@ -1177,6 +1200,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intModifier = 0;
                 List<Improvement> lstModifiers = await ImprovementManager
                     .GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute,
@@ -1225,6 +1249,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intModifier = 0;
                 List<Improvement> lstModifiers = await ImprovementManager
                     .GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute,
@@ -1262,6 +1287,7 @@ namespace Chummer.Backend.Attributes
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
@@ -1458,6 +1484,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedTotalValue;
                 if (intReturn != int.MinValue)
@@ -1488,6 +1515,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intReturn = await GetMetatypeMinimumAsync(token).ConfigureAwait(false) +
                                 await GetMinimumModifiersAsync(token).ConfigureAwait(false);
                 if (!CharacterObject.Settings.UnclampAttributeMinimum && intReturn < 0)
@@ -1531,6 +1559,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
@@ -1575,6 +1604,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
@@ -1613,6 +1643,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
@@ -1658,6 +1689,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Abbrev == "MAGAdept"
                     ? await LanguageManager.MAGAdeptStringAsync(strLanguage, true, token).ConfigureAwait(false)
                     : await LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Long", strLanguage, token: token).ConfigureAwait(false);
@@ -1686,6 +1718,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                     .ConfigureAwait(false);
                 if (Abbrev == "MAGAdept")
@@ -1727,6 +1760,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
                     await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
                     await GetTotalMinimumAsync(token).ConfigureAwait(false),
@@ -1782,6 +1816,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 bool blnMinChanged = _intMetatypeMin != intMin;
                 bool blnMaxChanged = _intMetatypeMax != intMax;
                 bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
@@ -1865,6 +1900,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 bool blnBaseChanged = _intBase != intBase;
                 bool blnKarmaChanged = _intKarma != intKarma;
                 bool blnMinChanged = _intMetatypeMin != intMin;
@@ -2203,6 +2239,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intBase = Base;
                 int intReturn = intBase;
 
@@ -2258,6 +2295,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intTotalMaximum = await GetTotalMaximumAsync(token).ConfigureAwait(false);
                 return intTotalMaximum > 0 && await GetValueAsync(token).ConfigureAwait(false) == intTotalMaximum;
             }
@@ -2276,6 +2314,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalMaximumAsync(token).ConfigureAwait(false) -
                     await GetTotalBaseAsync(token).ConfigureAwait(false), 0);
@@ -2295,6 +2334,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalMaximumAsync(token).ConfigureAwait(false) - Karma -
                     await GetFreeBaseAsync(token).ConfigureAwait(false) -
@@ -2395,6 +2435,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedUpgradeKarmaCost;
                 if (intReturn != int.MinValue)
@@ -2537,6 +2578,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (Karma == 0)
                     return 0;
 
@@ -2635,6 +2677,7 @@ namespace Chummer.Backend.Attributes
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
                 int intReturn = _intCachedCanUpgradeCareer;
                 if (intReturn < 0)

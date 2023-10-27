@@ -663,6 +663,7 @@ namespace Chummer.Backend.Equipment
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // <lifestyle>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("lifestyle", token).ConfigureAwait(false);
@@ -865,6 +866,7 @@ namespace Chummer.Backend.Equipment
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
@@ -896,6 +898,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(CustomName))
@@ -984,6 +987,7 @@ namespace Chummer.Backend.Equipment
                 return Page;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
@@ -1219,6 +1223,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return LP - Comforts - Area - Security + Roommates + BonusLP
                        - await LifestyleQualities.SumAsync(x => x.LP, token: token).ConfigureAwait(false);
             }
@@ -1468,6 +1473,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return ComfortsMaximum
                        + await LifestyleQualities
                                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.ComfortsMaximum, token)
@@ -1492,6 +1498,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return SecurityMaximum
                        + await LifestyleQualities
                                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.SecurityMaximum, token)
@@ -1516,6 +1523,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return AreaMaximum
                        + await LifestyleQualities
                                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.AreaMaximum, token)
@@ -1839,6 +1847,7 @@ namespace Chummer.Backend.Equipment
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1867,6 +1876,7 @@ namespace Chummer.Backend.Equipment
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1920,13 +1930,17 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<string> GetCityAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _strCity;
+            }
         }
 
         public async ValueTask SetCityAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strCity, value) != value)
                     OnPropertyChanged(nameof(City));
             }
@@ -1952,13 +1966,17 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<string> GetDistrictAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _strDistrict;
+            }
         }
 
         public async ValueTask SetDistrictAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strDistrict, value) != value)
                     OnPropertyChanged(nameof(District));
             }
@@ -1984,13 +2002,17 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<string> GetBoroughAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _strBorough;
+            }
         }
 
         public async ValueTask SetBoroughAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strBorough, value) != value)
                     OnPropertyChanged(nameof(Borough));
             }
@@ -2018,7 +2040,10 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await GetTotalMonthlyCostAsync(token).ConfigureAwait(false) * Increments;
+            }
         }
 
         public decimal CostMultiplier
@@ -2048,6 +2073,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 decimal d = (Roommates + Area + Comforts + Security) * 10;
                 d += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.LifestyleCost,
                                                            false,
@@ -2094,6 +2120,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return BaseArea + Area
                                 + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
                                                                     lq => lq.Area, token: token).ConfigureAwait(false);
@@ -2123,6 +2150,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return BaseComforts + Comforts
                                     + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
                                                                         lq => lq.Comforts, token: token)
@@ -2153,6 +2181,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return BaseSecurity + Security
                                     + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
                                                                         lq => lq.Security, token: token)
@@ -2178,6 +2207,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalAreaMaximumAsync(token).ConfigureAwait(false) - (BaseArea + await LifestyleQualities
                         .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Area, token: token)
@@ -2203,6 +2233,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalComfortsMaximumAsync(token).ConfigureAwait(false) - (BaseComforts
                         + await LifestyleQualities
@@ -2229,6 +2260,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalSecurityMaximumAsync(token).ConfigureAwait(false) - (BaseSecurity
                         + await LifestyleQualities
@@ -2255,6 +2287,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return string.Format(
                     GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
@@ -2281,6 +2314,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return string.Format(
                     GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
@@ -2308,6 +2342,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return string.Format(
                     GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
@@ -2336,6 +2371,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Cost * (await GetCostMultiplierAsync(token).ConfigureAwait(false)
                                + await GetBaseCostMultiplierAsync(token).ConfigureAwait(false));
             }
@@ -2363,6 +2399,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return await LifestyleQualities
                              .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier,
                                        token: token)
@@ -2440,6 +2477,7 @@ namespace Chummer.Backend.Equipment
             decimal decReturn = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!TrustFund)
                 {
                     decReturn += await GetBaseCostAsync(token).ConfigureAwait(false);
@@ -2508,6 +2546,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(
                            _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
@@ -2872,12 +2911,14 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
                         await LanguageManager.GetStringAsync("Message_DeleteLifestyle", token: token)
                                              .ConfigureAwait(false), token).ConfigureAwait(false))
                     return false;
                 using (await _objCharacter.Lifestyles.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (await _objCharacter.Lifestyles.ContainsAsync(this, token).ConfigureAwait(false)
                         && !await _objCharacter.Lifestyles.RemoveAsync(this, token).ConfigureAwait(false))
                         return false;
@@ -2902,6 +2943,7 @@ namespace Chummer.Backend.Equipment
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
                 await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);

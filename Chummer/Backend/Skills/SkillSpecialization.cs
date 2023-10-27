@@ -104,6 +104,7 @@ namespace Chummer.Backend.Skills
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // <skillspecialization>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("skillspecialization", token: token).ConfigureAwait(false);
@@ -171,6 +172,7 @@ namespace Chummer.Backend.Skills
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))
@@ -210,7 +212,10 @@ namespace Chummer.Backend.Skills
         public async ValueTask<Skill> GetParentAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _objParent;
+            }
         }
 
         private XmlNode _objCachedMyXmlNode;
@@ -221,6 +226,7 @@ namespace Chummer.Backend.Skills
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -248,6 +254,7 @@ namespace Chummer.Backend.Skills
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -429,6 +436,7 @@ namespace Chummer.Backend.Skills
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intReturn = 0;
                 if ((await ImprovementManager
                            .GetCachedImprovementListForValueOfAsync(_objCharacter,

@@ -448,6 +448,7 @@ namespace Chummer.UI.Attributes
             CharacterAttrib objAttribute = await GetAttributeObjectAsync(token).ConfigureAwait(false);
             using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intTotalMaximum = await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false);
                 if (intValue < intTotalMaximum || intTotalMaximum == 0)
                     return true;

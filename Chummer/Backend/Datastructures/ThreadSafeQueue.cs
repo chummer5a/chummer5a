@@ -113,7 +113,10 @@ namespace Chummer
         public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _queData.Contains(item);
+            }
         }
 
         /// <inheritdoc />
@@ -121,6 +124,7 @@ namespace Chummer
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (ReferenceEquals(await PeekAsync(token).ConfigureAwait(false), item))
                 {
                     await DequeueAsync(token).ConfigureAwait(false);
@@ -164,7 +168,10 @@ namespace Chummer
         public async ValueTask<T> PeekAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _queData.Peek();
+            }
         }
 
         /// <inheritdoc cref="Queue{T}.Dequeue" />
@@ -247,7 +254,10 @@ namespace Chummer
         public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _queData.ToArray();
+            }
         }
 
         /// <inheritdoc cref="Queue{T}.CopyTo" />
@@ -276,7 +286,10 @@ namespace Chummer
         public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 _queData.CopyTo(array, index);
+            }
         }
 
         /// <inheritdoc />
@@ -297,6 +310,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_queData.Count == 0)
                     return new Tuple<bool, T>(false, default);
             }
@@ -335,6 +349,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (T objItem in _queData)
                 {
                     array.SetValue(objItem, index);
@@ -359,7 +374,10 @@ namespace Chummer
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _queData.Count;
+            }
         }
 
         /// <inheritdoc cref="ICollection.SyncRoot" />

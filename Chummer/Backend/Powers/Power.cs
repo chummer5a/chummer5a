@@ -286,6 +286,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail == default)
                     _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
                         await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
@@ -441,6 +442,7 @@ namespace Chummer
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // <power>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("power", token).ConfigureAwait(false);
@@ -762,6 +764,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = Name;
 
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -813,6 +816,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(Extra))
@@ -952,6 +956,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
                 int intTotalMax = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
                 if (_intRating <= intTotalMax)
@@ -984,6 +989,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return Math.Min(
                     await GetRatingAsync(token).ConfigureAwait(false)
                     + await GetFreeLevelsAsync(token).ConfigureAwait(false),
@@ -1063,62 +1069,66 @@ namespace Chummer
         public async ValueTask<int> GetFreeLevelsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            using (await _objCachedFreeLevelsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                if (_intCachedFreeLevels != int.MinValue)
-                    return _intCachedFreeLevels;
-
-                IAsyncDisposable objLocker = await _objCachedFreeLevelsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                token.ThrowIfCancellationRequested();
+                using (await _objCachedFreeLevelsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (_intCachedFreeLevels != int.MinValue)
                         return _intCachedFreeLevels;
-                    decimal decExtraCost = FreePoints;
-                    // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
-                    int intReturn = (await ImprovementManager
-                            .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                Improvement.ImprovementType.AdeptPowerFreeLevels,
-                                Name, token: token).ConfigureAwait(false))
-                        .Sum(objImprovement => objImprovement.UniqueName == Extra,
-                            objImprovement => objImprovement.Rating, token);
-                    // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
-                    if (Rating + intReturn == 0 && ExtraPointCost > 0)
+
+                    IAsyncDisposable objLocker = await _objCachedFreeLevelsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        decExtraCost -= (PointsPerLevel + ExtraPointCost);
-                        if (decExtraCost >= 0)
+                        token.ThrowIfCancellationRequested();
+                        if (_intCachedFreeLevels != int.MinValue)
+                            return _intCachedFreeLevels;
+                        decimal decExtraCost = FreePoints;
+                        // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
+                        int intReturn = (await ImprovementManager
+                                .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                    Improvement.ImprovementType.AdeptPowerFreeLevels,
+                                    Name, token: token).ConfigureAwait(false))
+                            .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                objImprovement => objImprovement.Rating, token);
+                        // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
+                        if (Rating + intReturn == 0 && ExtraPointCost > 0)
                         {
-                            ++intReturn;
+                            decExtraCost -= (PointsPerLevel + ExtraPointCost);
+                            if (decExtraCost >= 0)
+                            {
+                                ++intReturn;
+                            }
+
+                            for (decimal i = decExtraCost; i >= 1; --i)
+                            {
+                                ++intReturn;
+                            }
+                        }
+                        else if (PointsPerLevel == 0)
+                        {
+                            Utils.BreakIfDebug();
+                            // power costs no PP, just return free levels
+                        }
+                        //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
+                        else
+                        {
+                            for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
+                            {
+                                ++intReturn;
+                            }
                         }
 
-                        for (decimal i = decExtraCost; i >= 1; --i)
-                        {
-                            ++intReturn;
-                        }
+                        return _intCachedFreeLevels
+                            = Math.Min(intReturn,
+                                MAGAttributeObject != null
+                                    ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false)
+                                    : 0);
                     }
-                    else if (PointsPerLevel == 0)
+                    finally
                     {
-                        Utils.BreakIfDebug();
-                        // power costs no PP, just return free levels
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
-                    //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
-                    else
-                    {
-                        for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
-                        {
-                            ++intReturn;
-                        }
-                    }
-
-                    return _intCachedFreeLevels
-                        = Math.Min(intReturn,
-                            MAGAttributeObject != null
-                                ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false)
-                                : 0);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -1174,45 +1184,49 @@ namespace Chummer
         public async ValueTask<decimal> GetPowerPointsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            using (await _objCachedPowerPointsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                if (_decCachedPowerPoints != decimal.MinValue)
-                    return _decCachedPowerPoints;
-
-                IAsyncDisposable objLocker =
-                    await _objCachedPowerPointsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                token.ThrowIfCancellationRequested();
+                using (await _objCachedPowerPointsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (_decCachedPowerPoints != decimal.MinValue)
                         return _decCachedPowerPoints;
-                    int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
-                    int intRating = await GetRatingAsync(token).ConfigureAwait(false);
-                    if (intRating == 0 || !LevelsEnabled && intFreeLevels > 0)
-                    {
-                        return _decCachedPowerPoints = 0;
-                    }
 
-                    decimal decReturn;
-                    decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
-                    if (intFreeLevels * PointsPerLevel >= decFreePoints)
+                    IAsyncDisposable objLocker =
+                        await _objCachedPowerPointsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        decReturn = intRating * PointsPerLevel;
-                        decReturn += ExtraPointCost;
-                    }
-                    else
-                    {
-                        decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * PointsPerLevel
-                                    + ExtraPointCost;
-                        decReturn -= decFreePoints;
-                    }
+                        token.ThrowIfCancellationRequested();
+                        if (_decCachedPowerPoints != decimal.MinValue)
+                            return _decCachedPowerPoints;
+                        int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
+                        int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                        if (intRating == 0 || !LevelsEnabled && intFreeLevels > 0)
+                        {
+                            return _decCachedPowerPoints = 0;
+                        }
 
-                    decReturn -= Discount;
-                    return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                        decimal decReturn;
+                        decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
+                        if (intFreeLevels * PointsPerLevel >= decFreePoints)
+                        {
+                            decReturn = intRating * PointsPerLevel;
+                            decReturn += ExtraPointCost;
+                        }
+                        else
+                        {
+                            decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * PointsPerLevel
+                                        + ExtraPointCost;
+                            decReturn -= decFreePoints;
+                        }
+
+                        decReturn -= Discount;
+                        return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
         }
@@ -1234,6 +1248,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (string.IsNullOrEmpty(_strCachedPowerPoints))
                     _strCachedPowerPoints
                         = (await GetPowerPointsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
@@ -1292,6 +1307,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intRating = (await ImprovementManager
                                        .GetCachedImprovementListForValueOfAsync(CharacterObject,
                                            Improvement.ImprovementType.AdeptPowerFreePoints,
@@ -1372,6 +1388,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
@@ -1687,6 +1704,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!LevelsEnabled)
                     return 1;
                 int intReturn = MaxLevels;
@@ -1971,6 +1989,7 @@ namespace Chummer
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -2001,6 +2020,7 @@ namespace Chummer
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -2060,30 +2080,33 @@ namespace Chummer
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
             {
-                sbdModifier.Append(await LanguageManager.GetStringAsync("String_Rating", token: token)
-                                                        .ConfigureAwait(false)).Append(strSpace).Append('(')
-                           .Append((await GetRatingAsync(token).ConfigureAwait(false)).ToString(
-                                       GlobalSettings.CultureInfo)).Append(strSpace)
-                           .Append('×')
-                           .Append(strSpace).Append(PointsPerLevel.ToString(GlobalSettings.CultureInfo))
-                           .Append(')');
-                foreach (Improvement objImprovement in (await ImprovementManager
-                                                              .GetCachedImprovementListForValueOfAsync(
-                                                                  CharacterObject,
-                                                                  Improvement.ImprovementType.AdeptPower,
-                                                                  Name, token: token).ConfigureAwait(false)).Where(
-                             objImprovement =>
-                                 objImprovement.UniqueName == Extra))
+                token.ThrowIfCancellationRequested();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                 {
-                    sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                               .Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
-                                                            .ConfigureAwait(false)).Append(strSpace).Append('(')
-                               .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
-                }
+                    sbdModifier.Append(await LanguageManager.GetStringAsync("String_Rating", token: token)
+                            .ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await GetRatingAsync(token).ConfigureAwait(false)).ToString(
+                            GlobalSettings.CultureInfo)).Append(strSpace)
+                        .Append('×')
+                        .Append(strSpace).Append(PointsPerLevel.ToString(GlobalSettings.CultureInfo))
+                        .Append(')');
+                    foreach (Improvement objImprovement in (await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(
+                                     CharacterObject,
+                                     Improvement.ImprovementType.AdeptPower,
+                                     Name, token: token).ConfigureAwait(false)).Where(
+                                 objImprovement =>
+                                     objImprovement.UniqueName == Extra))
+                    {
+                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
+                                .ConfigureAwait(false)).Append(strSpace).Append('(')
+                            .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
 
-                return sbdModifier.ToString();
+                    return sbdModifier.ToString();
+                }
             }
         }
 
@@ -2103,6 +2126,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
                 await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);

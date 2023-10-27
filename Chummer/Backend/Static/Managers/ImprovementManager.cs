@@ -782,6 +782,7 @@ namespace Chummer
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? objCharacter.LockObject.EnterReadLock(token) : await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // These values are needed to prevent race conditions that could cause Chummer to crash
                 Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>> tupMyValueToCheck
                     = new Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>(
@@ -4061,6 +4062,7 @@ namespace Chummer
             List<Improvement> objImprovementList;
             using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all of the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
                     ? objCharacter.Improvements.Where(objImprovement =>

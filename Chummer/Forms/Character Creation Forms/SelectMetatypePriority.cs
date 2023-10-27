@@ -1360,6 +1360,7 @@ namespace Chummer
         {
             using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                 {
                     int intSumToTen = await SumToTen(false, token).ConfigureAwait(false);

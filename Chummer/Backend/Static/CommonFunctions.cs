@@ -1207,6 +1207,7 @@ namespace Chummer
 
             using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(strNotes)

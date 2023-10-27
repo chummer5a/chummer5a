@@ -113,7 +113,10 @@ namespace Chummer
         public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _stkData.Contains(item);
+            }
         }
 
         /// <inheritdoc cref="Stack{T}.TrimExcess"/>
@@ -149,7 +152,10 @@ namespace Chummer
         public async ValueTask<T> PeekAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _stkData.Peek();
+            }
         }
 
         /// <inheritdoc cref="Stack{T}.Pop"/>
@@ -257,6 +263,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_stkData.Count == 0)
                     return new Tuple<bool, T>(false, default);
             }
@@ -288,7 +295,10 @@ namespace Chummer
         public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _stkData.ToArray();
+            }
         }
 
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
@@ -330,7 +340,10 @@ namespace Chummer
         public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 _stkData.CopyTo(array, index);
+            }
         }
 
         /// <inheritdoc />
@@ -338,6 +351,7 @@ namespace Chummer
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (ReferenceEquals(await PeekAsync(token).ConfigureAwait(false), item))
                 {
                     await PopAsync(token).ConfigureAwait(false);
@@ -353,6 +367,7 @@ namespace Chummer
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (T objItem in _stkData)
                 {
                     array.SetValue(objItem, index);
@@ -377,7 +392,10 @@ namespace Chummer
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _stkData.Count;
+            }
         }
 
         /// <inheritdoc />

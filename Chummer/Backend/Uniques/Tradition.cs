@@ -502,6 +502,7 @@ namespace Chummer.Backend.Uniques
                 return;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // <tradition>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("tradition", token).ConfigureAwait(false);
@@ -789,6 +790,7 @@ namespace Chummer.Backend.Uniques
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsCustomTradition)
                 {
                     if (GlobalSettings.Language != strLanguage)
@@ -854,6 +856,7 @@ namespace Chummer.Backend.Uniques
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(Extra))
@@ -1485,6 +1488,7 @@ namespace Chummer.Backend.Uniques
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
@@ -1506,6 +1510,7 @@ namespace Chummer.Backend.Uniques
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (Type == TraditionType.None)
                     return null;
                 XmlNode objReturn = _xmlCachedMyXmlNode;
@@ -1547,6 +1552,7 @@ namespace Chummer.Backend.Uniques
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1659,6 +1665,7 @@ namespace Chummer.Backend.Uniques
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
                 await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);

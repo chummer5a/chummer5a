@@ -828,6 +828,7 @@ namespace Chummer.UI.Skills
             {
                 using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
                                                                                "Message_ConfirmKarmaExpense",
@@ -858,6 +859,7 @@ namespace Chummer.UI.Skills
             {
                 using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     int price = _objSkill.CharacterObject.Settings.KarmaSpecialization;
 
                     decimal decExtraSpecCost = 0;

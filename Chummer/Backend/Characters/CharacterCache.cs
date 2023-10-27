@@ -436,6 +436,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 using (await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     _strBackground = objExistingCache.Background;
                     _strBuildMethod = objExistingCache.BuildMethod;
                     _strCharacterAlias = objExistingCache.CharacterAlias;
