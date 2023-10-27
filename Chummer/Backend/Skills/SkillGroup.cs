@@ -194,10 +194,15 @@ namespace Chummer.Backend.Skills
 
                         //and save back, cannot go under 0
                         BasePoints = Math.Max(0, value - FreeBase);
-                        foreach (Skill skill in SkillList)
+
+                        if (!CharacterObject.Created && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode &&
+                                                          !CharacterObject.IgnoreRules)
+                                                         || !CharacterObject.Settings.UsePointsOnBrokenGroups))
                         {
-                            //To trigger new calculation of skill.KarmaPoints
-                            skill.OnPropertyChanged();
+                            foreach (Skill skill in SkillList)
+                            {
+                                skill.BasePoints = 0;
+                            }
                         }
                     }
                 }
@@ -239,10 +244,18 @@ namespace Chummer.Backend.Skills
                     int intValue = Math.Max(0, value - await GetFreeBaseAsync(token).ConfigureAwait(false));
                     if (Interlocked.Exchange(ref _intSkillFromSp, intValue) != intValue)
                         OnPropertyChanged(nameof(BasePoints));
-                    foreach (Skill skill in SkillList)
+
+                    CharacterSettings objSettings =
+                        await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                        && ((await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                             && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                            || !await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false)))
                     {
-                        //To trigger new calculation of skill.BasePoints
-                        skill.OnPropertyChanged(nameof(Skill.Base));
+                        foreach (Skill skill in SkillList)
+                        {
+                            await skill.SetBasePointsAsync(0, token).ConfigureAwait(false);
+                        }
                     }
                 }
                 finally
@@ -258,12 +271,11 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (!KarmaUnbroken && KarmaPoints > 0)
-                    {
-                        KarmaPoints = 0;
-                    }
-
-                    return IsDisabled ? 0 : Math.Min(KarmaPoints + FreeLevels, RatingMaximum);
+                    return IsDisabled
+                        ? 0
+                        : KarmaUnbroken
+                            ? Math.Min(KarmaPoints + FreeLevels, RatingMaximum)
+                            : Math.Min(FreeLevels, RatingMaximum);
                 }
             }
             set
@@ -282,10 +294,15 @@ namespace Chummer.Backend.Skills
 
                         //and save back, cannot go under 0
                         KarmaPoints = Math.Max(0, value - FreeLevels);
-                        foreach (Skill skill in SkillList)
+
+                        if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
+                            !CharacterObject.IgnoreRules && Karma > 0)
                         {
-                            //To trigger new calculation of skill.KarmaPoints
-                            skill.OnPropertyChanged();
+                            foreach (Skill skill in SkillList)
+                            {
+                                skill.KarmaPoints = 0;
+                                skill.Specializations.RemoveAll(x => !x.Free);
+                            }
                         }
                     }
                 }
@@ -335,10 +352,25 @@ namespace Chummer.Backend.Skills
                     int intValue = Math.Max(0, value - await GetFreeLevelsAsync(token).ConfigureAwait(false));
                     if (Interlocked.Exchange(ref _intSkillFromKarma, intValue) != intValue)
                         OnPropertyChanged(nameof(KarmaPoints));
-                    foreach (Skill skill in SkillList)
+
+                    int intGroupKarma = await GetKarmaAsync(token).ConfigureAwait(false);
+                    if (intGroupKarma > 0
+                        && await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                            .GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                        && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                        && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     {
-                        //To trigger new calculation of skill.KarmaPoints
-                        skill.OnPropertyChanged(nameof(Skill.Karma));
+                        foreach (Skill skill in SkillList)
+                        {
+                            await skill.SetKarmaPointsAsync(0, token).ConfigureAwait(false);
+                            ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
+                                = await skill.GetSpecializationsAsync(token).ConfigureAwait(false);
+                            foreach (SkillSpecialization objSpecialization in await lstSpecs.ToListAsync(
+                                         x => !x.Free, token).ConfigureAwait(false))
+                            {
+                                await lstSpecs.RemoveAsync(objSpecialization, token).ConfigureAwait(false);
+                            }
+                        }
                     }
                 }
                 finally
@@ -1958,6 +1990,12 @@ namespace Chummer.Backend.Skills
                             _intCachedHasAnyBreakingSkills = int.MinValue;
                             UpdateIsBroken();
                         }
+
+                        if (KarmaPoints > 0 && setNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)) &&
+                            _objCharacter?.Created == false && !KarmaUnbroken)
+                        {
+                            KarmaPoints = 0;
+                        }
                     }
 
                     if (PropertyChanged != null)
@@ -2006,7 +2044,68 @@ namespace Chummer.Backend.Skills
             switch (e.PropertyName)
             {
                 case nameof(CharacterSettings.StrictSkillGroupsInCreateMode):
+                    if (CharacterObject?.Created == false && CharacterObject.Settings.StrictSkillGroupsInCreateMode &&
+                        !CharacterObject.IgnoreRules)
+                    {
+                        using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                        {
+                            if (Karma > 0)
+                            {
+                                foreach (Skill skill in SkillList)
+                                {
+                                    IAsyncDisposable objLocker = await skill.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                                    try
+                                    {
+                                        skill.KarmaPoints = 0;
+                                        skill.BasePoints = 0;
+                                        skill.Specializations.RemoveAll(x => !x.Free);
+                                    }
+                                    finally
+                                    {
+                                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (Skill skill in SkillList)
+                                {
+                                    IAsyncDisposable objLocker = await skill.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                                    try
+                                    {
+                                        skill.BasePoints = 0;
+                                    }
+                                    finally
+                                    {
+                                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    OnPropertyChanged(nameof(BaseUnbroken));
+                    break;
                 case nameof(CharacterSettings.UsePointsOnBrokenGroups):
+                    if (CharacterObject?.Created == false && !CharacterObject.Settings.UsePointsOnBrokenGroups)
+                    {
+                        using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                        {
+                            foreach (Skill skill in SkillList)
+                            {
+                                IAsyncDisposable objLocker = await skill.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                                try
+                                {
+                                    skill.BasePoints = 0;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                        }
+                    }
+
                     OnPropertyChanged(nameof(BaseUnbroken));
                     break;
 

@@ -469,7 +469,7 @@ namespace Chummer
         {
             get
             {
-                using (LockObject.EnterUpgradeableReadLock())
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }

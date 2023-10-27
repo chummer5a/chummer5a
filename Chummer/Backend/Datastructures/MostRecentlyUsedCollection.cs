@@ -86,7 +86,7 @@ namespace Chummer
         /// <inheritdoc />
         public override void Add(T item)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 int intExistingIndex = IndexOf(item);
                 if (intExistingIndex == -1)
@@ -98,8 +98,7 @@ namespace Chummer
 
         public override async ValueTask AddAsync(T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
@@ -107,10 +106,6 @@ namespace Chummer
                     await base.AddAsync(item, token).ConfigureAwait(false);
                 else
                     await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

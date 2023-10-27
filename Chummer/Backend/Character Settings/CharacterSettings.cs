@@ -3525,7 +3525,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
                 if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
-                if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialarts", ref (_intMaxMartialArts)))
+                if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts);
                 if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques);
@@ -4315,7 +4315,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
                 if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
-                if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialarts", ref (_intMaxMartialArts)))
+                if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts);
                 if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques);

@@ -1092,11 +1092,11 @@ namespace Chummer.Backend.Skills
                 {
                     if (SkillGroupObject?.Base > 0)
                     {
-                        if ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
-                             !CharacterObject.IgnoreRules)
-                            || !CharacterObject.Settings.UsePointsOnBrokenGroups)
-                            BasePoints = 0;
-                        return Math.Min(SkillGroupObject.Base + BasePoints + FreeBase, RatingMaximum);
+                        return (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
+                                !CharacterObject.IgnoreRules)
+                               || !CharacterObject.Settings.UsePointsOnBrokenGroups
+                            ? Math.Min(SkillGroupObject.Base + FreeBase, RatingMaximum)
+                            : Math.Min(SkillGroupObject.Base + BasePoints + FreeBase, RatingMaximum);
                     }
 
                     return Math.Min(BasePoints + FreeBase, RatingMaximum);
@@ -1148,13 +1148,16 @@ namespace Chummer.Backend.Skills
                     {
                         CharacterSettings objSettings =
                             await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                        if ((await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
-                             && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                             && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
-                            || !await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false))
-                            await SetBasePointsAsync(0, token).ConfigureAwait(false);
-                        return Math.Min(intGroupBase + await GetBasePointsAsync(token).ConfigureAwait(false) + await GetFreeBaseAsync(token).ConfigureAwait(false),
-                            await GetRatingMaximumAsync(token).ConfigureAwait(false));
+                        return (await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                                && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                                && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                               || !await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false)
+                            ? Math.Min(intGroupBase + await GetFreeBaseAsync(token).ConfigureAwait(false),
+                                await GetRatingMaximumAsync(token).ConfigureAwait(false))
+                            : Math.Min(
+                                intGroupBase + await GetBasePointsAsync(token).ConfigureAwait(false) +
+                                await GetFreeBaseAsync(token).ConfigureAwait(false),
+                                await GetRatingMaximumAsync(token).ConfigureAwait(false));
                     }
                 }
 
@@ -1221,8 +1224,6 @@ namespace Chummer.Backend.Skills
                     if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
                         !CharacterObject.IgnoreRules && SkillGroupObject?.Karma > 0)
                     {
-                        KarmaPoints = 0;
-                        Specializations.RemoveAll(x => !x.Free);
                         return SkillGroupObject.Karma;
                     }
 
@@ -1272,15 +1273,6 @@ namespace Chummer.Backend.Skills
                         && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                         && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     {
-                        await SetKarmaPointsAsync(0, token).ConfigureAwait(false);
-                        ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
-                            = await GetSpecializationsAsync(token).ConfigureAwait(false);
-                        foreach (SkillSpecialization objSpecialization in await lstSpecs.ToListAsync(
-                                     x => !x.Free, token).ConfigureAwait(false))
-                        {
-                            await lstSpecs.RemoveAsync(objSpecialization, token).ConfigureAwait(false);
-                        }
-
                         return intGroupKarma;
                     }
                 }
