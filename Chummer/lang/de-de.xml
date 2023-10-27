@@ -2051,6 +2051,10 @@
       <text>(f)</text>
     </string>
     <string>
+      <key>String_DamageFire</key>
+      <text>(Feuer)</text>
+    </string>
+    <string>
       <key>String_DamagePOrS</key>
       <text>K oder G</text>
     </string>

@@ -2846,6 +2846,11 @@ namespace Chummer.Backend.Equipment
                 strDamageExtra = "(f)";
                 strDamage = strDamage.FastEscape("(f)");
             }
+            else if (strDamage.Contains("(fire)"))
+            {
+                strDamageExtra = "(fire)";
+                strDamage = strDamage.FastEscape("(fire)");
+            }
 
             // Look for splash damage info.
             if (strDamage.ContainsAny("/m)", " Radius)"))
@@ -3144,6 +3149,11 @@ namespace Chummer.Backend.Equipment
                     strDamageExtra = "(f)";
                     strDamage = strDamage.FastEscape("(f)");
                 }
+                else if (strDamage.Contains("(fire)"))
+                {
+                    strDamageExtra = "(fire)";
+                    strDamage = strDamage.FastEscape("(fire)");
+                }
 
                 if (string.IsNullOrEmpty(strDamage))
                     strReturn = strDamageType + strDamageExtra;
@@ -3345,6 +3355,8 @@ namespace Chummer.Backend.Equipment
                   .CheapReplace(
                       "(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage, token: token))
                   .CheapReplace(
+                      "(fire)", () => LanguageManager.GetString("String_DamageFire", strLanguage, token: token))
+                  .CheapReplace(
                       "Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage, token: token))
                   .CheapReplace(
                       "Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage, token: token))
@@ -3383,6 +3395,8 @@ namespace Chummer.Backend.Equipment
                             "(e)", () => LanguageManager.GetStringAsync("String_DamageElectric", strLanguage, token: token), token: token)
                         .CheapReplaceAsync(
                             "(f)", () => LanguageManager.GetStringAsync("String_DamageFlechette", strLanguage, token: token), token: token)
+                        .CheapReplaceAsync(
+                            "(fire)", () => LanguageManager.GetStringAsync("String_DamageFire", strLanguage, token: token), token: token)
                         .CheapReplaceAsync(
                             "Grenade",
                             () => LanguageManager.GetStringAsync("String_DamageGrenade", strLanguage, token: token), token: token)
