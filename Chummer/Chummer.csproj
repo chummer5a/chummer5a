@@ -381,6 +381,7 @@
     <Compile Include="Backend\Helpers\AsyncLock.cs" />
     <Compile Include="Backend\Helpers\CancellationTokenTaskSource.cs" />
     <Compile Include="Backend\Helpers\DebuggableSemaphoreSlim.cs" />
+    <Compile Include="Backend\Helpers\LinkedSemaphoreSlim.cs" />
     <Compile Include="Backend\Helpers\LzmaHelper.cs" />
     <Compile Include="Backend\Helpers\SafeDisposableObjectPool.cs" />
     <Compile Include="Backend\Helpers\SafeObjectPool.cs" />
