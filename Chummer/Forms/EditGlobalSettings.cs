@@ -2410,78 +2410,89 @@ namespace Chummer
                 if (eResult != DialogResult.OK || string.IsNullOrWhiteSpace(strSelectedPath))
                     return;
 
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                XPathNavigator objBooks = await tskLoadBooks.ConfigureAwait(false);
-                string[] astrFiles = Directory.GetFiles(strSelectedPath, "*.pdf");
-                ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch
-                    = new ConcurrentDictionary<string, Tuple<string, int>>();
-                foreach (XPathNavigator objBook in await objBooks
-                                                         .SelectAndCacheExpressionAsync(
-                                                             "/chummer/books/book[matches/match/language = "
-                                                             + _strSelectedLanguage.CleanXPath() + ']')
-                                                         .ConfigureAwait(false))
+                Stopwatch sw = Utils.StopwatchPool.Get();
+                try
                 {
-                    string strCode
-                        = (await objBook.SelectSingleNodeAndCacheExpressionAsync("code").ConfigureAwait(false))?.Value;
-                    if (string.IsNullOrEmpty(strCode))
-                        continue;
-                    XPathNavigator objMatch
-                        = await objBook.SelectSingleNodeAndCacheExpressionAsync(
-                                           "matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']')
-                                       .ConfigureAwait(false);
-                    if (objMatch == null)
-                        continue;
-                    string strMatchText
-                        = (await objMatch.SelectSingleNodeAndCacheExpressionAsync("text").ConfigureAwait(false))?.Value;
-                    if (string.IsNullOrEmpty(strMatchText))
-                        continue;
-                    if (!int.TryParse(
-                            (await objMatch.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))
-                            ?.Value, out int intMatchPage))
-                        continue;
-                    Tuple<string, int> tupValue = new Tuple<string, int>(strMatchText, intMatchPage);
-                    dicPatternsToMatch.AddOrUpdate(strCode, tupValue, (x, y) => tupValue);
-                }
-
-                using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                       = await Program.CreateAndShowProgressBarAsync(strSelectedPath, astrFiles.Length)
-                                      .ConfigureAwait(false))
-                {
-                    List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, dicPatternsToMatch, frmLoadingBar.MyForm)
-                        .ConfigureAwait(false);
-                    sw.Stop();
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdFeedback))
+                    sw.Start();
+                    XPathNavigator objBooks = await tskLoadBooks.ConfigureAwait(false);
+                    string[] astrFiles = Directory.GetFiles(strSelectedPath, "*.pdf");
+                    ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch
+                        = new ConcurrentDictionary<string, Tuple<string, int>>();
+                    foreach (XPathNavigator objBook in await objBooks
+                                 .SelectAndCacheExpressionAsync(
+                                     "/chummer/books/book[matches/match/language = "
+                                     + _strSelectedLanguage.CleanXPath() + ']')
+                                 .ConfigureAwait(false))
                     {
-                        sbdFeedback.AppendLine().AppendLine()
-                                   .AppendLine("-------------------------------------------------------------")
-                                   .AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                                 "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
-                                                 strSelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
-                                                 list.Count).AppendLine().AppendLine();
-                        foreach (SourcebookInfo sourcebook in list)
-                        {
-                            sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                                     "{0} with Offset {1} path: {2}", sourcebook.Code,
-                                                     sourcebook.Offset, sourcebook.Path).AppendLine();
-                        }
-
-                        sbdFeedback.AppendLine()
-                                   .AppendLine("-------------------------------------------------------------");
-                        Log.Info(sbdFeedback.ToString());
+                        string strCode
+                            = (await objBook.SelectSingleNodeAndCacheExpressionAsync("code").ConfigureAwait(false))
+                            ?.Value;
+                        if (string.IsNullOrEmpty(strCode))
+                            continue;
+                        XPathNavigator objMatch
+                            = await objBook.SelectSingleNodeAndCacheExpressionAsync(
+                                    "matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']')
+                                .ConfigureAwait(false);
+                        if (objMatch == null)
+                            continue;
+                        string strMatchText
+                            = (await objMatch.SelectSingleNodeAndCacheExpressionAsync("text").ConfigureAwait(false))
+                            ?.Value;
+                        if (string.IsNullOrEmpty(strMatchText))
+                            continue;
+                        if (!int.TryParse(
+                                (await objMatch.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))
+                                ?.Value, out int intMatchPage))
+                            continue;
+                        Tuple<string, int> tupValue = new Tuple<string, int>(strMatchText, intMatchPage);
+                        dicPatternsToMatch.AddOrUpdate(strCode, tupValue, (x, y) => tupValue);
                     }
 
-                    string message = string.Format(_objSelectedCultureInfo,
-                                                   await LanguageManager.GetStringAsync(
-                                                                            "Message_FoundPDFsInFolder",
-                                                                            _strSelectedLanguage)
-                                                                        .ConfigureAwait(false),
-                                                   list.Count, strSelectedPath);
-                    string title
-                        = await LanguageManager.GetStringAsync("MessageTitle_FoundPDFsInFolder",
-                                                               _strSelectedLanguage).ConfigureAwait(false);
-                    Program.ShowScrollableMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                           = await Program.CreateAndShowProgressBarAsync(strSelectedPath, astrFiles.Length)
+                               .ConfigureAwait(false))
+                    {
+                        List<SourcebookInfo> list =
+                            await ScanFilesForPDFTexts(astrFiles, dicPatternsToMatch, frmLoadingBar.MyForm)
+                                .ConfigureAwait(false);
+                        sw.Stop();
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                   out StringBuilder sbdFeedback))
+                        {
+                            sbdFeedback.AppendLine().AppendLine()
+                                .AppendLine("-------------------------------------------------------------")
+                                .AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                    "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
+                                    strSelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
+                                    list.Count).AppendLine().AppendLine();
+                            foreach (SourcebookInfo sourcebook in list)
+                            {
+                                sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                    "{0} with Offset {1} path: {2}", sourcebook.Code,
+                                    sourcebook.Offset, sourcebook.Path).AppendLine();
+                            }
+
+                            sbdFeedback.AppendLine()
+                                .AppendLine("-------------------------------------------------------------");
+                            Log.Info(sbdFeedback.ToString());
+                        }
+
+                        string message = string.Format(_objSelectedCultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                    "Message_FoundPDFsInFolder",
+                                    _strSelectedLanguage)
+                                .ConfigureAwait(false),
+                            list.Count, strSelectedPath);
+                        string title
+                            = await LanguageManager.GetStringAsync("MessageTitle_FoundPDFsInFolder",
+                                _strSelectedLanguage).ConfigureAwait(false);
+                        Program.ShowScrollableMessageBox(message, title, MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
+                }
+                finally
+                {
+                    Utils.StopwatchPool.Return(ref sw);
                 }
             }
             finally

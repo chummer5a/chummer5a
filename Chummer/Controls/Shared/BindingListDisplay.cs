@@ -266,34 +266,44 @@ namespace Chummer.Controls.Shared
                 end = _lstDisplayIndex.Count;
 
             end = Math.Min(end, firstUnrendered + _intOffScreenChunkSize);
-            Stopwatch sw = Stopwatch.StartNew();
-
-            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
-                pnlDisplay.SuspendLayout();
+            Stopwatch sw = Utils.StopwatchPool.Get();
             try
             {
-                LoadRange(firstUnrendered, end);
+                sw.Start();
+
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                    pnlDisplay.SuspendLayout();
+                try
+                {
+                    LoadRange(firstUnrendered, end);
+                }
+                finally
+                {
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
+                        pnlDisplay.ResumeLayout();
+                }
+
+                sw.Stop();
+
+                if (sw.Elapsed > TimeSpan.FromSeconds(0.1f))
+                {
+                    if (_intOffScreenChunkSize > 1)
+                    {
+                        _intOffScreenChunkSize /= 2;
+                        Log.Trace("Offscreen chunk render size decreased to " +
+                                  _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
+                    }
+                }
+                else if (sw.Elapsed < TimeSpan.FromSeconds(0.05f))
+                {
+                    _intOffScreenChunkSize *= 2;
+                    Log.Trace("Offscreen chunk render size increased to " +
+                              _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
+                }
             }
             finally
             {
-                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                    pnlDisplay.ResumeLayout();
-            }
-
-            sw.Stop();
-
-            if (sw.Elapsed > TimeSpan.FromSeconds(0.1f))
-            {
-                if (_intOffScreenChunkSize > 1)
-                {
-                    _intOffScreenChunkSize /= 2;
-                    Log.Trace("Offscreen chunk render size decreased to " + _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
-                }
-            }
-            else if (sw.Elapsed < TimeSpan.FromSeconds(0.05f))
-            {
-                _intOffScreenChunkSize *= 2;
-                Log.Trace("Offscreen chunk render size increased to " + _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
+                Utils.StopwatchPool.Return(ref sw);
             }
         }
 

@@ -6450,7 +6450,7 @@ namespace Chummer
                                                 "<metatypeid>" + strLoopSourceName + "</metatypeid>",
                                                 "<metavariantid>" + strLoopSourceName + "</metavariantid>"
                                             };
-                                            if (!strCharacterInnerXml.ContainsAny(astrToCheck, StringComparison.OrdinalIgnoreCase))
+                                            if (!strCharacterInnerXml.ContainsAnyParallel(astrToCheck, StringComparison.OrdinalIgnoreCase))
                                             {
                                                 //Utils.BreakIfDebug();
                                                 if (blnRemoveImprovements

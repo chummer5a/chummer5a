@@ -1904,7 +1904,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!Name.ContainsAny(new []{"ARM", "LEG"}, StringComparison.OrdinalIgnoreCase))
+                if (!Name.ContainsAny(new []{ "ARM", "LEG"}, StringComparison.OrdinalIgnoreCase))
                     return 0;
                 int intAttribute = 0;
                 int bod = 1;

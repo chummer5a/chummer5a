@@ -34,11 +34,15 @@ namespace Chummer
         public LinkedSemaphoreSlim ParentSemaphore { get; set; }
 
         private static readonly SafeObjectPool<Stack<LinkedSemaphoreSlim>> s_objSemaphoreStackPool =
+#if DEBUG
             new SafeObjectPool<Stack<LinkedSemaphoreSlim>>(128, () => new Stack<LinkedSemaphoreSlim>(8), x =>
             {
                 if (x.Count > 0)
                     Utils.BreakIfDebug();
             });
+#else
+            new SafeObjectPool<Stack<LinkedSemaphoreSlim>>(128, () => new Stack<LinkedSemaphoreSlim>(8));
+#endif
 
         public LinkedSemaphoreSlim(bool blnGetFromPool = false)
         {
@@ -123,83 +127,28 @@ namespace Chummer
         {
             if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(timeout);
-            Stopwatch objTimer = Stopwatch.StartNew();
-            if (!MySemaphore.Wait(timeout))
-                return false;
-            TimeSpan elapsed = objTimer.Elapsed;
-            if (elapsed > timeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            timeout -= elapsed;
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
             {
-                while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                stpTimer.Start();
+                if (!MySemaphore.Wait(timeout))
+                    return false;
+                TimeSpan elapsed = stpTimer.Elapsed;
+                if (elapsed > timeout)
                 {
-                    objTimer.Restart();
-                    if (!objLoopSemaphore.MySemaphore.Wait(timeout))
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
-                        return false;
-                    }
-
-                    elapsed = objTimer.Elapsed;
-                    if (elapsed > timeout)
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
-                        return false;
-                    }
-
-                    timeout -= elapsed;
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                    MySemaphore.Release();
+                    return false;
                 }
 
-                stkLockedSemaphores.Clear();
-            }
-            finally
-            {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
-            }
-
-            return true;
-        }
-
-        public bool WaitAll(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
-        {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
-                return MySemaphore.Wait(timeout, token);
-            Stopwatch objTimer = Stopwatch.StartNew();
-            if (!MySemaphore.Wait(timeout, token))
-                return false;
-            TimeSpan elapsed = objTimer.Elapsed;
-            if (elapsed > timeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            timeout -= elapsed;
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
-            try
-            {
+                timeout -= elapsed;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
                     while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                     {
-                        objTimer.Restart();
-                        if (!objLoopSemaphore.MySemaphore.Wait(timeout, token))
+                        stpTimer.Restart();
+                        if (!objLoopSemaphore.MySemaphore.Wait(timeout))
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
                             while (stkLockedSemaphores.Count > 0)
@@ -208,7 +157,7 @@ namespace Chummer
                             return false;
                         }
 
-                        elapsed = objTimer.Elapsed;
+                        elapsed = stpTimer.Elapsed;
                         if (elapsed > timeout)
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
@@ -222,107 +171,123 @@ namespace Chummer
                         stkLockedSemaphores.Push(objLoopSemaphore);
                         objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
                     }
+
+                    stkLockedSemaphores.Clear();
                 }
-                catch
+                finally
                 {
-                    // Release back-to-front to prevent weird race conditions as much as possible
-                    while (stkLockedSemaphores.Count > 0)
-                        stkLockedSemaphores.Pop().MySemaphore.Release();
-                    MySemaphore.Release();
-                    throw;
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
                 }
 
-                stkLockedSemaphores.Clear();
+                return true;
             }
             finally
             {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                Utils.StopwatchPool.Return(ref stpTimer);
             }
+        }
 
-            return true;
+        public bool WaitAll(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
+        {
+            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+                return MySemaphore.Wait(timeout, token);
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
+            try
+            {
+                stpTimer.Start();
+                if (!MySemaphore.Wait(timeout, token))
+                    return false;
+                TimeSpan elapsed = stpTimer.Elapsed;
+                if (elapsed > timeout)
+                {
+                    MySemaphore.Release();
+                    return false;
+                }
+
+                timeout -= elapsed;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+                try
+                {
+                    try
+                    {
+                        while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                        {
+                            stpTimer.Restart();
+                            if (!objLoopSemaphore.MySemaphore.Wait(timeout, token))
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            elapsed = stpTimer.Elapsed;
+                            if (elapsed > timeout)
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            timeout -= elapsed;
+                            stkLockedSemaphores.Push(objLoopSemaphore);
+                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        }
+                    }
+                    catch
+                    {
+                        // Release back-to-front to prevent weird race conditions as much as possible
+                        while (stkLockedSemaphores.Count > 0)
+                            stkLockedSemaphores.Pop().MySemaphore.Release();
+                        MySemaphore.Release();
+                        throw;
+                    }
+
+                    stkLockedSemaphores.Clear();
+                }
+                finally
+                {
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                }
+
+                return true;
+            }
+            finally
+            {
+                Utils.StopwatchPool.Return(ref stpTimer);
+            }
         }
 
         public bool WaitAll(int millisecondsTimeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
             if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(millisecondsTimeout);
-            Stopwatch objTimer = Stopwatch.StartNew();
-            if (!MySemaphore.Wait(millisecondsTimeout))
-                return false;
-            long millisecondsElapsed = objTimer.ElapsedMilliseconds;
-            if (millisecondsElapsed > millisecondsTimeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            millisecondsTimeout -= (int)millisecondsElapsed;
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
             {
-                while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                stpTimer.Start();
+                if (!MySemaphore.Wait(millisecondsTimeout))
+                    return false;
+                long millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                if (millisecondsElapsed > millisecondsTimeout)
                 {
-                    objTimer.Restart();
-                    if (!objLoopSemaphore.MySemaphore.Wait(millisecondsTimeout))
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
-                        return false;
-                    }
-
-                    millisecondsElapsed = objTimer.ElapsedMilliseconds;
-                    if (millisecondsElapsed > millisecondsTimeout)
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
-                        return false;
-                    }
-
-                    millisecondsTimeout -= (int)millisecondsElapsed;
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                    MySemaphore.Release();
+                    return false;
                 }
 
-                stkLockedSemaphores.Clear();
-            }
-            finally
-            {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
-            }
-
-            return true;
-        }
-
-        public bool WaitAll(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
-        {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
-                return MySemaphore.Wait(millisecondsTimeout, token);
-            Stopwatch objTimer = Stopwatch.StartNew();
-            if (!MySemaphore.Wait(millisecondsTimeout, token))
-                return false;
-            long millisecondsElapsed = objTimer.ElapsedMilliseconds;
-            if (millisecondsElapsed > millisecondsTimeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            millisecondsTimeout -= (int)millisecondsElapsed;
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
-            try
-            {
+                millisecondsTimeout -= (int)millisecondsElapsed;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
                     while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                     {
-                        objTimer.Restart();
-                        if (!objLoopSemaphore.MySemaphore.Wait(millisecondsTimeout, token))
+                        stpTimer.Restart();
+                        if (!objLoopSemaphore.MySemaphore.Wait(millisecondsTimeout))
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
                             while (stkLockedSemaphores.Count > 0)
@@ -331,7 +296,7 @@ namespace Chummer
                             return false;
                         }
 
-                        millisecondsElapsed = objTimer.ElapsedMilliseconds;
+                        millisecondsElapsed = stpTimer.ElapsedMilliseconds;
                         if (millisecondsElapsed > millisecondsTimeout)
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
@@ -345,24 +310,95 @@ namespace Chummer
                         stkLockedSemaphores.Push(objLoopSemaphore);
                         objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
                     }
+
+                    stkLockedSemaphores.Clear();
                 }
-                catch
+                finally
                 {
-                    // Release back-to-front to prevent weird race conditions as much as possible
-                    while (stkLockedSemaphores.Count > 0)
-                        stkLockedSemaphores.Pop().MySemaphore.Release();
-                    MySemaphore.Release();
-                    throw;
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
                 }
 
-                stkLockedSemaphores.Clear();
+                return true;
             }
             finally
             {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                Utils.StopwatchPool.Return(ref stpTimer);
             }
+        }
 
-            return true;
+        public bool WaitAll(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
+        {
+            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+                return MySemaphore.Wait(millisecondsTimeout, token);
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
+            try
+            {
+                stpTimer.Start();
+                if (!MySemaphore.Wait(millisecondsTimeout, token))
+                    return false;
+                long millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                if (millisecondsElapsed > millisecondsTimeout)
+                {
+                    MySemaphore.Release();
+                    return false;
+                }
+
+                millisecondsTimeout -= (int)millisecondsElapsed;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+                try
+                {
+                    try
+                    {
+                        while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                        {
+                            stpTimer.Restart();
+                            if (!objLoopSemaphore.MySemaphore.Wait(millisecondsTimeout, token))
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                            if (millisecondsElapsed > millisecondsTimeout)
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            millisecondsTimeout -= (int)millisecondsElapsed;
+                            stkLockedSemaphores.Push(objLoopSemaphore);
+                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        }
+                    }
+                    catch
+                    {
+                        // Release back-to-front to prevent weird race conditions as much as possible
+                        while (stkLockedSemaphores.Count > 0)
+                            stkLockedSemaphores.Pop().MySemaphore.Release();
+                        MySemaphore.Release();
+                        throw;
+                    }
+
+                    stkLockedSemaphores.Clear();
+                }
+                finally
+                {
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                }
+
+                return true;
+            }
+            finally
+            {
+                Utils.StopwatchPool.Return(ref stpTimer);
+            }
         }
 
         public async Task WaitAllAsync(LinkedSemaphoreSlim objUntilSemaphore = null)
@@ -423,83 +459,28 @@ namespace Chummer
         {
             if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(timeout).ConfigureAwait(false);
-            Stopwatch objTimer = Stopwatch.StartNew();
-            if (!await MySemaphore.WaitAsync(timeout).ConfigureAwait(false))
-                return false;
-            TimeSpan elapsed = objTimer.Elapsed;
-            if (elapsed > timeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            timeout -= elapsed;
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
             {
-                while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                stpTimer.Start();
+                if (!await MySemaphore.WaitAsync(timeout).ConfigureAwait(false))
+                    return false;
+                TimeSpan elapsed = stpTimer.Elapsed;
+                if (elapsed > timeout)
                 {
-                    objTimer.Restart();
-                    if (!await objLoopSemaphore.MySemaphore.WaitAsync(timeout).ConfigureAwait(false))
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
-                        return false;
-                    }
-
-                    elapsed = objTimer.Elapsed;
-                    if (elapsed > timeout)
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
-                        return false;
-                    }
-
-                    timeout -= elapsed;
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                    MySemaphore.Release();
+                    return false;
                 }
 
-                stkLockedSemaphores.Clear();
-            }
-            finally
-            {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
-            }
-
-            return true;
-        }
-
-        public async Task<bool> WaitAllAsync(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
-        {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
-                return await MySemaphore.WaitAsync(timeout, token).ConfigureAwait(false);
-            Stopwatch objTimer = Stopwatch.StartNew();
-            if (!await MySemaphore.WaitAsync(timeout, token).ConfigureAwait(false))
-                return false;
-            TimeSpan elapsed = objTimer.Elapsed;
-            if (elapsed > timeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            timeout -= elapsed;
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
-            try
-            {
+                timeout -= elapsed;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
                     while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                     {
-                        objTimer.Restart();
-                        if (!await objLoopSemaphore.MySemaphore.WaitAsync(timeout, token).ConfigureAwait(false))
+                        stpTimer.Restart();
+                        if (!await objLoopSemaphore.MySemaphore.WaitAsync(timeout).ConfigureAwait(false))
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
                             while (stkLockedSemaphores.Count > 0)
@@ -508,7 +489,7 @@ namespace Chummer
                             return false;
                         }
 
-                        elapsed = objTimer.Elapsed;
+                        elapsed = stpTimer.Elapsed;
                         if (elapsed > timeout)
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
@@ -522,107 +503,123 @@ namespace Chummer
                         stkLockedSemaphores.Push(objLoopSemaphore);
                         objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
                     }
+
+                    stkLockedSemaphores.Clear();
                 }
-                catch
+                finally
                 {
-                    // Release back-to-front to prevent weird race conditions as much as possible
-                    while (stkLockedSemaphores.Count > 0)
-                        stkLockedSemaphores.Pop().MySemaphore.Release();
-                    MySemaphore.Release();
-                    throw;
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
                 }
 
-                stkLockedSemaphores.Clear();
+                return true;
             }
             finally
             {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                Utils.StopwatchPool.Return(ref stpTimer);
             }
+        }
 
-            return true;
+        public async Task<bool> WaitAllAsync(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
+        {
+            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+                return await MySemaphore.WaitAsync(timeout, token).ConfigureAwait(false);
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
+            try
+            {
+                stpTimer.Start();
+                if (!await MySemaphore.WaitAsync(timeout, token).ConfigureAwait(false))
+                    return false;
+                TimeSpan elapsed = stpTimer.Elapsed;
+                if (elapsed > timeout)
+                {
+                    MySemaphore.Release();
+                    return false;
+                }
+
+                timeout -= elapsed;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+                try
+                {
+                    try
+                    {
+                        while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                        {
+                            stpTimer.Restart();
+                            if (!await objLoopSemaphore.MySemaphore.WaitAsync(timeout, token).ConfigureAwait(false))
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            elapsed = stpTimer.Elapsed;
+                            if (elapsed > timeout)
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            timeout -= elapsed;
+                            stkLockedSemaphores.Push(objLoopSemaphore);
+                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        }
+                    }
+                    catch
+                    {
+                        // Release back-to-front to prevent weird race conditions as much as possible
+                        while (stkLockedSemaphores.Count > 0)
+                            stkLockedSemaphores.Pop().MySemaphore.Release();
+                        MySemaphore.Release();
+                        throw;
+                    }
+
+                    stkLockedSemaphores.Clear();
+                }
+                finally
+                {
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                }
+
+                return true;
+            }
+            finally
+            {
+                Utils.StopwatchPool.Return(ref stpTimer);
+            }
         }
 
         public async Task<bool> WaitAllAsync(int millisecondsTimeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
             if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false);
-            Stopwatch objTimer = Stopwatch.StartNew();
-            if (!await MySemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false))
-                return false;
-            long millisecondsElapsed = objTimer.ElapsedMilliseconds;
-            if (millisecondsElapsed > millisecondsTimeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            millisecondsTimeout -= (int)millisecondsElapsed;
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
             {
-                while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                stpTimer.Start();
+                if (!await MySemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false))
+                    return false;
+                long millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                if (millisecondsElapsed > millisecondsTimeout)
                 {
-                    objTimer.Restart();
-                    if (!await objLoopSemaphore.MySemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false))
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
-                        return false;
-                    }
-
-                    millisecondsElapsed = objTimer.ElapsedMilliseconds;
-                    if (millisecondsElapsed > millisecondsTimeout)
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
-                        return false;
-                    }
-
-                    millisecondsTimeout -= (int)millisecondsElapsed;
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                    MySemaphore.Release();
+                    return false;
                 }
 
-                stkLockedSemaphores.Clear();
-            }
-            finally
-            {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
-            }
-
-            return true;
-        }
-
-        public async Task<bool> WaitAllAsync(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
-        {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
-                return await MySemaphore.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false);
-            Stopwatch objTimer = Stopwatch.StartNew();
-            if (!await MySemaphore.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false))
-                return false;
-            long millisecondsElapsed = objTimer.ElapsedMilliseconds;
-            if (millisecondsElapsed > millisecondsTimeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            millisecondsTimeout -= (int)millisecondsElapsed;
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
-            try
-            {
+                millisecondsTimeout -= (int)millisecondsElapsed;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
                     while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                     {
-                        objTimer.Restart();
-                        if (!await objLoopSemaphore.MySemaphore.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false))
+                        stpTimer.Restart();
+                        if (!await objLoopSemaphore.MySemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false))
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
                             while (stkLockedSemaphores.Count > 0)
@@ -631,7 +628,7 @@ namespace Chummer
                             return false;
                         }
 
-                        millisecondsElapsed = objTimer.ElapsedMilliseconds;
+                        millisecondsElapsed = stpTimer.ElapsedMilliseconds;
                         if (millisecondsElapsed > millisecondsTimeout)
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
@@ -645,24 +642,96 @@ namespace Chummer
                         stkLockedSemaphores.Push(objLoopSemaphore);
                         objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
                     }
+
+                    stkLockedSemaphores.Clear();
                 }
-                catch
+                finally
                 {
-                    // Release back-to-front to prevent weird race conditions as much as possible
-                    while (stkLockedSemaphores.Count > 0)
-                        stkLockedSemaphores.Pop().MySemaphore.Release();
-                    MySemaphore.Release();
-                    throw;
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
                 }
 
-                stkLockedSemaphores.Clear();
+                return true;
             }
             finally
             {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                Utils.StopwatchPool.Return(ref stpTimer);
             }
+        }
 
-            return true;
+        public async Task<bool> WaitAllAsync(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
+        {
+            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+                return await MySemaphore.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false);
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
+            try
+            {
+                stpTimer.Start();
+                if (!await MySemaphore.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false))
+                    return false;
+                long millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                if (millisecondsElapsed > millisecondsTimeout)
+                {
+                    MySemaphore.Release();
+                    return false;
+                }
+
+                millisecondsTimeout -= (int)millisecondsElapsed;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+                try
+                {
+                    try
+                    {
+                        while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                        {
+                            stpTimer.Restart();
+                            if (!await objLoopSemaphore.MySemaphore.WaitAsync(millisecondsTimeout, token)
+                                    .ConfigureAwait(false))
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                            if (millisecondsElapsed > millisecondsTimeout)
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            millisecondsTimeout -= (int)millisecondsElapsed;
+                            stkLockedSemaphores.Push(objLoopSemaphore);
+                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        }
+                    }
+                    catch
+                    {
+                        // Release back-to-front to prevent weird race conditions as much as possible
+                        while (stkLockedSemaphores.Count > 0)
+                            stkLockedSemaphores.Pop().MySemaphore.Release();
+                        MySemaphore.Release();
+                        throw;
+                    }
+
+                    stkLockedSemaphores.Clear();
+                }
+                finally
+                {
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                }
+
+                return true;
+            }
+            finally
+            {
+                Utils.StopwatchPool.Return(ref stpTimer);
+            }
         }
 
         public void SafeWaitAll(LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
@@ -861,106 +930,36 @@ namespace Chummer
             if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
                 return MySemaphore.SafeWait(timeout, blnForceDoEvents);
 
-            Stopwatch objTimer = Stopwatch.StartNew();
-            while (!MySemaphore.Wait(Utils.DefaultSleepDuration))
-            {
-                if (objTimer.Elapsed > timeout)
-                    return false;
-                Utils.DoEventsSafe(blnForceDoEvents);
-            }
-
-            TimeSpan elapsed = objTimer.Elapsed;
-            if (elapsed > timeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            timeout -= elapsed;
-
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
             {
-                while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                stpTimer.Start();
+                while (!MySemaphore.Wait(Utils.DefaultSleepDuration))
                 {
-                    objTimer.Restart();
-                    while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration))
-                    {
-                        if (objTimer.Elapsed > timeout)
-                        {
-                            // Release back-to-front to prevent weird race conditions as much as possible
-                            while (stkLockedSemaphores.Count > 0)
-                                stkLockedSemaphores.Pop().MySemaphore.Release();
-                            MySemaphore.Release();
-                            return false;
-                        }
-
-                        Utils.DoEventsSafe(blnForceDoEvents);
-                    }
-
-                    elapsed = objTimer.Elapsed;
-                    if (elapsed > timeout)
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
+                    if (stpTimer.Elapsed > timeout)
                         return false;
-                    }
-
-                    timeout -= elapsed;
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                    Utils.DoEventsSafe(blnForceDoEvents);
                 }
 
-                stkLockedSemaphores.Clear();
-            }
-            finally
-            {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
-            }
-
-            return true;
-        }
-
-        public bool SafeWaitAll(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
-        {
-            if (!Utils.EverDoEvents)
-                return WaitAll(timeout, token, objUntilSemaphore);
-
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
-                return MySemaphore.SafeWait(timeout, token, blnForceDoEvents);
-
-            Stopwatch objTimer = Stopwatch.StartNew();
-            while (!MySemaphore.Wait(Utils.DefaultSleepDuration, token))
-            {
-                if (objTimer.Elapsed > timeout)
+                TimeSpan elapsed = stpTimer.Elapsed;
+                if (elapsed > timeout)
+                {
+                    MySemaphore.Release();
                     return false;
-                Utils.DoEventsSafe(blnForceDoEvents);
-            }
+                }
 
-            TimeSpan elapsed = objTimer.Elapsed;
-            if (elapsed > timeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
+                timeout -= elapsed;
 
-            timeout -= elapsed;
-
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
-            try
-            {
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
                     while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                     {
-                        objTimer.Restart();
-                        while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration, token))
+                        stpTimer.Restart();
+                        while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration))
                         {
-                            if (objTimer.Elapsed > timeout)
+                            if (stpTimer.Elapsed > timeout)
                             {
                                 // Release back-to-front to prevent weird race conditions as much as possible
                                 while (stkLockedSemaphores.Count > 0)
@@ -972,7 +971,7 @@ namespace Chummer
                             Utils.DoEventsSafe(blnForceDoEvents);
                         }
 
-                        elapsed = objTimer.Elapsed;
+                        elapsed = stpTimer.Elapsed;
                         if (elapsed > timeout)
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
@@ -986,24 +985,110 @@ namespace Chummer
                         stkLockedSemaphores.Push(objLoopSemaphore);
                         objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
                     }
+
+                    stkLockedSemaphores.Clear();
                 }
-                catch
+                finally
                 {
-                    // Release back-to-front to prevent weird race conditions as much as possible
-                    while (stkLockedSemaphores.Count > 0)
-                        stkLockedSemaphores.Pop().MySemaphore.Release();
-                    MySemaphore.Release();
-                    throw;
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
                 }
 
-                stkLockedSemaphores.Clear();
+                return true;
             }
             finally
             {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                Utils.StopwatchPool.Return(ref stpTimer);
             }
+        }
 
-            return true;
+        public bool SafeWaitAll(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
+        {
+            if (!Utils.EverDoEvents)
+                return WaitAll(timeout, token, objUntilSemaphore);
+
+            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+                return MySemaphore.SafeWait(timeout, token, blnForceDoEvents);
+
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
+            try
+            {
+                stpTimer.Start();
+                while (!MySemaphore.Wait(Utils.DefaultSleepDuration, token))
+                {
+                    if (stpTimer.Elapsed > timeout)
+                        return false;
+                    Utils.DoEventsSafe(blnForceDoEvents);
+                }
+
+                TimeSpan elapsed = stpTimer.Elapsed;
+                if (elapsed > timeout)
+                {
+                    MySemaphore.Release();
+                    return false;
+                }
+
+                timeout -= elapsed;
+
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+                try
+                {
+                    try
+                    {
+                        while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                        {
+                            stpTimer.Restart();
+                            while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration, token))
+                            {
+                                if (stpTimer.Elapsed > timeout)
+                                {
+                                    // Release back-to-front to prevent weird race conditions as much as possible
+                                    while (stkLockedSemaphores.Count > 0)
+                                        stkLockedSemaphores.Pop().MySemaphore.Release();
+                                    MySemaphore.Release();
+                                    return false;
+                                }
+
+                                Utils.DoEventsSafe(blnForceDoEvents);
+                            }
+
+                            elapsed = stpTimer.Elapsed;
+                            if (elapsed > timeout)
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            timeout -= elapsed;
+                            stkLockedSemaphores.Push(objLoopSemaphore);
+                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        }
+                    }
+                    catch
+                    {
+                        // Release back-to-front to prevent weird race conditions as much as possible
+                        while (stkLockedSemaphores.Count > 0)
+                            stkLockedSemaphores.Pop().MySemaphore.Release();
+                        MySemaphore.Release();
+                        throw;
+                    }
+
+                    stkLockedSemaphores.Clear();
+                }
+                finally
+                {
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                }
+
+                return true;
+            }
+            finally
+            {
+                Utils.StopwatchPool.Return(ref stpTimer);
+            }
         }
 
         public bool SafeWaitAll(int millisecondsTimeout, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
@@ -1014,106 +1099,36 @@ namespace Chummer
             if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
                 return MySemaphore.SafeWait(millisecondsTimeout, blnForceDoEvents);
 
-            Stopwatch objTimer = Stopwatch.StartNew();
-            while (!MySemaphore.Wait(Utils.DefaultSleepDuration))
-            {
-                if (objTimer.ElapsedMilliseconds > millisecondsTimeout)
-                    return false;
-                Utils.DoEventsSafe(blnForceDoEvents);
-            }
-
-            long millisecondsElapsed = objTimer.ElapsedMilliseconds;
-            if (millisecondsElapsed > millisecondsTimeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
-
-            millisecondsTimeout -= (int)millisecondsElapsed;
-
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
             {
-                while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                stpTimer.Start();
+                while (!MySemaphore.Wait(Utils.DefaultSleepDuration))
                 {
-                    objTimer.Restart();
-                    while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration))
-                    {
-                        if (objTimer.ElapsedMilliseconds > millisecondsTimeout)
-                        {
-                            // Release back-to-front to prevent weird race conditions as much as possible
-                            while (stkLockedSemaphores.Count > 0)
-                                stkLockedSemaphores.Pop().MySemaphore.Release();
-                            MySemaphore.Release();
-                            return false;
-                        }
-
-                        Utils.DoEventsSafe(blnForceDoEvents);
-                    }
-
-                    millisecondsElapsed = objTimer.ElapsedMilliseconds;
-                    if (millisecondsElapsed > millisecondsTimeout)
-                    {
-                        // Release back-to-front to prevent weird race conditions as much as possible
-                        while (stkLockedSemaphores.Count > 0)
-                            stkLockedSemaphores.Pop().MySemaphore.Release();
-                        MySemaphore.Release();
+                    if (stpTimer.ElapsedMilliseconds > millisecondsTimeout)
                         return false;
-                    }
-
-                    millisecondsTimeout -= (int)millisecondsElapsed;
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                    Utils.DoEventsSafe(blnForceDoEvents);
                 }
 
-                stkLockedSemaphores.Clear();
-            }
-            finally
-            {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
-            }
-
-            return true;
-        }
-
-        public bool SafeWaitAll(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
-        {
-            if (!Utils.EverDoEvents)
-                return WaitAll(millisecondsTimeout, token, objUntilSemaphore);
-
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
-                return MySemaphore.SafeWait(millisecondsTimeout, token, blnForceDoEvents);
-
-            Stopwatch objTimer = Stopwatch.StartNew();
-            while (!MySemaphore.Wait(Utils.DefaultSleepDuration, token))
-            {
-                if (objTimer.ElapsedMilliseconds > millisecondsTimeout)
+                long millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                if (millisecondsElapsed > millisecondsTimeout)
+                {
+                    MySemaphore.Release();
                     return false;
-                Utils.DoEventsSafe(blnForceDoEvents);
-            }
+                }
 
-            long millisecondsElapsed = objTimer.ElapsedMilliseconds;
-            if (millisecondsElapsed > millisecondsTimeout)
-            {
-                MySemaphore.Release();
-                return false;
-            }
+                millisecondsTimeout -= (int)millisecondsElapsed;
 
-            millisecondsTimeout -= (int)millisecondsElapsed;
-
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
-            Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
-            try
-            {
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
                     while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                     {
-                        objTimer.Restart();
-                        while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration, token))
+                        stpTimer.Restart();
+                        while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration))
                         {
-                            if (objTimer.ElapsedMilliseconds > millisecondsTimeout)
+                            if (stpTimer.ElapsedMilliseconds > millisecondsTimeout)
                             {
                                 // Release back-to-front to prevent weird race conditions as much as possible
                                 while (stkLockedSemaphores.Count > 0)
@@ -1125,7 +1140,7 @@ namespace Chummer
                             Utils.DoEventsSafe(blnForceDoEvents);
                         }
 
-                        millisecondsElapsed = objTimer.ElapsedMilliseconds;
+                        millisecondsElapsed = stpTimer.ElapsedMilliseconds;
                         if (millisecondsElapsed > millisecondsTimeout)
                         {
                             // Release back-to-front to prevent weird race conditions as much as possible
@@ -1139,24 +1154,110 @@ namespace Chummer
                         stkLockedSemaphores.Push(objLoopSemaphore);
                         objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
                     }
+
+                    stkLockedSemaphores.Clear();
                 }
-                catch
+                finally
                 {
-                    // Release back-to-front to prevent weird race conditions as much as possible
-                    while (stkLockedSemaphores.Count > 0)
-                        stkLockedSemaphores.Pop().MySemaphore.Release();
-                    MySemaphore.Release();
-                    throw;
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
                 }
 
-                stkLockedSemaphores.Clear();
+                return true;
             }
             finally
             {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                Utils.StopwatchPool.Return(ref stpTimer);
             }
+        }
 
-            return true;
+        public bool SafeWaitAll(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
+        {
+            if (!Utils.EverDoEvents)
+                return WaitAll(millisecondsTimeout, token, objUntilSemaphore);
+
+            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+                return MySemaphore.SafeWait(millisecondsTimeout, token, blnForceDoEvents);
+
+            Stopwatch stpTimer = Utils.StopwatchPool.Get();
+            try
+            {
+                stpTimer.Start();
+                while (!MySemaphore.Wait(Utils.DefaultSleepDuration, token))
+                {
+                    if (stpTimer.ElapsedMilliseconds > millisecondsTimeout)
+                        return false;
+                    Utils.DoEventsSafe(blnForceDoEvents);
+                }
+
+                long millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                if (millisecondsElapsed > millisecondsTimeout)
+                {
+                    MySemaphore.Release();
+                    return false;
+                }
+
+                millisecondsTimeout -= (int)millisecondsElapsed;
+
+                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+                try
+                {
+                    try
+                    {
+                        while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
+                        {
+                            stpTimer.Restart();
+                            while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration, token))
+                            {
+                                if (stpTimer.ElapsedMilliseconds > millisecondsTimeout)
+                                {
+                                    // Release back-to-front to prevent weird race conditions as much as possible
+                                    while (stkLockedSemaphores.Count > 0)
+                                        stkLockedSemaphores.Pop().MySemaphore.Release();
+                                    MySemaphore.Release();
+                                    return false;
+                                }
+
+                                Utils.DoEventsSafe(blnForceDoEvents);
+                            }
+
+                            millisecondsElapsed = stpTimer.ElapsedMilliseconds;
+                            if (millisecondsElapsed > millisecondsTimeout)
+                            {
+                                // Release back-to-front to prevent weird race conditions as much as possible
+                                while (stkLockedSemaphores.Count > 0)
+                                    stkLockedSemaphores.Pop().MySemaphore.Release();
+                                MySemaphore.Release();
+                                return false;
+                            }
+
+                            millisecondsTimeout -= (int)millisecondsElapsed;
+                            stkLockedSemaphores.Push(objLoopSemaphore);
+                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        }
+                    }
+                    catch
+                    {
+                        // Release back-to-front to prevent weird race conditions as much as possible
+                        while (stkLockedSemaphores.Count > 0)
+                            stkLockedSemaphores.Pop().MySemaphore.Release();
+                        MySemaphore.Release();
+                        throw;
+                    }
+
+                    stkLockedSemaphores.Clear();
+                }
+                finally
+                {
+                    s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                }
+
+                return true;
+            }
+            finally
+            {
+                Utils.StopwatchPool.Return(ref stpTimer);
+            }
         }
 
         public void ReleaseAll(LinkedSemaphoreSlim objUntilSemaphore = null)

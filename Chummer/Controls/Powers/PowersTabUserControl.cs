@@ -129,60 +129,79 @@ namespace Chummer.UI.Powers
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
-            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
-            //Keep everything visible until ready to display everything. This
-            //seems to prevent redrawing everything each time anything is added
-            //Not benched, but should be faster
-
-            //Might also be useless horseshit, 2 lines
-
-            //Visible = false;
-            await this.DoThreadSafeAsync(x =>
+            Stopwatch sw = Utils.StopwatchPool.Get();
+            try
             {
-                x.SuspendLayout();
-                try
+#if DEBUG
+                sw.Start();
+#endif
+                //Keep everything visible until ready to display everything. This
+                //seems to prevent redrawing everything each time anything is added
+                //Not benched, but should be faster
+
+                //Might also be useless horseshit, 2 lines
+
+                //Visible = false;
+                await this.DoThreadSafeAsync(x =>
                 {
-                    Stopwatch parts = Stopwatch.StartNew();
-
-                    parts.TaskEnd("MakePowerDisplay()");
-
-                    cboDisplayFilter.BeginUpdate();
+                    x.SuspendLayout();
                     try
                     {
-                        cboDisplayFilter.DataSource = null;
-                        cboDisplayFilter.ValueMember = "Item2";
-                        cboDisplayFilter.DisplayMember = "Item1";
-                        cboDisplayFilter.DataSource = _dropDownList;
-                        cboDisplayFilter.SelectedIndex = 1;
-                        cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+                        Stopwatch parts = Utils.StopwatchPool.Get();
+                        try
+                        {
+                            parts.Start();
+                            parts.TaskEnd("MakePowerDisplay()");
+
+                            cboDisplayFilter.BeginUpdate();
+                            try
+                            {
+                                cboDisplayFilter.DataSource = null;
+                                cboDisplayFilter.ValueMember = "Item2";
+                                cboDisplayFilter.DisplayMember = "Item1";
+                                cboDisplayFilter.DataSource = _dropDownList;
+                                cboDisplayFilter.SelectedIndex = 1;
+                                cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+                            }
+                            finally
+                            {
+                                cboDisplayFilter.EndUpdate();
+                            }
+
+                            parts.TaskEnd("_ddl databind");
+
+                            //Visible = true;
+                            //this.ResumeLayout(false);
+                            //this.PerformLayout();
+                            parts.TaskEnd("visible");
+
+                            _table.Items = _objCharacter.Powers;
+
+                            parts.TaskEnd("resize");
+                        }
+                        finally
+                        {
+                            Utils.StopwatchPool.Return(ref parts);
+                        }
                     }
                     finally
                     {
-                        cboDisplayFilter.EndUpdate();
+                        x.ResumeLayout(true);
                     }
-
-                    parts.TaskEnd("_ddl databind");
-
-                    //Visible = true;
-                    //this.ResumeLayout(false);
-                    //this.PerformLayout();
-                    parts.TaskEnd("visible");
-
-                    _table.Items = _objCharacter.Powers;
-
-                    parts.TaskEnd("resize");
-                }
-                finally
-                {
-                    x.ResumeLayout(true);
-                }
-            }, token: token).ConfigureAwait(false);
-            await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
-                                                                     nameof(Character.DisplayPowerPointsRemaining),
-                                                                     x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
-                                                                     MyToken, MyToken).ConfigureAwait(false);
-            sw.Stop();
-            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+                }, token: token).ConfigureAwait(false);
+                await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
+                    nameof(Character.DisplayPowerPointsRemaining),
+                    x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
+                    MyToken, MyToken).ConfigureAwait(false);
+            }
+            finally
+            {
+#if DEBUG
+                sw.Stop();
+                Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+#endif
+                Utils.StopwatchPool.Return(ref sw);
+            }
 
             _objCharacter.Powers.ListChanged += OnPowersListChanged;
             IAsyncDisposable objLocker

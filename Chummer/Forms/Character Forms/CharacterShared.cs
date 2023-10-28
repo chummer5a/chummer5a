@@ -70,7 +70,11 @@ namespace Chummer
             _objCharacter = objCharacter;
             CancellationTokenRegistration objCancellationRegistration
                 = GenericToken.Register(() => _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false));
-            Disposed += (sender, args) => objCancellationRegistration.Dispose();
+            Disposed += (sender, args) =>
+            {
+                objCancellationRegistration.Dispose();
+                Utils.StopwatchPool.Return(ref _stpAutosaveStopwatch);
+            };
             using (_objCharacter.LockObject.EnterWriteLock())
                 _objCharacter.PropertyChanged += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
@@ -101,6 +105,7 @@ namespace Chummer
                 _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strCharacterFileName) ?? Path.GetPathRoot(strCharacterFileName), Path.GetFileName(strCharacterFileName));
                 _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
             }
+            AutosaveStopwatch.Start();
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -302,7 +307,7 @@ namespace Chummer
             }
         }
 
-        protected Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
+        protected Stopwatch AutosaveStopwatch => _stpAutosaveStopwatch;
 
         /// <summary>
         /// Automatically Save the character to a backup folder.
@@ -348,7 +353,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    AutosaveStopWatch.Restart();
+                    AutosaveStopwatch.Restart();
                 }
             }
             finally
@@ -9112,6 +9117,7 @@ namespace Chummer
         public IEnumerable<Character> CharacterObjects => _objCharacter?.Yield() ?? Enumerable.Empty<Character>();
 
         private CharacterSettings _objCachedSettings;
+        private Stopwatch _stpAutosaveStopwatch = Utils.StopwatchPool.Get();
 
         protected CharacterSettings CharacterObjectSettings => _objCachedSettings ?? (_objCachedSettings = CharacterObject?.Settings);
 

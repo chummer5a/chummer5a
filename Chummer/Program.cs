@@ -209,36 +209,51 @@ namespace Chummer
 
                         IsMono = Type.GetType("Mono.Runtime") != null;
 
-                        Stopwatch sw = Stopwatch.StartNew();
-                        //If debugging and launched from other place (Bootstrap), launch debugger
-                        if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
+                        string strInfo;
+
+                        Stopwatch sw = Utils.StopwatchPool.Get();
+                        try
                         {
-                            Debugger.Launch();
+                            sw.Start();
+                            //If debugging and launched from other place (Bootstrap), launch debugger
+                            if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
+                            {
+                                Debugger.Launch();
+                            }
+
+                            sw.TaskEnd("dbgchk");
+                            //Various init stuff (that mostly "can" be removed as they serve
+                            //debugging more than function
+
+                            //Needs to be called before Log is setup, as it moves where log might be.
+                            FixCwd();
+
+                            sw.TaskEnd("fixcwd");
+
+                            AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatMap.OnException;
+
+                            sw.TaskEnd("appdomain 2");
+
+                            strInfo =
+                                string.Format(GlobalSettings.InvariantCultureInfo,
+                                    "Application Chummer5a build {0} started at {1} with command line arguments {2}",
+                                    Utils.CurrentChummerVersion, DateTime.UtcNow,
+                                    Environment.CommandLine);
+                            sw.TaskEnd("infogen");
+
+                            sw.TaskEnd("infoprnt");
+
+                            sw.TaskEnd("languagefreestartup");
+
+                            if (!Utils.IsUnitTest)
+                                AppDomain.CurrentDomain.UnhandledException += HandleCrash;
+
+                            sw.TaskEnd("Startup");
                         }
-
-                        sw.TaskEnd("dbgchk");
-                        //Various init stuff (that mostly "can" be removed as they serve
-                        //debugging more than function
-
-                        //Needs to be called before Log is setup, as it moves where log might be.
-                        FixCwd();
-
-                        sw.TaskEnd("fixcwd");
-
-                        AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatMap.OnException;
-
-                        sw.TaskEnd("appdomain 2");
-
-                        string strInfo =
-                            string.Format(GlobalSettings.InvariantCultureInfo,
-                                          "Application Chummer5a build {0} started at {1} with command line arguments {2}",
-                                          Utils.CurrentChummerVersion, DateTime.UtcNow,
-                                          Environment.CommandLine);
-                        sw.TaskEnd("infogen");
-
-                        sw.TaskEnd("infoprnt");
-
-                        sw.TaskEnd("languagefreestartup");
+                        finally
+                        {
+                            Utils.StopwatchPool.Return(ref sw);
+                        }
 
                         void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                         {
@@ -302,11 +317,6 @@ namespace Chummer
                             Utils.BreakIfDebug();
                             CrashHandler.WebMiniDumpHandler(ex, datCrashDateTime);
                         }
-
-                        if (!Utils.IsUnitTest)
-                            AppDomain.CurrentDomain.UnhandledException += HandleCrash;
-
-                        sw.TaskEnd("Startup");
 
                         // Delete old ProfileOptimization file because we don't want it anymore, instead we restart profiling for each newly generated assembly
                         FileExtensions.SafeDelete(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
