@@ -222,13 +222,15 @@ namespace Chummer
 
         public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
                 string[] strModuleOutputStrings;
-                using (await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker2 = await Modules.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
@@ -237,12 +239,20 @@ namespace Chummer
                     {
                         strModuleOutputStrings[i]
                             = await (await Modules.GetValueAtAsync(i, token).ConfigureAwait(false))
-                                    .PrintModule(objCulture, strLanguage, token)
-                                    .ConfigureAwait(false);
+                                .PrintModule(objCulture, strLanguage, token)
+                                .ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
                 return string.Concat(strModuleOutputStrings);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

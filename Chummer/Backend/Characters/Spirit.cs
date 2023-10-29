@@ -134,7 +134,7 @@ namespace Chummer
             {
                 // ReSharper disable MethodHasAsyncOverload
                 // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                using (LockObject.EnterReadLock(token))
+                using (LockObject.EnterHiPrioReadLock(token))
                 using (objWriter.StartElement("spirit"))
                 {
                     objWriter.WriteElementString(
@@ -162,7 +162,8 @@ namespace Chummer
             }
             else
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     // <spirit>
@@ -171,40 +172,40 @@ namespace Chummer
                     try
                     {
                         await objWriter.WriteElementStringAsync(
-                                           "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("name", _strName, token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("crittername", _strCritterName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("type", _eEntityType.ToString(), token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("file", _strFileName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("relative", _strRelativeName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter
-                              .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
-                              .ConfigureAwait(false);
+                            .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
+                            .ConfigureAwait(false);
                         await objWriter
-                              .WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)
-                              .ConfigureAwait(false);
+                            .WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)
+                            .ConfigureAwait(false);
                         await SaveMugshotsAsync(objWriter, token).ConfigureAwait(false);
                     }
                     finally
@@ -212,6 +213,10 @@ namespace Chummer
                         // </spirit>
                         await objBaseElement.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -322,7 +327,8 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // Translate the Critter name if applicable.
@@ -343,22 +349,22 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("name", strName, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("crittername", CritterName, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("services", ServicesOwed.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("ratinglabel",
-                                                   await LanguageManager
-                                                         .GetStringAsync(RatingLabel, strLanguageToPrint, token: token)
-                                                         .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("ratinglabel",
+                            await LanguageManager
+                                .GetStringAsync(RatingLabel, strLanguageToPrint, token: token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                     if (objXmlCritterNode != null)
                     {
@@ -381,10 +387,10 @@ namespace Chummer
                                             strInner.Replace(
                                                 "F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), token);
                                     int intValue
-                                        = Math.Max(blnIsSuccess ? ((double) objProcess).StandardRound() : _intForce, 1);
+                                        = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
                                     await objWriter
-                                          .WriteElementStringAsync(strAttribute, intValue.ToString(objCulture),
-                                                                   token: token).ConfigureAwait(false);
+                                        .WriteElementStringAsync(strAttribute, intValue.ToString(objCulture),
+                                            token: token).ConfigureAwait(false);
 
                                     dicAttributes[strAttribute] = intValue;
                                 }
@@ -402,32 +408,32 @@ namespace Chummer
 
                             XPathNavigator xmlSpiritPowersBaseChummerNode
                                 = await (await _objLinkedCharacter
-                                               .LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint, token: token)
-                                               .ConfigureAwait(false))
-                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token)
-                                        .ConfigureAwait(false);
+                                        .LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint, token: token)
+                                        .ConfigureAwait(false))
+                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token)
+                                    .ConfigureAwait(false);
                             XPathNavigator xmlCritterPowersBaseChummerNode
                                 = await (await _objLinkedCharacter
-                                               .LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint,
-                                                                   token: token).ConfigureAwait(false))
-                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token)
-                                        .ConfigureAwait(false);
+                                        .LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint,
+                                            token: token).ConfigureAwait(false))
+                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token)
+                                    .ConfigureAwait(false);
 
                             XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                             if (xmlPowersNode != null)
                             {
                                 // <powers>
                                 XmlElementWriteHelper objPowersElement = await objWriter
-                                                                               .StartElementAsync(
-                                                                                   "powers", token: token)
-                                                                               .ConfigureAwait(false);
+                                    .StartElementAsync(
+                                        "powers", token: token)
+                                    .ConfigureAwait(false);
                                 try
                                 {
                                     foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                                     {
                                         await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode,
-                                                             xmlCritterPowersBaseChummerNode, objXmlPowerNode,
-                                                             strLanguageToPrint, token).ConfigureAwait(false);
+                                            xmlCritterPowersBaseChummerNode, objXmlPowerNode,
+                                            strLanguageToPrint, token).ConfigureAwait(false);
                                     }
                                 }
                                 finally
@@ -448,8 +454,8 @@ namespace Chummer
                                     foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                                     {
                                         await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode,
-                                                             xmlCritterPowersBaseChummerNode, objXmlPowerNode,
-                                                             strLanguageToPrint, token).ConfigureAwait(false);
+                                            xmlCritterPowersBaseChummerNode, objXmlPowerNode,
+                                            strLanguageToPrint, token).ConfigureAwait(false);
                                     }
                                 }
                                 finally
@@ -463,14 +469,14 @@ namespace Chummer
                             if (xmlPowersNode != null)
                             {
                                 XPathNavigator xmlSkillsDocument = await CharacterObject
-                                                                         .LoadDataXPathAsync(
-                                                                             "skills.xml", strLanguageToPrint,
-                                                                             token: token).ConfigureAwait(false);
+                                    .LoadDataXPathAsync(
+                                        "skills.xml", strLanguageToPrint,
+                                        token: token).ConfigureAwait(false);
                                 // <skills>
                                 XmlElementWriteHelper objSkillsElement = await objWriter
-                                                                               .StartElementAsync(
-                                                                                   "skills", token: token)
-                                                                               .ConfigureAwait(false);
+                                    .StartElementAsync(
+                                        "skills", token: token)
+                                    .ConfigureAwait(false);
                                 try
                                 {
                                     foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
@@ -483,8 +489,9 @@ namespace Chummer
                                         string strEnglishName = xmlSkillNode.InnerText;
                                         string strTranslatedName
                                             = xmlSkillsDocument
-                                              .SelectSingleNode("/chummer/skills/skill[name = "
-                                                                + strEnglishName.CleanXPath() + "]/translate")?.Value ??
+                                                  .SelectSingleNode("/chummer/skills/skill[name = "
+                                                                    + strEnglishName.CleanXPath() + "]/translate")
+                                                  ?.Value ??
                                               xmlSkillsDocument
                                                   .SelectSingleNode(
                                                       "/chummer/knowledgeskills/skill[name = "
@@ -496,16 +503,16 @@ namespace Chummer
                                         try
                                         {
                                             await objWriter
-                                                  .WriteElementStringAsync("name", strTranslatedName, token: token)
-                                                  .ConfigureAwait(false);
+                                                .WriteElementStringAsync("name", strTranslatedName, token: token)
+                                                .ConfigureAwait(false);
                                             await objWriter
-                                                  .WriteElementStringAsync("name_english", strEnglishName, token: token)
-                                                  .ConfigureAwait(false);
+                                                .WriteElementStringAsync("name_english", strEnglishName, token: token)
+                                                .ConfigureAwait(false);
                                             await objWriter.WriteElementStringAsync("attr", strAttrName, token: token)
-                                                           .ConfigureAwait(false);
+                                                .ConfigureAwait(false);
                                             await objWriter.WriteElementStringAsync(
-                                                               "pool", intDicepool.ToString(objCulture), token: token)
-                                                           .ConfigureAwait(false);
+                                                    "pool", intDicepool.ToString(objCulture), token: token)
+                                                .ConfigureAwait(false);
                                         }
                                         finally
                                         {
@@ -532,8 +539,8 @@ namespace Chummer
                                     foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                                     {
                                         await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode,
-                                                             xmlCritterPowersBaseChummerNode, objXmlPowerNode,
-                                                             strLanguageToPrint, token).ConfigureAwait(false);
+                                            xmlCritterPowersBaseChummerNode, objXmlPowerNode,
+                                            strLanguageToPrint, token).ConfigureAwait(false);
                                     }
                                 }
                                 finally
@@ -550,21 +557,21 @@ namespace Chummer
 
                         if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
                             await objWriter
-                                  .WriteElementStringAsync(
-                                      "source",
-                                      await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint, token)
-                                                           .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                .WriteElementStringAsync(
+                                    "source",
+                                    await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint, token)
+                                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
                         if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage)
                             || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
                             await objWriter.WriteElementStringAsync("page", strPage, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                     }
 
                     await objWriter
-                          .WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("type", EntityType.ToString(), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
 
                     if (GlobalSettings.PrintNotes)
                         await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
@@ -575,6 +582,10 @@ namespace Chummer
                     // </spirit>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

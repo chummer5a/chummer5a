@@ -464,7 +464,8 @@ namespace Chummer.Backend.Equipment
         {
             if (objWriter == null)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (!AllowPrint)
@@ -477,63 +478,64 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("formattedname",
-                                                   await FormattedDisplayNameAsync(
-                                                       objCulture, strLanguageToPrint, token).ConfigureAwait(false),
-                                                   token).ConfigureAwait(false);
+                        .WriteElementStringAsync("formattedname",
+                            await FormattedDisplayNameAsync(
+                                objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "extra",
-                              await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
-                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "extra",
+                            await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture), token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token)
+                        .ConfigureAwait(false);
                     string strLifestyleQualityType = Type.ToString();
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         XPathNavigator objNode
                             = await (await _objCharacter
-                                           .LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint, token: token)
-                                           .ConfigureAwait(false))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath()
-                                                                             + ']', token: token).ConfigureAwait(false);
+                                    .LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint, token: token)
+                                    .ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " +
+                                                                         strLifestyleQualityType.CleanXPath()
+                                                                         + ']', token: token).ConfigureAwait(false);
                         if (objNode != null)
                             strLifestyleQualityType
                                 = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token)
-                                                .ConfigureAwait(false))?.Value ?? strLifestyleQualityType;
+                                    .ConfigureAwait(false))?.Value ?? strLifestyleQualityType;
                     }
 
                     await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType, token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("lifestylequalitytype_english", Type.ToString(), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString(), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("free", Free.ToString(), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("freebylifestyle", CanBeFreeByLifestyle.ToString(), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString(), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "source",
-                              await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
-                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "source",
+                            await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
                         await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
                 }
@@ -542,6 +544,10 @@ namespace Chummer.Backend.Equipment
                     // </quality>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

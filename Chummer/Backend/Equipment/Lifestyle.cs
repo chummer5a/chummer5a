@@ -661,7 +661,8 @@ namespace Chummer.Backend.Equipment
         {
             if (objWriter == null)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // <lifestyle>
@@ -676,37 +677,37 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("district", District, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("borough", Borough, token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
-                              token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                            token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("totalmonthlycost",
-                                                   (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false))
-                                                   .ToString(
-                                                       _objCharacter.Settings.NuyenFormat, objCulture), token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("totalmonthlycost",
+                            (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false))
+                            .ToString(
+                                _objCharacter.Settings.NuyenFormat, objCulture), token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("totalcost",
-                                                   (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                                                       _objCharacter.Settings.NuyenFormat, objCulture),
-                                                   token).ConfigureAwait(false);
+                        .WriteElementStringAsync("totalcost",
+                            (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                _objCharacter.Settings.NuyenFormat, objCulture),
+                            token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("multiplier",
-                                                   Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
-                                                   token).ConfigureAwait(false);
+                        .WriteElementStringAsync("multiplier",
+                            Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                            token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("months", Increments.ToString(objCulture), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token).ConfigureAwait(false);
+                        .WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo),
+                            token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("type", StyleType.ToString(), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("increment", IncrementType.ToString(), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("bonuslp", BonusLP.ToString(objCulture), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     string strBaseLifestyle = string.Empty;
 
                     // Retrieve the Advanced Lifestyle information if applicable.
@@ -717,26 +718,26 @@ namespace Chummer.Backend.Equipment
                         {
                             strBaseLifestyle
                                 = (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("translate", token)
-                                                     .ConfigureAwait(false))?.Value
+                                      .ConfigureAwait(false))?.Value
                                   ?? (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                        .ConfigureAwait(false))?.Value ?? strBaseLifestyle;
+                                      .ConfigureAwait(false))?.Value ?? strBaseLifestyle;
                         }
                     }
 
                     await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyle, token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token).ConfigureAwait(false);
+                        .WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo),
+                            token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "source",
-                              await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
-                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "source",
+                            await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false);
 
                     // <qualities>
                     XmlElementWriteHelper objQualitiesElement
@@ -747,7 +748,7 @@ namespace Chummer.Backend.Equipment
                         foreach (LifestyleQuality objQuality in LifestyleQualities)
                         {
                             await objQuality.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                            .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -764,6 +765,10 @@ namespace Chummer.Backend.Equipment
                     // </lifestyle>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

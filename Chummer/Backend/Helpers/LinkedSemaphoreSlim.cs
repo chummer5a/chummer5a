@@ -25,26 +25,18 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public sealed class LinkedSemaphoreSlim : IDisposable
+    public sealed class LinkedSemaphoreSlim : IDisposable, IAsyncDisposable
     {
         private readonly bool _blnSemaphoreIsPooled;
         private DebuggableSemaphoreSlim _objMySemaphore;
 
         public DebuggableSemaphoreSlim MySemaphore => _objMySemaphore;
-        public LinkedSemaphoreSlim ParentSemaphore { get; set; }
+        public LinkedSemaphoreSlim ParentSemaphore { get; }
 
         private static readonly SafeObjectPool<Stack<LinkedSemaphoreSlim>> s_objSemaphoreStackPool =
-#if DEBUG
-            new SafeObjectPool<Stack<LinkedSemaphoreSlim>>(128, () => new Stack<LinkedSemaphoreSlim>(8), x =>
-            {
-                if (x.Count > 0)
-                    Utils.BreakIfDebug();
-            });
-#else
-            new SafeObjectPool<Stack<LinkedSemaphoreSlim>>(128, () => new Stack<LinkedSemaphoreSlim>(8));
-#endif
+            new SafeObjectPool<Stack<LinkedSemaphoreSlim>>(() => new Stack<LinkedSemaphoreSlim>(8));
 
-        public LinkedSemaphoreSlim(bool blnGetFromPool = false)
+        public LinkedSemaphoreSlim(LinkedSemaphoreSlim objParent, bool blnGetFromPool = false)
         {
             if (blnGetFromPool)
             {
@@ -53,16 +45,31 @@ namespace Chummer
             }
             else
                 _objMySemaphore = new DebuggableSemaphoreSlim();
+
+            ParentSemaphore = objParent;
         }
 
-        public LinkedSemaphoreSlim(DebuggableSemaphoreSlim objMySemaphore, bool blnSemaphoreIsPooled)
+        public LinkedSemaphoreSlim(LinkedSemaphoreSlim objParent, DebuggableSemaphoreSlim objMySemaphore, bool blnSemaphoreIsPooled)
         {
             _objMySemaphore = objMySemaphore ?? throw new ArgumentNullException(nameof(objMySemaphore));
             _blnSemaphoreIsPooled = blnSemaphoreIsPooled;
+            ParentSemaphore = objParent;
         }
 
         public void Dispose()
         {
+            MySemaphore.SafeWait();
+            MySemaphore.Release();
+            if (_blnSemaphoreIsPooled)
+                Utils.SemaphorePool.Return(ref _objMySemaphore);
+            else
+                MySemaphore.Dispose();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await MySemaphore.WaitAsync().ConfigureAwait(false);
+            MySemaphore.Release();
             if (_blnSemaphoreIsPooled)
                 Utils.SemaphorePool.Return(ref _objMySemaphore);
             else

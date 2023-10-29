@@ -293,12 +293,17 @@ namespace Chummer
 
         public async ValueTask<string> PrintModule(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return (await ResolveMacros(
                     await DisplayTextAsync(DefaultKey, strLanguage, token).ConfigureAwait(false), objCulture,
                     strLanguage, token: token).ConfigureAwait(false)).NormalizeWhiteSpace();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

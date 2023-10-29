@@ -3116,20 +3116,23 @@ namespace Chummer
                      && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
             {
                 strFileName = Path.GetFileNameWithoutExtension(strFileName) + ".chum5";
-                // ReSharper disable once MethodHasAsyncOverload
-                using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!string.IsNullOrEmpty(FileName)
-                        && FileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                        strFileName += "lz";
-                }
+                string strExistingFileName = FileName;
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(strExistingFileName)
+                    && strExistingFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                    strFileName += "lz";
             }
 
             bool blnErrorFree = true;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterHiPrioReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (blnSync)
@@ -3155,7 +3158,7 @@ namespace Chummer
                             objWriter.WriteElementString("minimumappversion", "5.214.1");
                             // <appversion />
                             objWriter.WriteElementString("appversion",
-                                                         Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
+                                Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
                             // <gameedition />
                             objWriter.WriteElementString("gameedition", "SR5");
 
@@ -3163,8 +3166,8 @@ namespace Chummer
                             objWriter.WriteElementString("settings", _strSettingsKey);
                             // <settingshashcode />
                             objWriter.WriteElementString("settingshashcode",
-                                                         Settings.GetEquatableHashCode(token)
-                                                                 .ToString(GlobalSettings.InvariantCultureInfo));
+                                Settings.GetEquatableHashCode(token)
+                                    .ToString(GlobalSettings.InvariantCultureInfo));
                             // <buildmethod />
                             objWriter.WriteElementString("buildmethod", Settings.BuildMethod.ToString());
 
@@ -3196,17 +3199,17 @@ namespace Chummer
                             objWriter.WriteElementString("metatype", _strMetatype);
                             // <metatypeid />
                             objWriter.WriteElementString("metatypeid",
-                                                         _guiMetatype.ToString(
-                                                             "D", GlobalSettings.InvariantCultureInfo));
+                                _guiMetatype.ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo));
                             // <metatypebp />
                             objWriter.WriteElementString("metatypebp",
-                                                         _intMetatypeBP.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intMetatypeBP.ToString(GlobalSettings.InvariantCultureInfo));
                             // <metavariant />
                             objWriter.WriteElementString("metavariant", _strMetavariant);
                             // <metavariantid />
                             objWriter.WriteElementString("metavariantid",
-                                                         _guiMetavariant.ToString(
-                                                             "D", GlobalSettings.InvariantCultureInfo));
+                                _guiMetavariant.ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo));
                             // <metatypecategory />
                             objWriter.WriteElementString("metatypecategory", _strMetatypeCategory);
                             // <movement />
@@ -3225,8 +3228,8 @@ namespace Chummer
                             objWriter.WriteElementString("sprintalt", _strSprint);
                             // <initiativedice />
                             objWriter.WriteElementString("initiativedice",
-                                                         _intInitiativeDice.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intInitiativeDice.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
 
                             // <prioritymetatype />
                             objWriter.WriteElementString("prioritymetatype", _strPriorityMetatype);
@@ -3252,8 +3255,8 @@ namespace Chummer
 
                             // <essenceatspecialstart />
                             objWriter.WriteElementString("essenceatspecialstart",
-                                                         _decEssenceAtSpecialStart.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _decEssenceAtSpecialStart.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
 
                             // <name />
                             objWriter.WriteElementString("name", _strName);
@@ -3293,150 +3296,150 @@ namespace Chummer
                             // <ignorerules />
                             if (_blnIgnoreRules)
                                 objWriter.WriteElementString("ignorerules",
-                                                             _blnIgnoreRules.ToString(
-                                                                 GlobalSettings.InvariantCultureInfo));
+                                    _blnIgnoreRules.ToString(
+                                        GlobalSettings.InvariantCultureInfo));
                             // <iscritter />
                             if (_blnIsCritter)
                                 objWriter.WriteElementString("iscritter",
-                                                             _blnIsCritter.ToString(
-                                                                 GlobalSettings.InvariantCultureInfo));
+                                    _blnIsCritter.ToString(
+                                        GlobalSettings.InvariantCultureInfo));
                             if (_blnPossessed)
                                 objWriter.WriteElementString("possessed",
-                                                             _blnPossessed.ToString(
-                                                                 GlobalSettings.InvariantCultureInfo));
+                                    _blnPossessed.ToString(
+                                        GlobalSettings.InvariantCultureInfo));
                             // <karma />
                             objWriter.WriteElementString(
                                 "karma", _intKarma.ToString(GlobalSettings.InvariantCultureInfo));
                             // <special />
                             objWriter.WriteElementString("special",
-                                                         _intSpecial.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intSpecial.ToString(GlobalSettings.InvariantCultureInfo));
                             // <totalspecial />
                             objWriter.WriteElementString("totalspecial",
-                                                         _intTotalSpecial.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intTotalSpecial.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <totalattributes />
                             objWriter.WriteElementString("totalattributes",
-                                                         _intTotalAttributes.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intTotalAttributes.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <edgeused />
                             objWriter.WriteElementString("edgeused",
-                                                         _intEdgeUsed.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intEdgeUsed.ToString(GlobalSettings.InvariantCultureInfo));
                             // <contactpoints />
                             objWriter.WriteElementString("contactpoints",
-                                                         _intCachedContactPoints.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intCachedContactPoints.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <contactpointsused />
                             objWriter.WriteElementString("contactpointsused",
-                                                         _intContactPointsUsed.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intContactPointsUsed.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <spelllimit />
                             objWriter.WriteElementString("spelllimit",
-                                                         _intFreeSpells.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intFreeSpells.ToString(GlobalSettings.InvariantCultureInfo));
                             // <cfplimit />
                             objWriter.WriteElementString("cfplimit",
-                                                         _intCFPLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intCFPLimit.ToString(GlobalSettings.InvariantCultureInfo));
                             // <totalaiprogramlimit />
                             objWriter.WriteElementString("ainormalprogramlimit",
-                                                         _intAINormalProgramLimit.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intAINormalProgramLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <aiadvancedprogramlimit />
                             objWriter.WriteElementString("aiadvancedprogramlimit",
-                                                         _intAIAdvancedProgramLimit.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intAIAdvancedProgramLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <currentcounterspellingdice />
                             objWriter.WriteElementString("currentcounterspellingdice",
-                                                         _intCurrentCounterspellingDice.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intCurrentCounterspellingDice.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <currentliftcarryhits />
                             objWriter.WriteElementString("currentliftcarryhits",
-                                                         _intCurrentLiftCarryHits.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intCurrentLiftCarryHits.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <carrylimit />
                             objWriter.WriteElementString("basecarrylimit",
-                                                         _decCachedBaseCarryLimit.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _decCachedBaseCarryLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <liftlimit />
                             objWriter.WriteElementString("baseliftlimit",
-                                                         _decCachedBaseLiftLimit.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _decCachedBaseLiftLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <totalcarriedweight />
                             objWriter.WriteElementString("totalcarriedweight",
-                                                         _decCachedTotalCarriedWeight.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _decCachedTotalCarriedWeight.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <encumbranceinterval />
                             objWriter.WriteElementString("encumbranceinterval",
-                                                         _decCachedEncumbranceInterval.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _decCachedEncumbranceInterval.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <streetcred />
                             objWriter.WriteElementString("streetcred",
-                                                         _intStreetCred.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intStreetCred.ToString(GlobalSettings.InvariantCultureInfo));
                             // <notoriety />
                             objWriter.WriteElementString("notoriety",
-                                                         _intNotoriety.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intNotoriety.ToString(GlobalSettings.InvariantCultureInfo));
                             // <publicaware />
                             objWriter.WriteElementString("publicawareness",
-                                                         _intPublicAwareness.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intPublicAwareness.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <burntstreetcred />
                             objWriter.WriteElementString("burntstreetcred",
-                                                         _intBurntStreetCred.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intBurntStreetCred.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <baseastralreputation />
                             objWriter.WriteElementString("baseastralreputation",
-                                                         _intBaseAstralReputation.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intBaseAstralReputation.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <basewildreputation />
                             objWriter.WriteElementString("basewildreputation",
-                                                         _intBaseWildReputation.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intBaseWildReputation.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <created />
                             objWriter.WriteElementString("created",
-                                                         _blnCreated.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnCreated.ToString(GlobalSettings.InvariantCultureInfo));
                             // <nuyen />
                             objWriter.WriteElementString(
                                 "nuyen", _decNuyen.ToString(GlobalSettings.InvariantCultureInfo));
                             // <startingnuyen />
                             objWriter.WriteElementString("startingnuyen",
-                                                         _decStartingNuyen.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _decStartingNuyen.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
 
                             // <nuyenbp />
                             objWriter.WriteElementString("nuyenbp",
-                                                         _decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo));
 
                             // <adept />
                             objWriter.WriteElementString("adept",
-                                                         _blnAdeptEnabled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _blnAdeptEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <magician />
                             objWriter.WriteElementString("magician",
-                                                         _blnMagicianEnabled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _blnMagicianEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <technomancer />
                             objWriter.WriteElementString("technomancer",
-                                                         _blnTechnomancerEnabled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _blnTechnomancerEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <ai />
                             objWriter.WriteElementString("ai",
-                                                         _blnAdvancedProgramsEnabled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _blnAdvancedProgramsEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <cyberwaredisabled />
                             objWriter.WriteElementString("cyberwaredisabled",
-                                                         _blnCyberwareDisabled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _blnCyberwareDisabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <initiationdisabled />
                             objWriter.WriteElementString("initiationdisabled",
-                                                         _blnInitiationDisabled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _blnInitiationDisabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <critter />
                             objWriter.WriteElementString("critter",
-                                                         _blnCritterEnabled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _blnCritterEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
 
                             // <prototypetranshuman />
                             objWriter.WriteElementString("prototypetranshuman",
-                                                         _decPrototypeTranshuman.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _decPrototypeTranshuman.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
 
                             // <attributes>
                             objWriter.WriteStartElement("attributes");
@@ -3446,24 +3449,24 @@ namespace Chummer
 
                             // <magenabled />
                             objWriter.WriteElementString("magenabled",
-                                                         _blnMAGEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnMAGEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                             // <initiategrade />
                             objWriter.WriteElementString("initiategrade",
-                                                         _intInitiateGrade.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intInitiateGrade.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <resenabled />
                             objWriter.WriteElementString("resenabled",
-                                                         _blnRESEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnRESEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                             // <submersiongrade />
                             objWriter.WriteElementString("submersiongrade",
-                                                         _intSubmersionGrade.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intSubmersionGrade.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <depenabled />
                             objWriter.WriteElementString("depenabled",
-                                                         _blnDEPEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnDEPEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                             // <groupmember />
                             objWriter.WriteElementString("groupmember",
-                                                         _blnGroupMember.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnGroupMember.ToString(GlobalSettings.InvariantCultureInfo));
                             // <groupname />
                             objWriter.WriteElementString("groupname", _strGroupName);
                             // <groupnotes />
@@ -3471,18 +3474,18 @@ namespace Chummer
 
                             // External reader friendly stuff.
                             objWriter.WriteElementString("totaless",
-                                                         Essence(token: token)
-                                                             .ToString(GlobalSettings.InvariantCultureInfo));
+                                Essence(token: token)
+                                    .ToString(GlobalSettings.InvariantCultureInfo));
 
                             // Write out the Mystic Adept MAG split info.
                             if (_blnAdeptEnabled && _blnMagicianEnabled)
                             {
                                 objWriter.WriteElementString("magsplitadept",
-                                                             _intMAGAdept.ToString(
-                                                                 GlobalSettings.InvariantCultureInfo));
+                                    _intMAGAdept.ToString(
+                                        GlobalSettings.InvariantCultureInfo));
                                 objWriter.WriteElementString("magsplitmagician",
-                                                             _intMAGMagician.ToString(
-                                                                 GlobalSettings.InvariantCultureInfo));
+                                    _intMAGMagician.ToString(
+                                        GlobalSettings.InvariantCultureInfo));
                             }
 
                             _objTradition?.Save(objWriter);
@@ -3490,17 +3493,17 @@ namespace Chummer
                             // Condition Monitor Progress.
                             // <physicalcmfilled />
                             objWriter.WriteElementString("physicalcmfilled",
-                                                         _intPhysicalCMFilled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intPhysicalCMFilled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <stuncmfilled />
                             objWriter.WriteElementString("stuncmfilled",
-                                                         _intStunCMFilled.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _intStunCMFilled.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
 
                             //<psyche />
                             objWriter.WriteElementString("psyche",
-                                                         _blnPsycheActive.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                _blnPsycheActive.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
 
                             ///////////////////////////////////////////SKILLS
 
@@ -3669,7 +3672,8 @@ namespace Chummer
 
                             // <improvementgroups>
                             objWriter.WriteStartElement("improvementgroups");
-                            _lstImprovementGroups.ForEach(strGroup => objWriter.WriteElementString("improvementgroup", strGroup), token);
+                            _lstImprovementGroups.ForEach(
+                                strGroup => objWriter.WriteElementString("improvementgroup", strGroup), token);
                             objWriter.WriteEndElement();
 
                             // <calendar>
@@ -3687,7 +3691,8 @@ namespace Chummer
                                 {
                                     try
                                     {
-                                        System.Reflection.AssemblyName objPluginAssemblyName = plugin.GetPluginAssembly().GetName();
+                                        System.Reflection.AssemblyName objPluginAssemblyName =
+                                            plugin.GetPluginAssembly().GetName();
                                         objWriter.WriteStartElement(objPluginAssemblyName.Name);
                                         objWriter.WriteAttributeString(
                                             "version", objPluginAssemblyName.Version.ToString());
@@ -3710,17 +3715,17 @@ namespace Chummer
                             objWriter.WriteComment(
                                 "these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)");
                             objWriter.WriteElementString("physicalcm",
-                                                         PhysicalCM.ToString(GlobalSettings.InvariantCultureInfo));
+                                PhysicalCM.ToString(GlobalSettings.InvariantCultureInfo));
                             objWriter.WriteElementString("physicalcmthresholdoffset",
-                                                         PhysicalCMThresholdOffset.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                PhysicalCMThresholdOffset.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             objWriter.WriteElementString("physicalcmoverflow",
-                                                         CMOverflow.ToString(GlobalSettings.InvariantCultureInfo));
+                                CMOverflow.ToString(GlobalSettings.InvariantCultureInfo));
                             objWriter.WriteElementString(
                                 "stuncm", StunCM.ToString(GlobalSettings.InvariantCultureInfo));
                             objWriter.WriteElementString("stuncmthresholdoffset",
-                                                         StunCMThresholdOffset.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                StunCMThresholdOffset.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             objWriter.WriteEndElement();
                             // </calculatedValues>
 
@@ -3737,7 +3742,7 @@ namespace Chummer
                         // Validate that the character can save properly. If there's no error, save the file to the listed file location.
                         try
                         {
-                            XmlDocument objDoc = new XmlDocument {XmlResolver = null};
+                            XmlDocument objDoc = new XmlDocument { XmlResolver = null };
                             using (XmlReader objXmlReader
                                    = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                 objDoc.Load(objXmlReader);
@@ -3793,64 +3798,66 @@ namespace Chummer
 
                             // <character>
                             await objWriter.WriteStartElementAsync("character", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
 
                             // <createdversion />
                             await objWriter
-                                  .WriteElementStringAsync("createdversion", _strVersionCreated, token: token)
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync("createdversion", _strVersionCreated, token: token)
+                                .ConfigureAwait(false);
                             // <minimumappversion />
                             await objWriter.WriteElementStringAsync("minimumappversion", "5.214.1", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <appversion />
                             await objWriter.WriteElementStringAsync("appversion",
-                                                                    Application.ProductVersion.FastEscapeOnceFromStart(
-                                                                        "0.0."), token: token)
-                                           .ConfigureAwait(false);
+                                    Application.ProductVersion.FastEscapeOnceFromStart(
+                                        "0.0."), token: token)
+                                .ConfigureAwait(false);
                             // <gameedition />
                             await objWriter.WriteElementStringAsync("gameedition", "SR5", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
 
                             // <settings />
                             await objWriter.WriteElementStringAsync("settings", _strSettingsKey, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             CharacterSettings objSettings
                                 = await GetSettingsAsync(token).ConfigureAwait(false);
                             // <settingshashcode />
                             await objWriter
-                                  .WriteElementStringAsync("settingshashcode",
-                                                           (await objSettings.GetEquatableHashCodeAsync(token)
-                                                                             .ConfigureAwait(false))
-                                                           .ToString(GlobalSettings.InvariantCultureInfo),
-                                                           token: token).ConfigureAwait(false);
+                                .WriteElementStringAsync("settingshashcode",
+                                    (await objSettings.GetEquatableHashCodeAsync(token)
+                                        .ConfigureAwait(false))
+                                    .ToString(GlobalSettings.InvariantCultureInfo),
+                                    token: token).ConfigureAwait(false);
                             // <buildmethod />
                             await objWriter
-                                  .WriteElementStringAsync("buildmethod", (await objSettings.GetBuildMethodAsync(token).ConfigureAwait(false)).ToString(),
-                                                           token: token).ConfigureAwait(false);
+                                .WriteElementStringAsync("buildmethod",
+                                    (await objSettings.GetBuildMethodAsync(token).ConfigureAwait(false)).ToString(),
+                                    token: token).ConfigureAwait(false);
 
                             // <sources>
                             await objWriter.WriteStartElementAsync("sources", token: token).ConfigureAwait(false);
                             foreach (string strBook in await objSettings.GetBooksAsync(token).ConfigureAwait(false))
                             {
                                 await objWriter.WriteElementStringAsync("source", strBook, token: token)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             }
 
                             // </sources>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                            IReadOnlyList<CustomDataDirectoryInfo> lstInfos = await objSettings.GetEnabledCustomDataDirectoryInfosAsync(token)
-                                                                                               .ConfigureAwait(false);
+                            IReadOnlyList<CustomDataDirectoryInfo> lstInfos = await objSettings
+                                .GetEnabledCustomDataDirectoryInfosAsync(token)
+                                .ConfigureAwait(false);
                             if (lstInfos.Count > 0)
                             {
                                 // <customdatadirectorynames>
                                 await objWriter.WriteStartElementAsync("customdatadirectorynames", token: token)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                                 foreach (string strDirectoryName in lstInfos.Select(x => x.Name))
                                 {
                                     await objWriter
-                                          .WriteElementStringAsync("directoryname", strDirectoryName, token: token)
-                                          .ConfigureAwait(false);
+                                        .WriteElementStringAsync("directoryname", strDirectoryName, token: token)
+                                        .ConfigureAwait(false);
                                 }
 
                                 // </customdatadirectorynames>
@@ -3859,87 +3866,87 @@ namespace Chummer
 
                             // <metatype />
                             await objWriter.WriteElementStringAsync("metatype", _strMetatype, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <metatypeid />
                             await objWriter.WriteElementStringAsync("metatypeid",
-                                                                    _guiMetatype.ToString(
-                                                                        "D", GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _guiMetatype.ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <metatypebp />
                             await objWriter.WriteElementStringAsync("metatypebp",
-                                                                    _intMetatypeBP.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intMetatypeBP.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <metavariant />
                             await objWriter.WriteElementStringAsync("metavariant", _strMetavariant, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <metavariantid />
                             await objWriter.WriteElementStringAsync("metavariantid",
-                                                                    _guiMetavariant.ToString(
-                                                                        "D", GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _guiMetavariant.ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <metatypecategory />
                             await objWriter
-                                  .WriteElementStringAsync("metatypecategory", _strMetatypeCategory, token: token)
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync("metatypecategory", _strMetatypeCategory, token: token)
+                                .ConfigureAwait(false);
                             // <movement />
                             await objWriter.WriteElementStringAsync("movement", _strMovement, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <walk />
                             await objWriter.WriteElementStringAsync("walk", _strWalk, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <run />
                             await objWriter.WriteElementStringAsync("run", _strRun, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <sprint />
                             await objWriter.WriteElementStringAsync("sprint", _strSprint, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <walk />
                             await objWriter.WriteElementStringAsync("walkalt", _strWalk, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <run />
                             await objWriter.WriteElementStringAsync("runalt", _strRun, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <sprint />
                             await objWriter.WriteElementStringAsync("sprintalt", _strSprint, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <initiativedice />
                             await objWriter.WriteElementStringAsync("initiativedice",
-                                                                    _intInitiativeDice.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intInitiativeDice.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             // <prioritymetatype />
                             await objWriter
-                                  .WriteElementStringAsync("prioritymetatype", _strPriorityMetatype, token: token)
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync("prioritymetatype", _strPriorityMetatype, token: token)
+                                .ConfigureAwait(false);
                             // <priorityattributes />
                             await objWriter
-                                  .WriteElementStringAsync("priorityattributes", _strPriorityAttributes,
-                                                           token: token).ConfigureAwait(false);
+                                .WriteElementStringAsync("priorityattributes", _strPriorityAttributes,
+                                    token: token).ConfigureAwait(false);
                             // <priorityspecial />
                             await objWriter
-                                  .WriteElementStringAsync("priorityspecial", _strPrioritySpecial, token: token)
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync("priorityspecial", _strPrioritySpecial, token: token)
+                                .ConfigureAwait(false);
                             // <priorityskills />
                             await objWriter
-                                  .WriteElementStringAsync("priorityskills", _strPrioritySkills, token: token)
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync("priorityskills", _strPrioritySkills, token: token)
+                                .ConfigureAwait(false);
                             // <priorityresources />
                             await objWriter
-                                  .WriteElementStringAsync("priorityresources", _strPriorityResources,
-                                                           token: token).ConfigureAwait(false);
+                                .WriteElementStringAsync("priorityresources", _strPriorityResources,
+                                    token: token).ConfigureAwait(false);
                             // <priorityresources />
                             await objWriter
-                                  .WriteElementStringAsync("prioritytalent", _strPriorityTalent, token: token)
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync("prioritytalent", _strPriorityTalent, token: token)
+                                .ConfigureAwait(false);
                             // <priorityskills >
                             await objWriter.WriteStartElementAsync("priorityskills", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             foreach (string strSkill in _lstPrioritySkills)
                             {
                                 await objWriter.WriteElementStringAsync("priorityskill", strSkill, token: token)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             }
 
                             // </priorityskills>
@@ -3947,320 +3954,320 @@ namespace Chummer
 
                             // <essenceatspecialstart />
                             await objWriter.WriteElementStringAsync("essenceatspecialstart",
-                                                                    _decEssenceAtSpecialStart.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _decEssenceAtSpecialStart.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             // <name />
                             await objWriter.WriteElementStringAsync("name", _strName, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await SaveMugshotsAsync(objWriter, token).ConfigureAwait(false);
 
                             // <gender />
                             await objWriter.WriteElementStringAsync("gender", _strGender, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <age />
                             await objWriter.WriteElementStringAsync("age", _strAge, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <eyes />
                             await objWriter.WriteElementStringAsync("eyes", _strEyes, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <height />
                             await objWriter.WriteElementStringAsync("height", _strHeight, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <weight />
                             await objWriter.WriteElementStringAsync("weight", _strWeight, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <skin />
                             await objWriter.WriteElementStringAsync("skin", _strSkin, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <hair />
                             await objWriter.WriteElementStringAsync("hair", _strHair, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <description />
                             await objWriter.WriteElementStringAsync("description", _strDescription, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <background />
                             await objWriter.WriteElementStringAsync("background", _strBackground, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <concept />
                             await objWriter.WriteElementStringAsync("concept", _strConcept, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <notes />
                             await objWriter
-                                  .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(),
-                                                           token: token).ConfigureAwait(false);
+                                .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(),
+                                    token: token).ConfigureAwait(false);
                             // <alias />
                             await objWriter.WriteElementStringAsync("alias", _strAlias, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <playername />
                             await objWriter.WriteElementStringAsync("playername", _strPlayerName, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <gamenotes />
                             await objWriter.WriteElementStringAsync("gamenotes", _strGameNotes, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <primaryarm />
                             await objWriter.WriteElementStringAsync("primaryarm", _strPrimaryArm, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
 
                             // <ignorerules />
                             if (_blnIgnoreRules)
                                 await objWriter.WriteElementStringAsync("ignorerules",
-                                                                        _blnIgnoreRules.ToString(
-                                                                            GlobalSettings.InvariantCultureInfo),
-                                                                        token: token).ConfigureAwait(false);
+                                    _blnIgnoreRules.ToString(
+                                        GlobalSettings.InvariantCultureInfo),
+                                    token: token).ConfigureAwait(false);
                             // <iscritter />
                             if (_blnIsCritter)
                                 await objWriter.WriteElementStringAsync("iscritter",
-                                                                        _blnIsCritter.ToString(
-                                                                            GlobalSettings.InvariantCultureInfo),
-                                                                        token: token).ConfigureAwait(false);
+                                    _blnIsCritter.ToString(
+                                        GlobalSettings.InvariantCultureInfo),
+                                    token: token).ConfigureAwait(false);
                             if (_blnPossessed)
                                 await objWriter.WriteElementStringAsync("possessed",
-                                                                        _blnPossessed.ToString(
-                                                                            GlobalSettings.InvariantCultureInfo),
-                                                                        token: token).ConfigureAwait(false);
+                                    _blnPossessed.ToString(
+                                        GlobalSettings.InvariantCultureInfo),
+                                    token: token).ConfigureAwait(false);
                             // <karma />
                             await objWriter.WriteElementStringAsync(
-                                               "karma", _intKarma.ToString(GlobalSettings.InvariantCultureInfo),
-                                               token: token)
-                                           .ConfigureAwait(false);
+                                    "karma", _intKarma.ToString(GlobalSettings.InvariantCultureInfo),
+                                    token: token)
+                                .ConfigureAwait(false);
                             // <special />
                             await objWriter.WriteElementStringAsync("special",
-                                                                    _intSpecial.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intSpecial.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <totalspecial />
                             await objWriter.WriteElementStringAsync("totalspecial",
-                                                                    _intTotalSpecial.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intTotalSpecial.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <totalattributes />
                             await objWriter.WriteElementStringAsync("totalattributes",
-                                                                    _intTotalAttributes.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intTotalAttributes.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <edgeused />
                             await objWriter.WriteElementStringAsync("edgeused",
-                                                                    _intEdgeUsed.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intEdgeUsed.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <contactpoints />
                             await objWriter.WriteElementStringAsync("contactpoints",
-                                                                    _intCachedContactPoints.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intCachedContactPoints.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <contactpointsused />
                             await objWriter.WriteElementStringAsync("contactpointsused",
-                                                                    _intContactPointsUsed.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intContactPointsUsed.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <spelllimit />
                             await objWriter.WriteElementStringAsync("spelllimit",
-                                                                    _intFreeSpells.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intFreeSpells.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <cfplimit />
                             await objWriter.WriteElementStringAsync("cfplimit",
-                                                                    _intCFPLimit.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intCFPLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <totalaiprogramlimit />
                             await objWriter.WriteElementStringAsync("ainormalprogramlimit",
-                                                                    _intAINormalProgramLimit.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intAINormalProgramLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <aiadvancedprogramlimit />
                             await objWriter.WriteElementStringAsync("aiadvancedprogramlimit",
-                                                                    _intAIAdvancedProgramLimit.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intAIAdvancedProgramLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <currentcounterspellingdice />
                             await objWriter.WriteElementStringAsync("currentcounterspellingdice",
-                                                                    _intCurrentCounterspellingDice.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intCurrentCounterspellingDice.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <currentliftcarryhits />
                             await objWriter.WriteElementStringAsync("currentliftcarryhits",
-                                                                    _intCurrentLiftCarryHits.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intCurrentLiftCarryHits.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <carrylimit />
                             await objWriter.WriteElementStringAsync("basecarrylimit",
-                                                                    _decCachedBaseCarryLimit.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _decCachedBaseCarryLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <liftlimit />
                             await objWriter.WriteElementStringAsync("baseliftlimit",
-                                                                    _decCachedBaseLiftLimit.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _decCachedBaseLiftLimit.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <totalcarriedweight />
                             await objWriter.WriteElementStringAsync("totalcarriedweight",
-                                                                    _decCachedTotalCarriedWeight.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _decCachedTotalCarriedWeight.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <encumbranceinterval />
                             await objWriter.WriteElementStringAsync("encumbranceinterval",
-                                                                    _decCachedEncumbranceInterval.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _decCachedEncumbranceInterval.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <streetcred />
                             await objWriter.WriteElementStringAsync("streetcred",
-                                                                    _intStreetCred.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intStreetCred.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <notoriety />
                             await objWriter.WriteElementStringAsync("notoriety",
-                                                                    _intNotoriety.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intNotoriety.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <publicaware />
                             await objWriter.WriteElementStringAsync("publicawareness",
-                                                                    _intPublicAwareness.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intPublicAwareness.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <burntstreetcred />
                             await objWriter.WriteElementStringAsync("burntstreetcred",
-                                                                    _intBurntStreetCred.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intBurntStreetCred.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <baseastralreputation />
                             await objWriter.WriteElementStringAsync("baseastralreputation",
-                                                                    _intBaseAstralReputation.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intBaseAstralReputation.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <basewildreputation />
                             await objWriter.WriteElementStringAsync("basewildreputation",
-                                                                    _intBaseWildReputation.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intBaseWildReputation.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <created />
                             await objWriter.WriteElementStringAsync("created",
-                                                                    _blnCreated.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnCreated.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <nuyen />
                             await objWriter.WriteElementStringAsync(
-                                               "nuyen", _decNuyen.ToString(GlobalSettings.InvariantCultureInfo),
-                                               token: token)
-                                           .ConfigureAwait(false);
+                                    "nuyen", _decNuyen.ToString(GlobalSettings.InvariantCultureInfo),
+                                    token: token)
+                                .ConfigureAwait(false);
                             // <startingnuyen />
                             await objWriter.WriteElementStringAsync("startingnuyen",
-                                                                    _decStartingNuyen.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _decStartingNuyen.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             // <nuyenbp />
                             await objWriter.WriteElementStringAsync("nuyenbp",
-                                                                    _decNuyenBP.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _decNuyenBP.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             // <adept />
                             await objWriter.WriteElementStringAsync("adept",
-                                                                    _blnAdeptEnabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnAdeptEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <magician />
                             await objWriter.WriteElementStringAsync("magician",
-                                                                    _blnMagicianEnabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnMagicianEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <technomancer />
                             await objWriter.WriteElementStringAsync("technomancer",
-                                                                    _blnTechnomancerEnabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnTechnomancerEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <ai />
                             await objWriter.WriteElementStringAsync("ai",
-                                                                    _blnAdvancedProgramsEnabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnAdvancedProgramsEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <cyberwaredisabled />
                             await objWriter.WriteElementStringAsync("cyberwaredisabled",
-                                                                    _blnCyberwareDisabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnCyberwareDisabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <initiationdisabled />
                             await objWriter.WriteElementStringAsync("initiationdisabled",
-                                                                    _blnInitiationDisabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnInitiationDisabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <critter />
                             await objWriter.WriteElementStringAsync("critter",
-                                                                    _blnCritterEnabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnCritterEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             // <prototypetranshuman />
                             await objWriter.WriteElementStringAsync("prototypetranshuman",
-                                                                    _decPrototypeTranshuman.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _decPrototypeTranshuman.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             // <attributes>
                             await objWriter.WriteStartElementAsync("attributes", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             AttributeSection.Save(objWriter, token);
                             // </attributes>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <magenabled />
                             await objWriter.WriteElementStringAsync("magenabled",
-                                                                    _blnMAGEnabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnMAGEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <initiategrade />
                             await objWriter.WriteElementStringAsync("initiategrade",
-                                                                    _intInitiateGrade.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intInitiateGrade.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <resenabled />
                             await objWriter.WriteElementStringAsync("resenabled",
-                                                                    _blnRESEnabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnRESEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <submersiongrade />
                             await objWriter.WriteElementStringAsync("submersiongrade",
-                                                                    _intSubmersionGrade.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intSubmersionGrade.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <depenabled />
                             await objWriter.WriteElementStringAsync("depenabled",
-                                                                    _blnDEPEnabled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnDEPEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <groupmember />
                             await objWriter.WriteElementStringAsync("groupmember",
-                                                                    _blnGroupMember.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnGroupMember.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <groupname />
                             await objWriter.WriteElementStringAsync("groupname", _strGroupName, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             // <groupnotes />
                             await objWriter.WriteElementStringAsync("groupnotes", _strGroupNotes, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
 
                             // External reader friendly stuff.
                             await objWriter.WriteElementStringAsync("totaless",
-                                                                    (await EssenceAsync(token: token)
-                                                                        .ConfigureAwait(false))
-                                                                    .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                (await EssenceAsync(token: token)
+                                    .ConfigureAwait(false))
+                                .ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             // Write out the Mystic Adept MAG split info.
                             if (_blnAdeptEnabled && _blnMagicianEnabled)
                             {
                                 await objWriter.WriteElementStringAsync("magsplitadept",
-                                                                        _intMAGAdept.ToString(
-                                                                            GlobalSettings.InvariantCultureInfo),
-                                                                        token: token).ConfigureAwait(false);
+                                    _intMAGAdept.ToString(
+                                        GlobalSettings.InvariantCultureInfo),
+                                    token: token).ConfigureAwait(false);
                                 await objWriter.WriteElementStringAsync("magsplitmagician",
-                                                                        _intMAGMagician.ToString(
-                                                                            GlobalSettings.InvariantCultureInfo),
-                                                                        token: token).ConfigureAwait(false);
+                                    _intMAGMagician.ToString(
+                                        GlobalSettings.InvariantCultureInfo),
+                                    token: token).ConfigureAwait(false);
                             }
 
                             _objTradition?.Save(objWriter);
@@ -4268,20 +4275,20 @@ namespace Chummer
                             // Condition Monitor Progress.
                             // <physicalcmfilled />
                             await objWriter.WriteElementStringAsync("physicalcmfilled",
-                                                                    _intPhysicalCMFilled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intPhysicalCMFilled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <stuncmfilled />
                             await objWriter.WriteElementStringAsync("stuncmfilled",
-                                                                    _intStunCMFilled.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _intStunCMFilled.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             //<psyche />
                             await objWriter.WriteElementStringAsync("psyche",
-                                                                    _blnPsycheActive.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                _blnPsycheActive.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
 
                             ///////////////////////////////////////////SKILLS
 
@@ -4295,7 +4302,8 @@ namespace Chummer
 
                             // <contacts>
                             await objWriter.WriteStartElementAsync("contacts", token: token).ConfigureAwait(false);
-                            await _lstContacts.ForEachAsync(x => x.SaveAsync(objWriter, token), token).ConfigureAwait(false);
+                            await _lstContacts.ForEachAsync(x => x.SaveAsync(objWriter, token), token)
+                                .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <spells>
@@ -4310,7 +4318,7 @@ namespace Chummer
 
                             // <stackedfoci>
                             await objWriter.WriteStartElementAsync("stackedfoci", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstStackedFoci.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
@@ -4321,30 +4329,31 @@ namespace Chummer
 
                             // <spirits>
                             await objWriter.WriteStartElementAsync("spirits", token: token).ConfigureAwait(false);
-                            await _lstSpirits.ForEachAsync(x => x.SaveAsync(objWriter, token), token).ConfigureAwait(false);
+                            await _lstSpirits.ForEachAsync(x => x.SaveAsync(objWriter, token), token)
+                                .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <complexforms>
                             await objWriter.WriteStartElementAsync("complexforms", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstComplexForms.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <aiprograms>
                             await objWriter.WriteStartElementAsync("aiprograms", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstAIPrograms.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <martialarts>
                             await objWriter.WriteStartElementAsync("martialarts", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstMartialArts.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <limitmodifiers>
                             await objWriter.WriteStartElementAsync("limitmodifiers", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstLimitModifiers.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
@@ -4360,19 +4369,19 @@ namespace Chummer
 
                             // <cyberwares>
                             await objWriter.WriteStartElementAsync("cyberwares", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstCyberware.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <qualities>
                             await objWriter.WriteStartElementAsync("qualities", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstQualities.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <lifestyles>
                             await objWriter.WriteStartElementAsync("lifestyles", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstLifestyles.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
@@ -4388,7 +4397,7 @@ namespace Chummer
 
                             // <metamagics>
                             await objWriter.WriteStartElementAsync("metamagics", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstMetamagics.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
@@ -4399,32 +4408,34 @@ namespace Chummer
 
                             // <enhancements>
                             await objWriter.WriteStartElementAsync("enhancements", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstEnhancements.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <critterpowers>
                             await objWriter.WriteStartElementAsync("critterpowers", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstCritterPowers.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <initiationgrades>
                             await objWriter.WriteStartElementAsync("initiationgrades", token: token)
-                                           .ConfigureAwait(false);
-                            await _lstInitiationGrades.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
+                                .ConfigureAwait(false);
+                            await _lstInitiationGrades.ForEachAsync(x => x.Save(objWriter), token)
+                                .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <improvements>
                             await objWriter.WriteStartElementAsync("improvements", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstImprovements.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <sustained>
                             await objWriter.WriteStartElementAsync("sustainedobjects", token: token)
-                                           .ConfigureAwait(false);
-                            await _lstSustainedObjects.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
+                                .ConfigureAwait(false);
+                            await _lstSustainedObjects.ForEachAsync(x => x.Save(objWriter), token)
+                                .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <drugs>
@@ -4434,7 +4445,7 @@ namespace Chummer
 
                             // <mentorspirits>
                             await objWriter.WriteStartElementAsync("mentorspirits", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstMentorSpirits.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
@@ -4445,33 +4456,35 @@ namespace Chummer
 
                             // <locations>
                             await objWriter.WriteStartElementAsync("gearlocations", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstGearLocations.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <armorlocations>
                             await objWriter.WriteStartElementAsync("armorlocations", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstArmorLocations.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <vehiclelocations>
                             await objWriter.WriteStartElementAsync("vehiclelocations", token: token)
-                                           .ConfigureAwait(false);
-                            await _lstVehicleLocations.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
+                                .ConfigureAwait(false);
+                            await _lstVehicleLocations.ForEachAsync(x => x.Save(objWriter), token)
+                                .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <weaponlocations>
                             await objWriter.WriteStartElementAsync("weaponlocations", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstWeaponLocations.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <improvementgroups>
                             await objWriter.WriteStartElementAsync("improvementgroups", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await _lstImprovementGroups.ForEachAsync(
-                                strGroup => objWriter.WriteElementStringAsync("improvementgroup", strGroup, token: token),
+                                strGroup => objWriter.WriteElementStringAsync("improvementgroup", strGroup,
+                                    token: token),
                                 token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
@@ -4488,21 +4501,22 @@ namespace Chummer
                             {
                                 // <plugins>
                                 await objWriter.WriteStartElementAsync("plugins", token: token)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                                 foreach (IPlugin objPlugin in lstActivePlugins)
                                 {
                                     try
                                     {
-                                        System.Reflection.AssemblyName objPluginAssemblyName = objPlugin.GetPluginAssembly().GetName();
+                                        System.Reflection.AssemblyName objPluginAssemblyName =
+                                            objPlugin.GetPluginAssembly().GetName();
                                         await objWriter
-                                              .WriteStartElementAsync(objPluginAssemblyName.Name, token: token)
-                                              .ConfigureAwait(false);
+                                            .WriteStartElementAsync(objPluginAssemblyName.Name, token: token)
+                                            .ConfigureAwait(false);
                                         await objWriter
-                                              .WriteAttributeStringAsync(
-                                                  "version", objPluginAssemblyName.Version.ToString(), token: token)
-                                              .ConfigureAwait(false);
+                                            .WriteAttributeStringAsync(
+                                                "version", objPluginAssemblyName.Version.ToString(), token: token)
+                                            .ConfigureAwait(false);
                                         await objWriter.WriteStringAsync(objPlugin.GetSaveToFileElement(this))
-                                                       .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                     }
                                     catch (Exception e)
@@ -4518,36 +4532,36 @@ namespace Chummer
 
                             //calculatedValues
                             await objWriter.WriteStartElementAsync("calculatedvalues", token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await objWriter.WriteCommentAsync(
-                                               "these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)")
-                                           .ConfigureAwait(false);
+                                    "these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)")
+                                .ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("physicalcm",
-                                                                    (await GetPhysicalCMAsync(token)
-                                                                        .ConfigureAwait(false))
-                                                                    .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                (await GetPhysicalCMAsync(token)
+                                    .ConfigureAwait(false))
+                                .ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("physicalcmthresholdoffset",
-                                                                    (await GetPhysicalCMThresholdOffsetAsync(token)
-                                                                        .ConfigureAwait(false))
-                                                                    .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                (await GetPhysicalCMThresholdOffsetAsync(token)
+                                    .ConfigureAwait(false))
+                                .ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("physicalcmoverflow",
-                                                                    (await GetCMOverflowAsync(token)
-                                                                        .ConfigureAwait(false))
-                                                                    .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                (await GetCMOverflowAsync(token)
+                                    .ConfigureAwait(false))
+                                .ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             await objWriter
-                                  .WriteElementStringAsync(
-                                      "stuncm",
-                                      (await GetStunCMAsync(token).ConfigureAwait(false)).ToString(
-                                          GlobalSettings.InvariantCultureInfo), token: token)
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync(
+                                    "stuncm",
+                                    (await GetStunCMAsync(token).ConfigureAwait(false)).ToString(
+                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                .ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("stuncmthresholdoffset",
-                                                                    (await GetStunCMThresholdOffsetAsync(token)
-                                                                        .ConfigureAwait(false))
-                                                                    .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                    token: token).ConfigureAwait(false);
+                                (await GetStunCMThresholdOffsetAsync(token)
+                                    .ConfigureAwait(false))
+                                .ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             // </calculatedValues>
 
@@ -4563,7 +4577,7 @@ namespace Chummer
                         // Validate that the character can save properly. If there's no error, save the file to the listed file location.
                         try
                         {
-                            XmlDocument objDoc = new XmlDocument {XmlResolver = null};
+                            XmlDocument objDoc = new XmlDocument { XmlResolver = null };
                             using (XmlReader objXmlReader
                                    = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                 objDoc.Load(objXmlReader);
@@ -4576,9 +4590,9 @@ namespace Chummer
                                 {
                                     objStream.Seek(0, SeekOrigin.Begin);
                                     await objStream.CompressToLzmaFileAsync(
-                                                       objFileStream, GlobalSettings.Chum5lzCompressionLevel,
-                                                       token: token)
-                                                   .ConfigureAwait(false);
+                                            objFileStream, GlobalSettings.Chum5lzCompressionLevel,
+                                            token: token)
+                                        .ConfigureAwait(false);
                                 }
                             }
                         }
@@ -4588,9 +4602,9 @@ namespace Chummer
                             if (Utils.IsUnitTest)
                                 throw;
                             Program.ShowScrollableMessageBox(await LanguageManager
-                                                                   .GetStringAsync(
-                                                                       "Message_Save_Error_Warning", token: token)
-                                                                   .ConfigureAwait(false));
+                                .GetStringAsync(
+                                    "Message_Save_Error_Warning", token: token)
+                                .ConfigureAwait(false));
                             blnErrorFree = false;
                         }
                         catch (XmlException ex)
@@ -4599,17 +4613,17 @@ namespace Chummer
                             if (Utils.IsUnitTest)
                                 throw;
                             Program.ShowScrollableMessageBox(await LanguageManager
-                                                                   .GetStringAsync(
-                                                                       "Message_Save_Error_Warning", token: token)
-                                                                   .ConfigureAwait(false));
+                                .GetStringAsync(
+                                    "Message_Save_Error_Warning", token: token)
+                                .ConfigureAwait(false));
                             blnErrorFree = false;
                         }
                         catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                         {
                             Program.ShowScrollableMessageBox(await LanguageManager
-                                                                   .GetStringAsync(
-                                                                       "Message_Save_Error_Warning", token: token)
-                                                                   .ConfigureAwait(false));
+                                .GetStringAsync(
+                                    "Message_Save_Error_Warning", token: token)
+                                .ConfigureAwait(false));
                             blnErrorFree = false;
                         }
                     }
@@ -4623,8 +4637,15 @@ namespace Chummer
                         GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
                     else
                         await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, FileName, token)
-                                            .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
 
             using (blnSync ? LockObject.EnterUpgradeableReadLock(token) : await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -4640,7 +4661,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -4648,7 +4669,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 
@@ -9294,7 +9315,9 @@ namespace Chummer
                 objCulture = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguageToPrint))
                 strLanguageToPrint = GlobalSettings.Language;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+
+            IAsyncDisposable objLockerAsync = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // <character>
@@ -9304,99 +9327,99 @@ namespace Chummer
                 {
                     // <settings />
                     await objWriter
-                          .WriteElementStringAsync("settings", await GetSettingsKeyAsync(token).ConfigureAwait(false),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("settings", await GetSettingsKeyAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <buildmethod />
                     await objWriter
-                          .WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString(), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString(), token: token)
+                        .ConfigureAwait(false);
                     // <imageformat />
                     await objWriter.WriteElementStringAsync("imageformat",
-                                                            "jpeg", token: token)
-                                   .ConfigureAwait(
-                                       false); // Here for legacy/compatibility purposes, we always export as JPEG now
+                            "jpeg", token: token)
+                        .ConfigureAwait(
+                            false); // Here for legacy/compatibility purposes, we always export as JPEG now
                     // <metatype />
                     await objWriter
-                          .WriteElementStringAsync(
-                              "metatype", await DisplayMetatypeAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "metatype", await DisplayMetatypeAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <metatype_english />
                     await objWriter.WriteElementStringAsync("metatype_english", Metatype, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <metatype_guid />
                     await objWriter.WriteElementStringAsync("metatype_guid",
-                                                            MetatypeGuid.ToString(
-                                                                "D", GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            MetatypeGuid.ToString(
+                                "D", GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     // <metavariant />
                     await objWriter.WriteElementStringAsync("metavariant",
-                                                            await DisplayMetavariantAsync(strLanguageToPrint, token)
-                                                                .ConfigureAwait(false), token: token)
-                                   .ConfigureAwait(false);
+                            await DisplayMetavariantAsync(strLanguageToPrint, token)
+                                .ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false);
                     // <metavariant_english />
                     await objWriter.WriteElementStringAsync("metavariant_english", Metavariant, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <metavariant_guid />
                     await objWriter.WriteElementStringAsync("metavariant_guid",
-                                                            MetavariantGuid.ToString(
-                                                                "D", GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            MetavariantGuid.ToString(
+                                "D", GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     // <movement />
                     await objWriter
-                          .WriteElementStringAsync(
-                              "movement",
-                              await FullMovementAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "movement",
+                            await FullMovementAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <walk />
                     await objWriter
-                          .WriteElementStringAsync(
-                              "walk",
-                              await FullMovementAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "walk",
+                            await FullMovementAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <run />
                     await objWriter
-                          .WriteElementStringAsync(
-                              "run",
-                              await FullMovementAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "run",
+                            await FullMovementAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <sprint />
                     await objWriter
-                          .WriteElementStringAsync(
-                              "sprint",
-                              await FullMovementAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "sprint",
+                            await FullMovementAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <movementwalk />
                     await objWriter.WriteElementStringAsync("movementwalk",
-                                                            await GetMovementAsync(
-                                                                    objCulture, strLanguageToPrint, token)
-                                                                .ConfigureAwait(false), token: token)
-                                   .ConfigureAwait(false);
+                            await GetMovementAsync(
+                                    objCulture, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false);
                     // <movementswim />
                     await objWriter
-                          .WriteElementStringAsync("movementswim",
-                                                   await GetSwimAsync(objCulture, strLanguageToPrint, token)
-                                                       .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("movementswim",
+                            await GetSwimAsync(objCulture, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     // <movementfly />
                     await objWriter
-                          .WriteElementStringAsync("movementfly",
-                                                   await GetFlyAsync(objCulture, strLanguageToPrint, token)
-                                                       .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("movementfly",
+                            await GetFlyAsync(objCulture, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                     // <prioritymetatype />
                     await objWriter.WriteElementStringAsync("prioritymetatype", MetatypePriority, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <priorityattributes />
                     await objWriter.WriteElementStringAsync("priorityattributes", AttributesPriority, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <priorityspecial />
                     await objWriter.WriteElementStringAsync("priorityspecial", SpecialPriority, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <priorityskills />
                     await objWriter.WriteElementStringAsync("priorityskills", SkillsPriority, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <priorityresources />
                     await objWriter.WriteElementStringAsync("priorityresources", ResourcesPriority, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
 
                     // <priorityskills>
                     XmlElementWriteHelper objPrioritySkillsElement
@@ -9406,7 +9429,7 @@ namespace Chummer
                         foreach (string strSkill in PriorityBonusSkillList)
                         {
                             await objWriter.WriteElementStringAsync("priorityskill", strSkill, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9419,288 +9442,289 @@ namespace Chummer
                     if (await GetAmbidextrousAsync(token).ConfigureAwait(false))
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
-                                                                await LanguageManager.GetStringAsync(
-                                                                    "String_Ambidextrous", strLanguageToPrint,
-                                                                    token: token).ConfigureAwait(false), token: token)
-                                       .ConfigureAwait(false);
+                                await LanguageManager.GetStringAsync(
+                                    "String_Ambidextrous", strLanguageToPrint,
+                                    token: token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false);
                     }
                     else if (PrimaryArm == "Left")
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
-                                                                await LanguageManager.GetStringAsync(
-                                                                    "String_Improvement_SideLeft", strLanguageToPrint,
-                                                                    token: token).ConfigureAwait(false), token: token)
-                                       .ConfigureAwait(false);
+                                await LanguageManager.GetStringAsync(
+                                    "String_Improvement_SideLeft", strLanguageToPrint,
+                                    token: token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false);
                     }
                     else
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
-                                                                await LanguageManager.GetStringAsync(
-                                                                        "String_Improvement_SideRight",
-                                                                        strLanguageToPrint, token: token)
-                                                                    .ConfigureAwait(false), token: token)
-                                       .ConfigureAwait(false);
+                                await LanguageManager.GetStringAsync(
+                                        "String_Improvement_SideRight",
+                                        strLanguageToPrint, token: token)
+                                    .ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false);
                     }
 
                     // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from
                     // having a self-terminated title tag which causes browser to not rendering anything.
                     // <name />
                     await objWriter.WriteElementStringAsync("name",
-                                                            !string.IsNullOrEmpty(Name)
-                                                                ? Name
-                                                                : await LanguageManager.GetStringAsync(
-                                                                    "String_UnnamedCharacter", strLanguageToPrint,
-                                                                    token: token).ConfigureAwait(false), token: token)
-                                   .ConfigureAwait(false);
+                            !string.IsNullOrEmpty(Name)
+                                ? Name
+                                : await LanguageManager.GetStringAsync(
+                                    "String_UnnamedCharacter", strLanguageToPrint,
+                                    token: token).ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false);
 
                     await PrintMugshots(objWriter, token).ConfigureAwait(false);
 
                     // <sex />
                     await objWriter.WriteElementStringAsync("gender",
-                                                            await TranslateExtraAsync(
-                                                                    await ReverseTranslateExtraAsync(
-                                                                        Gender, GlobalSettings.Language, "contacts.xml",
-                                                                        token: token).ConfigureAwait(false),
-                                                                    strLanguageToPrint, "contacts.xml", token: token)
-                                                                .ConfigureAwait(false), token: token)
-                                   .ConfigureAwait(false);
+                            await TranslateExtraAsync(
+                                    await ReverseTranslateExtraAsync(
+                                        Gender, GlobalSettings.Language, "contacts.xml",
+                                        token: token).ConfigureAwait(false),
+                                    strLanguageToPrint, "contacts.xml", token: token)
+                                .ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false);
                     // <age />
                     await objWriter.WriteElementStringAsync("age",
-                                                            await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(
-                                                                    Age, GlobalSettings.Language, "contacts.xml",
-                                                                    token: token).ConfigureAwait(false),
-                                                                strLanguageToPrint,
-                                                                "contacts.xml", token: token).ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await TranslateExtraAsync(
+                            await ReverseTranslateExtraAsync(
+                                Age, GlobalSettings.Language, "contacts.xml",
+                                token: token).ConfigureAwait(false),
+                            strLanguageToPrint,
+                            "contacts.xml", token: token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     // <eyes />
                     await objWriter.WriteElementStringAsync("eyes",
-                                                            await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Eyes, token: token)
-                                                                    .ConfigureAwait(false),
-                                                                strLanguageToPrint, token: token).ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await TranslateExtraAsync(
+                            await ReverseTranslateExtraAsync(Eyes, token: token)
+                                .ConfigureAwait(false),
+                            strLanguageToPrint, token: token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     // <height />
                     await objWriter.WriteElementStringAsync("height",
-                                                            await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Height, token: token)
-                                                                    .ConfigureAwait(false),
-                                                                strLanguageToPrint, token: token).ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await TranslateExtraAsync(
+                            await ReverseTranslateExtraAsync(Height, token: token)
+                                .ConfigureAwait(false),
+                            strLanguageToPrint, token: token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     // <weight />
                     await objWriter.WriteElementStringAsync("weight",
-                                                            await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Weight, token: token)
-                                                                    .ConfigureAwait(false),
-                                                                strLanguageToPrint, token: token).ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await TranslateExtraAsync(
+                            await ReverseTranslateExtraAsync(Weight, token: token)
+                                .ConfigureAwait(false),
+                            strLanguageToPrint, token: token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     // <skin />
                     await objWriter.WriteElementStringAsync("skin",
-                                                            await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Skin, token: token)
-                                                                    .ConfigureAwait(false),
-                                                                strLanguageToPrint, token: token).ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await TranslateExtraAsync(
+                            await ReverseTranslateExtraAsync(Skin, token: token)
+                                .ConfigureAwait(false),
+                            strLanguageToPrint, token: token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     // <hair />
                     await objWriter.WriteElementStringAsync("hair",
-                                                            await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Hair, token: token)
-                                                                    .ConfigureAwait(false),
-                                                                strLanguageToPrint, token: token).ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await TranslateExtraAsync(
+                            await ReverseTranslateExtraAsync(Hair, token: token)
+                                .ConfigureAwait(false),
+                            strLanguageToPrint, token: token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     // <description />
                     await objWriter
-                          .WriteElementStringAsync("description",
-                                                   await Description.RtfToHtmlAsync(token).ConfigureAwait(false),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("description",
+                            await Description.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <background />
                     await objWriter
-                          .WriteElementStringAsync("background",
-                                                   await Background.RtfToHtmlAsync(token).ConfigureAwait(false),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("background",
+                            await Background.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <concept />
                     await objWriter
-                          .WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync(token).ConfigureAwait(false),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <notes />
                     await objWriter
-                          .WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync(token).ConfigureAwait(false),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     // <alias />
                     await objWriter.WriteElementStringAsync("alias", Alias, token: token).ConfigureAwait(false);
                     // <playername />
                     await objWriter.WriteElementStringAsync("playername", PlayerName, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <gamenotes />
                     await objWriter
-                          .WriteElementStringAsync("gamenotes",
-                                                   await GameNotes.RtfToHtmlAsync(token).ConfigureAwait(false),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("gamenotes",
+                            await GameNotes.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
 
                     // <limitphysical />
                     await objWriter
-                          .WriteElementStringAsync("limitphysical", LimitPhysical.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("limitphysical", LimitPhysical.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <limitmental />
                     await objWriter
-                          .WriteElementStringAsync("limitmental", LimitMental.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("limitmental", LimitMental.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <limitsocial />
                     await objWriter
-                          .WriteElementStringAsync("limitsocial", LimitSocial.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("limitsocial", LimitSocial.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <limitastral />
                     await objWriter
-                          .WriteElementStringAsync("limitastral", LimitAstral.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("limitastral", LimitAstral.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <contactpoints />
                     await objWriter
-                          .WriteElementStringAsync("contactpoints",
-                                                   (await GetContactPointsAsync(token).ConfigureAwait(false)).ToString(
-                                                       objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("contactpoints",
+                            (await GetContactPointsAsync(token).ConfigureAwait(false)).ToString(
+                                objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <contactpointsused />
                     await objWriter.WriteElementStringAsync("contactpointsused",
-                                                            (await GetContactPointsUsedAsync(token)
-                                                                .ConfigureAwait(false)).ToString(objCulture),
-                                                            token: token)
-                                   .ConfigureAwait(false);
+                            (await GetContactPointsUsedAsync(token)
+                                .ConfigureAwait(false)).ToString(objCulture),
+                            token: token)
+                        .ConfigureAwait(false);
                     // <cfplimit />
                     await objWriter.WriteElementStringAsync("cfplimit", CFPLimit.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <totalaiprogramlimit />
                     await objWriter.WriteElementStringAsync("ainormalprogramlimit",
-                                                            AINormalProgramLimit.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            AINormalProgramLimit.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <aiadvancedprogramlimit />
                     await objWriter.WriteElementStringAsync("aiadvancedprogramlimit",
-                                                            AIAdvancedProgramLimit.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            AIAdvancedProgramLimit.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <spelllimit />
-                    await objWriter.WriteElementStringAsync("spelllimit", (await GetFreeSpellsAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("spelllimit",
+                            (await GetFreeSpellsAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <karma />
                     await objWriter
-                          .WriteElementStringAsync(
-                              "karma", (await GetKarmaAsync(token).ConfigureAwait(false)).ToString(objCulture),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "karma", (await GetKarmaAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <totalkarma />
                     await objWriter
-                          .WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <special />
                     await objWriter.WriteElementStringAsync("special", Special.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <totalspecial />
                     await objWriter
-                          .WriteElementStringAsync("totalspecial", TotalSpecial.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("totalspecial", TotalSpecial.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <attributes />
                     await objWriter.WriteElementStringAsync("attributes", Attributes.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <totalattributes />
                     await objWriter
-                          .WriteElementStringAsync("totalattributes", TotalAttributes.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("totalattributes", TotalAttributes.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <edgeused />
                     await objWriter.WriteElementStringAsync("edgeused", EdgeUsed.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <edgeremaining />
                     await objWriter
-                          .WriteElementStringAsync("edgeremaining", EdgeRemaining.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("edgeremaining", EdgeRemaining.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <streetcred />
                     await objWriter.WriteElementStringAsync("streetcred", StreetCred.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <calculatedstreetcred />
                     await objWriter.WriteElementStringAsync("calculatedstreetcred",
-                                                            CalculatedStreetCred.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            CalculatedStreetCred.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <totalstreetcred />
                     await objWriter
-                          .WriteElementStringAsync("totalstreetcred", TotalStreetCred.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("totalstreetcred", TotalStreetCred.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <burntstreetcred />
                     await objWriter
-                          .WriteElementStringAsync("burntstreetcred", BurntStreetCred.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("burntstreetcred", BurntStreetCred.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <notoriety />
                     await objWriter.WriteElementStringAsync("notoriety", Notoriety.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <calculatednotoriety />
                     await objWriter.WriteElementStringAsync("calculatednotoriety",
-                                                            CalculatedNotoriety.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            CalculatedNotoriety.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <totalnotoriety />
                     await objWriter
-                          .WriteElementStringAsync("totalnotoriety", TotalNotoriety.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("totalnotoriety", TotalNotoriety.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <publicawareness />
                     await objWriter
-                          .WriteElementStringAsync("publicawareness", PublicAwareness.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("publicawareness", PublicAwareness.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <calculatedpublicawareness />
                     await objWriter.WriteElementStringAsync("calculatedpublicawareness",
-                                                            CalculatedPublicAwareness.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        CalculatedPublicAwareness.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     // <totalpublicawareness />
                     await objWriter.WriteElementStringAsync("totalpublicawareness",
-                                                            TotalPublicAwareness.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            TotalPublicAwareness.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <astralreputation />
                     await objWriter
-                          .WriteElementStringAsync("astralreputation", AstralReputation.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("astralreputation", AstralReputation.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <totalastralreputation />
                     await objWriter.WriteElementStringAsync("totalastralreputation",
-                                                            TotalAstralReputation.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            TotalAstralReputation.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <wildreputation />
                     await objWriter
-                          .WriteElementStringAsync("wildreputation", WildReputation.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("wildreputation", WildReputation.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <totalwildreputation />
                     await objWriter.WriteElementStringAsync("totalwildreputation",
-                                                            TotalWildReputation.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            TotalWildReputation.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <created />
                     await objWriter.WriteElementStringAsync(
-                                       "created", Created.ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            "created", Created.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     // <nuyen />
                     await objWriter
-                          .WriteElementStringAsync("nuyen", Nuyen.ToString(Settings.NuyenFormat, objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("nuyen", Nuyen.ToString(Settings.NuyenFormat, objCulture),
+                            token: token).ConfigureAwait(false);
                     // <adept />
                     await objWriter.WriteElementStringAsync(
-                                       "adept", AdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo),
-                                       token: token)
-                                   .ConfigureAwait(false);
+                            "adept", AdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token)
+                        .ConfigureAwait(false);
                     // <magician />
                     await objWriter.WriteElementStringAsync(
-                                       "magician", MagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo),
-                                       token: token)
-                                   .ConfigureAwait(false);
+                            "magician", MagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token)
+                        .ConfigureAwait(false);
                     // <technomancer />
                     await objWriter.WriteElementStringAsync("technomancer",
-                                                            TechnomancerEnabled.ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            TechnomancerEnabled.ToString(
+                                GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     // <ai />
                     await objWriter.WriteElementStringAsync("ai",
-                                                            AdvancedProgramsEnabled.ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            AdvancedProgramsEnabled.ToString(
+                                GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     // <cyberwaredisabled />
                     await objWriter.WriteElementStringAsync("cyberwaredisabled",
-                                                            CyberwareDisabled.ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            CyberwareDisabled.ToString(
+                                GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     // <critter />
                     await objWriter.WriteElementStringAsync(
-                                       "critter", CritterEnabled.ToString(GlobalSettings.InvariantCultureInfo),
-                                       token: token)
-                                   .ConfigureAwait(false);
+                            "critter", CritterEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token)
+                        .ConfigureAwait(false);
 
                     await objWriter.WriteElementStringAsync(
                         "totaless",
@@ -9711,7 +9735,7 @@ namespace Chummer
                     if (MagicTradition.Type != TraditionType.None)
                     {
                         await MagicTradition.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                            .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                     }
 
                     // <attributes>
@@ -9720,7 +9744,7 @@ namespace Chummer
                     try
                     {
                         await AttributeSection.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                              .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                     }
                     finally
                     {
@@ -9736,98 +9760,98 @@ namespace Chummer
                     int intFallingArmor = await GetTotalFallingArmorRatingAsync(token).ConfigureAwait(false);
                     // <dodge />
                     await objWriter.WriteElementStringAsync("dodge", Dodge.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <armor />
                     await objWriter.WriteElementStringAsync("armor", intArmor.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <firearmor />
                     await objWriter
-                          .WriteElementStringAsync("firearmor", intFireArmor.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("firearmor", intFireArmor.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <coldarmor />
                     await objWriter
-                          .WriteElementStringAsync("coldarmor", intColdArmor.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("coldarmor", intColdArmor.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <electricityarmor />
                     await objWriter
-                          .WriteElementStringAsync("electricityarmor", intElectricityArmor.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("electricityarmor", intElectricityArmor.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <acidarmor />
                     await objWriter
-                          .WriteElementStringAsync("acidarmor", intAcidArmor.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("acidarmor", intAcidArmor.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <fallingarmor />
                     await objWriter
-                          .WriteElementStringAsync("fallingarmor", intFallingArmor.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("fallingarmor", intFallingArmor.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
 
                     int intDamageResistanceDice = (await ImprovementManager
-                                                         .ValueOfAsync(
-                                                             this, Improvement.ImprovementType.DamageResistance,
-                                                             token: token).ConfigureAwait(false))
+                            .ValueOfAsync(
+                                this, Improvement.ImprovementType.DamageResistance,
+                                token: token).ConfigureAwait(false))
                         .StandardRound();
                     int intBodTotalValue = await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
-                                                 .GetTotalValueAsync(token).ConfigureAwait(false);
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
                     // <armordicestun />
                     await objWriter.WriteElementStringAsync("armordicestun",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intArmor).ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intArmor).ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     // <firearmordicestun />
                     await objWriter.WriteElementStringAsync("firearmordicestun",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intFireArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intFireArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <coldarmordicestun />
                     await objWriter.WriteElementStringAsync("coldarmordicestun",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intColdArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intColdArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <electricityarmordicestun />
                     await objWriter.WriteElementStringAsync("electricityarmordicestun",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intElectricityArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intElectricityArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <acidarmordicestun />
                     await objWriter.WriteElementStringAsync("acidarmordicestun",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intAcidArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intAcidArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <fallingarmordicestun />
                     await objWriter.WriteElementStringAsync("fallingarmordicestun",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intFallingArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intFallingArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <armordicephysical />
                     await objWriter.WriteElementStringAsync("armordicephysical",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intArmor).ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intArmor).ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     // <firearmordicephysical />
                     await objWriter.WriteElementStringAsync("firearmordicephysical",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intFireArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intFireArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <coldarmordicephysical />
                     await objWriter.WriteElementStringAsync("coldarmordicephysical",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intColdArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intColdArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <electricityarmordicephysical />
                     await objWriter.WriteElementStringAsync("electricityarmordicephysical",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intElectricityArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intElectricityArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <acidarmordicephysical />
                     await objWriter.WriteElementStringAsync("acidarmordicephysical",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intAcidArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intAcidArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
                     // <fallingarmordicephysical />
                     await objWriter.WriteElementStringAsync("fallingarmordicephysical",
-                                                            (intBodTotalValue + intDamageResistanceDice
-                                                                              + intFallingArmor)
-                                                            .ToString(objCulture), token: token).ConfigureAwait(false);
+                        (intBodTotalValue + intDamageResistanceDice
+                                          + intFallingArmor)
+                        .ToString(objCulture), token: token).ConfigureAwait(false);
 
                     bool blnIsAI = await GetIsAIAsync(token).ConfigureAwait(false);
                     bool blnPhysicalTrackIsCore = blnIsAI && !(HomeNode is Vehicle);
@@ -9835,330 +9859,331 @@ namespace Chummer
                     // <physicalcm />
                     int intPhysicalCM = await GetPhysicalCMAsync(token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("physicalcm", intPhysicalCM.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("physicalcm", intPhysicalCM.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("physicalcmiscorecm",
-                                                            blnPhysicalTrackIsCore.ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            blnPhysicalTrackIsCore.ToString(
+                                GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     // <stuncm />
                     int intStunCM = await GetStunCMAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("stuncm", intStunCM.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("stuncmismatrixcm",
-                                                            blnIsAI.ToString(GlobalSettings.InvariantCultureInfo),
-                                                            token: token).ConfigureAwait(false);
+                        blnIsAI.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
 
                     // Condition Monitor Progress.
                     // <physicalcmfilled />
                     await objWriter
-                          .WriteElementStringAsync("physicalcmfilled", PhysicalCMFilled.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("physicalcmfilled", PhysicalCMFilled.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <stuncmfilled />
                     await objWriter
-                          .WriteElementStringAsync("stuncmfilled", StunCMFilled.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("stuncmfilled", StunCMFilled.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
 
                     // <cmthreshold>
                     await objWriter
-                          .WriteElementStringAsync("cmthreshold",
-                                                   (await GetCMThresholdAsync(token).ConfigureAwait(false)).ToString(
-                                                       objCulture), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("cmthreshold",
+                            (await GetCMThresholdAsync(token).ConfigureAwait(false)).ToString(
+                                objCulture), token: token).ConfigureAwait(false);
                     // <cmthresholdoffset>
                     await objWriter.WriteElementStringAsync("physicalcmthresholdoffset",
-                                                            Math.Min(
-                                                                    await GetPhysicalCMThresholdOffsetAsync(token)
-                                                                        .ConfigureAwait(false), intPhysicalCM)
-                                                                .ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            Math.Min(
+                                    await GetPhysicalCMThresholdOffsetAsync(token)
+                                        .ConfigureAwait(false), intPhysicalCM)
+                                .ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <cmthresholdoffset>
                     await objWriter.WriteElementStringAsync("stuncmthresholdoffset",
-                                                            Math.Min(
-                                                                    await GetStunCMThresholdOffsetAsync(token)
-                                                                        .ConfigureAwait(false), intStunCM)
-                                                                .ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            Math.Min(
+                                    await GetStunCMThresholdOffsetAsync(token)
+                                        .ConfigureAwait(false), intStunCM)
+                                .ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <cmoverflow>
                     await objWriter
-                          .WriteElementStringAsync("cmoverflow",
-                                                   (await GetCMOverflowAsync(token).ConfigureAwait(false)).ToString(
-                                                       objCulture), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("cmoverflow",
+                            (await GetCMOverflowAsync(token).ConfigureAwait(false)).ToString(
+                                objCulture), token: token).ConfigureAwait(false);
 
                     // <psyche>
                     await objWriter.WriteElementStringAsync(
-                                       "psyche", _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo),
-                                       token: token)
-                                   .ConfigureAwait(false);
+                            "psyche", _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token)
+                        .ConfigureAwait(false);
 
                     // Calculate Initiatives.
                     // Initiative.
                     await objWriter
-                          .WriteElementStringAsync("init", GetInitiative(objCulture, strLanguageToPrint), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("init", GetInitiative(objCulture, strLanguageToPrint), token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("initdice", InitiativeDice.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("initdice", InitiativeDice.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("initvalue", InitiativeValue.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("initvalue", InitiativeValue.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("initbonus",
-                                                            Math.Max(
-                                                                    await ImprovementManager.ValueOfAsync(
-                                                                        this, Improvement.ImprovementType.Initiative,
-                                                                        token: token).ConfigureAwait(false),
-                                                                    0)
-                                                                .ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            Math.Max(
+                                    await ImprovementManager.ValueOfAsync(
+                                        this, Improvement.ImprovementType.Initiative,
+                                        token: token).ConfigureAwait(false),
+                                    0)
+                                .ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
 
                     // Astral Initiative.
                     if (await GetMAGEnabledAsync(token).ConfigureAwait(false))
                     {
                         await objWriter.WriteElementStringAsync("astralinit",
-                                                                GetAstralInitiative(objCulture, strLanguageToPrint),
-                                                                token: token).ConfigureAwait(false);
+                            GetAstralInitiative(objCulture, strLanguageToPrint),
+                            token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("astralinitdice",
-                                                                AstralInitiativeDice.ToString(objCulture), token: token)
-                                       .ConfigureAwait(false);
+                                AstralInitiativeDice.ToString(objCulture), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("astralinitvalue",
-                                                                AstralInitiativeValue.ToString(objCulture),
-                                                                token: token).ConfigureAwait(false);
+                            AstralInitiativeValue.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     }
 
                     // Matrix Initiative (AR).
                     await objWriter.WriteElementStringAsync("matrixarinit",
-                                                            GetMatrixInitiative(objCulture, strLanguageToPrint),
-                                                            token: token).ConfigureAwait(false);
+                        GetMatrixInitiative(objCulture, strLanguageToPrint),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixarinitdice",
-                                                            MatrixInitiativeDice.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            MatrixInitiativeDice.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixarinitvalue",
-                                                            MatrixInitiativeValue.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            MatrixInitiativeValue.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
 
                     // Matrix Initiative (Cold).
                     await objWriter.WriteElementStringAsync("matrixcoldinit",
-                                                            GetMatrixInitiativeCold(objCulture, strLanguageToPrint),
-                                                            token: token).ConfigureAwait(false);
+                        GetMatrixInitiativeCold(objCulture, strLanguageToPrint),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixcoldinitdice",
-                                                            MatrixInitiativeDice.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            MatrixInitiativeDice.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixcoldinitvalue",
-                                                            MatrixInitiativeValue.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            MatrixInitiativeValue.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
 
                     // Matrix Initiative (Hot).
                     await objWriter.WriteElementStringAsync("matrixhotinit",
-                                                            GetMatrixInitiativeHot(objCulture, strLanguageToPrint),
-                                                            token: token).ConfigureAwait(false);
+                        GetMatrixInitiativeHot(objCulture, strLanguageToPrint),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixhotinitdice",
-                                                            MatrixInitiativeDice.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            MatrixInitiativeDice.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixhotinitvalue",
-                                                            MatrixInitiativeValue.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            MatrixInitiativeValue.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
 
                     // Rigger Initiative.
                     await objWriter.WriteElementStringAsync("riggerinit",
-                                                            GetInitiative(objCulture, strLanguageToPrint), token: token)
-                                   .ConfigureAwait(false);
+                            GetInitiative(objCulture, strLanguageToPrint), token: token)
+                        .ConfigureAwait(false);
 
                     // <magenabled />
                     await objWriter.WriteElementStringAsync("magenabled",
-                                                            (await GetMAGEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                                                            token: token).ConfigureAwait(false);
+                        (await GetMAGEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                            .InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
                     // <initiategrade />
                     await objWriter
-                          .WriteElementStringAsync("initiategrade", InitiateGrade.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("initiategrade", InitiateGrade.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <resenabled />
                     await objWriter.WriteElementStringAsync("resenabled",
-                                                            RESEnabled.ToString(GlobalSettings.InvariantCultureInfo),
-                                                            token: token).ConfigureAwait(false);
+                        RESEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
                     // <submersiongrade />
                     await objWriter
-                          .WriteElementStringAsync("submersiongrade", SubmersionGrade.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("submersiongrade", SubmersionGrade.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <depenabled />
                     await objWriter.WriteElementStringAsync("depenabled",
-                                                            DEPEnabled.ToString(GlobalSettings.InvariantCultureInfo),
-                                                            token: token).ConfigureAwait(false);
+                        DEPEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
                     // <groupmember />
                     await objWriter.WriteElementStringAsync("groupmember",
-                                                            GroupMember.ToString(GlobalSettings.InvariantCultureInfo),
-                                                            token: token).ConfigureAwait(false);
+                        GroupMember.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
                     // <groupname />
                     await objWriter.WriteElementStringAsync("groupname", GroupName, token: token).ConfigureAwait(false);
                     // <groupnotes />
                     await objWriter.WriteElementStringAsync("groupnotes", GroupNotes, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <surprise />
                     await objWriter.WriteElementStringAsync("surprise", Surprise.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <composure />
                     await objWriter.WriteElementStringAsync("composure", Composure.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <judgeintentions />
                     await objWriter
-                          .WriteElementStringAsync("judgeintentions", JudgeIntentions.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("judgeintentions", JudgeIntentions.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <judgeintentionsresist />
                     await objWriter.WriteElementStringAsync("judgeintentionsresist",
-                                                            JudgeIntentionsResist.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            JudgeIntentionsResist.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <liftandcarry />
                     await objWriter
-                          .WriteElementStringAsync("liftandcarry", LiftAndCarry.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("liftandcarry", LiftAndCarry.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <memory />
                     await objWriter.WriteElementStringAsync("memory", Memory.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // <liftweight />
                     await objWriter.WriteElementStringAsync("liftweight",
-                                                            LiftLimit.ToString(Settings.WeightFormat, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        LiftLimit.ToString(Settings.WeightFormat, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <carryweight />
                     await objWriter.WriteElementStringAsync("carryweight",
-                                                            CarryLimit.ToString(Settings.WeightFormat, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        CarryLimit.ToString(Settings.WeightFormat, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <totalcarriedweight />
                     await objWriter.WriteElementStringAsync("totalcarriedweight",
-                                                            TotalCarriedWeight.ToString(
-                                                                Settings.WeightFormat, objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            TotalCarriedWeight.ToString(
+                                Settings.WeightFormat, objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <fatigueresist />
                     await objWriter
-                          .WriteElementStringAsync("fatigueresist", FatigueResist.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("fatigueresist", FatigueResist.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <radiationresist />
                     await objWriter
-                          .WriteElementStringAsync("radiationresist", RadiationResist.ToString(objCulture),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("radiationresist", RadiationResist.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <sonicresist />
                     await objWriter
-                          .WriteElementStringAsync("sonicresist", SonicResist.ToString(objCulture), token: token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("sonicresist", SonicResist.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <toxincontacttesist />
                     await objWriter.WriteElementStringAsync("toxincontactresist",
-                                                            ToxinContactResist(strLanguageToPrint, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        ToxinContactResist(strLanguageToPrint, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <toxiningestionresist />
                     await objWriter.WriteElementStringAsync("toxiningestionresist",
-                                                            ToxinIngestionResist(strLanguageToPrint, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        ToxinIngestionResist(strLanguageToPrint, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <toxininhalationresist />
                     await objWriter.WriteElementStringAsync("toxininhalationresist",
-                                                            ToxinInhalationResist(strLanguageToPrint, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        ToxinInhalationResist(strLanguageToPrint, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <toxininjectionresist />
                     await objWriter.WriteElementStringAsync("toxininjectionresist",
-                                                            ToxinInjectionResist(strLanguageToPrint, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        ToxinInjectionResist(strLanguageToPrint, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <pathogencontactresist />
                     await objWriter.WriteElementStringAsync("pathogencontactresist",
-                                                            PathogenContactResist(strLanguageToPrint, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        PathogenContactResist(strLanguageToPrint, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <pathogeningestionresist />
                     await objWriter.WriteElementStringAsync("pathogeningestionresist",
-                                                            PathogenIngestionResist(strLanguageToPrint, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        PathogenIngestionResist(strLanguageToPrint, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <pathogeninhalationresist />
                     await objWriter.WriteElementStringAsync("pathogeninhalationresist",
-                                                            PathogenInhalationResist(strLanguageToPrint, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        PathogenInhalationResist(strLanguageToPrint, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <pathogeninjectionresist />
                     await objWriter.WriteElementStringAsync("pathogeninjectionresist",
-                                                            PathogenInjectionResist(strLanguageToPrint, objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        PathogenInjectionResist(strLanguageToPrint, objCulture),
+                        token: token).ConfigureAwait(false);
                     // <physiologicaladdictionresistfirsttime />
                     await objWriter.WriteElementStringAsync("physiologicaladdictionresistfirsttime",
-                                                            PhysiologicalAddictionResistFirstTime.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        PhysiologicalAddictionResistFirstTime.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     // <physiologicaladdictionresistalreadyaddicted />
                     await objWriter.WriteElementStringAsync("physiologicaladdictionresistalreadyaddicted",
-                                                            PhysiologicalAddictionResistAlreadyAddicted.ToString(
-                                                                objCulture), token: token).ConfigureAwait(false);
+                        PhysiologicalAddictionResistAlreadyAddicted.ToString(
+                            objCulture), token: token).ConfigureAwait(false);
                     // <psychologicaladdictionresistfirsttime />
                     await objWriter.WriteElementStringAsync("psychologicaladdictionresistfirsttime",
-                                                            PsychologicalAddictionResistFirstTime.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        PsychologicalAddictionResistFirstTime.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     // <psychologicaladdictionresistalreadyaddicted />
                     await objWriter.WriteElementStringAsync("psychologicaladdictionresistalreadyaddicted",
-                                                            PsychologicalAddictionResistAlreadyAddicted.ToString(
-                                                                objCulture), token: token).ConfigureAwait(false);
+                        PsychologicalAddictionResistAlreadyAddicted.ToString(
+                            objCulture), token: token).ConfigureAwait(false);
                     // <physicalcmnaturalrecovery />
                     await objWriter.WriteElementStringAsync("physicalcmnaturalrecovery",
-                                                            PhysicalCMNaturalRecovery.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        PhysicalCMNaturalRecovery.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     // <stuncmnaturalrecovery />
                     await objWriter.WriteElementStringAsync("stuncmnaturalrecovery",
-                                                            StunCMNaturalRecovery.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            StunCMNaturalRecovery.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
 
                     // Spell Resistances
                     //Indirect Dodge
                     await objWriter.WriteElementStringAsync("indirectdefenseresist",
-                                                            SpellDefenseIndirectDodge.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        SpellDefenseIndirectDodge.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     //Direct Soak - Mana
                     await objWriter.WriteElementStringAsync("directmanaresist",
-                                                            SpellDefenseDirectSoakMana.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        SpellDefenseDirectSoakMana.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     //Direct Soak - Physical
                     await objWriter.WriteElementStringAsync("directphysicalresist",
-                                                            SpellDefenseDirectSoakPhysical.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        SpellDefenseDirectSoakPhysical.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     //Detection Spells
                     await objWriter.WriteElementStringAsync("detectionspellresist",
-                                                            SpellDefenseDetection.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDetection.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Decrease Attribute - BOD
                     await objWriter.WriteElementStringAsync("decreasebodresist",
-                                                            SpellDefenseDecreaseBOD.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDecreaseBOD.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Decrease Attribute - AGI
                     await objWriter.WriteElementStringAsync("decreaseagiresist",
-                                                            SpellDefenseDecreaseAGI.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDecreaseAGI.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Decrease Attribute - REA
                     await objWriter.WriteElementStringAsync("decreaserearesist",
-                                                            SpellDefenseDecreaseREA.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDecreaseREA.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Decrease Attribute - STR
                     await objWriter.WriteElementStringAsync("decreasestrresist",
-                                                            SpellDefenseDecreaseSTR.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDecreaseSTR.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Decrease Attribute - CHA
                     await objWriter.WriteElementStringAsync("decreasecharesist",
-                                                            SpellDefenseDecreaseCHA.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDecreaseCHA.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Decrease Attribute - INT
                     await objWriter.WriteElementStringAsync("decreaseintresist",
-                                                            SpellDefenseDecreaseINT.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDecreaseINT.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Decrease Attribute - LOG
                     await objWriter.WriteElementStringAsync("decreaselogresist",
-                                                            SpellDefenseDecreaseLOG.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDecreaseLOG.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Decrease Attribute - WIL
                     await objWriter.WriteElementStringAsync("decreasewilresist",
-                                                            SpellDefenseDecreaseWIL.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseDecreaseWIL.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Illusion - Mana
                     await objWriter.WriteElementStringAsync("illusionmanaresist",
-                                                            SpellDefenseIllusionMana.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                            SpellDefenseIllusionMana.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     //Illusion - Physical
                     await objWriter.WriteElementStringAsync("illusionphysicalresist",
-                                                            SpellDefenseIllusionPhysical.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        SpellDefenseIllusionPhysical.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     //Manipulation - Mental
                     await objWriter.WriteElementStringAsync("manipulationmentalresist",
-                                                            SpellDefenseManipulationMental.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        SpellDefenseManipulationMental.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     //Manipulation - Physical
                     await objWriter.WriteElementStringAsync("manipulationphysicalresist",
-                                                            SpellDefenseManipulationPhysical.ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        SpellDefenseManipulationPhysical.ToString(objCulture),
+                        token: token).ConfigureAwait(false);
 
                     // <skills>
                     XmlElementWriteHelper objSkillsElement
@@ -10166,7 +10191,7 @@ namespace Chummer
                     try
                     {
                         await SkillsSection.Print(objWriter, objCulture, strLanguageToPrint, token: token)
-                                           .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                     }
                     finally
                     {
@@ -10182,7 +10207,7 @@ namespace Chummer
                         foreach (Contact objContact in Contacts)
                         {
                             await objContact.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                            .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10193,9 +10218,9 @@ namespace Chummer
 
                     // <limitmodifiersphys>
                     XmlElementWriteHelper objLimitModifiersPhysElement = await objWriter
-                                                                               .StartElementAsync(
-                                                                                   "limitmodifiersphys", token: token)
-                                                                               .ConfigureAwait(false);
+                        .StartElementAsync(
+                            "limitmodifiersphys", token: token)
+                        .ConfigureAwait(false);
                     try
                     {
                         await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(
@@ -10204,35 +10229,35 @@ namespace Chummer
                                 if (objLimitModifier.Limit == "Physical")
                                 {
                                     await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                                          .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                                 }
                             }, token).ConfigureAwait(false);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager
-                                                                     .GetCachedImprovementListForValueOfAsync(this,
-                                                                         Improvement.ImprovementType.LimitModifier,
-                                                                         "Physical", token: token)
-                                                                     .ConfigureAwait(false))
+                                     .GetCachedImprovementListForValueOfAsync(this,
+                                         Improvement.ImprovementType.LimitModifier,
+                                         "Physical", token: token)
+                                     .ConfigureAwait(false))
                         {
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token)
                                 .ConfigureAwait(false);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager
-                                             .GetStringAsync("String_Colon", strLanguageToPrint, token: token)
-                                             .ConfigureAwait(false) +
+                                           .GetStringAsync("String_Colon", strLanguageToPrint, token: token)
+                                           .ConfigureAwait(false) +
                                        await LanguageManager
-                                             .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                             .ConfigureAwait(false);
+                                           .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                                           .ConfigureAwait(false);
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
                                 strName += ',' + await LanguageManager
-                                                       .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                                       .ConfigureAwait(false) +
+                                               .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                                               .ConfigureAwait(false) +
                                            objImprovement.Condition;
 
                             // <limitmodifier>
@@ -10241,10 +10266,10 @@ namespace Chummer
                             try
                             {
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
                                     await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token)
-                                                   .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                             }
                             finally
                             {
@@ -10261,9 +10286,9 @@ namespace Chummer
 
                     // <limitmodifiersment>
                     XmlElementWriteHelper objLimitModifiersMentElement = await objWriter
-                                                                               .StartElementAsync(
-                                                                                   "limitmodifiersment", token: token)
-                                                                               .ConfigureAwait(false);
+                        .StartElementAsync(
+                            "limitmodifiersment", token: token)
+                        .ConfigureAwait(false);
                     try
                     {
                         await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(
@@ -10272,34 +10297,34 @@ namespace Chummer
                                 if (objLimitModifier.Limit == "Mental")
                                 {
                                     await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                                          .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                                 }
                             }, token).ConfigureAwait(false);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager
-                                                                     .GetCachedImprovementListForValueOfAsync(this,
-                                                                         Improvement.ImprovementType.LimitModifier,
-                                                                         "Mental", token: token).ConfigureAwait(false))
+                                     .GetCachedImprovementListForValueOfAsync(this,
+                                         Improvement.ImprovementType.LimitModifier,
+                                         "Mental", token: token).ConfigureAwait(false))
                         {
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token)
                                 .ConfigureAwait(false);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager
-                                             .GetStringAsync("String_Colon", strLanguageToPrint, token: token)
-                                             .ConfigureAwait(false) +
+                                           .GetStringAsync("String_Colon", strLanguageToPrint, token: token)
+                                           .ConfigureAwait(false) +
                                        await LanguageManager
-                                             .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                             .ConfigureAwait(false);
+                                           .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                                           .ConfigureAwait(false);
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
                                 strName += ',' + await LanguageManager
-                                                       .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                                       .ConfigureAwait(false) +
+                                               .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                                               .ConfigureAwait(false) +
                                            objImprovement.Condition;
 
                             // <limitmodifier>
@@ -10308,10 +10333,10 @@ namespace Chummer
                             try
                             {
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
                                     await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token)
-                                                   .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                             }
                             finally
                             {
@@ -10337,34 +10362,34 @@ namespace Chummer
                                 if (objLimitModifier.Limit == "Social")
                                 {
                                     await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                                          .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                                 }
                             }, token).ConfigureAwait(false);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager
-                                                                     .GetCachedImprovementListForValueOfAsync(this,
-                                                                         Improvement.ImprovementType.LimitModifier,
-                                                                         "Social", token: token).ConfigureAwait(false))
+                                     .GetCachedImprovementListForValueOfAsync(this,
+                                         Improvement.ImprovementType.LimitModifier,
+                                         "Social", token: token).ConfigureAwait(false))
                         {
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token)
                                 .ConfigureAwait(false);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager
-                                             .GetStringAsync("String_Colon", strLanguageToPrint, token: token)
-                                             .ConfigureAwait(false) +
+                                           .GetStringAsync("String_Colon", strLanguageToPrint, token: token)
+                                           .ConfigureAwait(false) +
                                        await LanguageManager
-                                             .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                             .ConfigureAwait(false);
+                                           .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                                           .ConfigureAwait(false);
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
                                 strName += ',' + await LanguageManager
-                                                       .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                                       .ConfigureAwait(false) +
+                                               .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                                               .ConfigureAwait(false) +
                                            objImprovement.Condition;
 
                             // <limitmodifier>
@@ -10373,10 +10398,10 @@ namespace Chummer
                             try
                             {
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
                                     await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token)
-                                                   .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                             }
                             finally
                             {
@@ -10415,7 +10440,7 @@ namespace Chummer
                         foreach (Spell objSpell in Spells)
                         {
                             await objSpell.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                          .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10432,7 +10457,7 @@ namespace Chummer
                         foreach (Power objPower in Powers)
                         {
                             await objPower.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                          .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10449,7 +10474,7 @@ namespace Chummer
                         foreach (Spirit objSpirit in Spirits)
                         {
                             await objSpirit.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10498,7 +10523,7 @@ namespace Chummer
                         foreach (MartialArt objMartialArt in MartialArts)
                         {
                             await objMartialArt.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                               .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10515,7 +10540,7 @@ namespace Chummer
                         foreach (Armor objArmor in Armor)
                         {
                             await objArmor.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                          .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10532,7 +10557,7 @@ namespace Chummer
                         foreach (Weapon objWeapon in Weapons)
                         {
                             await objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10549,7 +10574,7 @@ namespace Chummer
                         foreach (Cyberware objCyberware in Cyberware)
                         {
                             await objCyberware.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                              .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10586,7 +10611,7 @@ namespace Chummer
                             if (strQualitiesToPrint.TryGetValue(strKey, out int intLoopRating))
                             {
                                 await objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint, token)
-                                                .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                                 strQualitiesToPrint.Remove(strKey);
                             }
                         }
@@ -10605,7 +10630,7 @@ namespace Chummer
                         foreach (Lifestyle objLifestyle in Lifestyles)
                         {
                             await objLifestyle.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                              .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10654,7 +10679,7 @@ namespace Chummer
                         foreach (Vehicle objVehicle in Vehicles)
                         {
                             await objVehicle.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                            .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10682,7 +10707,7 @@ namespace Chummer
                                 {
                                     if (objMetamagic.Grade == objGrade.Grade)
                                         await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                                          .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -10717,7 +10742,7 @@ namespace Chummer
                                 {
                                     if (objEnhancement.Grade == objGrade.Grade)
                                         await objEnhancement.Print(objWriter, strLanguageToPrint, token)
-                                                            .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -10741,7 +10766,7 @@ namespace Chummer
                         foreach (Metamagic objMetamagic in Metamagics)
                         {
                             await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                              .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10806,7 +10831,7 @@ namespace Chummer
                         foreach (SustainedObject objSustained in SustainedCollection)
                         {
                             await objSustained.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                              .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -10821,57 +10846,57 @@ namespace Chummer
                     try
                     {
                         foreach (Improvement objImprovement in await ImprovementManager
-                                                                     .GetCachedImprovementListForValueOfAsync(
-                                                                         this, Improvement.ImprovementType.Armor,
-                                                                         token: token).ConfigureAwait(false))
+                                     .GetCachedImprovementListForValueOfAsync(
+                                         this, Improvement.ImprovementType.Armor,
+                                         token: token).ConfigureAwait(false))
                         {
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.Armor
                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod)
                                 continue;
                             // <otherarmor>
                             XmlElementWriteHelper objBaseElement = await objWriter
-                                                                         .StartElementAsync("otherarmor", token: token)
-                                                                         .ConfigureAwait(false);
+                                .StartElementAsync("otherarmor", token: token)
+                                .ConfigureAwait(false);
                             try
                             {
                                 await objWriter.WriteElementStringAsync("guid", objImprovement.InternalId, token: token)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync("sourcename", objImprovement.SourceName, token: token)
-                                      .ConfigureAwait(false);
+                                    .WriteElementStringAsync("sourcename", objImprovement.SourceName, token: token)
+                                    .ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync("objectname",
-                                                               await GetObjectNameAsync(
-                                                                       objImprovement, strLanguageToPrint, token)
-                                                                   .ConfigureAwait(false), token: token)
-                                      .ConfigureAwait(false);
+                                    .WriteElementStringAsync("objectname",
+                                        await GetObjectNameAsync(
+                                                objImprovement, strLanguageToPrint, token)
+                                            .ConfigureAwait(false), token: token)
+                                    .ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync("objectname_english",
-                                                               await GetObjectNameAsync(
-                                                                   objImprovement, GlobalSettings.DefaultLanguage,
-                                                                   token).ConfigureAwait(false), token: token)
-                                      .ConfigureAwait(false);
+                                    .WriteElementStringAsync("objectname_english",
+                                        await GetObjectNameAsync(
+                                            objImprovement, GlobalSettings.DefaultLanguage,
+                                            token).ConfigureAwait(false), token: token)
+                                    .ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync(
-                                          "armor", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo),
-                                          token: token).ConfigureAwait(false);
+                                    .WriteElementStringAsync(
+                                        "armor", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo),
+                                        token: token).ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync("improvesource", objImprovement.ImproveSource.ToString(),
-                                                               token: token).ConfigureAwait(false);
+                                    .WriteElementStringAsync("improvesource", objImprovement.ImproveSource.ToString(),
+                                        token: token).ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync(
-                                          "enabled",
-                                          objImprovement.Enabled.ToString(GlobalSettings.InvariantCultureInfo),
-                                          token: token).ConfigureAwait(false);
+                                    .WriteElementStringAsync(
+                                        "enabled",
+                                        objImprovement.Enabled.ToString(GlobalSettings.InvariantCultureInfo),
+                                        token: token).ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync("customname", objImprovement.CustomName, token: token)
-                                      .ConfigureAwait(false);
+                                    .WriteElementStringAsync("customname", objImprovement.CustomName, token: token)
+                                    .ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync("customgroup", objImprovement.CustomGroup, token: token)
-                                      .ConfigureAwait(false);
+                                    .WriteElementStringAsync("customgroup", objImprovement.CustomGroup, token: token)
+                                    .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
                                     await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token)
-                                                   .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                             }
                             finally
                             {
@@ -10893,7 +10918,7 @@ namespace Chummer
                     {
                         foreach (CalendarWeek objWeek in Calendar)
                             await objWeek.Print(objWriter, objCulture, GlobalSettings.PrintNotes, token)
-                                         .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                     }
                     finally
                     {
@@ -10911,7 +10936,7 @@ namespace Chummer
                         {
                             foreach (ExpenseLogEntry objExpense in ExpenseEntries.Reverse())
                                 await objExpense.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                                .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                         }
                         finally
                         {
@@ -10925,6 +10950,10 @@ namespace Chummer
                     // </character>
                     await objCharacterElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -17575,24 +17604,18 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public IEnumerable<CharacterAttrib> GetAllAttributes(CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock(token))
-            using (AttributeSection.LockObject.EnterReadLock(token))
+            using (LockObject.EnterHiPrioReadLock(token))
+            using (AttributeSection.LockObject.EnterHiPrioReadLock(token))
             {
-                using (AttributeSection.AttributeList.LockObject.EnterReadLock(token))
+                foreach (CharacterAttrib objAttribute in AttributeSection.AttributeList)
                 {
-                    foreach (CharacterAttrib objAttribute in AttributeSection.AttributeList)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        yield return objAttribute;
-                    }
+                    token.ThrowIfCancellationRequested();
+                    yield return objAttribute;
                 }
-                using (AttributeSection.SpecialAttributeList.LockObject.EnterReadLock(token))
+                foreach (CharacterAttrib objAttribute in AttributeSection.SpecialAttributeList)
                 {
-                    foreach (CharacterAttrib objAttribute in AttributeSection.SpecialAttributeList)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        yield return objAttribute;
-                    }
+                    token.ThrowIfCancellationRequested();
+                    yield return objAttribute;
                 }
             }
         }
@@ -17606,7 +17629,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public IEnumerable<CharacterAttrib> GetAllAttributes(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock(token))
+            using (LockObject.EnterHiPrioReadLock(token))
+            using (AttributeSection.LockObject.EnterHiPrioReadLock(token))
             {
                 if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute)
                                                && !blnExplicit)

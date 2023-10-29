@@ -328,7 +328,7 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable MethodHasAsyncOverload
-                using (LockObject.EnterReadLock(token))
+                using (LockObject.EnterHiPrioReadLock(token))
                 {
                     objWriter.WriteStartElement("contact");
                     objWriter.WriteElementString("name", _strName);
@@ -375,7 +375,8 @@ namespace Chummer
             else
             {
                 // <contact>
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     XmlElementWriteHelper objBaseElement
@@ -385,74 +386,74 @@ namespace Chummer
                         await objWriter.WriteElementStringAsync("name", _strName, token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("role", _strRole, token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("location", _strLocation, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("connection",
-                                                                _intConnection.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
+                                _intConnection.ToString(
+                                    GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("metatype", _strMetatype, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("gender", _strGender, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("age", _strAge, token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("contacttype", _strType, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("preferredpayment", _strPreferredPayment, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("hobbiesvice", _strHobbiesVice, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("personallife", _strPersonalLife, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("type", _eContactType.ToString(), token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("file", _strFileName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("relative", _strRelativeName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter
-                              .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
-                              .ConfigureAwait(false);
+                            .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
+                            .ConfigureAwait(false);
                         await objWriter
-                              .WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)
-                              .ConfigureAwait(false);
+                            .WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("groupname", _strGroupName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "colour", _objColor.ToArgb().ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "colour", _objColor.ToArgb().ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("blackmail",
-                                                                _blnBlackmail.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
+                                _blnBlackmail.ToString(
+                                    GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
+                                "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("groupenabled",
-                                                                _blnGroupEnabled.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
+                                _blnGroupEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
 
                         if (_blnReadOnly)
                             await objWriter.WriteElementStringAsync("readonly", string.Empty, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
 
                         if (_strUnique != null)
                         {
                             await objWriter.WriteElementStringAsync("guid", _strUnique, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
 
                         await SaveMugshotsAsync(objWriter, token).ConfigureAwait(false);
@@ -462,6 +463,10 @@ namespace Chummer
                         // </contact>
                         await objBaseElement.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -602,7 +607,8 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // <contact>
@@ -618,19 +624,19 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("location", Location, token: token).ConfigureAwait(false);
                     if (!IsGroup)
                         await objWriter.WriteElementStringAsync("connection",
-                                                                (await GetConnectionAsync(token).ConfigureAwait(false))
-                                                                .ToString(objCulture),
-                                                                token: token).ConfigureAwait(false);
+                            (await GetConnectionAsync(token).ConfigureAwait(false))
+                            .ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     else
                         await objWriter.WriteElementStringAsync("connection",
-                                                                await LanguageManager.GetStringAsync(
-                                                                        "String_Group", strLanguageToPrint,
-                                                                        token: token)
-                                                                    .ConfigureAwait(false) + '('
-                                                                + (await GetConnectionAsync(token)
-                                                                    .ConfigureAwait(false))
-                                                                .ToString(objCulture)
-                                                                + ')', token: token).ConfigureAwait(false);
+                            await LanguageManager.GetStringAsync(
+                                    "String_Group", strLanguageToPrint,
+                                    token: token)
+                                .ConfigureAwait(false) + '('
+                                                       + (await GetConnectionAsync(token)
+                                                           .ConfigureAwait(false))
+                                                       .ToString(objCulture)
+                                                       + ')', token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                         "loyalty", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
@@ -644,35 +650,35 @@ namespace Chummer
                         "age", await DisplayAgeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("contacttype",
-                                                            await DisplayTypeMethodAsync(strLanguageToPrint, token)
-                                                                .ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await DisplayTypeMethodAsync(strLanguageToPrint, token)
+                            .ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("preferredpayment",
-                                                            await DisplayPreferredPaymentMethodAsync(
-                                                                strLanguageToPrint, token).ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await DisplayPreferredPaymentMethodAsync(
+                            strLanguageToPrint, token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("hobbiesvice",
-                                                            await DisplayHobbiesViceMethodAsync(
-                                                                    strLanguageToPrint, token)
-                                                                .ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await DisplayHobbiesViceMethodAsync(
+                                strLanguageToPrint, token)
+                            .ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("personallife",
-                                                            await DisplayPersonalLifeMethodAsync(
-                                                                    strLanguageToPrint, token)
-                                                                .ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await DisplayPersonalLifeMethodAsync(
+                                strLanguageToPrint, token)
+                            .ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                         "type",
                         await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint, token: token)
-                                             .ConfigureAwait(false),
+                            .ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("forcedloyalty",
-                                                            (await GetForcedLoyaltyAsync(token).ConfigureAwait(false))
-                                                            .ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        (await GetForcedLoyaltyAsync(token).ConfigureAwait(false))
+                        .ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("blackmail",
-                                                            Blackmail.ToString(GlobalSettings.InvariantCultureInfo),
-                                                            token: token).ConfigureAwait(false);
+                        Blackmail.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                         "family", Family.ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
@@ -686,6 +692,10 @@ namespace Chummer
                     // </contact>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

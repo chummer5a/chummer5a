@@ -274,7 +274,8 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
 
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // <skill>
@@ -314,10 +315,12 @@ namespace Chummer.Backend.Skills
                     await objWriter.WriteElementStringAsync(
                         "grouped",
                         await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                            ? (SkillGroupObject != null && !await SkillGroupObject.GetIsBrokenAsync(token).ConfigureAwait(false) &&
+                            ? (SkillGroupObject != null &&
+                               !await SkillGroupObject.GetIsBrokenAsync(token).ConfigureAwait(false) &&
                                await SkillGroupObject.GetRatingAsync(token).ConfigureAwait(false) > 0)
                             .ToString(GlobalSettings.InvariantCultureInfo)
-                            : (SkillGroupObject != null && !await SkillGroupObject.GetHasAnyBreakingSkillsAsync(token).ConfigureAwait(false) &&
+                            : (SkillGroupObject != null && !await SkillGroupObject.GetHasAnyBreakingSkillsAsync(token)
+                                   .ConfigureAwait(false) &&
                                await SkillGroupObject.GetRatingAsync(token).ConfigureAwait(false) > 0)
                             .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter
@@ -386,11 +389,12 @@ namespace Chummer.Backend.Skills
                         .WriteElementStringAsync("poolmod", intDicePoolModifiers.ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("islanguage",
-                                                            (await GetIsLanguageAsync(token).ConfigureAwait(false)).ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            (await GetIsLanguageAsync(token).ConfigureAwait(false)).ToString(
+                                GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("isnativelanguage",
-                                                            (await GetIsNativeLanguageAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            (await GetIsNativeLanguageAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                                .InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("bp",
                         (await GetCurrentKarmaCostAsync(token).ConfigureAwait(false)).ToString(objCulture),
@@ -403,7 +407,7 @@ namespace Chummer.Backend.Skills
                         await (await GetSpecializationsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSpec =>
                         {
                             await objSpec.Print(objWriter, objCulture, strLanguageToPrint, token: token)
-                                         .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                     }
                     finally
@@ -417,6 +421,10 @@ namespace Chummer.Backend.Skills
                     // </skill>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

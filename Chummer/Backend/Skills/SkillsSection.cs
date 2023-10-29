@@ -2892,7 +2892,7 @@ namespace Chummer.Backend.Skills
 
         private static void MergeSkills(Skill objExistingSkill, Skill objNewSkill, CancellationToken token = default)
         {
-            using (objNewSkill.LockObject.EnterReadLock(token))
+            using (objNewSkill.LockObject.EnterHiPrioReadLock(token))
             using (objExistingSkill.LockObject.EnterUpgradeableReadLock(token))
             {
                 objExistingSkill.CopyInternalId(objNewSkill);
@@ -2910,7 +2910,8 @@ namespace Chummer.Backend.Skills
 
         private static async Task MergeSkillsAsync(Skill objExistingSkill, Skill objNewSkill, CancellationToken token = default)
         {
-            using (await objNewSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await objNewSkill.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 using (await objExistingSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -2921,12 +2922,14 @@ namespace Chummer.Backend.Skills
                     int intNewBasePoints = await objNewSkill.GetBasePointsAsync(token).ConfigureAwait(false);
                     if (intExistingBasePoints < intNewBasePoints)
                         await objExistingSkill.SetBasePointsAsync(intNewBasePoints, token).ConfigureAwait(false);
-                    int intExistingKarmaPoints = await objExistingSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
+                    int intExistingKarmaPoints =
+                        await objExistingSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
                     int intNewKarmaPoints = await objNewSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
                     if (intExistingKarmaPoints < intNewKarmaPoints)
                         await objExistingSkill.SetKarmaPointsAsync(intNewKarmaPoints, token).ConfigureAwait(false);
                     await objExistingSkill
-                        .SetBuyWithKarmaAsync(await objNewSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false), token)
+                        .SetBuyWithKarmaAsync(await objNewSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false),
+                            token)
                         .ConfigureAwait(false);
                     objExistingSkill.Notes += objNewSkill.Notes;
                     objExistingSkill.NotesColor = objNewSkill.NotesColor;
@@ -2936,6 +2939,10 @@ namespace Chummer.Backend.Skills
                                 .AsTask(),
                             token: token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await objNewSkill.RemoveAsync(token).ConfigureAwait(false);
@@ -3072,7 +3079,8 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 foreach (Skill objSkill in Skills)
@@ -3087,7 +3095,8 @@ namespace Chummer.Backend.Skills
                 {
                     if (objSkillGroup.Rating > 0)
                     {
-                        await objSkillGroup.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
+                        await objSkillGroup.Print(objWriter, objCulture, strLanguageToPrint, token)
+                            .ConfigureAwait(false);
                     }
                 }
 
@@ -3095,6 +3104,10 @@ namespace Chummer.Backend.Skills
                 {
                     await objSkill.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -540,7 +540,8 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (!AllowPrint)
@@ -553,15 +554,15 @@ namespace Chummer
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager
-                                            .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                            .ConfigureAwait(false);
+                        .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                        .ConfigureAwait(false);
                     string strRatingString = string.Empty;
                     if (intRating > 1)
                         strRatingString = strSpace + intRating.ToString(objCulture);
@@ -571,44 +572,44 @@ namespace Chummer
                                                  + await GetSourceNameAsync(strLanguageToPrint, token)
                                                      .ConfigureAwait(false) + ')';
                     await objWriter.WriteElementStringAsync(
-                                       "extra",
-                                       await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
-                                                          .ConfigureAwait(false) + strRatingString + strSourceName,
-                                       token: token)
-                                   .ConfigureAwait(false);
+                            "extra",
+                            await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                                .ConfigureAwait(false) + strRatingString + strSourceName,
+                            token: token)
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("bp", BP.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     string strQualityType = Type.ToString();
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         strQualityType =
                             (await (await _objCharacter
-                                          .LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
-                                          .ConfigureAwait(false))
-                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                       "/chummer/categories/category[. = " + strQualityType.CleanXPath()
-                                                                           + "]/@translate", token: token)
-                                   .ConfigureAwait(false))
+                                    .LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
+                                    .ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsync(
+                                    "/chummer/categories/category[. = " + strQualityType.CleanXPath()
+                                                                        + "]/@translate", token: token)
+                                .ConfigureAwait(false))
                             ?.Value ?? strQualityType;
                     }
 
                     await objWriter.WriteElementStringAsync("qualitytype", strQualityType, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("qualitytype_english", Type.ToString(), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("qualitysource", OriginSource.ToString(), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("metagenic", Metagenic.ToString(), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "source",
-                              await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
-                                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "source",
+                            await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
                         await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
                 }
@@ -617,6 +618,10 @@ namespace Chummer
                     // </quality>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1637,10 +1642,11 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">The Character</param>
         /// <param name="xmlQuality">The XmlNode describing the quality</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Is the Quality valid on said Character</returns>
-        public static bool IsValid(Character objCharacter, XmlNode xmlQuality)
+        public static bool IsValid(Character objCharacter, XmlNode xmlQuality, CancellationToken token = default)
         {
-            return IsValid(objCharacter, xmlQuality, out QualityFailureReasons _, out List<Quality> _);
+            return IsValid(objCharacter, xmlQuality, out QualityFailureReasons _, out List<Quality> _, token);
         }
 
         /// <summary>
@@ -1652,12 +1658,13 @@ namespace Chummer
         /// <param name="objXmlQuality">The XmlNode describing the quality</param>
         /// <param name="reason">The reason the quality is not valid</param>
         /// <param name="conflictingQualities">List of Qualities that conflicts with this Quality</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Is the Quality valid on said Character</returns>
-        public static bool IsValid(Character objCharacter, XmlNode objXmlQuality, out QualityFailureReasons reason, out List<Quality> conflictingQualities)
+        public static bool IsValid(Character objCharacter, XmlNode objXmlQuality, out QualityFailureReasons reason, out List<Quality> conflictingQualities, CancellationToken token = default)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            using (objCharacter.LockObject.EnterReadLock())
+            using (objCharacter.LockObject.EnterHiPrioReadLock(token))
             {
                 conflictingQualities = new List<Quality>(objCharacter.Qualities.Count);
                 reason = QualityFailureReasons.None;
@@ -1667,6 +1674,7 @@ namespace Chummer
                 {
                     foreach (Quality objQuality in objCharacter.Qualities)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (string.Equals(objQuality.SourceIDString, objXmlQuality["id"]?.InnerText, StringComparison.OrdinalIgnoreCase))
                         {
                             reason |= QualityFailureReasons
@@ -1683,6 +1691,7 @@ namespace Chummer
                     XmlNode xmlOneOfNode = xmlRequiredNode["oneof"];
                     if (xmlOneOfNode != null)
                     {
+                        token.ThrowIfCancellationRequested();
                         //Add to set for O(N log M) runtime instead of O(N * M)
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
@@ -1694,6 +1703,7 @@ namespace Chummer
                                 {
                                     foreach (XmlNode node in xmlNodeList)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         lstRequired.Add(node.InnerText);
                                     }
                                 }
@@ -1705,6 +1715,8 @@ namespace Chummer
                             }
                         }
 
+                        token.ThrowIfCancellationRequested();
+
                         reason |= QualityFailureReasons.MetatypeRequired;
                         using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("metatype"))
                         {
@@ -1712,6 +1724,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode objNode in xmlNodeList)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (objNode.InnerText == objCharacter.Metatype)
                                     {
                                         reason &= ~QualityFailureReasons.MetatypeRequired;
@@ -1721,6 +1734,8 @@ namespace Chummer
                             }
                         }
                     }
+
+                    token.ThrowIfCancellationRequested();
 
                     XmlNode xmlAllOfNode = xmlRequiredNode["allof"];
                     if (xmlAllOfNode != null)
@@ -1732,6 +1747,7 @@ namespace Chummer
                         {
                             foreach (Quality objQuality in objCharacter.Qualities)
                             {
+                                token.ThrowIfCancellationRequested();
                                 lstRequired.Add(objQuality.Name);
                             }
 
@@ -1741,6 +1757,7 @@ namespace Chummer
                                 {
                                     foreach (XmlNode node in xmlNodeList)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (!lstRequired.Contains(node.InnerText))
                                         {
                                             reason |= QualityFailureReasons.RequiredMultiple;
@@ -1752,6 +1769,8 @@ namespace Chummer
                         }
                     }
                 }
+
+                token.ThrowIfCancellationRequested();
 
                 XmlNode xmlForbiddenNode = objXmlQuality["forbidden"];
                 if (xmlForbiddenNode != null)
@@ -1770,6 +1789,7 @@ namespace Chummer
                                 {
                                     foreach (XmlNode node in xmlNodeList)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         setQualityForbidden.Add(node.InnerText);
                                     }
                                 }
@@ -1777,6 +1797,7 @@ namespace Chummer
 
                             foreach (Quality quality in objCharacter.Qualities)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (setQualityForbidden.Contains(quality.Name))
                                 {
                                     reason |= QualityFailureReasons.ForbiddenSingle;

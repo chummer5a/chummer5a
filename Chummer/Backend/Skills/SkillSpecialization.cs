@@ -102,7 +102,8 @@ namespace Chummer.Backend.Skills
         {
             if (objWriter == null)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // <skillspecialization>
@@ -112,25 +113,29 @@ namespace Chummer.Backend.Skills
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("specbonus",
-                                                   (await GetSpecializationBonusAsync(token).ConfigureAwait(false))
-                                                   .ToString(objCulture), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("specbonus",
+                            (await GetSpecializationBonusAsync(token).ConfigureAwait(false))
+                            .ToString(objCulture), token: token).ConfigureAwait(false);
                 }
                 finally
                 {
                     // </skillspecialization>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

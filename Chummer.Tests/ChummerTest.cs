@@ -549,13 +549,13 @@ namespace Chummer.Tests
             Assert.IsNotNull(objCharacter);
             try
             {
-                Debug.WriteLine("Saving: " + objCharacter.Name + ", " + Path.GetFileName(objCharacter.FileName));
+                Debug.WriteLine("Saving: " + objCharacter.Name + ", " + Path.GetFileName(strPath));
                 objCharacter.Save(strPath, false);
                 Debug.WriteLine("Character saved: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
             {
-                string strErrorMessage = "Could not save " + Path.GetFileName(objCharacter.FileName) + '!';
+                string strErrorMessage = "Could not save " + Path.GetFileName(strPath) + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -571,7 +571,7 @@ namespace Chummer.Tests
             }
             catch (Exception e)
             {
-                string strErrorMessage = "Exception while saving " + Path.GetFileName(objCharacter.FileName) + ':';
+                string strErrorMessage = "Exception while saving " + Path.GetFileName(strPath) + ':';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
