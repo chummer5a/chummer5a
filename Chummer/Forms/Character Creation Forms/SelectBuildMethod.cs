@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -83,8 +84,8 @@ namespace Chummer
                                                          MessageBoxIcon.Warning) != DialogResult.Yes)
                         return;
                     string strOldCharacterSettingsKey = await _objCharacter.GetSettingsKeyAsync(_objGenericToken).ConfigureAwait(false);
-                    await _objCharacter.SetSettingsKeyAsync((await (await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false))
-                                                                   .FirstOrDefaultAsync(x => ReferenceEquals(x.Value, objSelectedGameplayOption), _objGenericToken).ConfigureAwait(false)).Key, _objGenericToken).ConfigureAwait(false);
+                    await _objCharacter.SetSettingsKeyAsync((await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false))
+                        .FirstOrDefault(x => ReferenceEquals(x.Value, objSelectedGameplayOption)).Key, _objGenericToken).ConfigureAwait(false);
                     // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
                     if (_objCharacter.IsLoading)
                         await _objCharacter.EnqueuePostLoadAsyncMethodAsync(x => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey, x), _objGenericToken).ConfigureAwait(false);
@@ -93,10 +94,10 @@ namespace Chummer
                 }
                 else
                 {
-                    await _objCharacter.SetSettingsKeyAsync((await (await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false))
-                                                                   .FirstOrDefaultAsync(
-                                                                       x => ReferenceEquals(
-                                                                           x.Value, objSelectedGameplayOption), _objGenericToken).ConfigureAwait(false)).Key, _objGenericToken).ConfigureAwait(false);
+                    await _objCharacter.SetSettingsKeyAsync((await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false))
+                        .FirstOrDefault(
+                            x => ReferenceEquals(
+                                x.Value, objSelectedGameplayOption)).Key, _objGenericToken).ConfigureAwait(false);
                 }
                 _objCharacter.IgnoreRules = await chkIgnoreRules.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x =>
@@ -176,12 +177,10 @@ namespace Chummer
                         CharacterSettings objSelectSettings = null;
                         if (_blnForExistingCharacter)
                         {
-                            IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
+                            IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                                 = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false);
-                            (bool blnSuccess, CharacterSettings objSetting)
-                                = await dicCharacterSettings.TryGetValueAsync(
-                                    await _objCharacter.GetSettingsKeyAsync(_objGenericToken).ConfigureAwait(false), _objGenericToken).ConfigureAwait(false);
-                            if (blnSuccess)
+                            if (dicCharacterSettings.TryGetValue(
+                                    await _objCharacter.GetSettingsKeyAsync(_objGenericToken).ConfigureAwait(false), out CharacterSettings objSetting))
                                 objSelectSettings = objSetting;
                         }
 
@@ -255,11 +254,10 @@ namespace Chummer
                         using (new FetchSafelyFromPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
                         {
-                            IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
-                                = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-                            (bool blnSuccess, CharacterSettings objSetting)
-                                = await dicCharacterSettings.TryGetValueAsync(
-                                    GlobalSettings.DefaultCharacterSetting, token).ConfigureAwait(false);
+                            IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
+                                = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false);
+                            bool blnSuccess = dicCharacterSettings.TryGetValue(
+                                GlobalSettings.DefaultCharacterSetting, out CharacterSettings objSetting);
                             await dicCharacterSettings.ForEachAsync(async x =>
                             {
                                 lstCharacterSettings.Add(new ListItem(x.Value,

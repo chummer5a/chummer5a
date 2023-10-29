@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -44,7 +45,7 @@ namespace Chummer
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
         private readonly Character _objCharacter;
-        private readonly LockingDictionary<Tuple<string, string>, Tuple<string, string>> _dicCache = new LockingDictionary<Tuple<string, string>, Tuple<string, string>>();
+        private readonly ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>> _dicCache = new ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>>();
         private CancellationTokenSource _objCharacterXmlGeneratorCancellationTokenSource;
         private CancellationTokenSource _objXmlGeneratorCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
@@ -70,7 +71,6 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 _objGenericFormClosingCancellationTokenSource.Dispose();
-                _dicCache.Dispose();
                 _objXmlGeneratorCancellationTokenSource?.Dispose();
                 _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
             };
@@ -416,11 +416,9 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             string strText = await LanguageManager.GetStringAsync("String_Generating_Data", token: token).ConfigureAwait(false);
                             await txtText.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                            (bool blnSuccess, Tuple<string, string> strBoxText)
-                                = await _dicCache.TryGetValueAsync(
-                                    new Tuple<string, string>(_strExportLanguage, _strXslt), token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            if (blnSuccess)
+                            if (_dicCache.TryGetValue(
+                                    new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText))
                             {
                                 await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2, token).ConfigureAwait(false);
                             }
@@ -679,10 +677,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
-            (bool blnSuccess, Tuple<string, string> strBoxText)
-                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token).ConfigureAwait(false);
             File.WriteAllText(strSaveFile, // Change this to a proper path.
-                              blnSuccess
+                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
                                   ? strBoxText.Item1
                                   : txtText.Text,
                               Encoding.UTF8);
@@ -841,9 +837,9 @@ namespace Chummer
             strDisplayText = s_RgxMainMugshotReplaceExpression.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
             strDisplayText = s_RgxStringBase64ReplaceExpression.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
             strDisplayText = s_RgxBase64ReplaceExpression.Replace(strDisplayText, "base64\": \"[...]\",");
-            await _dicCache.AddOrUpdateAsync(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                                             new Tuple<string, string>(strText, strDisplayText),
-                                             (a, b) => new Tuple<string, string>(strText, strDisplayText), token).ConfigureAwait(false);
+            _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
+                new Tuple<string, string>(strText, strDisplayText),
+                (a, b) => new Tuple<string, string>(strText, strDisplayText));
             await txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token).ConfigureAwait(false);
         }
 
@@ -876,14 +872,13 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strSaveFile))
                 return;
 
-            (bool blnSuccess, Tuple<string, string> strBoxText)
-                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token).ConfigureAwait(false);
             // Change this to a proper path.
             await FileExtensions.WriteAllTextAsync(strSaveFile,
-                                                   blnSuccess
-                                                       ? strBoxText.Item1
-                                                       : await txtText.DoThreadSafeFuncAsync(x => x.Text, token: token)
-                                                                      .ConfigureAwait(false), Encoding.UTF8).ConfigureAwait(false);
+                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
+                    out Tuple<string, string> strBoxText)
+                    ? strBoxText.Item1
+                    : await txtText.DoThreadSafeFuncAsync(x => x.Text, token: token)
+                        .ConfigureAwait(false), Encoding.UTF8).ConfigureAwait(false);
         }
 
         #endregion JSON

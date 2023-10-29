@@ -386,13 +386,10 @@ namespace Chummer
 
                     // We will need to rebuild the Grade list since certain categories of 'ware disallow certain grades (e.g. Used for cultured bioware) and ForceGrades can change.
                     HashSet<string> setDisallowedGrades = null;
-                    if (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("bannedgrades").ConfigureAwait(false)
-                        != null)
+                    if (xmlDrug.SelectSingleNodeAndCacheExpression("bannedgrades") != null)
                     {
                         setDisallowedGrades = new HashSet<string>();
-                        foreach (XPathNavigator objNode in await xmlDrug
-                                                                 .SelectAndCacheExpressionAsync("bannedgrades/grade")
-                                                                 .ConfigureAwait(false))
+                        foreach (XPathNavigator objNode in xmlDrug.SelectAndCacheExpression("bannedgrades/grade"))
                         {
                             setDisallowedGrades.Add(objNode.Value);
                         }
@@ -759,7 +756,7 @@ namespace Chummer
                         if (blnIsSuccess)
                         {
                             decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decCostMultiplier;
-                            decItemCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                            decItemCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
 
                             if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                             {

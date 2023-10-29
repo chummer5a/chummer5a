@@ -218,9 +218,9 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstActions))
                     {
-                        foreach (XPathNavigator xmlAction in await (await _objCharacter.LoadDataXPathAsync("actions.xml").ConfigureAwait(false))
-                                                                   .SelectAndCacheExpressionAsync(
-                                                                       "/chummer/actions/action").ConfigureAwait(false))
+                        foreach (XPathNavigator xmlAction in (await _objCharacter.LoadDataXPathAsync("actions.xml").ConfigureAwait(false))
+                                                                   .SelectAndCacheExpression(
+                                                                       "/chummer/actions/action"))
                         {
                             string strName = (await xmlAction.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strName))
@@ -567,10 +567,10 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstComplexForms))
                     {
-                        foreach (XPathNavigator xmlSpell in await (await _objCharacter.LoadDataXPathAsync(
+                        foreach (XPathNavigator xmlSpell in (await _objCharacter.LoadDataXPathAsync(
                                                                       "complexforms.xml").ConfigureAwait(false))
-                                                                  .SelectAndCacheExpressionAsync(
-                                                                      "/chummer/complexforms/complexform").ConfigureAwait(false))
+                                                                  .SelectAndCacheExpression(
+                                                                      "/chummer/complexforms/complexform"))
                         {
                             string strName = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strName))
@@ -602,9 +602,9 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstSpells))
                     {
-                        foreach (XPathNavigator xmlSpell in await (await _objCharacter.LoadDataXPathAsync("spells.xml").ConfigureAwait(false))
-                                                                  .SelectAndCacheExpressionAsync(
-                                                                      "/chummer/spells/spell").ConfigureAwait(false))
+                        foreach (XPathNavigator xmlSpell in (await _objCharacter.LoadDataXPathAsync("spells.xml").ConfigureAwait(false))
+                                                                  .SelectAndCacheExpression(
+                                                                      "/chummer/spells/spell"))
                         {
                             string strName = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strName))
@@ -751,7 +751,7 @@ namespace Chummer
                         try
                         {
                             // Retrieve the XML data from the document and replace the values as necessary.
-                            foreach (XPathNavigator xmlAttribute in await objFetchNode.SelectAndCacheExpressionAsync("xml/@*", token).ConfigureAwait(false))
+                            foreach (XPathNavigator xmlAttribute in objFetchNode.SelectAndCacheExpression("xml/@*", token))
                             {
                                 await objWriter.WriteAttributeStringAsync(
                                     xmlAttribute.LocalName, xmlAttribute.Value, token: token).ConfigureAwait(false);
@@ -895,9 +895,9 @@ namespace Chummer
 
                         objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", astrToTranslateParts[0]);
                         string strFirstPartTranslated = objXmlNode != null
-                            ? ((await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                               ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
-                               ?? astrToTranslateParts[0])
+                            ? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                              ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                              ?? astrToTranslateParts[0]
                             : astrToTranslateParts[0];
 
                         return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ')';

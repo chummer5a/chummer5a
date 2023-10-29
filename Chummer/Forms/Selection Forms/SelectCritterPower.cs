@@ -63,7 +63,7 @@ namespace Chummer
         private async void SelectCritterPower_Load(object sender, EventArgs e)
         {
             // Populate the Category list.
-            foreach (XPathNavigator objXmlCategory in await _xmlBaseCritterPowerDataNode.SelectAndCacheExpressionAsync("categories/category").ConfigureAwait(false))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.SelectAndCacheExpression("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if (strInnerText.ContainsAny((await ImprovementManager
@@ -95,7 +95,7 @@ namespace Chummer
                     continue;
                 }
                 _lstCategory.Add(new ListItem(strInnerText,
-                    (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value ?? strInnerText));
+                    objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
             }
 
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -286,7 +286,7 @@ namespace Chummer
             XPathNavigator xmlOptionalPowers = await _xmlMetatypeDataNode.SelectSingleNodeAndCacheExpressionAsync("optionalpowers", token: token).ConfigureAwait(false);
             if (xmlOptionalPowers != null)
             {
-                foreach (XPathNavigator xmlNode in await xmlOptionalPowers.SelectAndCacheExpressionAsync("power", token: token).ConfigureAwait(false))
+                foreach (XPathNavigator xmlNode in xmlOptionalPowers.SelectAndCacheExpression("power", token: token))
                     lstPowerWhitelist.Add(xmlNode.Value);
 
                 // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
@@ -296,7 +296,7 @@ namespace Chummer
                                                          || x.Name == "Inhabitation", token).ConfigureAwait(false);
 
                 // Add any Critter Powers the Critter comes with that have been manually deleted so they can be re-added.
-                foreach (XPathNavigator objXmlCritterPower in await _xmlMetatypeDataNode.SelectAndCacheExpressionAsync("powers/power", token: token).ConfigureAwait(false))
+                foreach (XPathNavigator objXmlCritterPower in _xmlMetatypeDataNode.SelectAndCacheExpression("powers/power", token: token))
                 {
                     bool blnAddPower = true;
                     // Make sure the Critter doesn't already have the Power.

@@ -77,7 +77,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
                 // Populate the Skill's Specializations (if any).
-                XPathNodeIterator xmlSpecList = xmlParentSkill != null ? await xmlParentSkill.SelectAndCacheExpressionAsync("specs/spec").ConfigureAwait(false) : null;
+                XPathNodeIterator xmlSpecList = xmlParentSkill?.SelectAndCacheExpression("specs/spec");
                 if (xmlSpecList?.Count > 0)
                 {
                     foreach (XPathNavigator objXmlSpecialization in xmlSpecList)
@@ -150,7 +150,7 @@ namespace Chummer
                 await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem)).ConfigureAwait(false);
                 if (await cboSpec.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
                 {
-                    await cboSpec.PopulateWithListItemsAsync((new ListItem(_strForceItem, _strForceItem)).Yield()).ConfigureAwait(false);
+                    await cboSpec.PopulateWithListItemsAsync(new ListItem(_strForceItem, _strForceItem).Yield()).ConfigureAwait(false);
                     await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 }
 

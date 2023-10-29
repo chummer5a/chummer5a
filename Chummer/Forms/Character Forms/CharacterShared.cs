@@ -5322,11 +5322,11 @@ namespace Chummer
 
                         int intFociTotal = 0;
 
-                        int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                                                      .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
+                        int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                            .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
                         if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                                            .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
+                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                         await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false)).ForEachAsync(async objGear =>
                         {
@@ -5427,11 +5427,11 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Add:
                         {
                             bool blnWarned = false;
-                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                                                          .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
+                            int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                                                .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                    .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -5640,11 +5640,11 @@ namespace Chummer
                             }
 
                             bool blnWarned = false;
-                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                                                          .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
+                            int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                                                .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                    .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -8145,9 +8145,9 @@ namespace Chummer
                     return;
                 }
 
-                foreach (XPathNavigator xmlContact in await xmlDoc.CreateNavigator()
-                                                                  .SelectAndCacheExpressionAsync(
-                                                                      "/chummer/contacts/contact", token: token).ConfigureAwait(false))
+                foreach (XPathNavigator xmlContact in xmlDoc.CreateNavigator()
+                                                                  .SelectAndCacheExpression(
+                                                                      "/chummer/contacts/contact", token: token))
                 {
                     Contact objContact = new Contact(CharacterObject);
                     await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);

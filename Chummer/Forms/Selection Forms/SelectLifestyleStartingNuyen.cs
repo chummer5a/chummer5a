@@ -252,7 +252,7 @@ namespace Chummer
         /// <summary>
         /// The total amount of Nuyen resulting from the dice roll.
         /// </summary>
-        public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * SelectedLifestyle?.Multiplier) ?? 0;
+        public decimal StartingNuyen => (nudDiceResult.Value + Extra) * SelectedLifestyle?.Multiplier ?? 0;
 
         /// <summary>
         /// The currently selected lifestyle

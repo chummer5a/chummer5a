@@ -777,7 +777,7 @@ namespace Chummer.Backend.Equipment
                 return Page;
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
+                ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1252,7 +1252,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strCapacity;
                 if (string.IsNullOrEmpty(strReturn))
-                    return (0.0m).ToString("#,0.##", GlobalSettings.CultureInfo);
+                    return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
 
                 if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
@@ -1502,7 +1502,7 @@ namespace Chummer.Backend.Equipment
                 // Apply a markup if applicable.
                 if (_decMarkup != 0)
                 {
-                    decReturn *= 1 + (_decMarkup / 100.0m);
+                    decReturn *= 1 + _decMarkup / 100.0m;
                 }
             }
 
@@ -1588,7 +1588,7 @@ namespace Chummer.Backend.Equipment
                 // Apply a markup if applicable.
                 if (_decMarkup != 0)
                 {
-                    decReturn *= 1 + (_decMarkup / 100.0m);
+                    decReturn *= 1 + _decMarkup / 100.0m;
                 }
 
                 return decReturn;
@@ -1690,7 +1690,7 @@ namespace Chummer.Backend.Equipment
             // Apply a markup if applicable.
             if (_decMarkup != 0)
             {
-                decReturn *= 1 + (_decMarkup / 100.0m);
+                decReturn *= 1 + _decMarkup / 100.0m;
             }
 
             return decReturn;
@@ -1856,7 +1856,7 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
+            return objNode != null ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);

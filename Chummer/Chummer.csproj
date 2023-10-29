@@ -404,6 +404,7 @@
     <Compile Include="Backend\Static\Extensions\BoolArrayExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\BoolExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\CollectionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DispatcherExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DoubleExtensions.cs" />

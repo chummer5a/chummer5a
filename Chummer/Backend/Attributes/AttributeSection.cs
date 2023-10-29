@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -297,7 +298,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private readonly LockingDictionary<string, BindingSource> _dicBindings = new LockingDictionary<string, BindingSource>(AttributeStrings.Count);
+        private readonly ConcurrentDictionary<string, BindingSource> _dicBindings = new ConcurrentDictionary<string, BindingSource>();
         private readonly Character _objCharacter;
         private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
         private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
@@ -446,8 +447,8 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterWriteLock())
             {
-                _dicBindings.ForEach(x => x.Value.Dispose());
-                _dicBindings.Dispose();
+                foreach (BindingSource objBinding in _dicBindings.Values)
+                    objBinding.Dispose();
                 _lstNormalAttributes.ForEach(x => x.Dispose());
                 _lstNormalAttributes.Dispose();
                 _lstSpecialAttributes.ForEach(x => x.Dispose());
@@ -463,8 +464,8 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                await _dicBindings.ForEachAsync(x => x.Value.Dispose()).ConfigureAwait(false);
-                await _dicBindings.DisposeAsync().ConfigureAwait(false);
+                foreach (BindingSource objBinding in _dicBindings.Values)
+                    objBinding.Dispose();
                 await _lstNormalAttributes.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstNormalAttributes.DisposeAsync().ConfigureAwait(false);
                 await _lstSpecialAttributes.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
@@ -1181,8 +1182,8 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intAugValue = 1; }
 
             await objNewAttribute.AssignBaseKarmaLimitsAsync(
-                (await objCharacterNode.SelectSingleNodeAndCacheExpressionAsync("base", token).ConfigureAwait(false))?.ValueAsInt ?? 0,
-                (await objCharacterNode.SelectSingleNodeAndCacheExpressionAsync("base", token).ConfigureAwait(false))?.ValueAsInt ?? 0, intMinValue, intMaxValue,
+                objCharacterNode.SelectSingleNodeAndCacheExpression("base", token)?.ValueAsInt ?? 0,
+                objCharacterNode.SelectSingleNodeAndCacheExpression("base", token)?.ValueAsInt ?? 0, intMinValue, intMaxValue,
                 intAugValue, token).ConfigureAwait(false);
             return objNewAttribute;
         }
@@ -1200,9 +1201,9 @@ namespace Chummer.Backend.Attributes
                     {
                         await objWriter.WriteElementStringAsync("attributecategory",
                                                                 xmlNode != null
-                                                                    ? (await xmlNode
-                                                                             .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                 "name/@translate", token: token).ConfigureAwait(false))
+                                                                    ? xmlNode
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "name/@translate", token: token)
                                                                     ?.Value ?? _objCharacter.Metatype
                                                                     : _objCharacter.Metatype, token: token).ConfigureAwait(false);
                     }
@@ -1239,8 +1240,8 @@ namespace Chummer.Backend.Attributes
                     && AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
                 CharacterAttrib objReturn
                     = AttributeList.Find(att => att.Abbrev == abbrev
-                                                && (att.MetatypeCategory
-                                                    == CharacterAttrib.AttributeCategory.Shapeshifter)
+                                                && att.MetatypeCategory
+                                                == CharacterAttrib.AttributeCategory.Shapeshifter
                                                 == blnGetShifterAttribute)
                       ?? SpecialAttributeList.Find(att => att.Abbrev == abbrev);
                 return objReturn;
@@ -1256,8 +1257,8 @@ namespace Chummer.Backend.Attributes
                     && await GetAttributeCategoryAsync(token).ConfigureAwait(false) == CharacterAttrib.AttributeCategory.Shapeshifter;
                 CharacterAttrib objReturn
                     = (await GetAttributeListAsync(token).ConfigureAwait(false)).Find(att => att.Abbrev == abbrev
-                                                           && (att.MetatypeCategory
-                                                               == CharacterAttrib.AttributeCategory.Shapeshifter)
+                                                           && att.MetatypeCategory
+                                                           == CharacterAttrib.AttributeCategory.Shapeshifter
                                                            == blnGetShifterAttribute)
                       ?? (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).Find(att => att.Abbrev == abbrev);
                 return objReturn;
@@ -1267,7 +1268,7 @@ namespace Chummer.Backend.Attributes
         public BindingSource GetAttributeBindingByName(string abbrev, CancellationToken token = default)
         {
             using (LockObject.EnterReadLock(token))
-                return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding, token) ? objAttributeBinding : null;
+                return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
         }
 
         public async ValueTask<BindingSource> GetAttributeBindingByNameAsync(string abbrev, CancellationToken token = default)
@@ -1275,8 +1276,7 @@ namespace Chummer.Backend.Attributes
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                (bool blnSuccess, BindingSource objAttributeBinding) = await _dicBindings.TryGetValueAsync(abbrev, token).ConfigureAwait(false);
-                return blnSuccess ? objAttributeBinding : null;
+                return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
             }
         }
 
@@ -1330,11 +1330,11 @@ namespace Chummer.Backend.Attributes
                     : null;
                 if (node != null)
                 {
-                    int.TryParse((await node.SelectSingleNodeAndCacheExpressionAsync(strSourceAbbrev + "min", token).ConfigureAwait(false))?.Value, NumberStyles.Any,
+                    int.TryParse(node.SelectSingleNodeAndCacheExpression(strSourceAbbrev + "min", token)?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intMinimum);
-                    int.TryParse((await node.SelectSingleNodeAndCacheExpressionAsync(strSourceAbbrev + "max", token).ConfigureAwait(false))?.Value, NumberStyles.Any,
+                    int.TryParse(node.SelectSingleNodeAndCacheExpression(strSourceAbbrev + "max", token)?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intMaximum);
-                    int.TryParse((await node.SelectSingleNodeAndCacheExpressionAsync(strSourceAbbrev + "aug", token).ConfigureAwait(false))?.Value, NumberStyles.Any,
+                    int.TryParse(node.SelectSingleNodeAndCacheExpression(strSourceAbbrev + "aug", token)?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intAugmentedMaximum);
                     intMaximum = Math.Max(intMaximum, intMinimum);
                     intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);
@@ -1792,12 +1792,17 @@ namespace Chummer.Backend.Attributes
 
                     if (blnFirstTime)
                     {
-                        _dicBindings.ForEach(x => x.Value.Dispose(), token);
+                        foreach (BindingSource objBinding in _dicBindings.Values)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objBinding.Dispose();
+                        }
+                        token.ThrowIfCancellationRequested();
                         _dicBindings.Clear();
                         foreach (string strAttributeString in AttributeStrings)
                         {
                             token.ThrowIfCancellationRequested();
-                            _dicBindings.Add(strAttributeString, new BindingSource());
+                            _dicBindings.TryAdd(strAttributeString, new BindingSource());
                         }
                     }
 
@@ -1847,11 +1852,17 @@ namespace Chummer.Backend.Attributes
 
                     if (blnFirstTime)
                     {
-                        await _dicBindings.ForEachAsync(x => x.Value.Dispose(), token: token).ConfigureAwait(false);
-                        await _dicBindings.ClearAsync(token).ConfigureAwait(false);
+                        foreach (BindingSource objBinding in _dicBindings.Values)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objBinding.Dispose();
+                        }
+                        token.ThrowIfCancellationRequested();
+                        _dicBindings.Clear();
                         foreach (string strAttributeString in AttributeStrings)
                         {
-                            await _dicBindings.AddAsync(strAttributeString, new BindingSource(), token).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            _dicBindings.TryAdd(strAttributeString, new BindingSource());
                         }
                     }
 
@@ -1897,9 +1908,18 @@ namespace Chummer.Backend.Attributes
             using (_objCharacter.LockObject.EnterWriteLock(token))
             using (LockObject.EnterWriteLock(token))
             {
-                _dicBindings.ForEach(objBindingEntry => objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key, token), token);
+                token.ThrowIfCancellationRequested();
+                foreach (KeyValuePair<string, BindingSource> kvpBinding in _dicBindings)
+                {
+                    token.ThrowIfCancellationRequested();
+                    kvpBinding.Value.DataSource = GetAttributeByName(kvpBinding.Key, token);
+                }
                 _objCharacter.RefreshAttributeBindings(token);
-                _dicBindings.ForEach(objBindingEntry => objBindingEntry.Value.ResetBindings(false), token);
+                foreach (BindingSource objBinding in _dicBindings.Values)
+                {
+                    token.ThrowIfCancellationRequested();
+                    objBinding.ResetBindings(false);
+                }
             }
         }
 
@@ -1917,12 +1937,17 @@ namespace Chummer.Backend.Attributes
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    await _dicBindings.ForEachAsync(
-                        async objBindingEntry => objBindingEntry.Value.DataSource =
-                            await GetAttributeByNameAsync(objBindingEntry.Key, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    foreach (KeyValuePair<string, BindingSource> kvpBinding in _dicBindings)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        kvpBinding.Value.DataSource = await GetAttributeByNameAsync(kvpBinding.Key, token).ConfigureAwait(false);
+                    }
                     await _objCharacter.RefreshAttributeBindingsAsync(token).ConfigureAwait(false);
-                    await _dicBindings.ForEachAsync(objBindingEntry => objBindingEntry.Value.ResetBindings(false),
-                        token: token).ConfigureAwait(false);
+                    foreach (BindingSource objBinding in _dicBindings.Values)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objBinding.ResetBindings(false);
+                    }
                 }
                 finally
                 {

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -32,7 +33,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
     public sealed class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IHasLockObject
     {
-        private readonly LockingDictionary<string, string> _dicEnglishTexts = new LockingDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _dicEnglishTexts = new ConcurrentDictionary<string, string>();
         private readonly Guid _guiInternalId;
         private string _strName;
         private Guid _guiSourceID;
@@ -65,7 +66,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
-                        _dicEnglishTexts.Add(xmlText.Name, xmlText.Value);
+                        _dicEnglishTexts.TryAdd(xmlText.Name, xmlText.Value);
                         if (xmlText.SelectSingleNodeAndCacheExpression("@default")?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
@@ -97,15 +98,15 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
-                        await _dicEnglishTexts.AddAsync(xmlText.Name, xmlText.Value, token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        _dicEnglishTexts.TryAdd(xmlText.Name, xmlText.Value);
                         if ((await xmlText.SelectSingleNodeAndCacheExpressionAsync("@default", token: token)
                                           .ConfigureAwait(false))?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
 
                     if (string.IsNullOrEmpty(_strDefaultTextKey))
-                        _strDefaultTextKey
-                            = (await _dicEnglishTexts.FirstOrDefaultAsync(token: token).ConfigureAwait(false)).Key;
+                        _strDefaultTextKey = _dicEnglishTexts.FirstOrDefault().Key;
                 }
             }
             finally
@@ -276,9 +277,7 @@ namespace Chummer
                         return strReturn;
                 }
 
-                bool blnSuccess;
-                (blnSuccess, strReturn) = await _dicEnglishTexts.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                return blnSuccess ? strReturn : '<' + strKey + '>';
+                return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
             }
         }
 
@@ -615,10 +614,7 @@ namespace Chummer
 
                 if (blnGeneratePersistents)
                 {
-                    (bool blnSuccess, StoryModule objInnerModule)
-                        = await ParentStory.PersistentModules.TryGetValueAsync(strFunction, token)
-                                           .ConfigureAwait(false);
-                    if (blnSuccess)
+                    if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
                         return await ResolveMacros(
                                 await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token)
                                                     .ConfigureAwait(false), objCulture, strLanguage, token: token)
@@ -632,17 +628,11 @@ namespace Chummer
                                 token: token)
                             .ConfigureAwait(false);
                 }
-                else
-                {
-                    (bool blnSuccess, StoryModule objInnerModule)
-                        = await ParentStory.PersistentModules.TryGetValueAsync(strFunction, token)
-                                           .ConfigureAwait(false);
-                    if (blnSuccess)
-                        return await ResolveMacros(
-                                await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token)
-                                                    .ConfigureAwait(false), objCulture, strLanguage, token: token)
-                            .ConfigureAwait(false);
-                }
+                else if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
+                    return await ResolveMacros(
+                            await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token)
+                                .ConfigureAwait(false), objCulture, strLanguage, token: token)
+                        .ConfigureAwait(false);
 
                 return await LanguageManager.GetStringAsync("String_Error", strLanguage, token: token)
                                             .ConfigureAwait(false);
@@ -722,25 +712,13 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            using (LockObject.EnterWriteLock())
-                _dicEnglishTexts.Dispose();
             LockObject.Dispose();
         }
 
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-            try
-            {
-                await _dicEnglishTexts.DisposeAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
+            return LockObject.DisposeAsync();
         }
 
         /// <inheritdoc />

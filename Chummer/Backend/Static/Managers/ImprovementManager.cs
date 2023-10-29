@@ -49,18 +49,16 @@ namespace Chummer
         private static readonly ConcurrentDictionary<Character, List<Improvement>> s_DictionaryTransactions
             = new ConcurrentDictionary<Character, List<Improvement>>();
 
-        private static readonly ConcurrentHashSet<Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>>
-            s_SetCurrentlyCalculatingValues = new ConcurrentHashSet<Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>>();
+        private static readonly ConcurrentHashSet<Tuple<ImprovementDictionaryKey, ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>>
+            s_SetCurrentlyCalculatingValues = new ConcurrentHashSet<Tuple<ImprovementDictionaryKey, ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>>();
 
-        private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
+        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
             s_DictionaryCachedValues
-                = new LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>(
-                    (int)Improvement.ImprovementType.NumImprovementTypes);
+                = new ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>();
 
-        private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
+        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
             s_DictionaryCachedAugmentedValues
-                = new LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>(
-                    (int)Improvement.ImprovementType.NumImprovementTypes);
+                = new ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>();
 
         public readonly struct ImprovementDictionaryKey : IEquatable<ImprovementDictionaryKey>,
             IEquatable<Tuple<Character, Improvement.ImprovementType, string>>
@@ -188,6 +186,7 @@ namespace Chummer
             {
                 ImprovementDictionaryKey objCheckKey
                     = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
+                token.ThrowIfCancellationRequested();
                 s_DictionaryCachedValues.AddOrUpdate(objCheckKey,
                                                      x => new Tuple<decimal, List<Improvement>>(
                                                          decimal.MinValue, new List<Improvement>()),
@@ -196,7 +195,8 @@ namespace Chummer
                                                          y.Item2.Clear();
                                                          return new Tuple<decimal, List<Improvement>>(
                                                              decimal.MinValue, y.Item2);
-                                                     }, token);
+                                                     });
+                token.ThrowIfCancellationRequested();
                 s_DictionaryCachedAugmentedValues.AddOrUpdate(objCheckKey,
                                                               x => new Tuple<decimal, List<Improvement>>(
                                                                   decimal.MinValue, new List<Improvement>()),
@@ -205,21 +205,22 @@ namespace Chummer
                                                                   y.Item2.Clear();
                                                                   return new Tuple<decimal, List<Improvement>>(
                                                                       decimal.MinValue, y.Item2);
-                                                              }, token);
+                                                              });
             }
             else
             {
                 List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>();
-                s_DictionaryCachedValues.ForEach(x =>
+                foreach (ImprovementDictionaryKey objCachedValueKey in s_DictionaryCachedValues.Keys)
                 {
-                    if (x.Key.CharacterObject == objCharacter && x.Key.ImprovementType == eImprovementType)
-                        lstTempOuter.Add(x.Key);
-                }, token);
+                    token.ThrowIfCancellationRequested();
+                    if (objCachedValueKey.CharacterObject == objCharacter && objCachedValueKey.ImprovementType == eImprovementType)
+                        lstTempOuter.Add(objCachedValueKey);
+                }
                 foreach (ImprovementDictionaryKey objCheckKey in lstTempOuter)
                 {
                     token.ThrowIfCancellationRequested();
                     if (s_DictionaryCachedValues.TryGetValue(objCheckKey,
-                                                             out Tuple<decimal, List<Improvement>> tupTemp, token))
+                                                             out Tuple<decimal, List<Improvement>> tupTemp))
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
                         lstTemp.Clear();
@@ -227,21 +228,22 @@ namespace Chummer
                             .AddOrUpdate(objCheckKey,
                                          x => new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp),
                                          (x, y) => new Tuple<decimal, List<Improvement>>(
-                                             decimal.MinValue, lstTemp), token);
+                                             decimal.MinValue, lstTemp));
                     }
                 }
 
                 lstTempOuter.Clear();
-                s_DictionaryCachedAugmentedValues.ForEach(x =>
+                foreach (ImprovementDictionaryKey objCachedValueKey in s_DictionaryCachedAugmentedValues.Keys)
                 {
-                    if (x.Key.CharacterObject == objCharacter && x.Key.ImprovementType == eImprovementType)
-                        lstTempOuter.Add(x.Key);
-                }, token);
+                    token.ThrowIfCancellationRequested();
+                    if (objCachedValueKey.CharacterObject == objCharacter && objCachedValueKey.ImprovementType == eImprovementType)
+                        lstTempOuter.Add(objCachedValueKey);
+                }
                 foreach (ImprovementDictionaryKey objCheckKey in lstTempOuter)
                 {
                     token.ThrowIfCancellationRequested();
                     if (s_DictionaryCachedAugmentedValues.TryGetValue(objCheckKey,
-                                                                      out Tuple<decimal, List<Improvement>> tupTemp, token))
+                                                                      out Tuple<decimal, List<Improvement>> tupTemp))
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
                         lstTemp.Clear();
@@ -249,80 +251,7 @@ namespace Chummer
                             .AddOrUpdate(objCheckKey,
                                          x => new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp),
                                          (x, y) => new Tuple<decimal, List<Improvement>>(
-                                             decimal.MinValue, lstTemp), token);
-                    }
-                }
-            }
-        }
-
-        public static async ValueTask ClearCachedValueAsync(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName = "", CancellationToken token = default)
-        {
-            if (!string.IsNullOrEmpty(strImprovementName))
-            {
-                ImprovementDictionaryKey objCheckKey
-                    = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
-                await s_DictionaryCachedValues.AddOrUpdateAsync(objCheckKey,
-                                                                x => new Tuple<decimal, List<Improvement>>(
-                                                                    decimal.MinValue, new List<Improvement>()),
-                                                                (x, y) =>
-                                                                {
-                                                                    y.Item2.Clear();
-                                                                    return new Tuple<decimal, List<Improvement>>(
-                                                                        decimal.MinValue, y.Item2);
-                                                                }, token).ConfigureAwait(false);
-                await s_DictionaryCachedAugmentedValues.AddOrUpdateAsync(objCheckKey,
-                                                                         x => new Tuple<decimal, List<Improvement>>(
-                                                                             decimal.MinValue, new List<Improvement>()),
-                                                                         (x, y) =>
-                                                                         {
-                                                                             y.Item2.Clear();
-                                                                             return new Tuple<decimal, List<Improvement>>(
-                                                                                 decimal.MinValue, y.Item2);
-                                                                         }, token).ConfigureAwait(false);
-            }
-            else
-            {
-                List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>();
-                await s_DictionaryCachedValues.ForEachAsync(x =>
-                {
-                    if (x.Key.CharacterObject == objCharacter && x.Key.ImprovementType == eImprovementType)
-                        lstTempOuter.Add(x.Key);
-                }, token: token).ConfigureAwait(false);
-                foreach (ImprovementDictionaryKey objCheckKey in lstTempOuter)
-                {
-                    (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                    {
-                        List<Improvement> lstTemp = tupTemp.Item2;
-                        lstTemp.Clear();
-                        await s_DictionaryCachedValues
-                              .AddOrUpdateAsync(objCheckKey,
-                                                x => new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp),
-                                                (x, y) => new Tuple<decimal, List<Improvement>>(
-                                                    decimal.MinValue, lstTemp), token).ConfigureAwait(false);
-                    }
-                }
-
-                lstTempOuter.Clear();
-                await s_DictionaryCachedAugmentedValues.ForEachAsync(x =>
-                {
-                    if (x.Key.CharacterObject == objCharacter && x.Key.ImprovementType == eImprovementType)
-                        lstTempOuter.Add(x.Key);
-                }, token: token).ConfigureAwait(false);
-                foreach (ImprovementDictionaryKey objCheckKey in lstTempOuter)
-                {
-                    (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                    {
-                        List<Improvement> lstTemp = tupTemp.Item2;
-                        lstTemp.Clear();
-                        await s_DictionaryCachedAugmentedValues
-                              .AddOrUpdateAsync(objCheckKey,
-                                                x => new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp),
-                                                (x, y) => new Tuple<decimal, List<Improvement>>(
-                                                    decimal.MinValue, lstTemp), token).ConfigureAwait(false);
+                                             decimal.MinValue, lstTemp));
                     }
                 }
             }
@@ -330,12 +259,14 @@ namespace Chummer
 
         public static void ClearCachedValues(Character objCharacter, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>();
-            s_DictionaryCachedValues.ForEach(x =>
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys)
             {
-                if (x.Key.CharacterObject == objCharacter)
-                    lstToRemove.Add(x.Key);
-            }, token);
+                token.ThrowIfCancellationRequested();
+                if (objKey.CharacterObject == objCharacter)
+                    lstToRemove.Add(objKey);
+            }
             foreach (ImprovementDictionaryKey objKey in lstToRemove)
             {
                 token.ThrowIfCancellationRequested();
@@ -344,48 +275,16 @@ namespace Chummer
             }
 
             lstToRemove.Clear();
-            s_DictionaryCachedAugmentedValues.ForEach(x =>
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys)
             {
-                if (x.Key.CharacterObject == objCharacter)
-                    lstToRemove.Add(x.Key);
-            }, token);
+                token.ThrowIfCancellationRequested();
+                if (objKey.CharacterObject == objCharacter)
+                    lstToRemove.Add(objKey);
+            }
             foreach (ImprovementDictionaryKey objKey in lstToRemove)
             {
                 token.ThrowIfCancellationRequested();
                 if (s_DictionaryCachedAugmentedValues.TryRemove(objKey, out Tuple<decimal, List<Improvement>> tupTemp))
-                    tupTemp.Item2.Clear(); // Just in case this helps the GC
-            }
-
-            s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> _);
-        }
-
-        public static async ValueTask ClearCachedValuesAsync(Character objCharacter, CancellationToken token = default)
-        {
-            List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>();
-            await s_DictionaryCachedValues.ForEachAsync(x =>
-            {
-                if (x.Key.CharacterObject == objCharacter)
-                    lstToRemove.Add(x.Key);
-            }, token: token).ConfigureAwait(false);
-            foreach (ImprovementDictionaryKey objKey in lstToRemove)
-            {
-                (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                    = await s_DictionaryCachedValues.TryRemoveAsync(objKey, token).ConfigureAwait(false);
-                if (blnSuccess)
-                    tupTemp.Item2.Clear(); // Just in case this helps the GC
-            }
-
-            lstToRemove.Clear();
-            await s_DictionaryCachedAugmentedValues.ForEachAsync(x =>
-            {
-                if (x.Key.CharacterObject == objCharacter)
-                    lstToRemove.Add(x.Key);
-            }, token: token).ConfigureAwait(false);
-            foreach (ImprovementDictionaryKey objKey in lstToRemove)
-            {
-                (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                    = await s_DictionaryCachedAugmentedValues.TryRemoveAsync(objKey, token).ConfigureAwait(false);
-                if (blnSuccess)
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
@@ -710,7 +609,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         private static Tuple<decimal, List<Improvement>> MetaValueOf(Character objCharacter, Improvement.ImprovementType eImprovementType,
                                                                      Func<Improvement, decimal> funcValueGetter,
-                                                                     LockingDictionary<ImprovementDictionaryKey,
+                                                                     ConcurrentDictionary<ImprovementDictionaryKey,
                                                                          Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
                                                                      bool blnAddToRating, string strImprovedName,
                                                                      bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
@@ -734,7 +633,7 @@ namespace Chummer
         private static Task<Tuple<decimal, List<Improvement>>> MetaValueOfAsync(
             Character objCharacter, Improvement.ImprovementType eImprovementType,
             Func<Improvement, decimal> funcValueGetter,
-            LockingDictionary<ImprovementDictionaryKey,
+            ConcurrentDictionary<ImprovementDictionaryKey,
                 Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
             bool blnAddToRating, string strImprovedName,
             bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
@@ -760,7 +659,7 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         private static async Task<Tuple<decimal, List<Improvement>>> MetaValueOfCoreAsync(bool blnSync, Character objCharacter, Improvement.ImprovementType eImprovementType,
                                                                                           Func<Improvement, decimal> funcValueGetter,
-                                                                                          LockingDictionary<ImprovementDictionaryKey,
+                                                                                          ConcurrentDictionary<ImprovementDictionaryKey,
                                                                                               Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
                                                                                           bool blnAddToRating, string strImprovedName,
                                                                                           bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
@@ -784,12 +683,12 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // These values are needed to prevent race conditions that could cause Chummer to crash
-                Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>> tupMyValueToCheck
-                    = new Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>(
+                Tuple<ImprovementDictionaryKey, ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>> tupMyValueToCheck
+                    = new Tuple<ImprovementDictionaryKey, ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>(
                         new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName),
                         dicCachedValuesToUse);
-                Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>> tupBlankValueToCheck
-                    = new Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>(
+                Tuple<ImprovementDictionaryKey, ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>> tupBlankValueToCheck
+                    = new Tuple<ImprovementDictionaryKey, ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>(
                         new ImprovementDictionaryKey(objCharacter, eImprovementType, string.Empty),
                         dicCachedValuesToUse);
 
@@ -881,15 +780,9 @@ namespace Chummer
 
                                 ImprovementDictionaryKey objCacheKey
                                     = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName);
-                                bool blnSuccess;
-                                Tuple<decimal, List<Improvement>> tupCachedValue;
-                                if (blnSync)
-                                    blnSuccess = dicCachedValuesToUse.TryGetValue(
-                                        objCacheKey, out tupCachedValue, token);
-                                else
-                                    (blnSuccess, tupCachedValue)
-                                        = await dicCachedValuesToUse.TryGetValueAsync(objCacheKey, token).ConfigureAwait(false);
-                                if (blnSuccess && tupCachedValue.Item1 != decimal.MinValue)
+                                if (dicCachedValuesToUse.TryGetValue(
+                                        objCacheKey, out Tuple<decimal, List<Improvement>> tupCachedValue) &&
+                                    tupCachedValue.Item1 != decimal.MinValue)
                                 {
                                     // To make sure we do not inadvertently alter the cached list
                                     return new Tuple<decimal, List<Improvement>>(
@@ -909,56 +802,31 @@ namespace Chummer
                                 bool blnDoRecalculate = true;
                                 decimal decCachedValue = 0;
                                 // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
-                                if (blnSync)
+                                foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
+                                             kvpLoopCachedEntry in dicCachedValuesToUse)
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    dicCachedValuesToUse.ForEachWithBreak(objLoopCachedEntry =>
+                                    token.ThrowIfCancellationRequested();
+                                    ImprovementDictionaryKey objLoopKey = kvpLoopCachedEntry.Key;
+                                    if (objLoopKey.CharacterObject != objCharacter ||
+                                        objLoopKey.ImprovementType != eImprovementType)
+                                        continue;
+                                    token.ThrowIfCancellationRequested();
+                                    if (!string.IsNullOrWhiteSpace(strImprovedName)
+                                        && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
+                                        && strImprovedName != objLoopKey.ImprovementName)
+                                        continue;
+                                    token.ThrowIfCancellationRequested();
+                                    blnDoRecalculate = false;
+                                    decimal decLoopCachedValue = kvpLoopCachedEntry.Value.Item1;
+                                    if (decLoopCachedValue == decimal.MinValue)
                                     {
-                                        ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
-                                        if (objLoopKey.CharacterObject != objCharacter ||
-                                            objLoopKey.ImprovementType != eImprovementType)
-                                            return true;
-                                        if (!string.IsNullOrWhiteSpace(strImprovedName)
-                                            && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
-                                            && strImprovedName != objLoopKey.ImprovementName)
-                                            return true;
-                                        blnDoRecalculate = false;
-                                        decimal decLoopCachedValue = objLoopCachedEntry.Value.Item1;
-                                        if (decLoopCachedValue == decimal.MinValue)
-                                        {
-                                            blnDoRecalculate = true;
-                                            return false;
-                                        }
+                                        blnDoRecalculate = true;
+                                        break;
+                                    }
 
-                                        decCachedValue += decLoopCachedValue;
-                                        lstUsedImprovements.AddRange(objLoopCachedEntry.Value.Item2);
-                                        return true;
-                                    }, token: token);
-                                }
-                                else
-                                {
-                                    await dicCachedValuesToUse.ForEachWithBreakAsync(x =>
-                                    {
-                                        ImprovementDictionaryKey objLoopKey = x.Key;
-                                        if (objLoopKey.CharacterObject != objCharacter
-                                            || objLoopKey.ImprovementType != eImprovementType)
-                                            return true;
-                                        if (!string.IsNullOrWhiteSpace(strImprovedName)
-                                            && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
-                                            && strImprovedName != objLoopKey.ImprovementName)
-                                            return true;
-                                        blnDoRecalculate = false;
-                                        decimal decLoopCachedValue = x.Value.Item1;
-                                        if (decLoopCachedValue == decimal.MinValue)
-                                        {
-                                            blnDoRecalculate = true;
-                                            return false;
-                                        }
-
-                                        decCachedValue += decLoopCachedValue;
-                                        lstUsedImprovements.AddRange(x.Value.Item2);
-                                        return true;
-                                    }, token: token).ConfigureAwait(false);
+                                    token.ThrowIfCancellationRequested();
+                                    decCachedValue += decLoopCachedValue;
+                                    lstUsedImprovements.AddRange(kvpLoopCachedEntry.Value.Item2);
                                 }
 
                                 if (blnDoRecalculate)
@@ -1357,60 +1225,23 @@ namespace Chummer
                             {
                                 ImprovementDictionaryKey objLoopCacheKey =
                                     new ImprovementDictionaryKey(objCharacter, eImprovementType, strLoopImprovedName);
-                                IDisposable objCachedLocker = null;
-                                IAsyncDisposable objCachedLockerAsync = null;
-                                if (blnSync)
-                                    objCachedLocker = dicCachedValuesToUse.LockObject.EnterWriteLock(token);
-                                else
-                                    objCachedLockerAsync = await dicCachedValuesToUse.LockObject
-                                        .EnterWriteLockAsync(token).ConfigureAwait(false);
-                                try
+                                token.ThrowIfCancellationRequested();
+                                if (!dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue))
                                 {
-                                    token.ThrowIfCancellationRequested();
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    if (!(blnSync
-                                            ? dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue)
-                                            : await dicCachedValuesToUse
-                                                    .TryAddAsync(objLoopCacheKey, tupNewValue, token)
-                                                    .ConfigureAwait(false)))
+                                    List<Improvement> lstTemp = dicCachedValuesToUse.TryGetValue(
+                                        objLoopCacheKey, out Tuple<decimal, List<Improvement>> tupTemp)
+                                        ? tupTemp.Item2
+                                        : new List<Improvement>();
+
+                                    if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
                                     {
-                                        List<Improvement> lstTemp;
-                                        if (blnSync)
-                                        {
-                                            lstTemp = dicCachedValuesToUse.TryGetValue(
-                                                objLoopCacheKey, out Tuple<decimal, List<Improvement>> tupTemp, token)
-                                                ? tupTemp.Item2
-                                                : new List<Improvement>();
-                                        }
-                                        else
-                                        {
-                                            lstTemp = (await dicCachedValuesToUse
-                                                             .TryGetValueAsync(objLoopCacheKey, token)
-                                                             .ConfigureAwait(false)).Item2.Item2;
-                                        }
-
-                                        if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
-                                        {
-                                            lstTemp.Clear();
-                                            lstTemp.AddRange(tupNewValue.Item2);
-                                            tupNewValue = new Tuple<decimal, List<Improvement>>(decLoopValue, lstTemp);
-                                        }
-
-                                        if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            dicCachedValuesToUse.AddOrUpdate(objLoopCacheKey, tupNewValue,
-                                                                             (x, y) => tupNewValue, token);
-                                        else
-                                            await dicCachedValuesToUse.AddOrUpdateAsync(objLoopCacheKey, tupNewValue,
-                                                (x, y) => tupNewValue, token).ConfigureAwait(false);
+                                        lstTemp.Clear();
+                                        lstTemp.AddRange(tupNewValue.Item2);
+                                        tupNewValue = new Tuple<decimal, List<Improvement>>(decLoopValue, lstTemp);
                                     }
-                                }
-                                finally
-                                {
-                                    objCachedLocker?.Dispose();
-                                    if (objCachedLockerAsync != null)
-                                        await objCachedLockerAsync.DisposeAsync().ConfigureAwait(false);
+
+                                    dicCachedValuesToUse.AddOrUpdate(objLoopCacheKey, tupNewValue,
+                                        (x, y) => tupNewValue);
                                 }
                             }
 
@@ -2246,13 +2077,8 @@ namespace Chummer
                                 }
                                 else if (objCharacter != null)
                                 {
-                                    string strXPath = (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                              "selecttext/@xpath", token)
-                                                          : await nodBonus
-                                                                  .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                      "selecttext/@xpath", token).ConfigureAwait(false))?.Value
+                                    string strXPath = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                          "selecttext/@xpath", token)?.Value
                                                       ?? string.Empty;
                                     if (string.IsNullOrEmpty(strXPath))
                                     {
@@ -2267,13 +2093,8 @@ namespace Chummer
                                     }
 
                                     string strXmlFile
-                                        = (blnSync
-                                              // ReSharper disable once MethodHasAsyncOverload
-                                              ? nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                  "selecttext/@xml", token)
-                                              : await nodBonus
-                                                      .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                          "selecttext/@xml", token).ConfigureAwait(false))?.Value
+                                        = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                              "selecttext/@xml", token)?.Value
                                           ?? string.Empty;
                                     XPathNavigator xmlDoc
                                         = blnSync
@@ -2403,14 +2224,8 @@ namespace Chummer
                                                    }, token).ConfigureAwait(false))
                                         {
                                             if (Convert.ToBoolean(
-                                                    (blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                            "selecttext/@allowedit", token)
-                                                        : await nodBonus
-                                                                .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                    "selecttext/@allowedit", token)
-                                                                .ConfigureAwait(false))?.Value,
+                                                    nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                        "selecttext/@allowedit", token)?.Value,
                                                     GlobalSettings.InvariantCultureInfo))
                                             {
                                                 lstItems.Insert(0, ListItem.Blank);
@@ -4167,15 +3982,12 @@ namespace Chummer
                     {
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         objCharacter.Improvements.Remove(objImprovement);
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName, token: token);
                     }
                     else
                     {
                         await objCharacter.Improvements.RemoveAsync(objImprovement, token).ConfigureAwait(false);
-                        await ClearCachedValueAsync(objCharacter, objImprovement.ImproveType,
-                                                    objImprovement.ImprovedName, token).ConfigureAwait(false);
                     }
+                    ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName, token: token);
                 }
 
                 // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
@@ -5208,7 +5020,7 @@ namespace Chummer
                     objImprovement.SetupComplete = true;
                     // Add the Improvement to the list.
                     await objCharacter.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
-                    await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName, token).ConfigureAwait(false);
+                    ClearCachedValue(objCharacter, objImprovementType, strImprovedName, token);
 
                     // Add the Improvement to the Transaction List.
                     List<Improvement> lstTransactions
@@ -5284,8 +5096,8 @@ namespace Chummer
                     {
                         await RemoveImprovementsAsync(objCharacter, objTransactingImprovement.ImproveSource,
                                                       objTransactingImprovement.SourceName, token).ConfigureAwait(false);
-                        await ClearCachedValueAsync(objCharacter, objTransactingImprovement.ImproveType,
-                                                    objTransactingImprovement.ImprovedName, token).ConfigureAwait(false);
+                        ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType,
+                            objTransactingImprovement.ImprovedName, token);
                     }
                 }
                 finally

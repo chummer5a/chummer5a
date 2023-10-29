@@ -679,7 +679,7 @@ namespace Chummer.Backend.Skills
                 {
                     WritableName = strName,
                     Karma = intKarmaRating,
-                    Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic"),
+                    Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : xmlSkillDataNode?["category"]?.InnerText ?? "Academic",
                     IsNativeLanguage = blnIsNativeLanguage
                 };
             }
@@ -2463,8 +2463,8 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 return await GetLeveledAsync(token).ConfigureAwait(false)
                        && await GetEnabledAsync(token).ConfigureAwait(false)
-                    ? await ColorManager.GetControlAsync(token).ConfigureAwait(false)
-                    : await ColorManager.GetControlLighterAsync(token).ConfigureAwait(false);
+                    ? ColorManager.Control
+                    : ColorManager.ControlLighter;
             }
         }
 
@@ -3435,9 +3435,7 @@ namespace Chummer.Backend.Skills
                                 XPathNavigator objBaseNode = await this
                                     .GetNodeXPathAsync(GlobalSettings.Language, token: token)
                                     .ConfigureAwait(false);
-                                XPathNodeIterator xmlSpecList = objBaseNode != null
-                                    ? await objBaseNode.SelectAndCacheExpressionAsync("specs/spec", token).ConfigureAwait(false)
-                                    : null;
+                                XPathNodeIterator xmlSpecList = objBaseNode?.SelectAndCacheExpression("specs/spec", token);
                                 if (xmlSpecList?.Count > 0)
                                 {
                                     foreach (XPathNavigator xmlSpecNode in xmlSpecList)
@@ -4661,8 +4659,8 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
-                    ? await ColorManager.GenerateCurrentModeColorAsync(NotesColor, token).ConfigureAwait(false)
-                    : await ColorManager.GetControlTextAsync(token).ConfigureAwait(false);
+                    ? ColorManager.GenerateCurrentModeColor(NotesColor)
+                    : ColorManager.ControlText;
             }
         }
 

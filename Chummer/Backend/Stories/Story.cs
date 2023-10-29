@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -29,7 +30,7 @@ namespace Chummer
 {
     public sealed class Story : IHasLockObject
     {
-        private readonly LockingDictionary<string, StoryModule> _dicPersistentModules = new LockingDictionary<string, StoryModule>();
+        private readonly ConcurrentDictionary<string, StoryModule> _dicPersistentModules = new ConcurrentDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
         private readonly ThreadSafeObservableCollection<StoryModule> _lstStoryModules = new ThreadSafeObservableCollection<StoryModule>();
         private bool _blnNeedToRegeneratePersistents = true;
@@ -115,7 +116,7 @@ namespace Chummer
             }
         }
 
-        public LockingDictionary<string, StoryModule> PersistentModules
+        public ConcurrentDictionary<string, StoryModule> PersistentModules
         {
             get
             {
@@ -129,7 +130,7 @@ namespace Chummer
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.TryGetNodeByNameOrId("storypools/storypool", strFunction);
             if (xmlStoryPool != null)
             {
-                XPathNodeIterator xmlPossibleStoryList = await xmlStoryPool.SelectAndCacheExpressionAsync("story", token: token).ConfigureAwait(false);
+                XPathNodeIterator xmlPossibleStoryList = xmlStoryPool.SelectAndCacheExpression("story", token: token);
                 Dictionary<string, int> dicStoriesListWithWeights = new Dictionary<string, int>(xmlPossibleStoryList.Count);
                 int intTotalWeight = 0;
                 foreach (XPathNavigator xmlStory in xmlPossibleStoryList)
@@ -172,7 +173,8 @@ namespace Chummer
                         try
                         {
                             await objPersistentStoryModule.CreateAsync(xmlNewPersistentNode, token).ConfigureAwait(false);
-                            await _dicPersistentModules.TryAddAsync(strFunction, objPersistentStoryModule, token).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            _dicPersistentModules.TryAdd(strFunction, objPersistentStoryModule);
                             return objPersistentStoryModule;
                         }
                         catch
@@ -194,15 +196,19 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 List<string> lstPersistentKeysToRemove
-                    = new List<string>(await _dicPersistentModules.GetCountAsync(token).ConfigureAwait(false));
-                await _dicPersistentModules.ForEachAsync(x =>
+                    = new List<string>(_dicPersistentModules.Count);
+                foreach (KeyValuePair<string, StoryModule> kvpModule in _dicPersistentModules)
                 {
-                    if (x.Value.IsRandomlyGenerated)
-                        lstPersistentKeysToRemove.Add(x.Key);
-                }, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (kvpModule.Value.IsRandomlyGenerated)
+                        lstPersistentKeysToRemove.Add(kvpModule.Key);
+                }
 
                 foreach (string strKey in lstPersistentKeysToRemove)
-                    await _dicPersistentModules.RemoveAsync(strKey, token).ConfigureAwait(false);
+                {
+                    token.ThrowIfCancellationRequested();
+                    _dicPersistentModules.TryRemove(strKey, out _);
+                }
 
                 await Modules.ForEachAsync(x => x.TestRunToGeneratePersistents(objCulture, strLanguage, token).AsTask(), token)
                              .ConfigureAwait(false);
@@ -245,7 +251,6 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
             {
-                _dicPersistentModules.Dispose();
                 _lstStoryModules.Dispose();
             }
             LockObject.Dispose();
@@ -257,7 +262,6 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                await _dicPersistentModules.DisposeAsync().ConfigureAwait(false);
                 await _lstStoryModules.DisposeAsync().ConfigureAwait(false);
             }
             finally

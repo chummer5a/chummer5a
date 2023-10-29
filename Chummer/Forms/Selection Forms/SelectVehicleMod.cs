@@ -110,13 +110,13 @@ namespace Chummer
             string strFilterPrefix = (VehicleMountMods
                 ? "weaponmountmods/mod[("
                 : "mods/mod[(") + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and category = ";
-            foreach (XPathNavigator objXmlCategory in await _xmlBaseVehicleDataNode.SelectAndCacheExpressionAsync("modcategories/category").ConfigureAwait(false))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if ((string.IsNullOrEmpty(_strLimitToCategories) || strValues.Contains(strInnerText))
                     && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
                 {
-                    _lstCategory.Add(new ListItem(strInnerText, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value ?? strInnerText));
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -325,7 +325,7 @@ namespace Chummer
                 bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-                decimal decBaseCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                 foreach (XPathNavigator objXmlMod in objXmlModList)
                 {
                     if (!await _objVehicle.CheckModRequirementsAsync(objXmlMod, token).ConfigureAwait(false))
@@ -424,7 +424,7 @@ namespace Chummer
                     SelectedRating = nudRating.ValueAsInt;
                     _intMarkup = nudMarkup.ValueAsInt;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-                    _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                    _strSelectCategory = GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0
                         ? cboCategory.SelectedValue?.ToString()
                         : xmlVehicleMod.SelectSingleNodeAndCacheExpression("category")?.Value;
                     DialogResult = DialogResult.OK;
@@ -608,8 +608,8 @@ namespace Chummer
                                 .DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
                             decimal decCostMultiplier
-                                = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                      .ConfigureAwait(false) / 100.0m);
+                                = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
+                                    .ConfigureAwait(false) / 100.0m;
                             if (_setBlackMarketMaps.Contains(
                                     (await xmlVehicleMod.SelectSingleNodeAndCacheExpressionAsync("category", token)
                                                         .ConfigureAwait(false))?.Value))
@@ -756,8 +756,8 @@ namespace Chummer
                             decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
 
                         // Apply any markup.
-                        decItemCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                           .ConfigureAwait(false) / 100.0m);
+                        decItemCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
+                            .ConfigureAwait(false) / 100.0m;
 
                         if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                         .ConfigureAwait(false))

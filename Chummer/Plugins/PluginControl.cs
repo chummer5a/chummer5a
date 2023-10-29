@@ -444,12 +444,10 @@ namespace Chummer.Plugins
             {
                 token.ThrowIfCancellationRequested();
                 List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
-                await MyPlugins.ForEachAsync(async plugin =>
+                await MyPlugins.ForEachAsync(plugin =>
                 {
-                    (bool blnSuccess, bool blnEnabled)
-                        = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(plugin.ToString(), token)
-                                              .ConfigureAwait(false);
-                    if (!blnSuccess || blnEnabled)
+                    if (!GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool blnEnabled)
+                        || blnEnabled)
                         result.Add(plugin);
                 }, token).ConfigureAwait(false);
 

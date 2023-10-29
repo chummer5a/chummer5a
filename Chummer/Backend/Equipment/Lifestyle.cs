@@ -2454,7 +2454,7 @@ namespace Chummer.Backend.Equipment
                     switch (IncrementType)
                     {
                         case LifestyleIncrement.Day:
-                            decContractCost /= (4.34812m * 7);
+                            decContractCost /= 4.34812m * 7;
                             break;
 
                         case LifestyleIncrement.Week:
@@ -2516,7 +2516,7 @@ namespace Chummer.Backend.Equipment
                 switch (IncrementType)
                 {
                     case LifestyleIncrement.Day:
-                        decContractCost /= (4.34812m * 7);
+                        decContractCost /= 4.34812m * 7;
                         break;
 
                     case LifestyleIncrement.Week:

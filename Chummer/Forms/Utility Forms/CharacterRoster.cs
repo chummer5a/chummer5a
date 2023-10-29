@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -246,9 +247,7 @@ namespace Chummer
                     }
 
                     CancellationToken objTokenToUse = objTemp.Token;
-                    (bool blnSuccess, CharacterCache objCacheToRemove)
-                        = await _dicSavedCharacterCaches.TryRemoveAsync(e.FullPath, objTokenToUse).ConfigureAwait(false);
-                    if (blnSuccess)
+                    if (_dicSavedCharacterCaches.TryRemove(e.FullPath, out CharacterCache objCacheToRemove))
                     {
                         await treCharacterList.DoThreadSafeAsync(x =>
                         {
@@ -309,11 +308,13 @@ namespace Chummer
                                 objNode.Tag = objNewCache;
                             }
                         }, objTokenToUse).ConfigureAwait(false);
-                        await _dicSavedCharacterCaches.ForEachWithBreakAsync(x =>
+                        foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
                         {
-                            setCachesToDispose.Remove(x.Value);
-                            return setCachesToDispose.Count > 0;
-                        }, objTokenToUse).ConfigureAwait(false);
+                            objTokenToUse.ThrowIfCancellationRequested();
+                            setCachesToDispose.Remove(objCache);
+                            if (setCachesToDispose.Count == 0)
+                                break;
+                        }
                         foreach (CharacterCache objOldCache in setCachesToDispose)
                         {
                             await objOldCache.DisposeAsync().ConfigureAwait(false);
@@ -480,7 +481,7 @@ namespace Chummer
                                 nodNode.Tag = null;
                                 if (!objCache.IsDisposed)
                                 {
-                                    await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath, _objGenericToken).ConfigureAwait(false);
+                                    _dicSavedCharacterCaches.TryRemove(objCache.FilePath, out _);
                                     await objCache.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
@@ -489,9 +490,12 @@ namespace Chummer
                         }
                     }
 
-                    await _dicSavedCharacterCaches.ForEachAsync(async kvpCache => await kvpCache.Value.DisposeAsync().ConfigureAwait(false),
-                                                                _objGenericToken).ConfigureAwait(false);
-                    await _dicSavedCharacterCaches.DisposeAsync().ConfigureAwait(false);
+                    _objGenericToken.ThrowIfCancellationRequested();
+                    foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
+                    {
+                        _objGenericToken.ThrowIfCancellationRequested();
+                        await objCache.DisposeAsync().ConfigureAwait(false);
+                    }
 
                     try
                     {
@@ -1047,7 +1051,6 @@ namespace Chummer
                 = await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false)
                   + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
                   + Environment.NewLine;
-            Color objWindowTextColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
 
             Dictionary<TreeNode, string> dicNodeNames = new Dictionary<TreeNode, string>();
             foreach (TreeNode objCharacterNode in await treCharacterList
@@ -1089,7 +1092,7 @@ namespace Chummer
                         strTooltip += strErrorPrefix + objCache.ErrorText;
                     }
                     else
-                        objCharacterNode.ForeColor = objWindowTextColor;
+                        objCharacterNode.ForeColor = ColorManager.WindowText;
 
                     objCharacterNode.ToolTipText = strTooltip;
                 }
@@ -1611,7 +1614,7 @@ namespace Chummer
             }
         }
 
-        private readonly LockingDictionary<string, CharacterCache> _dicSavedCharacterCaches = new LockingDictionary<string, CharacterCache>();
+        private readonly ConcurrentDictionary<string, CharacterCache> _dicSavedCharacterCaches = new ConcurrentDictionary<string, CharacterCache>();
 
         /// <summary>
         /// Remove all character caches from the cached dictionary that are not present in any of the form's lists (and are therefore unnecessary).
@@ -1619,14 +1622,14 @@ namespace Chummer
         private async ValueTask PurgeUnusedCharacterCaches(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            foreach (KeyValuePair<string, CharacterCache> kvpCache in await _dicSavedCharacterCaches.ToArrayAsync(token).ConfigureAwait(false))
+            foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches.ToArray())
             {
                 token.ThrowIfCancellationRequested();
                 CharacterCache objCache = kvpCache.Value;
                 if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token).ConfigureAwait(false) != null)
                     continue;
                 token.ThrowIfCancellationRequested();
-                await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath, token).ConfigureAwait(false);
+                _dicSavedCharacterCaches.TryRemove(objCache.FilePath, out _);
                 if (!objCache.IsDisposed)
                     await objCache.DisposeAsync().ConfigureAwait(false);
             }
@@ -1640,7 +1643,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             CharacterCache objCache = null;
-            if (!_dicSavedCharacterCaches.IsDisposed)
+            if (_intIsClosing == 0)
             {
                 try
                 {
@@ -1668,7 +1671,7 @@ namespace Chummer
                         else
                         {
                             objCache = await _dicSavedCharacterCaches
-                                             .AddOrGetAsync(
+                                             .GetOrAddAsync(
                                                  strFile,
                                                  async x => objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false),
                                                  token)
@@ -1825,7 +1828,7 @@ namespace Chummer
 
                                 token.ThrowIfCancellationRequested();
                                 string strMetatype = objMetatypeNode != null
-                                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                    ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                       ?? objCache.Metatype
                                     : objCache.Metatype;
 
@@ -1836,7 +1839,7 @@ namespace Chummer
 
                                     strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
                                         + (objMetatypeNode != null
-                                            ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
+                                            ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)
                                               ?.Value
                                               ?? objCache.Metavariant
                                             : objCache.Metavariant) + ')';
@@ -1862,8 +1865,7 @@ namespace Chummer
                             }
                             else
                             {
-                                Color objTextColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
-                                await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = objTextColor, token).ConfigureAwait(false);
+                                await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token).ConfigureAwait(false);
                             }
                         }
                         else

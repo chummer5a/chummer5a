@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -29,7 +30,7 @@ namespace Chummer
 {
     public sealed class StoryBuilder : IHasLockObject
     {
-        private readonly LockingDictionary<string, string> _dicPersistence = new LockingDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _dicPersistence = new ConcurrentDictionary<string, string>();
         private readonly Character _objCharacter;
 
         public StoryBuilder(Character objCharacter)
@@ -232,17 +233,14 @@ namespace Chummer
                     if (xmlUserMacroFirstChild != null)
                     {
                         //Already defined, no need to do anything fancy
-                        (bool blnSuccess, string strSelectedNodeName)
-                            = await _dicPersistence.TryGetValueAsync(macroPool, token).ConfigureAwait(false);
-                        if (!blnSuccess)
+                        if (!_dicPersistence.TryGetValue(macroPool, out string strSelectedNodeName))
                         {
                             switch (xmlUserMacroFirstChild.Name)
                             {
                                 case "random":
                                 {
-                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild
-                                        .SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token)
-                                        .ConfigureAwait(false);
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild
+                                        .SelectAndCacheExpression("./*[not(self::default)]", token: token);
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
@@ -270,9 +268,8 @@ namespace Chummer
                                 case "persistent":
                                 {
                                     //Any node not named
-                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild
-                                        .SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token)
-                                        .ConfigureAwait(false);
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild
+                                        .SelectAndCacheExpression("./*[not(self::default)]", token: token);
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
@@ -295,9 +292,7 @@ namespace Chummer
                                         }
 
                                         string strToAdd = strSelectedNodeName;
-                                        strSelectedNodeName = await _dicPersistence
-                                                                    .AddOrGetAsync(macroPool, x => strToAdd, token)
-                                                                    .ConfigureAwait(false);
+                                        strSelectedNodeName = _dicPersistence.GetOrAdd(macroPool, x => strToAdd);
                                     }
 
                                     break;
@@ -335,25 +330,13 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            using (LockObject.EnterWriteLock())
-                _dicPersistence.Dispose();
             LockObject.Dispose();
         }
 
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-            try
-            {
-                await _dicPersistence.DisposeAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
+            return LockObject.DisposeAsync();
         }
 
         /// <inheritdoc />

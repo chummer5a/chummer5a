@@ -578,11 +578,7 @@ namespace Chummer
             if (xmlForbiddenNode != null)
             {
                 // Loop through the oneof requirements.
-                foreach (XPathNavigator objXmlOneOf in blnSync
-                             // ReSharper disable once MethodHasAsyncOverload
-                             ? xmlForbiddenNode.SelectAndCacheExpression("oneof", token)
-                             : await xmlForbiddenNode.SelectAndCacheExpressionAsync("oneof", token)
-                                                     .ConfigureAwait(false))
+                foreach (XPathNavigator objXmlOneOf in xmlForbiddenNode.SelectAndCacheExpression("oneof", token))
                 {
                     foreach (XPathNavigator xmlForbiddenItemNode in objXmlOneOf.SelectChildren(XPathNodeType.Element))
                     {
@@ -642,11 +638,7 @@ namespace Chummer
                     bool blnRequirementMet = true;
 
                     // Loop through the oneof requirements.
-                    foreach (XPathNavigator objXmlOneOf in blnSync
-                                 // ReSharper disable once MethodHasAsyncOverload
-                                 ? xmlRequiredNode.SelectAndCacheExpression("oneof", token)
-                                 : await xmlRequiredNode.SelectAndCacheExpressionAsync("oneof", token)
-                                                        .ConfigureAwait(false))
+                    foreach (XPathNavigator objXmlOneOf in xmlRequiredNode.SelectAndCacheExpression("oneof", token))
                     {
                         bool blnOneOfMet = false;
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -697,11 +689,7 @@ namespace Chummer
                     if (blnRequirementMet || blnShowMessage)
                     {
                         // Loop through the allof requirements.
-                        foreach (XPathNavigator objXmlAllOf in blnSync
-                                     // ReSharper disable once MethodHasAsyncOverload
-                                     ? xmlRequiredNode.SelectAndCacheExpression("allof", token)
-                                     : await xmlRequiredNode.SelectAndCacheExpressionAsync("allof", token)
-                                                            .ConfigureAwait(false))
+                        foreach (XPathNavigator objXmlAllOf in xmlRequiredNode.SelectAndCacheExpression("allof", token))
                         {
                             bool blnAllOfMet = true;
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -1532,14 +1520,14 @@ namespace Chummer
                                 "String_DamageResistance",
                                 token: token).ConfigureAwait(false));
                     int intDR = blnSync
-                        ? (objCharacter.BOD.TotalValue
-                           // ReSharper disable once MethodHasAsyncOverload
-                           + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance,
-                                                        token: token).StandardRound())
-                        : (await (await objCharacter.GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
-                           + (await ImprovementManager.ValueOfAsync(objCharacter,
-                                                                    Improvement.ImprovementType.DamageResistance,
-                                                                    token: token).ConfigureAwait(false)).StandardRound());
+                        ? objCharacter.BOD.TotalValue
+                          // ReSharper disable once MethodHasAsyncOverload
+                          + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance,
+                              token: token).StandardRound()
+                        : await (await objCharacter.GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                          + (await ImprovementManager.ValueOfAsync(objCharacter,
+                              Improvement.ImprovementType.DamageResistance,
+                              token: token).ConfigureAwait(false)).StandardRound();
                     return new Tuple<bool, string>(intDR >= xmlNode.ValueAsInt, strName);
                 }
                 case "depenabled":

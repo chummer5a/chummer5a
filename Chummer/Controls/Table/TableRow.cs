@@ -58,19 +58,19 @@ namespace Chummer.UI.Table
             }
         }
 
-        protected virtual async ValueTask UpdateAsync(int intIndex, bool blnSelected, CancellationToken token = default)
+        protected virtual Task UpdateAsync(int intIndex, bool blnSelected, CancellationToken token = default)
         {
             if (blnSelected)
             {
-                Color objHighlightColor = await ColorManager.GetHighlightAsync(token).ConfigureAwait(false);
-                await this.DoThreadSafeAsync(x => x.BackColor = objHighlightColor, token: token).ConfigureAwait(false);
+                Color objHighlightColor = ColorManager.Highlight;
+                return this.DoThreadSafeAsync(x => x.BackColor = objHighlightColor, token: token);
             }
             else
             {
                 Color objColor = (intIndex & 1) == 0
-                    ? await ColorManager.GetControlLightestAsync(token).ConfigureAwait(false)
-                    : await ColorManager.GetControlAsync(token).ConfigureAwait(false);
-                await this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token).ConfigureAwait(false);
+                    ? ColorManager.ControlLightest
+                    : ColorManager.Control;
+                return this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token);
             }
         }
 

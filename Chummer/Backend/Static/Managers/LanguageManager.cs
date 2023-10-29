@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -36,13 +37,13 @@ namespace Chummer
 {
     public static class LanguageManager
     {
-        private static readonly LockingDictionary<string, LanguageData> s_DicLanguageData
-            = new LockingDictionary<string, LanguageData>();
+        private static readonly ConcurrentDictionary<string, LanguageData> s_DicLanguageData
+            = new ConcurrentDictionary<string, LanguageData>();
 
-        private static readonly LockingDictionary<string, string> s_DicEnglishStrings
-            = new LockingDictionary<string, string>();
+        private static readonly ConcurrentDictionary<string, string> s_DicEnglishStrings
+            = new ConcurrentDictionary<string, string>();
 
-        public static IAsyncReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
+        public static IReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
         public static string ManagerErrorMessage { get; }
 
         #region Constructor
@@ -169,18 +170,8 @@ namespace Chummer
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
                 string strKey = strIntoLanguage.ToUpperInvariant();
-                if (blnSync)
-                {
-                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
-                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
-                }
+                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
 
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
@@ -254,14 +245,14 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                objNewLanguage = s_DicLanguageData.AddCheapOrGet(strKey, x => new LanguageData(strLanguage), token);
+                objNewLanguage = s_DicLanguageData.GetOrAdd(strKey, x => new LanguageData(strLanguage));
             }
             else
             {
                 objNewLanguage = await s_DicLanguageData
-                                       .AddCheapOrGetAsync(
-                                           strKey, x => Task.Run(() => new LanguageData(strLanguage), token), token)
-                                       .ConfigureAwait(false);
+                    .GetOrAddAsync(
+                        strKey, x => Task.Run(() => new LanguageData(strLanguage), token), token)
+                    .ConfigureAwait(false);
             }
 
             if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
@@ -954,39 +945,15 @@ namespace Chummer
             if (blnLanguageLoaded)
             {
                 string strLanguageKey = strLanguage.ToUpperInvariant();
-                if (blnSync)
+                if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
+                    && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                 {
-                    if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
-                        && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                    {
-                        return strReturn;
-                    }
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strLanguageKey, token).ConfigureAwait(false);
-                    if (blnSuccess && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                    {
-                        return strReturn;
-                    }
+                    return strReturn;
                 }
             }
 
-            if (blnSync)
-            {
-                // ReSharper disable once MethodHasAsyncOverload
-                if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn, token))
-                    return strReturn;
-            }
-            else
-            {
-                bool blnSuccess;
-                (blnSuccess, strReturn)
-                    = await s_DicEnglishStrings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                if (blnSuccess)
-                    return strReturn;
-            }
+            if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
+                return strReturn;
 
             return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
@@ -1154,21 +1121,9 @@ namespace Chummer
             if (blnLanguageLoaded)
             {
                 string strKey = strLanguage.ToUpperInvariant();
-                if (blnSync)
+                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
                 {
-                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
-                    {
-                        return objLanguageData.DataDocument;
-                    }
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                    {
-                        return objLanguageData.DataDocument;
-                    }
+                    return objLanguageData.DataDocument;
                 }
             }
 
@@ -1202,9 +1157,8 @@ namespace Chummer
                                                                      .LoadStandardFromFileAsync(
                                                                          strFilePath, token: token)
                                                                      .ConfigureAwait(false);
-                            foreach (XPathNavigator objNode in await objEnglishDocument.CreateNavigator()
-                                         .SelectAndCacheExpressionAsync("/chummer/strings/string", token)
-                                         .ConfigureAwait(false))
+                            foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
+                                         .SelectAndCacheExpression("/chummer/strings/string", token))
                             {
                                 string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
                                                               .ConfigureAwait(false))?.Value;
@@ -1231,9 +1185,8 @@ namespace Chummer
                                                                       .LoadStandardFromFileAsync(
                                                                           strLangPath, token: token)
                                                                       .ConfigureAwait(false);
-                            foreach (XPathNavigator objNode in await objLanguageDocument.CreateNavigator()
-                                         .SelectAndCacheExpressionAsync("/chummer/strings/string", token)
-                                         .ConfigureAwait(false))
+                            foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
+                                         .SelectAndCacheExpression("/chummer/strings/string", token))
                             {
                                 string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
                                                               .ConfigureAwait(false))?.Value;
@@ -1722,22 +1675,9 @@ namespace Chummer
                                             .ConfigureAwait(false);
                                     if (blnEnglishLanguageLoaded)
                                     {
-                                        bool blnSuccess;
-                                        LanguageData objEnglishLanguageData;
-                                        if (blnSync)
-                                        {
-                                            blnSuccess = LoadedLanguageData.TryGetValue(
-                                                GlobalSettings.DefaultLanguage.ToUpperInvariant(),
-                                                out objEnglishLanguageData);
-                                        }
-                                        else
-                                        {
-                                            (blnSuccess, objEnglishLanguageData)
-                                                = await LoadedLanguageData.TryGetValueAsync(
-                                                                              GlobalSettings.DefaultLanguage
-                                                                                  .ToUpperInvariant(), token)
-                                                                          .ConfigureAwait(false);
-                                        }
+                                        bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                            GlobalSettings.DefaultLanguage.ToUpperInvariant(),
+                                            out LanguageData objEnglishLanguageData);
 
                                         token.ThrowIfCancellationRequested();
                                         if (blnSuccess)
@@ -1807,22 +1747,9 @@ namespace Chummer
                                 : await LoadLanguageAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false);
                             if (blnEnglishLanguageLoaded)
                             {
-                                bool blnSuccess;
-                                LanguageData objEnglishLanguageData;
-                                if (blnSync)
-                                {
-                                    blnSuccess = LoadedLanguageData.TryGetValue(
-                                        GlobalSettings.DefaultLanguage.ToUpperInvariant(),
-                                        out objEnglishLanguageData);
-                                }
-                                else
-                                {
-                                    (blnSuccess, objEnglishLanguageData)
-                                        = await LoadedLanguageData.TryGetValueAsync(
-                                                                      GlobalSettings.DefaultLanguage
-                                                                          .ToUpperInvariant(), token)
-                                                                  .ConfigureAwait(false);
-                                }
+                                bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                    GlobalSettings.DefaultLanguage.ToUpperInvariant(),
+                                    out LanguageData objEnglishLanguageData);
 
                                 token.ThrowIfCancellationRequested();
                                 if (blnSuccess)
@@ -2191,20 +2118,8 @@ namespace Chummer
                             : await LoadLanguageAsync(strFromLanguage, token).ConfigureAwait(false);
                         if (blnFromLanguageLoaded)
                         {
-                            bool blnSuccess;
-                            LanguageData objFromLanguageData;
-                            if (blnSync)
-                            {
-                                blnSuccess = LoadedLanguageData.TryGetValue(
-                                    strFromLanguage.ToUpperInvariant(), out objFromLanguageData);
-                            }
-                            else
-                            {
-                                (blnSuccess, objFromLanguageData)
-                                    = await LoadedLanguageData
-                                            .TryGetValueAsync(strFromLanguage.ToUpperInvariant(), token)
-                                            .ConfigureAwait(false);
-                            }
+                            bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                strFromLanguage.ToUpperInvariant(), out LanguageData objFromLanguageData);
 
                             token.ThrowIfCancellationRequested();
                             if (blnSuccess)
@@ -2269,20 +2184,8 @@ namespace Chummer
                     : await LoadLanguageAsync(strFromLanguage, token).ConfigureAwait(false);
                 if (blnFromLanguageLoaded)
                 {
-                    bool blnSuccess;
-                    LanguageData objFromLanguageData;
-                    if (blnSync)
-                    {
-                        blnSuccess = LoadedLanguageData.TryGetValue(
-                            strFromLanguage.ToUpperInvariant(), out objFromLanguageData);
-                    }
-                    else
-                    {
-                        (blnSuccess, objFromLanguageData)
-                            = await LoadedLanguageData
-                                    .TryGetValueAsync(strFromLanguage.ToUpperInvariant(), token)
-                                    .ConfigureAwait(false);
-                    }
+                    bool blnSuccess = LoadedLanguageData.TryGetValue(
+                        strFromLanguage.ToUpperInvariant(), out LanguageData objFromLanguageData);
 
                     token.ThrowIfCancellationRequested();
                     if (blnSuccess)

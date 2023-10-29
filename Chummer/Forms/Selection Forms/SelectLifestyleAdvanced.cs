@@ -881,8 +881,8 @@ namespace Chummer
             XPathNavigator xmlAspect = await _objLifestyle.GetNodeXPathAsync(token: token).ConfigureAwait(false);
             if (xmlAspect != null)
             {
-                string strSource = (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value ?? string.Empty;
-                string strPage = (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                string strSource = xmlAspect.SelectSingleNodeAndCacheExpression("source", token)?.Value ?? string.Empty;
+                string strPage = xmlAspect.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? xmlAspect.SelectSingleNodeAndCacheExpression("page", token)?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,

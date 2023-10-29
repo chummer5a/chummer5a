@@ -100,9 +100,9 @@ namespace Chummer.Backend.Skills
                     token.ThrowIfCancellationRequested();
                     if (GlobalSettings.LiveCustomData)
                     {
-                        XPathNodeIterator lstXmlSkills = await (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
-                            .SelectAndCacheExpressionAsync(
-                                "/chummer/knowledgeskills/skill", token).ConfigureAwait(false);
+                        XPathNodeIterator lstXmlSkills = (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                            .SelectAndCacheExpression(
+                                "/chummer/knowledgeskills/skill", token);
                         Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
                         foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                         {
@@ -126,10 +126,10 @@ namespace Chummer.Backend.Skills
                             if (_dicCategoriesSkillMap == null)
                             {
                                 XPathNodeIterator lstXmlSkills =
-                                    await (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token)
+                                    (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token)
                                             .ConfigureAwait(false))
-                                        .SelectAndCacheExpressionAsync(
-                                            "/chummer/knowledgeskills/skill", token).ConfigureAwait(false);
+                                        .SelectAndCacheExpression(
+                                            "/chummer/knowledgeskills/skill", token);
                                 Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
                                 foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                                 {

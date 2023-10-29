@@ -35,7 +35,7 @@ namespace Chummer
         private int _intSkipRefresh = 1;
         private CharacterSettings _objSelectedSetting;
         private readonly DebuggableSemaphoreSlim _objLoadContentLocker = new DebuggableSemaphoreSlim();
-        private readonly LockingDictionary<MasterIndexEntry, Task<string>> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, Task<string>>();
+        private readonly ConcurrentDictionary<MasterIndexEntry, Task<string>> _dicCachedNotes = new ConcurrentDictionary<MasterIndexEntry, Task<string>>();
         private List<ListItem> _lstFileNamesWithItems = Utils.ListItemListPool.Get();
         private List<ListItem> _lstItems = Utils.ListItemListPool.Get();
         private CancellationTokenSource _objPopulateCharacterSettingsCancellationTokenSource;
@@ -48,16 +48,12 @@ namespace Chummer
 
         private static async ValueTask<CharacterSettings> GetInitialSetting(CancellationToken token = default)
         {
-            IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-            (bool blnSuccess, CharacterSettings objReturn)
-                = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting, token).ConfigureAwait(false);
-            if (blnSuccess)
+            IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
+            if (dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting, out CharacterSettings objReturn))
                 return objReturn;
-            (blnSuccess, objReturn)
-                = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue, token).ConfigureAwait(false);
-            return blnSuccess
+            return dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objReturn)
                 ? objReturn
-                : (await dicCharacterSettings.FirstOrDefaultAsync(token: token).ConfigureAwait(false)).Value;
+                : dicCharacterSettings.FirstOrDefault().Value;
         }
 
         private static readonly ReadOnlyCollection<string> _astrFileNames = Array.AsReadOnly(new[]
@@ -130,7 +126,6 @@ namespace Chummer
                 _objGenericFormClosingCancellationTokenSource.Dispose();
 
                 _objLoadContentLocker.Dispose();
-                _dicCachedNotes.Dispose();
                 foreach (ListItem objExistingItem in _lstItems)
                     ((MasterIndexEntry) objExistingItem.Value).Dispose();
                 Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
@@ -159,13 +154,14 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
                 {
-                    IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
+                    IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                         = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-                    await dicCharacterSettings.ForEachAsync(async x =>
+                    foreach (var objSetting in dicCharacterSettings.Values)
                     {
                         lstCharacterSettings.Add(
-                            new ListItem(x.Value, await x.Value.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
-                    }, token: token).ConfigureAwait(false);
+                            new ListItem(objSetting,
+                                await objSetting.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                    }
 
                     lstCharacterSettings.Sort(CompareListItems.CompareNames);
 
@@ -192,14 +188,10 @@ namespace Chummer
                     {
                         await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings, token)
                                                  .ConfigureAwait(false);
-                        if (!string.IsNullOrEmpty(strOldSettingKey))
+                        if (!string.IsNullOrEmpty(strOldSettingKey) && dicCharacterSettings.TryGetValue(strOldSettingKey, out CharacterSettings objSettings))
                         {
-                            (bool blnSuccess, CharacterSettings objSettings)
-                                = await dicCharacterSettings.TryGetValueAsync(strOldSettingKey, token)
-                                                            .ConfigureAwait(false);
-                            if (blnSuccess)
-                                await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token)
-                                                         .ConfigureAwait(false);
+                            await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token)
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -210,20 +202,12 @@ namespace Chummer
                     if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
                         != -1)
                         return;
-                    (bool blnSuccess2, CharacterSettings objSettings2)
-                        = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting, token)
-                                                    .ConfigureAwait(false);
-                    if (blnSuccess2)
+                    if (dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting, out CharacterSettings objSettings2))
                         await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings2, token)
                                                  .ConfigureAwait(false);
-                    else
+                    else if (dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings2))
                     {
-                        (bool blnSuccess3, CharacterSettings objSettings3)
-                            = await dicCharacterSettings
-                                    .TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue, token)
-                                    .ConfigureAwait(false);
-                        if (blnSuccess3)
-                            await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings3, token)
+                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings2, token)
                                                      .ConfigureAwait(false);
                     }
 
@@ -246,31 +230,28 @@ namespace Chummer
                     await SourceString.Blank.SetControlAsync(lblSource, _objGenericToken).ConfigureAwait(false);
 
                     // Pre-load some very common expressions to speed up content load
-                    await Utils.TryCacheExpressionAsync("/chummer", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("/chummer/books/book/code", _objGenericToken).ConfigureAwait(false);
-                    foreach (XPathNavigator objCode in await (await XmlManager
+                    Utils.TryCacheExpression("/chummer", _objGenericToken);
+                    Utils.TryCacheExpression("/chummer/books/book/code", _objGenericToken);
+                    foreach (XPathNavigator objCode in (await XmlManager
                                      .LoadXPathAsync("books.xml", token: _objGenericToken).ConfigureAwait(false))
-                                 .SelectAndCacheExpressionAsync("/chummer/books/book/code", _objGenericToken)
-                                 .ConfigureAwait(false))
+                                 .SelectAndCacheExpression("/chummer/books/book/code", _objGenericToken))
                     {
-                        await Utils.TryCacheExpressionAsync(
-                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + ']', _objGenericToken)
-                            .ConfigureAwait(false);
-                        await Utils.TryCacheExpressionAsync(
-                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + "]/altcode", _objGenericToken)
-                            .ConfigureAwait(false);
+                        Utils.TryCacheExpression(
+                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + ']', _objGenericToken);
+                        Utils.TryCacheExpression(
+                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + "]/altcode", _objGenericToken);
                     }
 
-                    await Utils.TryCacheExpressionAsync("name", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("translate", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("id", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("source", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("page", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("altpage", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("nameonpage", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("altnameonpage", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("notes", _objGenericToken).ConfigureAwait(false);
-                    await Utils.TryCacheExpressionAsync("altnotes", _objGenericToken).ConfigureAwait(false);
+                    Utils.TryCacheExpression("name", _objGenericToken);
+                    Utils.TryCacheExpression("translate", _objGenericToken);
+                    Utils.TryCacheExpression("id", _objGenericToken);
+                    Utils.TryCacheExpression("source", _objGenericToken);
+                    Utils.TryCacheExpression("page", _objGenericToken);
+                    Utils.TryCacheExpression("altpage", _objGenericToken);
+                    Utils.TryCacheExpression("nameonpage", _objGenericToken);
+                    Utils.TryCacheExpression("altnameonpage", _objGenericToken);
+                    Utils.TryCacheExpression("notes", _objGenericToken);
+                    Utils.TryCacheExpression("altnotes", _objGenericToken);
 
                     await PopulateCharacterSettings(_objGenericToken).ConfigureAwait(false);
                     await LoadContent(_objGenericToken).ConfigureAwait(false);
@@ -436,32 +417,21 @@ namespace Chummer
                                 : string.Empty;
                         bool blnSuccess = false;
                         CharacterSettings objSettings = null;
-                        IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
+                        IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                             = await SettingsManager.GetLoadedCharacterSettingsAsync(token)
                                                    .ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strSelectedSetting))
                         {
-                            (blnSuccess, objSettings)
-                                = await dicCharacterSettings.TryGetValueAsync(strSelectedSetting, token)
-                                                            .ConfigureAwait(false);
+                            blnSuccess = dicCharacterSettings.TryGetValue(strSelectedSetting, out objSettings);
                         }
 
-                        if (!blnSuccess)
+                        if (!blnSuccess
+                            && !dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
+                                out objSettings)
+                            && !dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSettingDefaultValue,
+                                out objSettings))
                         {
-                            (blnSuccess, objSettings)
-                                = await dicCharacterSettings.TryGetValueAsync(
-                                    GlobalSettings.DefaultMasterIndexSetting, token).ConfigureAwait(false);
-                            if (!blnSuccess)
-                            {
-                                (blnSuccess, objSettings)
-                                    = await dicCharacterSettings.TryGetValueAsync(
-                                                                    GlobalSettings
-                                                                        .DefaultMasterIndexSettingDefaultValue,
-                                                                    token)
-                                                                .ConfigureAwait(false);
-                                if (!blnSuccess)
-                                    objSettings = (await dicCharacterSettings.FirstOrDefaultAsync(token: token).ConfigureAwait(false)).Value;
-                            }
+                            objSettings = dicCharacterSettings.FirstOrDefault().Value;
                         }
 
                         CharacterSettings objPreviousSettings = Interlocked.Exchange(ref _objSelectedSetting, objSettings);
@@ -533,7 +503,7 @@ namespace Chummer
                         Interlocked.Decrement(ref _intIsFinishedLoading);
                         try
                         {
-                            await _dicCachedNotes.ClearAsync(token).ConfigureAwait(false);
+                            _dicCachedNotes.Clear();
                             foreach (object objUncastedExistingEntry in _lstItems.Select(x => x.Value))
                             {
                                 if (objUncastedExistingEntry is MasterIndexEntry objExistingEntry)
@@ -551,11 +521,11 @@ namespace Chummer
                             {
                                 if (_objSelectedSetting != null)
                                 {
-                                    foreach (XPathNavigator xmlBookNode in await (await XmlManager.LoadXPathAsync(
+                                    foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync(
                                                      "books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths,
                                                      token: token).ConfigureAwait(false))
-                                                 .SelectAndCacheExpressionAsync(
-                                                     "/chummer/books/book/code", token: token).ConfigureAwait(false))
+                                                 .SelectAndCacheExpression(
+                                                     "/chummer/books/book/code", token: token))
                                     {
                                         setValidCodes.Add(xmlBookNode.Value);
                                     }
@@ -597,8 +567,8 @@ namespace Chummer
                                                         .EnabledCustomDataDirectoryPaths,
                                                     token: token).ConfigureAwait(false);
                                             xmlBaseNode
-                                                = await xmlBaseNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                    "/chummer", token: token).ConfigureAwait(false);
+                                                = xmlBaseNode.SelectSingleNodeAndCacheExpression(
+                                                    "/chummer", token: token);
                                             if (xmlBaseNode == null)
                                                 return;
                                             bool blnLoopFileNameHasItems = false;
@@ -607,45 +577,45 @@ namespace Chummer
                                             {
                                                 blnLoopFileNameHasItems = true;
                                                 string strName
-                                                    = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", token: token).ConfigureAwait(false))
+                                                    = xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                            "name", token: token)
                                                     ?.Value;
                                                 string strDisplayName
-                                                    = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                          "translate", token: token).ConfigureAwait(false))
+                                                    = xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                              "translate", token: token)
                                                       ?.Value
                                                       ?? strName
-                                                      ?? (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                          "id", token: token).ConfigureAwait(false))?.Value
+                                                      ?? xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                          "id", token: token)?.Value
                                                       ?? await LanguageManager
                                                                .GetStringAsync("String_Unknown", token: token)
                                                                .ConfigureAwait(false);
                                                 string strSource
-                                                    = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "source", token: token).ConfigureAwait(false))?.Value;
+                                                    = xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                        "source", token: token)?.Value;
                                                 string strPage
-                                                    = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "page", token: token).ConfigureAwait(false))
+                                                    = xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                            "page", token: token)
                                                     ?.Value;
                                                 string strDisplayPage
-                                                    = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                          "altpage", token: token).ConfigureAwait(false))?.Value
+                                                    = xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                          "altpage", token: token)?.Value
                                                       ?? strPage;
                                                 string strEnglishNameOnPage
-                                                    = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                          "nameonpage", token: token).ConfigureAwait(false))
+                                                    = xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                              "nameonpage", token: token)
                                                       ?.Value
                                                       ?? strName;
                                                 string strTranslatedNameOnPage =
-                                                    (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "altnameonpage", token: token).ConfigureAwait(false))
+                                                    xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                            "altnameonpage", token: token)
                                                     ?.Value
                                                     ?? strDisplayName;
                                                 string strNotes
-                                                    = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                          "altnotes", token: token).ConfigureAwait(false))?.Value
-                                                      ?? (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                          "notes", token: token).ConfigureAwait(false))
+                                                    = xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                          "altnotes", token: token)?.Value
+                                                      ?? xmlItemNode.SelectSingleNodeAndCacheExpression(
+                                                              "notes", token: token)
                                                       ?.Value;
                                                 MasterIndexEntry objEntry = new MasterIndexEntry(
                                                     strDisplayName,
@@ -663,9 +633,8 @@ namespace Chummer
                                                     strTranslatedNameOnPage);
                                                 lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
                                                 if (!string.IsNullOrEmpty(strNotes))
-                                                    await _dicCachedNotes.TryAddAsync(
-                                                                             objEntry, Task.FromResult(strNotes), token)
-                                                                         .ConfigureAwait(false);
+                                                    _dicCachedNotes.TryAdd(
+                                                        objEntry, Task.FromResult(strNotes));
                                             }
 
                                             if (blnLoopFileNameHasItems)
@@ -967,7 +936,7 @@ namespace Chummer
                             await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await objEntry.DisplaySource.SetControlAsync(lblSource, token).ConfigureAwait(false);
-                            string strNotes = await _dicCachedNotes.AddCheapOrGetAsync(objEntry, x =>
+                            string strNotes = await _dicCachedNotes.GetOrAdd(objEntry, x =>
                             {
                                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                     StringComparison.OrdinalIgnoreCase)
@@ -992,7 +961,7 @@ namespace Chummer
                                                     CommonFunctions.GetTextFromPdfAsync(
                                                         x.Source.ToString(),
                                                         x.EnglishNameOnPage, token: token), token);
-                            }, token).AsTask().Unwrap().ConfigureAwait(false);
+                            }).ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x =>
                             {
                                 x.Text = strNotes;

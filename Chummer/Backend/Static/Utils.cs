@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -169,7 +170,7 @@ namespace Chummer
             }
         }
 
-        private static readonly LockingDictionary<Icon, Bitmap> s_dicCachedIconBitmaps = new LockingDictionary<Icon, Bitmap>(10);
+        private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicCachedIconBitmaps = new ConcurrentDictionary<Icon, Bitmap>();
 
         /// <summary>
         /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
@@ -177,7 +178,7 @@ namespace Chummer
         /// </summary>
         public static Bitmap GetCachedIconBitmap(Icon objIcon)
         {
-            return s_dicCachedIconBitmaps.AddOrGet(objIcon, x => x.ToBitmap());
+            return s_dicCachedIconBitmaps.GetOrAdd(objIcon, x => x.ToBitmap());
         }
 
         /// <summary>
@@ -187,10 +188,10 @@ namespace Chummer
         public static Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return s_dicCachedIconBitmaps.AddOrGetAsync(objIcon, x => x.ToBitmap(), token).AsTask();
+            return s_dicCachedIconBitmaps.GetOrAddAsync(objIcon, x => Task.Run(x.ToBitmap, token), token);
         }
 
-        private static readonly LockingDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new LockingDictionary<Icon, Bitmap>(10);
+        private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new ConcurrentDictionary<Icon, Bitmap>();
 
         /// <summary>
         /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents.
@@ -198,7 +199,7 @@ namespace Chummer
         /// </summary>
         public static Bitmap GetStockIconBitmapsForSystemIcon(Icon objIcon)
         {
-            return s_dicStockIconBitmapsForSystemIcons.AddOrGet(objIcon, x =>
+            return s_dicStockIconBitmapsForSystemIcons.GetOrAdd(objIcon, x =>
             {
                 if (x == SystemIcons.Application)
                 {
@@ -246,7 +247,7 @@ namespace Chummer
         public static Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return s_dicStockIconBitmapsForSystemIcons.AddOrGetAsync(objIcon, x =>
+            return s_dicStockIconBitmapsForSystemIcons.GetOrAddAsync(objIcon, x => Task.Run(() =>
             {
                 if (x == SystemIcons.Application)
                 {
@@ -284,7 +285,7 @@ namespace Chummer
                 }
 
                 throw new ArgumentOutOfRangeException(nameof(objIcon));
-            }, token).AsTask();
+            }, token), token);
         }
 
         /// <summary>
@@ -337,21 +338,15 @@ namespace Chummer
 
         public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
 
-        private static readonly Lazy<LockingDictionary<string, XPathExpression>> s_dicCachedExpressions
-            = new Lazy<LockingDictionary<string, XPathExpression>>(() => new LockingDictionary<string, XPathExpression>());
+        private static readonly Lazy<ConcurrentDictionary<string, XPathExpression>> s_dicCachedExpressions
+            = new Lazy<ConcurrentDictionary<string, XPathExpression>>(() => new ConcurrentDictionary<string, XPathExpression>());
 
-        public static LockingDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
+        public static ConcurrentDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
 
         public static void TryCacheExpression(string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CachedXPathExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
-        }
-
-        public static ValueTask<XPathExpression> TryCacheExpressionAsync(string xpath, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            return CachedXPathExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token);
+            CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
         }
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory

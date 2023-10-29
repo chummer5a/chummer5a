@@ -116,9 +116,9 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                                 out HashSet<string> setAlreadyProcessed))
                                 {
-                                    foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode
-                                                 .SelectAndCacheExpressionAsync(
-                                                     "categories/category", _objGenericToken).ConfigureAwait(false))
+                                    foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode
+                                                 .SelectAndCacheExpression(
+                                                     "categories/category", _objGenericToken))
                                     {
                                         string strInnerText = objXmlCategory.Value;
                                         if (setAlreadyProcessed.Contains(strInnerText))
@@ -170,15 +170,15 @@ namespace Chummer
                                 if (objCritterPowersDataNode != null)
                                 {
                                     lstMethods.Add(new ListItem("Possession",
-                                                                (await objCritterPowersDataNode
-                                                                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                        "power[name = \"Possession\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                                        "power[name = \"Possession\"]/translate", _objGenericToken)
                                                                 ?.Value
                                                                 ?? "Possession"));
                                     lstMethods.Add(new ListItem("Inhabitation",
-                                                                (await objCritterPowersDataNode
-                                                                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                        "power[name = \"Inhabitation\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                                        "power[name = \"Inhabitation\"]/translate", _objGenericToken)
                                                                 ?.Value
                                                                 ?? "Inhabitation"));
                                 }
@@ -453,10 +453,9 @@ namespace Chummer
                     if (strSelectedMetatypeCategory == "Shapeshifter"
                         && strSelectedMetavariant == Guid.Empty.ToString())
                         strSelectedMetavariant
-                            = (await objXmlMetatype
-                                     .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                         "metavariants/metavariant[name = \"Human\"]/id", _objGenericToken)
-                                     .ConfigureAwait(false))
+                            = objXmlMetatype
+                                  .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                      "metavariants/metavariant[name = \"Human\"]/id", _objGenericToken)
                               ?.Value
                               ?? Guid.Empty.ToString();
                     if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
@@ -704,8 +703,8 @@ namespace Chummer
                                                                   out StringBuilder sbdQualities))
                     {
                         // Build a list of the Metavariant's Qualities.
-                        foreach (XPathNavigator objXmlQuality in await objXmlMetavariant.SelectAndCacheExpressionAsync(
-                                     "qualities/*/quality", token: token).ConfigureAwait(false))
+                        foreach (XPathNavigator objXmlQuality in objXmlMetavariant.SelectAndCacheExpression(
+                                     "qualities/*/quality", token: token))
                         {
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                 StringComparison.OrdinalIgnoreCase))
@@ -859,8 +858,8 @@ namespace Chummer
                                                                   out StringBuilder sbdQualities))
                     {
                         // Build a list of the Metatype's Positive Qualities.
-                        foreach (XPathNavigator objXmlQuality in await objXmlMetatype.SelectAndCacheExpressionAsync(
-                                     "qualities/*/quality", token: token).ConfigureAwait(false))
+                        foreach (XPathNavigator objXmlQuality in objXmlMetatype.SelectAndCacheExpression(
+                                     "qualities/*/quality", token: token))
                         {
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                 StringComparison.OrdinalIgnoreCase))

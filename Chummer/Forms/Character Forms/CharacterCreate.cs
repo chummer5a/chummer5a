@@ -636,9 +636,8 @@ namespace Chummer
                                         {
                                             if (xmlTraditionsBaseChummerNode != null)
                                             {
-                                                foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
-                                                             .SelectAndCacheExpressionAsync("spirits/spirit", GenericToken)
-                                                             .ConfigureAwait(false))
+                                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                                             .SelectAndCacheExpression("spirits/spirit", GenericToken))
                                                 {
                                                     string strSpiritName
                                                         = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync(
@@ -1678,12 +1677,10 @@ namespace Chummer
                         break;
 
                     case nameof(Character.Encumbrance):
-                        Color objControlTextColor
-                            = await ColorManager.GetControlTextAsync(GenericToken).ConfigureAwait(false);
                         await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.ForeColor
                                                                 = CharacterObject.Encumbrance > 0
                                                                     ? ColorManager.ErrorColor
-                                                                    : objControlTextColor, GenericToken)
+                                                                    : ColorManager.ControlText, GenericToken)
                                          .ConfigureAwait(false);
                         break;
 
@@ -1977,9 +1974,9 @@ namespace Chummer
                     {
                         if (CharacterObject.DEPEnabled)
                         {
-                            if (!(await CharacterObject.AttributeSection.Attributes
-                                                       .ContainsAsync(CharacterObject.DEP, GenericToken)
-                                                       .ConfigureAwait(false)))
+                            if (!await CharacterObject.AttributeSection.Attributes
+                                    .ContainsAsync(CharacterObject.DEP, GenericToken)
+                                    .ConfigureAwait(false))
                             {
                                 await CharacterObject.AttributeSection.Attributes
                                                      .AddAsync(CharacterObject.DEP, GenericToken).ConfigureAwait(false);
@@ -2631,9 +2628,9 @@ namespace Chummer
                                 {
                                     if (xmlTraditionsBaseChummerNode != null)
                                     {
-                                        foreach (XPathNavigator xmlDrain in await xmlTraditionsBaseChummerNode
-                                                     .SelectAndCacheExpressionAsync(
-                                                         "drainattributes/drainattribute", GenericToken).ConfigureAwait(false))
+                                        foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode
+                                                     .SelectAndCacheExpression(
+                                                         "drainattributes/drainattribute", GenericToken))
                                         {
                                             string strName
                                                 = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name", GenericToken)
@@ -2674,9 +2671,8 @@ namespace Chummer
                                     {
                                         if (xmlTraditionsBaseChummerNode != null)
                                         {
-                                            foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
-                                                         .SelectAndCacheExpressionAsync("spirits/spirit", GenericToken)
-                                                         .ConfigureAwait(false))
+                                            foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                                         .SelectAndCacheExpression("spirits/spirit", GenericToken))
                                             {
                                                 string strSpiritName
                                                     = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name", GenericToken)
@@ -4807,7 +4803,7 @@ namespace Chummer
 
                         // Check for SelectText.
                         string strExtra = string.Empty;
-                        XPathNavigator xmlSelectText = await objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext", GenericToken).ConfigureAwait(false);
+                        XPathNavigator xmlSelectText = objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", GenericToken);
                         if (xmlSelectText != null)
                         {
                             string strDescription = string.Format(GlobalSettings.CultureInfo,
@@ -5373,9 +5369,9 @@ namespace Chummer
 
                         // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                         if (CharacterObject.SubmersionGrade + 1
-                            > (await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken)
-                                                           .ConfigureAwait(false))
-                                     .GetTotalValueAsync(GenericToken).ConfigureAwait(false)))
+                            > await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken)
+                                    .ConfigureAwait(false))
+                                .GetTotalValueAsync(GenericToken).ConfigureAwait(false))
                         {
                             Program.ShowScrollableMessageBox(
                                 this,
@@ -5957,9 +5953,7 @@ namespace Chummer
                     // Fix for legacy characters with old addqualities improvements.
                     if (objXmlDeleteQuality != null)
                         await RemoveAddedQualities(
-                            await objXmlDeleteQuality.CreateNavigator()
-                                                     .SelectAndCacheExpressionAsync("addqualities/addquality", token)
-                                                     .ConfigureAwait(false),
+                            objXmlDeleteQuality.SelectAndCacheExpressionAsNavigator("addqualities/addquality", token),
                             token: token).ConfigureAwait(false);
                 }
 
@@ -6940,8 +6934,8 @@ namespace Chummer
                         break;
 
                     case VehicleMod selectedMod
-                        when (selectedMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)
-                              || selectedMod.Name.Contains("Drone Arm")):
+                        when selectedMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)
+                             || selectedMod.Name.Contains("Drone Arm"):
                         objMod = selectedMod;
                         objVehicle = selectedMod.Parent;
                         break;
@@ -7352,10 +7346,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken).ConfigureAwait(false);
                 string strCategories = string.Empty;
                 XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
-                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
-                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken)
-                                         .ConfigureAwait(false)
-                    : null;
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -8877,10 +8868,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken).ConfigureAwait(false);
                 string strCategories = string.Empty;
                 XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
-                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
-                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken)
-                                         .ConfigureAwait(false)
-                    : null;
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -8993,10 +8981,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken).ConfigureAwait(false);
                 string strCategories = string.Empty;
                 XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
-                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
-                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken)
-                                         .ConfigureAwait(false)
-                    : null;
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -9193,10 +9178,7 @@ namespace Chummer
 
                 string strCategories = string.Empty;
                 XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
-                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
-                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken)
-                                         .ConfigureAwait(false)
-                    : null;
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -9362,10 +9344,7 @@ namespace Chummer
                                                                   .ConfigureAwait(false);
                 string strCategories = string.Empty;
                 XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
-                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
-                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken)
-                                         .ConfigureAwait(false)
-                    : null;
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -11678,17 +11657,17 @@ namespace Chummer
 
                 if (!CharacterObject.IgnoreRules)
                 {
-                    if (intFociTotal > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
-                                                                    .ConfigureAwait(false))
-                                              .GetTotalValueAsync(GenericToken).ConfigureAwait(false)) * 5 ||
+                    if (intFociTotal > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
+                                .ConfigureAwait(false))
+                            .GetTotalValueAsync(GenericToken).ConfigureAwait(false) * 5 ||
                         CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
                                                                            && CharacterObject.InitiateGrade + 1
-                                                                           > (await (await CharacterObject
+                                                                           > await (await CharacterObject
                                                                                    .GetAttributeAsync(
                                                                                        "MAGAdept", token: GenericToken)
                                                                                    .ConfigureAwait(false))
                                                                                .GetTotalValueAsync(GenericToken)
-                                                                               .ConfigureAwait(false)))
+                                                                               .ConfigureAwait(false))
                     {
                         Program.ShowScrollableMessageBox(
                             this,
@@ -11699,17 +11678,17 @@ namespace Chummer
                         return;
                     }
 
-                    if (intFociCount > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
-                                                                    .ConfigureAwait(false))
-                                              .GetTotalValueAsync(GenericToken).ConfigureAwait(false)) ||
+                    if (intFociCount > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
+                                .ConfigureAwait(false))
+                            .GetTotalValueAsync(GenericToken).ConfigureAwait(false) ||
                         CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
                                                                            && intFociCount
-                                                                           > (await (await CharacterObject
+                                                                           > await (await CharacterObject
                                                                                    .GetAttributeAsync(
                                                                                        "MAGAdept", token: GenericToken)
                                                                                    .ConfigureAwait(false))
                                                                                .GetTotalValueAsync(GenericToken)
-                                                                               .ConfigureAwait(false)))
+                                                                               .ConfigureAwait(false))
                     {
                         Program.ShowScrollableMessageBox(
                             this,
@@ -13864,7 +13843,6 @@ namespace Chummer
                               + strSpace + strPoints, token).ConfigureAwait(false);
             // ------------------------------------------------------------------------------
             // Update the number of BP remaining in the StatusBar.
-            Color objControlTextColor = await ColorManager.GetControlTextAsync(token).ConfigureAwait(false);
             int intBuildKarma = _blnFreestyle
                 ? 0
                 : await CharacterObjectSettings.GetBuildKarmaAsync(token).ConfigureAwait(false);
@@ -13876,12 +13854,12 @@ namespace Chummer
                     tslKarma.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalSettings.CultureInfo);
                     tslKarma.ForeColor = intFreestyleBP < intFreestyleBPMin
                         ? ColorManager.ErrorColor
-                        : objControlTextColor;
+                        : ColorManager.ControlText;
                 }
                 else
                 {
                     tslKarma.Text = intBuildKarma.ToString(GlobalSettings.CultureInfo);
-                    tslKarma.ForeColor = objControlTextColor;
+                    tslKarma.ForeColor = ColorManager.ControlText;
                 }
             }, token).ConfigureAwait(false);
 
@@ -14378,14 +14356,12 @@ namespace Chummer
                                 = await objCyberware.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                             HashSet<string> setDisallowedGrades = null;
                             if (xmlCyberware != null
-                                && await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token)
-                                                     .ConfigureAwait(false) != null)
+                                && xmlCyberware.SelectSingleNodeAndCacheExpression("bannedgrades", token) != null)
                             {
                                 setDisallowedGrades = new HashSet<string>();
-                                foreach (XPathNavigator objNode in await xmlCyberware
-                                                                         .SelectAndCacheExpressionAsync(
-                                                                             "bannedgrades/grade", token)
-                                                                         .ConfigureAwait(false))
+                                foreach (XPathNavigator objNode in xmlCyberware
+                                                                         .SelectAndCacheExpression(
+                                                                             "bannedgrades/grade", token))
                                 {
                                     setDisallowedGrades.Add(objNode.Value);
                                 }
@@ -17196,9 +17172,9 @@ namespace Chummer
 
                 if (xmlParent != null)
                 {
-                    XPathNodeIterator xmlAddonCategoryList = await xmlParent
-                                                                   .SelectAndCacheExpressionAsync(
-                                                                       "addoncategory", token).ConfigureAwait(false);
+                    XPathNodeIterator xmlAddonCategoryList = xmlParent
+                                                                   .SelectAndCacheExpression(
+                                                                       "addoncategory", token);
                     if (xmlAddonCategoryList.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(
@@ -17356,10 +17332,7 @@ namespace Chummer
                 {
                     XPathNavigator objParentDataNode
                         = await objParentWithDataNode.GetNodeXPathAsync(token).ConfigureAwait(false);
-                    XPathNodeIterator xmlAddonCategoryList = objParentDataNode != null
-                        ? await objParentDataNode.SelectAndCacheExpressionAsync("addoncategory", token)
-                                                 .ConfigureAwait(false)
-                        : null;
+                    XPathNodeIterator xmlAddonCategoryList = objParentDataNode?.SelectAndCacheExpression("addoncategory", token);
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -22553,7 +22526,7 @@ namespace Chummer
                 decQty = Convert.ToDecimal(strQty, GlobalSettings.InvariantCultureInfo);
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
-            string strForceValue = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("name/@select", token).ConfigureAwait(false))?.Value ?? string.Empty;
+            string strForceValue = objXmlGear.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
             Gear objNewGear = new Gear(CharacterObject);
             try
             {

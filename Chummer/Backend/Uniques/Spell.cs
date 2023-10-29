@@ -721,11 +721,11 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return (await (await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage, token: token)
-                                                  .ConfigureAwait(false))
-                              .SelectSingleNodeAndCacheExpressionAsync(
-                                  "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate",
-                                  token: token).ConfigureAwait(false))
+                return (await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage, token: token)
+                           .ConfigureAwait(false))
+                       .SelectSingleNodeAndCacheExpression(
+                           "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate",
+                           token: token)
                        ?.Value
                        ?? Category;
             }
@@ -1424,8 +1424,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Page
+                    ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                     : Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
             }
@@ -1584,8 +1583,7 @@ namespace Chummer
                     XPathNavigator objNode
                         = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                     strReturn = objNode != null
-                        ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                        .ConfigureAwait(false))?.Value ?? Name
+                        ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
                         : Name;
                 }
 
@@ -1785,7 +1783,7 @@ namespace Chummer
                     string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     Skill objSkill = Skill;
                     CharacterAttrib objAttrib
-                        = _objCharacter.GetAttribute(BarehandedAdept ? "MAG" : (objSkill?.Attribute ?? "MAG"));
+                        = _objCharacter.GetAttribute(BarehandedAdept ? "MAG" : objSkill?.Attribute ?? "MAG");
                     if (objAttrib != null)
                     {
                         sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,

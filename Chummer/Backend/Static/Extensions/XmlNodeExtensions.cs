@@ -509,35 +509,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
-        /// Only use this if there's a particular XPath expression that keeps being used over and over.
-        /// </summary>
-        public static Task<XPathNavigator> SelectSingleNodeAndCacheExpressionAsNavigatorAsync(this XmlNode xmlNode, string xpath, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled<XPathNavigator>(token);
-            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
-            return token.IsCancellationRequested
-                ? Task.FromCanceled<XPathNavigator>(token)
-                : xmlNavigator.SelectSingleNodeAndCacheExpressionAsync(xpath, token);
-        }
-
-        /// <summary>
-        /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
-        /// Only use this if there's a particular XPath expression that keeps being used over and over.
-        /// </summary>
-        public static async Task<XPathNavigator> SelectSingleNodeAndCacheExpressionAsNavigatorAsync(this Task<XmlNode> tskNode, string xpath, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            XmlNode xmlNode = await tskNode.ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
-            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
-            return await xmlNavigator.SelectSingleNodeAndCacheExpressionAsync(xpath, token).ConfigureAwait(false);
-        }
-
-        /// <summary>
         /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
         /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
@@ -547,35 +518,6 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
             return xmlNavigator.SelectAndCacheExpression(xpath, token);
-        }
-
-        /// <summary>
-        /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
-        /// Only use this if there's a particular XPath expression that keeps being used over and over.
-        /// </summary>
-        public static Task<XPathNodeIterator> SelectAndCacheExpressionAsNavigatorAsync(this XmlNode xmlNode, string xpath, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled<XPathNodeIterator>(token);
-            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
-            return token.IsCancellationRequested
-                ? Task.FromCanceled<XPathNodeIterator>(token)
-                : xmlNavigator.SelectAndCacheExpressionAsync(xpath, token);
-        }
-
-        /// <summary>
-        /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
-        /// Only use this if there's a particular XPath expression that keeps being used over and over.
-        /// </summary>
-        public static async Task<XPathNodeIterator> SelectAndCacheExpressionAsNavigatorAsync(this Task<XmlNode> tskNode, string xpath, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            XmlNode xmlNode = await tskNode.ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
-            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
-            return await xmlNavigator.SelectAndCacheExpressionAsync(xpath, token).ConfigureAwait(false);
         }
     }
 }

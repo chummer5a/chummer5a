@@ -1777,83 +1777,83 @@ namespace Chummer
                 lstPreferredPayments.Add(ListItem.Blank);
                 lstHobbiesVices.Add(ListItem.Blank);
 
-                XPathNavigator xmlContactsBaseNode = await (await _objContact.CharacterObject.LoadDataXPathAsync("contacts.xml", token: token).ConfigureAwait(false))
-                                                           .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false);
+                XPathNavigator xmlContactsBaseNode = (await _objContact.CharacterObject.LoadDataXPathAsync("contacts.xml", token: token).ConfigureAwait(false))
+                                                           .SelectSingleNodeAndCacheExpression("/chummer", token);
                 if (xmlContactsBaseNode != null)
                 {
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("genders/gender", token).ConfigureAwait(false))
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("genders/gender", token))
                     {
                         string strName = xmlNode.Value;
                         lstGenders.Add(new ListItem(
                                            strName,
-                                           (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? strName));
+                                           xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName));
                     }
 
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("ages/age", token).ConfigureAwait(false))
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("ages/age", token))
                     {
                         string strName = xmlNode.Value;
                         lstAges.Add(new ListItem(
                                         strName,
-                                        (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? strName));
+                                        xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName));
                     }
 
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
-                                 "personallives/personallife", token).ConfigureAwait(false))
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "personallives/personallife", token))
                     {
                         string strName = xmlNode.Value;
                         lstPersonalLives.Add(new ListItem(
                                                  strName,
-                                                 (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
+                                                 xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value
                                                  ?? strName));
                     }
 
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("types/type", token).ConfigureAwait(false))
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("types/type", token))
                     {
                         string strName = xmlNode.Value;
                         lstTypes.Add(new ListItem(
                                          strName,
-                                         (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? strName));
+                                         xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName));
                     }
 
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
-                                 "preferredpayments/preferredpayment", token).ConfigureAwait(false))
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "preferredpayments/preferredpayment", token))
                     {
                         string strName = xmlNode.Value;
                         lstPreferredPayments.Add(new ListItem(
                                                      strName,
-                                                     (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
+                                                     xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value
                                                      ?? strName));
                     }
 
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
-                                 "hobbiesvices/hobbyvice", token).ConfigureAwait(false))
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "hobbiesvices/hobbyvice", token))
                     {
                         string strName = xmlNode.Value;
                         lstHobbiesVices.Add(new ListItem(
                                                 strName,
-                                                (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
+                                                xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value
                                                 ?? strName));
                     }
                 }
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("metatypes.xml", token: token).ConfigureAwait(false))
-                                                                 .SelectAndCacheExpressionAsync(
-                                                                     "/chummer/metatypes/metatype", token).ConfigureAwait(false))
+                foreach (XPathNavigator xmlMetatypeNode in (await _objContact.CharacterObject.LoadDataXPathAsync("metatypes.xml", token: token).ConfigureAwait(false))
+                                                                 .SelectAndCacheExpression(
+                                                                     "/chummer/metatypes/metatype", token))
                 {
-                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
-                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
+                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token)?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                     XPathNodeIterator xmlMetavariantsList
-                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant", token).ConfigureAwait(false);
+                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant", token);
                     if (xmlMetavariantsList.Count > 0)
                     {
                         string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                         foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                         {
                             string strMetavariantName
-                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
+                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                   ?? string.Empty;
                             if (lstMetatypes.All(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
@@ -1861,8 +1861,8 @@ namespace Chummer
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
-                                                                  (await objXmlMetavariantNode
-                                                                         .SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
+                                                                  objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpression("translate", token)
                                                                       ?.Value ?? strMetavariantName)));
                         }
                     }

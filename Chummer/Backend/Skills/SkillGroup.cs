@@ -187,7 +187,7 @@ namespace Chummer.Backend.Skills
                     using (LockObject.EnterWriteLock())
                     {
                         //Calculate how far above maximum we are.
-                        int intOverMax = (value + KarmaPoints + FreeLevels) - RatingMaximum;
+                        int intOverMax = value + KarmaPoints + FreeLevels - RatingMaximum;
 
                         //reduce value by max or 0
                         value -= Math.Max(0, intOverMax);

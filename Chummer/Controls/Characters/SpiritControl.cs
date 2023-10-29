@@ -477,8 +477,8 @@ namespace Chummer
                         {
                             if (setLimitCategories.Count == 0)
                             {
-                                foreach (XPathNavigator objXmlCritterNode in await objXmlDocument.SelectAndCacheExpressionAsync(
-                                             "/chummer/spirits/spirit", token: token).ConfigureAwait(false))
+                                foreach (XPathNavigator objXmlCritterNode in objXmlDocument.SelectAndCacheExpression(
+                                             "/chummer/spirits/spirit", token: token))
                                 {
                                     string strSpiritName = (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))
                                                                             ?.Value;
@@ -507,7 +507,7 @@ namespace Chummer
                         else
                         {
                             XPathNavigator objTraditionNode = await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                            XPathNodeIterator xmlSpiritList = objTraditionNode != null ? await objTraditionNode.SelectAndCacheExpressionAsync("spirits/*", token).ConfigureAwait(false) : null;
+                            XPathNodeIterator xmlSpiritList = objTraditionNode?.SelectAndCacheExpression("spirits/*", token);
                             if (xmlSpiritList != null)
                             {
                                 foreach (XPathNavigator objXmlSpirit in xmlSpiritList)

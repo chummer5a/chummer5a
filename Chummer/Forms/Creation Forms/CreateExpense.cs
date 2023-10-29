@@ -99,7 +99,7 @@ namespace Chummer
             {
                 decimal decReturn = nudAmount.Value;
                 if (_eMode == ExpenseType.Nuyen)
-                    decReturn *= (nudPercent.Value / 100.0m);
+                    decReturn *= nudPercent.Value / 100.0m;
                 return decReturn;
             }
             set

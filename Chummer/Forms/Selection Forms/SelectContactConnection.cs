@@ -190,7 +190,7 @@ namespace Chummer
                 return;
             if (objSelectedColor.Name == "White" || objSelectedColor.Name == "Black")
             {
-                Color objColor = await ColorManager.GetControlAsync().ConfigureAwait(false);
+                Color objColor = ColorManager.Control;
                 await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = objColor).ConfigureAwait(false);
                 _objColor = objColor;
             }

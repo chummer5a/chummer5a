@@ -54,8 +54,8 @@ namespace Chummer
         private static readonly ConcurrentStack<XPathNavigator> s_StkXPathNavigatorPool
             = new ConcurrentStack<XPathNavigator>();
 
-        private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
-            new LockingDictionary<string, Tuple<bool, object>>();
+        private static readonly ConcurrentDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
+            new ConcurrentDictionary<string, Tuple<bool, object>>();
 
         private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;,. ".ToCharArray());
 
@@ -66,27 +66,27 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, CancellationToken token = default)
+        public static Task<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strXPath))
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, null);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
-                return tupReturn;
+                s_DicCompiledEvaluations.TryAdd(string.Empty, tupReturn);
+                return Task.FromResult(tupReturn);
             }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, strXPath);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
-                return tupReturn;
+                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
+                return Task.FromResult(tupReturn);
             }
             if (strXPath == "-")
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(true, 0.0);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
-                return tupReturn;
+                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
+                return Task.FromResult(tupReturn);
             }
-            return await s_DicCompiledEvaluations.AddOrGetAsync(strXPath, async x =>
+            return s_DicCompiledEvaluations.GetOrAddAsync(strXPath, async x =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -130,7 +130,7 @@ namespace Chummer
                 }
 
                 return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            }, token).ConfigureAwait(false);
+            }, token: token);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strXPath))
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, null);
-                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
+                s_DicCompiledEvaluations.TryAdd(string.Empty, tupReturn);
                 return tupReturn;
             }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
@@ -162,7 +162,7 @@ namespace Chummer
                 return tupReturn;
             }
             token.ThrowIfCancellationRequested();
-            return s_DicCompiledEvaluations.AddOrGet(strXPath, x =>
+            return s_DicCompiledEvaluations.GetOrAdd(strXPath, x =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -206,7 +206,7 @@ namespace Chummer
                 }
 
                 return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            }, token);
+            });
         }
 
         /// <summary>
@@ -216,10 +216,10 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
+        public static Task<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            return s_DicCompiledEvaluations.AddOrGetAsync(strExpression, async x =>
+            return s_DicCompiledEvaluations.GetOrAddAsync(strExpression, async x =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -262,7 +262,9 @@ namespace Chummer
                     blnIsSuccess = false;
                 }
 
-                return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
+                return
+                    new Tuple<bool, object>(blnIsSuccess,
+                        objReturn); // don't want to store managed objects, only primitives
             }, token);
         }
 
@@ -276,7 +278,7 @@ namespace Chummer
         public static Tuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            return s_DicCompiledEvaluations.AddOrGet(strExpression, x =>
+            return s_DicCompiledEvaluations.GetOrAdd(strExpression, x =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -318,7 +320,7 @@ namespace Chummer
                 }
 
                 return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            }, token);
+            });
         }
 
         /// <summary>
@@ -1720,9 +1722,9 @@ namespace Chummer
             string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter, token).ConfigureAwait(false);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            (bool blnSuccess, SourcebookInfo objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
-            // If the sourcebook was not found, we can't open anything.
-            if (!blnSuccess || objBookInfo == null)
+            if (!(await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo) || objBookInfo == null)
+                // If the sourcebook was not found, we can't open anything.
                 return;
             Uri uriPath = null;
             try
@@ -1900,14 +1902,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            bool blnSuccess;
-            SourcebookInfo objBookInfo;
-            if (blnSync)
-                blnSuccess = GlobalSettings.SourcebookInfos.TryGetValue(strBook, out objBookInfo, token);
-            else
-                (blnSuccess, objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
-            // If the sourcebook was not found, we can't open anything.
-            if (!blnSuccess || objBookInfo == null)
+            if (!(blnSync
+                        ? GlobalSettings.SourcebookInfos
+                        : await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo) || objBookInfo == null)
+                // If the sourcebook was not found, we can't open anything.
                 return string.Empty;
 
             token.ThrowIfCancellationRequested();
@@ -2047,7 +2046,7 @@ namespace Chummer
                                     {
                                         sbdCurrentLine.Append(strCurrentLine);
                                         while (sbdCurrentLine.Length < intTextToSearchLength
-                                               && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                               && i + intTitleExtraLines + 1 < lstStringFromPdf.Count)
                                         {
                                             token.ThrowIfCancellationRequested();
                                             intTitleExtraLines++;

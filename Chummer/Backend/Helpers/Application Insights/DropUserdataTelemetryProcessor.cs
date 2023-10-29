@@ -53,7 +53,7 @@ namespace Chummer
             }
             if ((item is PageViewTelemetry
                 || item is PageViewPerformanceTelemetry)
-                && (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Info)
+                && GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Info
                 && !Utils.IsMilestoneVersion)
             {
                 Next.Process(item);

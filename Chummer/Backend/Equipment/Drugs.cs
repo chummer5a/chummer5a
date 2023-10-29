@@ -2294,7 +2294,7 @@ namespace Chummer.Backend.Equipment
                             sbdDescription.Append((objDrugEffect.Speed / 3).ToString(GlobalSettings.CultureInfo))
                                           .Append(strSpace).AppendLine(LanguageManager.GetString("String_CombatTurns"));
                         else
-                            sbdDescription.Append((objDrugEffect.Speed).ToString(GlobalSettings.CultureInfo))
+                            sbdDescription.Append(objDrugEffect.Speed.ToString(GlobalSettings.CultureInfo))
                                           .AppendLine(LanguageManager.GetString("String_Seconds"));
                     }
 
@@ -2443,7 +2443,7 @@ namespace Chummer.Backend.Equipment
                             sbdDescription.Append((objDrugEffect.Speed / 3).ToString(GlobalSettings.CultureInfo))
                                           .Append(strSpace).AppendLine(await LanguageManager.GetStringAsync("String_CombatTurns", token: token).ConfigureAwait(false));
                         else
-                            sbdDescription.Append((objDrugEffect.Speed).ToString(GlobalSettings.CultureInfo))
+                            sbdDescription.Append(objDrugEffect.Speed.ToString(GlobalSettings.CultureInfo))
                                           .AppendLine(await LanguageManager.GetStringAsync("String_Seconds", token: token).ConfigureAwait(false));
                     }
 

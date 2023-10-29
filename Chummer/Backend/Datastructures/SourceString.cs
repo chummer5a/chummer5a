@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace Chummer
 {
     public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
-        private static readonly LockingDictionary<string, Tuple<string, string>> s_DicCachedStrings = new LockingDictionary<string, Tuple<string, string>>();
+        private static readonly ConcurrentDictionary<string, Tuple<string, string>> s_DicCachedStrings = new ConcurrentDictionary<string, Tuple<string, string>>();
         private readonly int _intHashCode;
 
         public static readonly SourceString Blank = GetSourceString(string.Empty, 0, GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo);
@@ -108,7 +109,7 @@ namespace Chummer
 
             Code = strBookCodeShort;
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
-            (string strSpace, string strPage) = s_DicCachedStrings.AddOrGet(
+            (string strSpace, string strPage) = s_DicCachedStrings.GetOrAdd(
                 Language,
                 x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
                                                LanguageManager.GetString("String_Page", x)));
@@ -117,7 +118,7 @@ namespace Chummer
 
         public override string ToString()
         {
-            string strSpace = s_DicCachedStrings.AddOrGet(
+            string strSpace = s_DicCachedStrings.GetOrAdd(
                 Language,
                 x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
                                                LanguageManager.GetString("String_Page", x))).Item1;

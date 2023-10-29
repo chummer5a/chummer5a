@@ -294,9 +294,9 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-                string sNotesColor = ColorTranslator.ToHtml(await ColorManager.GetHasNotesColorAsync(token).ConfigureAwait(false));
-                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+                string strNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref strNotesColor);
+                _colNotes = ColorTranslator.FromHtml(strNotesColor);
 
                 await RefreshLinkedCharacterAsync(token: token).ConfigureAwait(false);
 
@@ -586,7 +586,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdExtra))
                 {
-                    string strSelect = (await xmlPowerEntryNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@select", token).ConfigureAwait(false))?.Value;
+                    string strSelect = xmlPowerEntryNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value;
                     if (!string.IsNullOrEmpty(strSelect))
                         sbdExtra.Append(await CharacterObject
                             .TranslateExtraAsync(strSelect, strLanguageToPrint, token: token)
@@ -1555,7 +1555,7 @@ namespace Chummer
                             }
 
                             if (_objLinkedCharacter != null)
-                                CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
+                                CharacterObject.LinkedCharacters.TryAdd(_objLinkedCharacter);
                         }
                     }
 
@@ -1609,8 +1609,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    await CharacterObject.LinkedCharacters.RemoveAsync(_objLinkedCharacter, token)
-                                         .ConfigureAwait(false);
+                    CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
                     bool blnUseRelative = false;
 
@@ -1652,7 +1651,7 @@ namespace Chummer
                             }
 
                             if (_objLinkedCharacter != null)
-                                await CharacterObject.LinkedCharacters.AddAsync(_objLinkedCharacter, token).ConfigureAwait(false);
+                                CharacterObject.LinkedCharacters.TryAdd(_objLinkedCharacter);
                         }
                     }
 
@@ -1673,9 +1672,9 @@ namespace Chummer
 
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token).ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
-                                                                              || !await x.LinkedCharacters.ContainsAsync(
-                                                                                  objOldLinkedCharacter, token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                                if (await Program.OpenCharacters.AllAsync(x => x == _objLinkedCharacter
+                                                                              || !x.LinkedCharacters.Contains(
+                                                                                  objOldLinkedCharacter), token: token).ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
                                         x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
                                     await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token).ConfigureAwait(false);
@@ -1945,7 +1944,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-                XPathNodeIterator xmlMugshotsList = await xmlSavedNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token).ConfigureAwait(false);
+                XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
                 List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
                 foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
                 {

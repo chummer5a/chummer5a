@@ -125,7 +125,7 @@ namespace Chummer
                 bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-                decimal decBaseCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                 foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select(
                              "accessories/accessory" + strFilter))
                 {
@@ -336,8 +336,8 @@ namespace Chummer
 
         private void UpdateMountFields(bool boolChangeExtraMountFirst)
         {
-            if ((cboMount.SelectedItem.ToString() != "None") && cboExtraMount.SelectedItem != null && (cboExtraMount.SelectedItem.ToString() != "None")
-                && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
+            if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem != null && cboExtraMount.SelectedItem.ToString() != "None"
+                && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
             {
                 if (boolChangeExtraMountFirst)
                     cboExtraMount.SelectedIndex = 0;
@@ -417,8 +417,8 @@ namespace Chummer
                         .DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                 {
                     decimal decCostMultiplier
-                        = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
-                               / 100.0m);
+                        = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
+                        / 100.0m;
                     if (_setBlackMarketMaps.Contains((await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
                         decCostMultiplier *= 0.9m;
                     int intMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token)
@@ -612,8 +612,8 @@ namespace Chummer
 
                     // Apply any markup.
                     decCost *= 1
-                               + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                 .ConfigureAwait(false) / 100.0m);
+                               + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
+                                   .ConfigureAwait(false) / 100.0m;
 
                     if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                     .ConfigureAwait(false))

@@ -142,13 +142,13 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlWeapon in xmlWeaponList)
                     {
-                        string strName = (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
+                        string strName = xmlWeapon.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                         if (!string.IsNullOrEmpty(strName))
                         {
                             lstSkillSpecializations.Add(
                                 new ListItem(
                                     strName,
-                                    (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                                    xmlWeapon.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                         }
                     }
                 }
@@ -164,7 +164,7 @@ namespace Chummer
                     {
                         lstSkillSpecializations.Add(new ListItem(
                                                         strName,
-                                                        (await xmlSpec.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value
+                                                        xmlSpec.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value
                                                         ?? strName));
                     }
                 }

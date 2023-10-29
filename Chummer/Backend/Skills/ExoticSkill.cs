@@ -76,9 +76,8 @@ namespace Chummer.Backend.Skills
             if (string.IsNullOrEmpty(strSkillName))
                 return new Tuple<bool, string>(false, string.Empty);
             XPathNodeIterator objXPathNameData
-                = await (await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
-                        .SelectAndCacheExpressionAsync("/chummer/skills/skill[exotic = 'True']/name", token)
-                        .ConfigureAwait(false);
+                = (await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                        .SelectAndCacheExpression("/chummer/skills/skill[exotic = 'True']/name", token);
             foreach (XPathNavigator objData in objXPathNameData)
             {
                 token.ThrowIfCancellationRequested();

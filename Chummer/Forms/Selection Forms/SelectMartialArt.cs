@@ -112,7 +112,7 @@ namespace Chummer
 
                 if (objXmlArt != null)
                 {
-                    string strKarmaCost = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("cost").ConfigureAwait(false))?.Value
+                    string strKarmaCost = objXmlArt.SelectSingleNodeAndCacheExpression("cost")?.Value
                                           ?? 7.ToString(GlobalSettings.CultureInfo);
                     await lblKarmaCost.DoThreadSafeAsync(x => x.Text = strKarmaCost).ConfigureAwait(false);
                     await lblKarmaCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strKarmaCost)).ConfigureAwait(false);
@@ -120,8 +120,8 @@ namespace Chummer
                     string strTechniques;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTechniques))
                     {
-                        foreach (XPathNavigator xmlMartialArtsTechnique in await objXmlArt.SelectAndCacheExpressionAsync(
-                                     "techniques/technique").ConfigureAwait(false))
+                        foreach (XPathNavigator xmlMartialArtsTechnique in objXmlArt.SelectAndCacheExpression(
+                                     "techniques/technique"))
                         {
                             string strLoopTechniqueName
                                 = (await xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value

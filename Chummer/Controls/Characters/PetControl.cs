@@ -305,16 +305,16 @@ namespace Chummer
             {
                 lstMetatypes.Add(ListItem.Blank);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false))
-                                                                 .SelectAndCacheExpressionAsync(
-                                                                     "/chummer/metatypes/metatype", token: token).ConfigureAwait(false))
+                foreach (XPathNavigator xmlMetatypeNode in (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false))
+                                                                 .SelectAndCacheExpression(
+                                                                     "/chummer/metatypes/metatype", token: token))
                 {
                     string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
                     string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                     XPathNodeIterator xmlMetavariantsList
-                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant", token: token).ConfigureAwait(false);
+                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant", token: token);
                     if (xmlMetavariantsList.Count > 0)
                     {
                         string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";

@@ -1032,7 +1032,7 @@ namespace Chummer
                         // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
                         if (Rating + intReturn == 0 && ExtraPointCost > 0)
                         {
-                            decExtraCost -= (PointsPerLevel + ExtraPointCost);
+                            decExtraCost -= PointsPerLevel + ExtraPointCost;
                             if (decExtraCost >= 0)
                             {
                                 ++intReturn;
@@ -1094,7 +1094,7 @@ namespace Chummer
                         // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
                         if (Rating + intReturn == 0 && ExtraPointCost > 0)
                         {
-                            decExtraCost -= (PointsPerLevel + ExtraPointCost);
+                            decExtraCost -= PointsPerLevel + ExtraPointCost;
                             if (decExtraCost >= 0)
                             {
                                 ++intReturn;

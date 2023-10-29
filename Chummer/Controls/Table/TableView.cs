@@ -19,6 +19,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -152,7 +153,7 @@ namespace Chummer.UI.Table
                                     try
                                     {
                                         row.Index = rowIndex;
-                                        row.Selected = (_table._intSelectedIndex == index);
+                                        row.Selected = _table._intSelectedIndex == index;
                                         row.Location = new Point(0, y);
                                         row.Width = widthSum;
                                         int dy = 0;
@@ -227,7 +228,7 @@ namespace Chummer.UI.Table
         private readonly TableColumnCollection<T> _columns;
         private TableLayoutEngine _layoutEngine;
         private readonly List<ColumnHolder> _lstCells = new List<ColumnHolder>();
-        private readonly LockingDictionary<string, List<int>> _dicObservedProperties = new LockingDictionary<string, List<int>>();
+        private readonly ConcurrentDictionary<string, List<int>> _dicObservedProperties = new ConcurrentDictionary<string, List<int>>();
         private readonly List<int> _lstPermutation = new List<int>();
         private readonly List<TableRow> _lstRowCells = new List<TableRow>();
         private SortOrder _eSortType = SortOrder.None;
@@ -259,9 +260,7 @@ namespace Chummer.UI.Table
                     else
                     {
                         // update cells in columns that have the column as dependency
-                        (bool blnSuccess, List<int> lstColumns)
-                            = await _dicObservedProperties.TryGetValueAsync(strProperty, token).ConfigureAwait(false);
-                        if (blnSuccess)
+                        if (_dicObservedProperties.TryGetValue(strProperty, out List<int> lstColumns))
                         {
                             foreach (int intColumnIndex in lstColumns)
                             {
@@ -477,9 +476,7 @@ namespace Chummer.UI.Table
             await CreateCellsForColumn(index, column, token).ConfigureAwait(false);
             foreach (string dependency in column.Dependencies)
             {
-                List<int> lstDependencies = await _dicObservedProperties
-                                                  .AddOrGetAsync(dependency, x => new List<int>(1), token)
-                                                  .ConfigureAwait(false);
+                List<int> lstDependencies = _dicObservedProperties.GetOrAdd(dependency, x => new List<int>(1));
                 lstDependencies.Add(index);
             }
         }
@@ -492,7 +489,6 @@ namespace Chummer.UI.Table
             foreach (TableColumn<T> objColumn in Columns)
                 objColumn.Dispose();
             Controls.Clear();
-            _dicObservedProperties.Dispose();
         }
 
         private async ValueTask DoFilter(bool performLayout = true, CancellationToken token = default)

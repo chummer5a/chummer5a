@@ -56,7 +56,7 @@ namespace Chummer
         {
             string strSelectString = "stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + ']';
 
-            XPathNavigator xmlStageNode = await _xmlLifeModulesDocumentChummerNode.SelectSingleNodeAndCacheExpressionAsync(strSelectString).ConfigureAwait(false);
+            XPathNavigator xmlStageNode = _xmlLifeModulesDocumentChummerNode.SelectSingleNodeAndCacheExpression(strSelectString);
             if (xmlStageNode != null)
             {
                 _strWorkStage = _strDefaultStageName = xmlStageNode.Value;
@@ -93,12 +93,11 @@ namespace Chummer
                 {
                     TreeNode treNode = new TreeNode
                     {
-                        Text = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
-                               ?? (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? string.Empty
+                        Text = xmlNode.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                               ?? xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty
                     };
-                    XPathNavigator xmlVersionsNode = await xmlNode
-                                                           .SelectSingleNodeAndCacheExpressionAsync("versions", token)
-                                                           .ConfigureAwait(false);
+                    XPathNavigator xmlVersionsNode = xmlNode
+                                                           .SelectSingleNodeAndCacheExpression("versions", token);
                     if (xmlVersionsNode != null)
                     {
                         TreeNode[] aobjNodes = await BuildList(
@@ -108,7 +107,7 @@ namespace Chummer
                         treNode.Nodes.AddRange(aobjNodes);
                     }
 
-                    treNode.Tag = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
+                    treNode.Tag = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                     token.ThrowIfCancellationRequested();
                     if (_rgxSearchExpression != null)
                     {
@@ -164,8 +163,7 @@ namespace Chummer
                 if (xmlModulePath != null)
                 {
                     blnSelectable
-                        = (await xmlModulePath.SelectSingleNodeAndCacheExpressionAsync("selectable")
-                                              .ConfigureAwait(false))?.Value != bool.FalseString;
+                        = xmlModulePath.SelectSingleNodeAndCacheExpression("selectable")?.Value != bool.FalseString;
                 }
             }
 
@@ -227,7 +225,7 @@ namespace Chummer
 
                         foreach (XPathNavigator xnode in _xmlLifeModulesDocumentChummerNode.Select("stages/stage"))
                         {
-                            string strOrder = (await xnode.SelectSingleNodeAndCacheExpressionAsync("order").ConfigureAwait(false))?.Value;
+                            string strOrder = xnode.SelectSingleNodeAndCacheExpression("order")?.Value;
                             if (!string.IsNullOrEmpty(strOrder))
                             {
                                 lstStages.Add(new ListItem(strOrder, xnode.Value));
@@ -284,7 +282,7 @@ namespace Chummer
             }
             else
             {
-                _strWorkStage = (await _xmlLifeModulesDocumentChummerNode.SelectSingleNodeAndCacheExpressionAsync("stages/stage[@order = " + strSelected.CleanXPath() + ']').ConfigureAwait(false))?.Value ?? string.Empty;
+                _strWorkStage = _xmlLifeModulesDocumentChummerNode.SelectSingleNodeAndCacheExpression("stages/stage[@order = " + strSelected.CleanXPath() + ']')?.Value ?? string.Empty;
             }
             await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }

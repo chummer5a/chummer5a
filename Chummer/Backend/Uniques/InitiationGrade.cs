@@ -244,7 +244,7 @@ namespace Chummer
             get
             {
                 CharacterSettings objSettings = _objCharacter.Settings;
-                decimal decCost = objSettings.KarmaInitiationFlat + (Grade * objSettings.KarmaInitiation);
+                decimal decCost = objSettings.KarmaInitiationFlat + Grade * objSettings.KarmaInitiation;
                 decimal decMultiplier = 1.0m;
 
                 // Discount for Group.

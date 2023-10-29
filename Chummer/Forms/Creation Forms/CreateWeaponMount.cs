@@ -670,7 +670,7 @@ namespace Chummer
 
                         if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                         {
-                            string strCostInner = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                            string strCostInner = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                 + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblCost.DoThreadSafeAsync(x => x.Text = strCostInner, token).ConfigureAwait(false);
                         }
@@ -1076,9 +1076,7 @@ namespace Chummer
                             {
                                 case "Visibility":
                                     {
-                                        XPathNodeIterator xmlNodeList = xmlForbiddenNode != null
-                                            ? await xmlForbiddenNode.SelectAndCacheExpressionAsync("visibility", token).ConfigureAwait(false)
-                                            : null;
+                                        XPathNodeIterator xmlNodeList = xmlForbiddenNode?.SelectAndCacheExpression("visibility", token);
                                         if (xmlNodeList?.Count > 0)
                                         {
                                             foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -1094,7 +1092,7 @@ namespace Chummer
                                         if (xmlRequiredNode != null)
                                         {
                                             blnAddItem = false;
-                                            xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("visibility", token).ConfigureAwait(false);
+                                            xmlNodeList = xmlRequiredNode.SelectAndCacheExpression("visibility", token);
                                             if (xmlNodeList.Count > 0)
                                             {
                                                 foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -1111,7 +1109,7 @@ namespace Chummer
                                         if (blnAddItem)
                                             lstVisibility.Add(
                                                 new ListItem(
-                                                    strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                                                    strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                                     }
                                     break;
 
@@ -1120,7 +1118,7 @@ namespace Chummer
                                         if (xmlForbiddenNode != null)
                                         {
                                             XPathNodeIterator xmlNodeList
-                                                = await xmlForbiddenNode.SelectAndCacheExpressionAsync("flexibility", token: token).ConfigureAwait(false);
+                                                = xmlForbiddenNode.SelectAndCacheExpression("flexibility", token: token);
                                             if (xmlNodeList?.Count > 0)
                                             {
                                                 foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -1137,7 +1135,7 @@ namespace Chummer
                                         if (xmlRequiredNode != null)
                                         {
                                             blnAddItem = false;
-                                            XPathNodeIterator xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("flexibility", token: token).ConfigureAwait(false);
+                                            XPathNodeIterator xmlNodeList = xmlRequiredNode.SelectAndCacheExpression("flexibility", token: token);
                                             if (xmlNodeList?.Count > 0)
                                             {
                                                 foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -1163,7 +1161,7 @@ namespace Chummer
                                         if (xmlForbiddenNode != null)
                                         {
                                             XPathNodeIterator xmlNodeList
-                                                = await xmlForbiddenNode.SelectAndCacheExpressionAsync("control", token: token).ConfigureAwait(false);
+                                                = xmlForbiddenNode.SelectAndCacheExpression("control", token: token);
                                             if (xmlNodeList?.Count > 0)
                                             {
                                                 foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -1180,7 +1178,7 @@ namespace Chummer
                                         if (xmlRequiredNode != null)
                                         {
                                             blnAddItem = false;
-                                            XPathNodeIterator xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("control", token: token).ConfigureAwait(false);
+                                            XPathNodeIterator xmlNodeList = xmlRequiredNode.SelectAndCacheExpression("control", token: token);
                                             if (xmlNodeList?.Count > 0)
                                             {
                                                 foreach (XPathNavigator xmlLoopNode in xmlNodeList)

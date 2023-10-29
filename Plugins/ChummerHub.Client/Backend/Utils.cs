@@ -762,18 +762,8 @@ namespace ChummerHub.Client.Backend
                                               CharacterAlias = sinner.Alias,
                                               BuildMethod = "online"
                                           };
-                if (blnSync)
-                {
-                    // ReSharper disable once MethodHasAsyncOverload
-                    objCache.MyPluginDataDic.AddOrUpdate("IsSINnerFavorite", member.IsFavorite,
-                                                         (x, y) => member.IsFavorite, token);
-                }
-                else
-                {
-                    await objCache.MyPluginDataDic
-                                  .AddOrUpdateAsync("IsSINnerFavorite", member.IsFavorite, (x, y) => member.IsFavorite,
-                                                    token).ConfigureAwait(false);
-                }
+                objCache.MyPluginDataDic.AddOrUpdate("IsSINnerFavorite", member.IsFavorite,
+                    (x, y) => member.IsFavorite);
 
                 SetEventHandlers(sinner, objCache);
                 TreeNode memberNode = new TreeNode
@@ -978,7 +968,7 @@ namespace ChummerHub.Client.Backend
                 throw new ArgumentNullException(nameof(sinner));
             if (objCache == null)
                 throw new ArgumentNullException(nameof(objCache));
-            objCache.MyPluginDataDic.Add("SINnerId", sinner.Id);
+            objCache.MyPluginDataDic.TryAdd("SINnerId", sinner.Id);
             objCache.OnMyDoubleClick = null;
             objCache.OnMyDoubleClick += OnObjCacheOnMyDoubleClick;
             async void OnObjCacheOnMyDoubleClick(object sender, EventArgs e) => await OnMyDoubleClick(sinner, objCache);

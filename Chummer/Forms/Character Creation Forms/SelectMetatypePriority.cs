@@ -196,8 +196,8 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         if (xmlBasePrioritiesNode != null)
                         {
-                            foreach (XPathNavigator objXmlPriorityCategory in await _xmlBasePriorityDataNode
-                                         .SelectAndCacheExpressionAsync("categories/category", _objGenericToken).ConfigureAwait(false))
+                            foreach (XPathNavigator objXmlPriorityCategory in _xmlBasePriorityDataNode
+                                         .SelectAndCacheExpression("categories/category", _objGenericToken))
                             {
                                 XPathNodeIterator objItems = xmlBasePrioritiesNode.Select(
                                     "priority[category = " + objXmlPriorityCategory.Value.CleanXPath()
@@ -413,15 +413,15 @@ namespace Chummer
                                 if (objCritterPowersDataNode != null)
                                 {
                                     lstMethods.Add(new ListItem("Possession",
-                                                                (await objCritterPowersDataNode
-                                                                       .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                           "power[name = \"Possession\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                                        "power[name = \"Possession\"]/translate", _objGenericToken)
                                                                 ?.Value
                                                                 ?? "Possession"));
                                     lstMethods.Add(new ListItem("Inhabitation",
-                                                                (await objCritterPowersDataNode
-                                                                       .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                           "power[name = \"Inhabitation\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                                        "power[name = \"Inhabitation\"]/translate", _objGenericToken)
                                                                 ?.Value
                                                                 ?? "Inhabitation"));
                                 }
@@ -640,9 +640,9 @@ namespace Chummer
                         + ")]");
                     foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                     {
-                        if (xmlBaseTalentPriorityList.Count == 1 || await xmlBaseTalentPriority
-                                                                          .SelectSingleNodeAndCacheExpressionAsync(
-                                                                              "prioritytable", token).ConfigureAwait(false)
+                        if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority
+                                                                          .SelectSingleNodeAndCacheExpression(
+                                                                              "prioritytable", token)
                             != null)
                         {
                             xmlTalentNode
@@ -654,35 +654,32 @@ namespace Chummer
 
                     if (xmlTalentNode != null)
                     {
-                        string strSkillCount
-                            = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillqty", token)
-                                                  .ConfigureAwait(false))?.Value
-                              ?? (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgroupqty", token)
-                                                     .ConfigureAwait(false))?.Value ?? string.Empty;
+                        string strSkillCount =
+                            xmlTalentNode.SelectSingleNodeAndCacheExpression("skillqty", token)?.Value ??
+                            xmlTalentNode.SelectSingleNodeAndCacheExpression("skillgroupqty", token)?.Value ??
+                            string.Empty;
                         if (!string.IsNullOrEmpty(strSkillCount) && int.TryParse(strSkillCount, out int intSkillCount))
                         {
-                            XPathNavigator xmlSkillTypeNode
-                                = await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skilltype", token)
-                                                     .ConfigureAwait(false) ?? await xmlTalentNode
-                                    .SelectSingleNodeAndCacheExpressionAsync("skillgrouptype", token).ConfigureAwait(false);
+                            XPathNavigator xmlSkillTypeNode =
+                                xmlTalentNode.SelectSingleNodeAndCacheExpression("skilltype", token) ??
+                                xmlTalentNode.SelectSingleNodeAndCacheExpression("skillgrouptype", token);
                             string strSkillType = xmlSkillTypeNode?.Value ?? string.Empty;
-                            XPathNodeIterator objNodeList = await xmlTalentNode
-                                                                  .SelectAndCacheExpressionAsync(
-                                                                      "skillgroupchoices/skillgroup", token)
-                                                                  .ConfigureAwait(false);
+                            XPathNodeIterator objNodeList = xmlTalentNode
+                                                                  .SelectAndCacheExpression(
+                                                                      "skillgroupchoices/skillgroup", token);
                             XPathNodeIterator xmlSkillsList;
                             switch (strSkillType)
                             {
                                 case "magic":
-                                    xmlSkillsList = await GetMagicalSkillListAsync(token).ConfigureAwait(false);
+                                    xmlSkillsList = GetMagicalSkillList(token);
                                     break;
 
                                 case "resonance":
-                                    xmlSkillsList = await GetResonanceSkillListAsync(token).ConfigureAwait(false);
+                                    xmlSkillsList = GetResonanceSkillList(token);
                                     break;
 
                                 case "matrix":
-                                    xmlSkillsList = await GetMatrixSkillListAsync(token).ConfigureAwait(false);
+                                    xmlSkillsList = GetMatrixSkillList(token);
                                     break;
 
                                 case "grouped":
@@ -691,24 +688,18 @@ namespace Chummer
 
                                 case "specific":
                                     xmlSkillsList
-                                        = BuildSkillList(await xmlTalentNode
-                                                               .SelectAndCacheExpressionAsync("skillchoices/skill", token)
-                                                               .ConfigureAwait(false));
+                                        = BuildSkillList(xmlTalentNode
+                                                               .SelectAndCacheExpression("skillchoices/skill", token));
                                     break;
 
                                 case "xpath":
-                                    xmlSkillsList = await GetActiveSkillListAsync(
-                                        xmlSkillTypeNode != null
-                                            ? (await xmlSkillTypeNode
-                                                .SelectSingleNodeAndCacheExpressionAsync("@xpath", token)
-                                                .ConfigureAwait(false))
-                                            ?.Value
-                                            : null, token).ConfigureAwait(false);
+                                    xmlSkillsList = GetActiveSkillList(
+                                        xmlSkillTypeNode?.SelectSingleNodeAndCacheExpression("@xpath", token)?.Value, token);
                                     strSkillType = "active";
                                     break;
 
                                 default:
-                                    xmlSkillsList = await GetActiveSkillListAsync(token: token).ConfigureAwait(false);
+                                    xmlSkillsList = GetActiveSkillList(token: token);
                                     break;
                             }
 
@@ -1716,9 +1707,8 @@ namespace Chummer
                                     }
 
                                     // Create the Qualities that come with the Talent.
-                                    foreach (XPathNavigator objXmlQualityItem in await xmlTalentPriorityNode
-                                                 .SelectAndCacheExpressionAsync("qualities/quality", token)
-                                                 .ConfigureAwait(false))
+                                    foreach (XPathNavigator objXmlQualityItem in xmlTalentPriorityNode
+                                                 .SelectAndCacheExpression("qualities/quality", token))
                                     {
                                         XmlNode objXmlQuality
                                             = _xmlQualityDocumentQualitiesNode.TryGetNodeByNameOrId(
@@ -1729,8 +1719,8 @@ namespace Chummer
                                         try
                                         {
                                             string strForceValue
-                                                = (await objXmlQualityItem.SelectSingleNodeAndCacheExpressionAsync(
-                                                    "@select", token).ConfigureAwait(false))
+                                                = objXmlQualityItem.SelectSingleNodeAndCacheExpression(
+                                                        "@select", token)
                                                 ?.Value ?? string.Empty;
                                             if (string.IsNullOrEmpty(strForceValue) && !string.IsNullOrEmpty(strUnlockSkillsFilter))
                                             {
@@ -2619,8 +2609,8 @@ namespace Chummer
 
                     Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                     // Build a list of the Metavariant's Qualities.
-                    foreach (XPathNavigator objXmlQuality in await objXmlMetavariant.SelectAndCacheExpressionAsync(
-                                 "qualities/*/quality", token).ConfigureAwait(false))
+                    foreach (XPathNavigator objXmlQuality in objXmlMetavariant.SelectAndCacheExpression(
+                                 "qualities/*/quality", token))
                     {
                         string strQuality;
                         if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -2748,8 +2738,8 @@ namespace Chummer
 
                     Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                     // Build a list of the Metatype's Qualities.
-                    foreach (XPathNavigator xmlQuality in await objXmlMetatype.SelectAndCacheExpressionAsync(
-                                 "qualities/*/quality", token).ConfigureAwait(false))
+                    foreach (XPathNavigator xmlQuality in objXmlMetatype.SelectAndCacheExpression(
+                                 "qualities/*/quality", token))
                     {
                         string strQuality;
                         if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -2970,8 +2960,8 @@ namespace Chummer
                         if (xmlBaseTalentPriorityList.Count == 1
                             || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
                         {
-                            foreach (XPathNavigator objXmlPriorityTalent in await xmlBaseTalentPriority.SelectAndCacheExpressionAsync(
-                                         "talents/talent", token).ConfigureAwait(false))
+                            foreach (XPathNavigator objXmlPriorityTalent in xmlBaseTalentPriority.SelectAndCacheExpression(
+                                         "talents/talent", token))
                             {
                                 XPathNavigator xmlQualitiesNode
                                     = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("qualities", token).ConfigureAwait(false);
@@ -2979,8 +2969,8 @@ namespace Chummer
                                 {
                                     bool blnFoundUnavailableQuality = false;
 
-                                    foreach (XPathNavigator xmlQuality in await xmlQualitiesNode.SelectAndCacheExpressionAsync(
-                                                 "quality", token).ConfigureAwait(false))
+                                    foreach (XPathNavigator xmlQuality in xmlQualitiesNode.SelectAndCacheExpression(
+                                                 "quality", token))
                                     {
                                         if (_xmlBaseQualityDataNode.TryGetNodeByNameOrId(
                                                 "qualities/quality", xmlQuality.Value, await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)) == null)
@@ -2995,14 +2985,14 @@ namespace Chummer
                                 }
 
                                 XPathNavigator xmlForbiddenNode
-                                    = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("forbidden", token).ConfigureAwait(false);
+                                    = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("forbidden", token);
                                 if (xmlForbiddenNode != null)
                                 {
                                     bool blnRequirementForbidden = false;
 
                                     // Loop through the oneof requirements.
                                     XPathNodeIterator objXmlForbiddenList
-                                        = await xmlForbiddenNode.SelectAndCacheExpressionAsync("oneof", token).ConfigureAwait(false);
+                                        = xmlForbiddenNode.SelectAndCacheExpression("oneof", token);
                                     foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                     {
                                         XPathNodeIterator objXmlOneOfList
@@ -3048,14 +3038,14 @@ namespace Chummer
                                 }
 
                                 XPathNavigator xmlRequiredNode
-                                    = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("required", token).ConfigureAwait(false);
+                                    = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("required", token);
                                 if (xmlRequiredNode != null)
                                 {
                                     bool blnRequirementMet = false;
 
                                     // Loop through the oneof requirements.
                                     XPathNodeIterator objXmlForbiddenList
-                                        = await xmlRequiredNode.SelectAndCacheExpressionAsync("oneof", token).ConfigureAwait(false);
+                                        = xmlRequiredNode.SelectAndCacheExpression("oneof", token);
                                     foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                     {
                                         XPathNodeIterator objXmlOneOfList
@@ -3499,8 +3489,8 @@ namespace Chummer
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setRemoveCategories))
                 {
-                    foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode.SelectAndCacheExpressionAsync(
-                                 "categories/category", token).ConfigureAwait(false))
+                    foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
+                                 "categories/category", token))
                     {
                         XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                             "priorities/priority[category = \"Heritage\" and value = "
@@ -3549,10 +3539,9 @@ namespace Chummer
                     // Populate the Metatype Category list.
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
                     {
-                        foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode
-                                                                        .SelectAndCacheExpressionAsync(
-                                                                            "categories/category", token)
-                                                                        .ConfigureAwait(false))
+                        foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode
+                                                                        .SelectAndCacheExpression(
+                                                                            "categories/category", token))
                         {
                             string strInnerText = objXmlCategory.Value;
 
@@ -3613,28 +3602,6 @@ namespace Chummer
         private XPathNodeIterator GetActiveSkillList(string strXPathFilter = "", CancellationToken token = default)
         {
             return _xmlBaseSkillDataNode.SelectAndCacheExpression(!string.IsNullOrEmpty(strXPathFilter)
-                ? "skills/skill[" + strXPathFilter + ']'
-                : "skills/skill", token);
-        }
-
-        private Task<XPathNodeIterator> GetMatrixSkillListAsync(CancellationToken token = default)
-        {
-            return _xmlBaseSkillDataNode.SelectAndCacheExpressionAsync("skills/skill[skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]", token);
-        }
-
-        private Task<XPathNodeIterator> GetMagicalSkillListAsync(CancellationToken token = default)
-        {
-            return _xmlBaseSkillDataNode.SelectAndCacheExpressionAsync("skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]", token);
-        }
-
-        private Task<XPathNodeIterator> GetResonanceSkillListAsync(CancellationToken token = default)
-        {
-            return _xmlBaseSkillDataNode.SelectAndCacheExpressionAsync("skills/skill[category = \"Resonance Active\" or skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]", token);
-        }
-
-        private Task<XPathNodeIterator> GetActiveSkillListAsync(string strXPathFilter = "", CancellationToken token = default)
-        {
-            return _xmlBaseSkillDataNode.SelectAndCacheExpressionAsync(!string.IsNullOrEmpty(strXPathFilter)
                 ? "skills/skill[" + strXPathFilter + ']'
                 : "skills/skill", token);
         }

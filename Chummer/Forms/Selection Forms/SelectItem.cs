@@ -130,18 +130,18 @@ namespace Chummer
                         }).ConfigureAwait(false);
                         if (!(await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).LicenseRestricted)
                         {
-                            foreach (XPathNavigator objNode in await (await _objCharacter.LoadDataXPathAsync("licenses.xml").ConfigureAwait(false))
-                                                                     .SelectAndCacheExpressionAsync(
-                                                                         "/chummer/licenses/license").ConfigureAwait(false))
+                            foreach (XPathNavigator objNode in (await _objCharacter.LoadDataXPathAsync("licenses.xml").ConfigureAwait(false))
+                                                                     .SelectAndCacheExpression(
+                                                                         "/chummer/licenses/license"))
                             {
                                 string strInnerText = objNode.Value;
                                 if (!string.IsNullOrEmpty(strInnerText))
                                 {
                                     lstItems.Add(new ListItem(strInnerText,
-                                                              (await objNode
-                                                                     .SelectSingleNodeAndCacheExpressionAsync(
-                                                                         "@translate").ConfigureAwait(false))
-                                                              ?.Value ?? strInnerText));
+                                        objNode
+                                            .SelectSingleNodeAndCacheExpression(
+                                                "@translate")
+                                            ?.Value ?? strInnerText));
                                 }
                             }
                         }
