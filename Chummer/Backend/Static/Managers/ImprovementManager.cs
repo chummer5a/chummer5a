@@ -2014,11 +2014,7 @@ namespace Chummer
                                 }
                                 else if (objCharacter != null)
                                 {
-                                    (bool blnHasText, string strText) = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? objCharacter.PushText.TryTake()
-                                        : await objCharacter.PushText.TryTakeAsync(token).ConfigureAwait(false);
-                                    if (blnHasText)
+                                    if (objCharacter.PushText.TryPop(out string strText))
                                     {
                                         LimitSelection = strText;
                                     }

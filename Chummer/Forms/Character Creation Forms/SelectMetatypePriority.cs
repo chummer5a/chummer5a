@@ -1744,9 +1744,26 @@ namespace Chummer
 
                                                     // Reverse order because we process bonus nodes from top to bottom, and this text will be saved in a FILO stack
                                                     lstToPush.Reverse();
-                                                    foreach (string strToPush in lstToPush)
-                                                        await _objCharacter.PushText.PushAsync(strToPush, token)
-                                                                           .ConfigureAwait(false);
+                                                    int intNumPushed = 0;
+                                                    try
+                                                    {
+                                                        foreach (string strToPush in lstToPush)
+                                                        {
+                                                            token.ThrowIfCancellationRequested();
+                                                            _objCharacter.PushText.Push(strToPush);
+                                                            ++intNumPushed;
+                                                        }
+                                                    }
+                                                    catch
+                                                    {
+                                                        for (int i = 0; i < intNumPushed; ++i)
+                                                        {
+                                                            if (!_objCharacter.PushText.TryPop(out _))
+                                                                break;
+                                                        }
+
+                                                        throw;
+                                                    }
                                                 }
                                             }
 

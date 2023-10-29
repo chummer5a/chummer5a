@@ -6101,7 +6101,7 @@ namespace Chummer
                     {
                         frmSelect.MyForm.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
 
-                        if (_objCharacter.PushText.TryTake(out string strText))
+                        if (_objCharacter.PushText.TryPop(out string strText))
                         {
                             frmSelect.MyForm.ForceItem(strText);
                         }

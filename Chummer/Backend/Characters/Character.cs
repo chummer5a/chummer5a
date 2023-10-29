@@ -11035,8 +11035,6 @@ namespace Chummer
                 _objAttributeSection.Dispose();
                 _setDoOnSaveCompleted.Dispose();
                 _setDoOnSaveCompletedAsync.Dispose();
-                if (_stkPushText.IsValueCreated)
-                    _stkPushText.Value.Dispose();
                 if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
                     _objSettings.Dispose();
                 _objCachedEssenceLock.Dispose();
@@ -11130,8 +11128,6 @@ namespace Chummer
                 await _objAttributeSection.DisposeAsync().ConfigureAwait(false);
                 await _setDoOnSaveCompleted.DisposeAsync().ConfigureAwait(false);
                 await _setDoOnSaveCompletedAsync.DisposeAsync().ConfigureAwait(false);
-                if (_stkPushText.IsValueCreated)
-                    await _stkPushText.Value.DisposeAsync().ConfigureAwait(false);
                 if (!(await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false))
                     .ContainsKey(await _objSettings.GetDictionaryKeyAsync().ConfigureAwait(false)))
                     await _objSettings.DisposeAsync().ConfigureAwait(false);
@@ -31120,12 +31116,12 @@ namespace Chummer
         #endregion Temporary Properties
 
         //Can't be at improvementmanager due reasons
-        private readonly Lazy<ThreadSafeStack<string>> _stkPushText = new Lazy<ThreadSafeStack<string>>();
+        private readonly Lazy<ConcurrentStack<string>> _stkPushText = new Lazy<ConcurrentStack<string>>();
 
         /// <summary>
         /// Push a value that will be used instead of dialog instead in next <selecttext />
         /// </summary>
-        public ThreadSafeStack<string> PushText
+        public ConcurrentStack<string> PushText
         {
             get
             {
