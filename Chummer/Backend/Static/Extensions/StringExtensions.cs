@@ -495,7 +495,7 @@ namespace Chummer
             {
                 if (objState.ShouldExitCurrentIteration)
                     return false;
-                if (strNeedle.Length > intHaystackLength)
+                if (strNeedle.Length <= intHaystackLength)
                 {
                     if (objState.ShouldExitCurrentIteration)
                         return false;
@@ -537,7 +537,7 @@ namespace Chummer
             {
                 if (objState.ShouldExitCurrentIteration)
                     return false;
-                if (strNeedle.Length > intHaystackLength)
+                if (strNeedle.Length <= intHaystackLength)
                 {
                     if (objState.ShouldExitCurrentIteration)
                         return false;
