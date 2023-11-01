@@ -88,7 +88,7 @@ namespace Chummer
             // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentSemaphore?.MySemaphore)
+                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
 
@@ -171,7 +171,7 @@ namespace Chummer
             // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentSemaphore?.MySemaphore)
+                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
             _objAsyncLocalCurrentsContainer.Value =
@@ -216,7 +216,7 @@ namespace Chummer
             // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentSemaphore?.MySemaphore)
+                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
             _objAsyncLocalCurrentsContainer.Value =
@@ -339,7 +339,7 @@ namespace Chummer
             // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentSemaphore?.MySemaphore)
+                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
@@ -407,7 +407,7 @@ namespace Chummer
             // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentSemaphore?.MySemaphore)
+                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
             _objAsyncLocalCurrentsContainer.Value =
@@ -463,7 +463,7 @@ namespace Chummer
             // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
             // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentSemaphore?.MySemaphore)
+                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
             _objAsyncLocalCurrentsContainer.Value =
@@ -1212,13 +1212,13 @@ namespace Chummer
             {
                 if (objNextLinkedSemaphore == null)
                     throw new ArgumentNullException(nameof(objNextLinkedSemaphore));
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentSemaphore;
+                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentLinkedSemaphore;
                 if (objCurrentLinkedSemaphore != null)
                 {
                     if (objCurrentLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
                         throw new InvalidOperationException(
                             "Current and next semaphores are identical, this should not happen.");
-                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentSemaphore;
+                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentLinkedSemaphore;
                     if (objLastLinkedSemaphore != null)
                     {
                         if (objLastLinkedSemaphore.MySemaphore == objCurrentLinkedSemaphore.MySemaphore)
@@ -1290,13 +1290,13 @@ namespace Chummer
             {
                 if (objNextLinkedSemaphore == null)
                     throw new ArgumentNullException(nameof(objNextLinkedSemaphore));
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentSemaphore;
+                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentLinkedSemaphore;
                 if (objCurrentLinkedSemaphore != null)
                 {
                     if (objCurrentLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
                         throw new InvalidOperationException(
                             "Current and next semaphores are identical, this should not happen.");
-                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentSemaphore;
+                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentLinkedSemaphore;
                     if (objLastLinkedSemaphore != null)
                     {
                         if (objLastLinkedSemaphore.MySemaphore == objCurrentLinkedSemaphore.MySemaphore)
@@ -1355,13 +1355,13 @@ namespace Chummer
             {
                 if (objNextLinkedSemaphore == null)
                     throw new ArgumentNullException(nameof(objNextLinkedSemaphore));
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentSemaphore;
+                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentLinkedSemaphore;
                 if (objCurrentLinkedSemaphore != null)
                 {
                     if (objCurrentLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
                         throw new InvalidOperationException(
                             "Current and next semaphores are identical, this should not happen.");
-                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentSemaphore;
+                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentLinkedSemaphore;
                     if (objLastLinkedSemaphore != null)
                     {
                         if (objLastLinkedSemaphore.MySemaphore == objCurrentLinkedSemaphore.MySemaphore)
@@ -1401,7 +1401,7 @@ namespace Chummer
                             "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
                             + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
                             + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentSemaphore)
+                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentLinkedSemaphore)
                         throw new InvalidOperationException(
                             "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
                     throw new InvalidOperationException(
@@ -1411,7 +1411,7 @@ namespace Chummer
 
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentSemaphore,
+                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
                 _objReaderWriterLock.ChangeNumActiveReaders(-1);
                 _objNextLinkedSemaphore.Dispose();
@@ -1439,7 +1439,7 @@ namespace Chummer
                             "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
                             + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
                             + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentSemaphore)
+                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentLinkedSemaphore)
                         throw new InvalidOperationException(
                             "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
                     throw new InvalidOperationException(
@@ -1452,7 +1452,7 @@ namespace Chummer
                 // copy of the ExecutionContext and the caller won't see the changes.
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentSemaphore,
+                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
                 return DisposeCoreAsync();
             }
@@ -1477,13 +1477,13 @@ namespace Chummer
             {
                 if (objNextLinkedSemaphore == null)
                     throw new ArgumentNullException(nameof(objNextLinkedSemaphore));
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentSemaphore;
+                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentLinkedSemaphore;
                 if (objCurrentLinkedSemaphore != null)
                 {
                     if (objCurrentLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
                         throw new InvalidOperationException(
                             "Current and next semaphores are identical, this should not happen.");
-                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentSemaphore;
+                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentLinkedSemaphore;
                     if (objLastLinkedSemaphore != null)
                     {
                         if (objLastLinkedSemaphore.MySemaphore == objCurrentLinkedSemaphore.MySemaphore)
@@ -1523,7 +1523,7 @@ namespace Chummer
                             "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
                             + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
                             + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentSemaphore)
+                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentLinkedSemaphore)
                         throw new InvalidOperationException(
                             "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
                     throw new InvalidOperationException(
@@ -1536,7 +1536,7 @@ namespace Chummer
                 // copy of the ExecutionContext and the caller won't see the changes.
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentSemaphore,
+                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
 
                 return DisposeCoreAsync(_intOldCountLocalReaders);
@@ -1544,8 +1544,11 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync(int intCountLocalReaders)
             {
+                // Wait for all other readers to exit before exiting ourselves
+                while (_objReaderWriterLock._intCountActiveReaders > 0 && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
+                    await Utils.SafeSleepAsync().ConfigureAwait(false);
                 await _objReaderWriterLock.ChangeNumActiveReadersAsync(intCountLocalReaders).ConfigureAwait(false);
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentSemaphore;
+                LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentLinkedSemaphore;
                 if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
                 {
                     try
@@ -1593,7 +1596,7 @@ namespace Chummer
                             "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
                             + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
                             + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentSemaphore)
+                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentLinkedSemaphore)
                         throw new InvalidOperationException(
                             "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
                     throw new InvalidOperationException(
@@ -1601,11 +1604,14 @@ namespace Chummer
                 }
 #endif
 
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentSemaphore;
+                LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentLinkedSemaphore;
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                         _intOldCountLocalReaders, objCurrentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
+                // Wait for all other readers to exit before exiting ourselves
+                while (_objReaderWriterLock._intCountActiveReaders > 0 && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
+                    Utils.SafeSleep();
                 _objReaderWriterLock.ChangeNumActiveReaders(_intOldCountLocalReaders);
 
                 if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)

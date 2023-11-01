@@ -29,9 +29,11 @@ namespace Chummer
     {
         private readonly bool _blnSemaphoreIsPooled;
         private DebuggableSemaphoreSlim _objMySemaphore;
+        private LinkedSemaphoreSlim _objParentLinkedSemaphore;
 
         public DebuggableSemaphoreSlim MySemaphore => _objMySemaphore;
-        public LinkedSemaphoreSlim ParentSemaphore { get; }
+
+        public LinkedSemaphoreSlim ParentLinkedSemaphore => _objParentLinkedSemaphore;
 
         private static readonly SafeObjectPool<Stack<LinkedSemaphoreSlim>> s_objSemaphoreStackPool =
             new SafeObjectPool<Stack<LinkedSemaphoreSlim>>(() => new Stack<LinkedSemaphoreSlim>(8));
@@ -46,19 +48,20 @@ namespace Chummer
             else
                 _objMySemaphore = new DebuggableSemaphoreSlim();
 
-            ParentSemaphore = objParent;
+            _objParentLinkedSemaphore = objParent;
         }
 
         public LinkedSemaphoreSlim(LinkedSemaphoreSlim objParent, DebuggableSemaphoreSlim objMySemaphore, bool blnSemaphoreIsPooled)
         {
             _objMySemaphore = objMySemaphore ?? throw new ArgumentNullException(nameof(objMySemaphore));
             _blnSemaphoreIsPooled = blnSemaphoreIsPooled;
-            ParentSemaphore = objParent;
+            _objParentLinkedSemaphore = objParent;
         }
 
         public void Dispose()
         {
             MySemaphore.SafeWait();
+            _objParentLinkedSemaphore = null;
             MySemaphore.Release();
             if (_blnSemaphoreIsPooled)
                 Utils.SemaphorePool.Return(ref _objMySemaphore);
@@ -69,6 +72,7 @@ namespace Chummer
         public async ValueTask DisposeAsync()
         {
             await MySemaphore.WaitAsync().ConfigureAwait(false);
+            _objParentLinkedSemaphore = null;
             MySemaphore.Release();
             if (_blnSemaphoreIsPooled)
                 Utils.SemaphorePool.Return(ref _objMySemaphore);
@@ -79,11 +83,11 @@ namespace Chummer
         public void WaitAll(LinkedSemaphoreSlim objUntilSemaphore = null)
         {
             MySemaphore.Wait();
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+            LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
             while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
             {
                 objLoopSemaphore.MySemaphore.Wait();
-                objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
             }
         }
 
@@ -92,7 +96,7 @@ namespace Chummer
             MySemaphore.Wait(token);
             try
             {
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 if (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                 {
                     Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
@@ -104,7 +108,7 @@ namespace Chummer
                             {
                                 objLoopSemaphore.MySemaphore.Wait(token);
                                 stkLockedSemaphores.Push(objLoopSemaphore);
-                                objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                                objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                             }
                         }
                         catch
@@ -132,7 +136,7 @@ namespace Chummer
 
         public bool WaitAll(TimeSpan timeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(timeout);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
@@ -148,7 +152,7 @@ namespace Chummer
                 }
 
                 timeout -= elapsed;
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -176,7 +180,7 @@ namespace Chummer
 
                         timeout -= elapsed;
                         stkLockedSemaphores.Push(objLoopSemaphore);
-                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                     }
 
                     stkLockedSemaphores.Clear();
@@ -196,7 +200,7 @@ namespace Chummer
 
         public bool WaitAll(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(timeout, token);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
@@ -212,7 +216,7 @@ namespace Chummer
                 }
 
                 timeout -= elapsed;
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -242,7 +246,7 @@ namespace Chummer
 
                             timeout -= elapsed;
                             stkLockedSemaphores.Push(objLoopSemaphore);
-                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                            objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                         }
                     }
                     catch
@@ -271,7 +275,7 @@ namespace Chummer
 
         public bool WaitAll(int millisecondsTimeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(millisecondsTimeout);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
@@ -287,7 +291,7 @@ namespace Chummer
                 }
 
                 millisecondsTimeout -= (int)millisecondsElapsed;
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -315,7 +319,7 @@ namespace Chummer
 
                         millisecondsTimeout -= (int)millisecondsElapsed;
                         stkLockedSemaphores.Push(objLoopSemaphore);
-                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                     }
 
                     stkLockedSemaphores.Clear();
@@ -335,7 +339,7 @@ namespace Chummer
 
         public bool WaitAll(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(millisecondsTimeout, token);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
@@ -351,7 +355,7 @@ namespace Chummer
                 }
 
                 millisecondsTimeout -= (int)millisecondsElapsed;
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -381,7 +385,7 @@ namespace Chummer
 
                             millisecondsTimeout -= (int)millisecondsElapsed;
                             stkLockedSemaphores.Push(objLoopSemaphore);
-                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                            objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                         }
                     }
                     catch
@@ -411,11 +415,11 @@ namespace Chummer
         public async Task WaitAllAsync(LinkedSemaphoreSlim objUntilSemaphore = null)
         {
             await MySemaphore.WaitAsync().ConfigureAwait(false);
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+            LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
             while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
             {
                 await objLoopSemaphore.MySemaphore.WaitAsync().ConfigureAwait(false);
-                objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
             }
         }
 
@@ -424,7 +428,7 @@ namespace Chummer
             await MySemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 if (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                 {
                     Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
@@ -436,7 +440,7 @@ namespace Chummer
                             {
                                 await objLoopSemaphore.MySemaphore.WaitAsync(token).ConfigureAwait(false);
                                 stkLockedSemaphores.Push(objLoopSemaphore);
-                                objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                                objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                             }
                         }
                         catch
@@ -464,7 +468,7 @@ namespace Chummer
 
         public async Task<bool> WaitAllAsync(TimeSpan timeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(timeout).ConfigureAwait(false);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
@@ -480,7 +484,7 @@ namespace Chummer
                 }
 
                 timeout -= elapsed;
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -508,7 +512,7 @@ namespace Chummer
 
                         timeout -= elapsed;
                         stkLockedSemaphores.Push(objLoopSemaphore);
-                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                     }
 
                     stkLockedSemaphores.Clear();
@@ -528,7 +532,7 @@ namespace Chummer
 
         public async Task<bool> WaitAllAsync(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(timeout, token).ConfigureAwait(false);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
@@ -544,7 +548,7 @@ namespace Chummer
                 }
 
                 timeout -= elapsed;
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -574,7 +578,7 @@ namespace Chummer
 
                             timeout -= elapsed;
                             stkLockedSemaphores.Push(objLoopSemaphore);
-                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                            objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                         }
                     }
                     catch
@@ -603,7 +607,7 @@ namespace Chummer
 
         public async Task<bool> WaitAllAsync(int millisecondsTimeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
@@ -619,7 +623,7 @@ namespace Chummer
                 }
 
                 millisecondsTimeout -= (int)millisecondsElapsed;
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -647,7 +651,7 @@ namespace Chummer
 
                         millisecondsTimeout -= (int)millisecondsElapsed;
                         stkLockedSemaphores.Push(objLoopSemaphore);
-                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                     }
 
                     stkLockedSemaphores.Clear();
@@ -667,7 +671,7 @@ namespace Chummer
 
         public async Task<bool> WaitAllAsync(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
             try
@@ -683,7 +687,7 @@ namespace Chummer
                 }
 
                 millisecondsTimeout -= (int)millisecondsElapsed;
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -714,7 +718,7 @@ namespace Chummer
 
                             millisecondsTimeout -= (int)millisecondsElapsed;
                             stkLockedSemaphores.Push(objLoopSemaphore);
-                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                            objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                         }
                     }
                     catch
@@ -757,7 +761,7 @@ namespace Chummer
 
                     try
                     {
-                        LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                        LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                         if (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                         {
                             Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
@@ -775,7 +779,7 @@ namespace Chummer
                                         }
 
                                         stkLockedSemaphores.Push(objLoopSemaphore);
-                                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                                     }
                                 }
                                 catch
@@ -807,12 +811,12 @@ namespace Chummer
             {
                 while (!MySemaphore.Wait(Utils.DefaultSleepDuration))
                     Utils.DoEventsSafe(blnForceDoEvents);
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                 {
                     while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration))
                         Utils.DoEventsSafe(blnForceDoEvents);
-                    objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                    objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                 }
             }
             else
@@ -835,7 +839,7 @@ namespace Chummer
 
                     try
                     {
-                        LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                        LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                         if (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                         {
                             Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
@@ -853,7 +857,7 @@ namespace Chummer
                                         }
 
                                         stkLockedSemaphores.Push(objLoopSemaphore);
-                                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                                     }
                                 }
                                 catch
@@ -887,7 +891,7 @@ namespace Chummer
                     Utils.DoEventsSafe(blnForceDoEvents);
                 try
                 {
-                    LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                    LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                     if (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
                     {
                         Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
@@ -900,7 +904,7 @@ namespace Chummer
                                     while (!objLoopSemaphore.MySemaphore.Wait(Utils.DefaultSleepDuration, token))
                                         Utils.DoEventsSafe(blnForceDoEvents);
                                     stkLockedSemaphores.Push(objLoopSemaphore);
-                                    objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                                    objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                                 }
                             }
                             catch
@@ -934,7 +938,7 @@ namespace Chummer
             if (!Utils.EverDoEvents)
                 return WaitAll(timeout, objUntilSemaphore);
 
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.SafeWait(timeout, blnForceDoEvents);
 
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -957,7 +961,7 @@ namespace Chummer
 
                 timeout -= elapsed;
 
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -990,7 +994,7 @@ namespace Chummer
 
                         timeout -= elapsed;
                         stkLockedSemaphores.Push(objLoopSemaphore);
-                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                     }
 
                     stkLockedSemaphores.Clear();
@@ -1013,7 +1017,7 @@ namespace Chummer
             if (!Utils.EverDoEvents)
                 return WaitAll(timeout, token, objUntilSemaphore);
 
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.SafeWait(timeout, token, blnForceDoEvents);
 
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -1036,7 +1040,7 @@ namespace Chummer
 
                 timeout -= elapsed;
 
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -1071,7 +1075,7 @@ namespace Chummer
 
                             timeout -= elapsed;
                             stkLockedSemaphores.Push(objLoopSemaphore);
-                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                            objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                         }
                     }
                     catch
@@ -1103,7 +1107,7 @@ namespace Chummer
             if (!Utils.EverDoEvents)
                 return WaitAll(millisecondsTimeout, objUntilSemaphore);
 
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.SafeWait(millisecondsTimeout, blnForceDoEvents);
 
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -1126,7 +1130,7 @@ namespace Chummer
 
                 millisecondsTimeout -= (int)millisecondsElapsed;
 
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -1159,7 +1163,7 @@ namespace Chummer
 
                         millisecondsTimeout -= (int)millisecondsElapsed;
                         stkLockedSemaphores.Push(objLoopSemaphore);
-                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                     }
 
                     stkLockedSemaphores.Clear();
@@ -1182,7 +1186,7 @@ namespace Chummer
             if (!Utils.EverDoEvents)
                 return WaitAll(millisecondsTimeout, token, objUntilSemaphore);
 
-            if (ParentSemaphore == null || ParentSemaphore == objUntilSemaphore)
+            if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.SafeWait(millisecondsTimeout, token, blnForceDoEvents);
 
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -1205,7 +1209,7 @@ namespace Chummer
 
                 millisecondsTimeout -= (int)millisecondsElapsed;
 
-                LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+                LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
                 try
                 {
@@ -1240,7 +1244,7 @@ namespace Chummer
 
                             millisecondsTimeout -= (int)millisecondsElapsed;
                             stkLockedSemaphores.Push(objLoopSemaphore);
-                            objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                            objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                         }
                     }
                     catch
@@ -1269,7 +1273,7 @@ namespace Chummer
 
         public void ReleaseAll(LinkedSemaphoreSlim objUntilSemaphore = null)
         {
-            LinkedSemaphoreSlim objLoopSemaphore = ParentSemaphore;
+            LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
             if (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
             {
                 Stack<LinkedSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
@@ -1278,7 +1282,7 @@ namespace Chummer
                     while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore && objLoopSemaphore.MySemaphore.CurrentCount == 0)
                     {
                         stkLockedSemaphores.Push(objLoopSemaphore);
-                        objLoopSemaphore = objLoopSemaphore.ParentSemaphore;
+                        objLoopSemaphore = objLoopSemaphore.ParentLinkedSemaphore;
                     }
 
                     // Release back-to-front to prevent weird race conditions as much as possible
