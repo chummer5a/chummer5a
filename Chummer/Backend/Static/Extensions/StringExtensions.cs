@@ -430,7 +430,7 @@ namespace Chummer
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
 
-            return !astrNeedles.All(x => x.Length > intHaystackLength) && astrNeedles.Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+            return astrNeedles.Any(x => x.Length <= intHaystackLength && strHaystack.IndexOf(x, eComparison) >= 0);
         }
 
         /// <summary>
@@ -490,25 +490,7 @@ namespace Chummer
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
 
-            bool blnReturn = false;
-            Parallel.ForEach(astrNeedles, () => false, (strNeedle, objState, _) =>
-            {
-                if (objState.ShouldExitCurrentIteration)
-                    return false;
-                if (strNeedle.Length <= intHaystackLength)
-                {
-                    if (objState.ShouldExitCurrentIteration)
-                        return false;
-                    if (strHaystack.IndexOf(strNeedle, eComparison) >= 0)
-                    {
-                        objState.Stop();
-                        return true;
-                    }
-                }
-
-                return false;
-            }, blnValue => blnReturn = blnReturn || blnValue);
-            return blnReturn;
+            return astrNeedles.AsParallel().Any(x => x.Length <= intHaystackLength && strHaystack.IndexOf(x, eComparison) >= 0);
         }
 
         /// <summary>
@@ -526,31 +508,10 @@ namespace Chummer
             int intHaystackLength = strHaystack.Length;
             if (intHaystackLength == 0)
                 return false;
-            if (astrNeedles == null)
-                return false;
-
-            // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
-            // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-
-            bool blnReturn = false;
-            Parallel.ForEach(astrNeedles, () => false, (strNeedle, objState, _) =>
-            {
-                if (objState.ShouldExitCurrentIteration)
-                    return false;
-                if (strNeedle.Length <= intHaystackLength)
-                {
-                    if (objState.ShouldExitCurrentIteration)
-                        return false;
-                    if (strHaystack.IndexOf(strNeedle, eComparison) >= 0)
-                    {
-                        objState.Stop();
-                        return true;
-                    }
-                }
-
-                return false;
-            }, blnValue => blnReturn = blnReturn || blnValue);
-            return blnReturn;
+            return astrNeedles != null &&
+                   // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+                   // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+                   astrNeedles.AsParallel().Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
         }
 
         /// <summary>

@@ -83,7 +83,7 @@ namespace Chummer
         /// </summary>
         public static bool IsActiveCommlink(this IHasMatrixAttributes objThis, Character objCharacter)
         {
-            if (objThis == null || objCharacter == null || !objThis.IsCommlink)
+            if (objThis == null || objCharacter == null)
                 return false;
             return objCharacter.ActiveCommlink == objThis;
         }

@@ -84,7 +84,7 @@ namespace Chummer.Backend.Attributes
         {
             if (objWriter == null)
                 return;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterHiPrioReadLock())
             {
                 objWriter.WriteStartElement("attribute");
                 objWriter.WriteElementString("name", _strAbbrev);

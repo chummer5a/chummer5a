@@ -482,7 +482,7 @@ namespace Chummer.Backend.Attributes
 
         internal void Save(XmlWriter objWriter, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock(token))
+            using (LockObject.EnterHiPrioReadLock(token))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList)
                 {

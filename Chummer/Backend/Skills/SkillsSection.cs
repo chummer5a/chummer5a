@@ -1944,7 +1944,7 @@ namespace Chummer.Backend.Skills
 
         internal void Save(XmlWriter objWriter)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterHiPrioReadLock())
             {
                 objWriter.WriteStartElement("newskills");
 
