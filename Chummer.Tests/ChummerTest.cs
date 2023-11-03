@@ -288,42 +288,41 @@ namespace Chummer.Tests
                     SaveCharacter(objCharacterTest, strDestinationTest);
                 }
 
-                // Check to see that character after first load cycle is consistent with character after second
-                using (FileStream controlFileStream =
-                       File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                try
                 {
+
+                    // Check to see that character after first load cycle is consistent with character after second
+                    using (FileStream controlFileStream =
+                           File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
                     using (FileStream testFileStream =
                            File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
                     {
-                        try
+                        Diff myDiff = DiffBuilder
+                            .Compare(controlFileStream)
+                            .WithTest(testFileStream)
+                            .CheckForIdentical()
+                            .WithNodeFilter(x =>
+                                x.Name !=
+                                "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                            .WithNodeMatcher(
+                                new DefaultNodeMatcher(
+                                    ElementSelectors.Or(
+                                        ElementSelectors.ByNameAndText,
+                                        ElementSelectors.ByName)))
+                            .IgnoreWhitespace()
+                            .Build();
+                        foreach (Difference diff in myDiff.Differences)
                         {
-                            Diff myDiff = DiffBuilder
-                                .Compare(controlFileStream)
-                                .WithTest(testFileStream)
-                                .CheckForIdentical()
-                                .WithNodeFilter(x =>
-                                    x.Name !=
-                                    "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
-                                .WithNodeMatcher(
-                                    new DefaultNodeMatcher(
-                                        ElementSelectors.Or(
-                                            ElementSelectors.ByNameAndText,
-                                            ElementSelectors.ByName)))
-                                .IgnoreWhitespace()
-                                .Build();
-                            foreach (Difference diff in myDiff.Differences)
-                            {
-                                Console.WriteLine(diff.Comparison);
-                                Console.WriteLine();
-                            }
+                            Console.WriteLine(diff.Comparison);
+                            Console.WriteLine();
+                        }
 
-                            Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
-                        }
-                        catch (XmlSchemaException e)
-                        {
-                            Assert.Fail("Unexpected validation failure: " + e.Message);
-                        }
+                        Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
                     }
+                }
+                catch (XmlSchemaException e)
+                {
+                    Assert.Fail("Unexpected validation failure: " + e.Message);
                 }
             }
         }
