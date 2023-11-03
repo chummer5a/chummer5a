@@ -117,11 +117,10 @@ namespace Chummer
 
             Disposed += (sender, args) =>
             {
+                _tmrCharactersToOpenCheck.Dispose();
                 _objGenericCancellationTokenSource.Dispose();
                 _objFormOpeningSemaphore.Dispose();
                 DisposeOpenForms();
-                _tmrCharactersToOpenCheck.Stop();
-                _tmrCharactersToOpenCheck.Dispose();
             };
 
             _lstOpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
