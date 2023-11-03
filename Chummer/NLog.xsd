@@ -2628,7 +2628,7 @@
         </xs:choice>
         <xs:attribute name="customColumnDelimiter" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Custom column delimiter value (valid when ColumnDelimiter is set to 'Custom').</xs:documentation>
+            <xs:documentation>Custom column delimiter value (valid when P:NLog.Layouts.CsvLayout.Delimiter is set to F:NLog.Layouts.CsvColumnDelimiterMode.Custom).</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="delimiter" type="NLog.Layouts.CsvColumnDelimiterMode">
