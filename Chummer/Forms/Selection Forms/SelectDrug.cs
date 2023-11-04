@@ -386,13 +386,10 @@ namespace Chummer
 
                     // We will need to rebuild the Grade list since certain categories of 'ware disallow certain grades (e.g. Used for cultured bioware) and ForceGrades can change.
                     HashSet<string> setDisallowedGrades = null;
-                    if (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("bannedgrades").ConfigureAwait(false)
-                        != null)
+                    if (xmlDrug.SelectSingleNodeAndCacheExpression("bannedgrades") != null)
                     {
                         setDisallowedGrades = new HashSet<string>();
-                        foreach (XPathNavigator objNode in await xmlDrug
-                                                                 .SelectAndCacheExpressionAsync("bannedgrades/grade")
-                                                                 .ConfigureAwait(false))
+                        foreach (XPathNavigator objNode in xmlDrug.SelectAndCacheExpression("bannedgrades/grade"))
                         {
                             setDisallowedGrades.Add(objNode.Value);
                         }
@@ -710,9 +707,10 @@ namespace Chummer
 
             // Cost.
             decimal decItemCost = 0;
+            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
-                await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strNuyen, token: token).ConfigureAwait(false);
             }
             else
             {
@@ -741,11 +739,11 @@ namespace Chummer
 
                         await lblCost.DoThreadSafeAsync(x => x.Text = decMax == decimal.MaxValue
                                                             ? decMin.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + '+'
+                                                                              GlobalSettings.CultureInfo) + strNuyen + '+'
                                                             : decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                               GlobalSettings.CultureInfo) + " - "
                                                             + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                                                              GlobalSettings.CultureInfo) + strNuyen, token: token).ConfigureAwait(false);
 
                         decItemCost = decMin;
                     }
@@ -758,23 +756,23 @@ namespace Chummer
                         if (blnIsSuccess)
                         {
                             decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decCostMultiplier;
-                            decItemCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                            decItemCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
 
                             if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                             {
                                 decItemCost *= 0.9m;
                             }
 
-                            await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                            await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strNuyen, token: token).ConfigureAwait(false);
                         }
                         else
                         {
-                            await lblCost.DoThreadSafeAsync(x => x.Text = strCost + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                            await lblCost.DoThreadSafeAsync(x => x.Text = strCost + strNuyen, token: token).ConfigureAwait(false);
                         }
                     }
                 }
                 else
-                    await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                    await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strNuyen, token: token).ConfigureAwait(false);
             }
 
             bool blnShowCost = !string.IsNullOrEmpty(await lblCost.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));

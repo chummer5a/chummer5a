@@ -235,7 +235,7 @@ namespace Chummer
                         Utils.DoEventsSafe(blnForceDoEvents);
                     }
                 }
-                else if (!Wait(Utils.WaitEmergencyReleaseMaxTicks))
+                else if (!Wait(Utils.WaitEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration))
                     throw new TimeoutException();
             }
             else if (Utils.EverDoEvents)
@@ -259,12 +259,12 @@ namespace Chummer
                     int intLoopCount = 0;
                     while (!Wait(Utils.DefaultSleepDuration, token))
                     {
-                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration)
                             throw new TimeoutException();
                         Utils.DoEventsSafe(blnForceDoEvents);
                     }
                 }
-                else if (!Wait(Utils.WaitEmergencyReleaseMaxTicks, token) && !token.IsCancellationRequested)
+                else if (!Wait(Utils.WaitEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration, token) && !token.IsCancellationRequested)
                     throw new TimeoutException();
             }
             else if (Utils.EverDoEvents)
@@ -281,19 +281,17 @@ namespace Chummer
         /// </summary>
         public bool SafeWait(TimeSpan timeout, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
-            {
-                for (int i = timeout.Milliseconds; i >= 0; i -= Utils.DefaultSleepDuration)
-                {
-                    if (Wait(Math.Min(Utils.DefaultSleepDuration, i)))
-                        return true;
-                    Utils.DoEventsSafe(blnForceDoEvents);
-                }
+            if (!Utils.EverDoEvents)
+                return Wait(timeout);
 
-                return false;
+            for (int i = timeout.Milliseconds; i >= 0; i -= Utils.DefaultSleepDuration)
+            {
+                if (Wait(Math.Min(Utils.DefaultSleepDuration, i)))
+                    return true;
+                Utils.DoEventsSafe(blnForceDoEvents);
             }
 
-            return Wait(timeout);
+            return false;
         }
 
         /// <summary>
@@ -301,19 +299,17 @@ namespace Chummer
         /// </summary>
         public bool SafeWait(TimeSpan timeout, CancellationToken token, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
-            {
-                for (int i = timeout.Milliseconds; i >= 0; i -= Utils.DefaultSleepDuration)
-                {
-                    if (Wait(Math.Min(Utils.DefaultSleepDuration, i), token))
-                        return true;
-                    Utils.DoEventsSafe(blnForceDoEvents);
-                }
+            if (!Utils.EverDoEvents)
+                return Wait(timeout, token);
 
-                return false;
+            for (int i = timeout.Milliseconds; i >= 0; i -= Utils.DefaultSleepDuration)
+            {
+                if (Wait(Math.Min(Utils.DefaultSleepDuration, i), token))
+                    return true;
+                Utils.DoEventsSafe(blnForceDoEvents);
             }
 
-            return Wait(timeout, token);
+            return false;
         }
 
         /// <summary>
@@ -321,19 +317,17 @@ namespace Chummer
         /// </summary>
         public bool SafeWait(int millisecondsTimeout, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
-            {
-                for (int i = millisecondsTimeout; i >= 0; i -= Utils.DefaultSleepDuration)
-                {
-                    if (Wait(Math.Min(Utils.DefaultSleepDuration, i)))
-                        return true;
-                    Utils.DoEventsSafe(blnForceDoEvents);
-                }
+            if (!Utils.EverDoEvents)
+                return Wait(millisecondsTimeout);
 
-                return false;
+            for (int i = millisecondsTimeout; i >= 0; i -= Utils.DefaultSleepDuration)
+            {
+                if (Wait(Math.Min(Utils.DefaultSleepDuration, i)))
+                    return true;
+                Utils.DoEventsSafe(blnForceDoEvents);
             }
 
-            return Wait(millisecondsTimeout);
+            return false;
         }
 
         /// <summary>
@@ -341,19 +335,17 @@ namespace Chummer
         /// </summary>
         public bool SafeWait(int millisecondsTimeout, CancellationToken token, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
-            {
-                for (int i = millisecondsTimeout; i >= 0; i -= Utils.DefaultSleepDuration)
-                {
-                    if (Wait(Math.Min(Utils.DefaultSleepDuration, i), token))
-                        return true;
-                    Utils.DoEventsSafe(blnForceDoEvents);
-                }
+            if (!Utils.EverDoEvents)
+                return Wait(millisecondsTimeout, token);
 
-                return false;
+            for (int i = millisecondsTimeout; i >= 0; i -= Utils.DefaultSleepDuration)
+            {
+                if (Wait(Math.Min(Utils.DefaultSleepDuration, i), token))
+                    return true;
+                Utils.DoEventsSafe(blnForceDoEvents);
             }
 
-            return Wait(millisecondsTimeout, token);
+            return false;
         }
 
         /// <inheritdoc cref="SemaphoreSlim.Release()"/>

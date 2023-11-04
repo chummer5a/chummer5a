@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
@@ -158,10 +159,10 @@ namespace Chummer
             }
         }
 
-        private static readonly LockingDictionary<Color, Color> s_DicDarkModeColors = new LockingDictionary<Color, Color>();
-        private static readonly LockingDictionary<Color, Color> s_DicInverseDarkModeColors = new LockingDictionary<Color, Color>();
-        private static readonly LockingDictionary<Color, Color> s_DicDimmedColors = new LockingDictionary<Color, Color>();
-        private static readonly LockingDictionary<Color, Color> s_DicBrightenedColors = new LockingDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicInverseDarkModeColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicDimmedColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicBrightenedColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
@@ -170,18 +171,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
         public static Color GenerateDarkModeColor(Color objColor)
         {
-            return s_DicDarkModeColors.AddOrGet(objColor, x => GetDarkModeVersion(objColor));
-        }
-
-        /// <summary>
-        /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
-        /// </summary>
-        /// <param name="objColor">Color whose lightness and saturation should be adjusted for Dark Mode.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
-        public static Task<Color> GenerateDarkModeColorAsync(Color objColor, CancellationToken token = default)
-        {
-            return s_DicDarkModeColors.AddOrGetAsync(objColor, x => GetDarkModeVersion(objColor), token).AsTask();
+            return s_DicDarkModeColors.GetOrAdd(objColor, x => GetDarkModeVersion(objColor));
         }
 
         /// <summary>
@@ -191,18 +181,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
         public static Color GenerateInverseDarkModeColor(Color objColor)
         {
-            return s_DicInverseDarkModeColors.AddOrGet(objColor, x => InverseGetDarkModeVersion(objColor));
-        }
-
-        /// <summary>
-        /// Returns an inverted version of a color that has gone through GenerateDarkModeColor()
-        /// </summary>
-        /// <param name="objColor">Color whose Dark Mode conversions for lightness and saturation should be inverted.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
-        public static Task<Color> GenerateInverseDarkModeColorAsync(Color objColor, CancellationToken token = default)
-        {
-            return s_DicInverseDarkModeColors.AddOrGetAsync(objColor, x => InverseGetDarkModeVersion(objColor), token).AsTask();
+            return s_DicInverseDarkModeColors.GetOrAdd(objColor, x => InverseGetDarkModeVersion(objColor));
         }
 
         /// <summary>
@@ -216,17 +195,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
-        /// </summary>
-        /// <param name="objColor">Color as it would be in Light mode</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to dark mode.</returns>
-        public static Task<Color> GenerateCurrentModeColorAsync(Color objColor, CancellationToken token = default)
-        {
-            return IsLightMode ? Task.FromResult(objColor) : GenerateDarkModeColorAsync(objColor, token);
-        }
-
-        /// <summary>
         /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
         /// </summary>
         /// <param name="objColor">Color as it is shown in current color mode</param>
@@ -237,17 +205,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
-        /// </summary>
-        /// <param name="objColor">Color as it is shown in current color mode</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to light mode.</returns>
-        public static Task<Color> GenerateModeIndependentColorAsync(Color objColor, CancellationToken token = default)
-        {
-            return IsLightMode ? Task.FromResult(objColor) : GenerateInverseDarkModeColorAsync(objColor, token);
-        }
-
-        /// <summary>
         /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
         /// </summary>
         /// <param name="objColor">Color whose lightness should be dimmed.</param>
@@ -255,21 +212,8 @@ namespace Chummer
         public static Color GenerateCurrentModeDimmedColor(Color objColor)
         {
             return IsLightMode
-                ? s_DicDimmedColors.AddOrGet(objColor, x => GetDimmedVersion(objColor))
-                : s_DicBrightenedColors.AddOrGet(objColor, x => GetBrightenedVersion(objColor));
-        }
-
-        /// <summary>
-        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
-        /// </summary>
-        /// <param name="objColor">Color whose lightness should be dimmed.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
-        public static Task<Color> GenerateCurrentModeDimmedColorAsync(Color objColor, CancellationToken token = default)
-        {
-            return IsLightMode
-                ? s_DicDimmedColors.AddOrGetAsync(objColor, x => GetDimmedVersion(objColor), token).AsTask()
-                : s_DicBrightenedColors.AddOrGetAsync(objColor, x => GetBrightenedVersion(objColor), token).AsTask();
+                ? s_DicDimmedColors.GetOrAdd(objColor, x => GetDimmedVersion(objColor))
+                : s_DicBrightenedColors.GetOrAdd(objColor, x => GetBrightenedVersion(objColor));
         }
 
         /// <summary>
@@ -282,19 +226,6 @@ namespace Chummer
         private static Color TransformToDarkModeValidVersion(Color objColor)
         {
             return GenerateDarkModeColor(GenerateInverseDarkModeColor(objColor));
-        }
-
-        /// <summary>
-        /// Because the transforms applied to convert a Light Mode color to Dark Mode cannot produce some ranges of lightness and saturation, not all colors are valid in Dark Mode.
-        /// This function takes a color intended for Dark Mode and converts it to the closest possible color that is valid in Dark Mode.
-        /// If the original color is valid in Dark Mode to begin with, the transforms should end up reproducing it.
-        /// </summary>
-        /// <param name="objColor">Color to adjust, originally specified within Dark Mode.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>New Color very similar to <paramref name="objColor"/>, but with lightness and saturation values set to within the range allowable in Dark Mode.</returns>
-        private static async Task<Color> TransformToDarkModeValidVersionAsync(Color objColor, CancellationToken token = default)
-        {
-            return await GenerateDarkModeColorAsync(await GenerateInverseDarkModeColorAsync(objColor, token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;
@@ -393,156 +324,6 @@ namespace Chummer
         public static Color DieGlitchHitBackground => IsLightMode ? DieGlitchHitBackgroundLight : DieGlitchHitBackgroundDark;
         private static Color DieGlitchHitBackgroundLight { get; } = Color.DarkGreen;
         private static Color DieGlitchHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
-
-        public static Task<Color> GetWindowTextAsync(CancellationToken token = default) => IsLightMode ? GetWindowTextLightAsync(token) : GetWindowTextDarkAsync(token);
-
-        private static Task<Color> GetWindowTextLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(WindowTextLight);
-
-        private static Task<Color> GetWindowTextDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(WindowTextLight, token);
-
-        public static Task<Color> GetWindowAsync(CancellationToken token = default) => IsLightMode ? GetWindowLightAsync(token) : GetWindowDarkAsync(token);
-
-        private static Task<Color> GetWindowLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(WindowLight);
-
-        private static Task<Color> GetWindowDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(WindowLight, token);
-
-        public static Task<Color> GetInfoTextAsync(CancellationToken token = default) => IsLightMode ? GetInfoTextLightAsync(token) : GetInfoTextDarkAsync(token);
-
-        private static Task<Color> GetInfoTextLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(InfoTextLight);
-
-        private static Task<Color> GetInfoTextDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(InfoTextLight, token);
-
-        public static Task<Color> GetInfoAsync(CancellationToken token = default) => IsLightMode ? GetInfoLightAsync(token) : GetInfoDarkAsync(token);
-
-        private static Task<Color> GetInfoLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(InfoLight);
-
-        private static Task<Color> GetInfoDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(InfoLight, token);
-
-        public static Task<Color> GetGrayTextAsync(CancellationToken token = default) => IsLightMode ? GetGrayTextLightAsync(token) : GetGrayTextDarkAsync(token);
-
-        private static Task<Color> GetGrayTextLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(GrayTextLight);
-
-        private static Task<Color> GetGrayTextDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(GrayTextLight, token);
-
-        public static Task<Color> GetHighlightTextAsync(CancellationToken token = default) => IsLightMode ? GetHighlightTextLightAsync(token) : GetHighlightTextDarkAsync(token);
-
-        private static Task<Color> GetHighlightTextLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(HighlightTextLight);
-
-        private static Task<Color> GetHighlightTextDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(HighlightTextLight, token);
-
-        public static Task<Color> GetHighlightAsync(CancellationToken token = default) => IsLightMode ? GetHighlightLightAsync(token) : GetHighlightDarkAsync(token);
-
-        private static Task<Color> GetHighlightLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(HighlightLight);
-
-        private static Task<Color> GetHighlightDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(HighlightLight, token);
-
-        public static Task<Color> GetControlTextAsync(CancellationToken token = default) => IsLightMode ? GetControlTextLightAsync(token) : GetControlTextDarkAsync(token);
-
-        private static Task<Color> GetControlTextLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(ControlTextLight);
-
-        private static Task<Color> GetControlTextDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(ControlTextLight, token);
-
-        public static Task<Color> GetControlDarkestAsync(CancellationToken token = default) => IsLightMode ? GetControlDarkestLightAsync(token) : GetControlDarkestDarkAsync(token);
-
-        private static Task<Color> GetControlDarkestLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(ControlDarkestLight);
-
-        private static Task<Color> GetControlDarkestDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(ControlDarkestLight, token);
-
-        public static Task<Color> GetControlDarkerAsync(CancellationToken token = default) => IsLightMode ? GetControlDarkerLightAsync(token) : GetControlDarkerDarkAsync(token);
-
-        private static Task<Color> GetControlDarkerLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(ControlDarkerLight);
-
-        private static Task<Color> GetControlDarkerDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(ControlDarkerLight, token);
-
-        public static Task<Color> GetControlAsync(CancellationToken token = default) => IsLightMode ? GetControlLightAsync(token) : GetControlDarkAsync(token);
-
-        private static Task<Color> GetControlLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(ControlLight);
-
-        private static Task<Color> GetControlDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(ControlLight, token);
-
-        public static Task<Color> GetControlLighterAsync(CancellationToken token = default) => IsLightMode ? GetControlLighterLightAsync(token) : GetControlLighterDarkAsync(token);
-
-        private static Task<Color> GetControlLighterLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(ControlLighterLight);
-
-        private static Task<Color> GetControlLighterDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(ControlLight, token);
-
-        public static Task<Color> GetControlLightestAsync(CancellationToken token = default) => IsLightMode ? GetControlLightestLightAsync(token) : GetControlLightestDarkAsync(token);
-
-        private static Task<Color> GetControlLightestLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(ControlLightestLight);
-
-        private static Task<Color> GetControlLightestDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(ControlLightestLight, token);
-
-        public static Task<Color> GetButtonFaceAsync(CancellationToken token = default) => IsLightMode ? GetButtonFaceLightAsync(token) : GetButtonFaceDarkAsync(token);
-
-        private static Task<Color> GetButtonFaceLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(ButtonFaceLight);
-
-        private static Task<Color> GetButtonFaceDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(ButtonFaceLight, token);
-
-        public static Task<Color> GetButtonShadowAsync(CancellationToken token = default) => IsLightMode ? GetButtonShadowLightAsync(token) : GetButtonShadowDarkAsync(token);
-
-        private static Task<Color> GetButtonShadowLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(ButtonShadowLight);
-
-        private static Task<Color> GetButtonShadowDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(ButtonShadowLight, token);
-
-        public static Task<Color> GetAppWorkspaceAsync(CancellationToken token = default) => IsLightMode ? GetAppWorkspaceLightAsync(token) : GetAppWorkspaceDarkAsync(token);
-
-        private static Task<Color> GetAppWorkspaceLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(AppWorkspaceLight);
-
-        private static Task<Color> GetAppWorkspaceDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(AppWorkspaceLight, token);
-
-        public static Task<Color> GetSplitterColorAsync(CancellationToken token = default) => IsLightMode ? GetSplitterColorLightAsync(token) : GetSplitterColorDarkAsync(token);
-
-        private static Task<Color> GetSplitterColorLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(SplitterColorLight);
-
-        private static Task<Color> GetSplitterColorDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(SplitterColorLight, token);
-
-        public static Task<Color> GetHasNotesColorAsync(CancellationToken token = default) => IsLightMode ? GetHasNotesColorLightAsync(token) : GetHasNotesColorDarkAsync(token);
-
-        private static Task<Color> GetHasNotesColorLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(HasNotesColorLight);
-
-        private static Task<Color> GetHasNotesColorDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(HasNotesColorLight, token);
-
-        public static Task<Color> GetGrayHasNotesColorAsync(CancellationToken token = default) => IsLightMode ? GetGrayHasNotesColorLightAsync(token) : GetGrayHasNotesColorDarkAsync(token);
-
-        private static Task<Color> GetGrayHasNotesColorLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(GrayHasNotesColorLight);
-
-        private static Task<Color> GetGrayHasNotesColorDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(GrayHasNotesColorLight, token);
-
-        public static Task<Color> GetDieGlitchForeAsync(CancellationToken token = default) => IsLightMode ? GetDieGlitchForeLightAsync(token) : GetDieGlitchForeDarkAsync(token);
-
-        private static Task<Color> GetDieGlitchForeLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(DieGlitchForeLight);
-
-        private static Task<Color> GetDieGlitchForeDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(DieGlitchForeLight, token);
-
-        public static Task<Color> GetDieGlitchBackgroundAsync(CancellationToken token = default) => IsLightMode ? GetDieGlitchBackgroundLightAsync(token) : GetDieGlitchBackgroundDarkAsync(token);
-
-        private static Task<Color> GetDieGlitchBackgroundLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(DieGlitchBackgroundLight);
-
-        private static Task<Color> GetDieGlitchBackgroundDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(DieGlitchBackgroundLight, token);
-
-        public static Task<Color> GetDieHitForeAsync(CancellationToken token = default) => IsLightMode ? GetDieHitForeLightAsync(token) : GetDieHitForeDarkAsync(token);
-
-        private static Task<Color> GetDieHitForeLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(DieHitForeLight);
-
-        private static Task<Color> GetDieHitForeDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(DieHitForeLight, token);
-
-        public static Task<Color> GetDieHitBackgroundAsync(CancellationToken token = default) => IsLightMode ? GetDieHitBackgroundLightAsync(token) : GetDieHitBackgroundDarkAsync(token);
-
-        private static Task<Color> GetDieHitBackgroundLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(DieHitBackgroundLight);
-
-        private static Task<Color> GetDieHitBackgroundDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(DieHitBackgroundLight, token);
-
-        public static Task<Color> GetDieGlitchHitForeAsync(CancellationToken token = default) => IsLightMode ? GetDieGlitchHitForeLightAsync(token) : GetDieGlitchHitForeDarkAsync(token);
-
-        private static Task<Color> GetDieGlitchHitForeLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(DieGlitchHitForeLight);
-
-        private static Task<Color> GetDieGlitchHitForeDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(DieHitForeLight, token);
-
-        public static Task<Color> GetDieGlitchHitBackgroundAsync(CancellationToken token = default) => IsLightMode ? GetDieGlitchHitBackgroundLightAsync(token) : GetDieGlitchHitBackgroundDarkAsync(token);
-
-        private static Task<Color> GetDieGlitchHitBackgroundLightAsync(CancellationToken token = default) => token.IsCancellationRequested ? Task.FromCanceled<Color>(token) : Task.FromResult(DieGlitchHitBackgroundLight);
-
-        private static Task<Color> GetDieGlitchHitBackgroundDarkAsync(CancellationToken token = default) => GenerateDarkModeColorAsync(DieHitBackgroundLight, token);
 
         public static void UpdateLightDarkMode(this Control objControl, CancellationToken token = default)
         {
@@ -1163,17 +944,17 @@ namespace Chummer
                         Color objAlternateBackColor;
                         if (blnLightMode)
                         {
-                            objBackgroundColor = await GetAppWorkspaceLightAsync(token).ConfigureAwait(false);
-                            objForeColor = await GetControlTextLightAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetControlLightAsync(token).ConfigureAwait(false);
-                            objAlternateBackColor = await GetControlLighterLightAsync(token).ConfigureAwait(false);
+                            objBackgroundColor = AppWorkspaceLight;
+                            objForeColor = ControlTextLight;
+                            objBackColor = ControlLight;
+                            objAlternateBackColor = ControlLighterLight;
                         }
                         else
                         {
-                            objBackgroundColor = await GetAppWorkspaceDarkAsync(token).ConfigureAwait(false);
-                            objForeColor = await GetControlTextDarkAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetControlDarkAsync(token).ConfigureAwait(false);
-                            objAlternateBackColor = await GetControlLighterDarkAsync(token).ConfigureAwait(false);
+                            objBackgroundColor = AppWorkspaceDark;
+                            objForeColor = ControlTextDark;
+                            objBackColor = ControlDark;
+                            objAlternateBackColor = ControlLighterDark;
                         }
                         await objDataGridView.DoThreadSafeAsync(x =>
                         {
@@ -1198,8 +979,8 @@ namespace Chummer
                 case SplitContainer objSplitControl:
                     {
                         Color objColor = blnLightMode
-                            ? await GetSplitterColorLightAsync(token).ConfigureAwait(false)
-                            : await GetSplitterColorDarkAsync(token).ConfigureAwait(false);
+                            ? SplitterColorLight
+                            : SplitterColorDark;
                         await objSplitControl.DoThreadSafeAsync(x =>
                         {
                             x.ForeColor = objColor;
@@ -1217,13 +998,13 @@ namespace Chummer
                         Color objBackColor;
                         if (blnLightMode)
                         {
-                            objForeColor = await GetWindowTextLightAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetWindowLightAsync(token).ConfigureAwait(false);
+                            objForeColor = WindowTextLight;
+                            objBackColor = WindowLight;
                         }
                         else
                         {
-                            objForeColor = await GetWindowTextDarkAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetWindowDarkAsync(token).ConfigureAwait(false);
+                            objForeColor = WindowTextDark;
+                            objBackColor = WindowDark;
                         }
                         await treControl.DoThreadSafeAsync(x =>
                         {
@@ -1278,13 +1059,13 @@ namespace Chummer
                         Color objBackColor;
                         if (blnLightMode)
                         {
-                            objForeColor = await GetWindowTextLightAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetWindowLightAsync(token).ConfigureAwait(false);
+                            objForeColor = WindowTextLight;
+                            objBackColor = WindowLight;
                         }
                         else
                         {
-                            objForeColor = await GetWindowTextDarkAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetWindowDarkAsync(token).ConfigureAwait(false);
+                            objForeColor = WindowTextDark;
+                            objBackColor = WindowDark;
                         }
 
                         await objListView.DoThreadSafeAsync(x =>
@@ -1360,13 +1141,13 @@ namespace Chummer
                         Color objBackColor;
                         if (blnLightMode)
                         {
-                            objForeColor = await GetWindowTextLightAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetWindowLightAsync(token).ConfigureAwait(false);
+                            objForeColor = WindowTextLight;
+                            objBackColor = WindowLight;
                         }
                         else
                         {
-                            objForeColor = await GetWindowTextDarkAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetWindowDarkAsync(token).ConfigureAwait(false);
+                            objForeColor = WindowTextDark;
+                            objBackColor = WindowDark;
                         }
                         await objControl.DoThreadSafeAsync(x =>
                         {
@@ -1381,13 +1162,13 @@ namespace Chummer
                         Color objBackColor;
                         if (blnLightMode)
                         {
-                            objForeColor = await GetControlTextLightAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetControlLightAsync(token).ConfigureAwait(false);
+                            objForeColor = ControlTextLight;
+                            objBackColor = ControlLight;
                         }
                         else
                         {
-                            objForeColor = await GetControlTextDarkAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetControlDarkAsync(token).ConfigureAwait(false);
+                            objForeColor = ControlTextDark;
+                            objBackColor = ControlDark;
                         }
                         await objControl.DoThreadSafeAsync(x =>
                         {
@@ -1419,13 +1200,13 @@ namespace Chummer
                         Color objForeColor;
                         if (blnLightMode)
                         {
-                            objForeColor = await GetControlTextLightAsync(token).ConfigureAwait(false); // Disabled case for Light mode already handled by the DefaultColorScheme = true property
+                            objForeColor = ControlTextLight; // Disabled case for Light mode already handled by the DefaultColorScheme = true property
                         }
                         else
                         {
                             objForeColor = await chkControlColored.DoThreadSafeFuncAsync(x => x.Enabled, token).ConfigureAwait(false)
-                                ? await GetControlTextDarkAsync(token).ConfigureAwait(false)
-                                : await GetGrayTextDarkAsync(token).ConfigureAwait(false);
+                                ? ControlTextDark
+                                : GrayTextDark;
                         }
                         await chkControlColored.DoThreadSafeAsync(x =>
                         {
@@ -1449,13 +1230,13 @@ namespace Chummer
                         Color objBackColor;
                         if (blnLightMode)
                         {
-                            objForeColor = await GetControlLightestLightAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetControlDarkAsync(token).ConfigureAwait(false);
+                            objForeColor = ControlLightestLight;
+                            objBackColor = ControlDark;
                         }
                         else
                         {
-                            objForeColor = await GetControlLightestDarkAsync(token).ConfigureAwait(false);
-                            objBackColor = await GetControlLightAsync(token).ConfigureAwait(false);
+                            objForeColor = ControlLightestDark;
+                            objBackColor = ControlLight;
                         }
 
                         await objControl.DoThreadSafeAsync(x =>
@@ -1490,14 +1271,14 @@ namespace Chummer
                     goto default;
                 default:
                     {
-                        Color objControlLightColor = await GetControlLightAsync(token).ConfigureAwait(false);
-                        Color objControlDarkColor = await GetControlDarkAsync(token).ConfigureAwait(false);
-                        Color objControlDarkerLightColor = await GetControlDarkerLightAsync(token).ConfigureAwait(false);
-                        Color objControlDarkestLightColor = await GetControlDarkestLightAsync(token).ConfigureAwait(false);
-                        Color objControlDarkerDarkColor = await GetControlDarkerDarkAsync(token).ConfigureAwait(false);
-                        Color objControlDarkestDarkColor = await GetControlDarkestDarkAsync(token).ConfigureAwait(false);
-                        Color objControlTextLightColor = await GetControlTextLightAsync(token).ConfigureAwait(false);
-                        Color objControlTextDarkColor = await GetControlTextDarkAsync(token).ConfigureAwait(false);
+                        Color objControlLightColor = ControlLight;
+                        Color objControlDarkColor = ControlDark;
+                        Color objControlDarkerLightColor = ControlDarkerLight;
+                        Color objControlDarkestLightColor = ControlDarkestLight;
+                        Color objControlDarkerDarkColor = ControlDarkerDark;
+                        Color objControlDarkestDarkColor = ControlDarkestDark;
+                        Color objControlTextLightColor = ControlTextLight;
+                        Color objControlTextDarkColor = ControlTextDark;
                         await objControl.DoThreadSafeAsync(x =>
                         {
                             if (blnLightMode)
@@ -1529,13 +1310,13 @@ namespace Chummer
                                                                                    == byte.MaxValue))))
                         {
                             Color objControlLighterLightColor
-                                = await GetControlLighterLightAsync(token).ConfigureAwait(false);
+                                = ControlLighterLight;
                             Color objControlLightestLightColor
-                                = await GetControlLightestLightAsync(token).ConfigureAwait(false);
+                                = ControlLightestLight;
                             Color objControlLighterDarkColor
-                                = await GetControlLighterDarkAsync(token).ConfigureAwait(false);
+                                = ControlLighterDark;
                             Color objControlLightestDarkColor
-                                = await GetControlLightestDarkAsync(token).ConfigureAwait(false);
+                                = ControlLightestDark;
                             await objControl.DoThreadSafeAsync(x =>
                             {
                                 if (blnLightMode)
@@ -1568,8 +1349,8 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
 
-            Color objControlLightColor = await GetControlLightAsync(token).ConfigureAwait(false);
-            Color objControlDarkColor = await GetControlDarkAsync(token).ConfigureAwait(false);
+            Color objControlLightColor = ControlLight;
+            Color objControlDarkColor = ControlDark;
 
             ToolStrip objParent = tssItem.GetCurrentParent();
             if (objParent != null)
@@ -1637,7 +1418,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
 
-            Color objBackColor = blnLightMode ? await GetWindowLightAsync(token).ConfigureAwait(false) : await GetWindowDarkAsync(token).ConfigureAwait(false);
+            Color objBackColor = blnLightMode ? WindowLight : WindowDark;
 
             TreeView treView = nodNode.TreeView;
             if (treView != null)

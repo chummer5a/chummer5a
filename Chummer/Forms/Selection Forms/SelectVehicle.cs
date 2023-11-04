@@ -144,7 +144,7 @@ namespace Chummer
 
                 // Populate the Vehicle Category list.
                 string strFilterPrefix = "vehicles/vehicle[(" + await _objCharacter.Settings.BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + ") and category = ";
-                foreach (XPathNavigator objXmlCategory in await _xmlBaseVehicleDataNode.SelectAndCacheExpressionAsync("categories/category", _objGenericToken).ConfigureAwait(false))
+                foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("categories/category", _objGenericToken))
                 {
                     string strInnerText = objXmlCategory.Value;
                     if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
@@ -449,7 +449,7 @@ namespace Chummer
                     AvailabilityValue objTotalAvail
                         = new AvailabilityValue(0, (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value,
                                                 await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? -4 : 0);
-                    string strAvail = objTotalAvail.ToString();
+                    string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
                     await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblVehicleAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
 
@@ -538,9 +538,9 @@ namespace Chummer
                         decCost = decTmp;
 
                         if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                            decCost *= 1.0m - (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                            decCost *= 1.0m - await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                         // Apply the markup if applicable.
-                        decCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                        decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
 
                         if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                             decCost *= 0.9m;
@@ -622,8 +622,8 @@ namespace Chummer
                 bool blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
                 decimal decBaseCostMultiplier = 1.0m;
                 if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decBaseCostMultiplier -= (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m);
-                decBaseCostMultiplier *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m);
+                    decBaseCostMultiplier -= await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
+                decBaseCostMultiplier *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
                 bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token).ConfigureAwait(false);
                 if (await tabViews.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == 1)
                 {
@@ -887,10 +887,10 @@ namespace Chummer
                         xmlVehicle = _xmlBaseVehicleDataNode.TryGetNodeByNameOrId("vehicles/vehicle", strSelectedId);
                         if (xmlVehicle != null)
                         {
-                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly
-                                                  || await txtSearch
-                                                           .DoThreadSafeFuncAsync(x => x.TextLength, token: token)
-                                                           .ConfigureAwait(false) == 0)
+                            _strSelectCategory = GlobalSettings.SearchInCategoryOnly
+                                                 || await txtSearch
+                                                     .DoThreadSafeFuncAsync(x => x.TextLength, token: token)
+                                                     .ConfigureAwait(false) == 0
                                 ? await cboCategory
                                         .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                         .ConfigureAwait(false)
@@ -926,9 +926,9 @@ namespace Chummer
                         if (xmlVehicle != null)
                         {
                             _strSelectCategory
-                                = (GlobalSettings.SearchInCategoryOnly
-                                   || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token)
-                                                     .ConfigureAwait(false) == 0)
+                                = GlobalSettings.SearchInCategoryOnly
+                                  || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token)
+                                      .ConfigureAwait(false) == 0
                                     ? await cboCategory
                                             .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                             .ConfigureAwait(false)
@@ -958,8 +958,8 @@ namespace Chummer
                         (await xmlVehicle.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false))
                         ?.Value, GlobalSettings.InvariantCultureInfo)
                     : 0;
-                decCost *= 1 - (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                            .ConfigureAwait(false) / 100.0m);
+                decCost *= 1 - await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token)
+                    .ConfigureAwait(false) / 100.0m;
 
                 _blnUsedVehicle = true;
                 _strUsedAvail = (await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text, token: token)

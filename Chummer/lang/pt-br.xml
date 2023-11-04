@@ -3111,6 +3111,10 @@
       <text>(f)</text>
     </string>
     <string>
+      <key>String_DamageFire</key>
+      <text>(incêndio)</text>
+    </string>
+    <string>
       <key>String_DamagePOrS</key>
       <text>F ou A</text>
     </string>

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Composition;
@@ -707,8 +708,8 @@ namespace Chummer.Plugins
                                                 ssgr.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList());
                         foreach (TreeNode node in nodelist)
                         {
-                            await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node,
-                                                                   (key, oldValue) => node);
+                            MyTreeNodes2Add.AddOrUpdate(node.Name, node,
+                                (key, oldValue) => node);
                         }
 
                         await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
@@ -740,7 +741,7 @@ namespace Chummer.Plugins
             }
         }
 
-        public static readonly LockingDictionary<string, TreeNode> MyTreeNodes2Add = new LockingDictionary<string, TreeNode>();
+        public static readonly ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
 
         private void mnuSINners_Click(object sender, EventArgs ea)
         {
@@ -991,7 +992,8 @@ namespace Chummer.Plugins
                         IEnumerable<TreeNode> nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
                         foreach (TreeNode node in nodelist)
                         {
-                            await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node, token);
+                            token.ThrowIfCancellationRequested();
+                            MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
                         }
                         await MainForm.CharacterRoster.RefreshPluginNodesAsync(this, token);
                         MainForm.CharacterRoster.BringToFront();
@@ -1440,7 +1442,7 @@ namespace Chummer.Plugins
                             }
                             case CharacterCache objCache:
                             {
-                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob, token))
+                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob))
                                 {
                                     mySiNnerId = (Guid?) sinidob;
                                 }

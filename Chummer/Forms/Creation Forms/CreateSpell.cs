@@ -53,12 +53,12 @@ namespace Chummer
                                                            out List<ListItem> lstCategory))
             {
                 // Populate the list of Spell Categories.
-                foreach (XPathNavigator objXmlCategory in await _objXmlDocument.SelectAndCacheExpressionAsync(
-                             "/chummer/categories/category").ConfigureAwait(false))
+                foreach (XPathNavigator objXmlCategory in _objXmlDocument.SelectAndCacheExpression(
+                             "/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                                  ?? strInnerText));
                 }
 

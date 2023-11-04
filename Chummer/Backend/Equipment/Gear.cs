@@ -1344,10 +1344,10 @@ namespace Chummer.Backend.Equipment
                 Category == "Cyberdecks")
             {
                 // Legacy shim
-                _blnCanSwapAttributes = (Name != "MCT Trainee" && Name != "C-K Analyst" &&
-                                         Name != "Aztechnology Emissary" &&
-                                         Name != "Yak Killer" && Name != "Ring of Light Special" &&
-                                         Name != "Ares Echo Unlimited");
+                _blnCanSwapAttributes = Name != "MCT Trainee" && Name != "C-K Analyst" &&
+                                        Name != "Aztechnology Emissary" &&
+                                        Name != "Yak Killer" && Name != "Ring of Light Special" &&
+                                        Name != "Ares Echo Unlimited";
             }
 
             if (blnNeedCommlinkLegacyShim)
@@ -1965,7 +1965,7 @@ namespace Chummer.Backend.Equipment
                 return Page;
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
+                ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -2025,7 +2025,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstChildren;
             }
         }
@@ -2700,7 +2700,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strCapacity;
                 if (string.IsNullOrEmpty(strReturn))
-                    return (0.0m).ToString("#,0.##", GlobalSettings.CultureInfo);
+                    return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
                 if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strReturn.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
@@ -3005,12 +3005,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the just the Gear itself.
         /// </summary>
-        public decimal CalculatedCost => (OwnCostPreMultipliers * Quantity) / CostFor;
+        public decimal CalculatedCost => OwnCostPreMultipliers * Quantity / CostFor;
 
         public async ValueTask<decimal> GetCalculatedCostAsync(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            return (await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity) / CostFor;
+            return await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity / CostFor;
         }
 
         /// <summary>
@@ -3027,7 +3027,7 @@ namespace Chummer.Backend.Equipment
                 int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
                 
                 // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
-                return (OwnCostPreMultipliers * Quantity * intParentMultiplier) / CostFor + decPlugin * Quantity;
+                return OwnCostPreMultipliers * Quantity * intParentMultiplier / CostFor + decPlugin * Quantity;
             }
         }
 
@@ -3045,7 +3045,7 @@ namespace Chummer.Backend.Equipment
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
 
             // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
-            return (await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity * intParentMultiplier) / CostFor + decPlugin * Quantity;
+            return await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity * intParentMultiplier / CostFor + decPlugin * Quantity;
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -3063,7 +3063,7 @@ namespace Chummer.Backend.Equipment
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
             
             // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
-            return (OwnCostPreMultipliers * Quantity * intParentMultiplier) / CostFor + decPlugin * Quantity;
+            return OwnCostPreMultipliers * Quantity * intParentMultiplier / CostFor + decPlugin * Quantity;
         }
 
         public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
@@ -3083,7 +3083,7 @@ namespace Chummer.Backend.Equipment
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
 
             // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
-            return (await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity * intParentMultiplier) / CostFor + decPlugin * Quantity;
+            return await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity * intParentMultiplier / CostFor + decPlugin * Quantity;
         }
 
         /// <summary>
@@ -3124,7 +3124,7 @@ namespace Chummer.Backend.Equipment
 
                 decimal decGearWeight = 0;
                 decimal decParentWeight = 0;
-                if (Parent != null && (strWeightExpression.ContainsAny("Parent Weight", "Gear Weight")))
+                if (Parent != null && strWeightExpression.ContainsAny("Parent Weight", "Gear Weight"))
                 {
                     decParentWeight = ((Gear)Parent).OwnWeight;
                     decGearWeight = decParentWeight * ((Gear)Parent).Quantity;
@@ -3989,7 +3989,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
                 {
-                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                           await _objCharacter.Improvements.ToListAsync(x =>
@@ -4009,7 +4009,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                          await _objCharacter.Improvements.ToListAsync(x =>
@@ -4933,14 +4933,14 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlLoopNode in xmlGearDataList)
                         {
                             token.ThrowIfCancellationRequested();
-                            XPathNavigator xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/parentdetails", token).ConfigureAwait(false);
+                            XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
                             if (xmlTestNode != null && await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/parentdetails", token).ConfigureAwait(false);
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                             if (xmlTestNode != null &&
                                 !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
@@ -4948,14 +4948,14 @@ namespace Chummer.Backend.Equipment
                                 continue;
                             }
 
-                            xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/geardetails", token).ConfigureAwait(false);
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
                             if (xmlTestNode != null && await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/geardetails", token).ConfigureAwait(false);
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                             if (xmlTestNode != null &&
                                 !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
@@ -4985,7 +4985,7 @@ namespace Chummer.Backend.Equipment
                                 foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    XPathNavigator xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/parentdetails", token).ConfigureAwait(false);
+                                    XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
                                     if (xmlTestNode != null &&
                                         await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                     {
@@ -4993,7 +4993,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/parentdetails", token).ConfigureAwait(false);
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                                     if (xmlTestNode != null &&
                                         !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                     {
@@ -5001,7 +5001,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/geardetails", token).ConfigureAwait(false);
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
                                     if (xmlTestNode != null &&
                                         await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                     {
@@ -5009,7 +5009,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/geardetails", token).ConfigureAwait(false);
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                                     if (xmlTestNode != null &&
                                         !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                     {
@@ -5042,7 +5042,7 @@ namespace Chummer.Backend.Equipment
                                     foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        XPathNavigator xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/parentdetails", token).ConfigureAwait(false);
+                                        XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
                                         if (xmlTestNode != null &&
                                             await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                         {
@@ -5050,7 +5050,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/parentdetails", token).ConfigureAwait(false);
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                                         if (xmlTestNode != null &&
                                             !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                         {
@@ -5058,7 +5058,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/geardetails", token).ConfigureAwait(false);
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
                                         if (xmlTestNode != null &&
                                             await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                         {
@@ -5066,7 +5066,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/geardetails", token).ConfigureAwait(false);
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                                         if (xmlTestNode != null &&
                                             !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                         {
@@ -5366,7 +5366,6 @@ namespace Chummer.Backend.Equipment
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                 }
-
             }
             finally
             {

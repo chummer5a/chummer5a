@@ -74,7 +74,7 @@ namespace Chummer
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstChoice2))
                         {
-                            foreach (XPathNavigator objChoice in await xmlChoices.SelectAndCacheExpressionAsync("choice").ConfigureAwait(false))
+                            foreach (XPathNavigator objChoice in xmlChoices.SelectAndCacheExpression("choice"))
                             {
                                 string strName = (await objChoice.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
                                                  ?? string.Empty;

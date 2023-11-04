@@ -341,7 +341,7 @@ namespace Chummer
                 {
                     using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
-                        byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength);
+                        byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength, token);
                         try
                         {
                             await objStream.WriteAsync(achrBuffer, 0, intArrayLength, token).ConfigureAwait(false);

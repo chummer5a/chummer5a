@@ -79,8 +79,8 @@ namespace Chummer
             _blnCanGenericSpellBeFree = blnCanGenericSpellBeFree;
             await txtSearch.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
             // Populate the Category list.
-            foreach (XPathNavigator objXmlCategory in await _xmlBaseSpellDataNode.SelectAndCacheExpressionAsync(
-                         "categories/category").ConfigureAwait(false))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.SelectAndCacheExpression(
+                         "categories/category"))
             {
                 string strCategory = objXmlCategory.Value;
                 if (!string.IsNullOrEmpty(_strLimitCategory) && strCategory != _strLimitCategory)
@@ -88,7 +88,7 @@ namespace Chummer
                 if (!await AnyItemInList(strCategory).ConfigureAwait(false))
                     continue;
                 _lstCategory.Add(new ListItem(strCategory,
-                                              (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
+                                              objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                               ?? strCategory));
             }
 

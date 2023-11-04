@@ -119,7 +119,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strStage;
             }
         }
@@ -360,7 +360,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_objCachedSourceDetail == default)
                         _objCachedSourceDetail = SourceString.GetSourceString(
@@ -379,7 +379,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("sourceid", SourceIDString);
@@ -540,8 +540,10 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (!AllowPrint)
                     return;
 
@@ -552,15 +554,15 @@ namespace Chummer
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager
-                                            .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                            .ConfigureAwait(false);
+                        .GetStringAsync("String_Space", strLanguageToPrint, token: token)
+                        .ConfigureAwait(false);
                     string strRatingString = string.Empty;
                     if (intRating > 1)
                         strRatingString = strSpace + intRating.ToString(objCulture);
@@ -570,44 +572,44 @@ namespace Chummer
                                                  + await GetSourceNameAsync(strLanguageToPrint, token)
                                                      .ConfigureAwait(false) + ')';
                     await objWriter.WriteElementStringAsync(
-                                       "extra",
-                                       await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
-                                                          .ConfigureAwait(false) + strRatingString + strSourceName,
-                                       token: token)
-                                   .ConfigureAwait(false);
+                            "extra",
+                            await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                                .ConfigureAwait(false) + strRatingString + strSourceName,
+                            token: token)
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("bp", BP.ToString(objCulture), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     string strQualityType = Type.ToString();
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         strQualityType =
                             (await (await _objCharacter
-                                          .LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
-                                          .ConfigureAwait(false))
-                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                       "/chummer/categories/category[. = " + strQualityType.CleanXPath()
-                                                                           + "]/@translate", token: token)
-                                   .ConfigureAwait(false))
+                                    .LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
+                                    .ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsync(
+                                    "/chummer/categories/category[. = " + strQualityType.CleanXPath()
+                                                                        + "]/@translate", token: token)
+                                .ConfigureAwait(false))
                             ?.Value ?? strQualityType;
                     }
 
                     await objWriter.WriteElementStringAsync("qualitytype", strQualityType, token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("qualitytype_english", Type.ToString(), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("qualitysource", OriginSource.ToString(), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("metagenic", Metagenic.ToString(), token: token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "source",
-                              await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
-                                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "source",
+                            await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
                         await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
                 }
@@ -616,6 +618,10 @@ namespace Chummer
                     // </quality>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -630,7 +636,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceID;
             }
         }
@@ -642,7 +648,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -654,7 +660,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -666,18 +672,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (!Guid.TryParse(value, out Guid guiTemp) || _guiWeaponID == guiTemp)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _guiWeaponID = guiTemp;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -689,12 +697,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) != value)
                         OnPropertyChanged();
@@ -709,7 +717,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnMetagenic;
             }
         }
@@ -721,13 +729,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strExtra;
             }
             set
             {
                 value = _objCharacter.ReverseTranslateExtra(value);
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) == value)
                         return;
@@ -743,12 +751,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSource;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSource, value) != value)
                         OnPropertyChanged();
@@ -763,12 +771,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPage;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPage, value) != value)
                         OnPropertyChanged();
@@ -786,7 +794,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -804,8 +812,9 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
@@ -822,12 +831,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSourceName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strSourceName, value) != value)
                         OnPropertyChanged();
@@ -840,7 +849,7 @@ namespace Chummer
         /// </summary>
         public string GetSourceName(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _objCharacter.TranslateExtra(_strSourceName, strLanguage);
         }
 
@@ -849,8 +858,11 @@ namespace Chummer
         /// </summary>
         public async Task<string> GetSourceNameAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return await _objCharacter.TranslateExtraAsync(_strSourceName, strLanguage, token: token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -860,12 +872,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _nodBonus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _nodBonus, value) != value)
                         OnPropertyChanged();
@@ -880,12 +892,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _nodFirstLevelBonus;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _nodFirstLevelBonus, value) != value)
                         OnPropertyChanged();
@@ -900,12 +912,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _nodNaturalWeaponsNode;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _nodNaturalWeaponsNode, value) != value)
                         OnPropertyChanged();
@@ -920,12 +932,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _eQualityType;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eQualityType, value) != value)
                         OnPropertyChanged();
@@ -940,12 +952,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _eQualitySource;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eQualitySource, value) != value)
                         OnPropertyChanged();
@@ -961,7 +973,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intValue = 0;
                     if (_nodDiscounts?.TryGetInt32FieldQuickly("value", ref intValue) != true)
@@ -986,7 +998,7 @@ namespace Chummer
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intBP, value) != value)
                         OnPropertyChanged();
@@ -1002,7 +1014,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
@@ -1014,8 +1026,9 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
@@ -1030,7 +1043,7 @@ namespace Chummer
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string strReturn = DisplayNameShort(strLanguage);
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
@@ -1074,8 +1087,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                        .ConfigureAwait(false);
@@ -1136,7 +1150,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     return _objCharacter.Qualities.Count(objExistingQuality =>
                                                              objExistingQuality.SourceID == SourceID
@@ -1154,18 +1168,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnPrint;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnPrint == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnPrint = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1177,18 +1193,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnDoubleCostCareer;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDoubleCostCareer == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnDoubleCostCareer = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1200,18 +1218,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnCanBuyWithSpellPoints;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnCanBuyWithSpellPoints == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnCanBuyWithSpellPoints = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1223,18 +1243,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnImplemented;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnImplemented == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnImplemented = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1246,7 +1268,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (OriginSource == QualitySource.Metatype
                         || OriginSource == QualitySource.MetatypeRemovable
@@ -1277,13 +1299,15 @@ namespace Chummer
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnContributeToLimit == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnContributeToLimit = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1295,7 +1319,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (OriginSource == QualitySource.Metatype || OriginSource == QualitySource.MetatypeRemovable
                                                                || OriginSource == QualitySource.MetatypeRemovedAtChargen
@@ -1314,18 +1338,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnStagedPurchase;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnStagedPurchase == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnStagedPurchase = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1337,7 +1363,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (OriginSource == QualitySource.Metatype || OriginSource == QualitySource.MetatypeRemovable
                                                                || OriginSource == QualitySource.Heritage)
@@ -1375,7 +1401,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (!string.IsNullOrEmpty(_strCachedNotes))
                         return _strCachedNotes;
@@ -1404,7 +1430,7 @@ namespace Chummer
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNotes, value) == value)
                         return;
@@ -1421,18 +1447,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _colNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1443,7 +1471,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedSuppressed < 0)
                     {
@@ -1464,7 +1492,7 @@ namespace Chummer
 
         private void RefreshSuppressed()
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Suppressed)
                 {
@@ -1484,8 +1512,9 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1513,8 +1542,9 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1543,7 +1573,7 @@ namespace Chummer
 
         public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality, TreeView treQualities)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if ((OriginSource == QualitySource.BuiltIn ||
                      OriginSource == QualitySource.Improvement ||
@@ -1612,10 +1642,11 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">The Character</param>
         /// <param name="xmlQuality">The XmlNode describing the quality</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Is the Quality valid on said Character</returns>
-        public static bool IsValid(Character objCharacter, XmlNode xmlQuality)
+        public static bool IsValid(Character objCharacter, XmlNode xmlQuality, CancellationToken token = default)
         {
-            return IsValid(objCharacter, xmlQuality, out QualityFailureReasons _, out List<Quality> _);
+            return IsValid(objCharacter, xmlQuality, out QualityFailureReasons _, out List<Quality> _, token);
         }
 
         /// <summary>
@@ -1627,12 +1658,13 @@ namespace Chummer
         /// <param name="objXmlQuality">The XmlNode describing the quality</param>
         /// <param name="reason">The reason the quality is not valid</param>
         /// <param name="conflictingQualities">List of Qualities that conflicts with this Quality</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Is the Quality valid on said Character</returns>
-        public static bool IsValid(Character objCharacter, XmlNode objXmlQuality, out QualityFailureReasons reason, out List<Quality> conflictingQualities)
+        public static bool IsValid(Character objCharacter, XmlNode objXmlQuality, out QualityFailureReasons reason, out List<Quality> conflictingQualities, CancellationToken token = default)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            using (EnterReadLock.Enter(objCharacter.LockObject))
+            using (objCharacter.LockObject.EnterHiPrioReadLock(token))
             {
                 conflictingQualities = new List<Quality>(objCharacter.Qualities.Count);
                 reason = QualityFailureReasons.None;
@@ -1642,6 +1674,7 @@ namespace Chummer
                 {
                     foreach (Quality objQuality in objCharacter.Qualities)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (string.Equals(objQuality.SourceIDString, objXmlQuality["id"]?.InnerText, StringComparison.OrdinalIgnoreCase))
                         {
                             reason |= QualityFailureReasons
@@ -1658,6 +1691,7 @@ namespace Chummer
                     XmlNode xmlOneOfNode = xmlRequiredNode["oneof"];
                     if (xmlOneOfNode != null)
                     {
+                        token.ThrowIfCancellationRequested();
                         //Add to set for O(N log M) runtime instead of O(N * M)
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
@@ -1669,6 +1703,7 @@ namespace Chummer
                                 {
                                     foreach (XmlNode node in xmlNodeList)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         lstRequired.Add(node.InnerText);
                                     }
                                 }
@@ -1680,6 +1715,8 @@ namespace Chummer
                             }
                         }
 
+                        token.ThrowIfCancellationRequested();
+
                         reason |= QualityFailureReasons.MetatypeRequired;
                         using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("metatype"))
                         {
@@ -1687,6 +1724,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode objNode in xmlNodeList)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (objNode.InnerText == objCharacter.Metatype)
                                     {
                                         reason &= ~QualityFailureReasons.MetatypeRequired;
@@ -1696,6 +1734,8 @@ namespace Chummer
                             }
                         }
                     }
+
+                    token.ThrowIfCancellationRequested();
 
                     XmlNode xmlAllOfNode = xmlRequiredNode["allof"];
                     if (xmlAllOfNode != null)
@@ -1707,6 +1747,7 @@ namespace Chummer
                         {
                             foreach (Quality objQuality in objCharacter.Qualities)
                             {
+                                token.ThrowIfCancellationRequested();
                                 lstRequired.Add(objQuality.Name);
                             }
 
@@ -1716,6 +1757,7 @@ namespace Chummer
                                 {
                                     foreach (XmlNode node in xmlNodeList)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (!lstRequired.Contains(node.InnerText))
                                         {
                                             reason |= QualityFailureReasons.RequiredMultiple;
@@ -1727,6 +1769,8 @@ namespace Chummer
                         }
                     }
                 }
+
+                token.ThrowIfCancellationRequested();
 
                 XmlNode xmlForbiddenNode = objXmlQuality["forbidden"];
                 if (xmlForbiddenNode != null)
@@ -1745,6 +1789,7 @@ namespace Chummer
                                 {
                                     foreach (XmlNode node in xmlNodeList)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         setQualityForbidden.Add(node.InnerText);
                                     }
                                 }
@@ -1752,6 +1797,7 @@ namespace Chummer
 
                             foreach (Quality quality in objCharacter.Qualities)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (setQualityForbidden.Contains(quality.Name))
                                 {
                                     reason |= QualityFailureReasons.ForbiddenSingle;
@@ -1853,19 +1899,22 @@ namespace Chummer
         {
             if (objOldQuality == null)
                 throw new ArgumentNullException(nameof(objOldQuality));
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // Helps to capture a write lock here for performance purposes
                 IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token)
                                                                 .ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Create(objXmlQuality, QualitySource.Selected, lstWeapons);
 
                     int intKarmaCost;
-                    using (await EnterReadLock.EnterAsync(objOldQuality.LockObject, token).ConfigureAwait(false))
+                    using (await objOldQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         bool blnAddItem = true;
                         intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels)
                                        * _objCharacter.Settings.KarmaQuality;
@@ -2038,7 +2087,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -2141,7 +2190,7 @@ namespace Chummer
                             decimal decInnerReturn = 0;
                             foreach (Weapon objDeleteWeapon in objVehicle.Weapons
                                                                          .DeepWhere(x => x.Children,
-                                                                                    x => x.ParentID == InternalId).ToList())
+                                                                                    x => x.ParentID == InternalId, token).ToList())
                             {
                                 token.ThrowIfCancellationRequested();
                                 decInnerReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
@@ -2153,7 +2202,7 @@ namespace Chummer
                                 decimal decInnerReturn2 = 0;
                                 foreach (Weapon objDeleteWeapon in objMod.Weapons
                                                                          .DeepWhere(x => x.Children,
-                                                                                    x => x.ParentID == InternalId).ToList())
+                                                                                    x => x.ParentID == InternalId, token).ToList())
                                 {
                                     token.ThrowIfCancellationRequested();
                                     decInnerReturn2 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
@@ -2168,7 +2217,7 @@ namespace Chummer
                                 decimal decInnerReturn2 = 0;
                                 foreach (Weapon objDeleteWeapon in objMount.Weapons
                                                                            .DeepWhere(x => x.Children,
-                                                                                      x => x.ParentID == InternalId).ToList())
+                                                                                      x => x.ParentID == InternalId, token).ToList())
                                 {
                                     token.ThrowIfCancellationRequested();
                                     decInnerReturn2 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
@@ -2180,7 +2229,7 @@ namespace Chummer
                                     decimal decInnerReturn3 = 0;
                                     foreach (Weapon objDeleteWeapon in objMod.Weapons
                                                                              .DeepWhere(x => x.Children,
-                                                                                 x => x.ParentID == InternalId).ToList())
+                                                                                 x => x.ParentID == InternalId, token).ToList())
                                     {
                                         token.ThrowIfCancellationRequested();
                                         decInnerReturn3 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
@@ -2218,6 +2267,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     decimal decReturn = 0;
                     if (blnFullRemoval)
                     {

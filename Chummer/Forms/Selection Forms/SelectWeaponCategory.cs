@@ -52,18 +52,18 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(OnlyCategory)
                              ? objXmlDocument.Select("/chummer/categories/category[. = "
                                                       + OnlyCategory.CleanXPath() + ']')
-                             : await objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
+                             : objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
                     if (!string.IsNullOrEmpty(WeaponType) && objXmlCategory.Value != "Exotic Ranged Weapons")
                     {
-                        string strType = (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@type").ConfigureAwait(false))?.Value;
+                        string strType = objXmlCategory.SelectSingleNodeAndCacheExpression("@type")?.Value;
                         if (string.IsNullOrEmpty(strType) || strType != WeaponType)
                             continue;
                     }
 
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                                  ?? strInnerText));
                 }
 

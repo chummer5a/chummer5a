@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -32,7 +33,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
     public sealed class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IHasLockObject
     {
-        private readonly LockingDictionary<string, string> _dicEnglishTexts = new LockingDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _dicEnglishTexts = new ConcurrentDictionary<string, string>();
         private readonly Guid _guiInternalId;
         private string _strName;
         private Guid _guiSourceID;
@@ -65,7 +66,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
-                        _dicEnglishTexts.Add(xmlText.Name, xmlText.Value);
+                        _dicEnglishTexts.TryAdd(xmlText.Name, xmlText.Value);
                         if (xmlText.SelectSingleNodeAndCacheExpression("@default")?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
@@ -86,6 +87,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 
@@ -96,15 +98,15 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
-                        await _dicEnglishTexts.AddAsync(xmlText.Name, xmlText.Value, token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        _dicEnglishTexts.TryAdd(xmlText.Name, xmlText.Value);
                         if ((await xmlText.SelectSingleNodeAndCacheExpressionAsync("@default", token: token)
                                           .ConfigureAwait(false))?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
 
                     if (string.IsNullOrEmpty(_strDefaultTextKey))
-                        _strDefaultTextKey
-                            = (await _dicEnglishTexts.FirstOrDefaultAsync(token: token).ConfigureAwait(false)).Key;
+                        _strDefaultTextKey = _dicEnglishTexts.FirstOrDefault().Key;
                 }
             }
             finally
@@ -117,12 +119,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _objParentStory;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _objParentStory = value;
             }
         }
@@ -134,12 +136,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnIsRandomlyGenerated;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _blnIsRandomlyGenerated = value;
             }
         }
@@ -148,12 +150,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _strName = value;
             }
         }
@@ -165,12 +167,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceID;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guiSourceID == value)
                         return;
@@ -194,7 +196,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
@@ -212,8 +214,9 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
@@ -235,19 +238,19 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strDefaultTextKey;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _strDefaultTextKey = value;
             }
         }
 
         public string DisplayText(string strKey, string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string strReturn;
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -262,8 +265,9 @@ namespace Chummer
 
         public async ValueTask<string> DisplayTextAsync(string strKey, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn;
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
@@ -273,16 +277,15 @@ namespace Chummer
                         return strReturn;
                 }
 
-                bool blnSuccess;
-                (blnSuccess, strReturn) = await _dicEnglishTexts.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                return blnSuccess ? strReturn : '<' + strKey + '>';
+                return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
             }
         }
 
         public async ValueTask<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return await ResolveMacros(await DisplayTextAsync(DefaultKey, strLanguage, token).ConfigureAwait(false),
                                            objCulture, strLanguage, true, token).ConfigureAwait(false);
             }
@@ -290,11 +293,17 @@ namespace Chummer
 
         public async ValueTask<string> PrintModule(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 return (await ResolveMacros(
                     await DisplayTextAsync(DefaultKey, strLanguage, token).ConfigureAwait(false), objCulture,
                     strLanguage, token: token).ConfigureAwait(false)).NormalizeWhiteSpace();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -303,8 +312,9 @@ namespace Chummer
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
             List<Tuple<string, bool>> lstSubstrings = new List<Tuple<string, bool>>(1);
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 while (!string.IsNullOrEmpty(strReturn))
                 {
                     int intOpeningBracketIndex = strReturn.IndexOf('{');
@@ -400,8 +410,9 @@ namespace Chummer
 
         public async ValueTask<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // Process Macros nested inside of single macro
                 strInput = await ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents, token)
                     .ConfigureAwait(false);
@@ -608,10 +619,7 @@ namespace Chummer
 
                 if (blnGeneratePersistents)
                 {
-                    (bool blnSuccess, StoryModule objInnerModule)
-                        = await ParentStory.PersistentModules.TryGetValueAsync(strFunction, token)
-                                           .ConfigureAwait(false);
-                    if (blnSuccess)
+                    if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
                         return await ResolveMacros(
                                 await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token)
                                                     .ConfigureAwait(false), objCulture, strLanguage, token: token)
@@ -625,17 +633,11 @@ namespace Chummer
                                 token: token)
                             .ConfigureAwait(false);
                 }
-                else
-                {
-                    (bool blnSuccess, StoryModule objInnerModule)
-                        = await ParentStory.PersistentModules.TryGetValueAsync(strFunction, token)
-                                           .ConfigureAwait(false);
-                    if (blnSuccess)
-                        return await ResolveMacros(
-                                await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token)
-                                                    .ConfigureAwait(false), objCulture, strLanguage, token: token)
-                            .ConfigureAwait(false);
-                }
+                else if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
+                    return await ResolveMacros(
+                            await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token)
+                                .ConfigureAwait(false), objCulture, strLanguage, token: token)
+                        .ConfigureAwait(false);
 
                 return await LanguageManager.GetStringAsync("String_Error", strLanguage, token: token)
                                             .ConfigureAwait(false);
@@ -646,7 +648,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     return _guiInternalId == Guid.Empty
                         ? string.Empty
@@ -658,8 +660,9 @@ namespace Chummer
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -688,8 +691,9 @@ namespace Chummer
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -713,25 +717,13 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            using (LockObject.EnterWriteLock())
-                _dicEnglishTexts.Dispose();
             LockObject.Dispose();
         }
 
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-            try
-            {
-                await _dicEnglishTexts.DisposeAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
+            return LockObject.DisposeAsync();
         }
 
         /// <inheritdoc />

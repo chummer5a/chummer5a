@@ -98,7 +98,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -328,7 +328,7 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable MethodHasAsyncOverload
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterHiPrioReadLock(token))
                 {
                     objWriter.WriteStartElement("contact");
                     objWriter.WriteElementString("name", _strName);
@@ -375,8 +375,10 @@ namespace Chummer
             else
             {
                 // <contact>
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
+                    token.ThrowIfCancellationRequested();
                     XmlElementWriteHelper objBaseElement
                         = await objWriter.StartElementAsync("contact", token: token).ConfigureAwait(false);
                     try
@@ -384,74 +386,74 @@ namespace Chummer
                         await objWriter.WriteElementStringAsync("name", _strName, token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("role", _strRole, token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("location", _strLocation, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("connection",
-                                                                _intConnection.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
+                                _intConnection.ToString(
+                                    GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("metatype", _strMetatype, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("gender", _strGender, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("age", _strAge, token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("contacttype", _strType, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("preferredpayment", _strPreferredPayment, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("hobbiesvice", _strHobbiesVice, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("personallife", _strPersonalLife, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("type", _eContactType.ToString(), token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("file", _strFileName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("relative", _strRelativeName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter
-                              .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
-                              .ConfigureAwait(false);
+                            .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
+                            .ConfigureAwait(false);
                         await objWriter
-                              .WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)
-                              .ConfigureAwait(false);
+                            .WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("groupname", _strGroupName, token: token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "colour", _objColor.ToArgb().ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "colour", _objColor.ToArgb().ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo),
-                                           token: token)
-                                       .ConfigureAwait(false);
+                                "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("blackmail",
-                                                                _blnBlackmail.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
+                                _blnBlackmail.ToString(
+                                    GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
-                                           "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
+                                "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("groupenabled",
-                                                                _blnGroupEnabled.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
+                                _blnGroupEnabled.ToString(
+                                    GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
 
                         if (_blnReadOnly)
                             await objWriter.WriteElementStringAsync("readonly", string.Empty, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
 
                         if (_strUnique != null)
                         {
                             await objWriter.WriteElementStringAsync("guid", _strUnique, token: token)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
 
                         await SaveMugshotsAsync(objWriter, token).ConfigureAwait(false);
@@ -461,6 +463,10 @@ namespace Chummer
                         // </contact>
                         await objBaseElement.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -534,6 +540,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 objNode.TryGetStringFieldQuickly("role", ref _strRole);
                 objNode.TryGetStringFieldQuickly("location", ref _strLocation);
@@ -553,9 +560,9 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("file", ref _strFileName);
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-                string sNotesColor = ColorTranslator.ToHtml(await ColorManager.GetHasNotesColorAsync(token).ConfigureAwait(false));
-                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+                string strNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref strNotesColor);
+                _colNotes = ColorTranslator.FromHtml(strNotesColor);
 
                 objNode.TryGetStringFieldQuickly("groupname", ref _strGroupName);
                 objNode.TryGetBoolFieldQuickly("group", ref _blnIsGroup);
@@ -600,8 +607,10 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 // <contact>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("contact", token: token).ConfigureAwait(false);
@@ -615,19 +624,19 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("location", Location, token: token).ConfigureAwait(false);
                     if (!IsGroup)
                         await objWriter.WriteElementStringAsync("connection",
-                                                                (await GetConnectionAsync(token).ConfigureAwait(false))
-                                                                .ToString(objCulture),
-                                                                token: token).ConfigureAwait(false);
+                            (await GetConnectionAsync(token).ConfigureAwait(false))
+                            .ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     else
                         await objWriter.WriteElementStringAsync("connection",
-                                                                await LanguageManager.GetStringAsync(
-                                                                        "String_Group", strLanguageToPrint,
-                                                                        token: token)
-                                                                    .ConfigureAwait(false) + '('
-                                                                + (await GetConnectionAsync(token)
-                                                                    .ConfigureAwait(false))
-                                                                .ToString(objCulture)
-                                                                + ')', token: token).ConfigureAwait(false);
+                            await LanguageManager.GetStringAsync(
+                                    "String_Group", strLanguageToPrint,
+                                    token: token)
+                                .ConfigureAwait(false) + '('
+                                                       + (await GetConnectionAsync(token)
+                                                           .ConfigureAwait(false))
+                                                       .ToString(objCulture)
+                                                       + ')', token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                         "loyalty", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
@@ -641,35 +650,35 @@ namespace Chummer
                         "age", await DisplayAgeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("contacttype",
-                                                            await DisplayTypeMethodAsync(strLanguageToPrint, token)
-                                                                .ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await DisplayTypeMethodAsync(strLanguageToPrint, token)
+                            .ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("preferredpayment",
-                                                            await DisplayPreferredPaymentMethodAsync(
-                                                                strLanguageToPrint, token).ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await DisplayPreferredPaymentMethodAsync(
+                            strLanguageToPrint, token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("hobbiesvice",
-                                                            await DisplayHobbiesViceMethodAsync(
-                                                                    strLanguageToPrint, token)
-                                                                .ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await DisplayHobbiesViceMethodAsync(
+                                strLanguageToPrint, token)
+                            .ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("personallife",
-                                                            await DisplayPersonalLifeMethodAsync(
-                                                                    strLanguageToPrint, token)
-                                                                .ConfigureAwait(false),
-                                                            token: token).ConfigureAwait(false);
+                        await DisplayPersonalLifeMethodAsync(
+                                strLanguageToPrint, token)
+                            .ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                         "type",
                         await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint, token: token)
-                                             .ConfigureAwait(false),
+                            .ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("forcedloyalty",
-                                                            (await GetForcedLoyaltyAsync(token).ConfigureAwait(false))
-                                                            .ToString(objCulture),
-                                                            token: token).ConfigureAwait(false);
+                        (await GetForcedLoyaltyAsync(token).ConfigureAwait(false))
+                        .ToString(objCulture),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("blackmail",
-                                                            Blackmail.ToString(GlobalSettings.InvariantCultureInfo),
-                                                            token: token).ConfigureAwait(false);
+                        Blackmail.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                         "family", Family.ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
@@ -684,6 +693,10 @@ namespace Chummer
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         #endregion Constructor, Save, Load, and Print Methods
@@ -694,7 +707,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnReadOnly;
             }
         }
@@ -706,7 +719,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (Free)
                         return 0;
@@ -732,12 +745,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return LinkedCharacter != null ? LinkedCharacter.CharacterName : _strName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) != value)
                         OnPropertyChanged();
@@ -750,8 +763,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetNameAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return LinkedCharacter != null
                     ? await LinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
                     : _strName;
@@ -808,12 +822,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strRole;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strRole, value) != value)
                         OnPropertyChanged();
@@ -828,12 +842,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strLocation;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strLocation, value) != value)
                         OnPropertyChanged();
@@ -848,13 +862,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Math.Min(_intConnection, ConnectionMaximum);
             }
             set
             {
                 value = Math.Max(Math.Min(value, ConnectionMaximum), 1);
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intConnection, value) != value)
                         OnPropertyChanged();
@@ -867,8 +881,11 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetConnectionAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return Math.Min(_intConnection, await GetConnectionMaximumAsync(token).ConfigureAwait(false));
+            }
         }
 
         /// <summary>
@@ -878,7 +895,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (ForcedLoyalty > 0)
                         return ForcedLoyalty;
@@ -888,7 +905,7 @@ namespace Chummer
             set
             {
                 value = Math.Max(value, 1);
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intLoyalty, value) != value)
                         OnPropertyChanged();
@@ -901,8 +918,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetLoyaltyAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intForced = await GetForcedLoyaltyAsync(token).ConfigureAwait(false);
                 if (intForced > 0)
                     return intForced;
@@ -912,7 +930,7 @@ namespace Chummer
 
         public string DisplayMetatypeMethod(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string strReturn = Metatype;
                 if (LinkedCharacter != null)
@@ -947,8 +965,9 @@ namespace Chummer
 
         public async Task<string> DisplayMetatypeMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = Metatype;
                 if (LinkedCharacter != null)
                 {
@@ -1014,7 +1033,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (LinkedCharacter != null)
                     {
@@ -1034,7 +1053,7 @@ namespace Chummer
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strMetatype, value) != value)
                         OnPropertyChanged();
@@ -1047,8 +1066,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetMetatypeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (LinkedCharacter != null)
                 {
                     string strMetatype = await LinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
@@ -1113,12 +1133,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return LinkedCharacter != null ? LinkedCharacter.Gender : _strGender;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strGender, value) != value)
                         OnPropertyChanged();
@@ -1131,8 +1151,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetGenderAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return LinkedCharacter != null
                     ? await LinkedCharacter.GetGenderAsync(token).ConfigureAwait(false)
                     : _strGender;
@@ -1183,12 +1204,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return LinkedCharacter != null ? LinkedCharacter.Age : _strAge;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strAge, value) != value)
                         OnPropertyChanged();
@@ -1201,8 +1222,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetAgeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return LinkedCharacter != null
                     ? await LinkedCharacter.GetAgeAsync(token).ConfigureAwait(false)
                     : _strGender;
@@ -1253,12 +1275,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strType;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strType, value) != value)
                         OnPropertyChanged();
@@ -1315,12 +1337,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPreferredPayment;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPreferredPayment, value) != value)
                         OnPropertyChanged();
@@ -1376,12 +1398,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strHobbiesVice;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strHobbiesVice, value) != value)
                         OnPropertyChanged();
@@ -1437,12 +1459,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPersonalLife;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strPersonalLife, value) != value)
                         OnPropertyChanged();
@@ -1457,18 +1479,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnIsGroup;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIsGroup == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnIsGroup = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1477,30 +1501,34 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return !ReadOnly && !IsGroup && ForcedLoyalty <= 0;
             }
         }
 
         public async ValueTask<bool> GetLoyaltyEnabledAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return !ReadOnly && !IsGroup && await GetForcedLoyaltyAsync(token).ConfigureAwait(false) <= 0;
+            }
         }
 
         public int ConnectionMaximum
         {
             get
             {
-                using (EnterReadLock.Enter(CharacterObject.LockObject))
+                using (CharacterObject.LockObject.EnterReadLock())
                     return CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
             }
         }
 
         public async ValueTask<int> GetConnectionMaximumAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(CharacterObject.LockObject, token).ConfigureAwait(false))
+            using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                        || await CharacterObject.GetFriendsInHighPlacesAsync(token).ConfigureAwait(false)
                     ? 12
@@ -1512,7 +1540,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})",
                                          Connection, Loyalty);
             }
@@ -1520,8 +1548,9 @@ namespace Chummer
 
         public async ValueTask<string> GetQuickTextAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})",
                                      await GetConnectionAsync(token).ConfigureAwait(false),
                                      await GetLoyaltyAsync(token).ConfigureAwait(false));
@@ -1535,12 +1564,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _eContactType;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eContactType, value) != value)
                         OnPropertyChanged();
@@ -1557,12 +1586,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strFileName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strFileName, value) != value)
                         RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
@@ -1577,12 +1606,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strRelativeName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strRelativeName, value) != value)
                         RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
@@ -1597,12 +1626,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strNotes, value) != value)
                         OnPropertyChanged();
@@ -1617,18 +1646,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _colNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1640,12 +1671,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strGroupName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strGroupName, value) != value)
                         OnPropertyChanged();
@@ -1660,18 +1691,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _objColor;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_objColor == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _objColor = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1685,7 +1718,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_blnFree)
                         return _blnFree;
@@ -1704,12 +1737,14 @@ namespace Chummer
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFree == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnFree = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -1720,8 +1755,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetFreeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_blnFree)
                     return _blnFree;
 
@@ -1744,7 +1780,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedFreeFromImprovement < 0)
                     {
@@ -1762,8 +1798,9 @@ namespace Chummer
 
         public async ValueTask<bool> GetFreeEnabledAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_intCachedFreeFromImprovement < 0)
                 {
                     _intCachedFreeFromImprovement = ((await ImprovementManager
@@ -1786,7 +1823,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strUnique;
             }
         }
@@ -1802,7 +1839,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedGroupEnabled < 0)
                     {
@@ -1824,8 +1861,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetGroupEnabledAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_intCachedGroupEnabled < 0)
                 {
                     _intCachedGroupEnabled = (!ReadOnly && (await ImprovementManager
@@ -1845,18 +1883,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnBlackmail;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnBlackmail == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnBlackmail = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1865,18 +1905,20 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnFamily;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFamily == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnFamily = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1887,7 +1929,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intCachedForcedLoyalty != int.MinValue)
                         return _intCachedForcedLoyalty;
@@ -1906,8 +1948,9 @@ namespace Chummer
 
         public async ValueTask<int> GetForcedLoyaltyAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_intCachedForcedLoyalty != int.MinValue)
                     return _intCachedForcedLoyalty;
 
@@ -1930,7 +1973,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _objCharacter;
             }
         }
@@ -1939,7 +1982,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _objLinkedCharacter;
             }
         }
@@ -1948,14 +1991,14 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _objLinkedCharacter == null;
             }
         }
 
         public void RefreshLinkedCharacter(bool blnShowError = false, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
                 using (LockObject.EnterWriteLock(token))
@@ -2002,7 +2045,7 @@ namespace Chummer
                             }
 
                             if (_objLinkedCharacter != null)
-                                CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
+                                CharacterObject.LinkedCharacters.TryAdd(_objLinkedCharacter);
                         }
                     }
 
@@ -2027,7 +2070,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (EnterReadLock.Enter(_objLinkedCharacter.LockObject, token))
+                            using (_objLinkedCharacter.LockObject.EnterUpgradeableReadLock(token))
                             {
                                 if (string.IsNullOrEmpty(_strName)
                                     && Name != LanguageManager.GetString("String_UnnamedCharacter", token: token))
@@ -2052,14 +2095,15 @@ namespace Chummer
 
         public async Task RefreshLinkedCharacterAsync(bool blnShowError = false, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 Character objOldLinkedCharacter = _objLinkedCharacter;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    await CharacterObject.LinkedCharacters.RemoveAsync(_objLinkedCharacter, token)
-                                         .ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
                     bool blnUseRelative = false;
 
@@ -2101,7 +2145,7 @@ namespace Chummer
                             }
 
                             if (_objLinkedCharacter != null)
-                                await CharacterObject.LinkedCharacters.AddAsync(_objLinkedCharacter, token).ConfigureAwait(false);
+                                CharacterObject.LinkedCharacters.TryAdd(_objLinkedCharacter);
                         }
                     }
 
@@ -2112,6 +2156,7 @@ namespace Chummer
                             IAsyncDisposable objLocker2 = await objOldLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
                             }
                             finally
@@ -2121,9 +2166,9 @@ namespace Chummer
 
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token).ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
-                                                                              || !await x.LinkedCharacters.ContainsAsync(
-                                                                                  objOldLinkedCharacter, token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                                if (await Program.OpenCharacters.AllAsync(x => x == _objLinkedCharacter
+                                                                              || !x.LinkedCharacters.Contains(
+                                                                                  objOldLinkedCharacter), token: token).ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
                                         x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
                                     await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token).ConfigureAwait(false);
@@ -2134,8 +2179,9 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (await EnterReadLock.EnterAsync(_objLinkedCharacter.LockObject, token).ConfigureAwait(false))
+                            using (await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (string.IsNullOrEmpty(_strName)
                                     && Name != await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
                                     _strName = Name;
@@ -2149,6 +2195,7 @@ namespace Chummer
                                 IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                                 }
                                 finally
@@ -2214,7 +2261,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
             }
         }
@@ -2226,7 +2273,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (LinkedCharacter != null)
                         return LinkedCharacter.MainMugshot;
@@ -2237,7 +2284,7 @@ namespace Chummer
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (LinkedCharacter != null)
                         LinkedCharacter.MainMugshot = value;
@@ -2256,7 +2303,7 @@ namespace Chummer
                         }
                         else
                         {
-                            using (EnterReadLock.Enter(Mugshots))
+                            using (Mugshots.LockObject.EnterWriteLock())
                             {
                                 Mugshots.Add(value);
                                 MainMugshotIndex = Mugshots.IndexOf(value);
@@ -2274,12 +2321,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return LinkedCharacter?.MainMugshotIndex ?? _intMainMugshotIndex;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (LinkedCharacter != null)
                         LinkedCharacter.MainMugshotIndex = value;
@@ -2309,8 +2356,10 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (blnSync)
                 {
                     objWriter.WriteElementString("mainmugshotindex",
@@ -2394,8 +2443,9 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-                XPathNodeIterator xmlMugshotsList = await xmlSavedNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token).ConfigureAwait(false);
+                XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
                 List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
                 foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
                 {
@@ -2432,8 +2482,9 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (LinkedCharacter != null)
                     await LinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
                 else if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 0)

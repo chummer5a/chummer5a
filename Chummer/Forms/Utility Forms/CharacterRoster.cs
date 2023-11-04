@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -246,9 +247,7 @@ namespace Chummer
                     }
 
                     CancellationToken objTokenToUse = objTemp.Token;
-                    (bool blnSuccess, CharacterCache objCacheToRemove)
-                        = await _dicSavedCharacterCaches.TryRemoveAsync(e.FullPath, objTokenToUse).ConfigureAwait(false);
-                    if (blnSuccess)
+                    if (_dicSavedCharacterCaches.TryRemove(e.FullPath, out CharacterCache objCacheToRemove))
                     {
                         await treCharacterList.DoThreadSafeAsync(x =>
                         {
@@ -309,11 +308,13 @@ namespace Chummer
                                 objNode.Tag = objNewCache;
                             }
                         }, objTokenToUse).ConfigureAwait(false);
-                        await _dicSavedCharacterCaches.ForEachWithBreakAsync(x =>
+                        foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
                         {
-                            setCachesToDispose.Remove(x.Value);
-                            return setCachesToDispose.Count > 0;
-                        }, objTokenToUse).ConfigureAwait(false);
+                            objTokenToUse.ThrowIfCancellationRequested();
+                            setCachesToDispose.Remove(objCache);
+                            if (setCachesToDispose.Count == 0)
+                                break;
+                        }
                         foreach (CharacterCache objOldCache in setCachesToDispose)
                         {
                             await objOldCache.DisposeAsync().ConfigureAwait(false);
@@ -480,7 +481,7 @@ namespace Chummer
                                 nodNode.Tag = null;
                                 if (!objCache.IsDisposed)
                                 {
-                                    await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath, _objGenericToken).ConfigureAwait(false);
+                                    _dicSavedCharacterCaches.TryRemove(objCache.FilePath, out _);
                                     await objCache.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
@@ -489,9 +490,12 @@ namespace Chummer
                         }
                     }
 
-                    await _dicSavedCharacterCaches.ForEachAsync(async kvpCache => await kvpCache.Value.DisposeAsync().ConfigureAwait(false),
-                                                                _objGenericToken).ConfigureAwait(false);
-                    await _dicSavedCharacterCaches.DisposeAsync().ConfigureAwait(false);
+                    _objGenericToken.ThrowIfCancellationRequested();
+                    foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
+                    {
+                        _objGenericToken.ThrowIfCancellationRequested();
+                        await objCache.DisposeAsync().ConfigureAwait(false);
+                    }
 
                     try
                     {
@@ -1047,7 +1051,6 @@ namespace Chummer
                 = await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false)
                   + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
                   + Environment.NewLine;
-            Color objWindowTextColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
 
             Dictionary<TreeNode, string> dicNodeNames = new Dictionary<TreeNode, string>();
             foreach (TreeNode objCharacterNode in await treCharacterList
@@ -1089,7 +1092,7 @@ namespace Chummer
                         strTooltip += strErrorPrefix + objCache.ErrorText;
                     }
                     else
-                        objCharacterNode.ForeColor = objWindowTextColor;
+                        objCharacterNode.ForeColor = ColorManager.WindowText;
 
                     objCharacterNode.ToolTipText = strTooltip;
                 }
@@ -1611,7 +1614,7 @@ namespace Chummer
             }
         }
 
-        private readonly LockingDictionary<string, CharacterCache> _dicSavedCharacterCaches = new LockingDictionary<string, CharacterCache>();
+        private readonly ConcurrentDictionary<string, CharacterCache> _dicSavedCharacterCaches = new ConcurrentDictionary<string, CharacterCache>();
 
         /// <summary>
         /// Remove all character caches from the cached dictionary that are not present in any of the form's lists (and are therefore unnecessary).
@@ -1619,14 +1622,14 @@ namespace Chummer
         private async ValueTask PurgeUnusedCharacterCaches(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            foreach (KeyValuePair<string, CharacterCache> kvpCache in await _dicSavedCharacterCaches.ToArrayAsync(token).ConfigureAwait(false))
+            foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches.ToArray())
             {
                 token.ThrowIfCancellationRequested();
                 CharacterCache objCache = kvpCache.Value;
                 if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token).ConfigureAwait(false) != null)
                     continue;
                 token.ThrowIfCancellationRequested();
-                await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath, token).ConfigureAwait(false);
+                _dicSavedCharacterCaches.TryRemove(objCache.FilePath, out _);
                 if (!objCache.IsDisposed)
                     await objCache.DisposeAsync().ConfigureAwait(false);
             }
@@ -1640,7 +1643,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             CharacterCache objCache = null;
-            if (!_dicSavedCharacterCaches.IsDisposed)
+            if (_intIsClosing == 0)
             {
                 try
                 {
@@ -1668,7 +1671,7 @@ namespace Chummer
                         else
                         {
                             objCache = await _dicSavedCharacterCaches
-                                             .AddOrGetAsync(
+                                             .GetOrAddAsync(
                                                  strFile,
                                                  async x => objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false),
                                                  token)
@@ -1825,7 +1828,7 @@ namespace Chummer
 
                                 token.ThrowIfCancellationRequested();
                                 string strMetatype = objMetatypeNode != null
-                                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                    ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                       ?? objCache.Metatype
                                     : objCache.Metatype;
 
@@ -1836,7 +1839,7 @@ namespace Chummer
 
                                     strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
                                         + (objMetatypeNode != null
-                                            ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
+                                            ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)
                                               ?.Value
                                               ?? objCache.Metavariant
                                             : objCache.Metavariant) + ')';
@@ -1862,8 +1865,7 @@ namespace Chummer
                             }
                             else
                             {
-                                Color objTextColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
-                                await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = objTextColor, token).ConfigureAwait(false);
+                                await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token).ConfigureAwait(false);
                             }
                         }
                         else
@@ -2431,15 +2433,18 @@ namespace Chummer
                                    ".chum5lz", StringComparison.OrdinalIgnoreCase))
                               && Program.MainForm.OpenFormsWithCharacters.Any(
                                   x => x.CharacterObjects.Any(y => y.FileName == strTag));
-                        await this.DoThreadSafeAsync(
-                            () => e.Node.ContextMenuStrip = CreateContextMenuStrip(blnIncludeCloseOpenCharacter, _objGenericToken),
-                            token: _objGenericToken).ConfigureAwait(false);
+                        ContextMenuStrip objStrip =
+                            await CreateContextMenuStripAsync(blnIncludeCloseOpenCharacter, _objGenericToken)
+                                .ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = objStrip, token: _objGenericToken)
+                            .ConfigureAwait(false);
                     }
                     else
                     {
-                        await this.DoThreadSafeAsync(
-                            () => e.Node.ContextMenuStrip = CreateContextMenuStrip(false, _objGenericToken),
-                            token: _objGenericToken).ConfigureAwait(false);
+                        ContextMenuStrip objStrip = await CreateContextMenuStripAsync(false, _objGenericToken)
+                            .ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = objStrip, token: _objGenericToken)
+                            .ConfigureAwait(false);
                     }
                 }
 
@@ -2458,148 +2463,158 @@ namespace Chummer
 
         public ContextMenuStrip CreateContextMenuStrip(bool blnIncludeCloseOpenCharacter, CancellationToken token = default)
         {
-            int intToolStripWidth = 180;
-            int intToolStripHeight = 22;
+            const int ToolStripWidth = 180;
+            const int ToolStripHeight = 22;
 
-            return this.DoThreadSafeFunc(x =>
+            return this.DoThreadSafeFunc(x => CreateContextMenuStripCore(blnIncludeCloseOpenCharacter, ToolStripWidth, ToolStripHeight, x), token);
+        }
+
+        public Task<ContextMenuStrip> CreateContextMenuStripAsync(bool blnIncludeCloseOpenCharacter, CancellationToken token = default)
+        {
+            const int ToolStripWidth = 180;
+            const int ToolStripHeight = 22;
+
+            return this.DoThreadSafeFuncAsync(x => CreateContextMenuStripCore(blnIncludeCloseOpenCharacter, ToolStripWidth, ToolStripHeight, x), token);
+        }
+
+        private ContextMenuStrip CreateContextMenuStripCore(bool blnIncludeCloseOpenCharacter, int intToolStripWidth, int intToolStripHeight, CancellationToken token = default)
+        {
+            using (Graphics g = CreateGraphics())
             {
-                using (Graphics g = CreateGraphics())
-                {
-                    intToolStripWidth = (int)(intToolStripWidth * g.DpiX / 96.0f);
-                    intToolStripHeight = (int)(intToolStripHeight * g.DpiY / 96.0f);
-                }
-                //
-                // tsToggleFav
-                //
-                DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem
-                {
-                    Name = "tsToggleFav",
-                    Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_ToggleFavorite"
-                };
-                tsToggleFav.BatchSetImages(Properties.Resources.asterisk_orange_16,
-                    Properties.Resources.asterisk_orange_20, Properties.Resources.asterisk_orange_24,
-                    Properties.Resources.asterisk_orange_32, Properties.Resources.asterisk_orange_48,
-                    Properties.Resources.asterisk_orange_64);
-                tsToggleFav.Click += tsToggleFav_Click;
-                //
-                // tsSort
-                //
-                DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem
-                {
-                    Name = "tsSort",
-                    Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Sort"
-                };
-                tsSort.BatchSetImages(Properties.Resources.page_refresh_16,
-                    Properties.Resources.page_refresh_20, Properties.Resources.page_refresh_24,
-                    Properties.Resources.page_refresh_32, Properties.Resources.page_refresh_48,
-                    Properties.Resources.page_refresh_64);
-                tsSort.Click += tsSort_Click;
-                //
-                // tsOpen
-                //
-                DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem
-                {
-                    Name = "tsOpen",
-                    Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Main_Open"
-                };
-                tsOpen.BatchSetImages(Properties.Resources.folder_page_16,
-                    Properties.Resources.folder_page_20, Properties.Resources.folder_page_24,
-                    Properties.Resources.folder_page_32, Properties.Resources.folder_page_48,
-                    Properties.Resources.folder_page_64);
-                tsOpen.Click += tsOpen_Click;
-                //
-                // tsOpenForPrinting
-                //
-                DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem
-                {
-                    Name = "tsOpenForPrinting",
-                    Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Main_OpenForPrinting"
-                };
-                tsOpenForPrinting.BatchSetImages(Properties.Resources.folder_print_16,
-                    Properties.Resources.folder_print_20, Properties.Resources.folder_print_24,
-                    Properties.Resources.folder_print_32, Properties.Resources.folder_print_48,
-                    Properties.Resources.folder_print_64);
-                tsOpenForPrinting.Click += tsOpenForPrinting_Click;
-                //
-                // tsOpenForExport
-                //
-                DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem
-                {
-                    Name = "tsOpenForExport",
-                    Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Main_OpenForExport"
-                };
-                tsOpenForExport.BatchSetImages(Properties.Resources.folder_script_go_16,
-                    Properties.Resources.folder_script_go_20, Properties.Resources.folder_script_go_24,
-                    Properties.Resources.folder_script_go_32, Properties.Resources.folder_script_go_48,
-                    Properties.Resources.folder_script_go_64);
-                tsOpenForExport.Click += tsOpenForExport_Click;
-                //
-                // tsDelete
-                //
-                DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem
-                {
-                    Name = "tsDelete",
-                    Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Delete"
-                };
-                tsDelete.BatchSetImages(Properties.Resources.delete_16,
-                    Properties.Resources.delete_20, Properties.Resources.delete_24,
-                    Properties.Resources.delete_32, Properties.Resources.delete_48,
-                    Properties.Resources.delete_64);
-                tsDelete.Click += tsDelete_Click;
-                //
-                // cmsRoster
-                //
-                ContextMenuStrip cmsRoster = new ContextMenuStrip(components)
-                {
-                    Name = "cmsRoster",
-                    Size = new Size(intToolStripWidth, intToolStripHeight * 5)
-                };
-                cmsRoster.Items.AddRange(new ToolStripItem[]
-                {
+                intToolStripWidth = (int)(intToolStripWidth * g.DpiX / 96.0f);
+                intToolStripHeight = (int)(intToolStripHeight * g.DpiY / 96.0f);
+            }
+            //
+            // tsToggleFav
+            //
+            DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem
+            {
+                Name = "tsToggleFav",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_ToggleFavorite"
+            };
+            tsToggleFav.BatchSetImages(Properties.Resources.asterisk_orange_16,
+                Properties.Resources.asterisk_orange_20, Properties.Resources.asterisk_orange_24,
+                Properties.Resources.asterisk_orange_32, Properties.Resources.asterisk_orange_48,
+                Properties.Resources.asterisk_orange_64);
+            tsToggleFav.Click += tsToggleFav_Click;
+            //
+            // tsSort
+            //
+            DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem
+            {
+                Name = "tsSort",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_Sort"
+            };
+            tsSort.BatchSetImages(Properties.Resources.page_refresh_16,
+                Properties.Resources.page_refresh_20, Properties.Resources.page_refresh_24,
+                Properties.Resources.page_refresh_32, Properties.Resources.page_refresh_48,
+                Properties.Resources.page_refresh_64);
+            tsSort.Click += tsSort_Click;
+            //
+            // tsOpen
+            //
+            DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem
+            {
+                Name = "tsOpen",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_Main_Open"
+            };
+            tsOpen.BatchSetImages(Properties.Resources.folder_page_16,
+                Properties.Resources.folder_page_20, Properties.Resources.folder_page_24,
+                Properties.Resources.folder_page_32, Properties.Resources.folder_page_48,
+                Properties.Resources.folder_page_64);
+            tsOpen.Click += tsOpen_Click;
+            //
+            // tsOpenForPrinting
+            //
+            DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem
+            {
+                Name = "tsOpenForPrinting",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_Main_OpenForPrinting"
+            };
+            tsOpenForPrinting.BatchSetImages(Properties.Resources.folder_print_16,
+                Properties.Resources.folder_print_20, Properties.Resources.folder_print_24,
+                Properties.Resources.folder_print_32, Properties.Resources.folder_print_48,
+                Properties.Resources.folder_print_64);
+            tsOpenForPrinting.Click += tsOpenForPrinting_Click;
+            //
+            // tsOpenForExport
+            //
+            DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem
+            {
+                Name = "tsOpenForExport",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_Main_OpenForExport"
+            };
+            tsOpenForExport.BatchSetImages(Properties.Resources.folder_script_go_16,
+                Properties.Resources.folder_script_go_20, Properties.Resources.folder_script_go_24,
+                Properties.Resources.folder_script_go_32, Properties.Resources.folder_script_go_48,
+                Properties.Resources.folder_script_go_64);
+            tsOpenForExport.Click += tsOpenForExport_Click;
+            //
+            // tsDelete
+            //
+            DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem
+            {
+                Name = "tsDelete",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_Delete"
+            };
+            tsDelete.BatchSetImages(Properties.Resources.delete_16,
+                Properties.Resources.delete_20, Properties.Resources.delete_24,
+                Properties.Resources.delete_32, Properties.Resources.delete_48,
+                Properties.Resources.delete_64);
+            tsDelete.Click += tsDelete_Click;
+            //
+            // cmsRoster
+            //
+            ContextMenuStrip cmsRoster = new ContextMenuStrip(components)
+            {
+                Name = "cmsRoster",
+                Size = new Size(intToolStripWidth, intToolStripHeight * 5)
+            };
+            cmsRoster.Items.AddRange(new ToolStripItem[]
+            {
                     tsToggleFav,
                     tsSort,
                     tsOpen,
                     tsOpenForPrinting,
                     tsOpenForExport,
                     tsDelete
-                });
+            });
 
-                tsToggleFav.TranslateToolStripItemsRecursively(token: x);
-                tsSort.TranslateToolStripItemsRecursively(token: x);
-                tsOpen.TranslateToolStripItemsRecursively(token: x);
-                tsOpenForPrinting.TranslateToolStripItemsRecursively(token: x);
-                tsOpenForExport.TranslateToolStripItemsRecursively(token: x);
-                tsDelete.TranslateToolStripItemsRecursively(token: x);
+            tsToggleFav.TranslateToolStripItemsRecursively(token: token);
+            tsSort.TranslateToolStripItemsRecursively(token: token);
+            tsOpen.TranslateToolStripItemsRecursively(token: token);
+            tsOpenForPrinting.TranslateToolStripItemsRecursively(token: token);
+            tsOpenForExport.TranslateToolStripItemsRecursively(token: token);
+            tsDelete.TranslateToolStripItemsRecursively(token: token);
 
-                if (blnIncludeCloseOpenCharacter)
+            if (blnIncludeCloseOpenCharacter)
+            {
+                //
+                // tsCloseOpenCharacter
+                //
+                DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem
                 {
-                    //
-                    // tsCloseOpenCharacter
-                    //
-                    DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem
-                    {
-                        Name = "tsCloseOpenCharacter",
-                        Size = new Size(intToolStripWidth, intToolStripHeight),
-                        Tag = "Menu_Close"
-                    };
-                    tsCloseOpenCharacter.BatchSetImages(Properties.Resources.door_out_16,
-                        Properties.Resources.door_out_20, Properties.Resources.door_out_24,
-                        Properties.Resources.door_out_32, Properties.Resources.door_out_48,
-                        Properties.Resources.door_out_64);
-                    tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
-                    cmsRoster.Items.Add(tsCloseOpenCharacter);
-                    tsCloseOpenCharacter.TranslateToolStripItemsRecursively(token: x);
-                }
+                    Name = "tsCloseOpenCharacter",
+                    Size = new Size(intToolStripWidth, intToolStripHeight),
+                    Tag = "Menu_Close"
+                };
+                tsCloseOpenCharacter.BatchSetImages(Properties.Resources.door_out_16,
+                    Properties.Resources.door_out_20, Properties.Resources.door_out_24,
+                    Properties.Resources.door_out_32, Properties.Resources.door_out_48,
+                    Properties.Resources.door_out_64);
+                tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
+                cmsRoster.Items.Add(tsCloseOpenCharacter);
+                tsCloseOpenCharacter.TranslateToolStripItemsRecursively(token: token);
+            }
 
-                cmsRoster.UpdateLightDarkMode(x);
-                return cmsRoster;
-            }, token);
+            cmsRoster.UpdateLightDarkMode(token);
+            return cmsRoster;
         }
 
         /// <summary>

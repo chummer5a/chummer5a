@@ -3964,6 +3964,10 @@
       <text>(f)</text>
     </string>
     <string>
+      <key>String_DamageFire</key>
+      <text>(fire)</text>
+    </string>
+    <string>
       <key>String_DamagePOrS</key>
       <text>P or S</text>
     </string>

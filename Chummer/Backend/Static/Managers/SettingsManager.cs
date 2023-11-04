@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Chummer
     public static class SettingsManager
     {
         private static int _intDicLoadedCharacterSettingsLoadedStatus = -1;
-        private static readonly LockingDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new LockingDictionary<string, CharacterSettings>();
+        private static readonly ConcurrentDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new ConcurrentDictionary<string, CharacterSettings>();
         private static readonly FileSystemWatcher s_ObjSettingsFolderWatcher;
 
         static SettingsManager()
@@ -87,7 +88,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static IAsyncReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings
+        public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings
         {
             get
             {
@@ -115,7 +116,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static async ValueTask<IAsyncReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
+        public static async ValueTask<IReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
         {
             do
             {
@@ -140,7 +141,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static LockingDictionary<string, CharacterSettings> LoadedCharacterSettingsAsModifiable
+        public static ConcurrentDictionary<string, CharacterSettings> LoadedCharacterSettingsAsModifiable
         {
             get
             {
@@ -168,7 +169,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static async ValueTask<LockingDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
+        public static async ValueTask<ConcurrentDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
         {
             do
             {
@@ -221,8 +222,8 @@ namespace Chummer
             Utils.RunWithoutThreadLock(async () =>
             {
                 IEnumerable<XPathNavigator> xmlSettingsIterator
-                    = (await (await XmlManager.LoadXPathAsync("settings.xml").ConfigureAwait(false))
-                             .SelectAndCacheExpressionAsync("/chummer/settings/setting").ConfigureAwait(false))
+                    = (await XmlManager.LoadXPathAsync("settings.xml").ConfigureAwait(false))
+                    .SelectAndCacheExpression("/chummer/settings/setting")
                     .Cast<XPathNavigator>();
                 Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
                 {
@@ -279,14 +280,14 @@ namespace Chummer
         private static async ValueTask LoadCharacterSettingsAsync(CancellationToken token = default)
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
-            await s_DicLoadedCharacterSettings.ClearAsync(token).ConfigureAwait(false);
+            s_DicLoadedCharacterSettings.Clear();
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {
                 CharacterSettings objNewCharacterSettings = new CharacterSettings();
                 try
                 {
-                    if (!await s_DicLoadedCharacterSettings.TryAddAsync(GlobalSettings.DefaultCharacterSetting,
-                            objNewCharacterSettings, token).ConfigureAwait(false))
+                    if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting,
+                            objNewCharacterSettings))
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 }
                 catch
@@ -303,13 +304,8 @@ namespace Chummer
             }
 
             List<Task> lstTasks = new List<Task>();
-            foreach (XPathNavigator xmlBuiltInSetting in await (await XmlManager
-                                                                          .LoadXPathAsync(
-                                                                              "settings.xml", token: token)
-                                                                          .ConfigureAwait(false))
-                                                                   .SelectAndCacheExpressionAsync(
-                                                                       "/chummer/settings/setting", token: token)
-                                                                   .ConfigureAwait(false))
+            foreach (XPathNavigator xmlBuiltInSetting in (await XmlManager.LoadXPathAsync("settings.xml", token: token)
+                         .ConfigureAwait(false)).SelectAndCacheExpression("/chummer/settings/setting", token: token))
             {
                 lstTasks.Add(Task.Run(() => LoadSettings(xmlBuiltInSetting), token));
             }
@@ -326,9 +322,9 @@ namespace Chummer
                         || (!GlobalSettings.LifeModuleEnabled
                             && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token)
                                                             .ConfigureAwait(false))
-                        || !await s_DicLoadedCharacterSettings.TryAddAsync(
+                        || !s_DicLoadedCharacterSettings.TryAdd(
                             await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
-                            objNewCharacterSettings, token).ConfigureAwait(false))
+                            objNewCharacterSettings))
                     {
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                     }
@@ -362,9 +358,9 @@ namespace Chummer
                                                           .ConfigureAwait(false)
                             || (!GlobalSettings.LifeModuleEnabled
                                 && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
-                            || !await s_DicLoadedCharacterSettings.TryAddAsync(
+                            || !s_DicLoadedCharacterSettings.TryAdd(
                                 await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
-                                objNewCharacterSettings, token).ConfigureAwait(false))
+                                objNewCharacterSettings))
                         {
                             await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                         }
@@ -426,7 +422,7 @@ namespace Chummer
                 return;
 
             CharacterSettings objSettingsToDelete
-                = (await s_DicLoadedCharacterSettings.FirstOrDefaultAsync(x => x.Value.FileName == strSettingName, token: token).ConfigureAwait(false)).Value;
+                = s_DicLoadedCharacterSettings.FirstOrDefault(x => x.Value.FileName == strSettingName).Value;
             if (objSettingsToDelete == default)
                 return;
             string strKeyToDelete = await objSettingsToDelete.GetDictionaryKeyAsync(token).ConfigureAwait(false);
@@ -455,8 +451,9 @@ namespace Chummer
                 }, Utils.JoinableTaskFactory);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    using (await EnterReadLock.EnterAsync(objCharacter, token).ConfigureAwait(false))
+                    using (await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                             await objCharacter
                                   .SetSettingsKeyAsync(
@@ -467,7 +464,7 @@ namespace Chummer
             }
             finally
             {
-                await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
+                s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out _);
                 await objSettingsToDelete.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -521,7 +518,7 @@ namespace Chummer
                             if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                                 await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
                         }, token: token).ConfigureAwait(false);
-                        await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
+                        s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out _);
                         await objToDelete.DisposeAsync().ConfigureAwait(false);
                     }
                 }

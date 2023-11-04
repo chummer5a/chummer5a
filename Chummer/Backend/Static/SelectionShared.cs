@@ -578,11 +578,7 @@ namespace Chummer
             if (xmlForbiddenNode != null)
             {
                 // Loop through the oneof requirements.
-                foreach (XPathNavigator objXmlOneOf in blnSync
-                             // ReSharper disable once MethodHasAsyncOverload
-                             ? xmlForbiddenNode.SelectAndCacheExpression("oneof", token)
-                             : await xmlForbiddenNode.SelectAndCacheExpressionAsync("oneof", token)
-                                                     .ConfigureAwait(false))
+                foreach (XPathNavigator objXmlOneOf in xmlForbiddenNode.SelectAndCacheExpression("oneof", token))
                 {
                     foreach (XPathNavigator xmlForbiddenItemNode in objXmlOneOf.SelectChildren(XPathNodeType.Element))
                     {
@@ -642,11 +638,7 @@ namespace Chummer
                     bool blnRequirementMet = true;
 
                     // Loop through the oneof requirements.
-                    foreach (XPathNavigator objXmlOneOf in blnSync
-                                 // ReSharper disable once MethodHasAsyncOverload
-                                 ? xmlRequiredNode.SelectAndCacheExpression("oneof", token)
-                                 : await xmlRequiredNode.SelectAndCacheExpressionAsync("oneof", token)
-                                                        .ConfigureAwait(false))
+                    foreach (XPathNavigator objXmlOneOf in xmlRequiredNode.SelectAndCacheExpression("oneof", token))
                     {
                         bool blnOneOfMet = false;
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -697,11 +689,7 @@ namespace Chummer
                     if (blnRequirementMet || blnShowMessage)
                     {
                         // Loop through the allof requirements.
-                        foreach (XPathNavigator objXmlAllOf in blnSync
-                                     // ReSharper disable once MethodHasAsyncOverload
-                                     ? xmlRequiredNode.SelectAndCacheExpression("allof", token)
-                                     : await xmlRequiredNode.SelectAndCacheExpressionAsync("allof", token)
-                                                            .ConfigureAwait(false))
+                        foreach (XPathNavigator objXmlAllOf in xmlRequiredNode.SelectAndCacheExpression("allof", token))
                         {
                             bool blnAllOfMet = true;
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -1532,14 +1520,14 @@ namespace Chummer
                                 "String_DamageResistance",
                                 token: token).ConfigureAwait(false));
                     int intDR = blnSync
-                        ? (objCharacter.BOD.TotalValue
-                           // ReSharper disable once MethodHasAsyncOverload
-                           + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance,
-                                                        token: token).StandardRound())
-                        : (await (await objCharacter.GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
-                           + (await ImprovementManager.ValueOfAsync(objCharacter,
-                                                                    Improvement.ImprovementType.DamageResistance,
-                                                                    token: token).ConfigureAwait(false)).StandardRound());
+                        ? objCharacter.BOD.TotalValue
+                          // ReSharper disable once MethodHasAsyncOverload
+                          + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance,
+                              token: token).StandardRound()
+                        : await (await objCharacter.GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                          + (await ImprovementManager.ValueOfAsync(objCharacter,
+                              Improvement.ImprovementType.DamageResistance,
+                              token: token).ConfigureAwait(false)).StandardRound();
                     return new Tuple<bool, string>(intDR >= xmlNode.ValueAsInt, strName);
                 }
                 case "depenabled":
@@ -1595,14 +1583,14 @@ namespace Chummer
                             // Essence must be less than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                          string.Format(GlobalSettings.CultureInfo, (blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                "Message_SelectQuality_RequireESSGradeBelow",
-                                                                token: token)
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Message_SelectQuality_RequireESSGradeBelow",
-                                                                token: token).ConfigureAwait(false)), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
+                                          string.Format(GlobalSettings.CultureInfo, blnSync
+                                              // ReSharper disable once MethodHasAsyncOverload
+                                              ? LanguageManager.GetString(
+                                                  "Message_SelectQuality_RequireESSGradeBelow",
+                                                  token: token)
+                                              : await LanguageManager.GetStringAsync(
+                                                  "Message_SelectQuality_RequireESSGradeBelow",
+                                                  token: token).ConfigureAwait(false), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
                             return new Tuple<bool, string>(decGrade
                                                            < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
                                                                                GlobalSettings.InvariantCultureInfo), strName);
@@ -1611,14 +1599,14 @@ namespace Chummer
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
-                                      string.Format(GlobalSettings.CultureInfo, (blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString(
-                                                            "Message_SelectQuality_RequireESSAbove",
-                                                            token: token)
-                                                        : await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireESSAbove",
-                                                            token: token).ConfigureAwait(false)), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
+                                      string.Format(GlobalSettings.CultureInfo, blnSync
+                                          // ReSharper disable once MethodHasAsyncOverload
+                                          ? LanguageManager.GetString(
+                                              "Message_SelectQuality_RequireESSAbove",
+                                              token: token)
+                                          : await LanguageManager.GetStringAsync(
+                                              "Message_SelectQuality_RequireESSAbove",
+                                              token: token).ConfigureAwait(false), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
                         return new Tuple<bool, string>(decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
                     }
 
@@ -1633,14 +1621,14 @@ namespace Chummer
                         // Essence must be less than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
-                                      string.Format(GlobalSettings.CultureInfo, (blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString(
-                                                            "Message_SelectQuality_RequireESSBelow",
-                                                            token: token)
-                                                        : await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireESSBelow",
-                                                            token: token).ConfigureAwait(false)), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
+                                      string.Format(GlobalSettings.CultureInfo, blnSync
+                                          // ReSharper disable once MethodHasAsyncOverload
+                                          ? LanguageManager.GetString(
+                                              "Message_SelectQuality_RequireESSBelow",
+                                              token: token)
+                                          : await LanguageManager.GetStringAsync(
+                                              "Message_SelectQuality_RequireESSBelow",
+                                              token: token).ConfigureAwait(false), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
                         return new Tuple<bool, string>(decEssence
                                                        < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
                                                                            GlobalSettings.InvariantCultureInfo), strName);
@@ -1649,14 +1637,14 @@ namespace Chummer
                     // Essence must be equal to or greater than the value.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' +
-                                  string.Format(GlobalSettings.CultureInfo, (blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                    ? LanguageManager.GetString(
-                                                        "Message_SelectQuality_RequireESSAbove",
-                                                        token: token)
-                                                    : await LanguageManager.GetStringAsync(
-                                                        "Message_SelectQuality_RequireESSAbove",
-                                                        token: token).ConfigureAwait(false)), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
+                                  string.Format(GlobalSettings.CultureInfo, blnSync
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      ? LanguageManager.GetString(
+                                          "Message_SelectQuality_RequireESSAbove",
+                                          token: token)
+                                      : await LanguageManager.GetStringAsync(
+                                          "Message_SelectQuality_RequireESSAbove",
+                                          token: token).ConfigureAwait(false), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
                     return new Tuple<bool, string>(decEssence
                                                    >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
                 }
@@ -2742,7 +2730,7 @@ namespace Chummer
                                          && x.TotalBaseRating >= intValue)
                                 : objSkillsSection.KnowledgeSkills.FirstOrDefault(
                                     x => (string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
-                                         && x.HasSpecialization(strSpec)
+                                         && x.HasSpecialization(strSpec, token)
                                          && x.TotalBaseRating >= intValue);
                         }
                         else
@@ -3154,7 +3142,7 @@ namespace Chummer
                         intMods += await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).SumAsync(async objVehicle =>
                         {
                             int intInnerSum = 0;
-                            foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons))
+                            foreach (Weapon objWeapon in await objVehicle.Weapons.GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                             {
                                 intInnerSum += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
                             }
@@ -3162,8 +3150,8 @@ namespace Chummer
                             intInnerSum += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                             {
                                 int intInnerSum2 = 0;
-                                foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(
-                                             x => x.UnderbarrelWeapons))
+                                foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(
+                                             x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                                 {
                                     intInnerSum2 += await objWeapon.WeaponAccessories.CountAsync(
                                         x => x.SpecialModification, token).ConfigureAwait(false);

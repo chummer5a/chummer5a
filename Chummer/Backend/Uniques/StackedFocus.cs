@@ -59,7 +59,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 objWriter.WriteStartElement("stackedfocus");
                 objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
@@ -109,7 +109,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -121,14 +121,14 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiGearId.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
                 {
-                    using (EnterReadLock.Enter(LockObject))
+                    using (LockObject.EnterUpgradeableReadLock())
                         _guiGearId = guiTemp;
                 }
             }
@@ -141,12 +141,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnBonded;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _blnBonded = value;
             }
         }
@@ -158,7 +158,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Gear.Sum(x => x.Rating);
             }
         }
@@ -171,7 +171,7 @@ namespace Chummer
             get
             {
                 decimal decCost = 0;
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     foreach (Gear objFocus in Gear)
                     {
@@ -302,9 +302,10 @@ namespace Chummer
         public async ValueTask<int> GetBindingCostAsync(CancellationToken token = default)
         {
             decimal decCost = 0;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                foreach (Gear objFocus in Gear)
+                token.ThrowIfCancellationRequested();
+                decCost += await Gear.SumAsync(async objFocus =>
                 {
                     // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
                     string strFocusName = objFocus.Name;
@@ -342,7 +343,7 @@ namespace Chummer
 
                         case "Counterspelling Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaCounterspellingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Banishing Focus":
@@ -362,7 +363,7 @@ namespace Chummer
 
                         case "Spellcasting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaSpellcastingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Summoning Focus":
@@ -387,7 +388,7 @@ namespace Chummer
 
                         case "Disenchanting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaDisenchantingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Power Focus":
@@ -396,17 +397,17 @@ namespace Chummer
 
                         case "Flexible Signature Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaFlexibleSignatureFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Ritual Spellcasting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaRitualSpellcastingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Spell Shaping Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaSpellShapingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         default:
@@ -435,8 +436,8 @@ namespace Chummer
                             }
                         }, token: token).ConfigureAwait(false);
 
-                    decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
-                }
+                    return objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
+                }, token).ConfigureAwait(false);
             }
 
             return decCost.StandardRound();
@@ -450,7 +451,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     foreach (Gear objGear in Gear)
                     {
@@ -474,8 +475,9 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     await Gear.ForEachAsync(async objGear =>
                     {
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
@@ -502,7 +504,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstGear;
             }
         }
@@ -515,7 +517,7 @@ namespace Chummer
         {
             if (objGear == null)
                 throw new ArgumentNullException(nameof(objGear));
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus, null);
 

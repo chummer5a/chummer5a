@@ -147,14 +147,11 @@ namespace Chummer
                     lstReturn = new List<T>();
                     break;
             }
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (await funcPredicate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                        lstReturn.Add(objEnumerator.Current);
-                }
+                token.ThrowIfCancellationRequested();
+                if (await funcPredicate.Invoke(objItem).ConfigureAwait(false))
+                    lstReturn.Add(objItem);
             }
             return lstReturn;
         }
@@ -246,14 +243,11 @@ namespace Chummer
 
         public static async Task<bool> AnyAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (await funcPredicate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                        return true;
-                }
+                token.ThrowIfCancellationRequested();
+                if (await funcPredicate.Invoke(objItem).ConfigureAwait(false))
+                    return true;
             }
             return false;
         }
@@ -324,14 +318,11 @@ namespace Chummer
 
         public static async Task<bool> AllAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!await funcPredicate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                        return false;
-                }
+                token.ThrowIfCancellationRequested();
+                if (!await funcPredicate.Invoke(objItem).ConfigureAwait(false))
+                    return false;
             }
             return true;
         }
@@ -370,14 +361,11 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (funcPredicate.Invoke(objEnumerator.Current))
-                        ++intReturn;
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate.Invoke(objItem))
+                    ++intReturn;
             }
             return intReturn;
         }
@@ -429,14 +417,11 @@ namespace Chummer
         public static async Task<int> CountAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
         {
             int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (await funcPredicate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                        ++intReturn;
-                }
+                token.ThrowIfCancellationRequested();
+                if (await funcPredicate.Invoke(objItem).ConfigureAwait(false))
+                    ++intReturn;
             }
             return intReturn;
         }
@@ -2460,13 +2445,10 @@ namespace Chummer
         public static async Task<int> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             int intReturn = int.MinValue;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    intReturn = Math.Max(intReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
-                }
+                token.ThrowIfCancellationRequested();
+                intReturn = Math.Max(intReturn, await funcSelector.Invoke(objItem).ConfigureAwait(false));
             }
             return intReturn;
         }
@@ -2517,13 +2499,10 @@ namespace Chummer
         public static async Task<long> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             long lngReturn = long.MinValue;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    lngReturn = Math.Max(lngReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
-                }
+                token.ThrowIfCancellationRequested();
+                lngReturn = Math.Max(lngReturn, await funcSelector.Invoke(objItem).ConfigureAwait(false));
             }
             return lngReturn;
         }
@@ -2574,13 +2553,10 @@ namespace Chummer
         public static async Task<float> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             float fltReturn = float.MinValue;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    fltReturn = Math.Max(fltReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
-                }
+                token.ThrowIfCancellationRequested();
+                fltReturn = Math.Max(fltReturn, await funcSelector.Invoke(objItem).ConfigureAwait(false));
             }
             return fltReturn;
         }
@@ -2631,13 +2607,10 @@ namespace Chummer
         public static async Task<double> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             double dblReturn = double.MinValue;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    dblReturn = Math.Max(dblReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
-                }
+                token.ThrowIfCancellationRequested();
+                dblReturn = Math.Max(dblReturn, await funcSelector.Invoke(objItem).ConfigureAwait(false));
             }
             return dblReturn;
         }
@@ -2688,13 +2661,10 @@ namespace Chummer
         public static async Task<decimal> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             decimal decReturn = decimal.MinValue;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    decReturn = Math.Max(decReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
-                }
+                token.ThrowIfCancellationRequested();
+                decReturn = Math.Max(decReturn, await funcSelector.Invoke(objItem).ConfigureAwait(false));
             }
             return decReturn;
         }
@@ -4435,13 +4405,10 @@ namespace Chummer
         public static async Task<int> MinAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             int intReturn = int.MaxValue;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    intReturn = Math.Min(intReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
-                }
+                token.ThrowIfCancellationRequested();
+                intReturn = Math.Min(intReturn, await funcSelector.Invoke(objItem).ConfigureAwait(false));
             }
             return intReturn;
         }
@@ -6420,14 +6387,11 @@ namespace Chummer
 
         public static async Task<T> FirstOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (await funcPredicate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                        return objEnumerator.Current;
-                }
+                token.ThrowIfCancellationRequested();
+                if (await funcPredicate.Invoke(objItem).ConfigureAwait(false))
+                    return objItem;
             }
             return default;
         }
@@ -6440,14 +6404,11 @@ namespace Chummer
         public static async Task<T> LastOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
         {
             T objReturn = default;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (await funcPredicate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                        objReturn = objEnumerator.Current;
-                }
+                token.ThrowIfCancellationRequested();
+                if (await funcPredicate.Invoke(objItem).ConfigureAwait(false))
+                    objReturn = objItem;
             }
             return objReturn;
         }
@@ -6459,13 +6420,10 @@ namespace Chummer
 
         public static void ForEach<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    objFuncToRun.Invoke(objEnumerator.Current);
-                }
+                token.ThrowIfCancellationRequested();
+                objFuncToRun.Invoke(objItem);
             }
         }
 
@@ -6505,13 +6463,10 @@ namespace Chummer
 
         public static async Task ForEachAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    await objFuncToRun.Invoke(objEnumerator.Current).ConfigureAwait(false);
-                }
+                token.ThrowIfCancellationRequested();
+                await objFuncToRun.Invoke(objItem).ConfigureAwait(false);
             }
         }
 
@@ -6523,14 +6478,11 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static void ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
-                        return;
-                }
+                token.ThrowIfCancellationRequested();
+                if (!objFuncToRunWithPossibleTerminate.Invoke(objItem))
+                    return;
             }
         }
 
@@ -6542,14 +6494,11 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static void ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current, token))
-                        return;
-                }
+                token.ThrowIfCancellationRequested();
+                if (!objFuncToRunWithPossibleTerminate.Invoke(objItem, token))
+                    return;
             }
         }
 
@@ -6621,14 +6570,11 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task ForEachWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                        return;
-                }
+                token.ThrowIfCancellationRequested();
+                if (!await objFuncToRunWithPossibleTerminate.Invoke(objItem).ConfigureAwait(false))
+                    return;
             }
         }
 
@@ -6700,14 +6646,11 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task ForEachWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objItem in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current, token).ConfigureAwait(false))
-                        return;
-                }
+                token.ThrowIfCancellationRequested();
+                if (!await objFuncToRunWithPossibleTerminate.Invoke(objItem, token).ConfigureAwait(false))
+                    return;
             }
         }
 
@@ -7790,17 +7733,13 @@ namespace Chummer
         public static IEnumerable<T> GetAllDescendants<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (IEnumerator<T> objEnumerator = objParentList.GetEnumerator())
+            foreach (T objItem in objParentList)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    T objLoopCurrent = objEnumerator.Current;
-                    yield return objLoopCurrent;
-                    token.ThrowIfCancellationRequested();
-                    foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopCurrent).GetAllDescendants(funcGetChildrenMethod, token))
-                        yield return objLoopGrandchild;
-                }
+                token.ThrowIfCancellationRequested();
+                yield return objItem;
+                token.ThrowIfCancellationRequested();
+                foreach (T objLoopGrandchild in funcGetChildrenMethod(objItem).GetAllDescendants(funcGetChildrenMethod, token))
+                    yield return objLoopGrandchild;
             }
         }
 
@@ -7844,18 +7783,15 @@ namespace Chummer
         public static IEnumerable<T> DeepWhere<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (IEnumerator<T> objEnumerator = objParentList.GetEnumerator())
+            foreach (T objItem in objParentList)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    T objLoopCurrent = objEnumerator.Current;
-                    if (predicate.Invoke(objLoopCurrent))
-                        yield return objLoopCurrent;
-                    token.ThrowIfCancellationRequested();
-                    foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopCurrent).DeepWhere(funcGetChildrenMethod, predicate, token))
-                        yield return objLoopGrandchild;
-                }
+                token.ThrowIfCancellationRequested();
+                T objLoopCurrent = objItem;
+                if (predicate.Invoke(objLoopCurrent))
+                    yield return objLoopCurrent;
+                token.ThrowIfCancellationRequested();
+                foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopCurrent).DeepWhere(funcGetChildrenMethod, predicate, token))
+                    yield return objLoopGrandchild;
             }
         }
 

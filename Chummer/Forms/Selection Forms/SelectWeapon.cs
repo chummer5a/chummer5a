@@ -369,7 +369,7 @@ namespace Chummer
                         if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
                             strWeaponCost
-                                = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                     + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                             .ConfigureAwait(false);
                         }
@@ -388,7 +388,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
 
                         AvailabilityValue objTotalAvail = await objSelectedWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-                        string strAvail = objTotalAvail.ToString();
+                        string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
                         await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token)
                                             .ConfigureAwait(false);
                         await lblWeaponAvailLabel
@@ -458,7 +458,7 @@ namespace Chummer
                 bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-                decimal decBaseCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                 if (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) == 1 && !blnForCategories)
                 {
                     DataTable tabWeapons = new DataTable("weapons");
@@ -491,7 +491,7 @@ namespace Chummer
                         if (!await objXmlWeapon.CreateNavigator().RequirementsMetAsync(_objCharacter, ParentWeapon, token: token).ConfigureAwait(false))
                             continue;
 
-                        XPathNavigator xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/weapondetails", token).ConfigureAwait(false);
+                        XPathNavigator xmlTestNode = objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails", token);
                         if (xmlTestNode != null
                             && await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                         {
@@ -499,7 +499,7 @@ namespace Chummer
                             continue;
                         }
 
-                        xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/weapondetails", token).ConfigureAwait(false);
+                        xmlTestNode = objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails", token);
                         if (xmlTestNode != null
                             && !await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                         {
@@ -625,7 +625,7 @@ namespace Chummer
                             if (!await objXmlWeapon.CreateNavigator().RequirementsMetAsync(_objCharacter, ParentWeapon, token: token).ConfigureAwait(false))
                                 continue;
 
-                            XPathNavigator xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/weapondetails", token).ConfigureAwait(false);
+                            XPathNavigator xmlTestNode = objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails", token);
                             if (xmlTestNode != null
                                 && await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
@@ -633,7 +633,7 @@ namespace Chummer
                                 continue;
                             }
 
-                            xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/weapondetails", token).ConfigureAwait(false);
+                            xmlTestNode = objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails", token);
                             if (xmlTestNode != null
                                 && !await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
@@ -995,7 +995,7 @@ namespace Chummer
                         objNode = _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strSelectedId);
                         if (objNode != null)
                         {
-                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                            _strSelectCategory = GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0
                                 ? cboCategory.SelectedValue?.ToString()
                                 : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
@@ -1024,7 +1024,7 @@ namespace Chummer
                         }
                         if (objNode != null)
                         {
-                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                            _strSelectCategory = GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0 ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
                         }
                         _decMarkup = nudMarkup.Value;

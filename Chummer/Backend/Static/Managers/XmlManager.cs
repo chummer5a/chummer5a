@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -46,13 +47,13 @@ namespace Chummer
             /// </summary>
             public bool GetDuplicatesChecked(CancellationToken token = default)
             {
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                     return _intDuplicatesChecked > 0;
             }
 
             public void SetDuplicatesChecked(bool blnNewValue, CancellationToken token = default)
             {
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                     Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
             }
 
@@ -61,14 +62,20 @@ namespace Chummer
             /// </summary>
             public async ValueTask<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
                     return _intDuplicatesChecked > 0;
+                }
             }
 
             public async ValueTask SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
                     Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
+                }
             }
 
             private XmlDocument _xmlContent = new XmlDocument { XmlResolver = null };
@@ -85,13 +92,13 @@ namespace Chummer
                 while (true)
                 {
                     int intLoadComplete;
-                    using (EnterReadLock.Enter(LockObject, token))
+                    using (LockObject.EnterReadLock(token))
                         intLoadComplete = _intInitialLoadComplete;
                     if (intLoadComplete > 0)
                         break;
                     Utils.SafeSleep(token);
                 }
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                     return _xmlContent;
             }
 
@@ -104,14 +111,21 @@ namespace Chummer
                 while (true)
                 {
                     int intLoadComplete;
-                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
                         intLoadComplete = _intInitialLoadComplete;
+                    }
+
                     if (intLoadComplete > 0)
                         break;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
                     return _xmlContent;
+                }
             }
 
             /// <summary>
@@ -119,7 +133,7 @@ namespace Chummer
             /// </summary>
             public void SetXmlContent(XmlDocument objContent, CancellationToken token = default)
             {
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterUpgradeableReadLock(token))
                 {
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
@@ -148,13 +162,15 @@ namespace Chummer
             /// </summary>
             public async ValueTask SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (objContent != null)
                         {
                             Interlocked.Increment(ref _intInitialLoadComplete);
@@ -185,13 +201,13 @@ namespace Chummer
                 while (true)
                 {
                     int intLoadComplete;
-                    using (EnterReadLock.Enter(LockObject, token))
+                    using (LockObject.EnterReadLock(token))
                         intLoadComplete = _intInitialLoadComplete;
                     if (intLoadComplete > 0)
                         break;
                     Utils.SafeSleep(token);
                 }
-                using (EnterReadLock.Enter(LockObject, token))
+                using (LockObject.EnterReadLock(token))
                     return _objXPathContent;
             }
 
@@ -204,14 +220,21 @@ namespace Chummer
                 while (true)
                 {
                     int intLoadComplete;
-                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
                         intLoadComplete = _intInitialLoadComplete;
+                    }
+
                     if (intLoadComplete > 0)
                         break;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
                     return _objXPathContent;
+                }
             }
 
             /// <inheritdoc />
@@ -230,8 +253,8 @@ namespace Chummer
             public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
         }
 
-        private static readonly LockingDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
-            new LockingDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
+        private static readonly ConcurrentDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
+            new ConcurrentDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
 
         private static readonly AsyncFriendlyReaderWriterLock s_objDataDirectoriesLock = new AsyncFriendlyReaderWriterLock();
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(2)
@@ -268,7 +291,11 @@ namespace Chummer
             using (s_objDataDirectoriesLock.EnterWriteLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                s_DicXmlDocuments.ForEach(x => x.Value.Dispose(), token);
+                foreach (XmlReference objReference in s_DicXmlDocuments.Values)
+                {
+                    token.ThrowIfCancellationRequested();
+                    objReference.Dispose();
+                }
                 token.ThrowIfCancellationRequested();
                 s_DicXmlDocuments.Clear();
                 token.ThrowIfCancellationRequested();
@@ -308,8 +335,14 @@ namespace Chummer
             IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                await s_DicXmlDocuments.ForEachAsync(kvpDocument => kvpDocument.Value.DisposeAsync().AsTask(), token: token).ConfigureAwait(false);
-                await s_DicXmlDocuments.ClearAsync(token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                foreach (XmlReference objReference in s_DicXmlDocuments.Values)
+                {
+                    token.ThrowIfCancellationRequested();
+                    await objReference.DisposeAsync().ConfigureAwait(false);
+                }
+                token.ThrowIfCancellationRequested();
+                s_DicXmlDocuments.Clear();
                 s_SetDataDirectories.Clear();
                 token.ThrowIfCancellationRequested();
                 s_SetDataDirectories.Add(Utils.GetDataFolderPath);
@@ -393,8 +426,9 @@ namespace Chummer
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(s_objDataDirectoriesLock, token) : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token).ConfigureAwait(false))
+            using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;
 
@@ -461,23 +495,11 @@ namespace Chummer
 
                 // Look to see if this XmlDocument is already loaded.
                 XmlDocument xmlDocumentOfReturn = null;
-                XmlReference xmlReferenceOfReturn = null;
-                bool blnDoLoad = blnLoadFile || (blnHasCustomData && (strFileName == "packs.xml"
-                                                                      || (GlobalSettings.LiveCustomData
-                                                                          && strFileName != "improvements.xml")));
-                if (!blnDoLoad)
-                {
-                    if (blnSync)
-                        blnDoLoad = !s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn, token);
-                    else
-                    {
-                        bool blnLoadSuccess;
-                        (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
-                        blnDoLoad = !blnLoadSuccess;
-                    }
-                }
-
-                if (blnDoLoad)
+                if (blnLoadFile
+                    || (blnHasCustomData && (strFileName == "packs.xml" ||
+                                             (GlobalSettings.LiveCustomData &&
+                                              strFileName != "improvements.xml")))
+                    || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     bool blnLoadSuccess;
@@ -485,7 +507,7 @@ namespace Chummer
                     {
                         // ReSharper disable once MethodHasAsyncOverload
                         xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token);
-                        blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn, token);
+                        blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                     }
                     else
                     {
@@ -495,8 +517,7 @@ namespace Chummer
                         // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                         if (xmlDocumentOfReturn != null)
                         {
-                            (blnLoadSuccess, xmlReferenceOfReturn)
-                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
+                            blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                         }
                         else
                         {
@@ -580,11 +601,10 @@ namespace Chummer
             string strPath = string.Empty;
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
-            using (blnSync
-                       // ReSharper disable once MethodHasAsyncOverload
-                       ? EnterReadLock.Enter(s_objDataDirectoriesLock, token)
-                       : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (string strDirectory in s_SetDataDirectories)
                 {
                     if (strDirectory.StartsWith(Utils.GetPacksFolderPath) && strFileName != "packs.xml")
@@ -628,20 +648,12 @@ namespace Chummer
                 XmlReference xmlReferenceOfReturn = null;
                 try
                 {
-                    xmlReferenceOfReturn = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? s_DicXmlDocuments.AddOrGet(objDataKey, x =>
-                        {
-                            blnLoadFile = true;
-                            // ReSharper disable once AccessToDisposedClosure
-                            return xmlNewReference.Value;
-                        }, token)
-                        : await s_DicXmlDocuments.AddOrGetAsync(objDataKey, x =>
-                        {
-                            blnLoadFile = true;
-                            // ReSharper disable once AccessToDisposedClosure
-                            return xmlNewReference.Value;
-                        }, token).ConfigureAwait(false);
+                    xmlReferenceOfReturn = s_DicXmlDocuments.GetOrAdd(objDataKey, x =>
+                    {
+                        blnLoadFile = true;
+                        // ReSharper disable once AccessToDisposedClosure
+                        return xmlNewReference.Value;
+                    });
                 }
                 finally
                 {
@@ -1062,7 +1074,7 @@ namespace Chummer
         private static async ValueTask AppendTranslationsAsync(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            foreach (XPathNavigator objChild in await xmlTranslationListParentNode.SelectAndCacheExpressionAsync("*", token).ConfigureAwait(false))
+            foreach (XPathNavigator objChild in xmlTranslationListParentNode.SelectAndCacheExpression("*", token))
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode xmlItem = null;
@@ -2163,11 +2175,11 @@ namespace Chummer
                     foreach (Character objCharacter in lstCharacters)
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (XPathNavigator xmlSheet in await (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token).ConfigureAwait(false))
-                                     .SelectAndCacheExpressionAsync(
+                        foreach (XPathNavigator xmlSheet in (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token).ConfigureAwait(false))
+                                     .SelectAndCacheExpression(
                                          "/chummer/sheets[@lang="
                                          + strLanguage.CleanXPath()
-                                         + "]/sheet[not(hide)]", token: token).ConfigureAwait(false))
+                                         + "]/sheet[not(hide)]", token: token))
                         {
                             token.ThrowIfCancellationRequested();
                             string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename", token: token).ConfigureAwait(false))?.Value;
@@ -2191,9 +2203,9 @@ namespace Chummer
                 }
                 else
                 {
-                    XPathNodeIterator xmlIterator = await (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token).ConfigureAwait(false))
-                        .SelectAndCacheExpressionAsync(
-                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token: token).ConfigureAwait(false);
+                    XPathNodeIterator xmlIterator = (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token).ConfigureAwait(false))
+                        .SelectAndCacheExpression(
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token: token);
                     if (blnDoList)
                         lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
 
@@ -2451,8 +2463,8 @@ namespace Chummer
                                                         "metavariants", token: token).ConfigureAwait(false);
                                                 if (xmlMetavariants != null)
                                                 {
-                                                    foreach (XPathNavigator objMetavariant in await xmlMetavariants
-                                                                 .SelectAndCacheExpressionAsync("metavariant", token: token).ConfigureAwait(false))
+                                                    foreach (XPathNavigator objMetavariant in xmlMetavariants
+                                                                 .SelectAndCacheExpression("metavariant", token: token))
                                                     {
                                                         string strMetavariantName
                                                             = (await objMetavariant

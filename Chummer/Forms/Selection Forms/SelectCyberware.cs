@@ -527,7 +527,7 @@ namespace Chummer
                         if (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token).ConfigureAwait(false) != null)
                         {
                             setDisallowedGrades = new HashSet<string>();
-                            foreach (XPathNavigator objNode in await xmlCyberware.SelectAndCacheExpressionAsync("bannedgrades/grade", token).ConfigureAwait(false))
+                            foreach (XPathNavigator objNode in xmlCyberware.SelectAndCacheExpression("bannedgrades/grade", token))
                             {
                                 setDisallowedGrades.Add(objNode.Value);
                             }
@@ -1072,14 +1072,15 @@ namespace Chummer
                                                                                GlobalSettings.InvariantCultureInfo), token: token),
                                                                        token: token).ConfigureAwait(false), _intAvailModifier);
                         await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
-                        await lblAvail.DoThreadSafeAsync(x => x.Text = objTotalAvail.ToString(), token: token).ConfigureAwait(false);
+                        string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
+                        await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
 
                         // Cost.
                         decimal decItemCost = 0;
                         string strCost;
                         if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
-                            strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                            strCost = 0.0m.ToString(_objCharacter.Settings.NuyenFormat,
                                                               GlobalSettings.CultureInfo)
                                               + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         }
@@ -1160,9 +1161,9 @@ namespace Chummer
                                         = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
                                     if (blnIsSuccess)
                                     {
-                                        decItemCost = (Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
-                                                       * _decCostMultiplier * decGenetechCostModifier);
-                                        decItemCost *= 1 + (nudMarkup.Value / 100.0m);
+                                        decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
+                                                      * _decCostMultiplier * decGenetechCostModifier;
+                                        decItemCost *= 1 + nudMarkup.Value / 100.0m;
 
                                         if (chkBlackMarketDiscount.Checked)
                                         {
@@ -1180,7 +1181,7 @@ namespace Chummer
                             }
                             else
                             {
-                                strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                                strCost = 0.0m.ToString(_objCharacter.Settings.NuyenFormat,
                                                           GlobalSettings.CultureInfo)
                                           + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                                  .ConfigureAwait(false);
@@ -1215,17 +1216,17 @@ namespace Chummer
                                     decCharacterESSModifier = CharacterESSMultiplier;
                                     // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
                                     if (strSelectCategory == "Basic" && _eMode == Mode.Bioware)
-                                        decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
+                                        decCharacterESSModifier -= 1 - BasicBiowareESSMultiplier;
                                     if (blnIsGeneware)
-                                        decCharacterESSModifier -= (1 - GenetechEssMultiplier);
+                                        decCharacterESSModifier -= 1 - GenetechEssMultiplier;
 
                                     if ((await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).AllowCyberwareESSDiscounts)
                                     {
                                         decimal decDiscountModifier = await nudESSDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
-                                        decCharacterESSModifier *= (1.0m - decDiscountModifier);
+                                        decCharacterESSModifier *= 1.0m - decDiscountModifier;
                                     }
 
-                                    decCharacterESSModifier -= (1 - _decESSMultiplier);
+                                    decCharacterESSModifier -= 1 - _decESSMultiplier;
 
                                     decCharacterESSModifier *= CharacterTotalESSMultiplier;
 
@@ -1285,7 +1286,7 @@ namespace Chummer
                         else
                         {
                             await lblEssence.DoThreadSafeAsync(x => x.Text
-                                                                   = (0.0m).ToString(
+                                                                   = 0.0m.ToString(
                                                                        _objCharacter.Settings.EssenceFormat,
                                                                        GlobalSettings.CultureInfo), token: token)
                                             .ConfigureAwait(false);
@@ -1779,7 +1780,7 @@ namespace Chummer
 
                         if (blnShowOnlyAffordItems && !blnFree)
                         {
-                            decimal decCostMultiplier = 1 + (decMarkup / 100.0m);
+                            decimal decCostMultiplier = 1 + decMarkup / 100.0m;
                             if (_setBlackMarketMaps.Contains(
                                     (await xmlCyberware
                                            .SelectSingleNodeAndCacheExpressionAsync("category", token: token)
@@ -1940,7 +1941,7 @@ namespace Chummer
                     return;
             }
 
-            s_strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0)
+            s_strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
                 ? _strSelectedCategory
                 : (await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
@@ -2104,7 +2105,7 @@ namespace Chummer
             }
             else
             {
-                objXmlCategoryList = await _xmlBaseCyberwareDataNode.SelectAndCacheExpressionAsync("categories/category", token: token).ConfigureAwait(false);
+                objXmlCategoryList = _xmlBaseCyberwareDataNode.SelectAndCacheExpression("categories/category", token: token);
             }
 
             string strOldSelectedCyberware = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);

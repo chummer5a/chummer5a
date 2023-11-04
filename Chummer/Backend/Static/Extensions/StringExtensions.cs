@@ -264,8 +264,8 @@ namespace Chummer
         /// Method to quickly remove the first instance of a substring from a string.
         /// </summary>
         /// <param name="strInput">String on which to operate.</param>
-        /// <param name="intStartIndex">Index from which to begin searching.</param>
         /// <param name="strSubstringToDelete">Substring to remove.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the first instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
         public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete,
@@ -290,8 +290,8 @@ namespace Chummer
         /// Method to quickly remove the last instance of a substring from a string.
         /// </summary>
         /// <param name="strInput">String on which to operate.</param>
-        /// <param name="intStartIndex">Index from which to begin searching (proceeding towards the beginning of the string).</param>
         /// <param name="strSubstringToDelete">Substring to remove.</param>
+        /// <param name="intStartIndex">Index from which to begin searching (proceeding towards the beginning of the string).</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the last instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
         public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete,
@@ -430,7 +430,7 @@ namespace Chummer
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
 
-            return !astrNeedles.All(x => x.Length > intHaystackLength) && astrNeedles.Any(strNeedle => strHaystack.Contains(strNeedle, eComparison));
+            return astrNeedles.Any(x => x.Length <= intHaystackLength && strHaystack.IndexOf(x, eComparison) >= 0);
         }
 
         /// <summary>
@@ -464,6 +464,66 @@ namespace Chummer
         public static bool ContainsAny(this string strHaystack, params string[] astrNeedles)
         {
             return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, IReadOnlyCollection<string> astrNeedles, StringComparison eComparison)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return false;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return false;
+            if (astrNeedles == null)
+                return false;
+            int intNumNeedles = astrNeedles.Count;
+            if (intNumNeedles == 0)
+                return false;
+
+            // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+            // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+
+            return astrNeedles.AsParallel().Any(x => x.Length <= intHaystackLength && strHaystack.IndexOf(x, eComparison) >= 0);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, IEnumerable<string> astrNeedles, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return false;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return false;
+            return astrNeedles != null &&
+                   // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+                   // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+                   astrNeedles.AsParallel().Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, params string[] astrNeedles)
+        {
+            return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
         }
 
         /// <summary>

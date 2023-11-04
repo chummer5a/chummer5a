@@ -410,7 +410,7 @@ namespace Chummer.Plugins
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstMyPlugins;
             }
         }
@@ -421,7 +421,7 @@ namespace Chummer.Plugins
             {
                 if (!GlobalSettings.PluginsEnabled)
                     return Array.Empty<IPlugin>();
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
                     foreach (IPlugin plugin in MyPlugins)
@@ -440,15 +440,14 @@ namespace Chummer.Plugins
         {
             if (!GlobalSettings.PluginsEnabled)
                 return Array.Empty<IPlugin>();
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
-                await MyPlugins.ForEachAsync(async plugin =>
+                await MyPlugins.ForEachAsync(plugin =>
                 {
-                    (bool blnSuccess, bool blnEnabled)
-                        = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(plugin.ToString(), token)
-                                              .ConfigureAwait(false);
-                    if (!blnSuccess || blnEnabled)
+                    if (!GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool blnEnabled)
+                        || blnEnabled)
                         result.Add(plugin);
                 }, token).ConfigureAwait(false);
 
@@ -545,8 +544,9 @@ namespace Chummer.Plugins
 
         internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
@@ -576,8 +576,9 @@ namespace Chummer.Plugins
         internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
@@ -606,8 +607,9 @@ namespace Chummer.Plugins
         internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,

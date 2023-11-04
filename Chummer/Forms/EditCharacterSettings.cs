@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -225,14 +226,11 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                LockingDictionary<string, CharacterSettings> dicCharacterSettings
+                ConcurrentDictionary<string, CharacterSettings> dicCharacterSettings
                     = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync().ConfigureAwait(false);
-                (bool blnSuccess, CharacterSettings objDeletedSettings)
-                    = await dicCharacterSettings.TryRemoveAsync(
-                                                    await _objReferenceCharacterSettings.GetDictionaryKeyAsync()
-                                                        .ConfigureAwait(false))
-                                                .ConfigureAwait(false);
-                if (!blnSuccess)
+                if (!dicCharacterSettings.TryRemove(
+                        await _objReferenceCharacterSettings.GetDictionaryKeyAsync()
+                            .ConfigureAwait(false), out CharacterSettings objDeletedSettings))
                     return;
                 try
                 {
@@ -242,32 +240,26 @@ namespace Chummer
                                              .ConfigureAwait(false))
                     {
                         // Revert removal of setting if we cannot delete the file
-                        await dicCharacterSettings.AddAsync(
-                                                      await objDeletedSettings.GetDictionaryKeyAsync()
-                                                                              .ConfigureAwait(false),
-                                                      objDeletedSettings)
-                                                  .ConfigureAwait(false);
+                        dicCharacterSettings.TryAdd(
+                            await objDeletedSettings.GetDictionaryKeyAsync().ConfigureAwait(false), objDeletedSettings);
                         return;
                     }
                 }
                 catch
                 {
                     // Revert removal of setting if we cannot delete the file
-                    await dicCharacterSettings.AddAsync(
-                                                  await objDeletedSettings.GetDictionaryKeyAsync()
-                                                                          .ConfigureAwait(false), objDeletedSettings)
-                                              .ConfigureAwait(false);
+                    dicCharacterSettings.TryAdd(
+                        await objDeletedSettings.GetDictionaryKeyAsync().ConfigureAwait(false), objDeletedSettings);
                     throw;
                 }
 
                 // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
                 _blnForceMasterIndexRepopulateOnClose = true;
                 KeyValuePair<string, CharacterSettings> kvpReplacementOption
-                    = await dicCharacterSettings.FirstOrDefaultAsync(
+                    = dicCharacterSettings.FirstOrDefault(
                                                     x => x.Value.BuiltInOption
                                                          && x.Value.BuildMethod
-                                                         == _objReferenceCharacterSettings.BuildMethod)
-                                                .ConfigureAwait(false);
+                                                         == _objReferenceCharacterSettings.BuildMethod);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
                     if (await objCharacter.GetSettingsKeyAsync().ConfigureAwait(false)
@@ -304,7 +296,7 @@ namespace Chummer
             string strSelectSettingName
                 = await LanguageManager.GetStringAsync("Message_CharacterOptions_SelectSettingName")
                                        .ConfigureAwait(false);
-            LockingDictionary<string, CharacterSettings> dicCharacterSettings
+            ConcurrentDictionary<string, CharacterSettings> dicCharacterSettings
                 = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync().ConfigureAwait(false);
             do
             {
@@ -324,7 +316,7 @@ namespace Chummer
                         strSelectedName = frmSelectName.MyForm.SelectedValue;
                     }
 
-                    if (await dicCharacterSettings.AnyAsync(x => x.Value.Name == strSelectedName).ConfigureAwait(false))
+                    if (dicCharacterSettings.Any(x => x.Value.Name == strSelectedName))
                     {
                         DialogResult eCreateDuplicateSetting = Program.ShowScrollableMessageBox(
                             string.Format(
@@ -356,7 +348,7 @@ namespace Chummer
                 int intMaxNameLength = char.MaxValue - Utils.GetStartupPath.Length - "settings".Length - 6;
                 uint uintAccumulator = 1;
                 string strSeparator = "_";
-                while (await dicCharacterSettings.AnyAsync(x => x.Value.FileName == strSelectedFullFileName).ConfigureAwait(false))
+                while (dicCharacterSettings.Any(x => x.Value.FileName == strSelectedFullFileName))
                 {
                     strSelectedFullFileName = strBaseFileName + strSeparator
                                                               + uintAccumulator.ToString(
@@ -392,7 +384,7 @@ namespace Chummer
                     CharacterSettings objNewCharacterSettings
                         = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
                     string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync().ConfigureAwait(false);
-                    if (!await dicCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings).ConfigureAwait(false))
+                    if (!dicCharacterSettings.TryAdd(strKey, objNewCharacterSettings))
                     {
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                         return;
@@ -406,14 +398,14 @@ namespace Chummer
                     catch
                     {
                         // Revert addition of settings if we cannot create a file
-                        await dicCharacterSettings.RemoveAsync(strKey).ConfigureAwait(false);
+                        dicCharacterSettings.TryRemove(strKey, out _);
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                         throw;
                     }
                     if (!blnSaveSuccessful)
                     {
                         // Revert addition of settings if we cannot create a file
-                        await dicCharacterSettings.RemoveAsync(strKey).ConfigureAwait(false);
+                        dicCharacterSettings.TryRemove(strKey, out _);
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                         return;
                     }
@@ -499,10 +491,8 @@ namespace Chummer
                                                      .ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedFile))
                 return;
-            (bool blnSuccess, CharacterSettings objNewOption)
-                = await (await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false))
-                        .TryGetValueAsync(strSelectedFile).ConfigureAwait(false);
-            if (!blnSuccess)
+            if (!(await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false)).TryGetValue(
+                    strSelectedFile, out CharacterSettings objNewOption))
                 return;
 
             if (IsDirty)
@@ -822,11 +812,20 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            using (await EnterReadLock.EnterAsync(_dicCharacterCustomDataDirectoryInfos.LockObject).ConfigureAwait(false))
+            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
                 if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
-                await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(intIndex, 2).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(intIndex, 2).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
                 await _objCharacterSettings.CustomDataDirectoryKeys.ReverseAsync(intIndex, 2).ConfigureAwait(false);
             }
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
@@ -840,7 +839,7 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            using (await EnterReadLock.EnterAsync(_dicCharacterCustomDataDirectoryInfos.LockObject).ConfigureAwait(false))
+            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
                 int intCount = await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false);
                 if (intIndex >= intCount - 1)
@@ -927,7 +926,7 @@ namespace Chummer
 
         private async void txtPriorities_TextChanged(object sender, EventArgs e)
         {
-            Color objWindowTextColor = await ColorManager.GetWindowTextAsync().ConfigureAwait(false);
+            Color objWindowTextColor = ColorManager.WindowText;
             await txtPriorities.DoThreadSafeAsync(x => x.ForeColor
                                                       = x.TextLength == 5
                                                           ? objWindowTextColor
@@ -941,7 +940,7 @@ namespace Chummer
                                            await txtContactPoints.DoThreadSafeFuncAsync(x => x.Text)
                                                                  .ConfigureAwait(false))
                                        .ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtContactPoints.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
@@ -953,7 +952,7 @@ namespace Chummer
                                            await txtKnowledgePoints.DoThreadSafeFuncAsync(x => x.Text)
                                                                    .ConfigureAwait(false))
                                        .ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtKnowledgePoints.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
@@ -966,7 +965,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(strText.Replace("{Karma}", "1")
                     .Replace("{PriorityNuyen}", "1")).ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtNuyenExpression.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
             await _objCharacterSettings.SetChargenKarmaToNuyenExpressionAsync(strText)
@@ -980,7 +979,7 @@ namespace Chummer
                                            await txtBoundSpiritLimit.DoThreadSafeFuncAsync(x => x.Text)
                                                                     .ConfigureAwait(false))
                                        .ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtBoundSpiritLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
@@ -992,7 +991,7 @@ namespace Chummer
                                            await txtRegisteredSpriteLimit.DoThreadSafeFuncAsync(x => x.Text)
                                                                          .ConfigureAwait(false))
                                        .ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtRegisteredSpriteLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
@@ -1004,7 +1003,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     strText.Replace("{Modifier}", "1.0")).ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtEssenceModifierPostExpression.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
@@ -1014,7 +1013,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtLiftLimit.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtLiftLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
@@ -1024,7 +1023,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtCarryLimit.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtCarryLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
@@ -1036,7 +1035,7 @@ namespace Chummer
                                            await txtEncumbranceInterval.DoThreadSafeFuncAsync(x => x.Text)
                                                                        .ConfigureAwait(false))
                                        .ConfigureAwait(false)
-                    ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
+                    ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
             await txtEncumbranceInterval.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
@@ -1154,13 +1153,12 @@ namespace Chummer
             {
                 await treSourcebook.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
                 _setPermanentSourcebooks.Clear();
-                foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync(
+                foreach (XPathNavigator objXmlBook in (await XmlManager.LoadXPathAsync(
                                                                 "books.xml",
                                                                 _objCharacterSettings.EnabledCustomDataDirectoryPaths,
                                                                 token: token).ConfigureAwait(false))
-                                                            .SelectAndCacheExpressionAsync(
-                                                                "/chummer/books/book", token: token)
-                                                            .ConfigureAwait(false))
+                                                            .SelectAndCacheExpression(
+                                                                "/chummer/books/book", token: token))
                 {
                     if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide", token: token)
                                         .ConfigureAwait(false) != null)
@@ -1219,12 +1217,14 @@ namespace Chummer
             {
                 string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
                                                               .ConfigureAwait(false);
-                Color objGrayTextColor = await ColorManager.GetGrayTextAsync(token).ConfigureAwait(false);
-                using (await EnterReadLock.EnterAsync(_dicCharacterCustomDataDirectoryInfos, token)
+                using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync(token)
                                           .ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     int intNewCount
                         = await _dicCharacterCustomDataDirectoryInfos.GetCountAsync(token).ConfigureAwait(false);
+                    Color objErrorColor = ColorManager.ErrorColor;
+                    Color objGrayTextColor = ColorManager.GrayText;
                     if (intNewCount != await treCustomDataDirectories
                                              .DoThreadSafeFuncAsync(x => x.Nodes.Count, token: token)
                                              .ConfigureAwait(false))
@@ -1262,7 +1262,7 @@ namespace Chummer
                                         objNode.ToolTipText
                                             = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
                                                 missingDirectories, prohibitedDirectories, token).ConfigureAwait(false);
-                                        objNode.ForeColor = ColorManager.ErrorColor;
+                                        objNode.ForeColor = objErrorColor;
                                     }
                                 }
                             }
@@ -1285,7 +1285,7 @@ namespace Chummer
                     }
                     else
                     {
-                        Color objWindowTextColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
+                        Color objWindowTextColor = ColorManager.WindowText;
                         for (int i = 0; i < intNewCount; ++i)
                         {
                             KeyValuePair<object, bool> kvpInfo = await _dicCharacterCustomDataDirectoryInfos
@@ -1329,7 +1329,7 @@ namespace Chummer
                                         await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                         {
                                             objNode.ToolTipText = strToolTip;
-                                            objNode.ForeColor = ColorManager.ErrorColor;
+                                            objNode.ForeColor = objErrorColor;
                                         }, token: token).ConfigureAwait(false);
                                     }
                                     else
@@ -1423,14 +1423,14 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstPriorityTables))
                 {
-                    foreach (XPathNavigator objXmlNode in await (await XmlManager
+                    foreach (XPathNavigator objXmlNode in (await XmlManager
                                                                        .LoadXPathAsync("priorities.xml",
                                                                            _objCharacterSettings
                                                                                .EnabledCustomDataDirectoryPaths,
                                                                            token: token).ConfigureAwait(false))
-                                                                .SelectAndCacheExpressionAsync(
+                                                                .SelectAndCacheExpression(
                                                                     "/chummer/prioritytables/prioritytable",
-                                                                    token: token).ConfigureAwait(false))
+                                                                    token: token))
                     {
                         string strName = objXmlNode.Value;
                         if (!string.IsNullOrEmpty(strName))
@@ -1490,14 +1490,13 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLimbCount))
                     {
-                        foreach (XPathNavigator objXmlNode in await (await XmlManager
+                        foreach (XPathNavigator objXmlNode in (await XmlManager
                                                                            .LoadXPathAsync("options.xml",
                                                                                _objCharacterSettings
                                                                                    .EnabledCustomDataDirectoryPaths,
                                                                                token: token).ConfigureAwait(false))
-                                                                    .SelectAndCacheExpressionAsync(
-                                                                        "/chummer/limbcounts/limb", token: token)
-                                                                    .ConfigureAwait(false))
+                                                                    .SelectAndCacheExpression(
+                                                                        "/chummer/limbcounts/limb", token: token))
                         {
                             string strExclude
                                 = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude", token: token)
@@ -1557,14 +1556,13 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstGrades))
                 {
-                    foreach (XPathNavigator objXmlNode in await (await XmlManager
+                    foreach (XPathNavigator objXmlNode in (await XmlManager
                                                                        .LoadXPathAsync("bioware.xml",
                                                                            _objCharacterSettings
                                                                                .EnabledCustomDataDirectoryPaths,
                                                                            token: token).ConfigureAwait(false))
-                                                                .SelectAndCacheExpressionAsync(
-                                                                    "/chummer/grades/grade[not(hide)]", token: token)
-                                                                .ConfigureAwait(false))
+                                                                .SelectAndCacheExpression(
+                                                                    "/chummer/grades/grade[not(hide)]", token: token))
                     {
                         string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token)
                                                           .ConfigureAwait(false))?.Value;
@@ -1593,14 +1591,13 @@ namespace Chummer
                         }
                     }
 
-                    foreach (XPathNavigator objXmlNode in await (await XmlManager
+                    foreach (XPathNavigator objXmlNode in (await XmlManager
                                                                        .LoadXPathAsync("cyberware.xml",
                                                                            _objCharacterSettings
                                                                                .EnabledCustomDataDirectoryPaths,
                                                                            token: token).ConfigureAwait(false))
-                                                                .SelectAndCacheExpressionAsync(
-                                                                    "/chummer/grades/grade[not(hide)]", token: token)
-                                                                .ConfigureAwait(false))
+                                                                .SelectAndCacheExpression(
+                                                                    "/chummer/grades/grade[not(hide)]", token: token))
                     {
                         string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token)
                                                           .ConfigureAwait(false))?.Value;
@@ -1693,6 +1690,7 @@ namespace Chummer
                 .EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 await _dicCharacterCustomDataDirectoryInfos.ClearAsync(token).ConfigureAwait(false);
                 await _objCharacterSettings.CustomDataDirectoryKeys.ForEachAsync(
                     async kvpCustomDataDirectory =>

@@ -305,10 +305,10 @@ namespace Chummer.Backend.Equipment
         /// Create an Armor from an XmlNode.
         /// </summary>
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
-        /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="intRating">Rating of the item.</param>
         /// <param name="lstWeapons">List of Weapons that added to the character's weapons.</param>
+        /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
+        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
         public void Create(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
         {
@@ -1412,7 +1412,7 @@ namespace Chummer.Backend.Equipment
                 return Page;
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
+                ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1821,7 +1821,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstArmorMods;
             }
         }
@@ -1833,7 +1833,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstGear;
             }
         }
@@ -2316,7 +2316,7 @@ namespace Chummer.Backend.Equipment
 
             // If an Armor Capacity is specified for the Armor, use that value.
             if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
-                strReturn = (0.0m).ToString("#,0.##", objCultureInfo);
+                strReturn = 0.0m.ToString("#,0.##", objCultureInfo);
             else if (strReturn == "Rating")
                 strReturn = Rating.ToString(objCultureInfo);
             else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decReturn))
@@ -2447,7 +2447,7 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
+            return objNode != null ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -2895,7 +2895,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped)
                 {
-                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                           await _objCharacter.Improvements.ToListAsync(
@@ -2914,7 +2914,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                          await _objCharacter.Improvements.ToListAsync(

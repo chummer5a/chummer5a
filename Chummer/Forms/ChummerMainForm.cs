@@ -117,11 +117,10 @@ namespace Chummer
 
             Disposed += (sender, args) =>
             {
+                _tmrCharactersToOpenCheck.Dispose();
                 _objGenericCancellationTokenSource.Dispose();
                 _objFormOpeningSemaphore.Dispose();
                 DisposeOpenForms();
-                _tmrCharactersToOpenCheck.Stop();
-                _tmrCharactersToOpenCheck.Dispose();
             };
 
             _lstOpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
@@ -2695,7 +2694,7 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterEditorForms, null);
             if (lstToClose1 != null)
             {
-                using (lstToClose1.LockObject.EnterWriteLock(CancellationToken.None))
+                using (lstToClose1.LockObject.EnterWriteLock())
                 {
                     for (int i = lstToClose1.Count - 1; i >= 0; --i)
                     {
@@ -2713,7 +2712,7 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterExportForms, null);
             if (lstToClose2 != null)
             {
-                using (lstToClose2.LockObject.EnterWriteLock(CancellationToken.None))
+                using (lstToClose2.LockObject.EnterWriteLock())
                 {
                     for (int i = lstToClose2.Count - 1; i >= 0; --i)
                     {
@@ -2731,7 +2730,7 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterSheetViewers, null);
             if (lstToClose3 != null)
             {
-                using (lstToClose3.LockObject.EnterWriteLock(CancellationToken.None))
+                using (lstToClose3.LockObject.EnterWriteLock())
                 {
                     for (int i = lstToClose3.Count - 1; i >= 0; --i)
                     {
@@ -2753,19 +2752,23 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterEditorForms, null);
             if (lstToClose1 != null)
             {
-                IAsyncDisposable objLocker = await lstToClose1.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                // ReSharper disable once MethodSupportsCancellation
+                IAsyncDisposable objLocker = await lstToClose1.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    for (int i = await lstToClose1.GetCountAsync(CancellationToken.None)
-                                                  .ConfigureAwait(false) - 1;
+                    // ReSharper disable once MethodSupportsCancellation
+                    for (int i = await lstToClose1.GetCountAsync()
+                             .ConfigureAwait(false) - 1;
                          i >= 0;
                          --i)
                     {
                         CharacterShared frmToClose = await lstToClose1
-                                                           .GetValueAtAsync(i, CancellationToken.None)
+                            // ReSharper disable once MethodSupportsCancellation
+                            .GetValueAtAsync(i)
                                                            .ConfigureAwait(false);
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None)
+                        // ReSharper disable once MethodSupportsCancellation
+                        await frmToClose.DoThreadSafeAsync(x => x.Close())
                                         .ConfigureAwait(false);
                         await objFormCharacter.DisposeAsync().ConfigureAwait(false);
                     }
@@ -2782,18 +2785,22 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterExportForms, null);
             if (lstToClose2 != null)
             {
-                IAsyncDisposable objLocker = await lstToClose2.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                // ReSharper disable once MethodSupportsCancellation
+                IAsyncDisposable objLocker = await lstToClose2.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    for (int i = await lstToClose2.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1;
+                    // ReSharper disable once MethodSupportsCancellation
+                    for (int i = await lstToClose2.GetCountAsync().ConfigureAwait(false) - 1;
                          i >= 0;
                          --i)
                     {
                         ExportCharacter frmToClose = await lstToClose2
-                                                           .GetValueAtAsync(i, CancellationToken.None)
+                            // ReSharper disable once MethodSupportsCancellation
+                            .GetValueAtAsync(i)
                                                            .ConfigureAwait(false);
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None)
+                        // ReSharper disable once MethodSupportsCancellation
+                        await frmToClose.DoThreadSafeAsync(x => x.Close())
                                         .ConfigureAwait(false);
                         await objFormCharacter.DisposeAsync().ConfigureAwait(false);
                     }
@@ -2810,19 +2817,23 @@ namespace Chummer
                 = Interlocked.Exchange(ref _lstOpenCharacterSheetViewers, null);
             if (lstToClose3 != null)
             {
-                IAsyncDisposable objLocker = await lstToClose3.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                // ReSharper disable once MethodSupportsCancellation
+                IAsyncDisposable objLocker = await lstToClose3.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    for (int i = await lstToClose3.GetCountAsync(CancellationToken.None)
-                                                  .ConfigureAwait(false) - 1;
+                    // ReSharper disable once MethodSupportsCancellation
+                    for (int i = await lstToClose3.GetCountAsync()
+                             .ConfigureAwait(false) - 1;
                          i >= 0;
                          --i)
                     {
                         CharacterSheetViewer frmToClose = await lstToClose3
-                                                                .GetValueAtAsync(i, CancellationToken.None)
+                            // ReSharper disable once MethodSupportsCancellation
+                            .GetValueAtAsync(i)
                                                                 .ConfigureAwait(false);
                         List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
-                        await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None)
+                        // ReSharper disable once MethodSupportsCancellation
+                        await frmToClose.DoThreadSafeAsync(x => x.Close())
                                         .ConfigureAwait(false);
                         foreach (Character objFormCharacter in lstFormCharacters)
                             await objFormCharacter.DisposeAsync().ConfigureAwait(false);
@@ -3199,12 +3210,11 @@ namespace Chummer
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
                                     if (await Program.OpenCharacters
-                                                     .AllAsync(
-                                                         async x => x == objCharacter || !await x.LinkedCharacters
-                                                             .ContainsAsync(objCharacter, token).ConfigureAwait(false),
-                                                         token).ConfigureAwait(false))
+                                            .AllAsync(
+                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
+                                                token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
-                                                     .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                     continue;
                                 }
 
@@ -3420,13 +3430,12 @@ namespace Chummer
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
-                                    if (await Program.OpenCharacters.AllAsync(
-                                                         async x => x == objCharacter || !await x.LinkedCharacters
-                                                             .ContainsAsync(objCharacter, token).ConfigureAwait(false),
-                                                         token)
-                                                     .ConfigureAwait(false))
+                                    if (await Program.OpenCharacters
+                                            .AllAsync(
+                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
+                                                token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
-                                                     .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                     continue;
                                 }
 
@@ -3661,13 +3670,12 @@ namespace Chummer
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
-                                    if (await Program.OpenCharacters.AllAsync(
-                                                         async x => x == objCharacter || !await x.LinkedCharacters
-                                                             .ContainsAsync(objCharacter, token).ConfigureAwait(false),
-                                                         token)
-                                                     .ConfigureAwait(false))
+                                    if (await Program.OpenCharacters
+                                            .AllAsync(
+                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
+                                                token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
-                                                     .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                     continue;
                                 }
 
@@ -3739,7 +3747,7 @@ namespace Chummer
         private async Task ProcessQueuedCharactersToOpen(CancellationToken token = default)
         {
             ConcurrentStringHashSet setCharactersToOpen = Interlocked.Exchange(ref _setCharactersToOpen, null);
-            if (setCharactersToOpen == null || setCharactersToOpen.Count == 0)
+            if (setCharactersToOpen == null || setCharactersToOpen.IsEmpty)
                 return;
 
             CancellationTokenSource objSource = null;
@@ -4146,9 +4154,9 @@ namespace Chummer
                                             objMostRecentAutosave = objAutosave;
                                         string strAutosaveName = Path.GetFileNameWithoutExtension(objAutosave.Name);
                                         if (GlobalSettings.MostRecentlyUsedCharacters.Any(
-                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName) ||
+                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken) ||
                                             GlobalSettings.FavoriteCharacters.Any(
-                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName))
+                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken))
                                             blnAnyAutosaveInMru = true;
                                     }
 
@@ -4162,9 +4170,9 @@ namespace Chummer
                                         string strAutosaveName
                                             = Path.GetFileNameWithoutExtension(objMostRecentAutosave.Name);
                                         if (GlobalSettings.MostRecentlyUsedCharacters.All(
-                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName)
+                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName, _objGenericToken)
                                             && GlobalSettings.FavoriteCharacters.All(
-                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName)
+                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName, _objGenericToken)
                                             && Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                           LanguageManager.GetString(
                                                                               "Message_PossibleCrashAutosaveFound", token: _objGenericToken),

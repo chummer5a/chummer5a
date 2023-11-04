@@ -43,7 +43,6 @@ namespace Chummer
                                                                                .AddData("exception.txt",
                                                                                    e.ExceptionObject.ToString()))
             {
-
                 //Log.IsLoggerEnabled = false; //Make sure log object is not used
 
                 string strChummerLog = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");

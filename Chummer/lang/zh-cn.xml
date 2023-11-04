@@ -2290,11 +2290,15 @@
     </string>
     <string>
       <key>String_DamageElectric</key>
-      <text>(e)</text>
+      <text>（电）</text>
     </string>
     <string>
       <key>String_DamageFlechette</key>
       <text>(f)</text>
+    </string>
+    <string>
+      <key>String_DamageFire</key>
+      <text>（火）</text>
     </string>
     <string>
       <key>String_DamagePOrS</key>

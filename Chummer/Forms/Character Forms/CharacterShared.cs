@@ -70,7 +70,11 @@ namespace Chummer
             _objCharacter = objCharacter;
             CancellationTokenRegistration objCancellationRegistration
                 = GenericToken.Register(() => _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false));
-            Disposed += (sender, args) => objCancellationRegistration.Dispose();
+            Disposed += (sender, args) =>
+            {
+                objCancellationRegistration.Dispose();
+                Utils.StopwatchPool.Return(ref _stpAutosaveStopwatch);
+            };
             using (_objCharacter.LockObject.EnterWriteLock())
                 _objCharacter.PropertyChanged += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
@@ -101,6 +105,7 @@ namespace Chummer
                 _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strCharacterFileName) ?? Path.GetPathRoot(strCharacterFileName), Path.GetFileName(strCharacterFileName));
                 _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
             }
+            AutosaveStopwatch.Start();
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -302,7 +307,7 @@ namespace Chummer
             }
         }
 
-        protected Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
+        protected Stopwatch AutosaveStopwatch => _stpAutosaveStopwatch;
 
         /// <summary>
         /// Automatically Save the character to a backup folder.
@@ -348,7 +353,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    AutosaveStopWatch.Restart();
+                    AutosaveStopwatch.Restart();
                 }
             }
             finally
@@ -2215,10 +2220,10 @@ namespace Chummer
         /// </summary>
         /// <param name="treQualities">TreeView to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
+        /// <param name="fntNormal">Normal font to use for qualities.</param>
         /// <param name="fntStrikeout">Font to use for disabled qualities (e.g. cybereyes-disabled Low Light Vision).</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <param name="fntNormal">Normal font to use for qualities.</param>
         protected async ValueTask RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, Font fntNormal, Font fntStrikeout, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treQualities == null)
@@ -2244,6 +2249,7 @@ namespace Chummer
                             = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                         }
                         finally
@@ -2330,6 +2336,7 @@ namespace Chummer
                                         = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                     }
                                     finally
@@ -2366,6 +2373,7 @@ namespace Chummer
                                             = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                         try
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                         }
                                         finally
@@ -2501,6 +2509,7 @@ namespace Chummer
                         = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
                     }
                     finally
@@ -4612,7 +4621,7 @@ namespace Chummer
                                                                 () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0).ToInt32()
                                                                     + objVehicle.GearChildren.Count(
-                                                                        z => z.Location == null), y, token)
+                                                                        z => z.Location == null, token), y, token)
                                     .ConfigureAwait(false);
 
                             await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
@@ -4832,7 +4841,7 @@ namespace Chummer
                                                                           + (objVehicle.WeaponMounts.Count > 0)
                                                                           .ToInt32()
                                                                           + objVehicle.GearChildren.Count(
-                                                                              z => z.Location == null), y, token)
+                                                                              z => z.Location == null, token), y, token)
                                         .ConfigureAwait(false);
 
                                 await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
@@ -5191,7 +5200,7 @@ namespace Chummer
                                                                           + (objVehicle.WeaponMounts.Count > 0)
                                                                           .ToInt32()
                                                                           + objVehicle.GearChildren.Count(
-                                                                              z => z.Location == null), y, token)
+                                                                              z => z.Location == null, token), y, token)
                                         .ConfigureAwait(false);
 
                                 await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
@@ -5313,11 +5322,11 @@ namespace Chummer
 
                         int intFociTotal = 0;
 
-                        int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                                                      .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
+                        int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                            .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
                         if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                                            .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
+                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                         await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false)).ForEachAsync(async objGear =>
                         {
@@ -5418,11 +5427,11 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Add:
                         {
                             bool blnWarned = false;
-                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                                                          .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
+                            int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                                                .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                    .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -5631,11 +5640,11 @@ namespace Chummer
                             }
 
                             bool blnWarned = false;
-                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                                                          .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
+                            int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                                                .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                    .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -7595,9 +7604,9 @@ namespace Chummer
         /// <summary>
         /// Adds the selected Object and child items to the clipboard as appropriate.
         /// </summary>
-        /// <param name="selectedObject"></param>
-        public void CopyObject(object selectedObject)
+        public void CopyObject(object selectedObject, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 switch (selectedObject)
@@ -7624,7 +7633,7 @@ namespace Chummer
                                         // Copy any Weapon that comes with the Gear.
                                         foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
                                                      x => x.Children,
-                                                     x => x.ParentID == objCopyArmor.InternalId))
+                                                     x => x.ParentID == objCopyArmor.InternalId, token))
                                         {
                                             objCopyWeapon.Save(objWriter);
                                         }
@@ -7675,7 +7684,7 @@ namespace Chummer
                                         // Copy any Weapon that comes with the Gear.
                                         foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
                                                      x => x.Children,
-                                                     x => x.ParentID == objCopyArmorMod.InternalId))
+                                                     x => x.ParentID == objCopyArmorMod.InternalId, token))
                                         {
                                             objCopyWeapon.Save(objWriter);
                                         }
@@ -7726,7 +7735,7 @@ namespace Chummer
                                         // Copy any Weapon that comes with the Gear.
                                         foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
                                                      x => x.Children,
-                                                     x => x.ParentID == objCopyCyberware.InternalId))
+                                                     x => x.ParentID == objCopyCyberware.InternalId, token))
                                         {
                                             objCopyWeapon.Save(objWriter);
                                         }
@@ -7795,7 +7804,7 @@ namespace Chummer
                                         // Copy any Weapon that comes with the Gear.
                                         foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
                                                      x => x.Children,
-                                                     x => x.ParentID == objCopyGear.InternalId))
+                                                     x => x.ParentID == objCopyGear.InternalId, token))
                                         {
                                             objCopyWeapon.Save(objWriter);
                                         }
@@ -8136,9 +8145,9 @@ namespace Chummer
                     return;
                 }
 
-                foreach (XPathNavigator xmlContact in await xmlDoc.CreateNavigator()
-                                                                  .SelectAndCacheExpressionAsync(
-                                                                      "/chummer/contacts/contact", token: token).ConfigureAwait(false))
+                foreach (XPathNavigator xmlContact in xmlDoc.CreateNavigator()
+                                                                  .SelectAndCacheExpression(
+                                                                      "/chummer/contacts/contact", token: token))
                 {
                     Contact objContact = new Contact(CharacterObject);
                     await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);
@@ -9108,6 +9117,7 @@ namespace Chummer
         public IEnumerable<Character> CharacterObjects => _objCharacter?.Yield() ?? Enumerable.Empty<Character>();
 
         private CharacterSettings _objCachedSettings;
+        private Stopwatch _stpAutosaveStopwatch = Utils.StopwatchPool.Get();
 
         protected CharacterSettings CharacterObjectSettings => _objCachedSettings ?? (_objCachedSettings = CharacterObject?.Settings);
 
@@ -9341,7 +9351,7 @@ namespace Chummer
             {
                 if (_objCharacter?.IsDisposed == false)
                 {
-                    using (_objCharacter.LockObject.EnterWriteLock(CancellationToken.None))
+                    using (_objCharacter.LockObject.EnterWriteLock())
                         _objCharacter.PropertyChanged -= CharacterPropertyChanged;
                 }
 
@@ -9387,7 +9397,7 @@ namespace Chummer
             {
                 if (_objCharacter?.IsDisposed == false)
                 {
-                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
                         _objCharacter.PropertyChanged -= CharacterPropertyChanged;

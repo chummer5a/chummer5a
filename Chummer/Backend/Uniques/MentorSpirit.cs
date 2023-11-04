@@ -266,7 +266,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_objCachedSourceDetail == default)
                         _objCachedSourceDetail = SourceString.GetSourceString(Source,
@@ -287,7 +287,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 objWriter.WriteStartElement("mentorspirit");
                 objWriter.WriteElementString("sourceid", SourceIDString);
@@ -415,8 +415,10 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 // <mentorspirit>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("mentorspirit", token).ConfigureAwait(false);
@@ -425,29 +427,29 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("mentortype", _eMentorType.ToString(), token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("advantage",
-                                                   await DisplayAdvantageAsync(strLanguageToPrint, token)
-                                                       .ConfigureAwait(false), token).ConfigureAwait(false);
+                        .WriteElementStringAsync("advantage",
+                            await DisplayAdvantageAsync(strLanguageToPrint, token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("disadvantage",
-                                                   await DisplayDisadvantageAsync(strLanguageToPrint, token)
-                                                       .ConfigureAwait(false), token).ConfigureAwait(false);
+                        .WriteElementStringAsync("disadvantage",
+                            await DisplayDisadvantageAsync(strLanguageToPrint, token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("advantage_english", Advantage, token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("disadvantage_english", Disadvantage, token)
-                                   .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "extra",
-                              await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
-                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "extra",
+                            await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extrachoice1",
@@ -459,27 +461,31 @@ namespace Chummer
                             await _objCharacter.TranslateExtraAsync(ExtraChoice2, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "source",
-                              await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
-                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "source",
+                            await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("mentormask",
-                                                   MentorMask.ToString(GlobalSettings.InvariantCultureInfo), token)
-                          .ConfigureAwait(false);
+                        .WriteElementStringAsync("mentormask",
+                            MentorMask.ToString(GlobalSettings.InvariantCultureInfo), token)
+                        .ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
                         await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                 }
                 finally
                 {
                     // </mentorspirit>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -494,7 +500,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceID;
             }
         }
@@ -506,7 +512,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -518,7 +524,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (string.IsNullOrEmpty(_strName) && _objCharacter.MentorSpirits.Count > 0
                                                        && _objCharacter.MentorSpirits[0] == this)
@@ -531,7 +537,7 @@ namespace Chummer
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strName, value) != value)
                     {
@@ -553,7 +559,7 @@ namespace Chummer
         /// </summary>
         public string DisplayExtras(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string strReturn;
                 string strReturn1 = LanguageManager.TranslateExtra(Extra, strLanguage, _objCharacter);
@@ -594,8 +600,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayExtrasAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn;
                 string strReturn1 = await LanguageManager
                     .TranslateExtraAsync(Extra, strLanguage, _objCharacter, token: token)
@@ -643,12 +650,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strExtra;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) != value && _objCharacter.MentorSpirits.Count > 0
                                                                             && _objCharacter.MentorSpirits[0] == this)
@@ -664,12 +671,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strExtraChoice1;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtraChoice1, value) != value && _objCharacter.MentorSpirits.Count > 0
                                                                             && _objCharacter.MentorSpirits[0] == this)
@@ -685,12 +692,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strExtraChoice2;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strExtraChoice2, value) != value && _objCharacter.MentorSpirits.Count > 0
                                                                             && _objCharacter.MentorSpirits[0] == this)
@@ -706,12 +713,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnMentorMask;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _blnMentorMask = value;
             }
         }
@@ -723,7 +730,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strAdvantage;
             }
         }
@@ -733,7 +740,7 @@ namespace Chummer
         /// </summary>
         public string DisplayAdvantage(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string strReturn = Advantage;
                 if (strLanguage != GlobalSettings.DefaultLanguage)
@@ -753,8 +760,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayAdvantageAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = Advantage;
                 if (strLanguage != GlobalSettings.DefaultLanguage)
                 {
@@ -775,7 +783,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strDisadvantage;
             }
         }
@@ -785,7 +793,7 @@ namespace Chummer
         /// </summary>
         public string DisplayDisadvantage(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string strReturn = Disadvantage;
                 if (strLanguage != GlobalSettings.DefaultLanguage)
@@ -805,8 +813,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayDisadvantageAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 string strReturn = Disadvantage;
                 if (strLanguage != GlobalSettings.DefaultLanguage)
                 {
@@ -828,7 +837,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
@@ -840,8 +849,9 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
@@ -871,12 +881,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSource;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _strSource = value;
             }
         }
@@ -888,12 +898,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPage;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _strPage = value;
             }
         }
@@ -908,7 +918,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -926,8 +936,9 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
@@ -944,12 +955,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _strNotes = value;
             }
         }
@@ -961,12 +972,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _colNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _colNotes = value;
             }
         }
@@ -975,7 +986,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (!string.IsNullOrEmpty(Notes))
                     {
@@ -992,11 +1003,10 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (blnSync
-                       // ReSharper disable once MethodHasAsyncOverload
-                       ? EnterReadLock.Enter(LockObject, token)
-                       : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1029,11 +1039,10 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (blnSync
-                       // ReSharper disable once MethodHasAsyncOverload
-                       ? EnterReadLock.Enter(LockObject, token)
-                       : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -1064,7 +1073,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }

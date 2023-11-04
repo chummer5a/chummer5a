@@ -76,9 +76,8 @@ namespace Chummer.Backend.Skills
             if (string.IsNullOrEmpty(strSkillName))
                 return new Tuple<bool, string>(false, string.Empty);
             XPathNodeIterator objXPathNameData
-                = await (await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
-                        .SelectAndCacheExpressionAsync("/chummer/skills/skill[exotic = 'True']/name", token)
-                        .ConfigureAwait(false);
+                = (await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                        .SelectAndCacheExpression("/chummer/skills/skill[exotic = 'True']/name", token);
             foreach (XPathNavigator objData in objXPathNameData)
             {
                 token.ThrowIfCancellationRequested();
@@ -95,18 +94,21 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return !CharacterObject.Created && FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0;
             }
         }
 
         public override async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                        && await GetFreeBaseAsync(token).ConfigureAwait(false)
                        + await GetFreeKarmaAsync(token).ConfigureAwait(false)
                        + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0;
+            }
         }
 
         public override bool BuyWithKarma
@@ -127,12 +129,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSpecific;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _strSpecific, value) == value)
@@ -144,14 +146,18 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<string> GetSpecificAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _strSpecific;
+            }
         }
 
         public async ValueTask SetSpecificAsync(string value, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _strSpecific, value) == value)
                     return;
@@ -161,7 +167,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplaySpecific(string strLanguage)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? Specific
@@ -171,8 +177,9 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask<string> DisplaySpecificAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? Specific
                     : await CharacterObject.TranslateExtraAsync(Specific, strLanguage, token: token)

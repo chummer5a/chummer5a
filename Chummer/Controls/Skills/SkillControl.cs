@@ -81,7 +81,7 @@ namespace Chummer.UI.Skills
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
-            Disposed += (sender, args) => UnbindSkillControl();
+            Disposed += (sender, args) => UnbindSkillControl(CancellationToken.None);
             SuspendLayout();
             pnlAttributes.SuspendLayout();
             tlpMain.SuspendLayout();
@@ -355,7 +355,6 @@ namespace Chummer.UI.Skills
                                                                     .AsTask(),
                                                               _objMyToken, _objMyToken);
 
-
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))
                     {
@@ -540,7 +539,6 @@ namespace Chummer.UI.Skills
                                                                     x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                           .AsTask(),
                                                                     _objMyToken, _objMyToken).ConfigureAwait(false);
-
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))
@@ -828,8 +826,9 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
                                                                                "Message_ConfirmKarmaExpense",
@@ -858,8 +857,9 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     int price = _objSkill.CharacterObject.Settings.KarmaSpecialization;
 
                     decimal decExtraSpecCost = 0;
@@ -995,6 +995,7 @@ namespace Chummer.UI.Skills
                 IAsyncDisposable objLocker = await objOldAttrib.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
                 }
                 finally
@@ -1008,6 +1009,7 @@ namespace Chummer.UI.Skills
                 IAsyncDisposable objLocker = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     value.PropertyChanged += Attribute_PropertyChanged;
                 }
                 finally
@@ -1132,12 +1134,12 @@ namespace Chummer.UI.Skills
             lblName.DoThreadSafe(x => x.MinimumSize = new Size(intNewNameWidth - x.Margin.Right - pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width), x.MinimumSize.Height));
         }
 
-        private void UnbindSkillControl()
+        private void UnbindSkillControl(CancellationToken token = default)
         {
             _tmrSpecChangeTimer?.Dispose();
             try
             {
-                using (_objSkill.LockObject.EnterWriteLock())
+                using (_objSkill.LockObject.EnterWriteLock(token))
                     _objSkill.PropertyChanged -= Skill_PropertyChanged;
             }
             catch (ObjectDisposedException)
@@ -1148,7 +1150,7 @@ namespace Chummer.UI.Skills
             {
                 try
                 {
-                    using (AttributeActive.LockObject.EnterWriteLock())
+                    using (AttributeActive.LockObject.EnterWriteLock(token))
                         AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
                 }
                 catch (ObjectDisposedException)

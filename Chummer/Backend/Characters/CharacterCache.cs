@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -57,7 +58,7 @@ namespace Chummer
         private Image _imgMugshot;
         private int _intCreated;
         private string _strSettingsFile;
-        private readonly LockingDictionary<string, object> _dicMyPluginData = new LockingDictionary<string, object>();
+        private readonly ConcurrentDictionary<string, object> _dicMyPluginData = new ConcurrentDictionary<string, object>();
         private Task<string> _tskRunningDownloadTask;
         private EventHandler _onMyDoubleClick;
         private EventHandler _onMyContextMenuDeleteClick;
@@ -70,12 +71,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strFilePath;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strFilePath, value);
             }
         }
@@ -84,12 +85,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strFileName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strFileName, value);
             }
         }
@@ -98,12 +99,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strErrorText;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strErrorText, value);
             }
         }
@@ -112,12 +113,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strDescription;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strDescription, value);
             }
         }
@@ -126,12 +127,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strBackground;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strBackground, value);
             }
         }
@@ -140,12 +141,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strGameNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strGameNotes, value);
             }
         }
@@ -154,12 +155,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strCharacterNotes, value);
             }
         }
@@ -168,12 +169,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strConcept;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strConcept, value);
             }
         }
@@ -182,12 +183,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strKarma;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strKarma, value);
             }
         }
@@ -196,12 +197,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strMetatype;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strMetatype, value);
             }
         }
@@ -210,12 +211,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strMetavariant;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strMetavariant, value);
             }
         }
@@ -224,12 +225,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPlayerName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strPlayerName, value);
             }
         }
@@ -238,12 +239,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strCharacterName, value);
             }
         }
@@ -252,12 +253,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterAlias;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strCharacterAlias, value);
             }
         }
@@ -266,12 +267,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strBuildMethod;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strBuildMethod, value);
             }
         }
@@ -280,12 +281,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strEssence;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strEssence, value);
             }
         }
@@ -297,12 +298,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _imgMugshot;
             }
             private set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _imgMugshot, value)?.Dispose();
             }
         }
@@ -311,13 +312,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intCreated > 0;
             }
             set
             {
                 int intNewValue = value.ToInt32();
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _intCreated, intNewValue);
             }
         }
@@ -326,12 +327,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSettingsFile;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _strSettingsFile, value);
             }
         }
@@ -339,11 +340,11 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public LockingDictionary<string, object> MyPluginDataDic
+        public ConcurrentDictionary<string, object> MyPluginDataDic
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _dicMyPluginData;
             }
         }
@@ -352,13 +353,13 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _tskRunningDownloadTask;
             }
             set
             {
                 Task<string> tskOld;
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
                 if (tskOld != null && tskOld != value)
                     Utils.SafelyRunSynchronously(() => tskOld);
@@ -406,7 +407,7 @@ namespace Chummer
         public void CopyFrom(CharacterCache objExistingCache)
         {
             using (LockObject.EnterWriteLock())
-            using (EnterReadLock.Enter(objExistingCache.LockObject))
+            using (objExistingCache.LockObject.EnterHiPrioReadLock())
             {
                 _strBackground = objExistingCache.Background;
                 _strBuildMethod = objExistingCache.BuildMethod;
@@ -433,8 +434,12 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                using (await EnterReadLock.EnterAsync(objExistingCache.LockObject, token).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 =
+                    await objExistingCache.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
+                    token.ThrowIfCancellationRequested();
                     _strBackground = objExistingCache.Background;
                     _strBuildMethod = objExistingCache.BuildMethod;
                     _strCharacterAlias = objExistingCache.CharacterAlias;
@@ -452,6 +457,10 @@ namespace Chummer
                     _strPlayerName = objExistingCache.PlayerName;
                     _strSettingsFile = objExistingCache.SettingsFile;
                     Interlocked.Exchange(ref _imgMugshot, objExistingCache.Mugshot.Clone() as Image)?.Dispose();
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -477,12 +486,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyDoubleClick;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _onMyDoubleClick, value);
             }
         }
@@ -494,12 +503,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyContextMenuDeleteClick;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _onMyContextMenuDeleteClick, value);
             }
         }
@@ -511,12 +520,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyAfterSelect;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _onMyAfterSelect, value);
             }
         }
@@ -528,12 +537,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyKeyDown;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     Interlocked.Exchange(ref _onMyKeyDown, value);
             }
         }
@@ -593,6 +602,7 @@ namespace Chummer
                 objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
                 if (tskOld != null)
                 {
@@ -650,12 +660,7 @@ namespace Chummer
                             return Task.FromException<XPathDocument>(new InvalidOperationException());
                         }
 
-                        xmlSourceNode = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character", token)
-                            : await xmlDoc.CreateNavigator()
-                                          .SelectSingleNodeAndCacheExpressionAsync("/character", token: token)
-                                          .ConfigureAwait(false);
+                        xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character", token);
                     }
                     catch (Exception ex)
                     {
@@ -666,85 +671,29 @@ namespace Chummer
 
                 if (xmlSourceNode != null)
                 {
-                    if (blnSync)
-                    {
-                        // ReSharper disable MethodHasAsyncOverload
-                        _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
-                        _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod", token)?.Value;
-                        _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background", token)?.Value;
-                        _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes", token)?.Value;
-                        _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes", token)?.Value;
-                        _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept", token)?.Value;
-                        _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma", token)?.Value;
-                        _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype", token)?.Value;
-                        _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant", token)?.Value;
-                        _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername", token)?.Value;
-                        _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
-                        _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias", token)?.Value;
-                        _intCreated = (xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
-                                       == bool.TrueString).ToInt32();
-                        _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless", token)?.Value;
-                        // ReSharper restore MethodHasAsyncOverload
-                    }
-                    else
-                    {
-                        _strDescription = (await xmlSourceNode
-                                                 .SelectSingleNodeAndCacheExpressionAsync("description", token: token)
-                                                 .ConfigureAwait(false))?.Value;
-                        _strBuildMethod = (await xmlSourceNode
-                                                 .SelectSingleNodeAndCacheExpressionAsync("buildmethod", token: token)
-                                                 .ConfigureAwait(false))?.Value;
-                        _strBackground = (await xmlSourceNode
-                                                .SelectSingleNodeAndCacheExpressionAsync("background", token: token)
-                                                .ConfigureAwait(false))?.Value;
-                        _strCharacterNotes = (await xmlSourceNode
-                                                    .SelectSingleNodeAndCacheExpressionAsync("notes", token: token)
-                                                    .ConfigureAwait(false))?.Value;
-                        _strGameNotes = (await xmlSourceNode
-                                               .SelectSingleNodeAndCacheExpressionAsync("gamenotes", token: token)
-                                               .ConfigureAwait(false))?.Value;
-                        _strConcept = (await xmlSourceNode
-                                             .SelectSingleNodeAndCacheExpressionAsync("concept", token: token)
-                                             .ConfigureAwait(false))?.Value;
-                        _strKarma = (await xmlSourceNode
-                                           .SelectSingleNodeAndCacheExpressionAsync("totalkarma", token: token)
-                                           .ConfigureAwait(false))?.Value;
-                        _strMetatype = (await xmlSourceNode
-                                              .SelectSingleNodeAndCacheExpressionAsync("metatype", token: token)
-                                              .ConfigureAwait(false))?.Value;
-                        _strMetavariant = (await xmlSourceNode
-                                                 .SelectSingleNodeAndCacheExpressionAsync("metavariant", token: token)
-                                                 .ConfigureAwait(false))?.Value;
-                        _strPlayerName = (await xmlSourceNode
-                                                .SelectSingleNodeAndCacheExpressionAsync("playername", token: token)
-                                                .ConfigureAwait(false))?.Value;
-                        _strCharacterName = (await xmlSourceNode
-                                                   .SelectSingleNodeAndCacheExpressionAsync("name", token: token)
-                                                   .ConfigureAwait(false))?.Value;
-                        _strCharacterAlias = (await xmlSourceNode
-                                                    .SelectSingleNodeAndCacheExpressionAsync("alias", token: token)
-                                                    .ConfigureAwait(false))?.Value;
-                        _intCreated = ((await xmlSourceNode
-                                              .SelectSingleNodeAndCacheExpressionAsync("created", token: token)
-                                              .ConfigureAwait(false))?.Value == bool.TrueString).ToInt32();
-                        _strEssence = (await xmlSourceNode
-                                             .SelectSingleNodeAndCacheExpressionAsync("totaless", token: token)
-                                             .ConfigureAwait(false))?.Value;
-                    }
+                    _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
+                    _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod", token)?.Value;
+                    _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background", token)?.Value;
+                    _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes", token)?.Value;
+                    _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes", token)?.Value;
+                    _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept", token)?.Value;
+                    _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma", token)?.Value;
+                    _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype", token)?.Value;
+                    _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant", token)?.Value;
+                    _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername", token)?.Value;
+                    _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias", token)?.Value;
+                    _intCreated = (xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
+                                   == bool.TrueString).ToInt32();
+                    _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless", token)?.Value;
 
                     string strSettings
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlSourceNode.SelectSingleNodeAndCacheExpression("settings", token)
-                              : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("settings", token: token)
-                                                   .ConfigureAwait(false))?.Value
+                        = xmlSourceNode.SelectSingleNodeAndCacheExpression("settings", token)?.Value
                           ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSettings))
                     {
-                        (bool blnSuccess, CharacterSettings objSettings)
-                            = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
-                                    .TryGetValueAsync(strSettings, token).ConfigureAwait(false);
-                        if (blnSuccess)
+                        if ((await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
+                            .TryGetValue(strSettings, out CharacterSettings objSettings))
                             _strSettingsFile = blnSync
                                 ? objSettings.CurrentDisplayName
                                 : await objSettings.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -766,29 +715,16 @@ namespace Chummer
                         _strSettingsFile = string.Empty;
 
                     string strMugshotBase64
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot", token)
-                              : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mugshot", token: token)
-                                                   .ConfigureAwait(false))?.Value
+                        = xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot", token)?.Value
                           ?? string.Empty;
                     if (string.IsNullOrEmpty(strMugshotBase64))
                     {
-                        XPathNavigator xmlMainMugshotIndex = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex", token)
-                            : await xmlSourceNode
-                                    .SelectSingleNodeAndCacheExpressionAsync("mainmugshotindex", token: token)
-                                    .ConfigureAwait(false);
+                        XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex", token);
                         if (xmlMainMugshotIndex != null &&
                             int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) &&
                             intMainMugshotIndex >= 0)
                         {
-                            XPathNodeIterator xmlMugshotList = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot", token)
-                                : await xmlSourceNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token: token)
-                                                     .ConfigureAwait(false);
+                            XPathNodeIterator xmlMugshotList = xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot", token);
                             if (xmlMugshotList.Count > intMainMugshotIndex)
                             {
                                 int intIndex = 0;
@@ -996,7 +932,6 @@ namespace Chummer
                 Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
                 if (tskOld != null)
                     Utils.SafelyRunSynchronously(() => tskOld);
-                _dicMyPluginData.Dispose();
             }
 
             LockObject.Dispose();
@@ -1014,7 +949,6 @@ namespace Chummer
                 Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
                 if (tskOld != null)
                     await tskOld.ConfigureAwait(false);
-                await _dicMyPluginData.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {

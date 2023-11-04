@@ -543,7 +543,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstVehicleWeapons;
             }
         }
@@ -552,7 +552,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstCyberware;
             }
         }
@@ -777,7 +777,7 @@ namespace Chummer.Backend.Equipment
                 return Page;
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
+                ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1226,7 +1226,6 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
                     return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
-
                 }, token).ConfigureAwait(false) + await Weapons.SumAsync(async objChild =>
                 {
                     if (objChild.ParentID == InternalId)
@@ -1253,7 +1252,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strCapacity;
                 if (string.IsNullOrEmpty(strReturn))
-                    return (0.0m).ToString("#,0.##", GlobalSettings.CultureInfo);
+                    return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
 
                 if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
@@ -1503,7 +1502,7 @@ namespace Chummer.Backend.Equipment
                 // Apply a markup if applicable.
                 if (_decMarkup != 0)
                 {
-                    decReturn *= 1 + (_decMarkup / 100.0m);
+                    decReturn *= 1 + _decMarkup / 100.0m;
                 }
             }
 
@@ -1589,7 +1588,7 @@ namespace Chummer.Backend.Equipment
                 // Apply a markup if applicable.
                 if (_decMarkup != 0)
                 {
-                    decReturn *= 1 + (_decMarkup / 100.0m);
+                    decReturn *= 1 + _decMarkup / 100.0m;
                 }
 
                 return decReturn;
@@ -1691,7 +1690,7 @@ namespace Chummer.Backend.Equipment
             // Apply a markup if applicable.
             if (_decMarkup != 0)
             {
-                decReturn *= 1 + (_decMarkup / 100.0m);
+                decReturn *= 1 + _decMarkup / 100.0m;
             }
 
             return decReturn;
@@ -1857,7 +1856,7 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
+            return objNode != null ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -1905,7 +1904,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!Name.ContainsAny(new []{"ARM", "LEG"}, StringComparison.OrdinalIgnoreCase))
+                if (!Name.ContainsAny(new []{ "ARM", "LEG"}, StringComparison.OrdinalIgnoreCase))
                     return 0;
                 int intAttribute = 0;
                 int bod = 1;

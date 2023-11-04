@@ -180,7 +180,7 @@ namespace Chummer
             }, token);
         }
 
-        private async ValueTask UpdateColorAsync(CancellationToken token = default)
+        private Task UpdateColorAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             Color objForeColor;
@@ -189,31 +189,31 @@ namespace Chummer
             {
                 if (IsGlitch)
                 {
-                    objForeColor = await ColorManager.GetDieGlitchHitForeAsync(token).ConfigureAwait(false);
-                    objBackColor = await ColorManager.GetDieGlitchHitBackgroundAsync(token).ConfigureAwait(false);
+                    objForeColor = ColorManager.DieGlitchHitFore;
+                    objBackColor = ColorManager.DieGlitchHitBackground;
                 }
                 else
                 {
-                    objForeColor = await ColorManager.GetDieHitForeAsync(token).ConfigureAwait(false);
-                    objBackColor = await ColorManager.GetDieHitBackgroundAsync(token).ConfigureAwait(false);
+                    objForeColor = ColorManager.DieHitFore;
+                    objBackColor = ColorManager.DieHitBackground;
                 }
             }
             else if (IsGlitch)
             {
-                objForeColor = await ColorManager.GetDieGlitchForeAsync(token).ConfigureAwait(false);
-                objBackColor = await ColorManager.GetDieGlitchBackgroundAsync(token).ConfigureAwait(false);
+                objForeColor = ColorManager.DieGlitchFore;
+                objBackColor = ColorManager.DieGlitchBackground;
             }
             else
             {
-                objForeColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
-                objBackColor = await ColorManager.GetWindowAsync(token).ConfigureAwait(false);
+                objForeColor = ColorManager.WindowText;
+                objBackColor = ColorManager.Window;
             }
 
-            await Utils.RunOnMainThreadAsync(() =>
+            return Utils.RunOnMainThreadAsync(() =>
             {
                 ForeColor = objForeColor;
                 BackColor = objBackColor;
-            }, token).ConfigureAwait(false);
+            }, token);
         }
     }
 }

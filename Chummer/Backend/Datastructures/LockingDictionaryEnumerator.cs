@@ -26,25 +26,34 @@ namespace Chummer
 {
     public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IDisposable
     {
-        private readonly IHasLockObject _objMyParent;
+        private readonly IDisposable _objMyRelease;
 
         private IDictionaryEnumerator _objInternalEnumerator;
 
         public static LockingDictionaryEnumerator Get(IHasLockObject objMyParent)
         {
-            objMyParent.LockObject.EnterReadLock();
-            return new LockingDictionaryEnumerator(objMyParent);
+            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLock();
+            return new LockingDictionaryEnumerator(objMyRelease);
         }
 
         public static async ValueTask<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            return new LockingDictionaryEnumerator(objMyParent);
+            IDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+            }
+            catch
+            {
+                objMyRelease.Dispose();
+                throw;
+            }
+            return new LockingDictionaryEnumerator(objMyRelease);
         }
 
-        private LockingDictionaryEnumerator(IHasLockObject objMyParent)
+        private LockingDictionaryEnumerator(IDisposable objMyRelease)
         {
-            _objMyParent = objMyParent;
+            _objMyRelease = objMyRelease;
         }
 
         public void SetEnumerator(IDictionaryEnumerator objInternalEnumerator)
@@ -57,7 +66,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            _objMyParent.LockObject.ExitReadLock();
+            _objMyRelease.Dispose();
         }
 
         /// <inheritdoc />

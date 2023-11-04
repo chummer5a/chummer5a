@@ -523,7 +523,7 @@ namespace Chummer
                 return default;
             try
             {
-                return objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token));
+                return objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -572,7 +572,7 @@ namespace Chummer
             {
                 return objDispatcher == null
                     ? funcToRun.Invoke(null, token)
-                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher, token));
+                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher, token), token);
             }
             catch (ObjectDisposedException) // e)
             {

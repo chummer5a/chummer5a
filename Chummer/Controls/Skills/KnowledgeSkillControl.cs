@@ -70,7 +70,7 @@ namespace Chummer.UI.Skills
             _objMyToken = objMyToken;
             _objSkill = objSkill;
             InitializeComponent();
-            Disposed += (sender, args) => UnbindKnowledgeSkillControl();
+            Disposed += (sender, args) => UnbindKnowledgeSkillControl(CancellationToken.None);
             SuspendLayout();
             tlpMain.SuspendLayout();
             tlpMiddle.SuspendLayout();
@@ -772,15 +772,15 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void UnbindKnowledgeSkillControl()
+        private void UnbindKnowledgeSkillControl(CancellationToken token = default)
         {
             _tmrNameChangeTimer?.Dispose();
             _tmrSpecChangeTimer?.Dispose();
             try
             {
-                using (_objSkill.LockObject.EnterWriteLock())
+                using (_objSkill.LockObject.EnterWriteLock(token))
                     _objSkill.PropertyChanged -= Skill_PropertyChanged;
-                using (_objSkill.CharacterObject.SkillsSection.LockObject.EnterWriteLock())
+                using (_objSkill.CharacterObject.SkillsSection.LockObject.EnterWriteLock(token))
                     _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
             }
             catch (ObjectDisposedException)
@@ -798,8 +798,9 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     int intKarmaCost = await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken).ConfigureAwait(false);
 
                     if (intKarmaCost == -1)
@@ -835,8 +836,9 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
 
                     decimal decExtraSpecCost = 0;

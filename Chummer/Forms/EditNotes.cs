@@ -143,8 +143,7 @@ namespace Chummer
                 if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x), token: _objMyToken)
                               .ConfigureAwait(false) != DialogResult.OK)
                     return;
-                _colNotes = await ColorManager.GenerateModeIndependentColorAsync(dlgColor.Color, _objMyToken)
-                                              .ConfigureAwait(false);
+                _colNotes = ColorManager.GenerateModeIndependentColor(dlgColor.Color);
                 await UpdateColorRepresentation(_objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -171,11 +170,11 @@ namespace Chummer
 
         #endregion Properties
 
-        private async ValueTask UpdateColorRepresentation(CancellationToken token = default)
+        private Task UpdateColorRepresentation(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Color objColor = await ColorManager.GenerateCurrentModeColorAsync(_colNotes, token).ConfigureAwait(false);
-            await txtNotes.DoThreadSafeAsync(x => x.ForeColor = objColor, token).ConfigureAwait(false);
+            Color objColor = ColorManager.GenerateCurrentModeColor(_colNotes);
+            return txtNotes.DoThreadSafeAsync(x => x.ForeColor = objColor, token);
         }
     }
 }

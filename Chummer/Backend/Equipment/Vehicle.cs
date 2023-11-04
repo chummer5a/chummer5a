@@ -1493,7 +1493,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstVehicleMods;
             }
         }
@@ -1505,7 +1505,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstGear;
             }
         }
@@ -1517,7 +1517,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstWeapons;
             }
         }
@@ -1529,7 +1529,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstWeaponMounts;
             }
         }
@@ -2011,7 +2011,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstLocations;
             }
         }
@@ -3432,6 +3432,42 @@ namespace Chummer.Backend.Equipment
                                           .ConfigureAwait(false);
 
             return intRestrictedCount;
+        }
+
+
+
+        /// <summary>
+        /// Checks whether a given VehicleMod is allowed to be added to this vehicle.
+        /// </summary>
+        public async ValueTask<bool> CheckModRequirementsAsync(XPathNavigator objXmlMod,
+                                                                     CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objXmlMod == null)
+                return false;
+
+            if (!await objXmlMod.RequirementsMetAsync(_objCharacter, this, string.Empty, string.Empty, token: token)
+                    .ConfigureAwait(false))
+                return false;
+
+            XPathNavigator xmlTestNode = await objXmlMod
+                                               .SelectSingleNodeAndCacheExpressionAsync(
+                                                   "forbidden/vehicledetails", token).ConfigureAwait(false);
+            if (xmlTestNode != null)
+            {
+                XPathNavigator xmlRequirementsNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+                // Assumes topmost parent is an AND node
+                if (await xmlRequirementsNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token)
+                                             .ConfigureAwait(false))
+                    return false;
+            }
+
+            xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails", token)
+                                               .ConfigureAwait(false);
+            // Assumes topmost parent is an AND node
+            return xmlTestNode == null || await (await this.GetNodeXPathAsync(token).ConfigureAwait(false))
+                                                .ProcessFilterOperationNodeAsync(xmlTestNode, false, token)
+                                                .ConfigureAwait(false);
         }
 
         #region UI Methods

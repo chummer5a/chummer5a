@@ -55,11 +55,13 @@ namespace Chummer.Backend.Skills
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlWriter objWriter)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void Save(XmlWriter objWriter, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock(token))
             {
                 objWriter.WriteStartElement("spec");
                 objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
@@ -100,8 +102,10 @@ namespace Chummer.Backend.Skills
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 // <skillspecialization>
                 XmlElementWriteHelper objBaseElement
                     = await objWriter.StartElementAsync("skillspecialization", token: token).ConfigureAwait(false);
@@ -109,25 +113,29 @@ namespace Chummer.Backend.Skills
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync(
-                              "name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
-                              token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync(
+                            "name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo),
-                                                   token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                     await objWriter
-                          .WriteElementStringAsync("specbonus",
-                                                   (await GetSpecializationBonusAsync(token).ConfigureAwait(false))
-                                                   .ToString(objCulture), token: token).ConfigureAwait(false);
+                        .WriteElementStringAsync("specbonus",
+                            (await GetSpecializationBonusAsync(token).ConfigureAwait(false))
+                            .ToString(objCulture), token: token).ConfigureAwait(false);
                 }
                 finally
                 {
                     // </skillspecialization>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -142,7 +150,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -150,13 +158,13 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (EnterReadLock.Enter(LockObject))
-                return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? Name;
+            using (LockObject.EnterReadLock(token))
+                return this.GetNodeXPath(strLanguage, token)?.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? Name;
         }
 
         /// <summary>
@@ -167,8 +175,9 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
                     ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))
@@ -192,12 +201,12 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _objParent;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _objParent = value;
             }
         }
@@ -207,8 +216,11 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<Skill> GetParentAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 return _objParent;
+            }
         }
 
         private XmlNode _objCachedMyXmlNode;
@@ -217,8 +229,9 @@ namespace Chummer.Backend.Skills
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -244,8 +257,9 @@ namespace Chummer.Backend.Skills
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
@@ -271,7 +285,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     if (_intNameLoaded <= 1)
                     {
@@ -322,7 +336,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Name == value)
                         return;
@@ -360,7 +374,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnFree;
             }
         }
@@ -372,7 +386,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnExpertise;
             }
         }
@@ -384,7 +398,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     int intReturn = 0;
                     if (ImprovementManager
@@ -425,8 +439,9 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask<int> GetSpecializationBonusAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 int intReturn = 0;
                 if ((await ImprovementManager
                            .GetCachedImprovementListForValueOfAsync(_objCharacter,
@@ -482,7 +497,7 @@ namespace Chummer.Backend.Skills
 
                 Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, null);
                 if (tskOld != null)
-                    Utils.SafelyRunSynchronously(() => tskOld);
+                    Utils.SafelyRunSynchronously(() => tskOld, CancellationToken.None);
             }
             LockObject.Dispose();
         }

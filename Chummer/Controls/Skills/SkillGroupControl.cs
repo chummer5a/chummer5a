@@ -52,77 +52,86 @@ namespace Chummer.UI.Skills
             InitializeComponent();
             Disposed += (sender, args) => UnbindSkillGroupControl();
             //This is apparently a factor 30 faster than placed in load. NFI why
-            Stopwatch sw = Stopwatch.StartNew();
-            SuspendLayout();
-            tlpMain.SuspendLayout();
+            Stopwatch sw = Utils.StopwatchPool.Get();
             try
             {
-                // To make sure that the initial load formats the name column properly, we need to set the attribute name in the constructor
-                lblName.Text = skillGroup.CurrentDisplayName;
-                // Creating these controls outside of the designer saves on handles
-                if (skillGroup.CharacterObject.Created)
+                sw.Start();
+                SuspendLayout();
+                tlpMain.SuspendLayout();
+                try
                 {
-                    lblGroupRating = new Label
+                    // To make sure that the initial load formats the name column properly, we need to set the attribute name in the constructor
+                    lblName.Text = skillGroup.CurrentDisplayName;
+                    // Creating these controls outside of the designer saves on handles
+                    if (skillGroup.CharacterObject.Created)
                     {
-                        Anchor = AnchorStyles.Right,
-                        AutoSize = true,
-                        Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0),
-                        Margin = new Padding(3, 6, 3, 6),
-                        Name = "lblGroupRating",
-                        TextAlign = ContentAlignment.MiddleRight
-                    };
-                    btnCareerIncrease = new ButtonWithToolTip
-                    {
-                        Anchor = AnchorStyles.Right,
-                        AutoSize = true,
-                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        MinimumSize = new Size(24, 24),
-                        Name = "btnCareerIncrease",
-                        Padding = new Padding(1),
-                        UseVisualStyleBackColor = true
-                    };
-                    btnCareerIncrease.BatchSetImages(Resources.add_16, Resources.add_20, Resources.add_24,
-                        Resources.add_32, Resources.add_48, Resources.add_64);
-                    btnCareerIncrease.Click += btnCareerIncrease_Click;
+                        lblGroupRating = new Label
+                        {
+                            Anchor = AnchorStyles.Right,
+                            AutoSize = true,
+                            Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0),
+                            Margin = new Padding(3, 6, 3, 6),
+                            Name = "lblGroupRating",
+                            TextAlign = ContentAlignment.MiddleRight
+                        };
+                        btnCareerIncrease = new ButtonWithToolTip
+                        {
+                            Anchor = AnchorStyles.Right,
+                            AutoSize = true,
+                            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                            MinimumSize = new Size(24, 24),
+                            Name = "btnCareerIncrease",
+                            Padding = new Padding(1),
+                            UseVisualStyleBackColor = true
+                        };
+                        btnCareerIncrease.BatchSetImages(Resources.add_16, Resources.add_20, Resources.add_24,
+                            Resources.add_32, Resources.add_48, Resources.add_64);
+                        btnCareerIncrease.Click += btnCareerIncrease_Click;
 
-                    tlpMain.Controls.Add(lblGroupRating, 2, 0);
-                    tlpMain.Controls.Add(btnCareerIncrease, 3, 0);
+                        tlpMain.Controls.Add(lblGroupRating, 2, 0);
+                        tlpMain.Controls.Add(btnCareerIncrease, 3, 0);
+                    }
+                    else
+                    {
+                        nudKarma = new NumericUpDownEx
+                        {
+                            Anchor = AnchorStyles.Right,
+                            AutoSize = true,
+                            InterceptMouseWheel = GlobalSettings.InterceptMode,
+                            Margin = new Padding(3, 2, 3, 2),
+                            Maximum = new decimal(new[] { 99, 0, 0, 0 }),
+                            Name = "nudKarma"
+                        };
+                        nudSkill = new NumericUpDownEx
+                        {
+                            Anchor = AnchorStyles.Right,
+                            AutoSize = true,
+                            InterceptMouseWheel = GlobalSettings.InterceptMode,
+                            Margin = new Padding(3, 2, 3, 2),
+                            Maximum = new decimal(new[] { 99, 0, 0, 0 }),
+                            Name = "nudSkill"
+                        };
+                        tlpMain.Controls.Add(nudSkill, 2, 0);
+                        tlpMain.Controls.Add(nudKarma, 3, 0);
+                    }
+
+                    DoDataBindings();
+
+                    this.UpdateLightDarkMode(token: objMyToken);
+                    this.TranslateWinForm(blnDoResumeLayout: false, token: objMyToken);
                 }
-                else
+                finally
                 {
-                    nudKarma = new NumericUpDownEx
-                    {
-                        Anchor = AnchorStyles.Right,
-                        AutoSize = true,
-                        InterceptMouseWheel = GlobalSettings.InterceptMode,
-                        Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
-                        Name = "nudKarma"
-                    };
-                    nudSkill = new NumericUpDownEx
-                    {
-                        Anchor = AnchorStyles.Right,
-                        AutoSize = true,
-                        InterceptMouseWheel = GlobalSettings.InterceptMode,
-                        Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
-                        Name = "nudSkill"
-                    };
-                    tlpMain.Controls.Add(nudSkill, 2, 0);
-                    tlpMain.Controls.Add(nudKarma, 3, 0);
+                    tlpMain.ResumeLayout();
+                    ResumeLayout(true);
                 }
 
-                DoDataBindings();
-
-                this.UpdateLightDarkMode(token: objMyToken);
-                this.TranslateWinForm(blnDoResumeLayout: false, token: objMyToken);
+                sw.TaskEnd("Create skillgroup");
             }
             finally
             {
-                tlpMain.ResumeLayout();
-                ResumeLayout(true);
+                Utils.StopwatchPool.Return(ref sw);
             }
-            sw.TaskEnd("Create skillgroup");
         }
 
         private void DoDataBindings()
@@ -276,8 +285,9 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await EnterReadLock.EnterAsync(_skillGroup.LockObject, _objMyToken).ConfigureAwait(false))
+                using (await _skillGroup.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
+                    _objMyToken.ThrowIfCancellationRequested();
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager
                                                             .GetStringAsync(

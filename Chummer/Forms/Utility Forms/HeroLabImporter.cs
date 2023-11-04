@@ -19,10 +19,12 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,15 +37,17 @@ namespace Chummer
     public partial class HeroLabImporter : Form
     {
         private readonly ThreadSafeList<HeroLabCharacterCache> _lstCharacterCache = new ThreadSafeList<HeroLabCharacterCache>(2);
-        private readonly LockingDictionary<string, Bitmap> _dicImages = new LockingDictionary<string, Bitmap>();
+        private readonly ConcurrentDictionary<string, Bitmap> _dicImages = new ConcurrentDictionary<string, Bitmap>();
 
         public HeroLabImporter()
         {
             Disposed += (sender, args) =>
             {
                 _lstCharacterCache.Dispose();
-                _dicImages.ForEach(x => x.Value.Dispose());
-                _dicImages.Dispose();
+                foreach (Bitmap objImage in _dicImages.Values)
+                {
+                    objImage.Dispose();
+                }
             };
             InitializeComponent();
             tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
@@ -161,11 +165,11 @@ namespace Chummer
                                         : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                                     token.ThrowIfCancellationRequested();
                                     string strKey = Path.GetFileName(strEntryFullName);
-                                    await _dicImages.AddOrUpdateAsync(strKey, x => bmpNewMugshot, (x, y) =>
+                                    _dicImages.AddOrUpdate(strKey, x => bmpNewMugshot, (x, y) =>
                                     {
                                         y.Dispose();
                                         return bmpNewMugshot;
-                                    }, token).ConfigureAwait(false);
+                                    });
                                 }
                             }
                         }
@@ -216,20 +220,17 @@ namespace Chummer
             foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
             {
                 XPathNavigator xmlBaseCharacterNode
-                    = await xmlCharacterDocument
-                            .SelectSingleNodeAndCacheExpressionAsync("/document/public/character", token)
-                            .ConfigureAwait(false);
+                    = xmlCharacterDocument
+                            .SelectSingleNodeAndCacheExpression("/document/public/character", token);
                 if (xmlBaseCharacterNode != null)
                 {
                     HeroLabCharacterCache objCache = new HeroLabCharacterCache
                     {
-                        PlayerName = (await xmlBaseCharacterNode
-                                            .SelectSingleNodeAndCacheExpressionAsync("@playername", token)
-                                            .ConfigureAwait(false))?.Value ?? string.Empty
+                        PlayerName = xmlBaseCharacterNode
+                            .SelectSingleNodeAndCacheExpression("@playername", token)?.Value ?? string.Empty
                     };
                     string strNameString
-                        = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("@name", token)
-                                                     .ConfigureAwait(false))?.Value ?? string.Empty;
+                        = xmlBaseCharacterNode.SelectSingleNodeAndCacheExpression("@name", token)?.Value ?? string.Empty;
                     objCache.CharacterId = strNameString;
                     if (!string.IsNullOrEmpty(strNameString))
                     {
@@ -246,19 +247,17 @@ namespace Chummer
                         }
                     }
 
-                    string strRaceString = (await xmlBaseCharacterNode
-                                                  .SelectSingleNodeAndCacheExpressionAsync("race/@name", token)
-                                                  .ConfigureAwait(false))?.Value;
+                    string strRaceString = xmlBaseCharacterNode
+                        .SelectSingleNodeAndCacheExpression("race/@name", token)?.Value;
                     if (strRaceString == "Metasapient")
                         strRaceString = "A.I.";
                     if (!string.IsNullOrEmpty(strRaceString))
                     {
-                        foreach (XPathNavigator xmlMetatype in await xmlMetatypesDocument.SelectAndCacheExpressionAsync(
-                                     "/chummer/metatypes/metatype", token).ConfigureAwait(false))
+                        foreach (XPathNavigator xmlMetatype in xmlMetatypesDocument.SelectAndCacheExpression(
+                                     "/chummer/metatypes/metatype", token))
                         {
                             string strMetatypeName
-                                = (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                    .ConfigureAwait(false))?.Value ?? string.Empty;
+                                = xmlMetatype.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
                             if (strMetatypeName == strRaceString)
                             {
                                 objCache.Metatype = strMetatypeName;
@@ -267,13 +266,11 @@ namespace Chummer
                             }
 
                             foreach (XPathNavigator xmlMetavariant in
-                                     await xmlMetatype
-                                           .SelectAndCacheExpressionAsync("metavariants/metavariant", token: token)
-                                           .ConfigureAwait(false))
+                                     xmlMetatype
+                                           .SelectAndCacheExpression("metavariants/metavariant", token: token))
                             {
                                 string strMetavariantName
-                                    = (await xmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                           .ConfigureAwait(false))?.Value ?? string.Empty;
+                                    = xmlMetavariant.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
                                 if (strMetavariantName == strRaceString)
                                 {
                                     objCache.Metatype = strMetatypeName;
@@ -284,26 +281,22 @@ namespace Chummer
                         }
                     }
 
-                    objCache.Description = (await xmlBaseCharacterNode
-                                                  .SelectSingleNodeAndCacheExpressionAsync(
-                                                      "personal/description", token).ConfigureAwait(false))?.Value;
+                    objCache.Description = xmlBaseCharacterNode
+                        .SelectSingleNodeAndCacheExpression(
+                            "personal/description", token)?.Value;
                     objCache.Karma
-                        = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("karma/@total", token)
-                                                     .ConfigureAwait(false))?.Value ?? "0";
-                    objCache.Essence = (await xmlBaseCharacterNode
-                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                  "attributes/attribute[@name = \"Essence\"]/@text", token)
-                                              .ConfigureAwait(false))?.Value;
+                        = xmlBaseCharacterNode.SelectSingleNodeAndCacheExpression("karma/@total", token)?.Value ?? "0";
+                    objCache.Essence = xmlBaseCharacterNode
+                        .SelectSingleNodeAndCacheExpression(
+                            "attributes/attribute[@name = \"Essence\"]/@text", token)?.Value;
                     objCache.BuildMethod
-                        = (await xmlBaseCharacterNode
-                                 .SelectSingleNodeAndCacheExpressionAsync("creation/bp/@total", token)
-                                 .ConfigureAwait(false))?.ValueAsInt <= 100
+                        = xmlBaseCharacterNode
+                            .SelectSingleNodeAndCacheExpression("creation/bp/@total", token)?.ValueAsInt <= 100
                             ? CharacterBuildMethod.Priority
                             : CharacterBuildMethod.Karma;
 
                     string strSettingsSummary =
-                        (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("settings/@summary", token)
-                                                   .ConfigureAwait(false))?.Value;
+                        xmlBaseCharacterNode.SelectSingleNodeAndCacheExpression("settings/@summary", token)?.Value;
                     if (!string.IsNullOrEmpty(strSettingsSummary))
                     {
                         int intSemicolonIndex;
@@ -360,33 +353,27 @@ namespace Chummer
                     if (!objCache.Created)
                     {
                         XPathNodeIterator xmlJournalEntries
-                            = await xmlBaseCharacterNode.SelectAndCacheExpressionAsync("journals/journal", token: token)
-                                                        .ConfigureAwait(false);
+                            = xmlBaseCharacterNode.SelectAndCacheExpression("journals/journal", token: token);
                         if (xmlJournalEntries?.Count > 1)
                         {
                             objCache.Created = true;
                         }
                         else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries.Current != null
-                                                               && (await xmlJournalEntries.Current
-                                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "@name", token).ConfigureAwait(false))?.Value
+                                                               && xmlJournalEntries.Current
+                                                                   .SelectSingleNodeAndCacheExpression(
+                                                                       "@name", token)?.Value
                                                                != "Title")
                         {
                             objCache.Created = true;
                         }
                     }
 
-                    string strImageString = (await xmlBaseCharacterNode
-                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                       "images/image/@filename", token).ConfigureAwait(false))?.Value;
-                    if (!string.IsNullOrEmpty(strImageString))
+                    string strImageString = xmlBaseCharacterNode
+                        .SelectSingleNodeAndCacheExpression(
+                            "images/image/@filename", token)?.Value;
+                    if (!string.IsNullOrEmpty(strImageString) && _dicImages.TryGetValue(strImageString, out Bitmap objTemp))
                     {
-                        (bool blnSuccess, Bitmap objTemp)
-                            = await _dicImages.TryGetValueAsync(strImageString, token).ConfigureAwait(false);
-                        if (blnSuccess)
-                        {
-                            objCache.Mugshot = objTemp;
-                        }
+                        objCache.Mugshot = objTemp;
                     }
 
                     objCache.FilePath = strFile;
@@ -528,7 +515,7 @@ namespace Chummer
                 }
 
                 string strMetatype = objMetatypeNode != null
-                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                    ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                       ?? objCache.Metatype
                     : objCache.Metatype;
 
@@ -537,7 +524,7 @@ namespace Chummer
                     objMetatypeNode = objMetatypeNode?.TryGetNodeByNameOrId("metavariants/metavariant", objCache.Metavariant);
 
                     strMetatype += " (" + (objMetatypeNode != null
-                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                        ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                           ?? objCache.Metavariant
                         : objCache.Metavariant) + ')';
                 }
@@ -650,29 +637,27 @@ namespace Chummer
                 try
                 {
                     await Program.OpenCharacters.AddAsync(objCharacter, token: token).ConfigureAwait(false);
-                    IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
+                    IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
                     CharacterSettings objHeroLabSettings =
-                        (await dicCharacterSettings.FirstOrDefaultAsync(
-                            x => x.Value.Name == objCache.SettingsName && x.Value.BuildMethod == objCache.BuildMethod, token: token).ConfigureAwait(false)).Value;
+                        dicCharacterSettings.FirstOrDefault(
+                            x => x.Value.Name == objCache.SettingsName && x.Value.BuildMethod == objCache.BuildMethod).Value;
                     if (objHeroLabSettings != null)
                     {
                         await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                     else
                     {
-                        objHeroLabSettings = (await dicCharacterSettings.FirstOrDefaultAsync(
-                            x => x.Value.Name.Contains(objCache.SettingsName) && x.Value.BuildMethod == objCache.BuildMethod, token: token).ConfigureAwait(false)).Value;
+                        objHeroLabSettings = dicCharacterSettings.FirstOrDefault(
+                            x => x.Value.Name.Contains(objCache.SettingsName) && x.Value.BuildMethod == objCache.BuildMethod).Value;
                         if (objHeroLabSettings != null)
                         {
                             await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
                         else
                         {
-                            (bool blnSuccess, CharacterSettings objDefaultCharacterSettings)
-                                = await dicCharacterSettings.TryGetValueAsync(
-                                    GlobalSettings.DefaultCharacterSetting, token).ConfigureAwait(false);
                             bool blnCacheUsesPriorityTables = objCache.BuildMethod.UsesPriorityTables();
-                            if (blnSuccess && blnCacheUsesPriorityTables
+                            if (dicCharacterSettings.TryGetValue(
+                                    GlobalSettings.DefaultCharacterSetting, out CharacterSettings objDefaultCharacterSettings) && blnCacheUsesPriorityTables
                                 == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
                             {
                                 await objCharacter.SetSettingsKeyAsync(await objDefaultCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -680,15 +665,15 @@ namespace Chummer
                             else
                             {
                                 CharacterSettings objTempSetting
-                                    = (await dicCharacterSettings.FirstOrDefaultAsync(
-                                        x => x.Value.BuiltInOption && x.Value.BuildMethod == objCache.BuildMethod, token: token).ConfigureAwait(false)).Value;
+                                    = dicCharacterSettings.FirstOrDefault(
+                                        x => x.Value.BuiltInOption && x.Value.BuildMethod == objCache.BuildMethod).Value;
                                 if (objTempSetting != null)
                                     await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                 else
                                 {
-                                    objTempSetting = (await dicCharacterSettings.FirstOrDefaultAsync(
+                                    objTempSetting = dicCharacterSettings.FirstOrDefault(
                                         x => x.Value.BuiltInOption && x.Value.BuildMethod.UsesPriorityTables()
-                                            == blnCacheUsesPriorityTables, token: token).ConfigureAwait(false)).Value;
+                                            == blnCacheUsesPriorityTables).Value;
                                     if (objTempSetting != null)
                                         await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                     else

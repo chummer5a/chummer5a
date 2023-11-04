@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -36,13 +37,13 @@ namespace Chummer
 {
     public static class LanguageManager
     {
-        private static readonly LockingDictionary<string, LanguageData> s_DicLanguageData
-            = new LockingDictionary<string, LanguageData>();
+        private static readonly ConcurrentDictionary<string, LanguageData> s_DicLanguageData
+            = new ConcurrentDictionary<string, LanguageData>();
 
-        private static readonly LockingDictionary<string, string> s_DicEnglishStrings
-            = new LockingDictionary<string, string>();
+        private static readonly ConcurrentDictionary<string, string> s_DicEnglishStrings
+            = new ConcurrentDictionary<string, string>();
 
-        public static IAsyncReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
+        public static IReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
         public static string ManagerErrorMessage { get; }
 
         #region Constructor
@@ -107,8 +108,8 @@ namespace Chummer
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -123,8 +124,8 @@ namespace Chummer
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -140,8 +141,8 @@ namespace Chummer
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         private static async Task TranslateWinFormCoreAsync(bool blnSync, Control objObject, string strIntoLanguage,
@@ -169,18 +170,8 @@ namespace Chummer
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
                 string strKey = strIntoLanguage.ToUpperInvariant();
-                if (blnSync)
-                {
-                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
-                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
-                }
+                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
 
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
@@ -254,14 +245,14 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                objNewLanguage = s_DicLanguageData.AddCheapOrGet(strKey, x => new LanguageData(strLanguage), token);
+                objNewLanguage = s_DicLanguageData.GetOrAdd(strKey, x => new LanguageData(strLanguage));
             }
             else
             {
                 objNewLanguage = await s_DicLanguageData
-                                       .AddCheapOrGetAsync(
-                                           strKey, x => Task.Run(() => new LanguageData(strLanguage), token), token)
-                                       .ConfigureAwait(false);
+                    .GetOrAddAsync(
+                        strKey, x => Task.Run(() => new LanguageData(strLanguage), token), token)
+                    .ConfigureAwait(false);
             }
 
             if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
@@ -284,8 +275,8 @@ namespace Chummer
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
-        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private static void UpdateControls(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
@@ -486,8 +477,8 @@ namespace Chummer
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
-        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private static async ValueTask UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
@@ -954,39 +945,15 @@ namespace Chummer
             if (blnLanguageLoaded)
             {
                 string strLanguageKey = strLanguage.ToUpperInvariant();
-                if (blnSync)
+                if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
+                    && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                 {
-                    if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
-                        && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                    {
-                        return strReturn;
-                    }
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strLanguageKey, token).ConfigureAwait(false);
-                    if (blnSuccess && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                    {
-                        return strReturn;
-                    }
+                    return strReturn;
                 }
             }
 
-            if (blnSync)
-            {
-                // ReSharper disable once MethodHasAsyncOverload
-                if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn, token))
-                    return strReturn;
-            }
-            else
-            {
-                bool blnSuccess;
-                (blnSuccess, strReturn)
-                    = await s_DicEnglishStrings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                if (blnSuccess)
-                    return strReturn;
-            }
+            if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
+                return strReturn;
 
             return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
@@ -997,8 +964,8 @@ namespace Chummer
         /// Processes a compound string that contains both plaintext and references to localized strings
         /// </summary>
         /// <param name="strInput">Input string to process.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
@@ -1154,21 +1121,9 @@ namespace Chummer
             if (blnLanguageLoaded)
             {
                 string strKey = strLanguage.ToUpperInvariant();
-                if (blnSync)
+                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
                 {
-                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
-                    {
-                        return objLanguageData.DataDocument;
-                    }
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                    {
-                        return objLanguageData.DataDocument;
-                    }
+                    return objLanguageData.DataDocument;
                 }
             }
 
@@ -1202,9 +1157,8 @@ namespace Chummer
                                                                      .LoadStandardFromFileAsync(
                                                                          strFilePath, token: token)
                                                                      .ConfigureAwait(false);
-                            foreach (XPathNavigator objNode in await objEnglishDocument.CreateNavigator()
-                                         .SelectAndCacheExpressionAsync("/chummer/strings/string", token)
-                                         .ConfigureAwait(false))
+                            foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
+                                         .SelectAndCacheExpression("/chummer/strings/string", token))
                             {
                                 string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
                                                               .ConfigureAwait(false))?.Value;
@@ -1231,9 +1185,8 @@ namespace Chummer
                                                                       .LoadStandardFromFileAsync(
                                                                           strLangPath, token: token)
                                                                       .ConfigureAwait(false);
-                            foreach (XPathNavigator objNode in await objLanguageDocument.CreateNavigator()
-                                         .SelectAndCacheExpressionAsync("/chummer/strings/string", token)
-                                         .ConfigureAwait(false))
+                            foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
+                                         .SelectAndCacheExpression("/chummer/strings/string", token))
                             {
                                 string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
                                                               .ConfigureAwait(false))?.Value;
@@ -1472,8 +1425,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1498,8 +1451,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1519,8 +1472,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         private static async Task<string> TranslateExtraCoreAsync(bool blnSync, string strExtra, string strIntoLanguage,
@@ -1722,22 +1675,9 @@ namespace Chummer
                                             .ConfigureAwait(false);
                                     if (blnEnglishLanguageLoaded)
                                     {
-                                        bool blnSuccess;
-                                        LanguageData objEnglishLanguageData;
-                                        if (blnSync)
-                                        {
-                                            blnSuccess = LoadedLanguageData.TryGetValue(
-                                                GlobalSettings.DefaultLanguage.ToUpperInvariant(),
-                                                out objEnglishLanguageData);
-                                        }
-                                        else
-                                        {
-                                            (blnSuccess, objEnglishLanguageData)
-                                                = await LoadedLanguageData.TryGetValueAsync(
-                                                                              GlobalSettings.DefaultLanguage
-                                                                                  .ToUpperInvariant(), token)
-                                                                          .ConfigureAwait(false);
-                                        }
+                                        bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                            GlobalSettings.DefaultLanguage.ToUpperInvariant(),
+                                            out LanguageData objEnglishLanguageData);
 
                                         token.ThrowIfCancellationRequested();
                                         if (blnSuccess)
@@ -1771,10 +1711,6 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else if (blnSync)
-                                {
-                                    strTemp = FindString(strPreferFile, token);
-                                }
                                 else
                                 {
                                     using (CancellationTokenSource objCombinedCancellationTokenSource
@@ -1784,9 +1720,11 @@ namespace Chummer
                                         CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                                         try
                                         {
-                                            strTemp = await Task.Run(
-                                                () => FindString(strPreferFile, objCombinedToken),
-                                                objCombinedToken).ConfigureAwait(false);
+                                            strTemp = blnSync
+                                                ? FindString(strPreferFile, objCombinedToken)
+                                                : await Task.Run(
+                                                    () => FindString(strPreferFile, objCombinedToken),
+                                                    objCombinedToken).ConfigureAwait(false);
                                         }
                                         catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
                                         {
@@ -1809,22 +1747,9 @@ namespace Chummer
                                 : await LoadLanguageAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false);
                             if (blnEnglishLanguageLoaded)
                             {
-                                bool blnSuccess;
-                                LanguageData objEnglishLanguageData;
-                                if (blnSync)
-                                {
-                                    blnSuccess = LoadedLanguageData.TryGetValue(
-                                        GlobalSettings.DefaultLanguage.ToUpperInvariant(),
-                                        out objEnglishLanguageData);
-                                }
-                                else
-                                {
-                                    (blnSuccess, objEnglishLanguageData)
-                                        = await LoadedLanguageData.TryGetValueAsync(
-                                                                      GlobalSettings.DefaultLanguage
-                                                                          .ToUpperInvariant(), token)
-                                                                  .ConfigureAwait(false);
-                                }
+                                bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                    GlobalSettings.DefaultLanguage.ToUpperInvariant(),
+                                    out LanguageData objEnglishLanguageData);
 
                                 token.ThrowIfCancellationRequested();
                                 if (blnSuccess)
@@ -1857,27 +1782,23 @@ namespace Chummer
                                 }
                             }
 
-                            if (blnSync)
+
+                            using (CancellationTokenSource objCombinedCancellationTokenSource
+                                   = CancellationTokenSource.CreateLinkedTokenSource(
+                                       objCancellationToken, token))
                             {
-                                strTemp = FindString(innerToken: token);
-                            }
-                            else
-                            {
-                                using (CancellationTokenSource objCombinedCancellationTokenSource
-                                       = CancellationTokenSource.CreateLinkedTokenSource(
-                                           objCancellationToken, token))
+                                CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
+                                try
                                 {
-                                    CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
-                                    try
-                                    {
-                                        strTemp = await Task.Run(
+                                    strTemp = blnSync
+                                        ? FindString(innerToken: objCombinedToken)
+                                        : await Task.Run(
                                             () => FindString(innerToken: objCombinedToken),
                                             objCombinedToken).ConfigureAwait(false);
-                                    }
-                                    catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
-                                    {
-                                        //swallow this
-                                    }
+                                }
+                                catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                                {
+                                    //swallow this
                                 }
                             }
 
@@ -1927,23 +1848,32 @@ namespace Chummer
                                             return string.Empty;
                                         }
 
-                                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                                     objXPathPair.Item2))
+                                        try
                                         {
-                                            if (objState.ShouldExitCurrentIteration)
-                                                return string.Empty;
-                                            if (innerToken.IsCancellationRequested)
+                                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                                         objXPathPair.Item2, innerToken))
                                             {
-                                                objState.Stop();
-                                                return string.Empty;
-                                            }
+                                                if (objState.ShouldExitCurrentIteration)
+                                                    return string.Empty;
+                                                if (innerToken.IsCancellationRequested)
+                                                {
+                                                    objState.Stop();
+                                                    return string.Empty;
+                                                }
 
-                                            if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                                continue;
-                                            string strTranslate = objXPathPair.Item4(objNode);
-                                            if (string.IsNullOrEmpty(strTranslate))
-                                                continue;
-                                            return strTranslate;
+                                                if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                                    continue;
+                                                string strTranslate = objXPathPair.Item4(objNode);
+                                                if (string.IsNullOrEmpty(strTranslate))
+                                                    continue;
+                                                objState.Stop();
+                                                return strTranslate;
+                                            }
+                                        }
+                                        catch (OperationCanceledException)
+                                        {
+                                            objState.Stop();
+                                            return string.Empty;
                                         }
 
                                         return string.Empty;
@@ -1983,8 +1913,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item from a foreign language to the default one.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2010,8 +1940,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item from a foreign language to the default one.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2032,8 +1962,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         public static async Task<string> ReverseTranslateExtraCoreAsync(bool blnSync, string strExtra,
@@ -2188,20 +2118,8 @@ namespace Chummer
                             : await LoadLanguageAsync(strFromLanguage, token).ConfigureAwait(false);
                         if (blnFromLanguageLoaded)
                         {
-                            bool blnSuccess;
-                            LanguageData objFromLanguageData;
-                            if (blnSync)
-                            {
-                                blnSuccess = LoadedLanguageData.TryGetValue(
-                                    strFromLanguage.ToUpperInvariant(), out objFromLanguageData);
-                            }
-                            else
-                            {
-                                (blnSuccess, objFromLanguageData)
-                                    = await LoadedLanguageData
-                                            .TryGetValueAsync(strFromLanguage.ToUpperInvariant(), token)
-                                            .ConfigureAwait(false);
-                            }
+                            bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                strFromLanguage.ToUpperInvariant(), out LanguageData objFromLanguageData);
 
                             token.ThrowIfCancellationRequested();
                             if (blnSuccess)
@@ -2230,10 +2148,6 @@ namespace Chummer
                             }
                         }
                     }
-                    else if (blnSync)
-                    {
-                        strTemp = FindString(strPreferFile, token);
-                    }
                     else
                     {
                         using (CancellationTokenSource objCombinedCancellationTokenSource
@@ -2243,9 +2157,11 @@ namespace Chummer
                             CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                             try
                             {
-                                strTemp = await Task.Run(
-                                    () => FindString(strPreferFile, objCombinedToken),
-                                    objCombinedToken).ConfigureAwait(false);
+                                strTemp = blnSync
+                                    ? FindString(strPreferFile, token)
+                                    : await Task.Run(
+                                        () => FindString(strPreferFile, objCombinedToken),
+                                        objCombinedToken).ConfigureAwait(false);
                             }
                             catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
                             {
@@ -2268,20 +2184,8 @@ namespace Chummer
                     : await LoadLanguageAsync(strFromLanguage, token).ConfigureAwait(false);
                 if (blnFromLanguageLoaded)
                 {
-                    bool blnSuccess;
-                    LanguageData objFromLanguageData;
-                    if (blnSync)
-                    {
-                        blnSuccess = LoadedLanguageData.TryGetValue(
-                            strFromLanguage.ToUpperInvariant(), out objFromLanguageData);
-                    }
-                    else
-                    {
-                        (blnSuccess, objFromLanguageData)
-                            = await LoadedLanguageData
-                                    .TryGetValueAsync(strFromLanguage.ToUpperInvariant(), token)
-                                    .ConfigureAwait(false);
-                    }
+                    bool blnSuccess = LoadedLanguageData.TryGetValue(
+                        strFromLanguage.ToUpperInvariant(), out LanguageData objFromLanguageData);
 
                     token.ThrowIfCancellationRequested();
                     if (blnSuccess)
@@ -2310,27 +2214,23 @@ namespace Chummer
                     }
                 }
 
-                if (blnSync)
+
+                using (CancellationTokenSource objCombinedCancellationTokenSource
+                       = CancellationTokenSource.CreateLinkedTokenSource(
+                           objCancellationToken, token))
                 {
-                    strTemp = FindString(innerToken: token);
-                }
-                else
-                {
-                    using (CancellationTokenSource objCombinedCancellationTokenSource
-                           = CancellationTokenSource.CreateLinkedTokenSource(
-                               objCancellationToken, token))
+                    CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
+                    try
                     {
-                        CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
-                        try
-                        {
-                            strTemp = await Task.Run(
+                        strTemp = blnSync
+                            ? FindString(innerToken: token)
+                            : await Task.Run(
                                 () => FindString(innerToken: objCombinedToken),
                                 objCombinedToken).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
-                        {
-                            //swallow this
-                        }
+                    }
+                    catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                    {
+                        //swallow this
                     }
                 }
 
@@ -2380,23 +2280,32 @@ namespace Chummer
                                 return string.Empty;
                             }
 
-                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                         objXPathPair.Item2))
+                            try
                             {
-                                if (objState.ShouldExitCurrentIteration)
-                                    return string.Empty;
-                                if (innerToken.IsCancellationRequested)
+                                foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                             objXPathPair.Item2, innerToken))
                                 {
-                                    objState.Stop();
-                                    return string.Empty;
-                                }
+                                    if (objState.ShouldExitCurrentIteration)
+                                        return string.Empty;
+                                    if (innerToken.IsCancellationRequested)
+                                    {
+                                        objState.Stop();
+                                        return string.Empty;
+                                    }
 
-                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                    continue;
-                                string strOriginal = objXPathPair.Item3(objNode);
-                                if (string.IsNullOrEmpty(strOriginal))
-                                    continue;
-                                return strOriginal;
+                                    if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                        continue;
+                                    string strOriginal = objXPathPair.Item3(objNode);
+                                    if (string.IsNullOrEmpty(strOriginal))
+                                        continue;
+                                    objState.Stop();
+                                    return strOriginal;
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                objState.Stop();
+                                return string.Empty;
                             }
 
                             return string.Empty;

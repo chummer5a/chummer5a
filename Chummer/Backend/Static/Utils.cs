@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -170,7 +171,7 @@ namespace Chummer
             }
         }
 
-        private static readonly LockingDictionary<Icon, Bitmap> s_dicCachedIconBitmaps = new LockingDictionary<Icon, Bitmap>(10);
+        private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicCachedIconBitmaps = new ConcurrentDictionary<Icon, Bitmap>();
 
         /// <summary>
         /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
@@ -178,7 +179,7 @@ namespace Chummer
         /// </summary>
         public static Bitmap GetCachedIconBitmap(Icon objIcon)
         {
-            return s_dicCachedIconBitmaps.AddOrGet(objIcon, x => x.ToBitmap());
+            return s_dicCachedIconBitmaps.GetOrAdd(objIcon, x => x.ToBitmap());
         }
 
         /// <summary>
@@ -188,10 +189,10 @@ namespace Chummer
         public static Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return s_dicCachedIconBitmaps.AddOrGetAsync(objIcon, x => x.ToBitmap(), token).AsTask();
+            return s_dicCachedIconBitmaps.GetOrAddAsync(objIcon, x => Task.Run(x.ToBitmap, token), token);
         }
 
-        private static readonly LockingDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new LockingDictionary<Icon, Bitmap>(10);
+        private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new ConcurrentDictionary<Icon, Bitmap>();
 
         /// <summary>
         /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents.
@@ -199,7 +200,7 @@ namespace Chummer
         /// </summary>
         public static Bitmap GetStockIconBitmapsForSystemIcon(Icon objIcon)
         {
-            return s_dicStockIconBitmapsForSystemIcons.AddOrGet(objIcon, x =>
+            return s_dicStockIconBitmapsForSystemIcons.GetOrAdd(objIcon, x =>
             {
                 if (x == SystemIcons.Application)
                 {
@@ -247,7 +248,7 @@ namespace Chummer
         public static Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return s_dicStockIconBitmapsForSystemIcons.AddOrGetAsync(objIcon, x =>
+            return s_dicStockIconBitmapsForSystemIcons.GetOrAddAsync(objIcon, x => Task.Run(() =>
             {
                 if (x == SystemIcons.Application)
                 {
@@ -285,7 +286,7 @@ namespace Chummer
                 }
 
                 throw new ArgumentOutOfRangeException(nameof(objIcon));
-            }, token).AsTask();
+            }, token), token);
         }
 
         /// <summary>
@@ -338,21 +339,15 @@ namespace Chummer
 
         public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
 
-        private static readonly Lazy<LockingDictionary<string, XPathExpression>> s_dicCachedExpressions
-            = new Lazy<LockingDictionary<string, XPathExpression>>(() => new LockingDictionary<string, XPathExpression>());
+        private static readonly Lazy<ConcurrentDictionary<string, XPathExpression>> s_dicCachedExpressions
+            = new Lazy<ConcurrentDictionary<string, XPathExpression>>(() => new ConcurrentDictionary<string, XPathExpression>());
 
-        public static LockingDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
+        public static ConcurrentDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
 
         public static void TryCacheExpression(string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CachedXPathExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
-        }
-
-        public static ValueTask<XPathExpression> TryCacheExpressionAsync(string xpath, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            return CachedXPathExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token);
+            CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
         }
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
@@ -461,11 +456,13 @@ namespace Chummer
 
         public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(CurrentChummerVersion) ?? 0;
 
-        public const int DefaultSleepDuration = 15;
+        private static readonly ThreadLocal<Stopwatch> s_objThreadStopwatch = new ThreadLocal<Stopwatch>(() => new Stopwatch());
 
-        public const int SleepEmergencyReleaseMaxTicks = 60000 / DefaultSleepDuration; // 1 minute in ticks
+        public const int DefaultSleepDuration = 1;
 
-        public const int WaitEmergencyReleaseMaxTicks = 1800000 / DefaultSleepDuration; // 30 minutes in ticks
+        public const int SleepEmergencyReleaseMaxTicks = 60000 / 15; // About 1 minute in ticks (assuming 15 ms timer frequency)
+
+        public const int WaitEmergencyReleaseMaxTicks = 1800000 / 15; // About 30 minutes in ticks (assuming 15 ms timer frequency)
 
         /// <summary>
         /// Can the current user context write to a given file path?
@@ -480,13 +477,8 @@ namespace Chummer
             try
             {
                 WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-
-                var directoryInfo = new DirectoryInfo(Path.GetDirectoryName(strPath) ??
-                                                      throw new ArgumentOutOfRangeException(nameof(strPath)));
-                var security = directoryInfo.GetAccessControl();
-                AuthorizationRuleCollection authRules = security.GetAccessRules(true, true, typeof(SecurityIdentifier));
-
-                foreach (FileSystemAccessRule accessRule in authRules)
+                DirectorySecurity security = Directory.GetAccessControl(Path.GetDirectoryName(strPath) ?? throw new ArgumentOutOfRangeException(nameof(strPath)));
+                foreach (FileSystemAccessRule accessRule in security.GetAccessRules(true, true, typeof(SecurityIdentifier)))
                 {
                     if (!(accessRule.IdentityReference is SecurityIdentifier objIdentifier) || !principal.IsInRole(objIdentifier))
                         continue;
@@ -1190,7 +1182,7 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     func.Invoke();
                 });
             }
@@ -1207,7 +1199,7 @@ namespace Chummer
                 : JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     return func.Invoke();
                 });
         }
@@ -1243,7 +1235,7 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     func.Invoke();
                 }, eOptions);
             }
@@ -1260,7 +1252,7 @@ namespace Chummer
                 : JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     return func.Invoke();
                 }, eOptions);
         }
@@ -1388,7 +1380,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task SafeSleepAsync(int intDurationMilliseconds)
         {
-            return Task.Delay(intDurationMilliseconds);
+            return Task.Delay(Math.Min(intDurationMilliseconds, 1));
         }
 
         /// <summary>
@@ -1401,7 +1393,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task SafeSleepAsync(int intDurationMilliseconds, CancellationToken token)
         {
-            return Task.Delay(intDurationMilliseconds, token);
+            return Task.Delay(Math.Min(intDurationMilliseconds, 1), token);
         }
 
         /// <summary>
@@ -1459,34 +1451,27 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, bool blnForceDoEvents = false)
         {
-            if (!EverDoEvents)
+            if (Program.IsMainThread && EverDoEvents)
             {
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(intDurationMilliseconds),
-                                            intDurationMilliseconds > 1000
-                                                ? JoinableTaskCreationOptions.LongRunning
-                                                : JoinableTaskCreationOptions.None);
-                else
-                    Thread.Sleep(intDurationMilliseconds);
-                return;
+                s_objThreadStopwatch.Value.Restart();
+                try
+                {
+                    while (s_objThreadStopwatch.Value.ElapsedMilliseconds <= intDurationMilliseconds)
+                    {
+                        DoEventsSafe(blnForceDoEvents);
+                        int intDuration = DefaultSleepDuration - (int)s_objThreadStopwatch.Value.ElapsedMilliseconds;
+                        if (intDuration >= 0)
+                            Thread.Sleep(intDuration);
+                    }
+                }
+                finally
+                {
+                    s_objThreadStopwatch.Value.Stop();
+                }
             }
-
-            int i = intDurationMilliseconds;
-            for (; i >= DefaultSleepDuration; i -= DefaultSleepDuration)
+            else
             {
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(DefaultSleepDuration));
-                else
-                    Thread.Sleep(DefaultSleepDuration);
-                DoEventsSafe(blnForceDoEvents);
-            }
-            if (i > 0)
-            {
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(i));
-                else
-                    Thread.Sleep(i);
-                DoEventsSafe(blnForceDoEvents);
+                Thread.Sleep(intDurationMilliseconds);
             }
         }
 
@@ -1512,31 +1497,33 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, CancellationToken token, bool blnForceDoEvents = false)
         {
-            int i = intDurationMilliseconds;
-            for (; i >= DefaultSleepDuration; i -= DefaultSleepDuration)
+            token.ThrowIfCancellationRequested();
+            if (Program.IsMainThread && EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(DefaultSleepDuration, token));
-                else
-                    Thread.Sleep(DefaultSleepDuration);
-                if (EverDoEvents)
+                s_objThreadStopwatch.Value.Restart();
+                try
                 {
-                    token.ThrowIfCancellationRequested();
-                    DoEventsSafe(blnForceDoEvents);
+                    while (s_objThreadStopwatch.Value.ElapsedMilliseconds <= intDurationMilliseconds)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        DoEventsSafe(blnForceDoEvents);
+                        token.ThrowIfCancellationRequested();
+                        int intDuration = DefaultSleepDuration - (int)s_objThreadStopwatch.Value.ElapsedMilliseconds;
+                        if (intDuration >= 0)
+                            Thread.Sleep(intDuration);
+                    }
+                }
+                finally
+                {
+                    s_objThreadStopwatch.Value.Stop();
                 }
             }
-            if (i > 0)
+            else
             {
-                token.ThrowIfCancellationRequested();
-                if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(i, token));
-                else
-                    Thread.Sleep(i);
-                if (EverDoEvents)
+                for (int i = 0; i < intDurationMilliseconds; i += DefaultSleepDuration)
                 {
                     token.ThrowIfCancellationRequested();
-                    DoEventsSafe(blnForceDoEvents);
+                    Thread.Sleep(DefaultSleepDuration);
                 }
             }
         }
@@ -2397,6 +2384,13 @@ namespace Chummer
         [CLSCompliant(false)]
         public static SafeObjectPool<HashSet<string>> StringHashSetPool { get; }
             = new SafeObjectPool<HashSet<string>>(() => new HashSet<string>(), x => x.Clear());
+
+        /// <summary>
+        /// Memory Pool for stopwatches. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static SafeObjectPool<Stopwatch> StopwatchPool { get; }
+            = new SafeObjectPool<Stopwatch>(() => new Stopwatch(), x => x.Reset());
 
         /// <summary>
         /// Memory Pool for empty dictionaries used for processing multiple property changed. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.

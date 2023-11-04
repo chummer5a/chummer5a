@@ -125,7 +125,7 @@ namespace Chummer
                 bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-                decimal decBaseCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                 foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select(
                              "accessories/accessory" + strFilter))
                 {
@@ -336,8 +336,8 @@ namespace Chummer
 
         private void UpdateMountFields(bool boolChangeExtraMountFirst)
         {
-            if ((cboMount.SelectedItem.ToString() != "None") && cboExtraMount.SelectedItem != null && (cboExtraMount.SelectedItem.ToString() != "None")
-                && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
+            if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem != null && cboExtraMount.SelectedItem.ToString() != "None"
+                && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
             {
                 if (boolChangeExtraMountFirst)
                     cboExtraMount.SelectedIndex = 0;
@@ -417,8 +417,8 @@ namespace Chummer
                         .DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                 {
                     decimal decCostMultiplier
-                        = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
-                               / 100.0m);
+                        = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
+                        / 100.0m;
                     if (_setBlackMarketMaps.Contains((await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
                         decCostMultiplier *= 0.9m;
                     int intMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token)
@@ -535,12 +535,13 @@ namespace Chummer
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail
-                = new AvailabilityValue(intRating, (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value)
-                    .ToString();
+                = await new AvailabilityValue(intRating, (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value)
+                    .ToStringAsync(token).ConfigureAwait(false);
             await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
             await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token)
                                .ConfigureAwait(false);
 
+            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
                 string strCost = "0";
@@ -580,7 +581,7 @@ namespace Chummer
                         await lblCost.DoThreadSafeAsync(
                                          x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                        GlobalSettings.CultureInfo)
-                                                       + LanguageManager.GetString("String_NuyenSymbol") + '+',
+                                                       + strNuyen + '+',
                                          token: token)
                                      .ConfigureAwait(false);
                     }
@@ -593,7 +594,7 @@ namespace Chummer
                                                                        GlobalSettings.CultureInfo) + strSpace + '-'
                                                        + strSpace + decMax.ToString(_objCharacter.Settings.NuyenFormat,
                                                            GlobalSettings.CultureInfo)
-                                                       + LanguageManager.GetString("String_NuyenSymbol"), token: token)
+                                                       + strNuyen, token: token)
                                      .ConfigureAwait(false);
                     }
 
@@ -611,8 +612,8 @@ namespace Chummer
 
                     // Apply any markup.
                     decCost *= 1
-                               + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                 .ConfigureAwait(false) / 100.0m);
+                               + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
+                                   .ConfigureAwait(false) / 100.0m;
 
                     if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                     .ConfigureAwait(false))
@@ -638,7 +639,7 @@ namespace Chummer
                           .DoThreadSafeAsync(
                               x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat,
                                                              GlobalSettings.CultureInfo)
-                                            + LanguageManager.GetString("String_NuyenSymbol"), token: token)
+                                            + strNuyen, token: token)
                           .ConfigureAwait(false);
                     string strTest = await _objCharacter.AvailTestAsync(decCost, strAvail, token: token)
                                                         .ConfigureAwait(false);
@@ -649,8 +650,8 @@ namespace Chummer
             {
                 await lblCost
                       .DoThreadSafeAsync(
-                          x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                        + LanguageManager.GetString("String_NuyenSymbol"), token: token)
+                          x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                        + strNuyen, token: token)
                       .ConfigureAwait(false);
                 string strTest = await _objCharacter.AvailTestAsync(0, strAvail, token: token).ConfigureAwait(false);
                 await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);

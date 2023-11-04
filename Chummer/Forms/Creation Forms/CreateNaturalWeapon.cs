@@ -56,14 +56,14 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVBase))
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
             {
-                foreach (XPathNavigator objXmlSkill in await _objXmlSkillsDocument.SelectAndCacheExpressionAsync(
-                             "skills/skill[category = \"Combat Active\"]").ConfigureAwait(false))
+                foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.SelectAndCacheExpression(
+                             "skills/skill[category = \"Combat Active\"]"))
                 {
-                    string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                    string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                     if (!string.IsNullOrEmpty(strName))
                         lstSkills.Add(new ListItem(
                                           strName,
-                                          (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                          objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
                                           ?? strName));
                 }
 
@@ -146,7 +146,7 @@ namespace Chummer
                 strAP = intAP.ToString(GlobalSettings.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
-            XPathNavigator objPower = await _objXmlPowersDocument.SelectSingleNodeAndCacheExpressionAsync("powers/power[name = \"Natural Weapon\"]", token).ConfigureAwait(false);
+            XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNodeAndCacheExpression("powers/power[name = \"Natural Weapon\"]", token);
 
             if (objPower != null)
             {
@@ -167,8 +167,8 @@ namespace Chummer
                     Cost = "0",
                     Ammo = "0",
                     UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false),
-                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))?.Value ?? "SR5",
-                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page", token: token).ConfigureAwait(false))?.Value ?? "0"
+                    Source = objPower.SelectSingleNodeAndCacheExpression("source", token: token)?.Value ?? "SR5",
+                    Page = objPower.SelectSingleNodeAndCacheExpression("page", token: token)?.Value ?? "0"
                 };
                 _objWeapon.CreateClips();
 

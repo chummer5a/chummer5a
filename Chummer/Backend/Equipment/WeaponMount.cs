@@ -586,7 +586,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstWeapons;
             }
         }
@@ -1109,7 +1109,7 @@ namespace Chummer.Backend.Equipment
                 // Apply a markup if applicable.
                 if (_decMarkup != 0)
                 {
-                    decOptionCost *= 1 + (_decMarkup / 100.0m);
+                    decOptionCost *= 1 + _decMarkup / 100.0m;
                 }
 
                 return OwnCost + decOptionCost + Weapons.Sum(w => w.TotalCost) + Mods.Sum(m => m.TotalCost);
@@ -1134,7 +1134,7 @@ namespace Chummer.Backend.Equipment
             // Apply a markup if applicable.
             if (_decMarkup != 0)
             {
-                decOptionCost *= 1 + (_decMarkup / 100.0m);
+                decOptionCost *= 1 + _decMarkup / 100.0m;
             }
 
             return await GetOwnCostAsync(token).ConfigureAwait(false)
@@ -1165,7 +1165,7 @@ namespace Chummer.Backend.Equipment
                     // Apply a markup if applicable.
                     if (_decMarkup != 0)
                     {
-                        decOptionCost *= 1 + (_decMarkup / 100.0m);
+                        decOptionCost *= 1 + _decMarkup / 100.0m;
                     }
                 }
                 d += decOptionCost;
@@ -1196,7 +1196,7 @@ namespace Chummer.Backend.Equipment
             // Apply a markup if applicable.
             if (_decMarkup != 0)
             {
-                decOptionCost *= 1 + (_decMarkup / 100.0m);
+                decOptionCost *= 1 + _decMarkup / 100.0m;
             }
 
             return await GetOwnCostAsync(token).ConfigureAwait(false) + decOptionCost
@@ -1264,7 +1264,7 @@ namespace Chummer.Backend.Equipment
                 // Apply a markup if applicable.
                 if (_decMarkup != 0)
                 {
-                    decReturn *= 1 + (_decMarkup / 100.0m);
+                    decReturn *= 1 + _decMarkup / 100.0m;
                 }
 
                 return decReturn;
@@ -1353,7 +1353,7 @@ namespace Chummer.Backend.Equipment
             // Apply a markup if applicable.
             if (_decMarkup != 0)
             {
-                decReturn *= 1 + (_decMarkup / 100.0m);
+                decReturn *= 1 + _decMarkup / 100.0m;
             }
 
             return decReturn;
@@ -1363,7 +1363,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (_objCharacter.LockObject.EnterReadLock())
                     return _lstMods;
             }
         }
