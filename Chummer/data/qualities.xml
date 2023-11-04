@@ -17683,6 +17683,8 @@
       <name>Busted Cyberware</name>
       <karma>-4</karma>
       <category>Negative</category>
+      <limit>11</limit>
+      <chargenonly />
       <bonus>
         <addware>
           <name>Busted Ware</name>
