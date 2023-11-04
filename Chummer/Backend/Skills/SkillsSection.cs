@@ -1529,63 +1529,22 @@ namespace Chummer.Backend.Skills
                             //Timekeeper.Finish("load_char_skills");
                             if (blnSync)
                             {
-                                Stack<IDisposable> stkLockers = new Stack<IDisposable>();
-                                try
+                                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                Utils.RunWithoutThreadLock(new Action[]
                                 {
-                                    foreach (Skill objSkill in _lstSkills)
-                                        stkLockers.Push(objSkill.LockObject.EnterHiPrioReadLock(token));
-                                    foreach (KnowledgeSkill objSkill in _lstKnowledgeSkills)
-                                        stkLockers.Push(objSkill.LockObject.EnterHiPrioReadLock(token));
-                                    foreach (KnowledgeSkill objSkill in _lstKnowsoftSkills)
-                                        stkLockers.Push(objSkill.LockObject.EnterHiPrioReadLock(token));
-                                    foreach (SkillGroup objSkillGroup in _lstSkillGroups)
-                                        stkLockers.Push(objSkillGroup.LockObject.EnterHiPrioReadLock(token));
-                                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                    Utils.RunWithoutThreadLock(new Action[]
-                                    {
-                                        () => _lstSkills.Sort(CompareSkills),
-                                        () => _lstKnowledgeSkills.Sort(CompareSkills),
-                                        () => _lstKnowsoftSkills.Sort(CompareSkills),
-                                        () => _lstSkillGroups.Sort(CompareSkillGroups)
-                                    }, token: token);
-                                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                                }
-                                finally
-                                {
-                                    while (stkLockers.Count > 0)
-                                    {
-                                        stkLockers.Pop()?.Dispose();
-                                    }
-                                }
+                                    () => _lstSkills.Sort(CompareSkills),
+                                    () => _lstKnowledgeSkills.Sort(CompareSkills),
+                                    () => _lstKnowsoftSkills.Sort(CompareSkills),
+                                    () => _lstSkillGroups.Sort(CompareSkillGroups)
+                                }, token: token);
+                                // ReSharper restore MethodHasAsyncOverloadWithCancellation
                             }
                             else
                             {
-                                Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>();
-                                try
-                                {
-                                    foreach (Skill objSkill in _lstSkills)
-                                        stkLockers.Push(await objSkill.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
-                                    Task tskSort1 = _lstSkills.SortAsync(CompareSkills, token);
-                                    foreach (KnowledgeSkill objSkill in _lstKnowledgeSkills)
-                                        stkLockers.Push(await objSkill.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
-                                    Task tskSort2 = _lstKnowledgeSkills.SortAsync(CompareSkills, token);
-                                    foreach (KnowledgeSkill objSkill in _lstKnowsoftSkills)
-                                        stkLockers.Push(await objSkill.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
-                                    Task tskSort3 = _lstKnowsoftSkills.SortAsync(CompareSkills, token);
-                                    foreach (SkillGroup objSkillGroup in _lstSkillGroups)
-                                        stkLockers.Push(await objSkillGroup.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
-                                    Task tskSort4 = _lstSkillGroups.SortAsync(CompareSkillGroups, token);
-                                    await Task.WhenAll(tskSort1, tskSort2, tskSort3, tskSort4).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    while (stkLockers.Count > 0)
-                                    {
-                                        IAsyncDisposable objTemp = stkLockers.Pop();
-                                        if (objTemp != null)
-                                            await objTemp.DisposeAsync().ConfigureAwait(false);
-                                    }
-                                }
+                                await Task.WhenAll(_lstSkills.SortAsync(CompareSkills, token),
+                                    _lstKnowledgeSkills.SortAsync(CompareSkills, token),
+                                    _lstKnowsoftSkills.SortAsync(CompareSkills, token),
+                                    _lstSkillGroups.SortAsync(CompareSkillGroups, token)).ConfigureAwait(false);
                             }
                         }
                         finally
@@ -2286,20 +2245,7 @@ namespace Chummer.Backend.Skills
                                         }
                                     }
 
-                                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstSkills.Count);
-                                    try
-                                    {
-                                        foreach (Skill objSkill in _lstSkills)
-                                            stkLockers.Push(objSkill.LockObject.EnterHiPrioReadLock());
-                                        _lstSkills.Sort(CompareSkills);
-                                    }
-                                    finally
-                                    {
-                                        while (stkLockers.Count > 0)
-                                        {
-                                            stkLockers.Pop()?.Dispose();
-                                        }
-                                    }
+                                    _lstSkills.Sort(CompareSkills);
                                 }
                                 finally
                                 {
@@ -2382,21 +2328,7 @@ namespace Chummer.Backend.Skills
                                         }
                                     }
 
-                                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(await _lstSkills.GetCountAsync(token).ConfigureAwait(false));
-                                    try
-                                    {
-                                        await _lstSkills.ForEachAsync(async objSkill => stkLockers.Push(await objSkill.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                                        await _lstSkills.SortAsync(CompareSkills, token).ConfigureAwait(false);
-                                    }
-                                    finally
-                                    {
-                                        while (stkLockers.Count > 0)
-                                        {
-                                            IAsyncDisposable objTemp = stkLockers.Pop();
-                                            if (objTemp != null)
-                                                await objTemp.DisposeAsync().ConfigureAwait(false);
-                                        }
-                                    }
+                                    await _lstSkills.SortAsync(CompareSkills, token).ConfigureAwait(false);
                                 }
                                 finally
                                 {

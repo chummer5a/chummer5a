@@ -745,7 +745,33 @@ namespace Chummer
         {
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (_setData.Comparer is IComparer<T> comparer)
+                if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstOrderedData.Count);
+                    try
+                    {
+                        foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
+                            stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock(token));
+                        if (_setData.Comparer is IComparer<T> comparer)
+                        {
+                            using (LockObject.EnterWriteLock(token))
+                                _lstOrderedData.Sort(comparer);
+                        }
+                        else
+                        {
+                            using (LockObject.EnterWriteLock(token))
+                                _lstOrderedData.Sort();
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else if (_setData.Comparer is IComparer<T> comparer)
                 {
                     using (LockObject.EnterWriteLock(token))
                         _lstOrderedData.Sort(comparer);
@@ -761,22 +787,89 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
         public void Sort(Comparison<T> comparison, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock(token))
-                _lstOrderedData.Sort(comparison);
+            if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
+            {
+                Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstOrderedData.Count);
+                try
+                {
+                    foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
+                        stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock(token));
+                    using (LockObject.EnterWriteLock(token))
+                        _lstOrderedData.Sort(comparison);
+                }
+                finally
+                {
+                    while (stkLockers.Count > 0)
+                    {
+                        stkLockers.Pop()?.Dispose();
+                    }
+                }
+            }
+            else
+            {
+                using (LockObject.EnterWriteLock(token))
+                    _lstOrderedData.Sort(comparison);
+            }
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
         public void Sort(IComparer<T> comparer, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock(token))
-                _lstOrderedData.Sort(comparer);
+            if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
+            {
+                Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstOrderedData.Count);
+                try
+                {
+                    foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
+                        stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock(token));
+                    using (LockObject.EnterWriteLock(token))
+                        _lstOrderedData.Sort(comparer);
+                }
+                finally
+                {
+                    while (stkLockers.Count > 0)
+                    {
+                        stkLockers.Pop()?.Dispose();
+                    }
+                }
+            }
+            else
+            {
+                using (LockObject.EnterWriteLock(token))
+                    _lstOrderedData.Sort(comparer);
+            }
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
         public void Sort(int index, int count, IComparer<T> comparer, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock(token))
-                _lstOrderedData.Sort(index, count, comparer);
+            if (_lstOrderedData.Count > index && _lstOrderedData[0] is IHasLockObject)
+            {
+                Stack<IDisposable> stkLockers = new Stack<IDisposable>(count);
+                try
+                {
+                    for (int i = 0; i < count; ++i)
+                    {
+                        if (_lstOrderedData[index + i] is IHasLockObject objTemp)
+                            stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock(token));
+                    }
+
+                    using (LockObject.EnterWriteLock(token))
+                        _lstOrderedData.Sort(index, count, comparer);
+                }
+                finally
+                {
+                    while (stkLockers.Count > 0)
+                    {
+                        stkLockers.Pop()?.Dispose();
+                    }
+                }
+            }
+            else
+            {
+                using (LockObject.EnterWriteLock(token))
+                    _lstOrderedData.Sort(index, count, comparer);
+            }
         }
 
         /// <inheritdoc cref="List{T}.Sort()" />
@@ -785,7 +878,55 @@ namespace Chummer
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                if (_setData.Comparer is IComparer<T> comparer)
+                if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstOrderedData.Count);
+                    try
+                    {
+                        foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
+                        }
+
+                        if (_setData.Comparer is IComparer<T> comparer)
+                        {
+                            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                _lstOrderedData.Sort(comparer);
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                _lstOrderedData.Sort();
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else if (_setData.Comparer is IComparer<T> comparer)
                 {
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
@@ -817,45 +958,150 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
         public async ValueTask SortAsync(Comparison<T> comparison, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
             {
-                token.ThrowIfCancellationRequested();
-                _lstOrderedData.Sort(comparison);
+                Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstOrderedData.Count);
+                try
+                {
+                    foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
+                    }
+
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstOrderedData.Sort(comparison);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    while (stkLockers.Count > 0)
+                    {
+                        IAsyncDisposable objTemp = stkLockers.Pop();
+                        if (objTemp != null)
+                            await objTemp.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
-            finally
+            else
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _lstOrderedData.Sort(comparison);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
         public async ValueTask SortAsync(IComparer<T> comparer, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
             {
-                token.ThrowIfCancellationRequested();
-                _lstOrderedData.Sort(comparer);
+                Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstOrderedData.Count);
+                try
+                {
+                    foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
+                    }
+
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstOrderedData.Sort(comparer);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    while (stkLockers.Count > 0)
+                    {
+                        IAsyncDisposable objTemp = stkLockers.Pop();
+                        if (objTemp != null)
+                            await objTemp.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
-            finally
+            else
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _lstOrderedData.Sort(comparer);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
         public async ValueTask SortAsync(int index, int count, IComparer<T> comparer, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
             {
-                token.ThrowIfCancellationRequested();
-                _lstOrderedData.Sort(index, count, comparer);
+                Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstOrderedData.Count);
+                try
+                {
+                    for (int i = 0; i < count; ++i)
+                    {
+                        if (_lstOrderedData[index + i] is IHasLockObject objTemp)
+                            stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
+                    }
+
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstOrderedData.Sort(index, count, comparer);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    while (stkLockers.Count > 0)
+                    {
+                        IAsyncDisposable objTemp = stkLockers.Pop();
+                        if (objTemp != null)
+                            await objTemp.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
-            finally
+            else
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _lstOrderedData.Sort(index, count, comparer);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 

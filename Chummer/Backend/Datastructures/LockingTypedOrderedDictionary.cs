@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -2114,209 +2115,988 @@ namespace Chummer
 
         public void Sort()
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort();
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (IHasLockObject objTemp in _lstIndexes.Select(v => (IHasLockObject)v))
+                            stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort();
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort();
+                }
+            }
         }
 
         public void Sort(Comparison<TKey> comparison)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort(comparison);
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (IHasLockObject objTemp in _lstIndexes.Select(v => (IHasLockObject)v))
+                            stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort(comparison);
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort(comparison);
+                }
+            }
         }
 
         public void Sort(Comparison<KeyValuePair<TKey, TValue>> comparison)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort((x, y) => comparison(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
-                                                      new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            if (objKey is IHasLockObject objTemp)
+                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                        }
+
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort((x, y) => comparison(
+                                new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort((x, y) => comparison(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+                }
+            }
         }
 
         public void Sort(Comparison<Tuple<TKey, TValue>> comparison)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                                                      new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            if (objKey is IHasLockObject objTemp)
+                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                        }
+
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                }
+            }
         }
 
         public void Sort(IComparer<TKey> comparer)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort(comparer);
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (IHasLockObject objTemp in _lstIndexes.Select(v => (IHasLockObject)v))
+                            stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort(comparer);
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort(comparer);
+                }
+            }
         }
 
         public void Sort(IComparer<KeyValuePair<TKey, TValue>> comparer)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort((x, y) => comparer.Compare(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
-                                                            new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            if (objKey is IHasLockObject objTemp)
+                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                        }
+
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort((x, y) => comparer.Compare(
+                                new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort((x, y) => comparer.Compare(
+                            new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+                }
+            }
         }
 
         public void Sort(IComparer<Tuple<TKey, TValue>> comparer)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                                                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            if (objKey is IHasLockObject objTemp)
+                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                        }
+
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                }
+            }
         }
 
         public void Sort(int index, int count, IComparer<TKey> comparer)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort(index, count, comparer);
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(count);
+                    try
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            TKey objKey = _lstIndexes[index + i];
+                            if (objKey is IHasLockObject objTemp)
+                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                        }
+
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort(index, count, comparer);
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort(index, count, comparer);
+                }
+            }
         }
 
         public void Sort(int index, int count, IComparer<KeyValuePair<TKey, TValue>> comparer)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(count);
+                    try
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            TKey objKey = _lstIndexes[index + i];
+                            if (objKey is IHasLockObject objTemp)
+                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                        }
+
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+                }
+            }
         }
 
         public void Sort(int index, int count, IComparer<Tuple<TKey, TValue>> comparer)
         {
-            using (LockObject.EnterWriteLock())
-                _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
+                {
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(count);
+                    try
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            TKey objKey = _lstIndexes[index + i];
+                            if (objKey is IHasLockObject objTemp)
+                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                        }
+
+                        using (LockObject.EnterWriteLock())
+                            _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            stkLockers.Pop()?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock())
+                        _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+                }
+            }
         }
 
         public async Task SortAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort();
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort();
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort();
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(Comparison<TKey> comparison, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort(comparison);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort(comparison);
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort(comparison);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(Comparison<KeyValuePair<TKey, TValue>> comparison, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort((x, y) => comparison(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
-                                                      new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                            {
+                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort((x, y) => comparison(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort((x, y) => comparison(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(Comparison<Tuple<TKey, TValue>> comparison, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                                                      new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                            {
+                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(IComparer<TKey> comparer, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort(comparer);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort(comparer);
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort(comparer);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(IComparer<KeyValuePair<TKey, TValue>> comparer, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort((x, y) => comparer.Compare(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
-                                                            new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                            {
+                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort((x, y) => comparer.Compare(
+                                new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort((x, y) => comparer.Compare(
+                            new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(IComparer<Tuple<TKey, TValue>> comparer, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                                                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstIndexes.Count);
+                    try
+                    {
+                        foreach (TKey objKey in _lstIndexes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                            {
+                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(int index, int count, IComparer<TKey> comparer, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort(index, count, comparer);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(count);
+                    try
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            TKey objKey = _lstIndexes[index + i];
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort(index, count, comparer);
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort(index, count, comparer);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(int index, int count, IComparer<KeyValuePair<TKey, TValue>> comparer, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(count);
+                    try
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            TKey objKey = _lstIndexes[index + i];
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                            {
+                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
         public async Task SortAsync(int index, int count, IComparer<Tuple<TKey, TValue>> comparer, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
+                {
+                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(count);
+                    try
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            TKey objKey = _lstIndexes[index + i];
+                            if (objKey is IHasLockObject objTemp)
+                            {
+                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+
+                            if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
+                            {
+                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objTemp = stkLockers.Pop();
+                            if (objTemp != null)
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
