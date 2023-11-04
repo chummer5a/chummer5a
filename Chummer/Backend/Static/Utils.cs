@@ -477,7 +477,11 @@ namespace Chummer
             try
             {
                 WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-                DirectorySecurity security = Directory.GetAccessControl(Path.GetDirectoryName(strPath) ?? throw new ArgumentOutOfRangeException(nameof(strPath)));
+                var path = Path.GetDirectoryName(strPath) ?? throw new ArgumentOutOfRangeException(nameof(strPath));
+                var security = new FileSecurity(path,
+                    AccessControlSections.Owner |
+                    AccessControlSections.Group |
+                    AccessControlSections.Access);
                 foreach (FileSystemAccessRule accessRule in security.GetAccessRules(true, true, typeof(SecurityIdentifier)))
                 {
                     if (!(accessRule.IdentityReference is SecurityIdentifier objIdentifier) || !principal.IsInRole(objIdentifier))

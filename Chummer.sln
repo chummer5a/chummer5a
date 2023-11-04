@@ -41,8 +41,6 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegexLibCompiler", "RegexLibCompiler\RegexLibCompiler.csproj", "{629C3C4C-E584-45F9-9885-28E5265012E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChummerRazorLibrary", "ChummerRazorLibrary\ChummerRazorLibrary.csproj", "{2D78C371-CEAB-4C00-95B2-4D660327DB81}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chummer.Tests", "Chummer.Tests\Chummer.Tests.csproj", "{40601D95-6918-4E61-A960-EB3F4267A27E}"
 EndProject
 Global
@@ -242,26 +240,6 @@ Global
 		{629C3C4C-E584-45F9-9885-28E5265012E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{629C3C4C-E584-45F9-9885-28E5265012E5}.Release|x86.ActiveCfg = Release|Any CPU
 		{629C3C4C-E584-45F9-9885-28E5265012E5}.Release|x86.Build.0 = Release|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Debug (ChummerHub)|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Debug (ChummerHub)|Any CPU.Build.0 = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Debug (ChummerHub)|x86.ActiveCfg = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Debug (ChummerHub)|x86.Build.0 = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Debug|x86.Build.0 = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release (for Testing)|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release (for Testing)|Any CPU.Build.0 = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release (for Testing)|x86.ActiveCfg = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release (for Testing)|x86.Build.0 = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release (for Testing, ChummerHub)|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release (for Testing, ChummerHub)|Any CPU.Build.0 = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release (for Testing, ChummerHub)|x86.ActiveCfg = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release (for Testing, ChummerHub)|x86.Build.0 = Debug|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release|x86.ActiveCfg = Release|Any CPU
-		{2D78C371-CEAB-4C00-95B2-4D660327DB81}.Release|x86.Build.0 = Release|Any CPU
 		{40601D95-6918-4E61-A960-EB3F4267A27E}.Debug (ChummerHub)|Any CPU.ActiveCfg = Debug|Any CPU
 		{40601D95-6918-4E61-A960-EB3F4267A27E}.Debug (ChummerHub)|Any CPU.Build.0 = Debug|Any CPU
 		{40601D95-6918-4E61-A960-EB3F4267A27E}.Debug (ChummerHub)|x86.ActiveCfg = Debug|Any CPU

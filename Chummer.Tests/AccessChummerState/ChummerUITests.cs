@@ -5,6 +5,9 @@ using Assert = Xunit.Assert;
 
 namespace Chummer.Tests.AccessChummerState;
 
+/// <summary>
+/// TODO: Move this together in one TestClass with the other tests, because they stall even though the shouldnt...
+/// </summary>
 [Collection("AccessChummerState")]
 public class ChummerUITests: IClassFixture<ChummerUIFixture>
 {

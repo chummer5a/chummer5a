@@ -98,9 +98,6 @@
     <Compile Update="Controls\Shared\Components\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Forms\Utility Forms\AboutViewModel.cs">
-      <DependentUpon>About.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <!--UserControl-->
   <ItemGroup>
@@ -25743,9 +25740,6 @@
     <Compile Remove="Forms\Selection Forms\SelectProgramOption.cs" />
     <Compile Remove="Forms\Selection Forms\SelectProgramOption.Designer.cs" />
     <Compile Remove="InheritedListView.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ChummerRazorLibrary\ChummerRazorLibrary.csproj" />
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Blazor\Components\About.razor" />
