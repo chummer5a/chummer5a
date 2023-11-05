@@ -144,24 +144,31 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Content Include=".gitignore" />
-    <None Update="customdata\manifest.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Update="data\drugcomponents.xsd">
+    <Content Include="customdata\4e Critters Conversion\custom_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\priorities.xsd">
-      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="customdata\4e Critters Conversion\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\references.xsd">
+    </Content>
+    <Content Include="customdata\manifest.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\SchemaExtensions.xsd">
+    </Content>
+    <Content Update="data\drugcomponents.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\priorities.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Update="data\references.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="data\SchemaExtensions.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Update="Controls\Attributes\AttributeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -763,178 +770,178 @@
       <SubType>Component</SubType>
     </Compile>
     <None Include="Chummer_TemporaryKey.pfx" />
-    <None Update="data\armor.xsd">
+    <Content Update="data\armor.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\bioware.xsd">
+    </Content>
+    <Content Update="data\bioware.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\bonuses.xsd">
+    </Content>
+    <Content Update="data\bonuses.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\books.xsc">
+    </Content>
+    <Content Update="data\books.xsc">
       <DependentUpon>books.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\books.xsd">
+    </Content>
+    <Content Update="data\books.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\books.xss">
+    </Content>
+    <Content Update="data\books.xss">
       <DependentUpon>books.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\character.xsd">
+    </Content>
+    <Content Update="data\character.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\complexforms.xsd">
+    </Content>
+    <Content Update="data\complexforms.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\critterpowers.xsd">
+    </Content>
+    <Content Update="data\critterpowers.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\critters.xsd">
+    </Content>
+    <Content Update="data\critters.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\cyberware.xsd">
+    </Content>
+    <Content Update="data\cyberware.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\echoes.xsd">
+    </Content>
+    <Content Update="data\echoes.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\gear.xsd">
+    </Content>
+    <Content Update="data\gear.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\lifestyles.xsc">
+    </Content>
+    <Content Update="data\lifestyles.xsc">
       <DependentUpon>lifestyles.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\lifestyles.xsd">
+    </Content>
+    <Content Update="data\lifestyles.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\lifestyles.xss">
+    </Content>
+    <Content Update="data\lifestyles.xss">
       <DependentUpon>lifestyles.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\martialarts.xsd">
+    </Content>
+    <Content Update="data\martialarts.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\mentors.xsd">
+    </Content>
+    <Content Update="data\mentors.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\metamagic.xsd">
+    </Content>
+    <Content Update="data\metamagic.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\metatypes.xsd">
+    </Content>
+    <Content Update="data\metatypes.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\packs.xsd">
+    </Content>
+    <Content Update="data\packs.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\paragons.xsd">
+    </Content>
+    <Content Update="data\paragons.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\powers.xsd">
+    </Content>
+    <Content Update="data\powers.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\programs.xsd">
+    </Content>
+    <Content Update="data\programs.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\qualities.xsd">
+    </Content>
+    <Content Update="data\qualities.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\ranges.xsc">
+    </Content>
+    <Content Update="data\ranges.xsc">
       <DependentUpon>ranges.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\ranges.xsd">
+    </Content>
+    <Content Update="data\ranges.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\conditions.xsd">
+    </Content>
+    <Content Update="data\conditions.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\ranges.xss">
+    </Content>
+    <Content Update="data\ranges.xss">
       <DependentUpon>ranges.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\skills.xsc">
+    </Content>
+    <Content Update="data\skills.xsc">
       <DependentUpon>skills.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\skills.xsd">
+    </Content>
+    <Content Update="data\skills.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\skills.xss">
+    </Content>
+    <Content Update="data\skills.xss">
       <DependentUpon>skills.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\spells.xsd">
+    </Content>
+    <Content Update="data\spells.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\streams.xsc">
+    </Content>
+    <Content Update="data\streams.xsc">
       <DependentUpon>streams.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\streams.xsd">
+    </Content>
+    <Content Update="data\streams.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\streams.xss">
+    </Content>
+    <Content Update="data\streams.xss">
       <DependentUpon>streams.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\traditions.xsc">
+    </Content>
+    <Content Update="data\traditions.xsc">
       <DependentUpon>traditions.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\traditions.xsd">
+    </Content>
+    <Content Update="data\traditions.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\traditions.xss">
+    </Content>
+    <Content Update="data\traditions.xss">
       <DependentUpon>traditions.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\vehicles.xsc">
+    </Content>
+    <Content Update="data\vehicles.xsc">
       <DependentUpon>vehicles.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\vehicles.xsd">
+    </Content>
+    <Content Update="data\vehicles.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\vehicles.xss">
+    </Content>
+    <Content Update="data\vehicles.xss">
       <DependentUpon>vehicles.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\vessels.xsd">
+    </Content>
+    <Content Update="data\vessels.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\weapons.xsc">
+    </Content>
+    <Content Update="data\weapons.xsc">
       <DependentUpon>weapons.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\weapons.xsd">
+    </Content>
+    <Content Update="data\weapons.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\weapons.xss">
+    </Content>
+    <Content Update="data\weapons.xss">
       <DependentUpon>weapons.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lang\language.xsc">
+    </Content>
+    <Content Update="lang\language.xsc">
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lang\language.xsd">
+    </Content>
+    <Content Update="lang\language.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>language.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lang\language.xss">
+    </Content>
+    <Content Update="lang\language.xss">
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -25703,8 +25710,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
-    <PackageReference Include="Common.Logging" Version="3.4.1" />
-    <PackageReference Include="Common.Logging.Core" Version="3.4.1" />
     <PackageReference Include="HtmlRenderer.Core" Version="1.5.0.6" />
     <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
     <PackageReference Include="itext" Version="8.0.2" />
@@ -25738,11 +25743,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.2.5" />
     <PackageReference Include="NLog.Schema" Version="5.2.5" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
     <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.2" />
@@ -25815,5 +25818,8 @@
             echo "No .git directory found, skipping copying of hooks."
         )
 </PreBuildEvent>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisLevel>latest-minimum</AnalysisLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 </Project>
