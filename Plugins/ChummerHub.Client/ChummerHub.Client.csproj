@@ -1,506 +1,82 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}</ProjectGuid>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>ChummerHub.Client</RootNamespace>
-    <AssemblyName>ChummerHub.Client</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+	<Configurations>Debug;Release;Debuggable Release</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <!-- actual output path and start action definition -->
-    <!--<OutputPath>bin\Debug\</OutputPath>-->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <StartAction>Program</StartAction>
     <StartProgram>$(OutputPath)..\..\..\..\Chummer\bin\Debug\Chummer5.exe</StartProgram>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.3</LangVersion>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28for Testing%29|AnyCPU'">
-    <OutputPath>bin\Release %28for Testing%29\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
+    <OutputPath>bin\Debuggable Release\</OutputPath>
     <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GroupControls, Version=1.9.0.0, Culture=neutral, PublicKeyToken=3726d9da21b6ac8f, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GroupControls.1.9.0\lib\net45\GroupControls.dll</HintPath>
-    </Reference>
-    <Reference Include="IdentityModel, Version=6.2.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IdentityModel.6.2.0\lib\net472\IdentityModel.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.21.0.429, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.21.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=4.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Common.4.7.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=4.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.4.7.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.ObjectPool, Version=7.0.13.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Extensions.ObjectPool.7.0.13\lib\net462\Microsoft.Extensions.ObjectPool.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=6.32.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.IdentityModel.Abstractions.6.32.3\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.32.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.IdentityModel.JsonWebTokens.6.32.3\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.32.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.IdentityModel.Logging.6.32.3\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.32.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.IdentityModel.Tokens.6.32.3\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.2.3.24\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Threading, Version=17.7.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Threading.17.7.30\lib\net472\Microsoft.VisualStudio.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Validation, Version=17.6.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Validation.17.6.11\lib\netstandard2.0\Microsoft.VisualStudio.Validation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.5.2.5\lib\net46\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.7.0.0\lib\net462\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Composition.AttributedModel, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.AttributedModel.7.0.0\lib\net462\System.Composition.AttributedModel.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Convention, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.Convention.7.0.0\lib\net462\System.Composition.Convention.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Hosting, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.Hosting.7.0.0\lib\net462\System.Composition.Hosting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.Runtime.7.0.0\lib\net462\System.Composition.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.TypedParts, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.TypedParts.7.0.0\lib\net462\System.Composition.TypedParts.dll</HintPath>
-    </Reference>
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Design" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=7.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.7.0.2\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reflection.Metadata, Version=7.0.0.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Reflection.Metadata.7.0.2\lib\net462\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Text.Encoding.CodePages, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.Encoding.CodePages.7.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.Encodings.Web.7.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Json, Version=7.0.0.3, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.Json.7.0.3\lib\net462\System.Text.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\ApiKeyCredentials.cs" />
-    <Compile Include="Backend\FixedIsoDateTimeOffsetConverter .cs" />
-    <Compile Include="Backend\NamedPipeManager.cs" />
-    <Compile Include="Backend\NativeMethods.cs" />
-    <Compile Include="Backend\PluginHandler.cs" />
-    <Compile Include="Backend\PropertyRenameAndIgnoreSerializerContractResolver.cs" />
-    <Compile Include="Backend\Search\SearchTagExtractor.cs" />
-    <Compile Include="Backend\TaskCancellationExtension.cs" />
-    <Compile Include="Backend\Utils.cs" />
-    <Compile Include="Backend\MyMessageHandler.cs" />
-    <Compile Include="Backend\TagExtractor.cs" />
-    <Compile Include="Model\CharacterExtended.cs" />
-    <Compile Include="Model\ResultBase.cs" />
-    <Compile Include="Model\SearchTag.cs" />
-    <Compile Include="Model\SINnerGroup.cs" />
-    <Compile Include="Model\SinnersClient.cs" />
-    <Compile Include="Model\SINnerSearchGroup.cs" />
-    <Compile Include="Model\SINnerSearchGroupMember.cs" />
-    <Compile Include="Model\SINnerVisibility.cs" />
-    <Compile Include="Model\SINSearchGroupResult.cs" />
-    <Compile Include="Model\Tag.cs" />
-    <Compile Include="OidcClient\IdentityTokenValidator\JwtHandlerIdentityTokenValidator.cs" />
-    <Compile Include="OidcClient\Oidc\AssemblyAttributes.cs" />
-    <Compile Include="OidcClient\Oidc\AuthorizeClient.cs" />
-    <Compile Include="OidcClient\Oidc\AuthorizeState.cs" />
-    <Compile Include="OidcClient\Oidc\Browser\BrowserOptions.cs" />
-    <Compile Include="OidcClient\Oidc\Browser\BrowserResult.cs" />
-    <Compile Include="OidcClient\Oidc\Browser\BrowserResultType.cs" />
-    <Compile Include="OidcClient\Oidc\Browser\DisplayMode.cs" />
-    <Compile Include="OidcClient\Oidc\Browser\IBrowser.cs" />
-    <Compile Include="OidcClient\Oidc\CryptoHelper.cs" />
-    <Compile Include="OidcClient\Oidc\IIdentityTokenValidator.cs" />
-    <Compile Include="OidcClient\Oidc\Infrastructure\LoggingExtensions.cs" />
-    <Compile Include="OidcClient\Oidc\Infrastructure\LogSerializer.cs" />
-    <Compile Include="OidcClient\Oidc\Infrastructure\OidcClientOptionsExtensions.cs" />
-    <Compile Include="OidcClient\Oidc\Infrastructure\StringExtensions.cs" />
-    <Compile Include="OidcClient\Oidc\NoValidationIdentityTokenValidator.cs" />
-    <Compile Include="OidcClient\Oidc\OidcClient.cs" />
-    <Compile Include="OidcClient\Oidc\OidcClientOptions.cs" />
-    <Compile Include="OidcClient\Oidc\Policy.cs" />
-    <Compile Include="OidcClient\Oidc\ProviderInformation.cs" />
-    <Compile Include="OidcClient\Oidc\RefreshTokenDelegatingHandler.cs" />
-    <Compile Include="OidcClient\Oidc\Requests\AuthorizeRequest.cs" />
-    <Compile Include="OidcClient\Oidc\Requests\LoginRequest.cs" />
-    <Compile Include="OidcClient\Oidc\Requests\LogoutRequest.cs" />
-    <Compile Include="OidcClient\Oidc\ResponseProcessor.cs" />
-    <Compile Include="OidcClient\Oidc\Results\AuthorizeResult.cs" />
-    <Compile Include="OidcClient\Oidc\Results\IdentityTokenValidationResult.cs" />
-    <Compile Include="OidcClient\Oidc\Results\LoginResult.cs" />
-    <Compile Include="OidcClient\Oidc\Results\LogoutResult.cs" />
-    <Compile Include="OidcClient\Oidc\Results\RefreshTokenResult.cs" />
-    <Compile Include="OidcClient\Oidc\Results\ResponseValidationResult.cs" />
-    <Compile Include="OidcClient\Oidc\Results\Result.cs" />
-    <Compile Include="OidcClient\Oidc\Results\TokenResponseValidationResult.cs" />
-    <Compile Include="OidcClient\Oidc\Results\UserInfoResult.cs" />
-    <Compile Include="OidcClient\Oidc\TokenRefreshedEventArgs.cs" />
-    <Compile Include="OidcClient\SimpleHttpServer\HttpBuilder.cs" />
-    <Compile Include="OidcClient\SimpleHttpServer\HttpProcessor.cs" />
-    <Compile Include="OidcClient\SimpleHttpServer\HttpServer.cs" />
-    <Compile Include="OidcClient\SimpleHttpServer\Models\HttpRequest.cs" />
-    <Compile Include="OidcClient\SimpleHttpServer\Models\HttpResponse.cs" />
-    <Compile Include="OidcClient\SimpleHttpServer\Models\Route.cs" />
-    <Compile Include="OidcClient\SimpleHttpServer\RouteHandlers\FileSystemRouteHandler.cs" />
-    <Compile Include="OidcClient\SystemBrowser.cs" />
-    <Compile Include="OpenAPIs\swagger.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="Model\SINner.cs" />
-    <Compile Include="UI\frmSINnerGroupEdit.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmSINnerGroupEdit.Designer.cs">
-      <DependentUpon>frmSINnerGroupEdit.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\frmSINnerGroupSearch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmSINnerGroupSearch.Designer.cs">
-      <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\frmSINnerPassword.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmSINnerPassword.Designer.cs">
-      <DependentUpon>frmSINnerPassword.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\frmSINnerResponse.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmSINnerResponse.Designer.cs">
-      <DependentUpon>frmSINnerResponse.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\frmSINnerSearch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmSINnerSearch.Designer.cs">
-      <DependentUpon>frmSINnerSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\frmSINnerShare.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmSINnerShare.Designer.cs">
-      <DependentUpon>frmSINnerShare.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\frmSINnerVisibility.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmSINnerVisibility.Designer.cs">
-      <DependentUpon>frmSINnerVisibility.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\frmWebBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmWebBrowser.Designer.cs">
-      <DependentUpon>frmWebBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnerGroupCreate.cs">
+    <Compile Update="UI\ucSINnerGroupCreate.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnerGroupCreate.Designer.cs">
-      <DependentUpon>ucSINnerGroupCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnerGroupSearch.cs">
+    <Compile Update="UI\ucSINnerGroupSearch.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnerGroupSearch.Designer.cs">
-      <DependentUpon>ucSINnerGroupSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnerResponseUI.cs">
+    <Compile Update="UI\ucSINnerResponseUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnerResponseUI.Designer.cs">
-      <DependentUpon>ucSINnerResponseUI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnersAdvanced.cs">
+    <Compile Update="UI\ucSINnersAdvanced.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnersAdvanced.Designer.cs">
-      <DependentUpon>ucSINnersAdvanced.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\ucSINnersBasic.cs">
+    <Compile Update="UI\ucSINnersBasic.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnersBasic.Designer.cs">
-      <DependentUpon>ucSINnersBasic.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnerShare.cs">
+    <Compile Update="UI\ucSINnerShare.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnerShare.Designer.cs">
-      <DependentUpon>ucSINnerShare.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnersOptions.cs">
+    <Compile Update="UI\ucSINnersOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnersOptions.Designer.cs">
-      <DependentUpon>ucSINnersOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnersUserControl.cs">
+    <Compile Update="UI\ucSINnersUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnersUserControl.Designer.cs">
-      <DependentUpon>ucSINnersUserControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnersSearch.cs">
+    <Compile Update="UI\ucSINnersSearch.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ucSINnersSearch.Designer.cs">
-      <DependentUpon>ucSINnersSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ucSINnerVisibility.cs">
+    <Compile Update="UI\ucSINnerVisibility.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\ucSINnerVisibility.Designer.cs">
-      <DependentUpon>ucSINnerVisibility.cs</DependentUpon>
     </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSINnerGroupEdit.resx">
-      <DependentUpon>frmSINnerGroupEdit.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSINnerGroupSearch.resx">
-      <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSINnerPassword.resx">
-      <DependentUpon>frmSINnerPassword.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSINnerResponse.resx">
-      <DependentUpon>frmSINnerResponse.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSINnerSearch.resx">
-      <DependentUpon>frmSINnerSearch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSINnerShare.resx">
-      <DependentUpon>frmSINnerShare.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSINnerVisibility.resx">
-      <DependentUpon>frmSINnerVisibility.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmWebBrowser.resx">
-      <DependentUpon>frmWebBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnerGroupCreate.resx">
-      <DependentUpon>ucSINnerGroupCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnerGroupSearch.resx">
-      <DependentUpon>ucSINnerGroupSearch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnerResponseUI.resx">
-      <DependentUpon>ucSINnerResponseUI.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnersAdvanced.resx">
-      <DependentUpon>ucSINnersAdvanced.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnersBasic.resx">
-      <DependentUpon>ucSINnersBasic.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnerShare.resx">
-      <DependentUpon>ucSINnerShare.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnersOptions.resx">
-      <DependentUpon>ucSINnersOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnersUserControl.resx">
-      <DependentUpon>ucSINnersUserControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnersSearch.resx">
-      <DependentUpon>ucSINnersSearch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSINnerVisibility.resx">
-      <DependentUpon>ucSINnerVisibility.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\..\Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Chummer\Chummer.csproj">
-      <Project>{95279469-5a3e-42e6-993c-6a403586c86e}</Project>
-      <Name>Chummer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="libman.json" />
-    <None Include="OpenAPIs\swagger.json">
+    <None Update="OpenAPIs\swagger.json">
       <Namespace>ChummerHub.Client.Sinners</Namespace>
       <ClassName>SinnersClient</ClassName>
       <CodeGenerator>NSwagCSharp</CodeGenerator>
       <SourceUri>https://chummer-beta.azurewebsites.net/swagger/v1/swagger.json</SourceUri>
-    </None>
-    <None Include="packages.config" />
-    <None Include="Properties\DataSources\ChummerHub.Client.UI.SINnerResponseUI.datasource" />
-    <None Include="Properties\DataSources\SINners.Models.Tag.datasource" />
-    <None Include="Properties\Settings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -531,7 +107,96 @@
     <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
     <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <PackageReference Include="GroupControls" Version="1.9.0" />
+    <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.13" />
+    <PackageReference Include="Microsoft.IdentityModel.Abstractions" Version="6.32.3" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.32.3" />
+    <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.32.3" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.32.3" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.7.30" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
+    <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.6.11" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.2.5" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
+    <PackageReference Include="System.Composition" Version="7.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" Version="7.0.0" />
+    <PackageReference Include="System.Composition.Convention" Version="7.0.0" />
+    <PackageReference Include="System.Composition.Hosting" Version="7.0.0" />
+    <PackageReference Include="System.Composition.Runtime" Version="7.0.0" />
+    <PackageReference Include="System.Composition.TypedParts" Version="7.0.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.2" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="7.0.2" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+    <PackageReference Include="System.Security.Cryptography.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="7.0.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="OidcClient\OidcClient\AssemblyAttributes.cs" />
+    <Compile Remove="OidcClient\OidcClient\AuthorizeClient.cs" />
+    <Compile Remove="OidcClient\OidcClient\AuthorizeState.cs" />
+    <Compile Remove="OidcClient\OidcClient\Browser\BrowserOptions.cs" />
+    <Compile Remove="OidcClient\OidcClient\Browser\BrowserResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\Browser\BrowserResultType.cs" />
+    <Compile Remove="OidcClient\OidcClient\Browser\DisplayMode.cs" />
+    <Compile Remove="OidcClient\OidcClient\Browser\IBrowser.cs" />
+    <Compile Remove="OidcClient\OidcClient\CryptoHelper.cs" />
+    <Compile Remove="OidcClient\OidcClient\IIdentityTokenValidator.cs" />
+    <Compile Remove="OidcClient\OidcClient\Infrastructure\LoggingExtensions.cs" />
+    <Compile Remove="OidcClient\OidcClient\Infrastructure\LogSerializer.cs" />
+    <Compile Remove="OidcClient\OidcClient\Infrastructure\OidcClientOptionsExtensions.cs" />
+    <Compile Remove="OidcClient\OidcClient\Infrastructure\StringExtensions.cs" />
+    <Compile Remove="OidcClient\OidcClient\NoValidationIdentityTokenValidator.cs" />
+    <Compile Remove="OidcClient\OidcClient\OidcClient.cs" />
+    <Compile Remove="OidcClient\OidcClient\OidcClientOptions.cs" />
+    <Compile Remove="OidcClient\OidcClient\Policy.cs" />
+    <Compile Remove="OidcClient\OidcClient\ProviderInformation.cs" />
+    <Compile Remove="OidcClient\OidcClient\RefreshTokenDelegatingHandler.cs" />
+    <Compile Remove="OidcClient\OidcClient\Requests\AuthorizeRequest.cs" />
+    <Compile Remove="OidcClient\OidcClient\Requests\LoginRequest.cs" />
+    <Compile Remove="OidcClient\OidcClient\Requests\LogoutRequest.cs" />
+    <Compile Remove="OidcClient\OidcClient\ResponseProcessor.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\AuthorizeResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\IdentityTokenValidationResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\LoginResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\LogoutResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\RefreshTokenResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\ResponseValidationResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\Result.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\TokenResponseValidationResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\Results\UserInfoResult.cs" />
+    <Compile Remove="OidcClient\OidcClient\TokenRefreshedEventArgs.cs" />
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
       echo Statement 1: copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SINners\" /Y
@@ -551,14 +216,4 @@
         mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\"
         Exit 0</PreBuildEvent>
   </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
-  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
 </Project>

@@ -16,7 +16,7 @@
     <Version>1.2.0</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-    <Configurations>Debug;Release;Release (for Testing)</Configurations>
+    <Configurations>Debug;Release;Debuggable Release</Configurations>
     <StartupObject>ChummerHub.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
@@ -41,7 +41,7 @@
     <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (for Testing)|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debuggable Release|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
     <LangVersion>8.0</LangVersion>
     <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
