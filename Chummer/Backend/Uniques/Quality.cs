@@ -1709,7 +1709,7 @@ namespace Chummer
                                 }
                             }
 
-                            if (!objCharacter.Qualities.Any(quality => lstRequired.Contains(quality.Name)))
+                            if (!objCharacter.Qualities.Any(quality => lstRequired.Contains(quality.Name), token))
                             {
                                 reason |= QualityFailureReasons.RequiredSingle;
                             }
