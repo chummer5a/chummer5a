@@ -26,12 +26,12 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using ExternalUtils.RegularExpressions;
 using iText.Kernel.Pdf;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Win32;
@@ -1498,7 +1498,9 @@ namespace Chummer
         /// Regex that indicates whether a given string is a match for text that cannot be saved in XML. Match == true.
         /// </summary>
         [CLSCompliant(false)]
-        public static InvalidUnicodeCharsPattern InvalidUnicodeCharsExpression { get; } = new InvalidUnicodeCharsPattern();
+        public static Regex InvalidUnicodeCharsExpression { get; } = new Regex(
+            @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <summary>
         /// Clipboard.

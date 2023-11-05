@@ -34,7 +34,6 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
-using ExternalUtils.RegularExpressions.Weapons;
 using Microsoft.VisualStudio.Threading;
 using NLog;
 using IAsyncDisposable = System.IAsyncDisposable;
@@ -2454,8 +2453,10 @@ namespace Chummer.Backend.Equipment
             return strAmmo;
         }
 
-        private static readonly AmmoCapacityFirstPattern s_RgxAmmoCapacityFirst = new AmmoCapacityFirstPattern();
-        private static readonly AmmoCapacitySecondPattern s_RgxAmmoCapacitySecond = new AmmoCapacitySecondPattern();
+        private static readonly Regex s_RgxAmmoCapacityFirst = new Regex(@"^[0-9]*[0-9]*x",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Regex s_RgxAmmoCapacitySecond = new Regex(@"(?<=\))(x[0-9]*[0-9]*$)*",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <summary>
         /// The type of Ammunition loaded in the Weapon.
@@ -8984,12 +8985,12 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strOriginalName);
                 if (xmlWeaponDataNode == null)
                 {
-                    if (strOriginalName.IndexOf(':') >= 0)
+                    if (strOriginalName.Contains(':'))
                     {
                         string strName = strOriginalName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                         xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strName);
                     }
-                    if (xmlWeaponDataNode == null && strOriginalName.IndexOf(',') >= 0)
+                    if (xmlWeaponDataNode == null && strOriginalName.Contains(','))
                     {
                         string strName = strOriginalName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                         xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strName);

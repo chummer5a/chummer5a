@@ -276,11 +276,9 @@ namespace Chummer
                                         foreach (DictionaryEntry d in ex.Data)
                                         {
                                             object objKey = d.Key;
-                                            if (objKey == null)
-                                                continue;
                                             object objValue = d.Value;
                                             if (objValue != null)
-                                                et.Properties.Add(objKey.ToString(), objValue.ToString());
+                                                et.Properties.Add(objKey.ToString() ?? string.Empty, objValue.ToString());
                                         }
 
                                         et.Properties.Add("IsCrash", exa.IsTerminating.ToString());
@@ -661,7 +659,7 @@ namespace Chummer
                         // Manually dispose of the active telemetry configuration to also flush its metric managers
                         Lazy<TelemetryConfiguration> objOldConfiguration
                             = Interlocked.Exchange(ref s_objActiveTelemetryConfiguration, null);
-                        if (objOldConfiguration.IsValueCreated)
+                        if (objOldConfiguration?.IsValueCreated == true)
                             objOldConfiguration.Value.Dispose();
                     }
                 }

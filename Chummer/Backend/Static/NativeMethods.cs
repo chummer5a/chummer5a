@@ -28,7 +28,7 @@ namespace Chummer
 {
     internal static class NativeMethods
     {
-        [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+        [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern bool MiniDumpWriteDump
         (
@@ -41,7 +41,7 @@ namespace Chummer
             IntPtr CallbackParam
         );
 
-        [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+        [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern bool MiniDumpWriteDump
         (
@@ -96,15 +96,15 @@ namespace Chummer
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern bool DebugActiveProcess(IntPtr hProcess);
 
-        [DllImport("kernel32.dll", EntryPoint = "GetCurrentThreadId", CharSet = CharSet.Auto, ExactSpelling = true)]
+        [DllImport("kernel32.dll", EntryPoint = "GetCurrentThreadId", CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern uint GetCurrentThreadId();
 
-        [DllImport("kernel32.dll", EntryPoint = "GetCurrentProcess", CharSet = CharSet.Auto, ExactSpelling = true)]
+        [DllImport("kernel32.dll", EntryPoint = "GetCurrentProcess", CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern IntPtr GetCurrentProcess();
 
-        [DllImport("kernel32.dll", EntryPoint = "GetCurrentProcessId", CharSet = CharSet.Auto, ExactSpelling = true)]
+        [DllImport("kernel32.dll", EntryPoint = "GetCurrentProcessId", CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern uint GetCurrentProcessId();
 

@@ -207,7 +207,7 @@ namespace Chummer
                     }
                 }
                 string strFile = blnUseRelative ? Path.GetFullPath(_objContact.RelativeFileName) : _objContact.FileName;
-                Process.Start(strFile);
+                Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
             }
         }
 
