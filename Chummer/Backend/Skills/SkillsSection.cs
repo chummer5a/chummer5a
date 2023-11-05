@@ -409,13 +409,33 @@ namespace Chummer.Backend.Skills
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
                             token.ThrowIfCancellationRequested();
-                            if (!_dicSkillBackups.IsEmpty
+                            if (blnDeleteSkillsFromBackupIfFound)
+                            {
+                                if (!_dicSkillBackups.IsEmpty
+                                    && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId)
+                                    && _dicSkillBackups.TryRemove(guiSkillId, out Skill objSkill)
+                                    && objSkill != null)
+                                {
+                                    yield return objSkill;
+                                }
+                                else
+                                {
+                                    string strCategoryCleaned = xmlSkill["category"]?.InnerText.CleanXPath();
+                                    bool blnIsKnowledgeSkill
+                                        = string.IsNullOrEmpty(strCategoryCleaned) || xmlSkillsDocument
+                                            .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                "/chummer/categories/category[. = "
+                                                + strCategoryCleaned + "]/@type", token)
+                                            ?.Value
+                                        != "active";
+                                    yield return Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
+                                }
+                            }
+                            else if (!_dicSkillBackups.IsEmpty
                                 && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId)
                                 && _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill)
                                 && objSkill != null)
                             {
-                                if (blnDeleteSkillsFromBackupIfFound)
-                                    _dicSkillBackups.TryRemove(guiSkillId, out _);
                                 yield return objSkill;
                             }
                             else
@@ -455,13 +475,12 @@ namespace Chummer.Backend.Skills
                         token.ThrowIfCancellationRequested();
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
-                            if (!_dicSkillBackups.IsEmpty
-                                && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId))
+                            if (blnDeleteSkillsFromBackupIfFound)
                             {
-                                if (_dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
+                                if (!_dicSkillBackups.IsEmpty
+                                    && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
+                                    _dicSkillBackups.TryRemove(guiSkillId, out Skill objSkill) && objSkill != null)
                                 {
-                                    if (blnDeleteSkillsFromBackupIfFound)
-                                        _dicSkillBackups.TryRemove(guiSkillId, out _);
                                     lstReturn.Add(objSkill);
                                 }
                                 else
@@ -471,10 +490,16 @@ namespace Chummer.Backend.Skills
                                               .SelectSingleNodeAndCacheExpressionAsNavigator(
                                                   "/chummer/categories/category[. = "
                                                   + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
-                                          ?.Value
+                                              ?.Value
                                           != "active";
                                     lstReturn.Add(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
                                 }
+                            }
+                            else if (!_dicSkillBackups.IsEmpty
+                                     && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
+                                     _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
+                            {
+                                lstReturn.Add(objSkill);
                             }
                             else
                             {
@@ -483,7 +508,7 @@ namespace Chummer.Backend.Skills
                                           .SelectSingleNodeAndCacheExpressionAsNavigator(
                                               "/chummer/categories/category[. = "
                                               + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
-                                      ?.Value
+                                          ?.Value
                                       != "active";
                                 lstReturn.Add(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
                             }
