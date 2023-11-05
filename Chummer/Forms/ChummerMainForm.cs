@@ -1761,17 +1761,17 @@ namespace Chummer
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/chummer5a/chummer5a/wiki/");
+            Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/wiki/") { UseShellExecute = true });
         }
 
         private void mnuChummerDiscord_Click(object sender, EventArgs e)
         {
-            Process.Start("https://discord.gg/mJB7st9");
+            Process.Start(new ProcessStartInfo("https://discord.gg/mJB7st9") { UseShellExecute = true });
         }
 
         private void mnuHelpDumpshock_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/chummer5a/chummer5a/issues/");
+            Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/issues/") { UseShellExecute = true });
         }
 
         public PrintMultipleCharacters PrintMultipleCharactersForm { get; private set; }
@@ -2597,7 +2597,7 @@ namespace Chummer
         {
             string strTranslator = Path.Combine(Utils.GetStartupPath, "Translator.exe");
             if (File.Exists(strTranslator))
-                Process.Start(strTranslator);
+                Process.Start(new ProcessStartInfo(strTranslator) { UseShellExecute = true });
         }
 
         private async void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
@@ -4111,7 +4111,7 @@ namespace Chummer
                         _objGenericToken.ThrowIfCancellationRequested();
                         if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
                         {
-                            string strParam = Marshal.PtrToStringUni(objReceivedData.lpData);
+                            string strParam = Marshal.PtrToStringUni(objReceivedData.lpData) ?? string.Empty;
                             string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
 
                             _objGenericToken.ThrowIfCancellationRequested();

@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using ExternalUtils.RegularExpressions;
 
 namespace Chummer
 {
@@ -1397,7 +1396,8 @@ namespace Chummer
                     }
                 };
 
-        private static readonly ExtraFileSpecifierPattern s_RgxExtraFileSpecifierExpression = new ExtraFileSpecifierPattern();
+        private static readonly Regex s_RgxExtraFileSpecifierExpression = new Regex(@"^(\[([a-z])+\.xml\])",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         public static string MAGAdeptString(string strLanguage = "", bool blnLong = false,
                                             CancellationToken token = default)

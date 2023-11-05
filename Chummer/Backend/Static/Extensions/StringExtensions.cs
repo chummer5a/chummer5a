@@ -29,7 +29,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ExternalUtils.RegularExpressions;
 using RtfPipe;
 
 namespace Chummer
@@ -430,7 +429,7 @@ namespace Chummer
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
 
-            return astrNeedles.Any(x => x.Length <= intHaystackLength && strHaystack.IndexOf(x, eComparison) >= 0);
+            return astrNeedles.Any(x => x.Length <= intHaystackLength && strHaystack.Contains(x, eComparison));
         }
 
         /// <summary>
@@ -451,7 +450,7 @@ namespace Chummer
             return astrNeedles != null &&
                    // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
                    // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-                   astrNeedles.Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+                   astrNeedles.Any(strNeedle => strHaystack.Contains(strNeedle, eComparison));
         }
 
         /// <summary>
@@ -490,7 +489,7 @@ namespace Chummer
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
 
-            return astrNeedles.AsParallel().Any(x => x.Length <= intHaystackLength && strHaystack.IndexOf(x, eComparison) >= 0);
+            return astrNeedles.AsParallel().Any(x => x.Length <= intHaystackLength && strHaystack.Contains(x, eComparison));
         }
 
         /// <summary>
@@ -511,7 +510,7 @@ namespace Chummer
             return astrNeedles != null &&
                    // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
                    // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-                   astrNeedles.AsParallel().Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+                   astrNeedles.AsParallel().Any(strNeedle => strHaystack.Contains(strNeedle, eComparison));
         }
 
         /// <summary>
@@ -1824,11 +1823,14 @@ namespace Chummer
                 : GlobalSettings.InvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
         }
 
-        private static readonly HtmlTagsPattern s_RgxHtmlTagExpression = new HtmlTagsPattern();
+        private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
-        private static readonly LineEndingsPattern s_RgxLineEndingsExpression = new LineEndingsPattern();
+        private static readonly Regex s_RgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
-        private static readonly EscapedLineEndingsPattern s_RgxEscapedLineEndingsExpression = new EscapedLineEndingsPattern();
+        private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
         private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox()));
@@ -2005,7 +2007,9 @@ namespace Chummer
             }
         }
 
-        private static readonly RtfStripperPattern s_RtfStripperRegex = new RtfStripperPattern();
+        private static readonly Regex s_RtfStripperRegex = new Regex(
+            @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
         {

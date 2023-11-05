@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Chummer.Backend.Equipment;
-using ExternalUtils.RegularExpressions.ParameterAttribute;
 
 namespace Chummer
 {
@@ -38,7 +37,8 @@ namespace Chummer
     {
         //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
-        private static readonly FixedValuesPattern s_RgxFixedExtract = new FixedValuesPattern();
+        private static readonly Regex s_RgxFixedExtract = new Regex(@"FixedValues\(([^)]*)\)",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         private readonly Gear _objGear;
         private readonly string _strAttribute;
@@ -75,7 +75,8 @@ namespace Chummer
             }
         }
 
-        private static readonly SquareBracketsPattern s_RgxSquareBrackets = new SquareBracketsPattern();
+        private static readonly Regex s_RgxSquareBrackets = new Regex(@"\[([^\]]*)\]",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         public Gear Gear => _objGear;
 
