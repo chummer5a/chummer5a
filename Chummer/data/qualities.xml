@@ -11805,6 +11805,7 @@
       <name>Prototype Transhuman</name>
       <karma>10</karma>
       <category>Positive</category>
+      <chargenonly />
       <bonus>
         <prototypetranshuman>1</prototypetranshuman>
         <selectquality>
