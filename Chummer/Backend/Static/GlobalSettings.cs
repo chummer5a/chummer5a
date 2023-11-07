@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -309,6 +310,7 @@ namespace Chummer
         /// <summary>
         /// Load a Bool Option from the Registry.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static bool LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
             RegistryKey objKey = string.IsNullOrWhiteSpace(strSubKey)
@@ -340,6 +342,7 @@ namespace Chummer
         /// <summary>
         /// Load an Int Option from the Registry.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static bool LoadInt32FromRegistry(ref int intStorage, string strIntName, string strSubKey = "",
                                                  bool blnDeleteAfterFetch = false)
         {
@@ -372,6 +375,7 @@ namespace Chummer
         /// <summary>
         /// Load a Decimal Option from the Registry.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static bool LoadDecFromRegistry(ref decimal decStorage, string strDecName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
             RegistryKey objKey = string.IsNullOrWhiteSpace(strSubKey)
@@ -403,6 +407,7 @@ namespace Chummer
         /// <summary>
         /// Load an String Option from the Registry.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static bool LoadStringFromRegistry(ref string strStorage, string strStringName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
             RegistryKey objKey = string.IsNullOrWhiteSpace(strSubKey)
@@ -430,6 +435,7 @@ namespace Chummer
             return false;
         }
 
+        [SupportedOSPlatform("windows")]
         static GlobalSettings()
         {
             if (Utils.IsDesignerMode)
@@ -870,6 +876,7 @@ namespace Chummer
 
         #region Methods
 
+        [SupportedOSPlatform("windows")]
         public static async ValueTask SaveOptionsToRegistry(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1313,6 +1320,7 @@ namespace Chummer
         /// <summary>
         /// Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view. Defaults to 11
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static int EmulatedBrowserVersion
         {
             get => _intEmulatedBrowserVersion;
@@ -1568,6 +1576,7 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static IReadOnlyDictionary<string, SourcebookInfo> SourcebookInfos
         {
             get
@@ -1586,6 +1595,7 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static async Task<IReadOnlyDictionary<string, SourcebookInfo>> GetSourcebookInfosAsync(CancellationToken token = default)
         {
             // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
@@ -1640,6 +1650,7 @@ namespace Chummer
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private static void LoadSourcebookInfos(CancellationToken token = default)
         {
             if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) != 0)
@@ -1708,6 +1719,7 @@ namespace Chummer
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private static async ValueTask LoadSourcebookInfosAsync(CancellationToken token = default)
         {
             if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) != 0)
@@ -1792,6 +1804,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not to show a warning that this Nightly build is special
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static bool ShowCharacterCustomDataWarning
         {
             get => _blnShowCharacterCustomDataWarning;
@@ -1864,6 +1877,7 @@ namespace Chummer
         /// <summary>
         /// Last folder from which a mugshot was added
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static string RecentImageFolder
         {
             get => _strImageFolder;
@@ -1881,6 +1895,7 @@ namespace Chummer
 
         #region MRU Methods
 
+        [SupportedOSPlatform("windows")]
         private static void LstFavoritedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
@@ -1996,6 +2011,7 @@ namespace Chummer
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private static void LstMostRecentlyUsedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try

@@ -435,7 +435,7 @@ namespace ChummerHub.Client.UI
 
         public async Task<string> GetUserEmailAsync(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, true, token))
+            await using (await CursorWait.NewAsync(this, true, token))
             {
                 try
                 {
@@ -675,7 +675,7 @@ namespace ChummerHub.Client.UI
 
             if (response.IsSuccessStatusCode)
             {
-                JsonDocument json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                JsonDocument json = JsonDocument.Parse(await response.Content.ReadAsStringAsync(token));
                 Console.WriteLine("\n\n");
                 Console.WriteLine(json.RootElement);
             }
@@ -715,7 +715,7 @@ namespace ChummerHub.Client.UI
                 {
                     frmWebBrowser = await Chummer.Utils.RunOnMainThreadAsync(() => new frmWebBrowser(), token).ConfigureAwait(false);
                 }
-                await frmWebBrowser.DoThreadSafeAsync(x => x.ShowDialogSafe(Program.MainForm), token: token);
+                await frmWebBrowser.DoThreadSafeAsync(x => x.ShowDialogSafe(Program.MainForm, token), token: token);
                 await GetRolesStatusAsync(this, token);
                 await UpdateDisplayAsync(token);
                 ResumeLayout(false);
@@ -763,7 +763,7 @@ namespace ChummerHub.Client.UI
 
         private async Task DoRolesStatusAsync(Control sender, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(sender, true, token))
+            await using (await CursorWait.NewAsync(sender, true, token))
             {
                 SinnersClient client = StaticUtils.GetClient();
                 if (client != null)
@@ -934,7 +934,7 @@ namespace ChummerHub.Client.UI
         private async Task BackupTask(FolderBrowserDialog folderBrowserDialog1, CancellationToken token = default)
         {
             string folderName = folderBrowserDialog1.SelectedPath;
-            using (await CursorWait.NewAsync(this, true, token))
+            await using (await CursorWait.NewAsync(this, true, token))
             {
                 try
                 {
@@ -995,7 +995,7 @@ namespace ChummerHub.Client.UI
             {
                 DirectoryInfo d = new DirectoryInfo(folderName);//Assuming Test is your Folder
                 FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
-                using (await CursorWait.NewAsync(this, true, token))
+                await using (await CursorWait.NewAsync(this, true, token))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)

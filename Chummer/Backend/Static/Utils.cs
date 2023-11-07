@@ -45,6 +45,7 @@ using NLog;
 using Microsoft.IO;
 using Chummer.Forms;
 using System.Xml.XPath;
+using System.Runtime.Versioning;
 
 namespace Chummer
 {
@@ -83,6 +84,7 @@ namespace Chummer
 
         private static JoinableTaskContext MyJoinableTaskContext { get; set; }
 
+        [SupportedOSPlatform("windows")]
         public static JoinableTaskContext CreateSynchronizationContext()
         {
             if (Program.IsMainThread)
@@ -170,12 +172,14 @@ namespace Chummer
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicCachedIconBitmaps = new ConcurrentDictionary<Icon, Bitmap>();
 
         /// <summary>
         /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
         /// Mainly intended for SystemIcons.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Bitmap GetCachedIconBitmap(Icon objIcon)
         {
             return s_dicCachedIconBitmaps.GetOrAdd(objIcon, x => x.ToBitmap());
@@ -185,18 +189,21 @@ namespace Chummer
         /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
         /// Mainly intended for SystemIcons.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return s_dicCachedIconBitmaps.GetOrAddAsync(objIcon, x => Task.Run(x.ToBitmap, token), token);
         }
 
+        [SupportedOSPlatform("windows")]
         private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new ConcurrentDictionary<Icon, Bitmap>();
 
         /// <summary>
         /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents.
         /// Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Bitmap GetStockIconBitmapsForSystemIcon(Icon objIcon)
         {
             return s_dicStockIconBitmapsForSystemIcons.GetOrAdd(objIcon, x =>
@@ -244,6 +251,7 @@ namespace Chummer
         /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents.
         /// Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -343,18 +351,21 @@ namespace Chummer
 
         public static ConcurrentDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
 
+        [SupportedOSPlatform("windows")]
         public static void TryCacheExpression(string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
         }
 
+        [SupportedOSPlatform("windows")]
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
             = new Lazy<JoinableTaskFactory>(() => IsRunningInVisualStudio
                                                 ? new JoinableTaskFactory(new JoinableTaskContext())
                                                 : new JoinableTaskFactory(
                                                     MyJoinableTaskContext ?? CreateSynchronizationContext()));
 
+        [SupportedOSPlatform("windows")]
         public static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
 
         private static readonly Lazy<string[]> s_astrBasicDataFileNames = new Lazy<string[]>(() =>
@@ -467,7 +478,7 @@ namespace Chummer
         /// Can the current user context write to a given file path?
         /// </summary>
         /// <param name="strPath">File path to evaluate.</param>
-        /// <returns></returns>
+        [SupportedOSPlatform("windows")]
         public static bool CanWriteToPath(string strPath)
         {
             if (string.IsNullOrEmpty(strPath))
@@ -542,6 +553,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        [SupportedOSPlatform("windows")]
         public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
             return SafelyRunSynchronously(() => SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token), token);
@@ -555,6 +567,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        [SupportedOSPlatform("windows")]
         public static Task<bool> SafeDeleteDirectoryAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
             return SafeDeleteDirectoryCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout, token);
@@ -571,6 +584,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        [SupportedOSPlatform("windows")]
         private static async Task<bool> SafeDeleteDirectoryCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -682,6 +696,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        [SupportedOSPlatform("windows")]
         public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
             return SafelyRunSynchronously(() => SafeClearDirectoryCoreAsync(
@@ -699,6 +714,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        [SupportedOSPlatform("windows")]
         public static Task<bool> SafeClearDirectoryAsync(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
             return SafeClearDirectoryCoreAsync(false, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
@@ -718,6 +734,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        [SupportedOSPlatform("windows")]
         private static async Task<bool> SafeClearDirectoryCoreAsync(bool blnSync, string strPath, string strSearchPattern, bool blnRecursive, bool blnShowUnauthorizedAccess, int intTimeout, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -904,7 +921,7 @@ namespace Chummer
 #pragma warning disable VSTHRD001
             MySynchronizationContext.Post(x =>
             {
-                (string strMyFileName, string strMyArguments) = (Tuple<string, string>) x;
+                (string strMyFileName, string strMyArguments) = (Tuple<string, string>) x ?? new Tuple<string, string>(string.Empty, string.Empty);
                 ProcessStartInfo objStartInfo = new ProcessStartInfo
                 {
                     FileName = strMyFileName,
@@ -926,6 +943,7 @@ namespace Chummer
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
         [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
+        [SupportedOSPlatform("windows")]
         public static Task StartStaTask(Action func)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -951,6 +969,7 @@ namespace Chummer
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
         [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
+        [SupportedOSPlatform("windows")]
         public static Task<T> StartStaTask<T>(Func<T> func)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
@@ -974,6 +993,7 @@ namespace Chummer
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
         [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
+        [SupportedOSPlatform("windows")]
         public static Task StartStaTask(Task func)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -1000,6 +1020,7 @@ namespace Chummer
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
         [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
+        [SupportedOSPlatform("windows")]
         public static Task<T> StartStaTask<T>(Task<T> func)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
@@ -1024,10 +1045,11 @@ namespace Chummer
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
         [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
+        [SupportedOSPlatform("windows")]
         public static Task StartStaTask(Action func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x)?.TrySetCanceled(token), tcs);
             Thread thread = new Thread(() =>
             {
                 try
@@ -1054,10 +1076,11 @@ namespace Chummer
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
         [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
+        [SupportedOSPlatform("windows")]
         public static Task<T> StartStaTask<T>(Func<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x)?.TrySetCanceled(token), tcs);
             Thread thread = new Thread(() =>
             {
                 try
@@ -1082,10 +1105,11 @@ namespace Chummer
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
         [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
+        [SupportedOSPlatform("windows")]
         public static Task StartStaTask(Task func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x)?.TrySetCanceled(token), tcs);
             Thread thread = new Thread(RunFunction);
             async void RunFunction()
             {
@@ -1113,10 +1137,11 @@ namespace Chummer
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
         [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
+        [SupportedOSPlatform("windows")]
         public static Task<T> StartStaTask<T>(Task<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x)?.TrySetCanceled(token), tcs);
             Thread thread = new Thread(RunFunction);
             async void RunFunction()
             {
@@ -1141,6 +1166,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None)
         {
             if (Program.IsMainThread)
@@ -1158,6 +1184,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static T RunOnMainThread<T>(Func<T> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None)
         {
             return Program.IsMainThread
@@ -1172,6 +1199,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static void RunOnMainThread(Action func, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1191,6 +1219,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static T RunOnMainThread<T>(Func<T> func, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1207,6 +1236,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static void RunOnMainThread(Func<Task> func, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1216,6 +1246,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static T RunOnMainThread<T>(Func<Task<T>> func, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1225,6 +1256,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1244,6 +1276,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static T RunOnMainThread<T>(Func<T> func, JoinableTaskCreationOptions eOptions, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1260,6 +1293,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static void RunOnMainThread(Func<Task> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1269,6 +1303,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static T RunOnMainThread<T>(Func<Task<T>> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1278,6 +1313,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Task RunOnMainThreadAsync(Action func)
         {
             return JoinableTaskFactory.RunAsync(async () =>
@@ -1290,6 +1326,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Task<T> RunOnMainThreadAsync<T>(Func<T> func)
         {
             return JoinableTaskFactory.RunAsync(async () =>
@@ -1302,6 +1339,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Task RunOnMainThreadAsync(Action func, CancellationToken token)
         {
             return token.IsCancellationRequested
@@ -1317,6 +1355,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Task<T> RunOnMainThreadAsync<T>(Func<T> func, CancellationToken token)
         {
             return token.IsCancellationRequested
@@ -1332,6 +1371,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Task RunOnMainThreadAsync(Func<Task> func, CancellationToken token = default)
         {
             return token.IsCancellationRequested ? Task.FromCanceled(token) : JoinableTaskFactory.RunAsync(func).Task;
@@ -1340,6 +1380,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public static Task<T> RunOnMainThreadAsync<T>(Func<Task<T>> func, CancellationToken token = default)
         {
             return token.IsCancellationRequested
@@ -1451,7 +1492,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, bool blnForceDoEvents = false)
         {
-            if (Program.IsMainThread && EverDoEvents)
+            if (Program.IsMainThread && EverDoEvents && s_objThreadStopwatch.Value != null)
             {
                 s_objThreadStopwatch.Value.Restart();
                 try
@@ -1498,7 +1539,7 @@ namespace Chummer
         public static void SafeSleep(int intDurationMilliseconds, CancellationToken token, bool blnForceDoEvents = false)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && EverDoEvents)
+            if (Program.IsMainThread && EverDoEvents && s_objThreadStopwatch.Value != null)
             {
                 s_objThreadStopwatch.Value.Restart();
                 try
@@ -1581,6 +1622,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void SafelyRunSynchronously(Func<Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1597,6 +1639,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T SafelyRunSynchronously<T>(Func<Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1612,6 +1655,7 @@ namespace Chummer
         /// <param name="afuncToRun">Code to run.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void SafelyRunSynchronously(IEnumerable<Func<Task>> afuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1640,6 +1684,7 @@ namespace Chummer
         /// <param name="afuncToRun">Code to run.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T[] SafelyRunSynchronously<T>(IReadOnlyCollection<Func<Task<T>>> afuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1671,6 +1716,7 @@ namespace Chummer
         /// </summary>
         /// <param name="afuncToRun">Code to run.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void SafelyRunSynchronously(params Func<Task>[] afuncToRun)
         {
             SafelyRunSynchronously(afuncToRun, default);
@@ -1682,6 +1728,7 @@ namespace Chummer
         /// </summary>
         /// <param name="afuncToRun">Code to run.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T[] SafelyRunSynchronously<T>(params Func<Task<T>>[] afuncToRun)
         {
             return SafelyRunSynchronously(afuncToRun, default);
@@ -1694,6 +1741,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void RunWithoutThreadLock(Action funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1716,6 +1764,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void RunWithoutThreadLock(Action<CancellationToken> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1737,6 +1786,7 @@ namespace Chummer
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void RunWithoutThreadLock(params Action[] afuncToRun)
         {
             RunWithoutThreadLock(afuncToRun, default);
@@ -1749,6 +1799,7 @@ namespace Chummer
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void RunWithoutThreadLock(Action[] afuncToRun, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1794,6 +1845,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T RunWithoutThreadLock<T>(Func<T> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1816,6 +1868,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T RunWithoutThreadLock<T>(Func<CancellationToken, T> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1837,6 +1890,7 @@ namespace Chummer
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T[] RunWithoutThreadLock<T>(params Func<T>[] afuncToRun)
         {
             return RunWithoutThreadLock(afuncToRun, default);
@@ -1849,6 +1903,7 @@ namespace Chummer
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<T>> afuncToRun, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1904,6 +1959,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T RunWithoutThreadLock<T>(Func<Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1930,6 +1986,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T RunWithoutThreadLock<T>(Func<CancellationToken, Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1955,6 +2012,7 @@ namespace Chummer
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T[] RunWithoutThreadLock<T>(params Func<Task<T>>[] afuncToRun)
         {
             return RunWithoutThreadLock(Array.AsReadOnly(afuncToRun), default);
@@ -1967,6 +2025,7 @@ namespace Chummer
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<Task<T>>> afuncToRun, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -2038,6 +2097,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void RunWithoutThreadLock(Func<Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2069,6 +2129,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void RunWithoutThreadLock(Func<CancellationToken, Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2099,6 +2160,7 @@ namespace Chummer
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void RunWithoutThreadLock(params Func<Task>[] afuncToRun)
         {
             RunWithoutThreadLock(Array.AsReadOnly(afuncToRun), default);
@@ -2111,6 +2173,7 @@ namespace Chummer
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SupportedOSPlatform("windows")]
         public static void RunWithoutThreadLock(IEnumerable<Func<Task>> afuncToRun, CancellationToken token)
         {
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
@@ -2291,6 +2354,7 @@ namespace Chummer
             return string.IsNullOrEmpty(strReturn) ? "Unknown" : strReturn;
         }
 
+        [SupportedOSPlatform("windows")]
         public static void SetupWebBrowserRegistryKeys()
         {
             int intInternetExplorerVersionKey = GlobalSettings.EmulatedBrowserVersion * 1000;

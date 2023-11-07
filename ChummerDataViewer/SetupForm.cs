@@ -59,7 +59,7 @@ namespace ChummerDataViewer
                 return;
             }
 
-            if (txtKey.Text.Any(x => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/".IndexOf(x) == -1))
+            if (txtKey.Text.Any(x => !"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/".Contains(x)))
             {
                 lblStatus.Text = "Invalid Character in Access Key";
                 return;

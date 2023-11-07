@@ -316,7 +316,7 @@ namespace ChummerHub.Client.Backend
                 Log.Info("Connected to " + Settings.Default.SINnerUrl + ".");
 
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 Uri baseUri = new Uri(Settings.Default.SINnerUrl);
                 //ServiceClientCredentials mycredentials = null;
                 //try
@@ -378,7 +378,7 @@ namespace ChummerHub.Client.Backend
                     }))
                     {
                         HttpResponseMessage result = await client.PostAsync(uri, content, token);
-                        string resultContent = await result.Content.ReadAsStringAsync();
+                        string resultContent = await result.Content.ReadAsStringAsync(token);
                         Log.Trace("Result from WebCall " + callback + ": " + resultContent);
                     }
                 }
@@ -623,7 +623,7 @@ namespace ChummerHub.Client.Backend
                         TopMost = true
                     };
                     if (rb.ErrorText.Length > 600)
-                        rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
+                        rb.ErrorText = string.Concat(rb.ErrorText.AsSpan(0, 598), "...");
                     frmSIN.SINnerResponseUI.Result = rb;
                     Log.Trace("Showing Dialog for frmSINnerResponse()");
                     frmSIN.Show();
@@ -889,11 +889,10 @@ namespace ChummerHub.Client.Backend
                         group = ge.MySINnerGroupCreate.MyGroup;
                         try
                         {
-                            using (await CursorWait.NewAsync(Program.MainForm, token: token))
+                            await using (await CursorWait.NewAsync(Program.MainForm, token: token))
                             {
                                 SINnerGroup a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup, token);
                                 return a;
-
                             }
                         }
                         catch (Exception exception)
@@ -1048,7 +1047,7 @@ namespace ChummerHub.Client.Backend
 
         private static async Task OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token).ConfigureAwait(false))
+            await using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token).ConfigureAwait(false))
             {
                 if (string.IsNullOrEmpty(sinner.FilePath))
                 {
@@ -1135,7 +1134,7 @@ namespace ChummerHub.Client.Backend
 
         private static async ValueTask SwitchToCharacter(CharacterCache objCache, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
+            await using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
             {
                 Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
                                              ?? await Program.LoadCharacterAsync(objCache.FilePath, token: token);
@@ -1255,7 +1254,7 @@ namespace ChummerHub.Client.Backend
                         ? ce.PrepareModel(token)
                         : await ce.PrepareModelAsync(token);
 
-                using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
+                await using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
                 {
                     try
                     {
@@ -1283,7 +1282,8 @@ namespace ChummerHub.Client.Backend
                                 {
                                     Program.ShowMessageBox(msg);
                                 }
-                                using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
+
+                                await using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
                                 {
                                     await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance, token);
                                 }
@@ -1406,11 +1406,9 @@ namespace ChummerHub.Client.Backend
                                 DateTime origDateTime = new DateTime(sinner.UploadDateTime.Value.Ticks, DateTimeKind.Unspecified);
                                 File.SetCreationTime(file, origDateTime);
                             }
-                            if (sinner.LastChange != null)
-                            {
-                                DateTime origDateTime = new DateTime(sinner.LastChange.Ticks, DateTimeKind.Unspecified);
-                                File.SetLastWriteTime(file, origDateTime);
-                            }
+
+                            DateTime origDateTime2 = new DateTime(sinner.LastChange.Ticks, DateTimeKind.Unspecified);
+                            File.SetLastWriteTime(file, origDateTime2);
                             loadFilePath = file;
                             if (objCache != null)
                                 objCache.FilePath = loadFilePath;

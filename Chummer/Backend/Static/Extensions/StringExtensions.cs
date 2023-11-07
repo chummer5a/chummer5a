@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -1648,6 +1649,7 @@ namespace Chummer
         /// <param name="strInput">String to process</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
+        [SupportedOSPlatform("windows")]
         public static string PlainTextToRtf(this string strInput, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1682,6 +1684,7 @@ namespace Chummer
         /// <param name="strInput">String to process</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
+        [SupportedOSPlatform("windows")]
         public static Task<string> PlainTextToRtfAsync(this string strInput, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1833,6 +1836,8 @@ namespace Chummer
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
+
+        [SupportedOSPlatform("windows")]
         private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox()));
 
         /// <summary>

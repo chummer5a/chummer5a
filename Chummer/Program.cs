@@ -1056,6 +1056,8 @@ namespace Chummer
 
         private static void OpenCharactersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.OldItems == null)
+                return;
             foreach (Character objCharacter in e.OldItems)
             {
                 objCharacter.Dispose();
@@ -1068,6 +1070,8 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Remove:
                     {
+                        if (e.OldItems == null)
+                            return;
                         foreach (Character objCharacter in e.OldItems)
                         {
                             objCharacter.Dispose();
@@ -1076,6 +1080,10 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
+                        if (e.OldItems == null)
+                            return;
+                        if (e.NewItems == null)
+                            return;
                         foreach (Character objCharacter in e.OldItems)
                         {
                             if (!e.NewItems.Contains(objCharacter))

@@ -26,7 +26,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -177,19 +179,24 @@ namespace Chummer
                 return;
             try
             {
+                if (e.OldItems == null)
+                    return;
                 foreach (ExportCharacter objOldForm in e.OldItems)
                 {
                     foreach (Character objCharacter in objOldForm.CharacterObjects)
                     {
                         if (objCharacter == null)
                             continue;
-                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken)
+                                .ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
+                                    token: _objGenericToken).ConfigureAwait(false)
                                 && Program.MainForm.OpenFormsWithCharacters.All(
                                     x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken)
+                                    .ConfigureAwait(false);
                         }
                         else
                             await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -209,6 +216,8 @@ namespace Chummer
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    if (e.NewItems == null)
+                        return;
                     foreach (ExportCharacter objNewForm in e.NewItems)
                     {
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
@@ -233,6 +242,8 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     if (Utils.IsUnitTest)
+                        return;
+                    if (e.OldItems == null)
                         return;
                     try
                     {
@@ -261,6 +272,10 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
+                    if (e.OldItems == null)
+                        return;
+                    if (e.NewItems == null)
+                        return;
                     if (!Utils.IsUnitTest)
                     {
                         try
@@ -324,6 +339,8 @@ namespace Chummer
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
+            if (e.OldItems == null)
+                return;
             try
             {
                 foreach (CharacterSheetViewer objOldForm in e.OldItems)
@@ -358,6 +375,8 @@ namespace Chummer
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    if (e.NewItems == null)
+                        return;
                     foreach (CharacterSheetViewer objNewForm in e.NewItems)
                     {
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
@@ -383,6 +402,8 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     if (Utils.IsUnitTest)
+                        return;
+                    if (e.OldItems == null)
                         return;
                     try
                     {
@@ -411,6 +432,10 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
+                    if (e.OldItems == null)
+                        return;
+                    if (e.NewItems == null)
+                        return;
                     if (!Utils.IsUnitTest)
                     {
                         foreach (CharacterSheetViewer objOldForm in e.OldItems)
@@ -470,6 +495,8 @@ namespace Chummer
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
+            if (e.OldItems == null)
+                return;
             Interlocked.Increment(ref _intSkipReopenUntilAllClear);
             try
             {
@@ -518,6 +545,8 @@ namespace Chummer
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    if (e.NewItems == null)
+                        return;
                     foreach (CharacterShared objNewForm in e.NewItems)
                     {
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
@@ -542,6 +571,8 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     if (Utils.IsUnitTest)
+                        return;
+                    if (e.OldItems == null)
                         return;
                     try
                     {
@@ -571,6 +602,10 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
+                    if (e.OldItems == null)
+                        return;
+                    if (e.NewItems == null)
+                        return;
                     if (!Utils.IsUnitTest)
                     {
                         try
@@ -634,6 +669,7 @@ namespace Chummer
 
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
+        [SupportedOSPlatform("windows")]
         private async void ChummerMainForm_Load(object sender, EventArgs e)
         {
             try
@@ -1075,15 +1111,17 @@ namespace Chummer
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
-        private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
+                        if (e.NewItems == null)
+                            return;
+                        foreach (Character objCharacter in e.NewItems)
                         {
                             using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
                                 objCharacter.PropertyChanged += UpdateCharacterTabTitle;
@@ -1093,7 +1131,9 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                        if (e.OldItems == null)
+                            return;
+                        foreach (Character objCharacter in e.OldItems)
                         {
                             if (objCharacter?.IsDisposed == false)
                             {
@@ -1113,7 +1153,9 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Replace:
                     {
-                        foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                        if (e.OldItems == null)
+                            return;
+                        foreach (Character objCharacter in e.OldItems)
                         {
                             if (objCharacter?.IsDisposed == false)
                             {
@@ -1129,7 +1171,9 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
+                        if (e.NewItems == null)
+                            return;
+                        foreach (Character objCharacter in e.NewItems)
                         {
                             using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
                                 objCharacter.PropertyChanged += UpdateCharacterTabTitle;
@@ -1245,7 +1289,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
 
                         // Get the stream containing content returned by the server.
-                        using (Stream dataStream = response.GetResponseStream())
+                        await using (Stream dataStream = response.GetResponseStream())
                         {
                             if (dataStream == null)
                             {
@@ -1320,6 +1364,7 @@ namespace Chummer
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private void StartAutoUpdateChecker(CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
@@ -2545,6 +2590,8 @@ namespace Chummer
 
         private async void ChummerMainForm_DragDrop(object sender, DragEventArgs e)
         {
+            if (e.Data == null)
+                return;
             try
             {
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
@@ -2590,7 +2637,7 @@ namespace Chummer
         private void ChummerMainForm_DragEnter(object sender, DragEventArgs e)
         {
             // Only use a drop effect if a file is being dragged into the window.
-            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
+            e.Effect = e.Data?.GetDataPresent(DataFormats.FileDrop) == true ? DragDropEffects.All : DragDropEffects.None;
         }
 
         private void mnuToolsTranslator_Click(object sender, EventArgs e)
@@ -3223,7 +3270,7 @@ namespace Chummer
                                 await this.DoThreadSafeAsync(y =>
                                 {
                                     CharacterShared frmNewCharacter = objCharacter.Created
-                                        ? (CharacterShared) new CharacterCareer(objCharacter)
+                                        ? new CharacterCareer(objCharacter)
                                         : new CharacterCreate(objCharacter);
                                     frmNewCharacter.MdiParent = y;
                                     bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
@@ -4105,117 +4152,125 @@ namespace Chummer
                     using (CursorWait.New(this, true))
                     {
                         // Extract the file name
-                        NativeMethods.CopyDataStruct objReceivedData
-                            = (NativeMethods.CopyDataStruct) Marshal.PtrToStructure(
-                                m.LParam, typeof(NativeMethods.CopyDataStruct));
-                        _objGenericToken.ThrowIfCancellationRequested();
-                        if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
+                        object objData = Marshal.PtrToStructure(
+                            m.LParam, typeof(NativeMethods.CopyDataStruct));
+                        if (objData != null)
                         {
-                            string strParam = Marshal.PtrToStringUni(objReceivedData.lpData) ?? string.Empty;
-                            string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
-
+                            NativeMethods.CopyDataStruct objReceivedData
+                                = (NativeMethods.CopyDataStruct)objData;
                             _objGenericToken.ThrowIfCancellationRequested();
-                            ProcessCommandLineArguments(strArgs, out bool blnShowTest,
-                                                        out HashSet<string> setFilesToLoad);
-                            try
+                            if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
                             {
+                                string strParam = Marshal.PtrToStringUni(objReceivedData.lpData) ?? string.Empty;
+                                string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
+
                                 _objGenericToken.ThrowIfCancellationRequested();
-                                if (Directory.Exists(Utils.GetAutosavesFolderPath))
+                                ProcessCommandLineArguments(strArgs, out bool blnShowTest,
+                                    out HashSet<string> setFilesToLoad);
+                                try
                                 {
-                                    // Always process newest autosave if all MRUs are empty
-                                    bool blnAnyAutosaveInMru = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                               GlobalSettings.FavoriteCharacters.Count == 0;
-                                    FileInfo objMostRecentAutosave = null;
-                                    foreach (string strAutosave in Directory.EnumerateFiles(
-                                                 Utils.GetAutosavesFolderPath,
-                                                 "*.chum5", SearchOption.AllDirectories).Concat(
-                                                 Directory.EnumerateFiles(
-                                                     Utils.GetAutosavesFolderPath,
-                                                     "*.chum5lz", SearchOption.AllDirectories)))
+                                    _objGenericToken.ThrowIfCancellationRequested();
+                                    if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                     {
-                                        _objGenericToken.ThrowIfCancellationRequested();
-                                        FileInfo objAutosave;
-                                        try
+                                        // Always process newest autosave if all MRUs are empty
+                                        bool blnAnyAutosaveInMru =
+                                            GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
+                                            GlobalSettings.FavoriteCharacters.Count == 0;
+                                        FileInfo objMostRecentAutosave = null;
+                                        foreach (string strAutosave in Directory.EnumerateFiles(
+                                                     Utils.GetAutosavesFolderPath,
+                                                     "*.chum5", SearchOption.AllDirectories).Concat(
+                                                     Directory.EnumerateFiles(
+                                                         Utils.GetAutosavesFolderPath,
+                                                         "*.chum5lz", SearchOption.AllDirectories)))
                                         {
-                                            objAutosave = new FileInfo(strAutosave);
-                                        }
-                                        catch (SecurityException)
-                                        {
-                                            continue;
-                                        }
-                                        catch (UnauthorizedAccessException)
-                                        {
-                                            continue;
+                                            _objGenericToken.ThrowIfCancellationRequested();
+                                            FileInfo objAutosave;
+                                            try
+                                            {
+                                                objAutosave = new FileInfo(strAutosave);
+                                            }
+                                            catch (SecurityException)
+                                            {
+                                                continue;
+                                            }
+                                            catch (UnauthorizedAccessException)
+                                            {
+                                                continue;
+                                            }
+
+                                            _objGenericToken.ThrowIfCancellationRequested();
+                                            if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
+                                                objMostRecentAutosave.LastWriteTimeUtc)
+                                                objMostRecentAutosave = objAutosave;
+                                            string strAutosaveName = Path.GetFileNameWithoutExtension(objAutosave.Name);
+                                            if (GlobalSettings.MostRecentlyUsedCharacters.Any(
+                                                    x => Path.GetFileNameWithoutExtension(x) == strAutosaveName,
+                                                    _objGenericToken) ||
+                                                GlobalSettings.FavoriteCharacters.Any(
+                                                    x => Path.GetFileNameWithoutExtension(x) == strAutosaveName,
+                                                    _objGenericToken))
+                                                blnAnyAutosaveInMru = true;
                                         }
 
                                         _objGenericToken.ThrowIfCancellationRequested();
-                                        if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
-                                            objMostRecentAutosave.LastWriteTimeUtc)
-                                            objMostRecentAutosave = objAutosave;
-                                        string strAutosaveName = Path.GetFileNameWithoutExtension(objAutosave.Name);
-                                        if (GlobalSettings.MostRecentlyUsedCharacters.Any(
-                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken) ||
-                                            GlobalSettings.FavoriteCharacters.Any(
-                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken))
-                                            blnAnyAutosaveInMru = true;
+                                        // Might have had a crash for an unsaved character, so prompt if we want to load them
+                                        if (objMostRecentAutosave != null
+                                            && blnAnyAutosaveInMru
+                                            && !setFilesToLoad.Contains(objMostRecentAutosave.FullName))
+                                        {
+                                            _objGenericToken.ThrowIfCancellationRequested();
+                                            string strAutosaveName
+                                                = Path.GetFileNameWithoutExtension(objMostRecentAutosave.Name);
+                                            if (GlobalSettings.MostRecentlyUsedCharacters.All(
+                                                    x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
+                                                    _objGenericToken)
+                                                && GlobalSettings.FavoriteCharacters.All(
+                                                    x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
+                                                    _objGenericToken)
+                                                && Program.ShowScrollableMessageBox(string.Format(
+                                                        GlobalSettings.CultureInfo,
+                                                        LanguageManager.GetString(
+                                                            "Message_PossibleCrashAutosaveFound",
+                                                            token: _objGenericToken),
+                                                        objMostRecentAutosave.Name,
+                                                        objMostRecentAutosave.LastWriteTimeUtc
+                                                            .ToLocalTime()),
+                                                    LanguageManager.GetString(
+                                                        "MessageTitle_AutosaveFound", token: _objGenericToken),
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                == DialogResult.Yes)
+                                            {
+                                                _objGenericToken.ThrowIfCancellationRequested();
+                                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                            }
+                                        }
                                     }
 
                                     _objGenericToken.ThrowIfCancellationRequested();
-                                    // Might have had a crash for an unsaved character, so prompt if we want to load them
-                                    if (objMostRecentAutosave != null
-                                        && blnAnyAutosaveInMru
-                                        && !setFilesToLoad.Contains(objMostRecentAutosave.FullName))
+                                    if (setFilesToLoad.Count > 0)
                                     {
-                                        _objGenericToken.ThrowIfCancellationRequested();
-                                        string strAutosaveName
-                                            = Path.GetFileNameWithoutExtension(objMostRecentAutosave.Name);
-                                        if (GlobalSettings.MostRecentlyUsedCharacters.All(
-                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName, _objGenericToken)
-                                            && GlobalSettings.FavoriteCharacters.All(
-                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName, _objGenericToken)
-                                            && Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
-                                                                              "Message_PossibleCrashAutosaveFound", token: _objGenericToken),
-                                                                          objMostRecentAutosave.Name,
-                                                                          objMostRecentAutosave.LastWriteTimeUtc
-                                                                              .ToLocalTime()),
-                                                                      LanguageManager.GetString(
-                                                                          "MessageTitle_AutosaveFound", token: _objGenericToken),
-                                                                      MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                                            == DialogResult.Yes)
+                                        ConcurrentStringHashSet setNewCharactersToOpen = Interlocked.CompareExchange(
+                                            ref _setCharactersToOpen, new ConcurrentStringHashSet(), null);
+                                        foreach (string strFile in setFilesToLoad)
                                         {
                                             _objGenericToken.ThrowIfCancellationRequested();
-                                            setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                            setNewCharactersToOpen.TryAdd(strFile);
                                         }
+
+                                        _tmrCharactersToOpenCheck.Start();
                                     }
                                 }
-
-                                _objGenericToken.ThrowIfCancellationRequested();
-                                if (setFilesToLoad.Count > 0)
+                                finally
                                 {
-                                    ConcurrentStringHashSet setNewCharactersToOpen = new ConcurrentStringHashSet();
-                                    ConcurrentStringHashSet setCharactersToOpen
-                                        = Interlocked.CompareExchange(
-                                            ref _setCharactersToOpen, setNewCharactersToOpen, null);
-                                    if (setCharactersToOpen != null)
-                                        setNewCharactersToOpen = setCharactersToOpen;
-                                    foreach (string strFile in setFilesToLoad)
-                                    {
-                                        _objGenericToken.ThrowIfCancellationRequested();
-                                        setNewCharactersToOpen.TryAdd(strFile);
-                                    }
-                                    _tmrCharactersToOpenCheck.Start();
+                                    Utils.StringHashSetPool.Return(ref setFilesToLoad);
                                 }
-                            }
-                            finally
-                            {
-                                Utils.StringHashSetPool.Return(ref setFilesToLoad);
-                            }
 
-                            if (blnShowTest)
-                            {
-                                TestDataEntries frmTestData = new TestDataEntries();
-                                frmTestData.Show();
+                                if (blnShowTest)
+                                {
+                                    TestDataEntries frmTestData = new TestDataEntries();
+                                    frmTestData.Show();
+                                }
                             }
                         }
                     }

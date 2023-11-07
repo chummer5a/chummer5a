@@ -170,7 +170,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                using (await CursorWait.NewAsync(this, true, token))
+                await using (await CursorWait.NewAsync(this, true, token))
                 {
                     await tvGroupSearchResult.DoThreadSafeAsync(x => x.SelectedNode = null, token);
                     await bSearch.DoThreadSafeAsync(x => x.Text = "searching", token);
@@ -238,7 +238,7 @@ namespace ChummerHub.Client.UI
 
             try
             {
-                using (await CursorWait.NewAsync(this))
+                await using (await CursorWait.NewAsync(this))
                 {
                     SINnerSearchGroup item = tvGroupSearchResult.SelectedNode.Tag as SINnerSearchGroup;
                     if (MyCE.MySINnerFile.MyGroup != null)
@@ -252,7 +252,7 @@ namespace ChummerHub.Client.UI
                     //var uploadtask = MyCE.Upload();
                     //await uploadtask.ContinueWith(b =>
                     //{
-                    using (await CursorWait.NewAsync(this))
+                    await using (await CursorWait.NewAsync(this))
                     {
                         Task<SINSearchGroupResult> task = JoinGroupTask(item, MyCE);
                         await task.ContinueWith(async a =>
@@ -383,7 +383,7 @@ namespace ChummerHub.Client.UI
                 {
                     try
                     {
-                        using (await CursorWait.NewAsync(this, true, token))
+                        await using (await CursorWait.NewAsync(this, true, token))
                         {
                             SinnersClient client = StaticUtils.GetClient();
                             SINner response =
@@ -472,7 +472,7 @@ namespace ChummerHub.Client.UI
             await lSINnerName.DoThreadSafeAsync(x => x.Text = MyCE.MySINnerFile.Alias, token: token);
             if (MyCE?.MySINnerFile.MyGroup != null)
             {
-                using (await CursorWait.NewAsync(this, true, token))
+                await using (await CursorWait.NewAsync(this, true, token))
                 {
                     try
                     {

@@ -481,7 +481,7 @@ namespace Chummer.Plugins
             {
                 try
                 {
-                    using (await CursorWait.NewAsync(MainForm, true, token))
+                    await using (await CursorWait.NewAsync(MainForm, true, token))
                     {
                         using (CharacterExtended ce = await GetMyCeAsync(input, token))
                         {
@@ -690,7 +690,7 @@ namespace Chummer.Plugins
             ResultGroupGetSearchGroups res = null;
             try
             {
-                using (await CursorWait.NewAsync(MainForm, true))
+                await using (await CursorWait.NewAsync(MainForm, true))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     res = await client.GetPublicGroupAsync("Archetypes", string.Empty);
@@ -813,7 +813,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (await CursorWait.NewAsync(frmCharRoster, true, token))
+                await using (await CursorWait.NewAsync(frmCharRoster, true, token))
                 {
                     IEnumerable<TreeNode> res = null;
                     if (Settings.Default.UserModeRegistered)
@@ -981,7 +981,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (await CursorWait.NewAsync(MainForm.CharacterRoster, true, token))
+                await using (await CursorWait.NewAsync(MainForm.CharacterRoster, true, token))
                 {
                     SINSearchGroupResult MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null, token);
                     SINnerSearchGroup item = MySINSearchGroupResult.SinGroups.FirstOrDefault(x => x.Groupname?.Contains("My Data") == true);
@@ -1389,7 +1389,8 @@ namespace Chummer.Plugins
                         return;
                 }
             }
-            using (await CursorWait.NewAsync(MainForm, token: token))
+
+            await using (await CursorWait.NewAsync(MainForm, token: token))
             {
                 if (!await Program.SwitchToOpenCharacter(objCharacter, token))
                     await Program.OpenCharacter(objCharacter, false, token);

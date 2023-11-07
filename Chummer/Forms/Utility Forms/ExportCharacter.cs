@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -81,6 +82,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
+        [SupportedOSPlatform("windows")]
         private async void ExportCharacter_Load(object sender, EventArgs e)
         {
             try
@@ -591,7 +593,7 @@ namespace Chummer
                 await txtText.DoThreadSafeAsync(x => x.Text = strGeneratingData, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 XmlDocument objNewDocument;
-                using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
+                await using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
                 {
                     objNewDocument = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                            _objCharacterXmlGeneratorCancellationTokenSource
@@ -633,8 +635,8 @@ namespace Chummer
                 // Look for the file extension information.
                 string strExtension = "xml";
                 string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
-                using (FileStream objFileStream
-                       = new FileStream(exportSheetPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                await using (FileStream objFileStream
+                             = new FileStream(exportSheetPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     token.ThrowIfCancellationRequested();
                     using (StreamReader objFile = new StreamReader(objFileStream, Encoding.UTF8, true))
@@ -677,11 +679,11 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
-            File.WriteAllText(strSaveFile, // Change this to a proper path.
+            await File.WriteAllTextAsync(strSaveFile, // Change this to a proper path.
                 _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
-                                  ? strBoxText.Item1
-                                  : txtText.Text,
-                              Encoding.UTF8);
+                    ? strBoxText.Item1
+                    : txtText.Text,
+                Encoding.UTF8, token).ConfigureAwait(false);
         }
 
         private async Task GenerateXml(CancellationToken token = default)
@@ -753,11 +755,11 @@ namespace Chummer
 
                     string strText = await Task.Run(async () =>
                     {
-                        using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                        await using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                         {
-                            using (XmlWriter objWriter = objSettings != null
-                                       ? XmlWriter.Create(objStream, objSettings)
-                                       : Utils.GetXslTransformXmlWriter(objStream))
+                            await using (XmlWriter objWriter = objSettings != null
+                                             ? XmlWriter.Create(objStream, objSettings)
+                                             : Utils.GetXslTransformXmlWriter(objStream))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objXslTransform.Transform(_objCharacterXml, objWriter);

@@ -201,7 +201,7 @@ namespace ChummerHub.Client.Sinners
             {
                 try
                 {
-                    using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
+                    await using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
                     {
                         try
                         {
@@ -779,7 +779,7 @@ namespace ChummerHub.Client.Sinners
         {
             try
             {
-                using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
+                await using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
                 {
                     if (myState != null)
                     {

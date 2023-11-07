@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace Chummer
@@ -910,6 +911,7 @@ namespace Chummer
         /// Gets a Windows stock icon. Useful as an alternative to the SystemIcons class.
         /// </summary>
         /// <param name="eIconId">Id to indicate which stock icon to fetch.</param>
+        [SupportedOSPlatform("windows")]
         internal static Icon GetStockIcon(SHSTOCKICONID eIconId)
         {
             SHSTOCKICONINFO sii = new SHSTOCKICONINFO

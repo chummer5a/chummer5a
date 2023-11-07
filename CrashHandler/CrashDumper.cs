@@ -228,7 +228,7 @@ namespace CrashHandler
         {
             token.ThrowIfCancellationRequested();
             bool blnSuccess = false;
-            using (FileStream file = File.Create(Path.Combine(WorkingDirectory, CrashDumpName + ".dmp")))
+            await using (FileStream file = File.Create(Path.Combine(WorkingDirectory, CrashDumpName + ".dmp")))
             {
                 NativeMethods.MiniDumpExceptionInformation info = new NativeMethods.MiniDumpExceptionInformation
                 {

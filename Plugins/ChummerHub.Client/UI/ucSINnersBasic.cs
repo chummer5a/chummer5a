@@ -103,7 +103,7 @@ namespace ChummerHub.Client.UI
                     return false;
                 }
 
-                using (await CursorWait.NewAsync(this, true, token))
+                await using (await CursorWait.NewAsync(this, true, token))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     ResultSinnerGetSINnerGroupFromSINerById response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value, token);
@@ -295,7 +295,7 @@ namespace ChummerHub.Client.UI
 
         private async void bUpload_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this, true))
+            await using (await CursorWait.NewAsync(this, true))
             {
                 try
                 {
@@ -337,7 +337,7 @@ namespace ChummerHub.Client.UI
         {
             using (frmSINnerVisibility visfrm = new frmSINnerVisibility())
             {
-                using (await CursorWait.NewAsync(this, true))
+                await using (await CursorWait.NewAsync(this, true))
                 {
                     if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
                     {
