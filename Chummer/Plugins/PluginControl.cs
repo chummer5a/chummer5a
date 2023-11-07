@@ -24,6 +24,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
@@ -84,6 +85,7 @@ namespace Chummer.Plugins
         private FileSystemWatcher _objWatcher;
 
         //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
+        [SupportedOSPlatform("windows")]
         public static bool RegisterChummerProtocol()
         {
             string startupExe = Assembly.GetEntryAssembly()?.Location;
@@ -131,6 +133,7 @@ namespace Chummer.Plugins
             return true;
         }
 
+        [SupportedOSPlatform("windows")]
         public static bool RegisterMyProtocol(string myAppPath) //myAppPath = full path to your application
         {
             RegistryKey objSoftware = null;
@@ -604,6 +607,7 @@ namespace Chummer.Plugins
             }
         }
 
+        [SupportedOSPlatform("windows")]
         internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {

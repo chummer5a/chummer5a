@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Composition;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;

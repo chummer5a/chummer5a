@@ -374,10 +374,8 @@ namespace Chummer
 
                             if (GlobalSettings.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
                             {
-                                LogManager.Setup()
-                                          .SetupExtensions(
-                                              ext => ext.RegisterTarget<ApplicationInsightsTarget>(
-                                                  "ApplicationInsightsTarget"));
+                                LogManager.Setup().SetupExtensions(ext =>
+                                    ext.RegisterTarget<ApplicationInsightsTarget>("ApplicationInsightsTarget"));
                             }
 
                             LogManager.ThrowExceptions = false;

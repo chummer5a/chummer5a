@@ -1,27 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Chummer.Utils</RootNamespace>
     <AssemblyName>Textblock Converter</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-	<Configurations>Debug;Release;Debuggable Release</Configurations>
-	<EnableNETAnalyzers>True</EnableNETAnalyzers>
-	<AnalysisLevel>latest-minimum</AnalysisLevel>
-	<PlatformTarget>AnyCPU</PlatformTarget>
+    <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisLevel>latest-minimum</AnalysisLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\Chummer\bin\Debug\Utils\</OutputPath>
+    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Utils\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\Chummer\bin\Release\Utils\</OutputPath>
+    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Utils\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
+    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Utils\</OutputPath>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <OutputPath>bin\Debuggable Release\</OutputPath>
+    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Utils\</OutputPath>
     <Optimize>false</Optimize>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>

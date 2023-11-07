@@ -31,6 +31,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.XmlUnit.Builder;
 using Org.XmlUnit.Diff;
 
+[assembly: Parallelize(Workers = 0, Scope = ExecutionScope.MethodLevel)]
 namespace Chummer.Tests
 {
     [TestClass]
@@ -87,6 +88,7 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
+        [DoNotParallelize]
         public void Test00_ColorTest()
         {
             Debug.WriteLine("Unit test initialized for: Test00_ColorTest()");
@@ -115,7 +117,8 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        //[STATestMethod]
+        [DoNotParallelize]
         public void Test01_LoadContent()
         {
             Debug.WriteLine("Unit test initialized for: Test01_LoadContent()");
@@ -170,7 +173,8 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        //[STATestMethod]
+        [DoNotParallelize]
         public void Test02_BasicStartup()
         {
             Debug.WriteLine("Unit test initialized for: Test02_BasicStartup()");
@@ -211,6 +215,7 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
+        [DoNotParallelize]
         public void Test03_LoadCharacters()
         {
             Debug.WriteLine("Unit test initialized for: Test03_LoadCharacters()");
@@ -361,7 +366,8 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        //[STATestMethod]
+        [DoNotParallelize]
         public void Test07_LoadCharacterForms()
         {
             Debug.WriteLine("Unit test initialized for: Test07_LoadCharacterForms()");

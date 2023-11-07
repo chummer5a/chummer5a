@@ -133,12 +133,12 @@ namespace WpfApplication1
                     {
                         string current = movement.Replace("x", string.Empty).Replace("+", string.Empty).TrimEnd();
                         int position = 0;
-                        if (current.IndexOf("swimming", StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (current.Contains("swimming", StringComparison.OrdinalIgnoreCase))
                         {
                             position = 1;
                             current = current.Split(' ')[0];
                         }
-                        else if (current.IndexOf("ﬂight", StringComparison.OrdinalIgnoreCase) >= 0 || current.IndexOf("flight", StringComparison.OrdinalIgnoreCase) >= 0)
+                        else if (current.Contains("ﬂight", StringComparison.OrdinalIgnoreCase) || current.Contains("flight", StringComparison.OrdinalIgnoreCase))
                         {
                             position = 2;
                             current = current.Split(' ')[0];

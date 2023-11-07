@@ -72,7 +72,7 @@ namespace IdentityModel.OidcClient
             string endpoint = _options.ProviderInformation.EndSessionEndpoint;
             if (endpoint.IsMissing())
             {
-                throw new InvalidOperationException("Discovery document has no end session endpoint");
+                return Task.FromException<BrowserResult>(new InvalidOperationException("Discovery document has no end session endpoint"));
             }
 
             string url = CreateEndSessionUrl(endpoint, request);

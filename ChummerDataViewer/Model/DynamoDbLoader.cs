@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
@@ -47,7 +48,7 @@ namespace ChummerDataViewer.Model
         private readonly Stopwatch _objTimeoutStopwatch = Stopwatch.StartNew();
         private int _intCurrentTimeout;
 
-        private void WorkerEntryPrt(object sender, DoWorkEventArgs e)
+        private async void WorkerEntryPrt(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -59,9 +60,9 @@ namespace ChummerDataViewer.Model
                     try
                     {
                         //Scan 10 items. If middle of scan, pick up there
-                        ScanResponse response = ScanData(
+                        ScanResponse response = await ScanDataAsync(
                             PersistentState.Database.GetKey("crashdumps_last_timestamp"),
-                            PersistentState.Database.GetKey("crashdumps_last_key")); //Start scanning based on last key in db
+                            PersistentState.Database.GetKey("crashdumps_last_key")).ConfigureAwait(false); //Start scanning based on last key in db
 
                         //Into anon type with a little extra info. DB lookup to see if known, parse guid
                         var newItems = response.Items
@@ -85,7 +86,8 @@ namespace ChummerDataViewer.Model
                         }
 
                         //Otherwise, add _NEW_ items to db
-                        using (SQLiteTransaction transaction = PersistentState.Database.GetTransaction())
+                        SQLiteTransaction transaction = PersistentState.Database.GetTransaction();
+                        try
                         {
                             if (response.LastEvaluatedKey.Count == 0)
                             {
@@ -98,7 +100,8 @@ namespace ChummerDataViewer.Model
                                 //Otherwise set next to take next block
                                 Dictionary<string, AttributeValue> nextRead = response.LastEvaluatedKey;
 
-                                PersistentState.Database.SetKey("crashdumps_last_timestamp", nextRead["upload_timestamp"].N);
+                                PersistentState.Database.SetKey("crashdumps_last_timestamp",
+                                    nextRead["upload_timestamp"].N);
                                 PersistentState.Database.SetKey("crashdumps_last_key", nextRead["crash_id"].S);
                             }
 
@@ -112,7 +115,12 @@ namespace ChummerDataViewer.Model
                                 //in reality it is probably bull
                                 _backoff.Sucess();
                             }
-                            transaction.Commit();
+
+                            await transaction.CommitAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await transaction.DisposeAsync().ConfigureAwait(false);
                         }
 
                         //Tell the good news that we have new items. Also tell guids so it can be found
@@ -169,7 +177,7 @@ namespace ChummerDataViewer.Model
                 );
         }
 
-        private ScanResponse ScanData(string lastTimeStamp, string lastKey)
+        private Task<ScanResponse> ScanDataAsync(string lastTimeStamp, string lastKey)
         {
             var request = new ScanRequest
             {
@@ -187,7 +195,9 @@ namespace ChummerDataViewer.Model
                 };
             }
 
-            return _client.Scan(request);
+            // AmazonDynamoDBClient requires the use of async methods in .NET instead of rewriting all to async we use this as a temporary workaround
+            // Mainly because I'm not even sure this is even used at all.
+            return _client.ScanAsync(request);
         }
 
         public event StatusChangedEvent StatusChanged;

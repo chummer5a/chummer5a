@@ -102,7 +102,7 @@ namespace IdentityModel.OidcClient
                     });
                 }
 
-                throw result.Exception;
+                return Task.FromException<IdentityTokenValidationResult>(result.Exception);
             }
 
             ClaimsPrincipal user = new ClaimsPrincipal(result.ClaimsIdentity);

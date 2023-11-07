@@ -16,7 +16,7 @@
     <Version>1.2.0</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-    <Configurations>Debug;Release;Debuggable Release</Configurations>
+    <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
     <StartupObject>ChummerHub.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
@@ -36,6 +36,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>ChummerHub.xml</DocumentationFile>
+    <LangVersion>8.0</LangVersion>
+    <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
     <LangVersion>8.0</LangVersion>
     <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
@@ -142,7 +148,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="6.4.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="System.Diagnostics.Tracing" Version="4.3.0" />
     <PackageReference Include="System.Net.Http.WinHttpHandler" Version="6.0.1" />
