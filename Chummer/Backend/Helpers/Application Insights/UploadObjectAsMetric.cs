@@ -57,7 +57,7 @@ namespace Chummer
             {
                 object val = prop.GetValue(obj, null);
                 Console.WriteLine("{0}={1}", prop.Name, val);
-                if (!bool.TryParse(val.ToString(), out bool boolval))
+                if (!bool.TryParse(val?.ToString() ?? string.Empty, out bool boolval))
                     continue;
                 MetricIdentifier mi = new MetricIdentifier(name, prop.Name);
                 Metric metric = tc.GetMetric(mi);

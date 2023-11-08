@@ -58,7 +58,7 @@ namespace Chummer.Backend
                     {"os-type", Environment.OSVersion.VersionString},
                     {"human-readable-os-version", Utils.HumanReadableOSVersion},
                     {"visible-error-friendly", ex?.Message.Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]") ?? "No description available"},
-                    {"visible-stacktrace", ex?.StackTrace.Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]") ?? "No stack trace available"},
+                    {"visible-stacktrace", ex?.StackTrace?.Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]") ?? "No stack trace available"},
                     {"installation-id", Properties.Settings.Default.UploadClientId.ToString() },
                     {"option-upload-logs-set", GlobalSettings.UseLoggingApplicationInsights.ToString() }
                 };
@@ -109,7 +109,7 @@ namespace Chummer.Backend
                         {
                             try
                             {
-                                _dicAttributes.Add("machine-id", objCurrentVersionKey.GetValue("ProductId").ToString());
+                                _dicAttributes.Add("machine-id", objCurrentVersionKey.GetValue("ProductId")?.ToString() ?? string.Empty);
                             }
                             catch (Exception e)
                             {
@@ -118,7 +118,7 @@ namespace Chummer.Backend
 
                             try
                             {
-                                _dicAttributes.Add("os-name", objCurrentVersionKey.GetValue("ProductName").ToString());
+                                _dicAttributes.Add("os-name", objCurrentVersionKey.GetValue("ProductName")?.ToString() ?? string.Empty);
                             }
                             catch (Exception e)
                             {
@@ -136,7 +136,7 @@ namespace Chummer.Backend
                 PropertyInfo[] systemInformation = typeof(SystemInformation).GetProperties();
                 foreach (PropertyInfo propertyInfo in systemInformation)
                 {
-                    _dicAttributes.Add("system-info-" + propertyInfo.Name, propertyInfo.GetValue(null).ToString());
+                    _dicAttributes.Add("system-info-" + propertyInfo.Name, propertyInfo.GetValue(null)?.ToString() ?? string.Empty);
                 }
             }
 

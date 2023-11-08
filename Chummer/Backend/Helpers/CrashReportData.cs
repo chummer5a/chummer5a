@@ -132,33 +132,31 @@ namespace Chummer
                     report.AppendLine("Release Build");
 #endif
                     //Secondary id for linux systems?
-                    if (Registry.LocalMachine != null)
+                    RegistryKey cv
+                        = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                    RegistryKey cv2 = null;
+
+                    if (cv != null)
                     {
-                        RegistryKey cv
-                            = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-                        RegistryKey cv2 = null;
+                        if (!cv.GetValueNames().Contains("ProductId"))
+                        {
+                            //on 32 bit builds?
+                            //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
+                            cv.Close();
+                            cv.Dispose();
+                            cv2 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                            cv = cv2.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                        }
 
                         if (cv != null)
                         {
-                            if (!cv.GetValueNames().Contains("ProductId"))
-                            {
-                                //on 32 bit builds?
-                                //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
-                                cv.Close();
-                                cv.Dispose();
-                                cv2 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-                                cv = cv2.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-                            }
-
-                            if (cv != null)
-                            {
-                                report.Append("Machine ID Primary=").AppendLine(cv.GetValue("ProductId").ToString());
-                            }
+                            report.Append("Machine ID Primary=")
+                                .AppendLine(cv.GetValue("ProductId")?.ToString() ?? "Unknown");
                         }
-
-                        cv?.Close();
-                        cv2?.Close();
                     }
+
+                    cv?.Close();
+                    cv2?.Close();
 
                     report.Append("CommandLine=").AppendLine(Environment.CommandLine);
 

@@ -466,7 +466,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             object objMyValue = objProperty.GetValue(this);
                             object objOtherValue = objProperty.GetValue(objOther);
-                            if (objMyValue.Equals(objOtherValue))
+                            if (objMyValue?.Equals(objOtherValue) != false)
                                 continue;
                             lstPropertiesToUpdate.Add(objProperty.Name);
                             objProperty.SetValue(this, objOtherValue);
@@ -585,7 +585,7 @@ namespace Chummer
                         {
                             object objMyValue = objProperty.GetValue(this);
                             object objOtherValue = objProperty.GetValue(objOther);
-                            if (objMyValue.Equals(objOtherValue))
+                            if (objMyValue?.Equals(objOtherValue) != false)
                                 continue;
                             lstPropertiesToUpdate.Add(objProperty.Name);
                             objProperty.SetValue(this, objOtherValue);
@@ -733,7 +733,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     object objMyValue = objProperty.GetValue(this);
                     object objOtherValue = objProperty.GetValue(objOther);
-                    if (objMyValue.Equals(objOtherValue))
+                    if (objMyValue?.Equals(objOtherValue) != false)
                         continue;
                     yield return objProperty.Name;
                 }
@@ -809,7 +809,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         object objMyValue = objProperty.GetValue(this);
                         object objOtherValue = objProperty.GetValue(objOther);
-                        if (objMyValue.Equals(objOtherValue))
+                        if (objMyValue?.Equals(objOtherValue) != false)
                             continue;
                         lstReturn.Add(objProperty.Name);
                     }
@@ -924,7 +924,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         object objMyValue = objProperty.GetValue(this);
                         object objOtherValue = objProperty.GetValue(objOther);
-                        if (!objMyValue.Equals(objOtherValue))
+                        if (objMyValue?.Equals(objOtherValue) == false)
                             return false;
                     }
 

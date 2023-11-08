@@ -24,14 +24,12 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.XmlUnit.Builder;
 using Org.XmlUnit.Diff;
 
-[assembly: Parallelize(Workers = 0, Scope = ExecutionScope.MethodLevel)]
 namespace Chummer.Tests
 {
     [TestClass]
@@ -55,7 +53,7 @@ namespace Chummer.Tests
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             foreach (DirectoryInfo objOldDir in objPathInfo.GetDirectories("TestRun-*"))
             {
-                Directory.Delete(objOldDir.FullName, true);
+                Utils.SafeDeleteDirectory(objOldDir.FullName);
             }
             TestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalSettings.InvariantCultureInfo));
             TestPathInfo = Directory.CreateDirectory(TestPath);
@@ -88,7 +86,6 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        [DoNotParallelize]
         public void Test00_ColorTest()
         {
             Debug.WriteLine("Unit test initialized for: Test00_ColorTest()");
@@ -117,53 +114,38 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        //[STATestMethod]
-        [DoNotParallelize]
+        [TestMethod]
         public void Test01_LoadContent()
         {
             Debug.WriteLine("Unit test initialized for: Test01_LoadContent()");
             try
             {
-                bool blnTemp = Utils.IsUnitTestForUI;
-                try
+                // Attempt to cache all XML files that are used the most.
+                List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                int intCounter = 0;
+                foreach (string strLoopFile in Utils.BasicDataFileNames)
                 {
-                    Utils.IsUnitTestForUI = true;
-                    // Attempt to cache all XML files that are used the most.
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
-                    {
-                        List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int intCounter = 0;
-                        foreach (string strLoopFile in Utils.BasicDataFileNames)
-                        {
-                            // ReSharper disable once AccessToDisposedClosure
-                            lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
-                            if (++intCounter != Utils.MaxParallelBatchSize)
-                                continue;
-                            Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
-                            lstCachingTasks.Clear();
-                            intCounter = 0;
-                        }
-
-                        Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
-
-                        async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
-                        {
-                            // Load default language data first for performance reasons
-                            if (!GlobalSettings.Language.Equals(
-                                    GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                            {
-                                await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
-                            }
-                            await XmlManager.LoadXPathAsync(strFile);
-                            await frmLoadingBarInner.PerformStepAsync(
-                                Application.ProductName,
-                                LoadingBar.ProgressBarTextPatterns.Initializing);
-                        }
-                    }
+                    // ReSharper disable once AccessToDisposedClosure
+                    lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile)));
+                    if (++intCounter != Utils.MaxParallelBatchSize)
+                        continue;
+                    Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+                    lstCachingTasks.Clear();
+                    intCounter = 0;
                 }
-                finally
+
+                Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+
+                async Task CacheCommonFile(string strFile)
                 {
-                    Utils.IsUnitTestForUI = blnTemp;
+                    // Load default language data first for performance reasons
+                    if (!GlobalSettings.Language.Equals(
+                            GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    {
+                        await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
+                    }
+
+                    await XmlManager.LoadXPathAsync(strFile);
                 }
             }
             catch (Exception ex)
@@ -174,7 +156,6 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         //[STATestMethod]
-        [DoNotParallelize]
         public void Test02_BasicStartup()
         {
             Debug.WriteLine("Unit test initialized for: Test02_BasicStartup()");
@@ -215,7 +196,6 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        [DoNotParallelize]
         public void Test03_LoadCharacters()
         {
             Debug.WriteLine("Unit test initialized for: Test03_LoadCharacters()");
@@ -240,8 +220,7 @@ namespace Chummer.Tests
                 GlobalSettings.Chum5lzCompressionLevel = LzmaHelper.ChummerCompressionPreset.Fast;
                 foreach (Character objCharacter in GetTestCharacters())
                 {
-                    string strFileName = Path.GetFileName(objCharacter.FileName)
-                                         ?? LanguageManager.GetString("String_Unknown");
+                    string strFileName = Path.GetFileName(objCharacter.FileName);
                     Debug.WriteLine("Checking " + strFileName);
                     string strDestination = Path.Combine(TestPathInfo.FullName, "(Compressed) " + strFileName);
                     if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
@@ -273,8 +252,7 @@ namespace Chummer.Tests
             List<string> lstBaseFileNames = new List<string>();
             foreach (Character objCharacterControl in GetTestCharacters())
             {
-                string strFileName = Path.GetFileName(objCharacterControl.FileName) ??
-                                     LanguageManager.GetString("String_Unknown");
+                string strFileName = Path.GetFileName(objCharacterControl.FileName);
                 Debug.WriteLine("Saving Control for " + strFileName);
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
@@ -356,8 +334,7 @@ namespace Chummer.Tests
             Debug.WriteLine("Finished pre-loading language files");
             foreach (Character objCharacter in GetTestCharacters())
             {
-                Debug.WriteLine("Checking " + (Path.GetFileName(objCharacter.FileName)
-                                               ?? LanguageManager.GetString("String_Unknown")));
+                Debug.WriteLine("Checking " + Path.GetFileName(objCharacter.FileName));
                 foreach (string strExportLanguage in lstExportLanguages)
                 {
                     DoAndSaveExport(objCharacter, strExportLanguage);
@@ -367,7 +344,6 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         //[STATestMethod]
-        [DoNotParallelize]
         public void Test07_LoadCharacterForms()
         {
             Debug.WriteLine("Unit test initialized for: Test07_LoadCharacterForms()");
@@ -396,7 +372,7 @@ namespace Chummer.Tests
                 Debug.WriteLine("Main form loaded");
                 foreach (Character objCharacter in GetTestCharacters())
                 {
-                    string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
+                    string strFileName = Path.GetFileName(objCharacter.FileName);
                     Debug.WriteLine("Checking " + strFileName);
                     string strDummyFileName = Path.Combine(TestPathInfo.FullName,
                                                            "(UnitTest05Dummy) "
@@ -420,7 +396,7 @@ namespace Chummer.Tests
                             {
                                 frmCharacterForm.DoThreadSafe(x =>
                                 {
-                                    x.FormClosed += (sender, args) => blnFormClosed = true;
+                                    x.FormClosed += (_, _) => blnFormClosed = true;
                                     x.MdiParent = frmTestForm;
                                     x.ShowInTaskbar = false;
                                     x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).

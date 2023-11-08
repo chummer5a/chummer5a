@@ -71,7 +71,7 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Chummer\Chummer.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="OpenAPIs\swagger.json">
@@ -96,18 +96,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\group.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GroupControls" Version="1.9.0" />
@@ -178,21 +166,21 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
-      echo Statement 1: copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SINners\" /Y
-      copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SINners\" /Y
-      echo Statement 2: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
-      copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
-      echo Statement 3: copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
-      copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
-      echo Statement 4: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
-      copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+      echo Statement 1: copy "$(TargetDir)\*.dll" "$(TargetDir)\Plugins\SINners\" /Y
+      copy "$(TargetDir)\*.dll" "$(TargetDir)\Plugins\SINners\" /Y
+      echo Statement 2: copy "$(TargetDir)\*.txt" "$(TargetDir)\Plugins\SINners\" /Y
+      copy "$(TargetDir)\*.txt" "$(TargetDir)\Plugins\SINners\" /Y
+      echo Statement 3: copy "$(TargetDir)\*.dll.config" "$(TargetDir)\Plugins\SINners\" /Y
+      copy "$(TargetDir)\*.dll.config" "$(TargetDir)\Plugins\SINners\" /Y
+      echo Statement 4: copy "$(TargetDir)\Plugins\SINners\*" "$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+      copy "$(TargetDir)\Plugins\SINners\*" "$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SINners\"
-        mkdir "$(TargetDir)Plugins\SINners\"
-        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
-        mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+        mkdir "$(TargetDir)\Plugins\SINners\"
+        echo Statement 2: mkdir "$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+        mkdir "$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
         Exit 0</PreBuildEvent>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>

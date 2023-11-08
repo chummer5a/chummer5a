@@ -370,7 +370,7 @@ namespace Codaxy.WkHtmlToPdf
                                             throw new PdfConvertTimeoutException();
                                         }
                                     }
-                                    else
+                                    else if (tskAsyncProcess != null)
                                     {
                                         int intTaskResult = await tskAsyncProcess.ConfigureAwait(false);
                                         if (tskAsyncProcess.IsCompleted && !objToken.IsCancellationRequested)

@@ -668,7 +668,7 @@ namespace Chummer.Backend.Skills
                         {
                             KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter)
                             {
-                                Type = strKnowledgeSkillTypeToUse.Value,
+                                Type = strKnowledgeSkillTypeToUse?.Value ?? "Professional",
                                 WritableName = objSkill.Name,
                                 Base = objSkill.Base,
                                 Karma = objSkill.Karma
@@ -1928,8 +1928,11 @@ namespace Chummer.Backend.Skills
                     {
                         for (int i = 0; i < lstNodesToChange.Count; i++)
                         {
-                            lstNodesToChange[i].InnerText
-                                = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                            XmlNode xmlLoop = lstNodesToChange[i];
+                            if (xmlLoop == null)
+                                continue;
+                            xmlLoop.InnerText
+                                = map.TryGetValue(xmlLoop.InnerText, out Guid guidLoop)
                                     ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
                                     : StringExtensions.EmptyGuid;
                         }
@@ -1993,8 +1996,11 @@ namespace Chummer.Backend.Skills
                     {
                         for (int i = 0; i < lstNodesToChange.Count; i++)
                         {
-                            lstNodesToChange[i].InnerText
-                                = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                            XmlNode xmlLoop = lstNodesToChange[i];
+                            if (xmlLoop == null)
+                                continue;
+                            xmlLoop.InnerText
+                                = map.TryGetValue(xmlLoop.InnerText, out Guid guidLoop)
                                     ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
                                     : StringExtensions.EmptyGuid;
                         }

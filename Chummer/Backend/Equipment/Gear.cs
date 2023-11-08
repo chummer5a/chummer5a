@@ -393,7 +393,7 @@ namespace Chummer.Backend.Equipment
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
-                            string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                            string strLoopRating = objXmlAddWeapon.Attributes?["rating"]?.InnerText ?? string.Empty;
                             if (!string.IsNullOrEmpty(strLoopRating))
                             {
                                 strLoopRating = strLoopRating.CheapReplace("{Rating}",
@@ -421,7 +421,7 @@ namespace Chummer.Backend.Equipment
                 // Do not apply the Improvements if this is a Focus, unless we're specifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
                 // to the character which is incorrect, and once when the Focus is actually Bonded).
                 bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") &&
-                                  !_nodBonus.InnerXml.Contains("selectweapon"));
+                                  !Bonus.InnerXml.Contains("selectweapon"));
 
                 if (blnApply)
                 {

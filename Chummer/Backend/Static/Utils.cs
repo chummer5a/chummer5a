@@ -1125,7 +1125,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    objRegistration.Dispose();
+                    await objRegistration.DisposeAsync().ConfigureAwait(false);
                 }
             }
             thread.SetApartmentState(ApartmentState.STA);
@@ -1155,7 +1155,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    objRegistration.Dispose();
+                    await objRegistration.DisposeAsync().ConfigureAwait(false);
                 }
             }
             thread.SetApartmentState(ApartmentState.STA);

@@ -317,10 +317,10 @@ namespace Chummer.Backend.Attributes
 
         private void SpecialAttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (LockObject.EnterReadLock())
             {
-                if (_intLoading > 0)
-                    return;
                 foreach (CharacterAttrib objAttribute in e.OldItems)
                 {
                     objAttribute.Dispose();
@@ -332,10 +332,10 @@ namespace Chummer.Backend.Attributes
 
         private void AttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (LockObject.EnterReadLock())
             {
-                if (_intLoading > 0)
-                    return;
                 foreach (CharacterAttrib objAttribute in e.OldItems)
                 {
                     objAttribute.Dispose();
@@ -347,10 +347,10 @@ namespace Chummer.Backend.Attributes
 
         private void AttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (LockObject.EnterReadLock())
             {
-                if (_intLoading > 0)
-                    return;
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
@@ -396,10 +396,10 @@ namespace Chummer.Backend.Attributes
 
         private void SpecialAttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (LockObject.EnterReadLock())
             {
-                if (_intLoading > 0)
-                    return;
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
