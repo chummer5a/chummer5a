@@ -317,10 +317,10 @@ namespace Chummer.Backend.Attributes
 
         private void SpecialAttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (LockObject.EnterReadLock())
             {
-                if (_intLoading > 0)
-                    return;
                 foreach (CharacterAttrib objAttribute in e.OldItems)
                 {
                     objAttribute.Dispose();
@@ -332,10 +332,10 @@ namespace Chummer.Backend.Attributes
 
         private void AttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (LockObject.EnterReadLock())
             {
-                if (_intLoading > 0)
-                    return;
                 foreach (CharacterAttrib objAttribute in e.OldItems)
                 {
                     objAttribute.Dispose();
@@ -347,10 +347,10 @@ namespace Chummer.Backend.Attributes
 
         private void AttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (LockObject.EnterReadLock())
             {
-                if (_intLoading > 0)
-                    return;
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
@@ -396,10 +396,10 @@ namespace Chummer.Backend.Attributes
 
         private void SpecialAttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (LockObject.EnterReadLock())
             {
-                if (_intLoading > 0)
-                    return;
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
@@ -864,217 +864,216 @@ namespace Chummer.Backend.Attributes
             if (xmlStatBlockBaseNode == null)
                 return;
             using (LockObject.EnterWriteLock(token))
+            using (Timekeeper.StartSyncron("load_char_attrib", parentActivity))
             {
-                using (Timekeeper.StartSyncron("load_char_attrib", parentActivity))
+                Interlocked.Increment(ref _intLoading);
+                try
                 {
-                    Interlocked.Increment(ref _intLoading);
-                    try
+                    AttributeList.Clear();
+                    SpecialAttributeList.Clear();
+                    XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath(token);
+                    // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
+                    XPathNavigator xmlCharNodeAnimalForm =
+                        _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
+                            ? _objCharacter.GetNodeXPath(true, token: token)
+                            : null;
+                    foreach (string strAttribute in AttributeStrings)
                     {
-                        AttributeList.Clear();
-                        SpecialAttributeList.Clear();
-                        XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath(token);
-                        // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
-                        XPathNavigator xmlCharNodeAnimalForm =
-                            _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
-                                ? _objCharacter.GetNodeXPath(true, token: token)
-                                : null;
-                        foreach (string strAttribute in AttributeStrings)
-                        {
-                            // First, remake the attribute
+                        // First, remake the attribute
 
-                            CharacterAttrib objAttribute = null;
+                        CharacterAttrib objAttribute = null;
+                        switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                        {
+                            case CharacterAttrib.AttributeCategory.Special:
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                    CharacterAttrib.AttributeCategory.Special);
+                                objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                SpecialAttributeList.Add(objAttribute);
+                                break;
+
+                            case CharacterAttrib.AttributeCategory.Standard:
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                    CharacterAttrib.AttributeCategory.Standard);
+                                objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                AttributeList.Add(objAttribute);
+                                break;
+                        }
+
+                        if (xmlCharNodeAnimalForm != null)
+                        {
                             switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                             {
                                 case CharacterAttrib.AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                                                       CharacterAttrib.AttributeCategory.Special);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                        CharacterAttrib.AttributeCategory.Special);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                     SpecialAttributeList.Add(objAttribute);
                                     break;
 
-                                case CharacterAttrib.AttributeCategory.Standard:
+                                case CharacterAttrib.AttributeCategory.Shapeshifter:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                                                       CharacterAttrib.AttributeCategory.Standard);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                        CharacterAttrib.AttributeCategory
+                                            .Shapeshifter);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                     AttributeList.Add(objAttribute);
                                     break;
                             }
-
-                            if (xmlCharNodeAnimalForm != null)
-                            {
-                                switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
-                                {
-                                    case CharacterAttrib.AttributeCategory.Special:
-                                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                                                           CharacterAttrib.AttributeCategory.Special);
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
-                                        SpecialAttributeList.Add(objAttribute);
-                                        break;
-
-                                    case CharacterAttrib.AttributeCategory.Shapeshifter:
-                                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                                                           CharacterAttrib.AttributeCategory
-                                                                               .Shapeshifter);
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
-                                        AttributeList.Add(objAttribute);
-                                        break;
-                                }
-                            }
-
-                            // Then load in attribute karma levels (we'll adjust these later if the character is in Create mode)
-                            if (strAttribute == "ESS"
-                               ) // Not Essence though, this will get modified automatically instead of having its value set to the one HeroLab displays
-                                continue;
-                            XPathNavigator xmlHeroLabAttributeNode =
-                                xmlStatBlockBaseNode.SelectSingleNode(
-                                    "attributes/attribute[@name = " + GetAttributeEnglishName(strAttribute).CleanXPath()
-                                                                    +
-                                                                    ']');
-                            XPathNavigator xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNodeAndCacheExpression("@base", token);
-                            if (xmlAttributeBaseNode != null &&
-                                int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
-                            {
-                                int intAttributeMinimumValue = GetAttributeByName(strAttribute, token).MetatypeMinimum;
-                                if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
-                                if (objAttribute != null)
-                                    objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
-                            }
                         }
 
-                        if (!_objCharacter.Created && _objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                        // Then load in attribute karma levels (we'll adjust these later if the character is in Create mode)
+                        if (strAttribute == "ESS"
+                           ) // Not Essence though, this will get modified automatically instead of having its value set to the one HeroLab displays
+                            continue;
+                        XPathNavigator xmlHeroLabAttributeNode =
+                            xmlStatBlockBaseNode.SelectSingleNode(
+                                "attributes/attribute[@name = " + GetAttributeEnglishName(strAttribute).CleanXPath()
+                                                                +
+                                                                ']');
+                        XPathNavigator xmlAttributeBaseNode =
+                            xmlHeroLabAttributeNode?.SelectSingleNodeAndCacheExpression("@base", token);
+                        if (xmlAttributeBaseNode != null &&
+                            int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
                         {
-                            // Allocate Attribute Points
-                            int intAttributePointCount = _objCharacter.TotalAttributes;
-                            CharacterAttrib objAttributeToPutPointsInto;
-                            // First loop through attributes where costs can be 100% covered with points
-                            do
+                            int intAttributeMinimumValue = GetAttributeByName(strAttribute, token).MetatypeMinimum;
+                            if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
+                            if (objAttribute != null)
+                                objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
+                        }
+                    }
+
+                    if (!_objCharacter.Created && _objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                    {
+                        // Allocate Attribute Points
+                        int intAttributePointCount = _objCharacter.TotalAttributes;
+                        CharacterAttrib objAttributeToPutPointsInto;
+                        // First loop through attributes where costs can be 100% covered with points
+                        do
+                        {
+                            objAttributeToPutPointsInto = null;
+                            int intAttributeToPutPointsIntoTotalKarmaCost = 0;
+                            foreach (CharacterAttrib objLoopAttribute in AttributeList)
                             {
-                                objAttributeToPutPointsInto = null;
-                                int intAttributeToPutPointsIntoTotalKarmaCost = 0;
-                                foreach (CharacterAttrib objLoopAttribute in AttributeList)
+                                if (objLoopAttribute.Karma == 0)
+                                    continue;
+                                // Put points into the attribute with the highest total karma cost.
+                                // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                                int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                                if (objAttributeToPutPointsInto == null ||
+                                    (objLoopAttribute.Karma <= intAttributePointCount &&
+                                     (intLoopTotalKarmaCost > intAttributeToPutPointsIntoTotalKarmaCost ||
+                                      (intLoopTotalKarmaCost == intAttributeToPutPointsIntoTotalKarmaCost &&
+                                       objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))))
                                 {
-                                    if (objLoopAttribute.Karma == 0)
-                                        continue;
-                                    // Put points into the attribute with the highest total karma cost.
-                                    // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
-                                    int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
-                                    if (objAttributeToPutPointsInto == null ||
-                                        (objLoopAttribute.Karma <= intAttributePointCount &&
-                                         (intLoopTotalKarmaCost > intAttributeToPutPointsIntoTotalKarmaCost ||
-                                          (intLoopTotalKarmaCost == intAttributeToPutPointsIntoTotalKarmaCost &&
-                                           objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))))
-                                    {
-                                        objAttributeToPutPointsInto = objLoopAttribute;
-                                        intAttributeToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
-                                    }
-                                }
-
-                                if (objAttributeToPutPointsInto != null)
-                                {
-                                    objAttributeToPutPointsInto.Base = objAttributeToPutPointsInto.Karma;
-                                    intAttributePointCount -= objAttributeToPutPointsInto.Karma;
-                                    objAttributeToPutPointsInto.Karma = 0;
-                                }
-                            } while (objAttributeToPutPointsInto != null && intAttributePointCount > 0);
-
-                            // If any points left over, then put them all into the attribute with the highest karma cost
-                            if (intAttributePointCount > 0 && AttributeList.Any(x => x.Karma != 0, token))
-                            {
-                                int intHighestTotalKarmaCost = 0;
-                                foreach (CharacterAttrib objLoopAttribute in AttributeList)
-                                {
-                                    if (objLoopAttribute.Karma == 0)
-                                        continue;
-                                    // Put points into the attribute with the highest total karma cost.
-                                    // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
-                                    int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
-                                    if (objAttributeToPutPointsInto == null ||
-                                        intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
-                                        (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
-                                         objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))
-                                    {
-                                        objAttributeToPutPointsInto = objLoopAttribute;
-                                        intHighestTotalKarmaCost = intLoopTotalKarmaCost;
-                                    }
-                                }
-
-                                if (objAttributeToPutPointsInto != null)
-                                {
-                                    objAttributeToPutPointsInto.Base = intAttributePointCount;
-                                    objAttributeToPutPointsInto.Karma -= intAttributePointCount;
+                                    objAttributeToPutPointsInto = objLoopAttribute;
+                                    intAttributeToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
                                 }
                             }
 
-                            // Allocate Special Attribute Points
-                            intAttributePointCount = _objCharacter.TotalSpecial;
-                            // First loop through attributes where costs can be 100% covered with points
-                            do
+                            if (objAttributeToPutPointsInto != null)
                             {
-                                objAttributeToPutPointsInto = null;
-                                int intAttributeToPutPointsIntoTotalKarmaCost = 0;
-                                foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)
-                                {
-                                    if (objLoopAttribute.Karma == 0)
-                                        continue;
-                                    // Put points into the attribute with the highest total karma cost.
-                                    // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
-                                    int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
-                                    if (objAttributeToPutPointsInto == null ||
-                                        (objLoopAttribute.Karma <= intAttributePointCount &&
-                                         (intLoopTotalKarmaCost > intAttributeToPutPointsIntoTotalKarmaCost ||
-                                          (intLoopTotalKarmaCost == intAttributeToPutPointsIntoTotalKarmaCost &&
-                                           objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))))
-                                    {
-                                        objAttributeToPutPointsInto = objLoopAttribute;
-                                        intAttributeToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
-                                    }
-                                }
+                                objAttributeToPutPointsInto.Base = objAttributeToPutPointsInto.Karma;
+                                intAttributePointCount -= objAttributeToPutPointsInto.Karma;
+                                objAttributeToPutPointsInto.Karma = 0;
+                            }
+                        } while (objAttributeToPutPointsInto != null && intAttributePointCount > 0);
 
-                                if (objAttributeToPutPointsInto != null)
-                                {
-                                    objAttributeToPutPointsInto.Base = objAttributeToPutPointsInto.Karma;
-                                    intAttributePointCount -= objAttributeToPutPointsInto.Karma;
-                                    objAttributeToPutPointsInto.Karma = 0;
-                                }
-                            } while (objAttributeToPutPointsInto != null);
-
-                            // If any points left over, then put them all into the attribute with the highest karma cost
-                            if (intAttributePointCount > 0 && SpecialAttributeList.Any(x => x.Karma != 0, token))
+                        // If any points left over, then put them all into the attribute with the highest karma cost
+                        if (intAttributePointCount > 0 && AttributeList.Any(x => x.Karma != 0, token))
+                        {
+                            int intHighestTotalKarmaCost = 0;
+                            foreach (CharacterAttrib objLoopAttribute in AttributeList)
                             {
-                                int intHighestTotalKarmaCost = 0;
-                                foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)
+                                if (objLoopAttribute.Karma == 0)
+                                    continue;
+                                // Put points into the attribute with the highest total karma cost.
+                                // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                                int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                                if (objAttributeToPutPointsInto == null ||
+                                    intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                                    (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
+                                     objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))
                                 {
-                                    if (objLoopAttribute.Karma == 0)
-                                        continue;
-                                    // Put points into the attribute with the highest total karma cost.
-                                    // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
-                                    int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
-                                    if (objAttributeToPutPointsInto == null ||
-                                        intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
-                                        (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
-                                         objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))
-                                    {
-                                        objAttributeToPutPointsInto = objLoopAttribute;
-                                        intHighestTotalKarmaCost = intLoopTotalKarmaCost;
-                                    }
+                                    objAttributeToPutPointsInto = objLoopAttribute;
+                                    intHighestTotalKarmaCost = intLoopTotalKarmaCost;
                                 }
+                            }
 
-                                if (objAttributeToPutPointsInto != null)
-                                {
-                                    objAttributeToPutPointsInto.Base = intAttributePointCount;
-                                    objAttributeToPutPointsInto.Karma -= intAttributePointCount;
-                                }
+                            if (objAttributeToPutPointsInto != null)
+                            {
+                                objAttributeToPutPointsInto.Base = intAttributePointCount;
+                                objAttributeToPutPointsInto.Karma -= intAttributePointCount;
                             }
                         }
 
-                        ResetBindings(token);
+                        // Allocate Special Attribute Points
+                        intAttributePointCount = _objCharacter.TotalSpecial;
+                        // First loop through attributes where costs can be 100% covered with points
+                        do
+                        {
+                            objAttributeToPutPointsInto = null;
+                            int intAttributeToPutPointsIntoTotalKarmaCost = 0;
+                            foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)
+                            {
+                                if (objLoopAttribute.Karma == 0)
+                                    continue;
+                                // Put points into the attribute with the highest total karma cost.
+                                // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                                int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                                if (objAttributeToPutPointsInto == null ||
+                                    (objLoopAttribute.Karma <= intAttributePointCount &&
+                                     (intLoopTotalKarmaCost > intAttributeToPutPointsIntoTotalKarmaCost ||
+                                      (intLoopTotalKarmaCost == intAttributeToPutPointsIntoTotalKarmaCost &&
+                                       objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))))
+                                {
+                                    objAttributeToPutPointsInto = objLoopAttribute;
+                                    intAttributeToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                                }
+                            }
+
+                            if (objAttributeToPutPointsInto != null)
+                            {
+                                objAttributeToPutPointsInto.Base = objAttributeToPutPointsInto.Karma;
+                                intAttributePointCount -= objAttributeToPutPointsInto.Karma;
+                                objAttributeToPutPointsInto.Karma = 0;
+                            }
+                        } while (objAttributeToPutPointsInto != null);
+
+                        // If any points left over, then put them all into the attribute with the highest karma cost
+                        if (intAttributePointCount > 0 && SpecialAttributeList.Any(x => x.Karma != 0, token))
+                        {
+                            int intHighestTotalKarmaCost = 0;
+                            foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)
+                            {
+                                if (objLoopAttribute.Karma == 0)
+                                    continue;
+                                // Put points into the attribute with the highest total karma cost.
+                                // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                                int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                                if (objAttributeToPutPointsInto == null ||
+                                    intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                                    (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
+                                     objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))
+                                {
+                                    objAttributeToPutPointsInto = objLoopAttribute;
+                                    intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                                }
+                            }
+
+                            if (objAttributeToPutPointsInto != null)
+                            {
+                                objAttributeToPutPointsInto.Base = intAttributePointCount;
+                                objAttributeToPutPointsInto.Karma -= intAttributePointCount;
+                            }
+                        }
                     }
-                    finally
-                    {
-                        Interlocked.Decrement(ref _intLoading);
-                    }
-                    //Timekeeper.Finish("load_char_attrib");
+
+                    ResetBindings(token);
                 }
+                finally
+                {
+                    Interlocked.Decrement(ref _intLoading);
+                }
+                //Timekeeper.Finish("load_char_attrib");
             }
         }
 

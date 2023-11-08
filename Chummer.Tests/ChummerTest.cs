@@ -24,7 +24,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -54,7 +53,7 @@ namespace Chummer.Tests
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             foreach (DirectoryInfo objOldDir in objPathInfo.GetDirectories("TestRun-*"))
             {
-                Directory.Delete(objOldDir.FullName, true);
+                Utils.SafeDeleteDirectory(objOldDir.FullName);
             }
             TestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalSettings.InvariantCultureInfo));
             TestPathInfo = Directory.CreateDirectory(TestPath);
@@ -121,46 +120,32 @@ namespace Chummer.Tests
             Debug.WriteLine("Unit test initialized for: Test01_LoadContent()");
             try
             {
-                bool blnTemp = Utils.IsUnitTestForUI;
-                try
+                // Attempt to cache all XML files that are used the most.
+                List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                int intCounter = 0;
+                foreach (string strLoopFile in Utils.BasicDataFileNames)
                 {
-                    Utils.IsUnitTestForUI = true;
-                    // Attempt to cache all XML files that are used the most.
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
-                    {
-                        List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int intCounter = 0;
-                        foreach (string strLoopFile in Utils.BasicDataFileNames)
-                        {
-                            // ReSharper disable once AccessToDisposedClosure
-                            lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
-                            if (++intCounter != Utils.MaxParallelBatchSize)
-                                continue;
-                            Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
-                            lstCachingTasks.Clear();
-                            intCounter = 0;
-                        }
-
-                        Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
-
-                        async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
-                        {
-                            // Load default language data first for performance reasons
-                            if (!GlobalSettings.Language.Equals(
-                                    GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                            {
-                                await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
-                            }
-                            await XmlManager.LoadXPathAsync(strFile);
-                            await frmLoadingBarInner.PerformStepAsync(
-                                Application.ProductName,
-                                LoadingBar.ProgressBarTextPatterns.Initializing);
-                        }
-                    }
+                    // ReSharper disable once AccessToDisposedClosure
+                    lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile)));
+                    if (++intCounter != Utils.MaxParallelBatchSize)
+                        continue;
+                    Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+                    lstCachingTasks.Clear();
+                    intCounter = 0;
                 }
-                finally
+
+                Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+
+                async Task CacheCommonFile(string strFile)
                 {
-                    Utils.IsUnitTestForUI = blnTemp;
+                    // Load default language data first for performance reasons
+                    if (!GlobalSettings.Language.Equals(
+                            GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    {
+                        await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
+                    }
+
+                    await XmlManager.LoadXPathAsync(strFile);
                 }
             }
             catch (Exception ex)

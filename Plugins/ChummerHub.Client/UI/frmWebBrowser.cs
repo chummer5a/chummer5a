@@ -56,15 +56,18 @@ namespace ChummerHub.Client.UI
 
         private void frmWebBrowser_Load(object sender, EventArgs e)
         {
-            Invoke(() =>
-                {
-                    SuspendLayout();
-                    webBrowser2.Navigated += webBrowser2_Navigated;
-                    webBrowser2.ScriptErrorsSuppressed = true;
-                    webBrowser2.Navigate(LoginUrl);
-                    BringToFront();
-                }
-            );
+            SuspendLayout();
+            try
+            {
+                webBrowser2.Navigated += webBrowser2_Navigated;
+                webBrowser2.ScriptErrorsSuppressed = true;
+                webBrowser2.Navigate(LoginUrl);
+                BringToFront();
+            }
+            finally
+            {
+                ResumeLayout();
+            }
         }
 
         private bool login;
@@ -96,7 +99,7 @@ namespace ChummerHub.Client.UI
                     if (body?.CallSuccess == true)
                     {
                         login = true;
-                        Program.MainForm.Invoke(() =>
+                        await Program.MainForm.DoThreadSafeAsync(x =>
                         {
                             SINnerVisibility tempvis = Backend.Utils.DefaultSINnerVisibility
                                                        ?? new SINnerVisibility
@@ -105,8 +108,8 @@ namespace ChummerHub.Client.UI
                                                            IsPublic = true
                                                        };
                             tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
-                            Close();
-                        });
+                            x.Close();
+                        }).ConfigureAwait(false);
                     }
                     else
                     {

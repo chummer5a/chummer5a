@@ -715,7 +715,7 @@ namespace ChummerHub.Client.UI
                 {
                     frmWebBrowser = await Chummer.Utils.RunOnMainThreadAsync(() => new frmWebBrowser(), token).ConfigureAwait(false);
                 }
-                await frmWebBrowser.DoThreadSafeAsync(x => x.ShowDialogSafe(Program.MainForm), token: token);
+                await frmWebBrowser.DoThreadSafeAsync(x => x.ShowDialogSafe(Program.MainForm, token), token: token);
                 await GetRolesStatusAsync(this, token);
                 await UpdateDisplayAsync(token);
                 ResumeLayout(false);

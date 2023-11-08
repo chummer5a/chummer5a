@@ -13,6 +13,7 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
 	<Configurations>Debug;Release;Debuggable Release</Configurations>
 	<AnalysisLevel>latest-minimum</AnalysisLevel>
+	<NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="WindowsBase" />
@@ -71,13 +72,13 @@
     <None Update="TestFiles\Mittens Chargen.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestFiles\Monomax %28approved%29 3.chum5">
+    <None Update="TestFiles\Monomax %28approved%29 3.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestFiles\Munin.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestFiles\Munin_Career%281%29.chum5">
+    <None Update="TestFiles\Munin_Career%281%29.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestFiles\Munin_Career.chum5">
@@ -107,13 +108,13 @@
     <None Update="TestFiles\Serpent.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestFiles\Skink%281%29.chum5">
+    <None Update="TestFiles\Skink%281%29.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestFiles\Skink.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestFiles\Soma %28Career%29.chum5">
+    <None Update="TestFiles\Soma %28Career%29.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestFiles\Soma.chum5">
@@ -136,21 +137,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chummer\Chummer.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
-    <Analyzer Include="..\packages\xunit.analyzers.1.4.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
-    <Analyzer Include="..\packages\xunit.analyzers.1.4.0\analyzers\dotnet\cs\xunit.analyzers.fixes.dll" />
+    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />

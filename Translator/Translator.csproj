@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -28,18 +28,19 @@
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <OutputPath>..\Chummer\bin\Debug\</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\Chummer\bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <OutputPath>..\Chummer\bin\Debuggable Release\</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <ItemGroup>
@@ -63,22 +64,10 @@
     <Content Include="translator.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chummer\Chummer.csproj" />
+    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.7.30\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />

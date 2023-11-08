@@ -4253,9 +4253,7 @@ namespace Chummer
                     else
                         Log.Trace("blnHasPower = true");
 
-                    int intLevels = 0;
-                    if (bonusNode["val"] != null)
-                        intLevels = Convert.ToInt32(bonusNode["val"].InnerText, GlobalSettings.InvariantCultureInfo);
+                    int.TryParse(bonusNode["val"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intLevels);
                     if (!objBoostedPower.LevelsEnabled)
                         intLevels = 1;
                     CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName,

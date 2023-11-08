@@ -25821,5 +25821,13 @@
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <AssemblyVersion>5.225.0.0</AssemblyVersion>
+    <FileVersion>5.225.0.0</FileVersion>
+    <Description>Character generator for Shadowrun 5th Edition</Description>
+    <Copyright>Licensed GNU GPLv3</Copyright>
+    <RepositoryUrl>Licensed GNU GPLv3</RepositoryUrl>
+    <Title>Chummer5a</Title>
+    <Product>Chummer5a</Product>
   </PropertyGroup>
 </Project>

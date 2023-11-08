@@ -58,11 +58,11 @@ namespace Chummer.Backend.Skills
 
         private async void SkillGroupsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await SkillGroups.LockObject.EnterReadLockAsync().ConfigureAwait(false))
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
@@ -77,11 +77,11 @@ namespace Chummer.Backend.Skills
 
         private async void SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await Skills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 Skill objSkill = await Skills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
@@ -99,12 +99,12 @@ namespace Chummer.Backend.Skills
 
         private async void KnowledgeSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await KnowledgeSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
             using (await KnowsoftSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 KnowledgeSkill objSkill = await KnowledgeSkills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
@@ -131,12 +131,12 @@ namespace Chummer.Backend.Skills
 
         private async void KnowsoftSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await KnowsoftSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
             using (await KnowledgeSkills.LockObject.EnterReadLockAsync().ConfigureAwait(false))
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 KnowledgeSkill objSkill = await KnowsoftSkills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
@@ -156,10 +156,10 @@ namespace Chummer.Backend.Skills
 
         private async void SkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 switch (e.ListChangedType)
                 {
                     case ListChangedType.Reset:
@@ -209,10 +209,10 @@ namespace Chummer.Backend.Skills
 
         private async void KnowledgeSkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 switch (e.ListChangedType)
                 {
                     case ListChangedType.Reset:
@@ -262,10 +262,10 @@ namespace Chummer.Backend.Skills
 
         private async void OnKnowledgeSkillPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 switch (e.PropertyName)
                 {
                     case nameof(KnowledgeSkill.CurrentSpCost):
@@ -281,10 +281,10 @@ namespace Chummer.Backend.Skills
 
         private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 if (e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
                     OnPropertyChanged(nameof(SkillPointsSpentOnKnoskills));
             }
@@ -292,10 +292,10 @@ namespace Chummer.Backend.Skills
 
         private async void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                if (_intLoading > 0)
-                    return;
                 switch (e?.PropertyName)
                 {
                     case nameof(CharacterSettings.KnowledgePointsExpression):
@@ -1928,8 +1928,11 @@ namespace Chummer.Backend.Skills
                     {
                         for (int i = 0; i < lstNodesToChange.Count; i++)
                         {
-                            lstNodesToChange[i].InnerText
-                                = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                            XmlNode xmlLoop = lstNodesToChange[i];
+                            if (xmlLoop == null)
+                                continue;
+                            xmlLoop.InnerText
+                                = map.TryGetValue(xmlLoop.InnerText, out Guid guidLoop)
                                     ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
                                     : StringExtensions.EmptyGuid;
                         }
@@ -1993,8 +1996,11 @@ namespace Chummer.Backend.Skills
                     {
                         for (int i = 0; i < lstNodesToChange.Count; i++)
                         {
-                            lstNodesToChange[i].InnerText
-                                = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                            XmlNode xmlLoop = lstNodesToChange[i];
+                            if (xmlLoop == null)
+                                continue;
+                            xmlLoop.InnerText
+                                = map.TryGetValue(xmlLoop.InnerText, out Guid guidLoop)
                                     ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
                                     : StringExtensions.EmptyGuid;
                         }

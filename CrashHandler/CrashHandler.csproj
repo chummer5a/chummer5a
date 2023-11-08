@@ -7,19 +7,20 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	<Configurations>Debug;Release;Debuggable Release</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\Chummer\bin\Debug\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\Chummer\bin\Release\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <OutputPath>bin\Debuggable Release\</OutputPath>
-    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -36,6 +37,8 @@
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <StartupObject>CrashHandler.Program</StartupObject>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
@@ -47,13 +50,7 @@
     <Content Include="CrashHandler.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chummer\Chummer.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />

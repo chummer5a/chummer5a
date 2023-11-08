@@ -540,7 +540,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
+        public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 600, CancellationToken token = default)
         {
             return SafelyRunSynchronously(() => SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token), token);
         }
@@ -553,7 +553,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static Task<bool> SafeDeleteDirectoryAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
+        public static Task<bool> SafeDeleteDirectoryAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 600, CancellationToken token = default)
         {
             return SafeDeleteDirectoryCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout, token);
         }
@@ -680,7 +680,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
+        public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 600, CancellationToken token = default)
         {
             return SafelyRunSynchronously(() => SafeClearDirectoryCoreAsync(
                                               true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
@@ -697,7 +697,7 @@ namespace Chummer
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static Task<bool> SafeClearDirectoryAsync(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
+        public static Task<bool> SafeClearDirectoryAsync(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 600, CancellationToken token = default)
         {
             return SafeClearDirectoryCoreAsync(false, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
                 intTimeout, token);

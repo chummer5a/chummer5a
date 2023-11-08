@@ -41,8 +41,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chummer.Benchmarks", "Chumm
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{8F9EEA5C-4856-4D5C-A46E-8971CE847880}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegexLibCompiler", "RegexLibCompiler\RegexLibCompiler.csproj", "{629C3C4C-E584-45F9-9885-28E5265012E5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug with ChummerHub|Any CPU = Debug with ChummerHub|Any CPU
@@ -107,11 +105,9 @@ Global
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debug|x86.Build.0 = Debug|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release with ChummerHub|Any CPU.ActiveCfg = Debuggable Release|Any CPU
-		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release with ChummerHub|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release with ChummerHub|x86.ActiveCfg = Debuggable Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release with ChummerHub|x86.Build.0 = Debuggable Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
-		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -125,11 +121,9 @@ Global
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug|x86.Build.0 = Debug|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release with ChummerHub|Any CPU.ActiveCfg = Debuggable Release|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release with ChummerHub|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release with ChummerHub|x86.ActiveCfg = Debuggable Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release with ChummerHub|x86.Build.0 = Debuggable Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -201,11 +195,9 @@ Global
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release with ChummerHub|x86.ActiveCfg = Debuggable Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release with ChummerHub|x86.Build.0 = Debuggable Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
-		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|x86.ActiveCfg = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|x86.Build.0 = Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debug with ChummerHub|Any CPU.ActiveCfg = Debug|Any CPU
@@ -217,11 +209,9 @@ Global
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debug|x86.Build.0 = Debug|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release with ChummerHub|Any CPU.ActiveCfg = Debuggable Release|Any CPU
-		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release with ChummerHub|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release with ChummerHub|x86.ActiveCfg = Debuggable Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release with ChummerHub|x86.Build.0 = Debuggable Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
-		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -246,16 +236,6 @@ Global
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Release|x86.ActiveCfg = Release|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Debug with ChummerHub|Any CPU.ActiveCfg = Debug|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Debug with ChummerHub|x86.ActiveCfg = Debug|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Debuggable Release with ChummerHub|Any CPU.ActiveCfg = Release|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Debuggable Release with ChummerHub|x86.ActiveCfg = Release|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Debuggable Release|Any CPU.ActiveCfg = Release|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Debuggable Release|x86.ActiveCfg = Release|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{629C3C4C-E584-45F9-9885-28E5265012E5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -265,8 +245,8 @@ Global
 		{EA016472-2F78-43F9-AF2C-809BDF766645} = {9C112322-31EA-418C-AC07-C6D030155FA3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {55540ABF-8BD7-4553-8C6D-03B5E024555F}
 		RESX_SortFileContentOnSave = True
+		SolutionGuid = {55540ABF-8BD7-4553-8C6D-03B5E024555F}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

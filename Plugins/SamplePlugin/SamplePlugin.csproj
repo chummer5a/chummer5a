@@ -10,19 +10,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <StartAction>Program</StartAction>
-    <StartProgram>$(OutputPath)..\..\..\..\Chummer\bin\Debug\Chummer5.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\Chummer5.exe</StartProgram>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <StartAction>Program</StartAction>
-    <StartProgram>$(OutputPath)..\..\..\..\Chummer\bin\Debug\Chummer5.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\Chummer5.exe</StartProgram>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <OutputPath>bin\Debuggable Release\</OutputPath>
+    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <Optimize>false</Optimize>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\Chummer5.exe</StartProgram>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
@@ -36,16 +41,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Chummer\Chummer.csproj" />
+    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
@@ -63,40 +62,37 @@
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SamplePlugin\"
-        mkdir "$(TargetDir)Plugins\SamplePlugin\"
-        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\"
-        mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\"
-        Exit 0</PreBuildEvent>
+mkdir "$(TargetDir)Plugins\SamplePlugin\"
+echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\"
+mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\"
+Exit 0</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>echo Statement 1: copy "$(TargetDir)*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SamplePlugin\" /Y
 echo ----------------------------------------------------------------------------------------------------
 echo ----------------------------------------------------------------------------------------------------
 echo Statement 2: You need to copy every DLL here in the post-build step! This HAS to be done here!
 echo ----------------------------------------------------------------------------------------------------
 echo ----------------------------------------------------------------------------------------------------
-        echo Statement 3: copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 4: copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 5: copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 6: copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 7: copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 11: copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 12: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
-
-        echo Statement last: copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\" /Y
-
-
-</PostBuildEvent>
+echo Statement 3: copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 4: copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 5: copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 6: copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 7: copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 11: copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 12: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement last: copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\" /Y</PostBuildEvent>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 </Project>
