@@ -33,24 +33,24 @@
     <AssemblyVersion>5.225.0.0</AssemblyVersion>
     <FileVersion>5.225.0.0</FileVersion>
     <Version>5.225.0.0</Version>
-    <Nullable>warnings</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
-    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
     <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <ItemGroup>

@@ -14,7 +14,7 @@
     <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>warnings</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
     <Optimize>True</Optimize>

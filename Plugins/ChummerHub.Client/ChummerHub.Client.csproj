@@ -9,31 +9,27 @@
     <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
 	<StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
-    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
     <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
 	<StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
     <Optimize>false</Optimize>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
@@ -71,7 +67,7 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\Chummer\Chummer.csproj" />
+    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="OpenAPIs\swagger.json">
@@ -166,27 +162,27 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
-      echo Statement 1: copy "$(TargetDir)\*.dll" "$(TargetDir)\Plugins\SINners\" /Y
-      copy "$(TargetDir)\*.dll" "$(TargetDir)\Plugins\SINners\" /Y
-      echo Statement 2: copy "$(TargetDir)\*.txt" "$(TargetDir)\Plugins\SINners\" /Y
-      copy "$(TargetDir)\*.txt" "$(TargetDir)\Plugins\SINners\" /Y
-      echo Statement 3: copy "$(TargetDir)\*.dll.config" "$(TargetDir)\Plugins\SINners\" /Y
-      copy "$(TargetDir)\*.dll.config" "$(TargetDir)\Plugins\SINners\" /Y
-      echo Statement 4: copy "$(TargetDir)\Plugins\SINners\*" "$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
-      copy "$(TargetDir)\Plugins\SINners\*" "$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+      echo Statement 1: copy "$(MSBuildProjectDirectory)\$(OutputPath)*.dll" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
+      copy "$(MSBuildProjectDirectory)\$(OutputPath)*.dll" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
+      echo Statement 2: copy "$(MSBuildProjectDirectory)\$(OutputPath)*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
+      copy "$(MSBuildProjectDirectory)\$(OutputPath)*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
+      echo Statement 3: copy "$(MSBuildProjectDirectory)\$(OutputPath)*.dll.config" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
+      copy "$(MSBuildProjectDirectory)\$(OutputPath)*.dll.config" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
+      echo Statement 4: copy "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+      copy "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SINners\"
-        mkdir "$(TargetDir)\Plugins\SINners\"
-        echo Statement 2: mkdir "$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
-        mkdir "$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+    <PreBuildEvent>echo Statement 1: mkdir "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\"
+        mkdir "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\"
+        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+        mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
         Exit 0</PreBuildEvent>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <AssemblyVersion>1.0.0.4</AssemblyVersion>
     <FileVersion>1.0.0.4</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>warnings</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 </Project>

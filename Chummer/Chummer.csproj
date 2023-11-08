@@ -83,7 +83,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -25782,6 +25781,6 @@
             echo "No .git directory found, skipping copying of hooks."
         )
 </PreBuildEvent>
-    <Nullable>warnings</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 </Project>

@@ -8,7 +8,7 @@
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Nullable>warnings</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>

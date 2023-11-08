@@ -10,7 +10,8 @@
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>warnings</Nullable>
+    <Nullable>disable</Nullable>
+    <StartupObject>ChummerDataViewer.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>

@@ -8,23 +8,23 @@
     <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
-    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
     <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <OutputPath>$(SolutionDir)\Chummer\bin\$(Configuration)\$(TargetFramework)\</OutputPath>
+    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <Optimize>false</Optimize>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
@@ -43,7 +43,8 @@
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>warnings</Nullable>
+    <Nullable>disable</Nullable>
+    <StartupObject>CrashHandler.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="CrashHandler.ico" />
