@@ -59,40 +59,36 @@
     <PackageReference Include="System.ServiceModel.Federation" Version="6.1.0" />
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>echo Statement 1: mkdir "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\"
-        mkdir "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\"
-        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
-        mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
-        Exit 0</PreBuildEvent>
+    <PreBuildEvent>echo Statement 1: mkdir "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
+mkdir "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
+echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
+mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
+Exit 0</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>echo Statement 1: copy "$(MSBuildProjectDirectory)\$(OutputPath)*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+    <PostBuildEvent>echo Statement 1: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\SamplePlugin*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\SamplePlugin*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
 echo ----------------------------------------------------------------------------------------------------
 echo ----------------------------------------------------------------------------------------------------
 echo Statement 2: You need to copy every DLL here in the post-build step! This HAS to be done here!
 echo ----------------------------------------------------------------------------------------------------
 echo ----------------------------------------------------------------------------------------------------
-        echo Statement 3: copy "$(MSBuildProjectDirectory)\$(OutputPath)Newtonsoft.Json.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        copy "$(MSBuildProjectDirectory)\$(OutputPath)Newtonsoft.Json.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        echo Statement 4: copy "$(MSBuildProjectDirectory)\$(OutputPath)NLog.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        copy "$(MSBuildProjectDirectory)\$(OutputPath)NLog.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        echo Statement 5: copy "$(MSBuildProjectDirectory)\$(OutputPath)System.Composition.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        copy "$(MSBuildProjectDirectory)\$(OutputPath)System.Composition.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        echo Statement 6: copy "$(MSBuildProjectDirectory)\$(OutputPath)System.Diagnostics.DiagnosticSource.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        copy "$(MSBuildProjectDirectory)\$(OutputPath)System.Diagnostics.DiagnosticSource.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        echo Statement 7: copy "$(MSBuildProjectDirectory)\$(OutputPath)Microsoft.ApplicationInsights.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        copy "$(MSBuildProjectDirectory)\$(OutputPath)Microsoft.ApplicationInsights.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        echo Statement 11: copy "$(MSBuildProjectDirectory)\$(OutputPath)System.Memory.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        copy "$(MSBuildProjectDirectory)\$(OutputPath)System.Memory.*" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        echo Statement 12: copy "$(MSBuildProjectDirectory)\$(OutputPath)*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-        copy "$(MSBuildProjectDirectory)\$(OutputPath)*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\" /Y
-
-        echo Statement last: copy "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-        copy "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-
-
-</PostBuildEvent>
+echo Statement 3: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Newtonsoft.Json.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Newtonsoft.Json.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+echo Statement 4: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\NLog.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\NLog.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+echo Statement 5: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Composition.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Composition.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+echo Statement 6: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Diagnostics.DiagnosticSource.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Diagnostics.DiagnosticSource.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+echo Statement 7: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Microsoft.ApplicationInsights.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Microsoft.ApplicationInsights.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+echo Statement 11: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Memory.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Memory.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+echo Statement 12: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+echo Statement last: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y</PostBuildEvent>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <NeutralLanguage>en-US</NeutralLanguage>

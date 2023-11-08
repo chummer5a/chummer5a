@@ -161,23 +161,25 @@
     <Compile Remove="OidcClient\OidcClient\TokenRefreshedEventArgs.cs" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-      echo Statement 1: copy "$(MSBuildProjectDirectory)\$(OutputPath)*.dll" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
-      copy "$(MSBuildProjectDirectory)\$(OutputPath)*.dll" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
-      echo Statement 2: copy "$(MSBuildProjectDirectory)\$(OutputPath)*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
-      copy "$(MSBuildProjectDirectory)\$(OutputPath)*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
-      echo Statement 3: copy "$(MSBuildProjectDirectory)\$(OutputPath)*.dll.config" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
-      copy "$(MSBuildProjectDirectory)\$(OutputPath)*.dll.config" "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\" /Y
-      echo Statement 4: copy "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
-      copy "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
-</PostBuildEvent>
+    <PostBuildEvent>echo Statement 1: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.dll" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.dll" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+echo Statement 2: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+echo Statement 3: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.dll.config" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.dll.config" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+echo Statement 4: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.pdb" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.pdb" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+echo Statement 5: del "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\Chummer5.*" /q
+del "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\Chummer5.*" /q
+echo Statement 6: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>echo Statement 1: mkdir "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\"
-        mkdir "$(MSBuildProjectDirectory)\$(OutputPath)Plugins\SINners\"
-        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
-        mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
-        Exit 0</PreBuildEvent>
+    <PreBuildEvent>echo Statement 1: mkdir "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+mkdir "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+Exit 0</PreBuildEvent>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <AssemblyVersion>1.0.0.4</AssemblyVersion>
