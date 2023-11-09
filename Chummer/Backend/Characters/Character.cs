@@ -11224,6 +11224,7 @@ namespace Chummer
                 _blnCyberwareDisabled = false;
                 _blnInitiationDisabled = false;
                 _blnCritterEnabled = false;
+                _objTradition.ResetTradition();
 
                 // Reset Attributes.
                 AttributeSection.Reset(token: token);
@@ -11260,6 +11261,10 @@ namespace Chummer
                 _lstStackedFoci.ForEach(x => x.Dispose(), token);
                 _lstDrugs.ForEach(x => x.Dispose(), token);
                 _lstMentorSpirits.ForEach(x => x.Dispose(), token);
+                _lstGearLocations.ForEach(x => x.Dispose(), token);
+                _lstArmorLocations.ForEach(x => x.Dispose(), token);
+                _lstWeaponLocations.ForEach(x => x.Dispose(), token);
+                _lstVehicleLocations.ForEach(x => x.Dispose(), token);
                 // Reset all of the Lists.
                 // This kills the GC
                 ImprovementManager.ClearCachedValues(this, token);
@@ -11289,6 +11294,11 @@ namespace Chummer
                 _lstCalendar.Clear();
                 _lstDrugs.Clear();
                 _lstMentorSpirits.Clear();
+                _lstGearLocations.Clear();
+                _lstArmorLocations.Clear();
+                _lstWeaponLocations.Clear();
+                _lstVehicleLocations.Clear();
+                _lstImprovementGroups.Clear();
 
                 LoadAsDirty = false;
             }
@@ -11362,6 +11372,7 @@ namespace Chummer
                 _blnCyberwareDisabled = false;
                 _blnInitiationDisabled = false;
                 _blnCritterEnabled = false;
+                await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
 
                 // Reset Attributes.
                 await AttributeSection.ResetAsync(token: token).ConfigureAwait(false);
@@ -11411,6 +11422,10 @@ namespace Chummer
                                .ConfigureAwait(false);
                 await _lstMentorSpirits.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
                                        .ConfigureAwait(false);
+                await _lstGearLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
+                await _lstArmorLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
+                await _lstWeaponLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
+                await _lstVehicleLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
                 // Reset all of the Lists.
                 // This kills the GC
                 ImprovementManager.ClearCachedValues(this, token);
@@ -11440,6 +11455,11 @@ namespace Chummer
                 await _lstCalendar.ClearAsync(token).ConfigureAwait(false);
                 await _lstDrugs.ClearAsync(token).ConfigureAwait(false);
                 await _lstMentorSpirits.ClearAsync(token).ConfigureAwait(false);
+                await _lstGearLocations.ClearAsync(token).ConfigureAwait(false);
+                await _lstArmorLocations.ClearAsync(token).ConfigureAwait(false);
+                await _lstWeaponLocations.ClearAsync(token).ConfigureAwait(false);
+                await _lstVehicleLocations.ClearAsync(token).ConfigureAwait(false);
+                await _lstImprovementGroups.ClearAsync(token).ConfigureAwait(false);
                 LoadAsDirty = false;
             }
             finally
