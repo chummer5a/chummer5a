@@ -468,37 +468,44 @@ namespace Chummer
         {
             if (SustainedCollection.Count == 0 || IsLoading)
                 return;
-            switch (e.Action)
+            using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
-                case NotifyCollectionChangedAction.Add:
-                    break;
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        break;
 
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (IHasInternalId objItem in e.OldItems)
-                    {
-                        await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem)).ConfigureAwait(false);
-                    }
-                    break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (IHasInternalId objItem in e.OldItems)
+                        {
+                            await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem))
+                                .ConfigureAwait(false);
+                        }
 
-                case NotifyCollectionChangedAction.Replace:
-                    foreach (IHasInternalId objItem in e.OldItems)
-                    {
-                        await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem)).ConfigureAwait(false);
-                    }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Move:
-                    break;
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (IHasInternalId objItem in e.OldItems)
+                        {
+                            await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem))
+                                .ConfigureAwait(false);
+                        }
 
-                case NotifyCollectionChangedAction.Reset:
-                    await SustainedCollection.RemoveAllAsync(async x =>
-                                                                 !await Spells.AnyAsync(
-                                                                     y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false)
-                                                                 && !await ComplexForms.AnyAsync(
-                                                                     y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false) &&
-                                                                 !await CritterPowers.AnyAsync(
-                                                                     y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false)).ConfigureAwait(false);
-                    break;
+                        break;
+
+                    case NotifyCollectionChangedAction.Move:
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        await SustainedCollection.RemoveAllAsync(async x =>
+                            !await Spells.AnyAsync(
+                                y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false)
+                            && !await ComplexForms.AnyAsync(
+                                y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false) &&
+                            !await CritterPowers.AnyAsync(
+                                y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false)).ConfigureAwait(false);
+                        break;
+                }
             }
         }
 
@@ -1703,32 +1710,31 @@ namespace Chummer
                                     blnDoEncumbranceRefresh = true;
                                 }
 
+                                if (IsLoading)
+                                    continue;
                                 using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
                                 {
-                                    if (!IsLoading)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
                                     {
-                                        // Needed in order to properly process named sources where
-                                        // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in Improvements)
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
                                         {
-                                            if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                                == objNewItem.InternalId
-                                                &&
-                                                objImprovement.Enabled)
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                          string strPropertyToUpdate) in
-                                                         objImprovement.GetRelevantPropertyChangers())
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
                                                 {
-                                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                            out HashSet<string> setChangedProperties))
-                                                    {
-                                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                    }
-
-                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -1766,32 +1772,31 @@ namespace Chummer
                                     blnDoEncumbranceRefresh = true;
                                 }
 
+                                if (IsLoading)
+                                    continue;
                                 using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
                                 {
-                                    if (!IsLoading)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
                                     {
-                                        // Needed in order to properly process named sources where
-                                        // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in Improvements)
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
                                         {
-                                            if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                                == objNewItem.InternalId
-                                                &&
-                                                objImprovement.Enabled)
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                          string strPropertyToUpdate) in
-                                                         objImprovement.GetRelevantPropertyChangers())
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
                                                 {
-                                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                            out HashSet<string> setChangedProperties))
-                                                    {
-                                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                    }
-
-                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -1853,32 +1858,31 @@ namespace Chummer
                                     blnDoEncumbranceRefresh = true;
                                 }
 
+                                if (IsLoading)
+                                    continue;
                                 using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
                                 {
-                                    if (!IsLoading)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
                                     {
-                                        // Needed in order to properly process named sources where
-                                        // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in Improvements)
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
                                         {
-                                            if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                                == objNewItem.InternalId
-                                                &&
-                                                objImprovement.Enabled)
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                          string strPropertyToUpdate) in
-                                                         objImprovement.GetRelevantPropertyChangers())
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
                                                 {
-                                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                            out HashSet<string> setChangedProperties))
-                                                    {
-                                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                    }
-
-                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -1916,32 +1920,31 @@ namespace Chummer
                                     blnDoEncumbranceRefresh = true;
                                 }
 
+                                if (IsLoading)
+                                    continue;
                                 using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
                                 {
-                                    if (!IsLoading)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
                                     {
-                                        // Needed in order to properly process named sources where
-                                        // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in Improvements)
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
                                         {
-                                            if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                                == objNewItem.InternalId
-                                                &&
-                                                objImprovement.Enabled)
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                          string strPropertyToUpdate) in
-                                                         objImprovement.GetRelevantPropertyChangers())
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
                                                 {
-                                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                            out HashSet<string> setChangedProperties))
-                                                    {
-                                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                    }
-
-                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -2006,32 +2009,31 @@ namespace Chummer
                                         blnDoArmorEncumbranceRefresh = true;
                                 }
 
+                                if (IsLoading)
+                                    continue;
                                 using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
                                 {
-                                    if (!IsLoading)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
                                     {
-                                        // Needed in order to properly process named sources where
-                                        // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in Improvements)
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
                                         {
-                                            if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                                == objNewItem.InternalId
-                                                &&
-                                                objImprovement.Enabled)
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                          string strPropertyToUpdate) in
-                                                         objImprovement.GetRelevantPropertyChangers())
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
                                                 {
-                                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                            out HashSet<string> setChangedProperties))
-                                                    {
-                                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                    }
-
-                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -2079,32 +2081,31 @@ namespace Chummer
                                         blnDoArmorEncumbranceRefresh = true;
                                 }
 
+                                if (IsLoading)
+                                    continue;
                                 using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
                                 {
-                                    if (!IsLoading)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
                                     {
-                                        // Needed in order to properly process named sources where
-                                        // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in Improvements)
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
                                         {
-                                            if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                                == objNewItem.InternalId
-                                                &&
-                                                objImprovement.Enabled)
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                          string strPropertyToUpdate) in
-                                                         objImprovement.GetRelevantPropertyChangers())
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
                                                 {
-                                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                            out HashSet<string> setChangedProperties))
-                                                    {
-                                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                    }
-
-                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -16129,66 +16130,63 @@ namespace Chummer
 
         private bool RefreshAstralReputationImprovements(CancellationToken token = default)
         {
-            using (LockObject.EnterUpgradeableReadLock(token))
+            if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
             {
-                if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
-                {
-                    EnqueuePostLoadMethod(RefreshAstralReputationImprovements, token);
+                EnqueuePostLoadMethod(RefreshAstralReputationImprovements, token);
+                return true;
+            }
+
+            using (LockObject.EnterWriteLock(token))
+            {
+                int intCurrentTotalAstralReputation = TotalAstralReputation;
+                List<Improvement> lstCurrentAstralReputationImprovements = Improvements
+                    .Where(x => x.ImproveSource
+                                == Improvement.ImprovementSource
+                                    .AstralReputation).ToList();
+                if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
                     return true;
+                ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements, token: token);
+                try
+                {
+                    ImprovementManager.CreateImprovement(this, "Summoning",
+                        Improvement.ImprovementSource.AstralReputation,
+                        nameof(TotalAstralReputation).ToUpperInvariant(),
+                        Improvement.ImprovementType.Skill,
+                        Guid.NewGuid()
+                            .ToString("D", GlobalSettings.InvariantCultureInfo),
+                        -intCurrentTotalAstralReputation, token: token);
+                    ImprovementManager.CreateImprovement(this, "Binding",
+                        Improvement.ImprovementSource.AstralReputation,
+                        nameof(TotalAstralReputation).ToUpperInvariant(),
+                        Improvement.ImprovementType.Skill,
+                        Guid.NewGuid()
+                            .ToString("D", GlobalSettings.InvariantCultureInfo),
+                        -intCurrentTotalAstralReputation, token: token);
+                    ImprovementManager.CreateImprovement(this, "Banishing",
+                        Improvement.ImprovementSource.AstralReputation,
+                        nameof(TotalAstralReputation).ToUpperInvariant(),
+                        Improvement.ImprovementType.Skill,
+                        Guid.NewGuid()
+                            .ToString("D", GlobalSettings.InvariantCultureInfo),
+                        -intCurrentTotalAstralReputation, token: token);
+                    if (intCurrentTotalAstralReputation >= 3)
+                        ImprovementManager.CreateImprovement(this, "Chain Breaker",
+                            Improvement.ImprovementSource.AstralReputation,
+                            nameof(TotalAstralReputation).ToUpperInvariant(),
+                            Improvement.ImprovementType.DisableQuality,
+                            Guid.NewGuid()
+                                .ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo),
+                            -intCurrentTotalAstralReputation, token: token);
+                }
+                catch
+                {
+                    ImprovementManager.Rollback(this, CancellationToken.None);
+                    throw;
                 }
 
-                using (LockObject.EnterWriteLock(token))
-                {
-                    int intCurrentTotalAstralReputation = TotalAstralReputation;
-                    List<Improvement> lstCurrentAstralReputationImprovements = Improvements
-                                                                               .Where(x => x.ImproveSource
-                                                                                   == Improvement.ImprovementSource
-                                                                                       .AstralReputation).ToList();
-                    if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
-                        return true;
-                    ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements, token: token);
-                    try
-                    {
-                        ImprovementManager.CreateImprovement(this, "Summoning",
-                                                             Improvement.ImprovementSource.AstralReputation,
-                                                             nameof(TotalAstralReputation).ToUpperInvariant(),
-                                                             Improvement.ImprovementType.Skill,
-                                                             Guid.NewGuid()
-                                                                 .ToString("D", GlobalSettings.InvariantCultureInfo),
-                                                             -intCurrentTotalAstralReputation, token: token);
-                        ImprovementManager.CreateImprovement(this, "Binding",
-                                                             Improvement.ImprovementSource.AstralReputation,
-                                                             nameof(TotalAstralReputation).ToUpperInvariant(),
-                                                             Improvement.ImprovementType.Skill,
-                                                             Guid.NewGuid()
-                                                                 .ToString("D", GlobalSettings.InvariantCultureInfo),
-                                                             -intCurrentTotalAstralReputation, token: token);
-                        ImprovementManager.CreateImprovement(this, "Banishing",
-                                                             Improvement.ImprovementSource.AstralReputation,
-                                                             nameof(TotalAstralReputation).ToUpperInvariant(),
-                                                             Improvement.ImprovementType.Skill,
-                                                             Guid.NewGuid()
-                                                                 .ToString("D", GlobalSettings.InvariantCultureInfo),
-                                                             -intCurrentTotalAstralReputation, token: token);
-                        if (intCurrentTotalAstralReputation >= 3)
-                            ImprovementManager.CreateImprovement(this, "Chain Breaker",
-                                                                 Improvement.ImprovementSource.AstralReputation,
-                                                                 nameof(TotalAstralReputation).ToUpperInvariant(),
-                                                                 Improvement.ImprovementType.DisableQuality,
-                                                                 Guid.NewGuid()
-                                                                     .ToString(
-                                                                         "D", GlobalSettings.InvariantCultureInfo),
-                                                                 -intCurrentTotalAstralReputation, token: token);
-                    }
-                    catch
-                    {
-                        ImprovementManager.Rollback(this, CancellationToken.None);
-                        throw;
-                    }
-
-                    ImprovementManager.Commit(this);
-                    return true;
-                }
+                ImprovementManager.Commit(this);
+                return true;
             }
         }
 
@@ -28930,12 +28928,11 @@ namespace Chummer
 
         public void RefreshDealerConnectionDiscounts(CancellationToken token = default)
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
-
                 if (Created)
                     return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
 
@@ -28965,12 +28962,12 @@ namespace Chummer
 
         public async ValueTask RefreshDealerConnectionDiscountsAsync(CancellationToken token = default)
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
 
                 if (await GetCreatedAsync(token).ConfigureAwait(false))
                     return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
@@ -29019,12 +29016,11 @@ namespace Chummer
 
         public void RefreshBlackMarketDiscounts(CancellationToken token = default)
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
-
                 if (Created)
                     return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
 
@@ -29396,12 +29392,12 @@ namespace Chummer
 
         public async ValueTask RefreshBlackMarketDiscountsAsync(CancellationToken token = default)
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
 
                 if (await GetCreatedAsync(token).ConfigureAwait(false))
                     return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
@@ -31289,14 +31285,14 @@ namespace Chummer
 
         private bool RefreshRedlinerImprovements(CancellationToken token = default)
         {
+            if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+            {
+                EnqueuePostLoadMethod(RefreshRedlinerImprovements, token);
+                return true;
+            }
+
             using (LockObject.EnterWriteLock(token))
             {
-                if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
-                {
-                    EnqueuePostLoadMethod(RefreshRedlinerImprovements, token);
-                    return true;
-                }
-
                 //Get attributes affected by redliner/cyber singularity seeker
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
                 lstSeekerImprovements.AddRange(ImprovementManager
@@ -31395,15 +31391,15 @@ namespace Chummer
 
         private async Task<bool> RefreshRedlinerImprovementsAsync(CancellationToken token = default)
         {
+            if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+            {
+                await EnqueuePostLoadAsyncMethodAsync(RefreshRedlinerImprovementsAsync, token).ConfigureAwait(false);
+                return true;
+            }
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
-                {
-                    await EnqueuePostLoadAsyncMethodAsync(RefreshRedlinerImprovementsAsync, token).ConfigureAwait(false);
-                    return true;
-                }
 
                 //Get attributes affected by redliner/cyber singularity seeker
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
@@ -31512,12 +31508,11 @@ namespace Chummer
 
         public void RefreshEssenceLossImprovements(CancellationToken token = default)
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
-
                 // Only worry about essence loss attribute modifiers if this character actually has any attributes that would be affected by essence loss
                 // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
                 if (EssenceAtSpecialStart != decimal.MinValue)
@@ -32299,12 +32294,12 @@ namespace Chummer
 
         public async ValueTask RefreshEssenceLossImprovementsAsync(CancellationToken token = default)
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
 
                 // Only worry about essence loss attribute modifiers if this character actually has any attributes that would be affected by essence loss
                 // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
@@ -33867,120 +33862,291 @@ namespace Chummer
 
         public void RefreshEncumbrance(CancellationToken token = default)
         {
-            using (LockObject.EnterUpgradeableReadLock(token))
+            token.ThrowIfCancellationRequested();
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
+            using (LockObject.EnterWriteLock(token))
             {
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
+                // Remove any Improvements from Armor Encumbrance.
+                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Encumbrance, token: token);
+                if (!Settings.DoEncumbrancePenaltyPhysicalLimit
+                    && !Settings.DoEncumbrancePenaltyMovementSpeed
+                    && !Settings.DoEncumbrancePenaltyAgility
+                    && !Settings.DoEncumbrancePenaltyReaction)
                     return;
-                using (LockObject.EnterWriteLock(token))
+                // Create the Encumbrance Improvements.
+                int intEncumbrance = Encumbrance;
+                if (intEncumbrance == 0)
+                    return;
+                try
                 {
-                    // Remove any Improvements from Armor Encumbrance.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Encumbrance, token: token);
-                    if (!Settings.DoEncumbrancePenaltyPhysicalLimit
-                        && !Settings.DoEncumbrancePenaltyMovementSpeed
-                        && !Settings.DoEncumbrancePenaltyAgility
-                        && !Settings.DoEncumbrancePenaltyReaction)
-                        return;
-                    // Create the Encumbrance Improvements.
-                    int intEncumbrance = Encumbrance;
-                    if (intEncumbrance == 0)
-                        return;
+                    if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                        ImprovementManager.CreateImprovement(this, "Physical",
+                            Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.PhysicalLimit,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyPhysicalLimit,
+                            token: token);
+                    if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                    {
+                        ImprovementManager.CreateImprovement(this, "Ground",
+                            Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.SprintBonusPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                        ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.SprintBonusPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                        ImprovementManager.CreateImprovement(this, "Swim",
+                            Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.SprintBonusPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                        ImprovementManager.CreateImprovement(this, "Ground",
+                            Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.RunMultiplierPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                        ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.RunMultiplierPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                        ImprovementManager.CreateImprovement(this, "Swim",
+                            Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.RunMultiplierPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                        ImprovementManager.CreateImprovement(this, "Ground",
+                            Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.WalkMultiplierPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                        ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.WalkMultiplierPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                        ImprovementManager.CreateImprovement(this, "Swim",
+                            Improvement.ImprovementSource.Encumbrance,
+                            string.Empty,
+                            Improvement.ImprovementType.WalkMultiplierPercent,
+                            "precedence-1",
+                            intEncumbrance
+                            * Settings.EncumbrancePenaltyMovementSpeed,
+                            token: token);
+                    }
+
+                    if (Settings.DoEncumbrancePenaltyAgility)
+                        ImprovementManager.CreateImprovement(this, "AGI", Improvement.ImprovementSource.Encumbrance,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            "precedence-1", 0, 1, 0, 0,
+                            intEncumbrance * Settings.EncumbrancePenaltyAgility,
+                            token: token);
+                    if (Settings.DoEncumbrancePenaltyReaction)
+                        ImprovementManager.CreateImprovement(this, "REA", Improvement.ImprovementSource.Encumbrance,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            "precedence-1", 0, 1, 0, 0,
+                            intEncumbrance * Settings.EncumbrancePenaltyReaction,
+                            token: token);
+                }
+                catch
+                {
+                    ImprovementManager.Rollback(this, CancellationToken.None);
+                    throw;
+                }
+
+                ImprovementManager.Commit(this);
+            }
+        }
+
+        public async ValueTask RefreshEncumbranceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Remove any Improvements from Armor Encumbrance.
+                await ImprovementManager
+                    .RemoveImprovementsAsync(this, Improvement.ImprovementSource.Encumbrance, token: token)
+                    .ConfigureAwait(false);
+                if (!Settings.DoEncumbrancePenaltyPhysicalLimit
+                    && !Settings.DoEncumbrancePenaltyMovementSpeed
+                    && !Settings.DoEncumbrancePenaltyAgility
+                    && !Settings.DoEncumbrancePenaltyReaction)
+                    return;
+                // Create the Encumbrance Improvements.
+                int intEncumbrance = Encumbrance;
+                if (intEncumbrance == 0)
+                    return;
+                try
+                {
+                    if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Physical", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.PhysicalLimit,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyPhysicalLimit,
+                                token: token)
+                            .ConfigureAwait(false);
+                    if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                    {
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty,
+                                Improvement.ImprovementType.WalkMultiplierPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty,
+                                Improvement.ImprovementType.WalkMultiplierPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty,
+                                Improvement.ImprovementType.WalkMultiplierPercent,
+                                "precedence-1",
+                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                token: token)
+                            .ConfigureAwait(false);
+                    }
+
+                    if (Settings.DoEncumbrancePenaltyAgility)
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "AGI", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.Attribute,
+                                "precedence-1", 0, 1, 0, 0,
+                                intEncumbrance * Settings.EncumbrancePenaltyAgility,
+                                token: token)
+                            .ConfigureAwait(false);
+                    if (Settings.DoEncumbrancePenaltyReaction)
+                        await ImprovementManager.CreateImprovementAsync(
+                                this, "REA", Improvement.ImprovementSource.Encumbrance,
+                                string.Empty, Improvement.ImprovementType.Attribute,
+                                "precedence-1", 0, 1, 0, 0,
+                                intEncumbrance * Settings.EncumbrancePenaltyReaction,
+                                token: token)
+                            .ConfigureAwait(false);
+                }
+                catch
+                {
+                    await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
+
+                ImprovementManager.Commit(this);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public void RefreshArmorEncumbrance(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
+            using (LockObject.EnterWriteLock(token))
+            {
+                // Remove any Improvements from Armor Encumbrance.
+                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ArmorEncumbrance,
+                    token: token);
+                // Create the Armor Encumbrance Improvements.
+                int intEncumbrance = ArmorEncumbrance;
+                if (intEncumbrance != 0)
+                {
                     try
                     {
-                        if (Settings.DoEncumbrancePenaltyPhysicalLimit)
-                            ImprovementManager.CreateImprovement(this, "Physical",
-                                                                 Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.PhysicalLimit,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyPhysicalLimit,
-                                                                 token: token);
-                        if (Settings.DoEncumbrancePenaltyMovementSpeed)
-                        {
-                            ImprovementManager.CreateImprovement(this, "Ground",
-                                                                 Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.SprintBonusPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                            ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.SprintBonusPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                            ImprovementManager.CreateImprovement(this, "Swim",
-                                                                 Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.SprintBonusPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                            ImprovementManager.CreateImprovement(this, "Ground",
-                                                                 Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.RunMultiplierPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                            ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.RunMultiplierPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                            ImprovementManager.CreateImprovement(this, "Swim",
-                                                                 Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.RunMultiplierPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                            ImprovementManager.CreateImprovement(this, "Ground",
-                                                                 Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.WalkMultiplierPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                            ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.WalkMultiplierPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                            ImprovementManager.CreateImprovement(this, "Swim",
-                                                                 Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.WalkMultiplierPercent,
-                                                                 "precedence-1",
-                                                                 intEncumbrance
-                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
-                                                                 token: token);
-                        }
-
-                        if (Settings.DoEncumbrancePenaltyAgility)
-                            ImprovementManager.CreateImprovement(this, "AGI", Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 "precedence-1", 0, 1, 0, 0,
-                                                                 intEncumbrance * Settings.EncumbrancePenaltyAgility,
-                                                                 token: token);
-                        if (Settings.DoEncumbrancePenaltyReaction)
-                            ImprovementManager.CreateImprovement(this, "REA", Improvement.ImprovementSource.Encumbrance,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 "precedence-1", 0, 1, 0, 0,
-                                                                 intEncumbrance * Settings.EncumbrancePenaltyReaction,
-                                                                 token: token);
+                        ImprovementManager.CreateImprovement(this, "AGI",
+                            Improvement.ImprovementSource.ArmorEncumbrance,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            "precedence-1", 0, 1, 0, 0,
+                            intEncumbrance, token: token);
+                        ImprovementManager.CreateImprovement(this, "REA",
+                            Improvement.ImprovementSource.ArmorEncumbrance,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            "precedence-1", 0, 1, 0, 0,
+                            intEncumbrance, token: token);
                     }
                     catch
                     {
@@ -33993,127 +34159,36 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshEncumbranceAsync(CancellationToken token = default)
+        public async ValueTask RefreshArmorEncumbranceAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                // Remove any Improvements from Armor Encumbrance.
+                await ImprovementManager
+                    .RemoveImprovementsAsync(this, Improvement.ImprovementSource.ArmorEncumbrance, token: token)
+                    .ConfigureAwait(false);
+                // Create the Armor Encumbrance Improvements.
+                int intEncumbrance = await GetArmorEncumbranceAsync(token).ConfigureAwait(false);
+                if (intEncumbrance != 0)
                 {
-                    token.ThrowIfCancellationRequested();
-                    // Remove any Improvements from Armor Encumbrance.
-                    await ImprovementManager
-                          .RemoveImprovementsAsync(this, Improvement.ImprovementSource.Encumbrance, token: token)
-                          .ConfigureAwait(false);
-                    if (!Settings.DoEncumbrancePenaltyPhysicalLimit
-                        && !Settings.DoEncumbrancePenaltyMovementSpeed
-                        && !Settings.DoEncumbrancePenaltyAgility
-                        && !Settings.DoEncumbrancePenaltyReaction)
-                        return;
-                    // Create the Encumbrance Improvements.
-                    int intEncumbrance = Encumbrance;
-                    if (intEncumbrance == 0)
-                        return;
                     try
                     {
-                        if (Settings.DoEncumbrancePenaltyPhysicalLimit)
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Physical", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.PhysicalLimit,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyPhysicalLimit,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                        if (Settings.DoEncumbrancePenaltyMovementSpeed)
-                        {
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.SprintBonusPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.SprintBonusPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.SprintBonusPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty,
-                                                        Improvement.ImprovementType.WalkMultiplierPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty,
-                                                        Improvement.ImprovementType.WalkMultiplierPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty,
-                                                        Improvement.ImprovementType.WalkMultiplierPercent,
-                                                        "precedence-1",
-                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                        }
-
-                        if (Settings.DoEncumbrancePenaltyAgility)
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "AGI", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.Attribute,
-                                                        "precedence-1", 0, 1, 0, 0,
-                                                        intEncumbrance * Settings.EncumbrancePenaltyAgility,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
-                        if (Settings.DoEncumbrancePenaltyReaction)
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        this, "REA", Improvement.ImprovementSource.Encumbrance,
-                                                        string.Empty, Improvement.ImprovementType.Attribute,
-                                                        "precedence-1", 0, 1, 0, 0,
-                                                        intEncumbrance * Settings.EncumbrancePenaltyReaction,
-                                                        token: token)
-                                                    .ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                            this, "AGI", Improvement.ImprovementSource.ArmorEncumbrance,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            "precedence-1", 0, 1, 0, 0,
+                            intEncumbrance, token: token).ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                            this, "REA", Improvement.ImprovementSource.ArmorEncumbrance,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            "precedence-1", 0, 1, 0, 0,
+                            intEncumbrance, token: token).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -34123,109 +34198,20 @@ namespace Chummer
 
                     ImprovementManager.Commit(this);
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
             }
-        }
-
-        public void RefreshArmorEncumbrance(CancellationToken token = default)
-        {
-            using (LockObject.EnterUpgradeableReadLock(token))
+            finally
             {
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
-                using (LockObject.EnterWriteLock(token))
-                {
-                    // Remove any Improvements from Armor Encumbrance.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ArmorEncumbrance, token: token);
-                    // Create the Armor Encumbrance Improvements.
-                    int intEncumbrance = ArmorEncumbrance;
-                    if (intEncumbrance != 0)
-                    {
-                        try
-                        {
-                            ImprovementManager.CreateImprovement(this, "AGI",
-                                                                 Improvement.ImprovementSource.ArmorEncumbrance,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 "precedence-1", 0, 1, 0, 0,
-                                                                 intEncumbrance, token: token);
-                            ImprovementManager.CreateImprovement(this, "REA",
-                                                                 Improvement.ImprovementSource.ArmorEncumbrance,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 "precedence-1", 0, 1, 0, 0,
-                                                                 intEncumbrance, token: token);
-                        }
-                        catch
-                        {
-                            ImprovementManager.Rollback(this, CancellationToken.None);
-                            throw;
-                        }
-
-                        ImprovementManager.Commit(this);
-                    }
-                }
-            }
-        }
-
-        public async ValueTask RefreshArmorEncumbranceAsync(CancellationToken token = default)
-        {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    // Remove any Improvements from Armor Encumbrance.
-                    await ImprovementManager
-                          .RemoveImprovementsAsync(this, Improvement.ImprovementSource.ArmorEncumbrance, token: token)
-                          .ConfigureAwait(false);
-                    // Create the Armor Encumbrance Improvements.
-                    int intEncumbrance = await GetArmorEncumbranceAsync(token).ConfigureAwait(false);
-                    if (intEncumbrance != 0)
-                    {
-                        try
-                        {
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "AGI", Improvement.ImprovementSource.ArmorEncumbrance,
-                                string.Empty, Improvement.ImprovementType.Attribute,
-                                "precedence-1", 0, 1, 0, 0,
-                                intEncumbrance, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "REA", Improvement.ImprovementSource.ArmorEncumbrance,
-                                string.Empty, Improvement.ImprovementType.Attribute,
-                                "precedence-1", 0, 1, 0, 0,
-                                intEncumbrance, token: token).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
-                            throw;
-                        }
-
-                        ImprovementManager.Commit(this);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public void RefreshWoundPenalties(CancellationToken token = default)
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
                 int intPhysicalCMFilled = Math.Min(PhysicalCMFilled, PhysicalCM);
                 int intStunCMFilled = Math.Min(StunCMFilled, StunCM);
                 int intCMThreshold = CMThreshold;
@@ -34250,12 +34236,13 @@ namespace Chummer
 
         public async ValueTask RefreshWoundPenaltiesAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
                 int intPhysicalCMFilled = Math.Min(PhysicalCMFilled, await GetPhysicalCMAsync(token).ConfigureAwait(false));
                 int intStunCMFilled = Math.Min(StunCMFilled, await GetStunCMAsync(token).ConfigureAwait(false));
                 int intCMThreshold = await GetCMThresholdAsync(token).ConfigureAwait(false);
@@ -34285,14 +34272,14 @@ namespace Chummer
         /// </summary>
         public bool RefreshSustainingPenalties(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+            {
+                EnqueuePostLoadMethod(RefreshSustainingPenalties, token);
+                return true;
+            }
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
-                {
-                    EnqueuePostLoadMethod(RefreshSustainingPenalties, token);
-                    return true;
-                }
-
                 int intDicePenaltySustainedSpell = Settings.DicePenaltySustaining;
 
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
@@ -34377,15 +34364,16 @@ namespace Chummer
         /// </summary>
         public async Task<bool> RefreshSustainingPenaltiesAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+            {
+                await EnqueuePostLoadAsyncMethodAsync(RefreshSustainingPenaltiesAsync, token).ConfigureAwait(false);
+                return true;
+            }
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
-                {
-                    await EnqueuePostLoadAsyncMethodAsync(RefreshSustainingPenaltiesAsync, token).ConfigureAwait(false);
-                    return true;
-                }
-
+                
                 int intDicePenaltySustainedSpell = Settings.DicePenaltySustaining;
 
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure

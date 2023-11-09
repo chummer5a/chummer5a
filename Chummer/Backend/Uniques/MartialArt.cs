@@ -116,51 +116,50 @@ namespace Chummer
                         break;
                 }
 
-                if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)
+                if (lstImprovementSourcesToProcess.Count <= 0 || _objCharacter?.IsLoading != false)
+                    return;
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                           Utils.DictionaryForMultiplePropertyChangedPool,
+                           out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
                 {
-                    using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
-                               Utils.DictionaryForMultiplePropertyChangedPool,
-                               out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                    try
                     {
-                        try
+                        foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
                         {
-                            foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
+                            // Needed in order to properly process named sources where
+                            // the tooltip was built before the object was added to the character
+                            _objCharacter.Improvements.ForEach(objImprovement =>
                             {
-                                // Needed in order to properly process named sources where
-                                // the tooltip was built before the object was added to the character
-                                _objCharacter.Improvements.ForEach(objImprovement =>
+                                if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                    return;
+                                foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
+                                         objImprovement.GetRelevantPropertyChangers())
                                 {
-                                    if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                        return;
-                                    foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
-                                             objImprovement.GetRelevantPropertyChangers())
+                                    if (!dicChangedProperties.TryGetValue(objToUpdate,
+                                            out HashSet<string> setChangedProperties))
                                     {
-                                        if (!dicChangedProperties.TryGetValue(objToUpdate,
-                                                                              out HashSet<string> setChangedProperties))
-                                        {
-                                            setChangedProperties = Utils.StringHashSetPool.Get();
-                                            dicChangedProperties.Add(objToUpdate, setChangedProperties);
-                                        }
-
-                                        setChangedProperties.Add(strPropertyName);
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(objToUpdate, setChangedProperties);
                                     }
-                                });
-                            }
 
-                            foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
-                                     dicChangedProperties)
-                            {
-                                kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
-                            }
+                                    setChangedProperties.Add(strPropertyName);
+                                }
+                            });
                         }
-                        finally
+
+                        foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                                 dicChangedProperties)
                         {
-                            List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
-                            for (int i = lstToReturn.Count - 1; i >= 0; --i)
-                            {
-                                HashSet<string> setLoop = lstToReturn[i];
-                                Utils.StringHashSetPool.Return(ref setLoop);
-                            }
+                            kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
+                        }
+                    }
+                    finally
+                    {
+                        List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
                         }
                     }
                 }

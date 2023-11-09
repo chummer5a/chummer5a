@@ -648,10 +648,11 @@ namespace Chummer.Backend.Equipment
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
-            bool blnDoEquipped = _objCharacter?.IsLoading == false && IsModularCurrentlyEquipped &&
-                                 ParentVehicle == null;
+            bool blnDoEquipped = _objCharacter?.IsLoading == false;
             using (LockObject.EnterUpgradeableReadLock())
             {
+                blnDoEquipped = blnDoEquipped && IsModularCurrentlyEquipped &&
+                                ParentVehicle == null;
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
