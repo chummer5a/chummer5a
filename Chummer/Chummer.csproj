@@ -21,12 +21,22 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	<Configurations>Debug;Release;Debuggable Release</Configurations>
+    <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
+      <_Parameter1>False</_Parameter1>
+      <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.Guid">
+      <_Parameter1>28a46ea3-4e45-4842-b8ae-313afde61173</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
   <PropertyGroup>
     <StartupObject>Chummer.Program</StartupObject>
   </PropertyGroup>
@@ -750,6 +760,11 @@
     </Compile>
     <Compile Update="Controls\Table\TextTableCell.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
@@ -25763,6 +25778,12 @@
     <Compile Remove="InheritedListView.cs" />
     <Compile Remove="packages\Codaxy.WkHtmlToPdf.0.5.8\content\PdfConvert.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">
       copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
@@ -25793,10 +25814,14 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <AssemblyVersion>5.225.0.0</AssemblyVersion>
     <FileVersion>5.225.0.0</FileVersion>
+    <InformationalVersion>5.225.0.0</InformationalVersion>
     <Description>Character generator for Shadowrun 5th Edition</Description>
     <Copyright>Licensed GNU GPLv3</Copyright>
-    <RepositoryUrl>Licensed GNU GPLv3</RepositoryUrl>
+    <RepositoryUrl>https://github.com/chummer5a/chummer5a/</RepositoryUrl>
     <Title>Chummer5a</Title>
     <Product>Chummer5a</Product>
+    <Nullable>disable</Nullable>
+    <Company>Chummer5a</Company>
+    <Authors>Chummer5a</Authors>
   </PropertyGroup>
 </Project>
