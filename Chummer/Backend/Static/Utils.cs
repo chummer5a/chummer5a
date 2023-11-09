@@ -1759,7 +1759,10 @@ namespace Chummer
                     Parallel.ForEach(afuncToRun, (x, y) =>
                     {
                         if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                        {
                             y.Stop();
+                            return;
+                        }
                         x.Invoke();
                     });
                     token.ThrowIfCancellationRequested();
@@ -1774,7 +1777,10 @@ namespace Chummer
                     Parallel.ForEach(afuncToRun, (x, y) =>
                     {
                         if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                        {
                             y.Stop();
+                            return;
+                        }
                         x.Invoke();
                     });
                     token.ThrowIfCancellationRequested();
@@ -1857,7 +1863,10 @@ namespace Chummer
                 Parallel.For(0, intLength, (i, y) =>
                 {
                     if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                    {
                         y.Stop();
+                        return;
+                    }
                     aobjReturn[i] = afuncToRun[i].Invoke();
                 });
                 token.ThrowIfCancellationRequested();
@@ -1975,7 +1984,10 @@ namespace Chummer
                 Parallel.For(0, intLength, (i, y) =>
                 {
                     if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                    {
                         y.Stop();
+                        return;
+                    }
                     aobjReturn[i] = JoinableTaskFactory.Run(afuncToRun[i], JoinableTaskCreationOptions.LongRunning);
                 });
                 token.ThrowIfCancellationRequested();
@@ -1986,7 +1998,10 @@ namespace Chummer
                 Parallel.For(0, intLength, (i, y) =>
                 {
                     if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                    {
                         y.Stop();
+                        return;
+                    }
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
@@ -2116,7 +2131,10 @@ namespace Chummer
                 Parallel.ForEach(afuncToRun, (funcToRun, y) =>
                 {
                     if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                    {
                         y.Stop();
+                        return;
+                    }
                     JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
                 });
                 token.ThrowIfCancellationRequested();
@@ -2127,7 +2145,11 @@ namespace Chummer
                 Parallel.ForEach(afuncToRun, (funcToRun, y) =>
                 {
                     if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                    {
                         y.Stop();
+                        return;
+                    }
+
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
