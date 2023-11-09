@@ -67,12 +67,12 @@ before_build:
         Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
         Write-Host "Environment Variable: $env:OldMinorVersion"
         $csProjFile = "C:\projects\chummer\Chummer\Chummer.csproj"
-        $regex = new-object System.Text.RegularExpressions.Regex ('(<AssemblyVersion>)(.*)(?=<\/AssemblyVersion>)')
+        $regex = new-object System.Text.RegularExpressions.Regex ('(?<=<AssemblyVersion>).*(?=<\/AssemblyVersion>)', [System.Text.RegularExpressions.RegexOptions]::MultiLine)
         $content = [IO.File]::ReadAllText($csProjFile)
         $version = $null
         $match = $regex.Match($content)
         if($match.Success) {
-        $version = $match.groups[1].value
+        $version = $match.value
         }
         $Major = $version.Split('.')[0]
         $Minor = $version.Split('.')[1]
