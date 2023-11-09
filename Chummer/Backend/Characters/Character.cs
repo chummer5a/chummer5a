@@ -3160,7 +3160,7 @@ namespace Chummer
                             objWriter.WriteElementString("minimumappversion", "5.214.1");
                             // <appversion />
                             objWriter.WriteElementString("appversion",
-                                Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
+                                Utils.CurrentChummerVersion.ToString(3));
                             // <gameedition />
                             objWriter.WriteElementString("gameedition", "SR5");
 
@@ -4631,6 +4631,9 @@ namespace Chummer
                     }
                 }
 
+                if (strFileName == FileName)
+                    _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
+
                 if (addToMRU)
                 {
                     if (blnSync)
@@ -4650,33 +4653,11 @@ namespace Chummer
                     await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
 
-            using (blnSync ? LockObject.EnterUpgradeableReadLock(token) : await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            if (callOnSaveCallBack)
             {
-                token.ThrowIfCancellationRequested();
-                if (blnSync)
+                using (blnSync ? LockObject.EnterUpgradeableReadLock(token) : await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
-                    // ReSharper disable once MethodHasAsyncOverload
-                    using (LockObject.EnterWriteLock(token))
-                    {
-                        _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
-                    }
-                }
-                else
-                {
-                    objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
-                    }
-                    finally
-                    {
-                        await objLockerAsync.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-
-                if (callOnSaveCallBack)
-                {
+                    token.ThrowIfCancellationRequested();
                     // Cannot use foreach or LINQ because we need to be able to allow queued functions to add onto the queue
                     if (blnSync)
                     {
@@ -14901,8 +14882,17 @@ namespace Chummer
 
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strFileName, value) == value)
+                    if (_strFileName == value)
                         return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _strFileName, value) == value)
+                            return;
+                        _dateFileLastWriteTime = string.IsNullOrEmpty(value)
+                            ? DateTime.MinValue
+                            : File.GetLastWriteTimeUtc(value);
+                    }
+
                     OnPropertyChanged();
                 }
             }
@@ -14916,7 +14906,10 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _dateFileLastWriteTime > DateTime.MinValue ? _dateFileLastWriteTime : DateTime.UtcNow;
+                {
+                    DateTime datReturn = _dateFileLastWriteTime;
+                    return datReturn > DateTime.MinValue ? datReturn : DateTime.UtcNow;
+                }
             }
         }
 

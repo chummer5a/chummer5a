@@ -58,7 +58,8 @@ namespace Chummer.Tests
             TestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalSettings.InvariantCultureInfo));
             TestPathInfo = Directory.CreateDirectory(TestPath);
             TestFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
-            _lstCharacters = new List<Character>(TestFiles.Length);
+            _aobjCharacters = new Character[TestFiles.Length];
+            _aobjCharacterReadLockers = new IDisposable[TestFiles.Length];
         }
 
         private string TestPath { get; }
@@ -66,20 +67,24 @@ namespace Chummer.Tests
 
         private FileInfo[] TestFiles { get; }
 
-        private readonly List<Character> _lstCharacters;
+        private readonly Character[] _aobjCharacters;
+        private readonly IDisposable[] _aobjCharacterReadLockers;
 
         private IEnumerable<Character> GetTestCharacters()
         {
-            foreach (FileInfo objFileInfo in TestFiles)
+            for (int i = 0; i < TestFiles.Length; ++i)
             {
+                FileInfo objFileInfo = TestFiles[i];
                 Debug.WriteLine("Loading " + objFileInfo.Name);
-                string strFile = objFileInfo.FullName;
-                Character objLoopCharacter = _lstCharacters.Find(x => x.FileName == strFile);
+                Character objLoopCharacter = _aobjCharacters[i];
                 if (objLoopCharacter == null)
                 {
                     objLoopCharacter = LoadCharacter(objFileInfo);
-                    _lstCharacters.Add(objLoopCharacter);
+                    // Once we have loaded the character, we should no longer attempt to modify it, so enter a high-priority read lock immediately
+                    _aobjCharacterReadLockers[i] = objLoopCharacter.LockObject.EnterHiPrioReadLock();
+                    _aobjCharacters[i] = objLoopCharacter;
                 }
+
                 yield return objLoopCharacter;
             }
         }
@@ -211,9 +216,9 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test04_SaveAsChum5lzThenLoad()
+        public void Test04_SaveAsChum5lz()
         {
-            Debug.WriteLine("Unit test initialized for: Test04_SaveAsChum5lzThenLoad()");
+            Debug.WriteLine("Unit test initialized for: Test04_SaveAsChum5lz()");
             LzmaHelper.ChummerCompressionPreset eOldSetting = GlobalSettings.Chum5lzCompressionLevel;
             try
             {
@@ -249,8 +254,6 @@ namespace Chummer.Tests
         public void Test05_LoadThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Test05_LoadThenSaveIsDeterministic()");
-            // Two separate loops because it's slightly faster this way
-            List<string> lstBaseFileNames = new List<string>();
             foreach (Character objCharacterControl in GetTestCharacters())
             {
                 string strFileName = Path.GetFileName(objCharacterControl.FileName) ??
@@ -259,19 +262,11 @@ namespace Chummer.Tests
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
                 SaveCharacter(objCharacterControl, strDestinationControl);
-                lstBaseFileNames.Add(strFileName);
-            }
-
-            foreach (string strFileName in lstBaseFileNames)
-            {
                 Debug.WriteLine("Checking " + strFileName);
                 // Second Load-Save cycle
-                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
                 string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + strFileName);
-                using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
-                {
-                    SaveCharacter(objCharacterTest, strDestinationTest);
-                }
+                Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)); // No using for dispose because we care more about execution time than memory usage
+                SaveCharacter(objCharacterTest, strDestinationTest);
 
                 try
                 {
@@ -319,13 +314,13 @@ namespace Chummer.Tests
             foreach (string strFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "lang"), "*.xml"))
             {
                 string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                if (strExportLanguage.Contains("data"))
-                    continue;
-                if (strExportLanguage == GlobalSettings.DefaultLanguage)
-                    lstExportLanguages.Insert(0, strExportLanguage);
-                else
+                if (!strExportLanguage.Contains("data") && strExportLanguage != GlobalSettings.DefaultLanguage)
                     lstExportLanguages.Add(strExportLanguage);
             }
+
+            lstExportLanguages.Sort();
+            lstExportLanguages.Insert(0, GlobalSettings.DefaultLanguage);
+
             Debug.WriteLine("Started pre-loading language files");
             foreach (string strExportLanguage in lstExportLanguages)
             {
@@ -480,16 +475,18 @@ namespace Chummer.Tests
         /// Validate that a given list of Characters can be successfully loaded.
         /// </summary>
         // ReSharper disable once SuggestBaseTypeForParameter
-        private static Character LoadCharacter(FileInfo objFileInfo)
+        private static Character LoadCharacter(FileInfo objFileInfo, Character objExistingCharacter = null)
         {
-            Character objCharacter = null;
+            Character objCharacter = objExistingCharacter;
             try
             {
                 Debug.WriteLine("Loading: " + objFileInfo.Name);
-                objCharacter = new Character
-                {
-                    FileName = objFileInfo.FullName
-                };
+                if (objExistingCharacter != null)
+                    objCharacter.ResetCharacter();
+                else
+                    objCharacter = new Character();
+                objCharacter.FileName = objFileInfo.FullName;
+
                 bool blnSuccess = objCharacter.Load();
                 Assert.IsTrue(blnSuccess);
                 Debug.WriteLine("Character loaded: " + objCharacter.Name + ", " + objFileInfo.Name);
@@ -498,7 +495,8 @@ namespace Chummer.Tests
             {
                 if (objCharacter != null)
                 {
-                    objCharacter.Dispose();
+                    if (objExistingCharacter == null)
+                        objCharacter.Dispose();
                     objCharacter = null;
                 }
                 string strErrorMessage = "Could not load " + objFileInfo.FullName + '!';
@@ -511,7 +509,8 @@ namespace Chummer.Tests
             {
                 if (objCharacter != null)
                 {
-                    objCharacter.Dispose();
+                    if (objExistingCharacter == null)
+                        objCharacter.Dispose();
                     objCharacter = null;
                 }
                 string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ':';
@@ -533,7 +532,7 @@ namespace Chummer.Tests
             try
             {
                 Debug.WriteLine("Saving: " + objCharacter.Name + ", " + Path.GetFileName(strPath));
-                objCharacter.Save(strPath, false);
+                objCharacter.Save(strPath, false, false);
                 Debug.WriteLine("Character saved: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
