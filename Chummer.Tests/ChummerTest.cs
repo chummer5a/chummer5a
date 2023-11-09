@@ -275,7 +275,6 @@ namespace Chummer.Tests
 
                 try
                 {
-
                     // Check to see that character after first load cycle is consistent with character after second
                     using (FileStream controlFileStream =
                            File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))

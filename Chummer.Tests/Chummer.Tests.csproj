@@ -24,6 +24,7 @@
 	<AnalysisLevel>latest-minimum</AnalysisLevel>
 	<NeutralLanguage>en-US</NeutralLanguage>
     <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="WindowsBase" />

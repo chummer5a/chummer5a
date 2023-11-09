@@ -12,6 +12,7 @@
 	<StartupObject>ChummerDataViewer.Program</StartupObject>
 	<NeutralLanguage>en-US</NeutralLanguage>
     <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
