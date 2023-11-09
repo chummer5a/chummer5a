@@ -965,17 +965,28 @@ namespace Chummer.UI.Skills
                 CharacterAttrib objOldAttrib = Interlocked.Exchange(ref _objAttributeActive, value);
                 if (objOldAttrib == value)
                     return;
-                if (objOldAttrib != null)
-                {
-                    using (objOldAttrib.LockObject.EnterWriteLock())
-                        objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
-                }
-
-                if (value != null)
-                {
-                    using (value.LockObject.EnterWriteLock())
-                        value.PropertyChanged += Attribute_PropertyChanged;
-                }
+                Utils.RunWithoutThreadLock(
+                    () =>
+                    {
+                        if (objOldAttrib == null)
+                            return;
+                        try
+                        {
+                            using (objOldAttrib.LockObject.EnterWriteLock())
+                                objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    },
+                    () =>
+                    {
+                        if (value == null)
+                            return;
+                        using (value.LockObject.EnterWriteLock())
+                            value.PropertyChanged += Attribute_PropertyChanged;
+                    });
 
                 btnAttribute.Font = value == _objSkill.AttributeObject
                     ? _fntNormal

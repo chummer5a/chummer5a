@@ -135,7 +135,6 @@ namespace Chummer
 
         // Metatype Information.
         private string _strMetatype = "Human";
-
         private Guid _guiMetatype = Guid.Empty;
         private string _strMetavariant = string.Empty;
         private Guid _guiMetavariant = Guid.Empty;
@@ -11210,11 +11209,13 @@ namespace Chummer
                 _intRegisteredSpriteLimit = int.MinValue;
 
                 // Reset Metatype Information.
-                _strMetatype = string.Empty;
+                _strMetatype = "Human";
                 _strMetavariant = string.Empty;
-                _strMetatypeCategory = string.Empty;
+                _strMetatypeCategory = "Metahuman";
                 _intMetatypeBP = 0;
                 _strMovement = string.Empty;
+                _guiMetatype = Guid.Empty;
+                _guiMetavariant = Guid.Empty;
 
                 // Reset Special Tab Flags.
                 _blnAdeptEnabled = false;
@@ -11358,11 +11359,13 @@ namespace Chummer
                 _intRegisteredSpriteLimit = int.MinValue;
 
                 // Reset Metatype Information.
-                _strMetatype = string.Empty;
+                _strMetatype = "Human";
                 _strMetavariant = string.Empty;
-                _strMetatypeCategory = string.Empty;
+                _strMetatypeCategory = "Metahuman";
                 _intMetatypeBP = 0;
                 _strMovement = string.Empty;
+                _guiMetatype = Guid.Empty;
+                _guiMetavariant = Guid.Empty;
 
                 // Reset Special Tab Flags.
                 _blnAdeptEnabled = false;
@@ -14731,8 +14734,15 @@ namespace Chummer
                                 {
                                     if (objOldSettings == null)
                                         return;
-                                    using (objOldSettings.LockObject.EnterWriteLock())
-                                        objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                                    try
+                                    {
+                                        using (objOldSettings.LockObject.EnterWriteLock())
+                                            objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                                    }
+                                    catch (ObjectDisposedException)
+                                    {
+                                        //swallow this
+                                    }
                                 },
                                 () =>
                                 {

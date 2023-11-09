@@ -101,8 +101,15 @@ namespace Chummer.Backend.Skills
                             {
                                 if (objOldAttribute == null)
                                     return;
-                                using (objOldAttribute.LockObject.EnterWriteLock())
-                                    objOldAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                                try
+                                {
+                                    using (objOldAttribute.LockObject.EnterWriteLock())
+                                        objOldAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             },
                             () =>
                             {

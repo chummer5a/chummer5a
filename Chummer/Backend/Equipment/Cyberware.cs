@@ -255,10 +255,17 @@ namespace Chummer.Backend.Equipment
                         case NotifyCollectionChangedAction.Remove:
                             foreach (Cyberware objOldItem in e.OldItems)
                             {
-                                using (objOldItem.LockObject.EnterUpgradeableReadLock())
+                                try
                                 {
-                                    if (objOldItem.Parent == this)
-                                        objOldItem.Parent = null;
+                                    using (objOldItem.LockObject.EnterUpgradeableReadLock())
+                                    {
+                                        if (objOldItem.Parent == this)
+                                            objOldItem.Parent = null;
+                                    }
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
                                 }
                             }
 
@@ -270,10 +277,17 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (!setNewItems.Contains(objOldItem))
                                 {
-                                    using (objOldItem.LockObject.EnterUpgradeableReadLock())
+                                    try
                                     {
-                                        if (objOldItem.Parent == this)
-                                            objOldItem.Parent = null;
+                                        using (objOldItem.LockObject.EnterUpgradeableReadLock())
+                                        {
+                                            if (objOldItem.Parent == this)
+                                                objOldItem.Parent = null;
+                                        }
+                                    }
+                                    catch (ObjectDisposedException)
+                                    {
+                                        //swallow this
                                     }
                                 }
                             }

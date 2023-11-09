@@ -556,8 +556,15 @@ namespace Chummer
                                 {
                                     if (objOldValue == null)
                                         return;
-                                    using (objOldValue.LockObject.EnterWriteLock())
-                                        objOldValue.PropertyChanged -= OnLinkedAttributeChanged;
+                                    try
+                                    {
+                                        using (objOldValue.LockObject.EnterWriteLock())
+                                            objOldValue.PropertyChanged -= OnLinkedAttributeChanged;
+                                    }
+                                    catch (ObjectDisposedException)
+                                    {
+                                        //swallow this
+                                    }
                                 },
                                 () =>
                                 {
@@ -609,8 +616,15 @@ namespace Chummer
                                 {
                                     if (objOldValue == null)
                                         return;
-                                    using (objOldValue.LockObject.EnterWriteLock())
-                                        objOldValue.PropertyChanged -= OnBoostedSkillChanged;
+                                    try
+                                    {
+                                        using (objOldValue.LockObject.EnterWriteLock())
+                                            objOldValue.PropertyChanged -= OnBoostedSkillChanged;
+                                    }
+                                    catch (ObjectDisposedException)
+                                    {
+                                        //swallow this
+                                    }
                                 },
                                 () =>
                                 {

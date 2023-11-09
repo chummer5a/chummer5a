@@ -1574,8 +1574,19 @@ namespace Chummer
                     {
                         if (objOldLinkedCharacter != null)
                         {
-                            using (objOldLinkedCharacter.LockObject.EnterWriteLock(token))
-                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                            if (!objOldLinkedCharacter.IsDisposed)
+                            {
+                                try
+                                {
+                                    using (objOldLinkedCharacter.LockObject.EnterWriteLock(token))
+                                        objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
+                            }
+
                             if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                             {
                                 if (Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter), token)
