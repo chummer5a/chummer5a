@@ -254,55 +254,61 @@ namespace Chummer.Tests
         public void Test05_LoadThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Test05_LoadThenSaveIsDeterministic()");
-            foreach (Character objCharacterControl in GetTestCharacters())
+            Character objCharacterTest = null;
+            DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(
+                ElementSelectors.Or(ElementSelectors.ByNameAndText, ElementSelectors.ByName));
+            try
             {
-                string strFileName = Path.GetFileName(objCharacterControl.FileName) ??
-                                     LanguageManager.GetString("String_Unknown");
-                Debug.WriteLine("Saving Control for " + strFileName);
-                // First Load-Save cycle
-                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
-                SaveCharacter(objCharacterControl, strDestinationControl);
-                Debug.WriteLine("Checking " + strFileName);
-                // Second Load-Save cycle
-                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + strFileName);
-                Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)); // No using for dispose because we care more about execution time than memory usage
-                SaveCharacter(objCharacterTest, strDestinationTest);
-
-                try
+                foreach (Character objCharacterControl in GetTestCharacters())
                 {
-                    // Check to see that character after first load cycle is consistent with character after second
-                    using (FileStream controlFileStream =
-                           File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
-                    using (FileStream testFileStream =
-                           File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
-                    {
-                        Diff myDiff = DiffBuilder
-                            .Compare(controlFileStream)
-                            .WithTest(testFileStream)
-                            .CheckForIdentical()
-                            .WithNodeFilter(x =>
-                                x.Name !=
-                                "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
-                            .WithNodeMatcher(
-                                new DefaultNodeMatcher(
-                                    ElementSelectors.Or(
-                                        ElementSelectors.ByNameAndText,
-                                        ElementSelectors.ByName)))
-                            .IgnoreWhitespace()
-                            .Build();
-                        foreach (Difference diff in myDiff.Differences)
-                        {
-                            Console.WriteLine(diff.Comparison);
-                            Console.WriteLine();
-                        }
+                    string strFileName = Path.GetFileName(objCharacterControl.FileName) ??
+                                         LanguageManager.GetString("String_Unknown");
+                    Debug.WriteLine("Saving Control for " + strFileName);
+                    // First Load-Save cycle
+                    string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
+                    SaveCharacter(objCharacterControl, strDestinationControl);
+                    Debug.WriteLine("Checking " + strFileName);
+                    // Second Load-Save cycle
+                    string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + strFileName);
+                    objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl), objCharacterTest);
+                    SaveCharacter(objCharacterTest, strDestinationTest);
 
-                        Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                    try
+                    {
+                        // Check to see that character after first load cycle is consistent with character after second
+                        using (FileStream controlFileStream =
+                               File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                        using (FileStream testFileStream =
+                               File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                        {
+                            Diff myDiff = DiffBuilder
+                                .Compare(controlFileStream)
+                                .WithTest(testFileStream)
+                                .CheckForIdentical()
+                                .WithNodeFilter(x =>
+                                    x.Name !=
+                                    "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                                .WithNodeMatcher(objDiffNodeMatcher)
+                                .IgnoreWhitespace()
+                                .Build();
+                            foreach (Difference diff in myDiff.Differences)
+                            {
+                                Console.WriteLine(diff.Comparison);
+                                Console.WriteLine();
+                            }
+
+                            Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                        }
+                    }
+                    catch (XmlSchemaException e)
+                    {
+                        Assert.Fail("Unexpected validation failure: " + e.Message);
                     }
                 }
-                catch (XmlSchemaException e)
-                {
-                    Assert.Fail("Unexpected validation failure: " + e.Message);
-                }
+            }
+            finally
+            {
+                objCharacterTest?.Dispose();
             }
         }
 
