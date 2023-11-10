@@ -540,7 +540,7 @@ namespace Chummer
             }
 
             token.ThrowIfCancellationRequested();
-            if (_intCountActiveHiPrioReaders > 0 && _objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
+            if (_intCountActiveHiPrioReaders > 0)
             {
                 ChangeNumActiveReaders(1, token: token);
                 return new SafeFastReaderSemaphoreRelease(this);
@@ -601,7 +601,7 @@ namespace Chummer
                 return Task.FromResult<IDisposable>(null);
             }
 
-            if (_intCountActiveHiPrioReaders > 0 && _objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
+            if (_intCountActiveHiPrioReaders > 0)
             {
                 return TakeFastReadLockCoreLightAsync(new SafeFastReaderSemaphoreRelease(this));
             }
