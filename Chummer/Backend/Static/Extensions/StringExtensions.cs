@@ -1565,8 +1565,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             return blnEscaped
-                ? s_RgxEscapedLineEndingsExpression.Replace(strInput, Environment.NewLine)
-                : s_RgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
+                ? s_RgxEscapedLineEndingsExpression.Value.Replace(strInput, Environment.NewLine)
+                : s_RgxLineEndingsExpression.Value.Replace(strInput, Environment.NewLine);
         }
 
         /// <summary>
@@ -1616,7 +1616,7 @@ namespace Chummer
                                .Replace("&amp;amp;", "&amp;")
                                .Replace("<", "&lt;")
                                .Replace(">", "&gt;");
-            return s_RgxLineEndingsExpression.Replace(strReturn, "<br />");
+            return s_RgxLineEndingsExpression.Value.Replace(strReturn, "<br />");
         }
 
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
@@ -1795,7 +1795,7 @@ namespace Chummer
             if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                return s_RtfStripperRegex.IsMatch(strInputTrimmed);
+                return s_RtfStripperRegex.Value.IsMatch(strInputTrimmed);
             }
 
             return false;
@@ -1808,7 +1808,7 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.IsMatch(strInput);
+            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.Value.IsMatch(strInput);
         }
 
         /// <summary>
@@ -1823,14 +1823,14 @@ namespace Chummer
                 : GlobalSettings.InvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
         }
 
-        private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxHtmlTagExpression = new Lazy<Regex>(() => new Regex(@"/<\/?[a-z][\s\S]*>/i",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Regex s_RgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxLineEndingsExpression = new Lazy<Regex>(() => new Regex(@"\r\n|\n\r|\n|\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxEscapedLineEndingsExpression = new Lazy<Regex>(() => new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
         private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox()));
@@ -1851,7 +1851,7 @@ namespace Chummer
                 return string.Empty;
             }
 
-            Match objMatch = s_RtfStripperRegex.Match(inputRtf);
+            Match objMatch = s_RtfStripperRegex.Value.Match(inputRtf);
 
             if (!objMatch.Success)
             {
@@ -2007,9 +2007,9 @@ namespace Chummer
             }
         }
 
-        private static readonly Regex s_RtfStripperRegex = new Regex(
+        private static readonly Lazy<Regex> s_RtfStripperRegex = new Lazy<Regex>(() => new Regex(
             @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
         {

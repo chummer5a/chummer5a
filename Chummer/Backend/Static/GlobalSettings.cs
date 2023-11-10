@@ -1483,6 +1483,9 @@ namespace Chummer
         public static CultureInfo SystemCultureInfo => CultureInfo.CurrentCulture;
 
         private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
+        private static readonly Lazy<Regex> s_RgxInvalidUnicodeCharsExpression = new Lazy<Regex>(() => new Regex(
+            @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         /// <summary>
         /// XmlReaderSettings that should be used when reading almost Xml readable.
@@ -1498,9 +1501,7 @@ namespace Chummer
         /// Regex that indicates whether a given string is a match for text that cannot be saved in XML. Match == true.
         /// </summary>
         [CLSCompliant(false)]
-        public static Regex InvalidUnicodeCharsExpression { get; } = new Regex(
-            @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        public static Regex InvalidUnicodeCharsExpression => s_RgxInvalidUnicodeCharsExpression.Value;
 
         /// <summary>
         /// Clipboard.

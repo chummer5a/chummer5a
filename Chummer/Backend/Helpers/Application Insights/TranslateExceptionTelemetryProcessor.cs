@@ -107,12 +107,12 @@ namespace Chummer
                 else if (!string.IsNullOrEmpty(translated))
                 {
                     string pattern = Regex.Escape(message);
-                    pattern = s_RgxFirstReplacePattern.Replace(pattern, "(?<group$1>.*)");
+                    pattern = s_RgxFirstReplacePattern.Value.Replace(pattern, "(?<group$1>.*)");
 
                     Regex regex = new Regex(pattern);
 
                     string replacePattern = translated;
-                    replacePattern = s_RgxSecondReplacePattern.Replace(replacePattern, "${group$1}");
+                    replacePattern = s_RgxSecondReplacePattern.Value.Replace(replacePattern, "${group$1}");
                     replacePattern = replacePattern.Replace("\\$", "$");
 
                     result = regex.Replace(result, replacePattern);
@@ -122,9 +122,9 @@ namespace Chummer
             return result;
         }
 
-        private static readonly Regex s_RgxFirstReplacePattern = new Regex(@"\\{([0-9]+)\}",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-        private static readonly Regex s_RgxSecondReplacePattern = new Regex(@"{([0-9]+)}",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxFirstReplacePattern = new Lazy<Regex>(() => new Regex(@"\\{([0-9]+)\}",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+        private static readonly Lazy<Regex> s_RgxSecondReplacePattern = new Lazy<Regex>(() => new Regex(@"{([0-9]+)}",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
     }
 }

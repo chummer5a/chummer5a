@@ -834,26 +834,26 @@ namespace Chummer
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
-            strDisplayText = s_RgxMainMugshotReplaceExpression.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
-            strDisplayText = s_RgxStringBase64ReplaceExpression.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
-            strDisplayText = s_RgxBase64ReplaceExpression.Replace(strDisplayText, "base64\": \"[...]\",");
+            strDisplayText = s_RgxMainMugshotReplaceExpression.Value.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
+            strDisplayText = s_RgxStringBase64ReplaceExpression.Value.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
+            strDisplayText = s_RgxBase64ReplaceExpression.Value.Replace(strDisplayText, "base64\": \"[...]\",");
             _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
                 new Tuple<string, string>(strText, strDisplayText),
                 (a, b) => new Tuple<string, string>(strText, strDisplayText));
             await txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token).ConfigureAwait(false);
         }
 
-        private static readonly Regex s_RgxMainMugshotReplaceExpression = new Regex(
+        private static readonly Lazy<Regex> s_RgxMainMugshotReplaceExpression = new Lazy<Regex>(() => new Regex(
             "<mainmugshotbase64>[^\\s\\S]*</mainmugshotbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Regex s_RgxStringBase64ReplaceExpression = new Regex(
+        private static readonly Lazy<Regex> s_RgxStringBase64ReplaceExpression = new Lazy<Regex>(() => new Regex(
             "<stringbase64>[^\\s\\S]*</stringbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Regex s_RgxBase64ReplaceExpression = new Regex(
+        private static readonly Lazy<Regex> s_RgxBase64ReplaceExpression = new Lazy<Regex>(() => new Regex(
             "base64\": \"[^\\\"]*\",",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         #endregion XML
 

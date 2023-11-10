@@ -2436,13 +2436,13 @@ namespace Chummer.Backend.Equipment
         {
             // Assuming base text of 10(ml)x2
             // matches [2x]10(ml) or [10x]2(ml)
-            foreach (Match m in s_RgxAmmoCapacityFirst.Matches(strAmmo))
+            foreach (Match m in s_RgxAmmoCapacityFirst.Value.Matches(strAmmo))
             {
                 strAmmo = strAmmo.TrimStartOnce(m.Value);
             }
 
             // Matches 2(ml[)x10] (But does not capture the ')') or 10(ml)[x2]
-            foreach (Match m in s_RgxAmmoCapacitySecond.Matches(strAmmo))
+            foreach (Match m in s_RgxAmmoCapacitySecond.Value.Matches(strAmmo))
             {
                 strAmmo = strAmmo.TrimEndOnce(m.Value);
             }
@@ -2453,10 +2453,10 @@ namespace Chummer.Backend.Equipment
             return strAmmo;
         }
 
-        private static readonly Regex s_RgxAmmoCapacityFirst = new Regex(@"^[0-9]*[0-9]*x",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-        private static readonly Regex s_RgxAmmoCapacitySecond = new Regex(@"(?<=\))(x[0-9]*[0-9]*$)*",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxAmmoCapacityFirst = new Lazy<Regex>(() => new Regex(@"^[0-9]*[0-9]*x",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+        private static readonly Lazy<Regex> s_RgxAmmoCapacitySecond = new Lazy<Regex>(() => new Regex(@"(?<=\))(x[0-9]*[0-9]*$)*",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         /// <summary>
         /// The type of Ammunition loaded in the Weapon.
