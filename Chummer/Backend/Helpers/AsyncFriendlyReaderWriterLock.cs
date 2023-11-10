@@ -42,9 +42,6 @@ namespace Chummer
     /// </summary>
     public sealed class AsyncFriendlyReaderWriterLock : IAsyncDisposable, IDisposable
     {
-        // Because readers are always recursive and it's fine that way, we only need to deploy complicated stuff on the writer side
-        private readonly DebuggableSemaphoreSlim _objReaderSemaphore = new DebuggableSemaphoreSlim();
-
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list, but as a tree graph. Each lock creates a disposable release object of some kind, and only disposing it frees the lock.
         // Because .NET Framework doesn't have dictionary optimizations for dealing with multiple AsyncLocals stored per context, we need scrape together something similar.
@@ -100,14 +97,14 @@ namespace Chummer
                     objTopMostHeldWriterSemaphore, this);
 
             // While we are attempting to acquire the write lock, act as if all previous upgradeable readers have been turned into writers
-            ChangeNumActiveReaders(-intCountLocalReaders, token: token);
+            ChangeNumActiveReaders(-intCountLocalReaders);
             try
             {
                 objCurrentLinkedSemaphore.SafeWaitAll(token, objTopMostHeldWriterSemaphore);
             }
             catch
             {
-                ChangeNumActiveReaders(intCountLocalReaders, false, CancellationToken.None);
+                ChangeNumActiveReaders(intCountLocalReaders);
                 throw;
             }
 
@@ -115,23 +112,8 @@ namespace Chummer
             {
                 // Wait for existing reader locks to finish and exit
                 // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                while (_intCountActiveHiPrioReaders > 0)
+                while (_intCountActiveHiPrioReaders > 0 || _intCountActiveReaders > 0)
                     Utils.SafeSleep(token);
-                if (intCountLocalReaders == 0)
-                {
-                    _objReaderSemaphore.SafeWait(token);
-                    _objReaderSemaphore.Release();
-                }
-                else
-                {
-                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                    while (_intCountActiveReaders > 0)
-                        Utils.SafeSleep(token);
-#if DEBUG
-                    if (_intCountActiveReaders < 0)
-                        Utils.BreakIfDebug();
-#endif
-                }
             }
             catch
             {
@@ -236,27 +218,12 @@ namespace Chummer
             try
             {
                 // While we are attempting to acquire the write lock, act as if all previous upgradeable readers have been turned into writers
-                await ChangeNumActiveReadersAsync(-intCountLocalReaders, false).ConfigureAwait(false);
+                ChangeNumActiveReaders(-intCountLocalReaders);
                 await objCurrentSemaphore.WaitAllAsync(objTopMostHeldWriterSemaphore).ConfigureAwait(false);
                 // Wait for existing reader locks to finish and exit
                 // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                while (_intCountActiveHiPrioReaders > 0)
+                while (_intCountActiveHiPrioReaders > 0 || _intCountActiveReaders > 0)
                     await Utils.SafeSleepAsync().ConfigureAwait(false);
-                if (intCountLocalReaders == 0)
-                {
-                    await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
-                    _objReaderSemaphore.Release();
-                }
-                else
-                {
-                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                    while (_intCountActiveReaders > 0)
-                        await Utils.SafeSleepAsync().ConfigureAwait(false);
-#if DEBUG
-                    if (_intCountActiveReaders < 0)
-                        Utils.BreakIfDebug();
-#endif
-                }
             }
             catch (OperationCanceledException)
             {
@@ -273,27 +240,12 @@ namespace Chummer
             try
             {
                 // While we are attempting to acquire the write lock, act as if all previous upgradeable readers have been turned into writers
-                await ChangeNumActiveReadersAsync(-intCountLocalReaders, false, token).ConfigureAwait(false);
+                ChangeNumActiveReaders(-intCountLocalReaders);
                 await objCurrentSemaphore.WaitAllAsync(token, objTopMostHeldWriterSemaphore).ConfigureAwait(false);
                 // Wait for existing reader locks to finish and exit
                 // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                while (_intCountActiveHiPrioReaders > 0)
+                while (_intCountActiveHiPrioReaders > 0 || _intCountActiveReaders > 0)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                if (intCountLocalReaders == 0)
-                {
-                    await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                    _objReaderSemaphore.Release();
-                }
-                else
-                {
-                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                    while (_intCountActiveReaders > 0)
-                        await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-#if DEBUG
-                    if (_intCountActiveReaders < 0)
-                        Utils.BreakIfDebug();
-#endif
-                }
             }
             catch (OperationCanceledException)
             {
@@ -345,7 +297,7 @@ namespace Chummer
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
             {
-                ChangeNumActiveReaders(1, token: token);
+                ChangeNumActiveReaders(1);
                 _objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
                         objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
@@ -357,7 +309,7 @@ namespace Chummer
             objCurrentLinkedSemaphore.SafeWaitAll(token, objTopMostHeldWriterSemaphore);
             try
             {
-                ChangeNumActiveReaders(1, token: token);
+                ChangeNumActiveReaders(1);
                 _objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
                         objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
@@ -417,10 +369,14 @@ namespace Chummer
                 new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
                     objTopMostHeldWriterSemaphore, this);
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            return _objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0
-                ? TakeUpgradeableReadLockCoreLightAsync(objRelease)
-                : TakeUpgradeableReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore,
-                    objRelease);
+            if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
+            {
+                ChangeNumActiveReaders(1);
+                return Task.FromResult<IDisposable>(objRelease);
+            }
+
+            return TakeUpgradeableReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore,
+                objRelease);
         }
 
         /// <summary>
@@ -473,10 +429,15 @@ namespace Chummer
                 new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
                     objTopMostHeldWriterSemaphore, this);
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            return _objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0
-                ? TakeUpgradeableReadLockCoreLightAsync(objRelease, token)
-                : TakeUpgradeableReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease,
-                    token);
+            if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
+            {
+                ChangeNumActiveReaders(1);
+                return Task.FromResult<IDisposable>(objRelease);
+            }
+
+            return TakeUpgradeableReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore,
+                objRelease,
+                token);
         }
 
         /// <summary>
@@ -491,30 +452,12 @@ namespace Chummer
                 await objCurrentSemaphore.WaitAllAsync(token, objTopMostHeldWriterSemaphore).ConfigureAwait(false);
                 try
                 {
-                    await ChangeNumActiveReadersAsync(1, false, token).ConfigureAwait(false);
+                    ChangeNumActiveReaders(1);
                 }
                 finally
                 {
                     objCurrentSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
-
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Lighter read lock entrant, used if no write locks are being held and we just want to worry about the read lock
-        /// </summary>
-        private async Task<IDisposable> TakeUpgradeableReadLockCoreLightAsync(
-            SafeUpgradeableReaderSemaphoreRelease objRelease, CancellationToken token = default)
-        {
-            try
-            {
-                await ChangeNumActiveReadersAsync(1, false, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -540,10 +483,19 @@ namespace Chummer
             }
 
             token.ThrowIfCancellationRequested();
-            if (_intCountActiveHiPrioReaders > 0)
+
+            ChangeNumActiveReaders(1); // Temporarily increase active reader count to avoid race conditions 
+            try
             {
-                ChangeNumActiveReaders(1, token: token);
-                return new SafeFastReaderSemaphoreRelease(this);
+                if (_intCountActiveHiPrioReaders > 0)
+                {
+                    ChangeNumActiveReaders(1);
+                    return new SafeFastReaderSemaphoreRelease(this);
+                }
+            }
+            finally
+            {
+                ChangeNumActiveReaders(-1);
             }
 
             int intCountLocalReaders = 0;
@@ -557,7 +509,7 @@ namespace Chummer
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue)
             {
-                ChangeNumActiveReaders(1, token: token);
+                ChangeNumActiveReaders(1);
                 _objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
                         objCurrentLinkedSemaphore,
@@ -572,7 +524,7 @@ namespace Chummer
             objCurrentLinkedSemaphore.SafeWaitAll(token, objTopMostHeldWriterSemaphore);
             try
             {
-                ChangeNumActiveReaders(1, token: token);
+                ChangeNumActiveReaders(1);
                 _objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
                         objCurrentLinkedSemaphore,
@@ -601,9 +553,18 @@ namespace Chummer
                 return Task.FromResult<IDisposable>(null);
             }
 
-            if (_intCountActiveHiPrioReaders > 0)
+            ChangeNumActiveReaders(1); // Temporarily increase active reader count to avoid race conditions 
+            try
             {
-                return TakeFastReadLockCoreLightAsync(new SafeFastReaderSemaphoreRelease(this));
+                if (_intCountActiveHiPrioReaders > 0)
+                {
+                    ChangeNumActiveReaders(1);
+                    return Task.FromResult<IDisposable>(new SafeFastReaderSemaphoreRelease(this));
+                }
+            }
+            finally
+            {
+                ChangeNumActiveReaders(-1);
             }
 
             int intCountLocalReaders = 0;
@@ -620,9 +581,13 @@ namespace Chummer
             SafeReaderSemaphoreRelease objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
                 objCurrentLinkedSemaphore,
                 objTopMostHeldWriterSemaphore, this);
-            return _objTopLevelWriterSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue
-                ? TakeReadLockCoreLightAsync(objRelease)
-                : TakeReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease);
+            if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue)
+            {
+                ChangeNumActiveReaders(1);
+                return Task.FromResult<IDisposable>(objRelease);
+            }
+
+            return TakeReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease);
         }
 
         /// <summary>
@@ -643,9 +608,19 @@ namespace Chummer
 
             if (token.IsCancellationRequested)
                 return Task.FromException<IDisposable>(new OperationCanceledException(token));
-            if (_intCountActiveHiPrioReaders > 0)
+
+            ChangeNumActiveReaders(1); // Temporarily increase active reader count to avoid race conditions 
+            try
             {
-                return TakeFastReadLockCoreLightAsync(new SafeFastReaderSemaphoreRelease(this), token);
+                if (_intCountActiveHiPrioReaders > 0)
+                {
+                    ChangeNumActiveReaders(1);
+                    return Task.FromResult<IDisposable>(new SafeFastReaderSemaphoreRelease(this));
+                }
+            }
+            finally
+            {
+                ChangeNumActiveReaders(-1);
             }
 
             int intCountLocalReaders = 0;
@@ -662,9 +637,14 @@ namespace Chummer
             SafeReaderSemaphoreRelease objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
                 objCurrentLinkedSemaphore,
                 objTopMostHeldWriterSemaphore, this);
-            return _objTopLevelWriterSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue
-                ? TakeReadLockCoreLightAsync(objRelease, token)
-                : TakeReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease, token);
+            if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue)
+            {
+                ChangeNumActiveReaders(1);
+                return Task.FromResult<IDisposable>(objRelease);
+            }
+
+            return TakeReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease,
+                token);
         }
 
         /// <summary>
@@ -673,10 +653,19 @@ namespace Chummer
         private async Task<IDisposable> TakeReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeReaderSemaphoreRelease objRelease)
         {
+            if (_intDisposedStatus != 0)
+            {
+#if DEBUG
+                Debug.WriteLine(
+                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(Environment.StackTrace);
+#endif
+                return objRelease;
+            }
             await objCurrentLinkedSemaphore.WaitAllAsync(objTopMostHeldWriterSemaphore).ConfigureAwait(false);
             try
             {
-                await ChangeNumActiveReadersAsync(1).ConfigureAwait(false);
+                ChangeNumActiveReaders(1);
             }
             finally
             {
@@ -693,72 +682,27 @@ namespace Chummer
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeReaderSemaphoreRelease objRelease,
             CancellationToken token)
         {
+            if (_intDisposedStatus != 0)
+            {
+#if DEBUG
+                Debug.WriteLine(
+                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(Environment.StackTrace);
+#endif
+                return objRelease;
+            }
             try
             {
                 await objCurrentLinkedSemaphore.WaitAllAsync(token, objTopMostHeldWriterSemaphore)
                     .ConfigureAwait(false);
                 try
                 {
-                    await ChangeNumActiveReadersAsync(1, false, token: token).ConfigureAwait(false);
+                    ChangeNumActiveReaders(1);
                 }
                 finally
                 {
                     objCurrentLinkedSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
-
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Lighter read lock entrant, used if no write locks are being held and we just want to worry about the read lock
-        /// </summary>
-        private async Task<IDisposable> TakeReadLockCoreLightAsync(SafeReaderSemaphoreRelease objRelease)
-        {
-            await ChangeNumActiveReadersAsync(1).ConfigureAwait(false);
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Lighter read lock entrant, used if no write locks are being held and we just want to worry about the read lock
-        /// </summary>
-        private async Task<IDisposable> TakeReadLockCoreLightAsync(SafeReaderSemaphoreRelease objRelease,
-            CancellationToken token)
-        {
-            try
-            {
-                await ChangeNumActiveReadersAsync(1, false, token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
-
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Even lighter read lock entrant, used if we have already obtained at least one high-priority lock, allowing us to not interact with AsyncLocals at all
-        /// </summary>
-        private async Task<IDisposable> TakeFastReadLockCoreLightAsync(SafeFastReaderSemaphoreRelease objRelease)
-        {
-            await ChangeNumActiveReadersAsync(1).ConfigureAwait(false);
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Even lighter read lock entrant, used if we have already obtained at least one high-priority lock, allowing us to not interact with AsyncLocals at all
-        /// </summary>
-        private async Task<IDisposable> TakeFastReadLockCoreLightAsync(SafeFastReaderSemaphoreRelease objRelease,
-            CancellationToken token)
-        {
-            try
-            {
-                await ChangeNumActiveReadersAsync(1, false, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -890,6 +834,15 @@ namespace Chummer
         private async Task<IAsyncDisposable> TakeHiPrioReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeHiPrioReaderSemaphoreRelease objRelease)
         {
+            if (_intDisposedStatus != 0)
+            {
+#if DEBUG
+                Debug.WriteLine(
+                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(Environment.StackTrace);
+#endif
+                return objRelease;
+            }
             await objCurrentLinkedSemaphore.WaitAllAsync(objTopMostHeldWriterSemaphore).ConfigureAwait(false);
             try
             {
@@ -910,6 +863,15 @@ namespace Chummer
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeHiPrioReaderSemaphoreRelease objRelease,
             CancellationToken token)
         {
+            if (_intDisposedStatus != 0)
+            {
+#if DEBUG
+                Debug.WriteLine(
+                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(Environment.StackTrace);
+#endif
+                return objRelease;
+            }
             try
             {
                 await objCurrentLinkedSemaphore.WaitAllAsync(token, objTopMostHeldWriterSemaphore)
@@ -931,10 +893,8 @@ namespace Chummer
             return objRelease;
         }
 
-        private void ChangeNumActiveReaders(int intDiff, bool blnUndoOnCancel = true, CancellationToken token = default)
+        private void ChangeNumActiveReaders(int intDiff)
         {
-            token.ThrowIfCancellationRequested();
-
             if (_intDisposedStatus > 1)
             {
                 if (intDiff <= 0)
@@ -956,141 +916,16 @@ namespace Chummer
             switch (intDiff)
             {
                 case -1:
-                    if (Interlocked.Decrement(ref _intCountActiveReaders) == 0)
-                        _objReaderSemaphore.Release();
+                    Interlocked.Decrement(ref _intCountActiveReaders);
                     break;
                 case 1:
-                    if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
-                    {
-                        try
-                        {
-                            _objReaderSemaphore.SafeWait(token);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            if (blnUndoOnCancel)
-                                Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                        catch
-                        {
-                            Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                    }
+                    Interlocked.Increment(ref _intCountActiveReaders);
 
                     break;
                 default:
-                    int intNewValue = Interlocked.Add(ref _intCountActiveReaders, intDiff);
-                    if (intNewValue == intDiff)
-                    {
-                        try
-                        {
-                            _objReaderSemaphore.SafeWait(token);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            if (blnUndoOnCancel)
-                                Interlocked.Add(ref _intCountActiveReaders, -intDiff);
-                            throw;
-                        }
-                        catch
-                        {
-                            Interlocked.Add(ref _intCountActiveReaders, -intDiff);
-                            throw;
-                        }
-                    }
-                    else if (intNewValue == 0)
-                        _objReaderSemaphore.Release();
+                    Interlocked.Add(ref _intCountActiveReaders, intDiff);
 
                     break;
-            }
-        }
-
-        private Task ChangeNumActiveReadersAsync(int intDiff, bool blnUndoOnCancel = true,
-            CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-
-            if (_intDisposedStatus > 1)
-            {
-                if (intDiff <= 0)
-                {
-#if DEBUG
-                    Debug.WriteLine(
-                        "Decreasing the number of active readers in a reader-writer lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
-#endif
-                    return Task.CompletedTask;
-                }
-
-                return Task.FromException(new ObjectDisposedException(ToString()));
-            }
-
-            if (intDiff == 0)
-                return Task.CompletedTask;
-
-            switch (intDiff)
-            {
-                case -1:
-                    if (Interlocked.Decrement(ref _intCountActiveReaders) == 0)
-                        _objReaderSemaphore.Release();
-                    return Task.CompletedTask;
-                case 1:
-                    if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
-                        return WaitReaderSemaphore1();
-
-                    async Task WaitReaderSemaphore1()
-                    {
-                        try
-                        {
-                            await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            if (blnUndoOnCancel)
-                                Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                        catch
-                        {
-                            Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                    }
-
-                    return Task.CompletedTask;
-                default:
-                    int intNewValue = Interlocked.Add(ref _intCountActiveReaders, intDiff);
-                    if (intNewValue == intDiff)
-                    {
-                        return WaitReaderSemaphore2();
-
-                        async Task WaitReaderSemaphore2()
-                        {
-                            try
-                            {
-                                await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                if (blnUndoOnCancel)
-                                    Interlocked.Add(ref _intCountActiveReaders, -intDiff);
-                                throw;
-                            }
-                            catch
-                            {
-                                Interlocked.Add(ref _intCountActiveReaders, -intDiff);
-                                throw;
-                            }
-                        }
-                    }
-
-                    if (intNewValue == 0)
-                        _objReaderSemaphore.Release();
-
-                    return Task.CompletedTask;
             }
         }
 
@@ -1144,9 +979,8 @@ namespace Chummer
                 // Ensure the locks aren't held. If they are, wait for them to be released
                 // before completing the dispose.
                 _objTopLevelWriterSemaphore.MySemaphore.SafeWait();
-                _objReaderSemaphore.SafeWait();
-                _objReaderSemaphore.Release();
-                _objReaderSemaphore.Dispose();
+                while (_intCountActiveHiPrioReaders > 0 || _intCountActiveReaders > 0)
+                    Utils.SafeSleep();
                 _objTopLevelWriterSemaphore.MySemaphore.Release();
                 _objTopLevelWriterSemaphore.Dispose();
             }
@@ -1167,9 +1001,8 @@ namespace Chummer
                 // Ensure the locks aren't held. If they are, wait for them to be released
                 // before completing the dispose.
                 await _objTopLevelWriterSemaphore.MySemaphore.WaitAsync().ConfigureAwait(false);
-                await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
-                _objReaderSemaphore.Release();
-                _objReaderSemaphore.Dispose();
+                while (_intCountActiveHiPrioReaders > 0 || _intCountActiveReaders > 0)
+                    await Utils.SafeSleepAsync().ConfigureAwait(false);
                 _objTopLevelWriterSemaphore.MySemaphore.Release();
                 await _objTopLevelWriterSemaphore.DisposeAsync().ConfigureAwait(false);
             }
@@ -1179,7 +1012,7 @@ namespace Chummer
             }
         }
 
-        private readonly struct SafeFastReaderSemaphoreRelease : IDisposable, IAsyncDisposable
+        private readonly struct SafeFastReaderSemaphoreRelease : IDisposable
         {
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
 
@@ -1191,11 +1024,6 @@ namespace Chummer
             public void Dispose()
             {
                 _objReaderWriterLock.ChangeNumActiveReaders(-1);
-            }
-
-            public async ValueTask DisposeAsync()
-            {
-                await _objReaderWriterLock.ChangeNumActiveReadersAsync(-1).ConfigureAwait(false);
             }
         }
 
@@ -1277,7 +1105,7 @@ namespace Chummer
             }
         }
 
-        private readonly struct SafeReaderSemaphoreRelease : IDisposable, IAsyncDisposable
+        private readonly struct SafeReaderSemaphoreRelease : IDisposable
         {
             private readonly int _intOldCountLocalReaders;
             private readonly LinkedSemaphoreSlim _objNextLinkedSemaphore;
@@ -1321,23 +1149,6 @@ namespace Chummer
                         _objNextLinkedSemaphore, _objPreviousTopMostHeldWriterSemaphore);
 
                 _objReaderWriterLock.ChangeNumActiveReaders(-1);
-            }
-
-            public ValueTask DisposeAsync()
-            {
-                // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
-                // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
-                // copy of the ExecutionContext and the caller won't see the changes.
-                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(_intOldCountLocalReaders,
-                        _objNextLinkedSemaphore, _objPreviousTopMostHeldWriterSemaphore);
-
-                return DisposeCoreAsync();
-            }
-
-            private async ValueTask DisposeCoreAsync()
-            {
-                await _objReaderWriterLock.ChangeNumActiveReadersAsync(-1).ConfigureAwait(false);
             }
         }
 
@@ -1454,13 +1265,8 @@ namespace Chummer
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                         _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
-                return DisposeCoreAsync();
-            }
-
-            private async ValueTask DisposeCoreAsync()
-            {
-                await _objReaderWriterLock.ChangeNumActiveReadersAsync(-1).ConfigureAwait(false);
-                await _objNextLinkedSemaphore.DisposeAsync().ConfigureAwait(false);
+                _objReaderWriterLock.ChangeNumActiveReaders(-1);
+                return _objNextLinkedSemaphore.DisposeAsync();
             }
         }
 
@@ -1547,7 +1353,7 @@ namespace Chummer
                 // Wait for all other readers to exit before exiting ourselves
                 while (_objReaderWriterLock._intCountActiveReaders > 0 && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
                     await Utils.SafeSleepAsync().ConfigureAwait(false);
-                await _objReaderWriterLock.ChangeNumActiveReadersAsync(intCountLocalReaders).ConfigureAwait(false);
+                _objReaderWriterLock.ChangeNumActiveReaders(intCountLocalReaders);
                 LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentLinkedSemaphore;
                 if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
                 {
