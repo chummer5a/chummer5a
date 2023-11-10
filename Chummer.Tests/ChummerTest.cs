@@ -59,7 +59,6 @@ namespace Chummer.Tests
             TestPathInfo = Directory.CreateDirectory(TestPath);
             TestFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
             _aobjCharacters = new Character[TestFiles.Length];
-            _aobjCharacterReadLockers = new IDisposable[TestFiles.Length];
         }
 
         private string TestPath { get; }
@@ -68,21 +67,23 @@ namespace Chummer.Tests
         private FileInfo[] TestFiles { get; }
 
         private readonly Character[] _aobjCharacters;
-        private readonly IDisposable[] _aobjCharacterReadLockers;
 
         private IEnumerable<Character> GetTestCharacters()
         {
             for (int i = 0; i < TestFiles.Length; ++i)
             {
+#if DEBUG
                 FileInfo objFileInfo = TestFiles[i];
                 Debug.WriteLine("Loading " + objFileInfo.Name);
+#endif
                 Character objLoopCharacter = _aobjCharacters[i];
                 if (objLoopCharacter == null)
                 {
-                    objLoopCharacter = LoadCharacter(objFileInfo);
-                    // Once we have loaded the character, we should no longer attempt to modify it, so enter a high-priority read lock immediately
-                    _aobjCharacterReadLockers[i] = objLoopCharacter.LockObject.EnterHiPrioReadLock();
-                    _aobjCharacters[i] = objLoopCharacter;
+#if DEBUG
+                    _aobjCharacters[i] = objLoopCharacter = LoadCharacter(objFileInfo);
+#else
+                    _aobjCharacters[i] = objLoopCharacter = LoadCharacter(TestFiles[i]);
+#endif
                 }
 
                 yield return objLoopCharacter;
