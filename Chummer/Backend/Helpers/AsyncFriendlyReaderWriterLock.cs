@@ -265,7 +265,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return null;
             }
@@ -333,7 +333,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return Task.FromResult<IDisposable>(null);
             }
@@ -390,7 +390,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return Task.FromResult<IDisposable>(null);
             }
@@ -477,7 +477,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return null;
             }
@@ -548,7 +548,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return Task.FromResult<IDisposable>(null);
             }
@@ -601,7 +601,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return Task.FromResult<IDisposable>(null);
             }
@@ -658,7 +658,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return objRelease;
             }
@@ -687,7 +687,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return objRelease;
             }
@@ -723,7 +723,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a high-priority read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return null;
             }
@@ -769,7 +769,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return Task.FromResult<IAsyncDisposable>(null);
             }
@@ -803,7 +803,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return Task.FromResult<IAsyncDisposable>(null);
             }
@@ -839,7 +839,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return objRelease;
             }
@@ -868,7 +868,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return objRelease;
             }
@@ -902,7 +902,7 @@ namespace Chummer
 #if DEBUG
                     Debug.WriteLine(
                         "Decreasing the number of active readers in a reader-writer lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
+                    Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                     return;
                 }
@@ -938,7 +938,7 @@ namespace Chummer
 #if DEBUG
                     Debug.WriteLine(
                         "Decreasing the number of active readers in a reader-writer lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
+                    Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                     return;
                 }
@@ -1197,7 +1197,7 @@ namespace Chummer
 #if DEBUG
                     Debug.WriteLine(
                         "Exiting a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
+                    Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                     return;
                 }
@@ -1235,7 +1235,7 @@ namespace Chummer
 #if DEBUG
                     Debug.WriteLine(
                         "Exiting a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
+                    Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                     return new ValueTask(Task.CompletedTask);
                 }

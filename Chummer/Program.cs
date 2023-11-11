@@ -260,6 +260,7 @@ namespace Chummer
                             DateTime datCrashDateTime = DateTime.UtcNow;
                             if (!(exa.ExceptionObject is Exception ex))
                                 return;
+                            ex = ex.Demystify();
                             if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
                                 && !Utils.IsMilestoneVersion)
                             {

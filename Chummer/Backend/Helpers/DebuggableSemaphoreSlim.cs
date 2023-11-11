@@ -23,6 +23,7 @@
 #endif
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -59,7 +60,7 @@ namespace Chummer
         {
             _objSemaphoreSlim.Wait();
 #if SEMAPHOREDEBUG
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 
@@ -68,7 +69,7 @@ namespace Chummer
         {
             _objSemaphoreSlim.Wait(token);
 #if SEMAPHOREDEBUG
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 
@@ -78,7 +79,7 @@ namespace Chummer
 #if SEMAPHOREDEBUG
             if (!_objSemaphoreSlim.Wait(timeout))
                 return false;
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
 
 #else
@@ -92,7 +93,7 @@ namespace Chummer
 #if SEMAPHOREDEBUG
             if (!_objSemaphoreSlim.Wait(timeout, token))
                 return false;
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
 
 #else
@@ -106,7 +107,7 @@ namespace Chummer
 #if SEMAPHOREDEBUG
             if (!_objSemaphoreSlim.Wait(millisecondsTimeout))
                 return false;
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
 
 #else
@@ -120,7 +121,7 @@ namespace Chummer
 #if SEMAPHOREDEBUG
             if (!_objSemaphoreSlim.Wait(millisecondsTimeout, token))
                 return false;
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
 
 #else
@@ -133,14 +134,14 @@ namespace Chummer
         public async Task WaitAsync()
         {
             await _objSemaphoreSlim.WaitAsync();
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
         }
 
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync(CancellationToken)"/>
         public async Task WaitAsync(CancellationToken token)
         {
             await _objSemaphoreSlim.WaitAsync(token);
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
         }
 
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync(TimeSpan)"/>
@@ -148,7 +149,7 @@ namespace Chummer
         {
             if (!await _objSemaphoreSlim.WaitAsync(timeout))
                 return false;
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
         }
 
@@ -157,7 +158,7 @@ namespace Chummer
         {
             if (!await _objSemaphoreSlim.WaitAsync(timeout, token))
                 return false;
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
         }
 
@@ -166,7 +167,7 @@ namespace Chummer
         {
             if (!await _objSemaphoreSlim.WaitAsync(millisecondsTimeout))
                 return false;
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
         }
 
@@ -175,7 +176,7 @@ namespace Chummer
         {
             if (!await _objSemaphoreSlim.WaitAsync(millisecondsTimeout, token))
                 return false;
-            LastHolderStackTrace = Environment.StackTrace;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
         }
 #else
@@ -373,7 +374,7 @@ namespace Chummer
             {
                 _objSemaphoreSlim.Dispose();
 #if SEMAPHOREDEBUG
-                LastHolderStackTrace = Environment.StackTrace;
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             }
         }

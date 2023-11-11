@@ -25708,6 +25708,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
     <PackageReference Include="HtmlRenderer.Core" Version="1.5.0.6" />
     <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
