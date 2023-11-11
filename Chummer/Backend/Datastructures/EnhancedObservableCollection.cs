@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -55,11 +56,34 @@ namespace Chummer
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            using (BlockReentrancy())
+            IDisposable objLocker = CollectionChangedLock?.EnterUpgradeableReadLock();
+            try
             {
-                BeforeClearCollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, (IList)Items));
+                using (BlockReentrancy())
+                {
+                    BeforeClearCollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, (IList)Items));
+                }
+                base.ClearItems();
             }
-            base.ClearItems();
+            finally
+            {
+                objLocker?.Dispose();
+            }
         }
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            IDisposable objLocker = CollectionChangedLock?.EnterUpgradeableReadLock();
+            try
+            {
+                base.OnCollectionChanged(e);
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+        }
+
+        public AsyncFriendlyReaderWriterLock CollectionChangedLock { get; set; }
     }
 }

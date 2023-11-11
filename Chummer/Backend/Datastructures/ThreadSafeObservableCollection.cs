@@ -39,17 +39,26 @@ namespace Chummer
 
         public ThreadSafeObservableCollection()
         {
-            _lstData = new EnhancedObservableCollection<T>();
+            _lstData = new EnhancedObservableCollection<T>
+            {
+                CollectionChangedLock = LockObject
+            };
         }
 
         public ThreadSafeObservableCollection(IEnumerable<T> collection)
         {
-            _lstData = new EnhancedObservableCollection<T>(collection);
+            _lstData = new EnhancedObservableCollection<T>(collection)
+            {
+                CollectionChangedLock = LockObject
+            };
         }
 
         public ThreadSafeObservableCollection(List<T> list)
         {
-            _lstData = new EnhancedObservableCollection<T>(list);
+            _lstData = new EnhancedObservableCollection<T>(list)
+            {
+                CollectionChangedLock = LockObject
+            };
         }
 
         /// <inheritdoc cref="ObservableCollection{T}.Count" />
