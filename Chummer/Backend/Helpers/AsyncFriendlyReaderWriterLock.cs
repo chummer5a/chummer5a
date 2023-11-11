@@ -1224,8 +1224,8 @@ namespace Chummer
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                         _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
-                _objReaderWriterLock.ChangeNumActiveReaders(-1);
                 _objNextLinkedSemaphore.Dispose();
+                _objReaderWriterLock.ChangeNumActiveReaders(-1);
             }
 
             public ValueTask DisposeAsync()
@@ -1265,8 +1265,13 @@ namespace Chummer
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                         _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
+                return DisposeCoreAsync();
+            }
+
+            private async ValueTask DisposeCoreAsync()
+            {
+                await _objNextLinkedSemaphore.DisposeAsync().ConfigureAwait(false);
                 _objReaderWriterLock.ChangeNumActiveReaders(-1);
-                return _objNextLinkedSemaphore.DisposeAsync();
             }
         }
 
@@ -1351,9 +1356,9 @@ namespace Chummer
             private async ValueTask DisposeCoreAsync(int intCountLocalReaders)
             {
                 // Wait for all other readers to exit before exiting ourselves
-                while (_objReaderWriterLock._intCountActiveReaders > 0 && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
+                while (_objReaderWriterLock._intCountActiveReaders > 0 &&
+                       _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
                     await Utils.SafeSleepAsync().ConfigureAwait(false);
-                _objReaderWriterLock.ChangeNumActiveReaders(intCountLocalReaders);
                 LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentLinkedSemaphore;
                 if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
                 {
@@ -1378,6 +1383,8 @@ namespace Chummer
                 }
 
                 await _objNextLinkedSemaphore.DisposeAsync().ConfigureAwait(false);
+
+                _objReaderWriterLock.ChangeNumActiveReaders(intCountLocalReaders);
             }
 
             /// <inheritdoc />
@@ -1416,9 +1423,9 @@ namespace Chummer
                         _intOldCountLocalReaders, objCurrentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
                 // Wait for all other readers to exit before exiting ourselves
-                while (_objReaderWriterLock._intCountActiveReaders > 0 && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
+                while (_objReaderWriterLock._intCountActiveReaders > 0 &&
+                       _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
                     Utils.SafeSleep();
-                _objReaderWriterLock.ChangeNumActiveReaders(_intOldCountLocalReaders);
 
                 if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
                 {
@@ -1443,6 +1450,8 @@ namespace Chummer
                 }
 
                 _objNextLinkedSemaphore.Dispose();
+
+                _objReaderWriterLock.ChangeNumActiveReaders(_intOldCountLocalReaders);
             }
         }
     }
