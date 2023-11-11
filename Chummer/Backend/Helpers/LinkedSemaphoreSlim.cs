@@ -27,6 +27,7 @@ namespace Chummer
 {
     public sealed class LinkedSemaphoreSlim : IDisposable, IAsyncDisposable
     {
+        private int _intDisposedStatus;
         private readonly bool _blnSemaphoreIsPooled;
         private DebuggableSemaphoreSlim _objMySemaphore;
         private LinkedSemaphoreSlim _objParentLinkedSemaphore;
@@ -60,28 +61,44 @@ namespace Chummer
 
         public void Dispose()
         {
-            MySemaphore.SafeWait();
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) > 0)
+                return;
+            DebuggableSemaphoreSlim objMySemaphore = _objMySemaphore;
+            if (objMySemaphore == null)
+                return;
+            objMySemaphore.SafeWait();
+            Interlocked.Increment(ref _intDisposedStatus);
+            _objMySemaphore = null;
             _objParentLinkedSemaphore = null;
-            MySemaphore.Release();
+            objMySemaphore.Release();
             if (_blnSemaphoreIsPooled)
-                Utils.SemaphorePool.Return(ref _objMySemaphore);
+                Utils.SemaphorePool.Return(ref objMySemaphore);
             else
-                MySemaphore.Dispose();
+                objMySemaphore.Dispose();
         }
 
         public async ValueTask DisposeAsync()
         {
-            await MySemaphore.WaitAsync().ConfigureAwait(false);
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) > 0)
+                return;
+            DebuggableSemaphoreSlim objMySemaphore = _objMySemaphore;
+            if (objMySemaphore == null)
+                return;
+            await objMySemaphore.WaitAsync().ConfigureAwait(false);
+            Interlocked.Increment(ref _intDisposedStatus);
+            _objMySemaphore = null;
             _objParentLinkedSemaphore = null;
-            MySemaphore.Release();
+            objMySemaphore.Release();
             if (_blnSemaphoreIsPooled)
-                Utils.SemaphorePool.Return(ref _objMySemaphore);
+                Utils.SemaphorePool.Return(ref objMySemaphore);
             else
-                MySemaphore.Dispose();
+                objMySemaphore.Dispose();
         }
 
         public void WaitAll(LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             MySemaphore.Wait();
             LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
             while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
@@ -93,6 +110,8 @@ namespace Chummer
 
         public void WaitAll(CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             MySemaphore.Wait(token);
             try
             {
@@ -136,6 +155,8 @@ namespace Chummer
 
         public bool WaitAll(TimeSpan timeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(timeout);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -200,6 +221,8 @@ namespace Chummer
 
         public bool WaitAll(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(timeout, token);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -275,6 +298,8 @@ namespace Chummer
 
         public bool WaitAll(int millisecondsTimeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(millisecondsTimeout);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -339,6 +364,8 @@ namespace Chummer
 
         public bool WaitAll(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return MySemaphore.Wait(millisecondsTimeout, token);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -414,6 +441,8 @@ namespace Chummer
 
         public async Task WaitAllAsync(LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             await MySemaphore.WaitAsync().ConfigureAwait(false);
             LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
             while (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
@@ -425,6 +454,8 @@ namespace Chummer
 
         public async Task WaitAllAsync(CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             await MySemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
@@ -468,6 +499,8 @@ namespace Chummer
 
         public async Task<bool> WaitAllAsync(TimeSpan timeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(timeout).ConfigureAwait(false);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -532,6 +565,8 @@ namespace Chummer
 
         public async Task<bool> WaitAllAsync(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(timeout, token).ConfigureAwait(false);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -607,6 +642,8 @@ namespace Chummer
 
         public async Task<bool> WaitAllAsync(int millisecondsTimeout, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -671,6 +708,8 @@ namespace Chummer
 
         public async Task<bool> WaitAllAsync(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (ParentLinkedSemaphore == null || ParentLinkedSemaphore == objUntilSemaphore)
                 return await MySemaphore.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false);
             Stopwatch stpTimer = Utils.StopwatchPool.Get();
@@ -747,6 +786,8 @@ namespace Chummer
 
         public void SafeWaitAll(LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (Utils.IsUnitTest)
             {
                 if (Utils.EverDoEvents)
@@ -825,6 +866,8 @@ namespace Chummer
 
         public void SafeWaitAll(CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (Utils.IsUnitTest)
             {
                 if (Utils.EverDoEvents)
@@ -935,6 +978,8 @@ namespace Chummer
 
         public bool SafeWaitAll(TimeSpan timeout, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
             if (!Utils.EverDoEvents)
                 return WaitAll(timeout, objUntilSemaphore);
 
@@ -1014,6 +1059,9 @@ namespace Chummer
 
         public bool SafeWaitAll(TimeSpan timeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
+
             if (!Utils.EverDoEvents)
                 return WaitAll(timeout, token, objUntilSemaphore);
 
@@ -1104,6 +1152,9 @@ namespace Chummer
 
         public bool SafeWaitAll(int millisecondsTimeout, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
+
             if (!Utils.EverDoEvents)
                 return WaitAll(millisecondsTimeout, objUntilSemaphore);
 
@@ -1183,6 +1234,9 @@ namespace Chummer
 
         public bool SafeWaitAll(int millisecondsTimeout, CancellationToken token, LinkedSemaphoreSlim objUntilSemaphore = null, bool blnForceDoEvents = false)
         {
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
+
             if (!Utils.EverDoEvents)
                 return WaitAll(millisecondsTimeout, token, objUntilSemaphore);
 
@@ -1273,6 +1327,9 @@ namespace Chummer
 
         public void ReleaseAll(LinkedSemaphoreSlim objUntilSemaphore = null)
         {
+            if (_intDisposedStatus > 1)
+                throw new ObjectDisposedException(nameof(LinkedSemaphoreSlim));
+
             LinkedSemaphoreSlim objLoopSemaphore = ParentLinkedSemaphore;
             if (objLoopSemaphore != null && objLoopSemaphore != objUntilSemaphore)
             {
