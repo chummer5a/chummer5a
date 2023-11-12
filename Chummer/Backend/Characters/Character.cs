@@ -15301,18 +15301,9 @@ namespace Chummer
                         }
                     }
 
-                    Guid guiImage = Guid.NewGuid();
                     Image imgMainMugshot = MainMugshot;
                     if (imgMainMugshot != null)
                     {
-                        string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                                                             guiImage.ToString("N", GlobalSettings.InvariantCultureInfo)
-                                                             + ".jpg");
-                        imgMainMugshot.Save(imgMugshotPath);
-                        // <mainmugshotpath />
-                        await objWriter.WriteElementStringAsync("mainmugshotpath",
-                                                                "file://" + imgMugshotPath.Replace(
-                                                                    Path.DirectorySeparatorChar, '/'), token: token).ConfigureAwait(false);
                         // <mainmugshotbase64 />
                         await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     }
@@ -15339,15 +15330,6 @@ namespace Chummer
                                 await objWriter.WriteElementStringAsync(
                                     "stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token).ConfigureAwait(false),
                                     token: token).ConfigureAwait(false);
-
-                                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                                                                     guiImage.ToString("N", GlobalSettings.InvariantCultureInfo)
-                                                                     +
-                                                                     i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
-                                imgMugshot.Save(imgMugshotPath);
-                                await objWriter.WriteElementStringAsync("temppath",
-                                                                        "file://" + imgMugshotPath.Replace(
-                                                                            Path.DirectorySeparatorChar, '/'), token: token).ConfigureAwait(false);
                             }
                             finally
                             {
