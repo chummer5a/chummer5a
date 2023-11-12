@@ -245,24 +245,32 @@ namespace Chummer.UI.Powers
         {
             try
             {
-                switch (e.ListChangedType)
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                try
                 {
-                    case ListChangedType.ItemChanged:
+                    switch (e.ListChangedType)
                     {
-                        string propertyName = e.PropertyDescriptor?.Name;
-                        if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                        case ListChangedType.ItemChanged:
                         {
-                            // recalculation of power points on rating/free levels change
-                            await CalculatePowerPoints(MyToken).ConfigureAwait(false);
-                        }
+                            string propertyName = e.PropertyDescriptor?.Name;
+                            if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                            {
+                                // recalculation of power points on rating/free levels change
+                                await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+                            }
 
-                        break;
+                            break;
+                        }
+                        case ListChangedType.Reset:
+                        case ListChangedType.ItemAdded:
+                        case ListChangedType.ItemDeleted:
+                            await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+                            break;
                     }
-                    case ListChangedType.Reset:
-                    case ListChangedType.ItemAdded:
-                    case ListChangedType.ItemDeleted:
-                        await CalculatePowerPoints(MyToken).ConfigureAwait(false);
-                        break;
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -324,19 +332,27 @@ namespace Chummer.UI.Powers
         {
             try
             {
-                if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, Task<bool>>> selectedItem))
-                    return;
-                if (selectedItem.Item2 == null)
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                try
                 {
-                    cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDown;
-                    _blnSearchMode = true;
-                    cboDisplayFilter.Text = string.Empty;
+                    if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, Task<bool>>> selectedItem))
+                        return;
+                    if (selectedItem.Item2 == null)
+                    {
+                        cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDown;
+                        _blnSearchMode = true;
+                        cboDisplayFilter.Text = string.Empty;
+                    }
+                    else
+                    {
+                        cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+                        _blnSearchMode = false;
+                        await _table.SetFilterAsync(selectedItem.Item2, MyToken).ConfigureAwait(false);
+                    }
                 }
-                else
+                finally
                 {
-                    cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-                    _blnSearchMode = false;
-                    await _table.SetFilterAsync(selectedItem.Item2, MyToken).ConfigureAwait(false);
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -349,21 +365,30 @@ namespace Chummer.UI.Powers
         {
             if (_blnSearchMode)
             {
-                await _table.SetFilterAsync(
-                    async power =>
-                    {
-                        try
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                try
+                {
+                    await _table.SetFilterAsync(
+                        async power =>
                         {
-                            return GlobalSettings.InvariantCultureInfo.CompareInfo.IndexOf(
-                                await power.GetCurrentDisplayNameAsync(token: MyToken).ConfigureAwait(false),
-                                await cboDisplayFilter.DoThreadSafeFuncAsync(x => x.Text, token: MyToken).ConfigureAwait(false),
-                                CompareOptions.IgnoreCase) >= 0;
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            return true;
-                        }
-                    }, MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return GlobalSettings.InvariantCultureInfo.CompareInfo.IndexOf(
+                                    await power.GetCurrentDisplayNameAsync(token: MyToken).ConfigureAwait(false),
+                                    await cboDisplayFilter.DoThreadSafeFuncAsync(x => x.Text, token: MyToken)
+                                        .ConfigureAwait(false),
+                                    CompareOptions.IgnoreCase) >= 0;
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                return true;
+                            }
+                        }, MyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -371,38 +396,47 @@ namespace Chummer.UI.Powers
         {
             try
             {
-                // Open the Cyberware XML file and locate the selected piece.
-                XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml", token: MyToken)
-                                                                .ConfigureAwait(false);
-                bool blnAddAgain;
-
-                do
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                try
                 {
-                    using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>
-                                                                            .GetAsync(
-                                                                                () => new SelectPower(_objCharacter),
-                                                                                MyToken).ConfigureAwait(false))
+                    // Open the Cyberware XML file and locate the selected piece.
+                    XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml", token: MyToken)
+                        .ConfigureAwait(false);
+                    bool blnAddAgain;
+
+                    do
                     {
-                        // Make sure the dialogue window was not canceled.
-                        if (await frmPickPower.ShowDialogSafeAsync(_objCharacter, MyToken).ConfigureAwait(false)
-                            == DialogResult.Cancel)
-                            break;
-
-                        blnAddAgain = frmPickPower.MyForm.AddAgain;
-
-                        Power objPower = new Power(_objCharacter);
-
-                        XmlNode objXmlPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower)
-                                              ?? throw new AbortedException();
-
-                        if (objPower.Create(objXmlPower))
+                        using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>
+                                   .GetAsync(
+                                       () => new SelectPower(_objCharacter),
+                                       MyToken).ConfigureAwait(false))
                         {
-                            await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);
+                            // Make sure the dialogue window was not canceled.
+                            if (await frmPickPower.ShowDialogSafeAsync(_objCharacter, MyToken).ConfigureAwait(false)
+                                == DialogResult.Cancel)
+                                break;
+
+                            blnAddAgain = frmPickPower.MyForm.AddAgain;
+
+                            Power objPower = new Power(_objCharacter);
+
+                            XmlNode objXmlPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power",
+                                                      frmPickPower.MyForm.SelectedPower)
+                                                  ?? throw new AbortedException();
+
+                            if (objPower.Create(objXmlPower))
+                            {
+                                await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);
+                            }
+                            else
+                                await objPower.DeletePowerAsync(MyToken).ConfigureAwait(false);
                         }
-                        else
-                            await objPower.DeletePowerAsync(MyToken).ConfigureAwait(false);
-                    }
-                } while (blnAddAgain);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -415,13 +449,24 @@ namespace Chummer.UI.Powers
         /// </summary>
         public async ValueTask CalculatePowerPoints(CancellationToken token = default)
         {
-            decimal decPowerPointsTotal = await _objCharacter.GetPowerPointsTotalAsync(token).ConfigureAwait(false);
-            decimal decPowerPointsRemaining = decPowerPointsTotal - await _objCharacter.GetPowerPointsUsedAsync(token).ConfigureAwait(false);
-            string strText = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                                           await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), decPowerPointsTotal,
-                                           decPowerPointsRemaining,
-                                           await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false));
-            await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
+            {
+                decimal decPowerPointsTotal = await _objCharacter.GetPowerPointsTotalAsync(token).ConfigureAwait(false);
+                decimal decPowerPointsRemaining = decPowerPointsTotal -
+                                                  await _objCharacter.GetPowerPointsUsedAsync(token)
+                                                      .ConfigureAwait(false);
+                string strText = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
+                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
+                    decPowerPointsTotal,
+                    decPowerPointsRemaining,
+                    await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false));
+                await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private void InitializeTable()
@@ -440,7 +485,15 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            return await power.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return await power.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                         catch (OperationCanceledException)
                         {
@@ -449,8 +502,27 @@ namespace Chummer.UI.Powers
                     }),
                     Tag = "String_Power",
                     Sorter = async (name1, name2) =>
-                        string.Compare((await name1.ConfigureAwait(false)).ToString(), (await name2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
-                                       CompareOptions.Ordinal)
+                    {
+                        try
+                        {
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return string.Compare((await name1.ConfigureAwait(false)).ToString(),
+                                    (await name2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
+                                    CompareOptions.Ordinal);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }
                 });
             nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
 
@@ -462,7 +534,15 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            return await power.GetDisplayActionAsync(MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return await power.GetDisplayActionAsync(MyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                         catch (OperationCanceledException)
                         {
@@ -471,8 +551,26 @@ namespace Chummer.UI.Powers
                     }),
                     Tag = "ColumnHeader_Action",
                     Sorter = async (action1, action2) =>
-                        string.Compare((await action1.ConfigureAwait(false)).ToString(), (await action2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
-                                       CompareOptions.Ordinal)
+                    {
+                        try
+                        {
+                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return string.Compare((await action1.ConfigureAwait(false)).ToString(),
+                                    (await action2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
+                                    CompareOptions.Ordinal);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }
                 });
             actionColumn.AddDependency(nameof(Power.DisplayAction));
 
@@ -486,11 +584,14 @@ namespace Chummer.UI.Powers
                                                                                     0)),
                                                                             ValueUpdater = (p, newRating) =>
                                                                             {
-                                                                                int delta = ((int)newRating)
-                                                                                    - p.Rating;
-                                                                                if (delta != 0)
+                                                                                using (CursorWait.New(this))
                                                                                 {
-                                                                                    p.Rating += delta;
+                                                                                    int delta = (int)newRating
+                                                                                        - p.Rating;
+                                                                                    if (delta != 0)
+                                                                                    {
+                                                                                        p.Rating += delta;
+                                                                                    }
                                                                                 }
                                                                             },
                                                                             MinExtractor = (p => 0),
@@ -503,9 +604,18 @@ namespace Chummer.UI.Powers
                 {
                     try
                     {
-                        if (await o1.ConfigureAwait(false) is Power objPower1 && await o2.ConfigureAwait(false) is Power objPower2)
-                            return await objPower1.GetRatingAsync(MyToken).ConfigureAwait(false)
-                                   - await objPower2.GetRatingAsync(MyToken).ConfigureAwait(false);
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                        try
+                        {
+                            if (await o1.ConfigureAwait(false) is Power objPower1 &&
+                                await o2.ConfigureAwait(false) is Power objPower2)
+                                return await objPower1.GetRatingAsync(MyToken).ConfigureAwait(false)
+                                       - await objPower2.GetRatingAsync(MyToken).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     catch (OperationCanceledException)
                     {
@@ -537,7 +647,15 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            return await power.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return await power.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                         catch (OperationCanceledException)
                         {
@@ -549,9 +667,18 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            if (await o1.ConfigureAwait(false) is Power objPower1 && await o2.ConfigureAwait(false) is Power objPower2)
-                                return await objPower1.GetTotalRatingAsync(MyToken).ConfigureAwait(false)
-                                       - await objPower2.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                if (await o1.ConfigureAwait(false) is Power objPower1 &&
+                                    await o2.ConfigureAwait(false) is Power objPower2)
+                                    return await objPower1.GetTotalRatingAsync(MyToken).ConfigureAwait(false)
+                                           - await objPower2.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                         catch (OperationCanceledException)
                         {
@@ -575,7 +702,15 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            return await power.GetDisplayPointsAsync(MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return await power.GetDisplayPointsAsync(MyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                         catch (OperationCanceledException)
                         {
@@ -587,7 +722,15 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            return await item.GetToolTipAsync(MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return await item.GetToolTipAsync(MyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                         catch (OperationCanceledException)
                         {
@@ -608,7 +751,15 @@ namespace Chummer.UI.Powers
                 {
                     try
                     {
-                        return await power.GetSourceDetailAsync(MyToken).ConfigureAwait(false);
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                        try
+                        {
+                            return await power.GetSourceDetailAsync(MyToken).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     catch (OperationCanceledException)
                     {
@@ -620,7 +771,15 @@ namespace Chummer.UI.Powers
                 {
                     try
                     {
-                        return (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).LanguageBookTooltip;
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                        try
+                        {
+                            return (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).LanguageBookTooltip;
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     catch (OperationCanceledException)
                     {
@@ -687,13 +846,21 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>
-                                           .GetAsync(() => new EditNotes(p.Notes, p.NotesColor, MyToken), MyToken)
-                                           .ConfigureAwait(false))
+                                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                                try
                                 {
-                                    if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter, MyToken)
-                                            .ConfigureAwait(false) == DialogResult.OK)
-                                        p.Notes = frmPowerNotes.MyForm.Notes;
+                                    using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>
+                                               .GetAsync(() => new EditNotes(p.Notes, p.NotesColor, MyToken), MyToken)
+                                               .ConfigureAwait(false))
+                                    {
+                                        if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter, MyToken)
+                                                .ConfigureAwait(false) == DialogResult.OK)
+                                            p.Notes = frmPowerNotes.MyForm.Notes;
+                                    }
+                                }
+                                finally
+                                {
+                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -711,14 +878,22 @@ namespace Chummer.UI.Powers
                 {
                     try
                     {
-                        string strTooltip
-                            = await LanguageManager.GetStringAsync(
-                                "Tip_Power_EditNotes", token: MyToken).ConfigureAwait(false);
-                        if (!string.IsNullOrEmpty(p.Notes))
-                            strTooltip += Environment.NewLine
-                                          + Environment.NewLine
-                                          + await p.Notes.RtfToPlainTextAsync(token: MyToken).ConfigureAwait(false);
-                        return strTooltip.WordWrap();
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                        try
+                        {
+                            string strTooltip
+                                = await LanguageManager.GetStringAsync(
+                                    "Tip_Power_EditNotes", token: MyToken).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(p.Notes))
+                                strTooltip += Environment.NewLine
+                                              + Environment.NewLine
+                                              + await p.Notes.RtfToPlainTextAsync(token: MyToken).ConfigureAwait(false);
+                            return strTooltip.WordWrap();
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     catch (OperationCanceledException)
                     {
@@ -748,34 +923,42 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                //Cache the parentform prior to deletion, otherwise the relationship is broken.
-                                Form frmParent = await this.DoThreadSafeFuncAsync(x => x.ParentForm, token: MyToken)
-                                                           .ConfigureAwait(false);
-                                if (p.FreeLevels > 0)
+                                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                                try
                                 {
-                                    string strExtra = p.Extra;
-                                    string strImprovementSourceName
-                                        = (await ImprovementManager
-                                                 .GetCachedImprovementListForValueOfAsync(
-                                                     p.CharacterObject,
-                                                     Improvement.ImprovementType.AdeptPowerFreePoints, p.Name,
-                                                     token: MyToken).ConfigureAwait(false))
-                                          .Find(x => x.UniqueName == strExtra)?.SourceName;
-                                    if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
+                                    //Cache the parentform prior to deletion, otherwise the relationship is broken.
+                                    Form frmParent = await this.DoThreadSafeFuncAsync(x => x.ParentForm, token: MyToken)
+                                        .ConfigureAwait(false);
+                                    if (p.FreeLevels > 0)
                                     {
-                                        Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
-                                        if (objGear?.Bonded == true)
+                                        string strExtra = p.Extra;
+                                        string strImprovementSourceName
+                                            = (await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(
+                                                    p.CharacterObject,
+                                                    Improvement.ImprovementType.AdeptPowerFreePoints, p.Name,
+                                                    token: MyToken).ConfigureAwait(false))
+                                            .Find(x => x.UniqueName == strExtra)?.SourceName;
+                                        if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
                                         {
-                                            objGear.Equipped = false;
-                                            objGear.Extra = string.Empty;
+                                            Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
+                                            if (objGear?.Bonded == true)
+                                            {
+                                                objGear.Equipped = false;
+                                                objGear.Extra = string.Empty;
+                                            }
                                         }
                                     }
+
+                                    await p.DeletePowerAsync(MyToken).ConfigureAwait(false);
+
+                                    if (frmParent is CharacterShared objParent)
+                                        await objParent.RequestCharacterUpdate(MyToken).ConfigureAwait(false);
                                 }
-
-                                await p.DeletePowerAsync(MyToken).ConfigureAwait(false);
-
-                                if (frmParent is CharacterShared objParent)
-                                    await objParent.RequestCharacterUpdate(MyToken).ConfigureAwait(false);
+                                finally
+                                {
+                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                             catch (OperationCanceledException)
                             {
@@ -791,7 +974,8 @@ namespace Chummer.UI.Powers
                 {
                     try
                     {
-                        return (await LanguageManager.GetStringAsync("String_Delete", token: MyToken).ConfigureAwait(false))
+                        return (await LanguageManager.GetStringAsync("String_Delete", token: MyToken)
+                                .ConfigureAwait(false))
                             .WordWrap();
                     }
                     catch (OperationCanceledException)
@@ -823,26 +1007,34 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                switch (ParentForm)
+                                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                                try
                                 {
-                                    case CharacterCreate
-                                        frmCreate:
-                                        await frmCreate
-                                              .ReapplySpecificImprovements(
-                                                  p.InternalId,
-                                                  await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
-                                                  MyToken)
-                                              .ConfigureAwait(false);
-                                        break;
-                                    case CharacterCareer
-                                        frmCareer:
-                                        await frmCareer
-                                              .ReapplySpecificImprovements(
-                                                  p.InternalId,
-                                                  await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
-                                                  MyToken)
-                                              .ConfigureAwait(false);
-                                        break;
+                                    switch (ParentForm)
+                                    {
+                                        case CharacterCreate
+                                            frmCreate:
+                                            await frmCreate
+                                                .ReapplySpecificImprovements(
+                                                    p.InternalId,
+                                                    await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
+                                                    MyToken)
+                                                .ConfigureAwait(false);
+                                            break;
+                                        case CharacterCareer
+                                            frmCareer:
+                                            await frmCareer
+                                                .ReapplySpecificImprovements(
+                                                    p.InternalId,
+                                                    await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
+                                                    MyToken)
+                                                .ConfigureAwait(false);
+                                            break;
+                                    }
+                                }
+                                finally
+                                {
+                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -859,7 +1051,9 @@ namespace Chummer.UI.Powers
                 {
                     try
                     {
-                        return (await LanguageManager.GetStringAsync("Menu_SpecialReapplyImprovements", token: MyToken).ConfigureAwait(false))
+                        return (await LanguageManager
+                                .GetStringAsync("Menu_SpecialReapplyImprovements", token: MyToken)
+                                .ConfigureAwait(false))
                             .WordWrap();
                     }
                     catch (OperationCanceledException)

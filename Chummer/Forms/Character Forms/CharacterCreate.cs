@@ -11611,219 +11611,238 @@ namespace Chummer
 
             try
             {
-                // Don't bother to do anything since a node is being unchecked.
-                if (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Checked, GenericToken).ConfigureAwait(false))
-                    return;
-
-                string strSelectedId
-                    = (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Tag, GenericToken)
-                                         .ConfigureAwait(false) as IHasInternalId)
-                    ?.InternalId ?? string.Empty;
-
-                // Locate the Focus that is being touched.
-                Gear objSelectedFocus = CharacterObject.Gear.DeepFindById(strSelectedId);
-
-                // Set the Focus count to 1 and get its current Rating (Force). This number isn't used in the following loops because it isn't yet checked or unchecked.
-                int intFociCount = 1;
-                int intFociTotal;
-
-                if (objSelectedFocus != null)
-                    intFociTotal = objSelectedFocus.Rating;
-                else
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    // This is a Stacked Focus.
-                    intFociTotal = (await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == strSelectedId, GenericToken)
-                                                         .ConfigureAwait(false))
-                        ?.TotalForce ?? 0;
-                }
-
-                await treViewToUse.DoThreadSafeAsync(y =>
-                {
-                    // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
-                    foreach (TreeNode objNode in y.Nodes)
-                    {
-                        if (objNode.Checked)
-                        {
-                            string strNodeId = objNode.Tag.ToString();
-                            ++intFociCount;
-                            intFociTotal += CharacterObject
-                                            .Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)
-                                            ?.Rating ?? 0;
-                            intFociTotal += CharacterObject.StackedFoci.Find(x => x.InternalId == strNodeId && x.Bonded)
-                                                           ?.TotalForce ?? 0;
-                        }
-                    }
-                }, GenericToken).ConfigureAwait(false);
-
-                if (!CharacterObject.IgnoreRules)
-                {
-                    if (intFociTotal > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
-                                .ConfigureAwait(false))
-                            .GetTotalValueAsync(GenericToken).ConfigureAwait(false) * 5 ||
-                        CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                                                                           && CharacterObject.InitiateGrade + 1
-                                                                           > await (await CharacterObject
-                                                                                   .GetAttributeAsync(
-                                                                                       "MAGAdept", token: GenericToken)
-                                                                                   .ConfigureAwait(false))
-                                                                               .GetTotalValueAsync(GenericToken)
-                                                                               .ConfigureAwait(false))
-                    {
-                        Program.ShowScrollableMessageBox(
-                            this,
-                            await LanguageManager.GetStringAsync("Message_FocusMaximumForce", token: GenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        e.Cancel = true;
+                    // Don't bother to do anything since a node is being unchecked.
+                    if (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Checked, GenericToken)
+                            .ConfigureAwait(false))
                         return;
-                    }
 
-                    if (intFociCount > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
+                    string strSelectedId
+                        = (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Tag, GenericToken)
+                            .ConfigureAwait(false) as IHasInternalId)
+                        ?.InternalId ?? string.Empty;
+
+                    // Locate the Focus that is being touched.
+                    Gear objSelectedFocus = CharacterObject.Gear.DeepFindById(strSelectedId);
+
+                    // Set the Focus count to 1 and get its current Rating (Force). This number isn't used in the following loops because it isn't yet checked or unchecked.
+                    int intFociCount = 1;
+                    int intFociTotal;
+
+                    if (objSelectedFocus != null)
+                        intFociTotal = objSelectedFocus.Rating;
+                    else
+                    {
+                        // This is a Stacked Focus.
+                        intFociTotal = (await CharacterObject.StackedFoci
+                                .FindAsync(x => x.InternalId == strSelectedId, GenericToken)
                                 .ConfigureAwait(false))
-                            .GetTotalValueAsync(GenericToken).ConfigureAwait(false) ||
-                        CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                                                                           && intFociCount
-                                                                           > await (await CharacterObject
-                                                                                   .GetAttributeAsync(
-                                                                                       "MAGAdept", token: GenericToken)
-                                                                                   .ConfigureAwait(false))
-                                                                               .GetTotalValueAsync(GenericToken)
-                                                                               .ConfigureAwait(false))
-                    {
-                        Program.ShowScrollableMessageBox(
-                            this,
-                            await LanguageManager.GetStringAsync("Message_FocusMaximumNumber", token: GenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        e.Cancel = true;
-                        return;
+                            ?.TotalForce ?? 0;
                     }
-                }
 
-                if (objSelectedFocus != null)
-                {
-                    Focus objFocus = new Focus(CharacterObject)
+                    await treViewToUse.DoThreadSafeAsync(y =>
                     {
-                        GearObject = objSelectedFocus
-                    };
-
-                    if (objSelectedFocus.Equipped && (objSelectedFocus.Bonus != null
-                                                      || objSelectedFocus.WirelessOn
-                                                      && objSelectedFocus.WirelessBonus != null))
-                    {
-                        if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
-                            ImprovementManager.ForcedValue = objSelectedFocus.Extra;
-                        if (objSelectedFocus.Bonus != null)
+                        // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
+                        foreach (TreeNode objNode in y.Nodes)
                         {
-                            if (!await ImprovementManager.CreateImprovementsAsync(
-                                    CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId,
-                                    objSelectedFocus.Bonus, objSelectedFocus.Rating,
-                                    await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                          .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
+                            if (objNode.Checked)
                             {
-                                // Clear created improvements
-                                await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken)
-                                                      .ConfigureAwait(false);
-                                await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken)
-                                                      .ConfigureAwait(false);
-                                e.Cancel = true;
-                                return;
+                                string strNodeId = objNode.Tag.ToString();
+                                ++intFociCount;
+                                intFociTotal += CharacterObject
+                                    .Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)
+                                    ?.Rating ?? 0;
+                                intFociTotal += CharacterObject.StackedFoci
+                                    .Find(x => x.InternalId == strNodeId && x.Bonded)
+                                    ?.TotalForce ?? 0;
                             }
+                        }
+                    }, GenericToken).ConfigureAwait(false);
 
-                            objSelectedFocus.Extra = ImprovementManager.SelectedValue;
+                    if (!CharacterObject.IgnoreRules)
+                    {
+                        if (intFociTotal > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
+                                    .ConfigureAwait(false))
+                                .GetTotalValueAsync(GenericToken).ConfigureAwait(false) * 5 ||
+                            CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                                                                               && CharacterObject.InitiateGrade + 1
+                                                                               > await (await CharacterObject
+                                                                                       .GetAttributeAsync(
+                                                                                           "MAGAdept",
+                                                                                           token: GenericToken)
+                                                                                       .ConfigureAwait(false))
+                                                                                   .GetTotalValueAsync(GenericToken)
+                                                                                   .ConfigureAwait(false))
+                        {
+                            Program.ShowScrollableMessageBox(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_FocusMaximumForce", token: GenericToken)
+                                    .ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum", token: GenericToken)
+                                    .ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            e.Cancel = true;
+                            return;
                         }
 
-                        if (objSelectedFocus.WirelessOn
-                            && objSelectedFocus.WirelessBonus != null
-                            && !await ImprovementManager.CreateImprovementsAsync(
-                                CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId,
-                                objSelectedFocus.WirelessBonus, objSelectedFocus.Rating,
-                                await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                      .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
+                        if (intFociCount > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
+                                    .ConfigureAwait(false))
+                                .GetTotalValueAsync(GenericToken).ConfigureAwait(false) ||
+                            CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                                                                               && intFociCount
+                                                                               > await (await CharacterObject
+                                                                                       .GetAttributeAsync(
+                                                                                           "MAGAdept",
+                                                                                           token: GenericToken)
+                                                                                       .ConfigureAwait(false))
+                                                                                   .GetTotalValueAsync(GenericToken)
+                                                                                   .ConfigureAwait(false))
                         {
-                            // Clear created improvements
-                            await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken)
-                                                  .ConfigureAwait(false);
-                            await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken)
-                                                  .ConfigureAwait(false);
+                            Program.ShowScrollableMessageBox(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_FocusMaximumNumber", token: GenericToken)
+                                    .ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum", token: GenericToken)
+                                    .ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
                             e.Cancel = true;
                             return;
                         }
                     }
 
-                    string strName = await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken)
-                                                           .ConfigureAwait(false);
-                    await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Text = strName, GenericToken)
-                                      .ConfigureAwait(false);
-                    await CharacterObject.Foci.AddAsync(objFocus, GenericToken).ConfigureAwait(false);
-                    objSelectedFocus.Bonded = true;
-                }
-                else
-                {
-                    // This is a Stacked Focus.
-                    StackedFocus objStack
-                        = await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == strSelectedId, GenericToken)
-                                               .ConfigureAwait(false);
-                    if (objStack != null)
+                    if (objSelectedFocus != null)
                     {
-                        Gear objStackGear = CharacterObject.Gear.DeepFindById(objStack.GearId);
-                        if (objStackGear.Equipped)
+                        Focus objFocus = new Focus(CharacterObject)
                         {
-                            foreach (Gear objGear in objStack.Gear)
+                            GearObject = objSelectedFocus
+                        };
+
+                        if (objSelectedFocus.Equipped && (objSelectedFocus.Bonus != null
+                                                          || objSelectedFocus.WirelessOn
+                                                          && objSelectedFocus.WirelessBonus != null))
+                        {
+                            if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
+                                ImprovementManager.ForcedValue = objSelectedFocus.Extra;
+                            if (objSelectedFocus.Bonus != null)
                             {
-                                if (objGear.Bonus == null && (!objGear.WirelessOn || objGear.WirelessBonus == null))
-                                    continue;
-                                if (!string.IsNullOrEmpty(objGear.Extra))
-                                    ImprovementManager.ForcedValue = objGear.Extra;
-                                if (objGear.Bonus != null)
-                                {
-                                    if (!await ImprovementManager.CreateImprovementsAsync(
-                                            CharacterObject, Improvement.ImprovementSource.StackedFocus,
-                                            objStack.InternalId, objGear.Bonus, objGear.Rating,
-                                            await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                         .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
-                                    {
-                                        // Clear created improvements
-                                        await objStackGear.ChangeEquippedStatusAsync(false, token: GenericToken)
-                                                          .ConfigureAwait(false);
-                                        await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken)
-                                                          .ConfigureAwait(false);
-                                        e.Cancel = true;
-                                        return;
-                                    }
-
-                                    objGear.Extra = ImprovementManager.SelectedValue;
-                                }
-
-                                if (objGear.WirelessOn
-                                    && objGear.WirelessBonus != null
-                                    && !await ImprovementManager.CreateImprovementsAsync(
-                                        CharacterObject, Improvement.ImprovementSource.StackedFocus,
-                                        objStack.InternalId, objGear.WirelessBonus, objGear.Rating,
-                                        await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                     .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
+                                if (!await ImprovementManager.CreateImprovementsAsync(
+                                        CharacterObject, Improvement.ImprovementSource.Gear,
+                                        objSelectedFocus.InternalId,
+                                        objSelectedFocus.Bonus, objSelectedFocus.Rating,
+                                        await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)
+                                            .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
                                 {
                                     // Clear created improvements
-                                    await objStackGear.ChangeEquippedStatusAsync(false, token: GenericToken)
-                                                      .ConfigureAwait(false);
-                                    await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken)
-                                                      .ConfigureAwait(false);
+                                    await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken)
+                                        .ConfigureAwait(false);
                                     e.Cancel = true;
                                     return;
                                 }
+
+                                objSelectedFocus.Extra = ImprovementManager.SelectedValue;
+                            }
+
+                            if (objSelectedFocus.WirelessOn
+                                && objSelectedFocus.WirelessBonus != null
+                                && !await ImprovementManager.CreateImprovementsAsync(
+                                    CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId,
+                                    objSelectedFocus.WirelessBonus, objSelectedFocus.Rating,
+                                    await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)
+                                        .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
+                            {
+                                // Clear created improvements
+                                await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken)
+                                    .ConfigureAwait(false);
+                                await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken)
+                                    .ConfigureAwait(false);
+                                e.Cancel = true;
+                                return;
                             }
                         }
 
-                        objStack.Bonded = true;
-                        string strName = await objStackGear.GetCurrentDisplayNameAsync(GenericToken)
-                                                           .ConfigureAwait(false);
-                        await treViewToUse.DoThreadSafeAsync(() => e.Node.Text = strName, GenericToken)
-                                          .ConfigureAwait(false);
+                        string strName = await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken)
+                            .ConfigureAwait(false);
+                        await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Text = strName, GenericToken)
+                            .ConfigureAwait(false);
+                        await CharacterObject.Foci.AddAsync(objFocus, GenericToken).ConfigureAwait(false);
+                        objSelectedFocus.Bonded = true;
                     }
-                }
+                    else
+                    {
+                        // This is a Stacked Focus.
+                        StackedFocus objStack
+                            = await CharacterObject.StackedFoci
+                                .FindAsync(x => x.InternalId == strSelectedId, GenericToken)
+                                .ConfigureAwait(false);
+                        if (objStack != null)
+                        {
+                            Gear objStackGear = CharacterObject.Gear.DeepFindById(objStack.GearId);
+                            if (objStackGear.Equipped)
+                            {
+                                foreach (Gear objGear in objStack.Gear)
+                                {
+                                    if (objGear.Bonus == null && (!objGear.WirelessOn || objGear.WirelessBonus == null))
+                                        continue;
+                                    if (!string.IsNullOrEmpty(objGear.Extra))
+                                        ImprovementManager.ForcedValue = objGear.Extra;
+                                    if (objGear.Bonus != null)
+                                    {
+                                        if (!await ImprovementManager.CreateImprovementsAsync(
+                                                CharacterObject, Improvement.ImprovementSource.StackedFocus,
+                                                objStack.InternalId, objGear.Bonus, objGear.Rating,
+                                                await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                    .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
+                                        {
+                                            // Clear created improvements
+                                            await objStackGear.ChangeEquippedStatusAsync(false, token: GenericToken)
+                                                .ConfigureAwait(false);
+                                            await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken)
+                                                .ConfigureAwait(false);
+                                            e.Cancel = true;
+                                            return;
+                                        }
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                                        objGear.Extra = ImprovementManager.SelectedValue;
+                                    }
+
+                                    if (objGear.WirelessOn
+                                        && objGear.WirelessBonus != null
+                                        && !await ImprovementManager.CreateImprovementsAsync(
+                                            CharacterObject, Improvement.ImprovementSource.StackedFocus,
+                                            objStack.InternalId, objGear.WirelessBonus, objGear.Rating,
+                                            await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
+                                    {
+                                        // Clear created improvements
+                                        await objStackGear.ChangeEquippedStatusAsync(false, token: GenericToken)
+                                            .ConfigureAwait(false);
+                                        await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken)
+                                            .ConfigureAwait(false);
+                                        e.Cancel = true;
+                                        return;
+                                    }
+                                }
+                            }
+
+                            objStack.Bonded = true;
+                            string strName = await objStackGear.GetCurrentDisplayNameAsync(GenericToken)
+                                .ConfigureAwait(false);
+                            await treViewToUse.DoThreadSafeAsync(() => e.Node.Text = strName, GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                    }
+
+                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
