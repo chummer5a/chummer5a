@@ -17,6 +17,11 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+// Uncomment this define to control whether or not stacktraces should be saved every time a linked semaphore is successfully disposed.
+#if DEBUG
+//#define LINKEDSEMAPHOREDISPOSEDEBUG
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -59,6 +64,11 @@ namespace Chummer
             _objParentLinkedSemaphore = objParent;
         }
 
+#if LINKEDSEMAPHOREDISPOSEDEBUG
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        private string DisposeStackTrace { get; set; }
+#endif
+
         public void Dispose()
         {
             if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) > 0)
@@ -66,6 +76,9 @@ namespace Chummer
             DebuggableSemaphoreSlim objMySemaphore = _objMySemaphore;
             if (objMySemaphore == null)
                 return;
+#if LINKEDSEMAPHOREDISPOSEDEBUG
+            DisposeStackTrace = EnhancedStackTrace.Current().ToString();
+#endif
             objMySemaphore.SafeWait();
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
@@ -84,6 +97,9 @@ namespace Chummer
             DebuggableSemaphoreSlim objMySemaphore = _objMySemaphore;
             if (objMySemaphore == null)
                 return;
+#if LINKEDSEMAPHOREDISPOSEDEBUG
+            DisposeStackTrace = EnhancedStackTrace.Current().ToString();
+#endif
             await objMySemaphore.WaitAsync().ConfigureAwait(false);
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
