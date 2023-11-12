@@ -7057,7 +7057,7 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                Dispose(true);
+                await DisposeAsync(true).ConfigureAwait(false);
             }
             finally
             {
