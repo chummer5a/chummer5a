@@ -130,21 +130,21 @@ namespace Chummer
             {
                 if (lstToProcess1 != null)
                 {
-                    lstToProcess1.BeforeClearCollectionChanged
+                    lstToProcess1.BeforeClearCollectionChangedAsync
                         += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
-                    lstToProcess1.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
+                    lstToProcess1.CollectionChangedAsync += OpenCharacterEditorFormsOnCollectionChanged;
                 }
                 if (lstToProcess2 != null)
                 {
-                    lstToProcess2.BeforeClearCollectionChanged
+                    lstToProcess2.BeforeClearCollectionChangedAsync
                         += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
-                    lstToProcess2.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
+                    lstToProcess2.CollectionChangedAsync += OpenCharacterSheetViewersOnCollectionChanged;
                 }
                 if (lstToProcess3 != null)
                 {
-                    lstToProcess3.BeforeClearCollectionChanged
+                    lstToProcess3.BeforeClearCollectionChangedAsync
                         += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
-                    lstToProcess3.CollectionChanged += OpenCharacterExportFormsOnCollectionChanged;
+                    lstToProcess3.CollectionChangedAsync += OpenCharacterExportFormsOnCollectionChanged;
                 }
                 GlobalSettings.MruChanged += RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
@@ -172,21 +172,21 @@ namespace Chummer
             {
                 if (lstToProcess1 != null)
                 {
-                    lstToProcess1.BeforeClearCollectionChanged
+                    lstToProcess1.BeforeClearCollectionChangedAsync
                         -= OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
-                    lstToProcess1.CollectionChanged -= OpenCharacterEditorFormsOnCollectionChanged;
+                    lstToProcess1.CollectionChangedAsync -= OpenCharacterEditorFormsOnCollectionChanged;
                 }
                 if (lstToProcess2 != null)
                 {
-                    lstToProcess2.BeforeClearCollectionChanged
+                    lstToProcess2.BeforeClearCollectionChangedAsync
                         -= OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
-                    lstToProcess2.CollectionChanged -= OpenCharacterSheetViewersOnCollectionChanged;
+                    lstToProcess2.CollectionChangedAsync -= OpenCharacterSheetViewersOnCollectionChanged;
                 }
                 if (lstToProcess3 != null)
                 {
-                    lstToProcess3.BeforeClearCollectionChanged
+                    lstToProcess3.BeforeClearCollectionChangedAsync
                         -= OpenCharacterExportFormsOnBeforeClearCollectionChanged;
-                    lstToProcess3.CollectionChanged -= OpenCharacterExportFormsOnCollectionChanged;
+                    lstToProcess3.CollectionChangedAsync -= OpenCharacterExportFormsOnCollectionChanged;
                 }
                 GlobalSettings.MruChanged -= RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
@@ -728,7 +728,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
@@ -766,7 +766,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
@@ -828,7 +828,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
@@ -870,7 +870,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
@@ -938,7 +938,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
@@ -976,7 +976,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;

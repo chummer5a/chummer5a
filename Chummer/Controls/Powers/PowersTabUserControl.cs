@@ -203,7 +203,7 @@ namespace Chummer.UI.Powers
                 Utils.StopwatchPool.Return(ref sw);
             }
 
-            _objCharacter.Powers.ListChanged += OnPowersListChanged;
+            _objCharacter.Powers.ListChangedAsync += OnPowersListChanged;
             IAsyncDisposable objLocker
                 = await _objCharacter.LockObject.EnterWriteLockAsync(MyToken).ConfigureAwait(false);
             try
@@ -221,7 +221,7 @@ namespace Chummer.UI.Powers
         {
             if (_objCharacter?.IsDisposed == false)
             {
-                _objCharacter.Powers.ListChanged -= OnPowersListChanged;
+                _objCharacter.Powers.ListChangedAsync -= OnPowersListChanged;
                 using (_objCharacter.LockObject.EnterWriteLock(token))
                     _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
             }
@@ -241,7 +241,7 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private async void OnPowersListChanged(object sender, ListChangedEventArgs e)
+        private async Task OnPowersListChanged(object sender, ListChangedEventArgs e)
         {
             try
             {

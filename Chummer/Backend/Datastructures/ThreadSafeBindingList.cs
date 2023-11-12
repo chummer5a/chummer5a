@@ -41,12 +41,18 @@ namespace Chummer
 
         public ThreadSafeBindingList()
         {
-            _lstData = new CachedBindingList<T>();
+            _lstData = new CachedBindingList<T>
+            {
+                BindingListLock = LockObject
+            };
         }
 
         public ThreadSafeBindingList(IList<T> list)
         {
-            _lstData = new CachedBindingList<T>(list);
+            _lstData = new CachedBindingList<T>(list)
+            {
+                BindingListLock = LockObject
+            };
         }
 
         /// <inheritdoc cref="List{T}.Count" />
@@ -771,6 +777,20 @@ namespace Chummer
             }
         }
 
+        public event AsyncBeforeRemoveEventHandler BeforeRemoveAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.BeforeRemoveAsync += value;
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.BeforeRemoveAsync -= value;
+            }
+        }
+
         /// <inheritdoc cref="BindingList{T}.AddingNew" />
         public event AddingNewEventHandler AddingNew
         {
@@ -783,6 +803,20 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                     _lstData.AddingNew -= value;
+            }
+        }
+
+        public event AsyncAddingNewEventHandler AddingNewAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.AddingNewAsync += value;
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.AddingNewAsync -= value;
             }
         }
 
@@ -801,6 +835,20 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                     _lstData.ListChanged -= value;
+            }
+        }
+
+        public event AsyncListChangedEventHandler ListChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.ListChangedAsync += value;
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.ListChangedAsync -= value;
             }
         }
 

@@ -8922,10 +8922,10 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                async void FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                async Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                     await this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                                                       null, y, funcMakeDirty).ConfigureAwait(false);
-                async void FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                async Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                     await this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                                                         () => UnderbarrelWeapons.Count, y, funcMakeDirty).ConfigureAwait(false);
 
@@ -8955,15 +8955,15 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                UnderbarrelWeapons.RemoveTaggedCollectionChanged(treWeapons);
-                WeaponAccessories.RemoveTaggedCollectionChanged(treWeapons);
+                UnderbarrelWeapons.RemoveTaggedAsyncCollectionChanged(treWeapons);
+                WeaponAccessories.RemoveTaggedAsyncCollectionChanged(treWeapons);
                 foreach (Weapon objChild in UnderbarrelWeapons)
                 {
                     objChild.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
                 }
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    objChild.GearChildren.RemoveTaggedCollectionChanged(treWeapons);
+                    objChild.GearChildren.RemoveTaggedAsyncCollectionChanged(treWeapons);
                     foreach (Gear objGear in objChild.GearChildren)
                         objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                 }

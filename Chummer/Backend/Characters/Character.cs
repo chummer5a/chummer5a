@@ -329,28 +329,28 @@ namespace Chummer
             using (_objSkillsSection.LockObject.EnterWriteLock())
                 _objSkillsSection.Reset(true);
 
-            _lstCyberware.CollectionChanged += CyberwareOnCollectionChanged;
-            _lstArmor.CollectionChanged += ArmorOnCollectionChanged;
-            _lstWeapons.CollectionChanged += WeaponsOnCollectionChanged;
-            _lstGear.CollectionChanged += GearOnCollectionChanged;
+            _lstCyberware.CollectionChangedAsync += CyberwareOnCollectionChanged;
+            _lstArmor.CollectionChangedAsync += ArmorOnCollectionChanged;
+            _lstWeapons.CollectionChangedAsync += WeaponsOnCollectionChanged;
+            _lstGear.CollectionChangedAsync += GearOnCollectionChanged;
             _lstContacts.CollectionChanged += ContactsOnCollectionChanged;
             _lstExpenseLog.CollectionChanged += ExpenseLogOnCollectionChanged;
-            _lstMentorSpirits.CollectionChanged += MentorSpiritsOnCollectionChanged;
-            _lstPowers.ListChanged += PowersOnListChanged;
-            _lstPowers.BeforeRemove += PowersOnBeforeRemove;
-            _lstQualities.CollectionChanged += QualitiesCollectionChanged;
-            _lstCalendar.BeforeRemove += CalendarOnBeforeRemove;
-            _lstMartialArts.CollectionChanged += MartialArtsOnCollectionChanged;
-            _lstMetamagics.CollectionChanged += MetamagicsOnCollectionChanged;
-            _lstSpells.CollectionChanged += SustainableOnCollectionChanged;
-            _lstComplexForms.CollectionChanged += SustainableOnCollectionChanged;
-            _lstCritterPowers.CollectionChanged += SustainableOnCollectionChanged;
-            _lstSustainedObjects.CollectionChanged += SustainedObjectsOnCollectionChanged;
-            _lstInitiationGrades.CollectionChanged += InitiationGradesOnCollectionChanged;
+            _lstMentorSpirits.CollectionChangedAsync += MentorSpiritsOnCollectionChanged;
+            _lstPowers.ListChangedAsync += PowersOnListChanged;
+            _lstPowers.BeforeRemoveAsync += PowersOnBeforeRemove;
+            _lstQualities.CollectionChangedAsync += QualitiesCollectionChanged;
+            _lstCalendar.BeforeRemoveAsync += CalendarOnBeforeRemove;
+            _lstMartialArts.CollectionChangedAsync += MartialArtsOnCollectionChanged;
+            _lstMetamagics.CollectionChangedAsync += MetamagicsOnCollectionChanged;
+            _lstSpells.CollectionChangedAsync += SustainableOnCollectionChanged;
+            _lstComplexForms.CollectionChangedAsync += SustainableOnCollectionChanged;
+            _lstCritterPowers.CollectionChangedAsync += SustainableOnCollectionChanged;
+            _lstSustainedObjects.CollectionChangedAsync += SustainedObjectsOnCollectionChanged;
+            _lstInitiationGrades.CollectionChangedAsync += InitiationGradesOnCollectionChanged;
             _objTradition = new Tradition(this);
         }
 
-        private async void CalendarOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task CalendarOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
             {
@@ -361,7 +361,7 @@ namespace Chummer
 
         private bool _blnClearingInitiations;
 
-        private async void InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_blnClearingInitiations || IsLoading || e.Action == NotifyCollectionChangedAction.Move)
                 return;
@@ -463,7 +463,7 @@ namespace Chummer
             }
         }
 
-        private async void SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (SustainedCollection.Count == 0 || IsLoading)
                 return;
@@ -1138,7 +1138,7 @@ namespace Chummer
             }
         }
 
-        private async void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
@@ -1150,7 +1150,7 @@ namespace Chummer
             }
         }
 
-        private async void PowersOnListChanged(object sender, ListChangedEventArgs e)
+        private async Task PowersOnListChanged(object sender, ListChangedEventArgs e)
         {
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
@@ -1290,7 +1290,7 @@ namespace Chummer
             }
         }
 
-        private async void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (IsLoading)
                 return;
@@ -1371,7 +1371,7 @@ namespace Chummer
             }
         }
 
-        private async void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (IsLoading)
                 return;
@@ -1457,7 +1457,7 @@ namespace Chummer
             }
         }
 
-        private async void MartialArtsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MartialArtsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (IsLoading)
                 return;
@@ -1538,7 +1538,7 @@ namespace Chummer
             }
         }
 
-        private async void MetamagicsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MetamagicsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (IsLoading)
                 return;
@@ -1688,7 +1688,7 @@ namespace Chummer
             }
         }
 
-        private async void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
@@ -1836,7 +1836,7 @@ namespace Chummer
             }
         }
 
-        private async void WeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task WeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
@@ -1984,7 +1984,7 @@ namespace Chummer
             }
         }
 
-        private async void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
@@ -2157,7 +2157,7 @@ namespace Chummer
             }
         }
 
-        private async void CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
@@ -2358,7 +2358,7 @@ namespace Chummer
             }
         }
 
-        private async void SustainedObjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SustainedObjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;

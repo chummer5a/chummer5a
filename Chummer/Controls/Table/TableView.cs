@@ -557,7 +557,7 @@ namespace Chummer.UI.Table
             await DoFilter(token: token).ConfigureAwait(false);
         }
 
-        private async void ItemsChanged(object sender, ListChangedEventArgs e)
+        private async Task ItemsChanged(object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
             {
@@ -761,7 +761,7 @@ namespace Chummer.UI.Table
                 if (lstOldItems != null)
                 {
                     // remove listener from old items
-                    lstOldItems.ListChanged -= ItemsChanged;
+                    lstOldItems.ListChangedAsync -= ItemsChanged;
                     intOldCount = lstOldItems.Count;
                     _lstPermutation.Clear();
                 }
@@ -843,7 +843,7 @@ namespace Chummer.UI.Table
 
                 if (value != null)
                 {
-                    value.ListChanged += ItemsChanged;
+                    value.ListChangedAsync += ItemsChanged;
                 }
             }
         }

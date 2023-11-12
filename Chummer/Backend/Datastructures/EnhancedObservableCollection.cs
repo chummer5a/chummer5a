@@ -22,6 +22,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -37,6 +39,21 @@ namespace Chummer
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         public virtual event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged;
+
+        private readonly List<AsyncNotifyCollectionChangedEventHandler> _lstBeforeClearCollectionChangedAsync =
+            new List<AsyncNotifyCollectionChangedEventHandler>();
+
+        /// <summary>
+        /// CollectionChanged event subscription for async events that will fire right before the collection is cleared.
+        /// To make things easy, all of the collections elements will be present in e.OldItems.
+        /// Use this event instead of BeforeClearCollectionChanged for tasks that will be awaited before completion.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
+        public virtual event AsyncNotifyCollectionChangedEventHandler BeforeClearCollectionChangedAsync
+        {
+            add => _lstBeforeClearCollectionChangedAsync.Add(value);
+            remove => _lstBeforeClearCollectionChangedAsync.Remove(value);
+        }
 
         /// <inheritdoc />
         public EnhancedObservableCollection()
@@ -56,34 +73,102 @@ namespace Chummer
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            IDisposable objLocker = CollectionChangedLock?.EnterUpgradeableReadLock();
-            try
+            if (_lstBeforeClearCollectionChangedAsync.Count != 0)
             {
-                using (BlockReentrancy())
+                Utils.SafelyRunSynchronously(async () =>
                 {
-                    BeforeClearCollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, (IList)Items));
-                }
-                base.ClearItems();
+                    IDisposable objLocker = null;
+                    if (CollectionChangedLock != null)
+                        objLocker = await CollectionChangedLock.EnterReadLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        using (BlockReentrancy())
+                        {
+                            NotifyCollectionChangedEventArgs objArgs =
+                                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
+                                    (IList)Items);
+                            await Task.WhenAll(
+                                _lstBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs)));
+                            BeforeClearCollectionChanged?.Invoke(this, objArgs);
+                        }
+                    }
+                    finally
+                    {
+                        objLocker?.Dispose();
+                    }
+                });
             }
-            finally
+            else
             {
-                objLocker?.Dispose();
+                IDisposable objLocker = CollectionChangedLock?.EnterReadLock();
+                try
+                {
+                    using (BlockReentrancy())
+                    {
+                        BeforeClearCollectionChanged?.Invoke(this,
+                            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, (IList)Items));
+                    }
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
             }
+
+            base.ClearItems();
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            IDisposable objLocker = CollectionChangedLock?.EnterUpgradeableReadLock();
-            try
+            if (_lstCollectionChangedAsync.Count != 0)
             {
-                base.OnCollectionChanged(e);
+                Utils.SafelyRunSynchronously(async () =>
+                {
+                    IDisposable objLocker = null;
+                    if (CollectionChangedLock != null)
+                        objLocker = await CollectionChangedLock.EnterReadLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        await Task.WhenAll(
+                            _lstCollectionChangedAsync.Select(x => x.Invoke(this, e)));
+                        base.OnCollectionChanged(e);
+                    }
+                    finally
+                    {
+                        objLocker?.Dispose();
+                    }
+                });
             }
-            finally
+            else
             {
-                objLocker?.Dispose();
+                IDisposable objLocker = CollectionChangedLock?.EnterReadLock();
+                try
+                {
+                    base.OnCollectionChanged(e);
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
             }
         }
 
         public AsyncFriendlyReaderWriterLock CollectionChangedLock { get; set; }
+
+        private readonly List<AsyncNotifyCollectionChangedEventHandler> _lstCollectionChangedAsync =
+            new List<AsyncNotifyCollectionChangedEventHandler>();
+
+        /// <summary>
+        /// Like CollectionChanged, occurs when an item is added, removed, changed, moved, or the entire list is refreshed.
+        /// Use this event instead of CollectionChanged for tasks that will be awaited before completion.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
+        public virtual event AsyncNotifyCollectionChangedEventHandler CollectionChangedAsync
+        {
+            add => _lstCollectionChangedAsync.Add(value);
+            remove => _lstCollectionChangedAsync.Remove(value);
+        }
     }
+
+    public delegate Task AsyncNotifyCollectionChangedEventHandler(object sender, NotifyCollectionChangedEventArgs e);
 }

@@ -374,7 +374,7 @@ namespace Chummer.Tests
                     string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
                     Debug.WriteLine("Checking " + strFileName);
                     string strDummyFileName = Path.Combine(TestPathInfo.FullName,
-                                                           "(UnitTest05Dummy) "
+                                                           "(UnitTest07Dummy) "
                                                            + Path.GetFileNameWithoutExtension(objCharacter.FileName)
                                                            + ".txt");
                     using (File.Create(strDummyFileName, byte.MaxValue,

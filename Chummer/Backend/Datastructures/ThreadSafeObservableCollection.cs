@@ -868,6 +868,36 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc cref="EnhancedObservableCollection{T}.BeforeClearCollectionChangedAsync" />
+        public virtual event AsyncNotifyCollectionChangedEventHandler BeforeClearCollectionChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.BeforeClearCollectionChangedAsync += value;
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.BeforeClearCollectionChangedAsync -= value;
+            }
+        }
+
+        /// <inheritdoc cref="EnhancedObservableCollection{T}.CollectionChangedAsync" />
+        public virtual event AsyncNotifyCollectionChangedEventHandler CollectionChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.CollectionChangedAsync += value;
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.CollectionChangedAsync -= value;
+            }
+        }
+
         /// <inheritdoc />
 #pragma warning disable CA1070
         public virtual event PropertyChangedEventHandler PropertyChanged;

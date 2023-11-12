@@ -123,12 +123,12 @@ namespace Chummer
                 DisposeOpenForms();
             };
 
-            _lstOpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
-            _lstOpenCharacterEditorForms.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
-            _lstOpenCharacterSheetViewers.BeforeClearCollectionChanged += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
-            _lstOpenCharacterSheetViewers.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
-            _lstOpenCharacterExportForms.BeforeClearCollectionChanged += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
-            _lstOpenCharacterExportForms.CollectionChanged += OpenCharacterExportFormsOnCollectionChanged;
+            _lstOpenCharacterEditorForms.BeforeClearCollectionChangedAsync += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
+            _lstOpenCharacterEditorForms.CollectionChangedAsync += OpenCharacterEditorFormsOnCollectionChanged;
+            _lstOpenCharacterSheetViewers.BeforeClearCollectionChangedAsync += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
+            _lstOpenCharacterSheetViewers.CollectionChangedAsync += OpenCharacterSheetViewersOnCollectionChanged;
+            _lstOpenCharacterExportForms.BeforeClearCollectionChangedAsync += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+            _lstOpenCharacterExportForms.CollectionChangedAsync += OpenCharacterExportFormsOnCollectionChanged;
             _tmrCharactersToOpenCheck.Interval = 1000;
             _tmrCharactersToOpenCheck.Tick += CharactersToOpenCheckOnTick;
 
@@ -171,7 +171,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
@@ -202,7 +202,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_intFormClosing > 0)
                 return;
@@ -320,7 +320,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
@@ -351,7 +351,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_intFormClosing > 0)
                 return;
@@ -466,7 +466,7 @@ namespace Chummer
         private int _intSkipReopenUntilAllClear;
         private ConcurrentBag<Character> _lstCharactersToReopen = new ConcurrentBag<Character>();
 
-        private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
@@ -511,7 +511,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_intFormClosing > 0)
                 return;

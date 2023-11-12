@@ -8627,49 +8627,46 @@ namespace Chummer.Backend.Equipment
         public void SetupChildrenCyberwareCollectionChanged(bool blnAdd, TreeView treCyberware,
             ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
         {
-            using (LockObject.EnterWriteLock())
+            if (blnAdd)
             {
-                if (blnAdd)
+                async Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y)
                 {
-                    async void FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y)
-                    {
-                        await this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
-                                                            funcMakeDirty).ConfigureAwait(false);
-                    }
-
-                    async void FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y)
-                    {
-                        await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
-                                                        funcMakeDirty).ConfigureAwait(false);
-                    }
-
-                    Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
-                    GearChildren.AddTaggedCollectionChanged(treCyberware, FuncGearToAdd);
-                    if (funcMakeDirty != null)
-                    {
-                        Children.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
-                        GearChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
-                    }
-
-                    foreach (Cyberware objChild in Children)
-                    {
-                        objChild.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
-                                                                         cmsCyberwareGear, funcMakeDirty);
-                    }
-
-                    foreach (Gear objGear in GearChildren)
-                        objGear.SetupChildrenGearsCollectionChanged(true, treCyberware, cmsCyberwareGear, null,
-                                                                    funcMakeDirty);
+                    await this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
+                        funcMakeDirty).ConfigureAwait(false);
                 }
-                else
+
+                async Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y)
                 {
-                    Children.RemoveTaggedCollectionChanged(treCyberware);
-                    GearChildren.RemoveTaggedCollectionChanged(treCyberware);
-                    foreach (Cyberware objChild in Children)
-                        objChild.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
-                    foreach (Gear objGear in GearChildren)
-                        objGear.SetupChildrenGearsCollectionChanged(false, treCyberware);
+                    await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
+                        funcMakeDirty).ConfigureAwait(false);
                 }
+
+                Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
+                GearChildren.AddTaggedCollectionChanged(treCyberware, FuncGearToAdd);
+                if (funcMakeDirty != null)
+                {
+                    Children.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
+                    GearChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
+                }
+
+                foreach (Cyberware objChild in Children)
+                {
+                    objChild.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
+                        cmsCyberwareGear, funcMakeDirty);
+                }
+
+                foreach (Gear objGear in GearChildren)
+                    objGear.SetupChildrenGearsCollectionChanged(true, treCyberware, cmsCyberwareGear, null,
+                        funcMakeDirty);
+            }
+            else
+            {
+                Children.RemoveTaggedAsyncCollectionChanged(treCyberware);
+                GearChildren.RemoveTaggedAsyncCollectionChanged(treCyberware);
+                foreach (Cyberware objChild in Children)
+                    objChild.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
+                foreach (Gear objGear in GearChildren)
+                    objGear.SetupChildrenGearsCollectionChanged(false, treCyberware);
             }
         }
 

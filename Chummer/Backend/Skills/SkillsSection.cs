@@ -48,15 +48,15 @@ namespace Chummer.Backend.Skills
                 character.PropertyChanged += OnCharacterPropertyChanged;
             using (character.Settings.LockObject.EnterWriteLock())
                 character.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
-            SkillGroups.BeforeRemove += SkillGroupsOnBeforeRemove;
-            KnowsoftSkills.BeforeRemove += KnowsoftSkillsOnBeforeRemove;
-            KnowledgeSkills.BeforeRemove += KnowledgeSkillsOnBeforeRemove;
-            KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
-            Skills.BeforeRemove += SkillsOnBeforeRemove;
-            Skills.ListChanged += SkillsOnListChanged;
+            SkillGroups.BeforeRemoveAsync += SkillGroupsOnBeforeRemove;
+            KnowsoftSkills.BeforeRemoveAsync += KnowsoftSkillsOnBeforeRemove;
+            KnowledgeSkills.BeforeRemoveAsync += KnowledgeSkillsOnBeforeRemove;
+            KnowledgeSkills.ListChangedAsync += KnowledgeSkillsOnListChanged;
+            Skills.BeforeRemoveAsync += SkillsOnBeforeRemove;
+            Skills.ListChangedAsync += SkillsOnListChanged;
         }
 
-        private async void SkillGroupsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task SkillGroupsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -75,7 +75,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async void SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -97,7 +97,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async void KnowledgeSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task KnowledgeSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -129,7 +129,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async void KnowsoftSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task KnowsoftSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -154,7 +154,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async void SkillsOnListChanged(object sender, ListChangedEventArgs e)
+        private async Task SkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -207,7 +207,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async void KnowledgeSkillsOnListChanged(object sender, ListChangedEventArgs e)
+        private async Task KnowledgeSkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
             if (_intLoading > 0)
                 return;

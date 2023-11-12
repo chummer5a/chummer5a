@@ -111,7 +111,7 @@ namespace Chummer.UI.Shared
                   .DoOneWayDataBindingAsync("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip), token)
                   .ConfigureAwait(false);
 
-            _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
+            _objCharacter.LimitModifiers.CollectionChangedAsync += LimitModifierCollectionChanged;
             await RefreshLimitModifiers(token: token).ConfigureAwait(false);
         }
 
@@ -573,9 +573,9 @@ namespace Chummer.UI.Shared
             MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
         }
 
-        private async void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private Task LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            await RefreshLimitModifiers(e).ConfigureAwait(false);
+            return RefreshLimitModifiers(e);
         }
 
         #endregion Methods

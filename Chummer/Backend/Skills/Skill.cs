@@ -781,7 +781,7 @@ namespace Chummer.Backend.Skills
                 using (character.AttributeSection.LockObject.EnterWriteLock())
                 {
                     character.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
-                    character.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
+                    character.AttributeSection.Attributes.CollectionChangedAsync += OnAttributesCollectionChanged;
                 }
             }
 
@@ -792,7 +792,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async void OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
@@ -6900,7 +6900,7 @@ namespace Chummer.Backend.Skills
                     using (CharacterObject.AttributeSection.LockObject.EnterWriteLock())
                     {
                         CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
-                        CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
+                        CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
                     }
                 }
 
@@ -6980,7 +6980,7 @@ namespace Chummer.Backend.Skills
                         AttributeSection objSection = await CharacterObject.GetAttributeSectionAsync().ConfigureAwait(false);
                         objSection.PropertyChanged -= OnAttributeSectionChanged;
                         ThreadSafeObservableCollection<CharacterAttrib> objAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
-                        objAttributes.CollectionChanged -= OnAttributesCollectionChanged;
+                        objAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
                     }
                     finally
                     {

@@ -1194,7 +1194,7 @@ namespace Chummer
                                                                 .ConfigureAwait(false),
                                                             GenericToken).ConfigureAwait(false);
 
-                                    CharacterObject.AttributeSection.Attributes.CollectionChanged
+                                    CharacterObject.AttributeSection.Attributes.CollectionChangedAsync
                                         += AttributeCollectionChanged;
 
                                     await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
@@ -1349,33 +1349,33 @@ namespace Chummer
                                                           .ConfigureAwait(false);
 
                                     // Set up events that would change various lists
-                                    CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
-                                    CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
-                                    CharacterObject.Arts.CollectionChanged += ArtCollectionChanged;
-                                    CharacterObject.Enhancements.CollectionChanged += EnhancementCollectionChanged;
-                                    CharacterObject.Metamagics.CollectionChanged += MetamagicCollectionChanged;
-                                    CharacterObject.InitiationGrades.CollectionChanged
+                                    CharacterObject.Spells.CollectionChangedAsync += SpellCollectionChanged;
+                                    CharacterObject.ComplexForms.CollectionChangedAsync += ComplexFormCollectionChanged;
+                                    CharacterObject.Arts.CollectionChangedAsync += ArtCollectionChanged;
+                                    CharacterObject.Enhancements.CollectionChangedAsync += EnhancementCollectionChanged;
+                                    CharacterObject.Metamagics.CollectionChangedAsync += MetamagicCollectionChanged;
+                                    CharacterObject.InitiationGrades.CollectionChangedAsync
                                         += InitiationGradeCollectionChanged;
-                                    CharacterObject.Powers.ListChanged += PowersListChanged;
-                                    CharacterObject.Powers.BeforeRemove += PowersBeforeRemove;
-                                    CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
-                                    CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
-                                    CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
-                                    CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
-                                    CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
-                                    CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
-                                    CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
-                                    CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
-                                    CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
-                                    CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
-                                    CharacterObject.WeaponLocations.CollectionChanged
+                                    CharacterObject.Powers.ListChangedAsync += PowersListChanged;
+                                    CharacterObject.Powers.BeforeRemoveAsync += PowersBeforeRemove;
+                                    CharacterObject.AIPrograms.CollectionChangedAsync += AIProgramCollectionChanged;
+                                    CharacterObject.CritterPowers.CollectionChangedAsync += CritterPowerCollectionChanged;
+                                    CharacterObject.Qualities.CollectionChangedAsync += QualityCollectionChanged;
+                                    CharacterObject.MartialArts.CollectionChangedAsync += MartialArtCollectionChanged;
+                                    CharacterObject.Lifestyles.CollectionChangedAsync += LifestyleCollectionChanged;
+                                    CharacterObject.Contacts.CollectionChangedAsync += ContactCollectionChanged;
+                                    CharacterObject.Spirits.CollectionChangedAsync += SpiritCollectionChanged;
+                                    CharacterObject.Armor.CollectionChangedAsync += ArmorCollectionChanged;
+                                    CharacterObject.ArmorLocations.CollectionChangedAsync += ArmorLocationCollectionChanged;
+                                    CharacterObject.Weapons.CollectionChangedAsync += WeaponCollectionChanged;
+                                    CharacterObject.WeaponLocations.CollectionChangedAsync
                                         += WeaponLocationCollectionChanged;
-                                    CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
-                                    CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
-                                    CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
-                                    CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
-                                    CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
-                                    CharacterObject.VehicleLocations.CollectionChanged
+                                    CharacterObject.Gear.CollectionChangedAsync += GearCollectionChanged;
+                                    CharacterObject.GearLocations.CollectionChangedAsync += GearLocationCollectionChanged;
+                                    CharacterObject.Drugs.CollectionChangedAsync += DrugCollectionChanged;
+                                    CharacterObject.Cyberware.CollectionChangedAsync += CyberwareCollectionChanged;
+                                    CharacterObject.Vehicles.CollectionChangedAsync += VehicleCollectionChanged;
+                                    CharacterObject.VehicleLocations.CollectionChangedAsync
                                         += VehicleLocationCollectionChanged;
 
                                     SetupCommonCollectionDatabindings(true);
@@ -1504,32 +1504,32 @@ namespace Chummer
 
                         // Unsubscribe from events.
                         GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
-                        CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;
-                        CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
-                        CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
-                        CharacterObject.Arts.CollectionChanged -= ArtCollectionChanged;
-                        CharacterObject.Enhancements.CollectionChanged -= EnhancementCollectionChanged;
-                        CharacterObject.Metamagics.CollectionChanged -= MetamagicCollectionChanged;
-                        CharacterObject.InitiationGrades.CollectionChanged -= InitiationGradeCollectionChanged;
-                        CharacterObject.Powers.ListChanged -= PowersListChanged;
-                        CharacterObject.Powers.BeforeRemove -= PowersBeforeRemove;
-                        CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
-                        CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
-                        CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
-                        CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
-                        CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
-                        CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
-                        CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
-                        CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
-                        CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
-                        CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
-                        CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
-                        CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
-                        CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
-                        CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
-                        CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
-                        CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
-                        CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
+                        CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
+                        CharacterObject.Spells.CollectionChangedAsync -= SpellCollectionChanged;
+                        CharacterObject.ComplexForms.CollectionChangedAsync -= ComplexFormCollectionChanged;
+                        CharacterObject.Arts.CollectionChangedAsync -= ArtCollectionChanged;
+                        CharacterObject.Enhancements.CollectionChangedAsync -= EnhancementCollectionChanged;
+                        CharacterObject.Metamagics.CollectionChangedAsync -= MetamagicCollectionChanged;
+                        CharacterObject.InitiationGrades.CollectionChangedAsync -= InitiationGradeCollectionChanged;
+                        CharacterObject.Powers.ListChangedAsync -= PowersListChanged;
+                        CharacterObject.Powers.BeforeRemoveAsync -= PowersBeforeRemove;
+                        CharacterObject.AIPrograms.CollectionChangedAsync -= AIProgramCollectionChanged;
+                        CharacterObject.CritterPowers.CollectionChangedAsync -= CritterPowerCollectionChanged;
+                        CharacterObject.Qualities.CollectionChangedAsync -= QualityCollectionChanged;
+                        CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
+                        CharacterObject.Lifestyles.CollectionChangedAsync -= LifestyleCollectionChanged;
+                        CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
+                        CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
+                        CharacterObject.Armor.CollectionChangedAsync -= ArmorCollectionChanged;
+                        CharacterObject.ArmorLocations.CollectionChangedAsync -= ArmorLocationCollectionChanged;
+                        CharacterObject.Weapons.CollectionChangedAsync -= WeaponCollectionChanged;
+                        CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
+                        CharacterObject.WeaponLocations.CollectionChangedAsync -= WeaponLocationCollectionChanged;
+                        CharacterObject.Gear.CollectionChangedAsync -= GearCollectionChanged;
+                        CharacterObject.GearLocations.CollectionChangedAsync -= GearLocationCollectionChanged;
+                        CharacterObject.Cyberware.CollectionChangedAsync -= CyberwareCollectionChanged;
+                        CharacterObject.Vehicles.CollectionChangedAsync -= VehicleCollectionChanged;
+                        CharacterObject.VehicleLocations.CollectionChangedAsync -= VehicleLocationCollectionChanged;
                         using (CharacterObject.LockObject.EnterWriteLock())
                         {
                             CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
@@ -23151,7 +23151,7 @@ namespace Chummer
             }
         }
 
-        private async void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23171,7 +23171,7 @@ namespace Chummer
             }
         }
 
-        private async void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task PowersBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             try
             {
@@ -23183,7 +23183,7 @@ namespace Chummer
             }
         }
 
-        private async void PowersListChanged(object sender, ListChangedEventArgs e)
+        private async Task PowersListChanged(object sender, ListChangedEventArgs e)
         {
             try
             {
@@ -23196,7 +23196,7 @@ namespace Chummer
             }
         }
 
-        private async void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23209,7 +23209,7 @@ namespace Chummer
             }
         }
 
-        private async void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23222,7 +23222,7 @@ namespace Chummer
             }
         }
 
-        private async void ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23235,7 +23235,7 @@ namespace Chummer
             }
         }
 
-        private async void EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23248,7 +23248,7 @@ namespace Chummer
             }
         }
 
-        private async void MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23261,7 +23261,7 @@ namespace Chummer
             }
         }
 
-        private async void InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23274,7 +23274,7 @@ namespace Chummer
             }
         }
 
-        private async void AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23286,7 +23286,7 @@ namespace Chummer
             }
         }
 
-        private async void CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23298,7 +23298,7 @@ namespace Chummer
             }
         }
 
-        private async void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23311,7 +23311,7 @@ namespace Chummer
             }
         }
 
-        private async void MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23324,7 +23324,7 @@ namespace Chummer
             }
         }
 
-        private async void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23337,7 +23337,7 @@ namespace Chummer
             }
         }
 
-        private async void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23349,7 +23349,7 @@ namespace Chummer
             }
         }
 
-        private async void SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23361,7 +23361,7 @@ namespace Chummer
             }
         }
 
-        private async void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23374,7 +23374,7 @@ namespace Chummer
             }
         }
 
-        private async void ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23386,7 +23386,7 @@ namespace Chummer
             }
         }
 
-        private async void WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23399,7 +23399,7 @@ namespace Chummer
             }
         }
 
-        private async void WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23412,7 +23412,7 @@ namespace Chummer
             }
         }
 
-        private async void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23424,7 +23424,7 @@ namespace Chummer
             }
         }
 
-        private async void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23440,7 +23440,7 @@ namespace Chummer
             }
         }
 
-        private async void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23452,7 +23452,7 @@ namespace Chummer
             }
         }
 
-        private async void CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23465,7 +23465,7 @@ namespace Chummer
             }
         }
 
-        private async void VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -23480,7 +23480,7 @@ namespace Chummer
             }
         }
 
-        private async void VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
