@@ -1557,7 +1557,12 @@ namespace Chummer
                 int intIsOkToRunDoEvents = Interlocked.Decrement(ref _intIsOkToRunDoEvents);
                 if (blnForceDoEvents || intIsOkToRunDoEvents == 0)
                 {
-                    Application.DoEvents();
+                    // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
+                    if (s_objEmptyExecutionContext != null)
+                        ExecutionContext.Run(s_objEmptyExecutionContext.CreateCopy(), state => Application.DoEvents(),
+                            null);
+                    else
+                        Application.DoEvents();
                 }
             }
             finally
@@ -1565,6 +1570,9 @@ namespace Chummer
                 Interlocked.Increment(ref _intIsOkToRunDoEvents);
             }
         }
+
+        // Empty/default Execution Context that we need for manual calls of Application.DoEvents so that AsyncLocals in events do not flow from values set in main thread
+        private static readonly ExecutionContext s_objEmptyExecutionContext = ExecutionContext.Capture()?.CreateCopy();
 
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
