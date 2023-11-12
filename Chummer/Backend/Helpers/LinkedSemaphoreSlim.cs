@@ -44,6 +44,8 @@ namespace Chummer
         private static readonly SafeObjectPool<Stack<LinkedSemaphoreSlim>> s_objSemaphoreStackPool =
             new SafeObjectPool<Stack<LinkedSemaphoreSlim>>(() => new Stack<LinkedSemaphoreSlim>(8));
 
+        public bool IsDisposed => _intDisposedStatus > 0;
+
         public LinkedSemaphoreSlim(LinkedSemaphoreSlim objParent, bool blnGetFromPool = false)
         {
             if (blnGetFromPool)

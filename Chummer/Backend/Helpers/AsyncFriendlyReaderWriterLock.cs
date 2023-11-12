@@ -495,15 +495,32 @@ namespace Chummer
             }
 
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
+            {
+                token.ThrowIfCancellationRequested();
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
 
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue)
+                // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
+                if (intCountLocalReaders == int.MinValue)
+                {
+                    ChangeNumActiveReaders(1);
+                    _objAsyncLocalCurrentsContainer.Value =
+                        new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                            objCurrentLinkedSemaphore,
+                            objTopMostHeldWriterSemaphore);
+                    return new SafeReaderSemaphoreRelease(intCountLocalReaders, objCurrentLinkedSemaphore,
+                        objTopMostHeldWriterSemaphore, this);
+                }
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
+            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
             {
                 ChangeNumActiveReaders(1);
                 _objAsyncLocalCurrentsContainer.Value =
@@ -564,20 +581,32 @@ namespace Chummer
             }
 
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+            SafeReaderSemaphoreRelease objRelease;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
+            {
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals = _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                        objCurrentLinkedSemaphore,
+                        objTopMostHeldWriterSemaphore);
+                objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
                     objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore);
-            SafeReaderSemaphoreRelease objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
-                objCurrentLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
-            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue)
+                    objTopMostHeldWriterSemaphore, this);
+                if (intCountLocalReaders == int.MinValue)
+                {
+                    ChangeNumActiveReaders(1);
+                    return Task.FromResult<IDisposable>(objRelease);
+                }
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
+            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
             {
                 ChangeNumActiveReaders(1);
                 return Task.FromResult<IDisposable>(objRelease);
@@ -620,20 +649,44 @@ namespace Chummer
             }
 
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+            SafeReaderSemaphoreRelease objRelease;
+            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objOriginalAsyncLocals = null;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
+            {
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals = _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                    if (objOriginalAsyncLocals == null)
+                        objOriginalAsyncLocals = objAsyncLocals;
+                }
+                else if (objOriginalAsyncLocals == null)
+                    objOriginalAsyncLocals = new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(0, _objTopLevelWriterSemaphore, null);
+
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                        objCurrentLinkedSemaphore,
+                        objTopMostHeldWriterSemaphore);
+                objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
                     objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore);
-            SafeReaderSemaphoreRelease objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
-                objCurrentLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
-            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue)
+                    objTopMostHeldWriterSemaphore, this);
+                if (intCountLocalReaders == int.MinValue)
+                {
+                    ChangeNumActiveReaders(1);
+                    return Task.FromResult<IDisposable>(objRelease);
+                }
+                if (token.IsCancellationRequested)
+                {
+                    _objAsyncLocalCurrentsContainer.Value = objOriginalAsyncLocals;
+                    return Task.FromException<IDisposable>(new OperationCanceledException(token));
+                }
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
+            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
             {
                 ChangeNumActiveReaders(1);
                 return Task.FromResult<IDisposable>(objRelease);
@@ -1215,6 +1268,10 @@ namespace Chummer
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                         _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
+                // Wait for all other readers to exit before exiting ourselves
+                while (_objReaderWriterLock._intCountActiveReaders > _intOldCountLocalReaders + 1
+                       && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
+                    Utils.SafeSleep();
                 _objNextLinkedSemaphore.Dispose();
                 _objReaderWriterLock.ChangeNumActiveReaders(-1);
             }
@@ -1261,6 +1318,10 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync()
             {
+                // Wait for all other readers to exit before exiting ourselves
+                while (_objReaderWriterLock._intCountActiveReaders > _intOldCountLocalReaders + 1
+                       && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
+                    await Utils.SafeSleepAsync().ConfigureAwait(false);
                 await _objNextLinkedSemaphore.DisposeAsync().ConfigureAwait(false);
                 _objReaderWriterLock.ChangeNumActiveReaders(-1);
             }
