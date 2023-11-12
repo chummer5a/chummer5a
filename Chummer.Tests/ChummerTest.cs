@@ -170,6 +170,7 @@ namespace Chummer.Tests
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
+                Utils.IsUnitTestForUI = true;
                 frmTestForm = new ChummerMainForm(true, true)
                 {
                     ShowInTaskbar =
@@ -196,6 +197,7 @@ namespace Chummer.Tests
             finally
             {
                 frmTestForm?.Dispose();
+                Utils.IsUnitTestForUI = false;
             }
             Program.MainForm = frmOldMainForm;
         }
@@ -348,6 +350,7 @@ namespace Chummer.Tests
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
+                Utils.IsUnitTestForUI = true;
                 frmTestForm = frmOldMainForm.DoThreadSafeFunc(() => new ChummerMainForm(true, true)
                 {
                     ShowInTaskbar =
@@ -466,6 +469,7 @@ namespace Chummer.Tests
                     Console.WriteLine(strErrorMessage);
                     Utils.BreakIfDebug();
                 }
+                Utils.IsUnitTestForUI = false;
             }
             Program.MainForm = frmOldMainForm;
         }

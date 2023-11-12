@@ -23,7 +23,9 @@
 #endif
 
 using System;
+#if SEMAPHOREDEBUG
 using System.Diagnostics;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 
