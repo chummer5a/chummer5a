@@ -9037,6 +9037,9 @@ namespace Chummer
                             //swallow this
                         }
                     }
+
+                    await Utils.SafeSleepAsync(50, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
+
                     Task tskNew = Utils.RunInEmptyExecutionContext(() => Task.Run(() => DoUpdateCharacterInfo(objToken), objToken));
                     if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, null) != null)
                     {

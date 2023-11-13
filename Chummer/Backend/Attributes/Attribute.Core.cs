@@ -1807,15 +1807,18 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
-                    List<string> lstProperties = new List<string>(3);
-                    if (blnMinChanged)
-                        lstProperties.Add(nameof(RawMetatypeMinimum));
-                    if (blnMaxChanged)
-                        lstProperties.Add(nameof(RawMetatypeMaximum));
-                    if (blnAugMaxChanged)
-                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
-                    OnMultiplePropertyChanged(lstProperties);
                 }
+
+                List<string> lstProperties = new List<string>(3);
+                if (blnMinChanged)
+                    lstProperties.Add(nameof(RawMetatypeMinimum));
+                if (blnMaxChanged)
+                    lstProperties.Add(nameof(RawMetatypeMaximum));
+                if (blnAugMaxChanged)
+                    lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+
+                using (_objCharacter.LockObject.EnterWriteLock())
+                    OnMultiplePropertyChanged(lstProperties);
             }
         }
 
@@ -1843,13 +1846,24 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
-                    List<string> lstProperties = new List<string>(3);
-                    if (blnMinChanged)
-                        lstProperties.Add(nameof(RawMetatypeMinimum));
-                    if (blnMaxChanged)
-                        lstProperties.Add(nameof(RawMetatypeMaximum));
-                    if (blnAugMaxChanged)
-                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                List<string> lstProperties = new List<string>(3);
+                if (blnMinChanged)
+                    lstProperties.Add(nameof(RawMetatypeMinimum));
+                if (blnMaxChanged)
+                    lstProperties.Add(nameof(RawMetatypeMaximum));
+                if (blnAugMaxChanged)
+                    lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+
+                objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     OnMultiplePropertyChanged(lstProperties);
                 }
                 finally
@@ -1885,19 +1899,22 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
-                    List<string> lstProperties = new List<string>(5);
-                    if (blnBaseChanged)
-                        lstProperties.Add(nameof(Base));
-                    if (blnKarmaChanged)
-                        lstProperties.Add(nameof(Karma));
-                    if (blnMinChanged)
-                        lstProperties.Add(nameof(RawMetatypeMinimum));
-                    if (blnMaxChanged)
-                        lstProperties.Add(nameof(RawMetatypeMaximum));
-                    if (blnAugMaxChanged)
-                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
-                    OnMultiplePropertyChanged(lstProperties);
                 }
+
+                List<string> lstProperties = new List<string>(5);
+                if (blnBaseChanged)
+                    lstProperties.Add(nameof(Base));
+                if (blnKarmaChanged)
+                    lstProperties.Add(nameof(Karma));
+                if (blnMinChanged)
+                    lstProperties.Add(nameof(RawMetatypeMinimum));
+                if (blnMaxChanged)
+                    lstProperties.Add(nameof(RawMetatypeMaximum));
+                if (blnAugMaxChanged)
+                    lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+
+                using (_objCharacter.LockObject.EnterWriteLock())
+                    OnMultiplePropertyChanged(lstProperties);
             }
         }
 
@@ -1931,17 +1948,28 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
-                    List<string> lstProperties = new List<string>(5);
-                    if (blnBaseChanged)
-                        lstProperties.Add(nameof(Base));
-                    if (blnKarmaChanged)
-                        lstProperties.Add(nameof(Karma));
-                    if (blnMinChanged)
-                        lstProperties.Add(nameof(RawMetatypeMinimum));
-                    if (blnMaxChanged)
-                        lstProperties.Add(nameof(RawMetatypeMaximum));
-                    if (blnAugMaxChanged)
-                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                List<string> lstProperties = new List<string>(5);
+                if (blnBaseChanged)
+                    lstProperties.Add(nameof(Base));
+                if (blnKarmaChanged)
+                    lstProperties.Add(nameof(Karma));
+                if (blnMinChanged)
+                    lstProperties.Add(nameof(RawMetatypeMinimum));
+                if (blnMaxChanged)
+                    lstProperties.Add(nameof(RawMetatypeMaximum));
+                if (blnAugMaxChanged)
+                    lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+
+                objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     OnMultiplePropertyChanged(lstProperties);
                 }
                 finally
@@ -3027,72 +3055,85 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
-                for (int i = 0; i < intAmount; ++i)
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    if (blnCreated)
+                    token.ThrowIfCancellationRequested();
+                    bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                    for (int i = 0; i < intAmount; ++i)
                     {
-                        if (!await GetCanUpgradeCareerAsync(token).ConfigureAwait(false))
-                            return;
-
-                        int intPrice = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
-                        int intValue = await GetValueAsync(token).ConfigureAwait(false);
-
-                        string strUpgradetext = string.Format(GlobalSettings.CultureInfo, "{1}{0}{2}{0}{3}{0}->{0}{4}",
-                            await LanguageManager.GetStringAsync(
-                                "String_Space", token: token).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync(
-                                "String_ExpenseAttribute", token: token).ConfigureAwait(false), Abbrev,
-                            intValue, intValue + 1);
-
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                        objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-                        objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
-
-                        await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                            .ConfigureAwait(false);
-
-                        await _objCharacter.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
-
-                        // Undo burned Edge if possible first
-                        if (Abbrev == "EDG")
+                        if (blnCreated)
                         {
-                            int intBurnedEdge = -(await ImprovementManager
-                                    .GetCachedImprovementListForValueOfAsync(
-                                        _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token)
-                                    .ConfigureAwait(false))
-                                .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
-                                    x => x.Minimum * x.Rating, token: token);
-                            if (intBurnedEdge > 0)
+                            if (!await GetCanUpgradeCareerAsync(token).ConfigureAwait(false))
+                                return;
+
+                            int intPrice = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
+                            int intValue = await GetValueAsync(token).ConfigureAwait(false);
+
+                            string strUpgradetext = string.Format(GlobalSettings.CultureInfo,
+                                "{1}{0}{2}{0}{3}{0}->{0}{4}",
+                                await LanguageManager.GetStringAsync(
+                                    "String_Space", token: token).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync(
+                                    "String_ExpenseAttribute", token: token).ConfigureAwait(false), Abbrev,
+                                intValue, intValue + 1);
+
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                            objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+                            objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
+
+                            await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                .ConfigureAwait(false);
+
+                            await _objCharacter.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
+
+                            // Undo burned Edge if possible first
+                            if (Abbrev == "EDG")
                             {
-                                await ImprovementManager.RemoveImprovementsAsync(
-                                        _objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token)
-                                    .ConfigureAwait(false);
-                                --intBurnedEdge;
+                                int intBurnedEdge = -(await ImprovementManager
+                                        .GetCachedImprovementListForValueOfAsync(
+                                            _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token)
+                                        .ConfigureAwait(false))
+                                    .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
+                                        x => x.Minimum * x.Rating, token: token);
                                 if (intBurnedEdge > 0)
                                 {
-                                    try
+                                    await ImprovementManager.RemoveImprovementsAsync(
+                                            _objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token)
+                                        .ConfigureAwait(false);
+                                    --intBurnedEdge;
+                                    if (intBurnedEdge > 0)
                                     {
-                                        await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
-                                            Improvement.ImprovementSource.BurnedEdge,
-                                            string.Empty,
-                                            Improvement.ImprovementType.Attribute,
-                                            string.Empty, 0, 1, -intBurnedEdge, token: token).ConfigureAwait(false);
-                                    }
-                                    catch
-                                    {
-                                        await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None).ConfigureAwait(false);
-                                        throw;
-                                    }
-                                    ImprovementManager.Commit(_objCharacter);
-                                }
+                                        try
+                                        {
+                                            await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
+                                                Improvement.ImprovementSource.BurnedEdge,
+                                                string.Empty,
+                                                Improvement.ImprovementType.Attribute,
+                                                string.Empty, 0, 1, -intBurnedEdge, token: token).ConfigureAwait(false);
+                                        }
+                                        catch
+                                        {
+                                            await ImprovementManager
+                                                .RollbackAsync(_objCharacter, CancellationToken.None)
+                                                .ConfigureAwait(false);
+                                            throw;
+                                        }
 
-                                continue; // Skip increasing Karma
+                                        ImprovementManager.Commit(_objCharacter);
+                                    }
+
+                                    continue; // Skip increasing Karma
+                                }
                             }
                         }
-                    }
 
-                    ++Karma;
+                        ++Karma;
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -3109,45 +3150,58 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
-                for (int i = intAmount; i > 0; --i)
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    if (Karma > 0)
+                    token.ThrowIfCancellationRequested();
+                    bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                    for (int i = intAmount; i > 0; --i)
                     {
-                        --Karma;
-                    }
-                    else if (Base > 0)
-                    {
-                        --Base;
-                    }
-                    else if (Abbrev == "EDG" && blnCreated && await GetTotalMinimumAsync(token).ConfigureAwait(false) > 0)
-                    {
-                        //Edge can reduce the metatype minimum below zero.
-                        int intBurnedEdge = -(await ImprovementManager
-                                .GetCachedImprovementListForValueOfAsync(
-                                    _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token).ConfigureAwait(false))
-                            .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
-                                x => x.Minimum * x.Rating, token: token) + 1;
-                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token).ConfigureAwait(false);
-                        try
+                        if (Karma > 0)
                         {
-                            await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
-                                                                            Improvement.ImprovementSource.BurnedEdge,
-                                                                            string.Empty,
-                                                                            Improvement.ImprovementType.Attribute,
-                                                                            string.Empty, 0, 1, -intBurnedEdge,
-                                                                            token: token).ConfigureAwait(false);
+                            --Karma;
                         }
-                        catch
+                        else if (Base > 0)
                         {
-                            await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None).ConfigureAwait(false);
-                            throw;
+                            --Base;
                         }
+                        else if (Abbrev == "EDG" && blnCreated &&
+                                 await GetTotalMinimumAsync(token).ConfigureAwait(false) > 0)
+                        {
+                            //Edge can reduce the metatype minimum below zero.
+                            int intBurnedEdge = -(await ImprovementManager
+                                    .GetCachedImprovementListForValueOfAsync(
+                                        _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token)
+                                    .ConfigureAwait(false))
+                                .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
+                                    x => x.Minimum * x.Rating, token: token) + 1;
+                            await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.BurnedEdge, token: token).ConfigureAwait(false);
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
+                                    Improvement.ImprovementSource.BurnedEdge,
+                                    string.Empty,
+                                    Improvement.ImprovementType.Attribute,
+                                    string.Empty, 0, 1, -intBurnedEdge,
+                                    token: token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None)
+                                    .ConfigureAwait(false);
+                                throw;
+                            }
 
-                        ImprovementManager.Commit(_objCharacter);
+                            ImprovementManager.Commit(_objCharacter);
+                        }
+                        else
+                            return;
                     }
-                    else
-                        return;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
