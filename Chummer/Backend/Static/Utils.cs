@@ -1208,10 +1208,7 @@ namespace Chummer
         public static void RunOnMainThread(Func<Task> func, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread)
-                SafelyRunSynchronously(func.Invoke, token);
-            else
-                JoinableTaskFactory.Run(func);
+            JoinableTaskFactory.Run(func, JoinableTaskCreationOptions.LongRunning);
         }
 
         /// <summary>
@@ -1220,9 +1217,7 @@ namespace Chummer
         public static T RunOnMainThread<T>(Func<Task<T>> func, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            return Program.IsMainThread
-                ? SafelyRunSynchronously(func.Invoke, token)
-                : JoinableTaskFactory.Run(func);
+            return JoinableTaskFactory.Run(func, JoinableTaskCreationOptions.LongRunning);
         }
 
         /// <summary>
@@ -1266,10 +1261,7 @@ namespace Chummer
         public static void RunOnMainThread(Func<Task> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread)
-                SafelyRunSynchronously(func.Invoke, eOptions, token);
-            else
-                JoinableTaskFactory.Run(func, eOptions);
+            JoinableTaskFactory.Run(func, eOptions);
         }
 
         /// <summary>
@@ -1278,9 +1270,7 @@ namespace Chummer
         public static T RunOnMainThread<T>(Func<Task<T>> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.IsMainThread
-                ? SafelyRunSynchronously(func.Invoke, eOptions, token)
-                : JoinableTaskFactory.Run(func, eOptions);
+            return JoinableTaskFactory.Run(func, eOptions);
         }
 
         /// <summary>
