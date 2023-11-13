@@ -2493,7 +2493,8 @@ namespace Chummer.Backend.Equipment
             {
                 int intTotalSpeed = Speed;
                 int intBaseOffroadSpeed = OffroadSpeed;
-                int intTotalArmor = 0;
+                int intTotalArmor = Armor;
+                int intModArmor = 0;
 
                 // First check for mods that overwrite the speed value or add to armor
                 foreach (VehicleMod objMod in Mods)
@@ -2508,8 +2509,13 @@ namespace Chummer.Backend.Equipment
                     intBaseOffroadSpeed = Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadSpeed, "OffroadSpeed", false), intTotalSpeed);
                     if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["armor"]?.InnerText ?? objMod.Bonus?["armor"]?.InnerText : objMod.Bonus?["armor"]?.InnerText;
-                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, Armor, "Armor", false), intTotalArmor);
+                        strBonus = objMod.Bonus?["armor"]?.InnerText;
+                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false), intTotalArmor);
+                        if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                        {
+                            strBonus = objMod.WirelessBonus["armor"]?.InnerText;
+                            intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false), intTotalArmor);
+                        }
                     }
                 }
 
@@ -2522,18 +2528,22 @@ namespace Chummer.Backend.Equipment
                         continue;
                     if (objMod.Bonus != null)
                     {
-                        intTotalBonusSpeed += ParseBonus(objMod.Bonus?["speed"]?.InnerText, objMod.Rating, intTotalSpeed, "Speed");
-                        intTotalBonusOffroadSpeed += ParseBonus(objMod.Bonus?["offroadspeed"]?.InnerText, objMod.Rating, intTotalSpeed, "OffroadSpeed");
+                        intTotalBonusSpeed += ParseBonus(objMod.Bonus["speed"]?.InnerText, objMod.Rating, intTotalSpeed, "Speed");
+                        intTotalBonusOffroadSpeed += ParseBonus(objMod.Bonus["offroadspeed"]?.InnerText, objMod.Rating, intTotalSpeed, "OffroadSpeed");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod.Rating, intTotalArmor, "Armor");
                     }
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
-                        intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus?["speed"]?.InnerText, objMod.Rating, intTotalSpeed, "Speed");
-                        intTotalBonusOffroadSpeed += ParseBonus(objMod.WirelessBonus?["offroadspeed"]?.InnerText, objMod.Rating, intTotalSpeed, "OffroadSpeed");
+                        intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus["speed"]?.InnerText, objMod.Rating, intTotalSpeed, "Speed");
+                        intTotalBonusOffroadSpeed += ParseBonus(objMod.WirelessBonus["offroadspeed"]?.InnerText, objMod.Rating, intTotalSpeed, "OffroadSpeed");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod.Rating, intTotalArmor, "Armor");
                     }
                 }
 
                 // Reduce speed of the drone if there is too much armor
-                int intPenalty = Math.Max((intTotalArmor - TotalBody * 3) / 3, 0);
+                int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 3, 0);
 
                 if (Speed != OffroadSpeed || intTotalSpeed + intTotalBonusSpeed != intBaseOffroadSpeed + intTotalBonusOffroadSpeed)
                 {
@@ -2553,7 +2563,8 @@ namespace Chummer.Backend.Equipment
             {
                 int intTotalAccel = Accel;
                 int intBaseOffroadAccel = OffroadAccel;
-                int intTotalArmor = 0;
+                int intTotalArmor = Armor;
+                int intModArmor = 0;
 
                 // First check for mods that overwrite the accel value or add to armor
                 foreach (VehicleMod objMod in Mods)
@@ -2567,8 +2578,13 @@ namespace Chummer.Backend.Equipment
                     intBaseOffroadAccel = Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadAccel, "OffroadAccel", false), intTotalAccel);
                     if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["armor"]?.InnerText ?? objMod.Bonus?["armor"]?.InnerText : objMod.Bonus?["armor"]?.InnerText;
-                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, Armor, "Armor", false), intTotalArmor);
+                        strBonus = objMod.Bonus?["armor"]?.InnerText;
+                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false), intTotalArmor);
+                        if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                        {
+                            strBonus = objMod.WirelessBonus["armor"]?.InnerText;
+                            intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false), intTotalArmor);
+                        }
                     }
                 }
 
@@ -2581,18 +2597,22 @@ namespace Chummer.Backend.Equipment
                         continue;
                     if (objMod.Bonus != null)
                     {
-                        intTotalBonusAccel        += ParseBonus(objMod.Bonus?["accel"]?.InnerText, objMod.Rating, intTotalAccel, "Accel");
-                        intTotalBonusOffroadAccel += ParseBonus(objMod.Bonus?["offroadaccel"]?.InnerText, objMod.Rating, intTotalAccel, "OffroadAccel");
+                        intTotalBonusAccel        += ParseBonus(objMod.Bonus["accel"]?.InnerText, objMod.Rating, intTotalAccel, "Accel");
+                        intTotalBonusOffroadAccel += ParseBonus(objMod.Bonus["offroadaccel"]?.InnerText, objMod.Rating, intTotalAccel, "OffroadAccel");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor           += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod.Rating, intTotalArmor, "Armor");
                     }
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
-                        intTotalBonusAccel        += ParseBonus(objMod.WirelessBonus?["accel"]?.InnerText, objMod.Rating, intTotalAccel, "Accel");
-                        intTotalBonusOffroadAccel += ParseBonus(objMod.WirelessBonus?["offroadaccel"]?.InnerText, objMod.Rating, intTotalAccel, "OffroadAccel");
+                        intTotalBonusAccel        += ParseBonus(objMod.WirelessBonus["accel"]?.InnerText, objMod.Rating, intTotalAccel, "Accel");
+                        intTotalBonusOffroadAccel += ParseBonus(objMod.WirelessBonus["offroadaccel"]?.InnerText, objMod.Rating, intTotalAccel, "OffroadAccel");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor           += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod.Rating, intTotalArmor, "Armor");
                     }
                 }
 
                 // Reduce acceleration of the drone if there is too much armor
-                int intPenalty = Math.Max((intTotalArmor - TotalBody * 3) / 6, 0);
+                int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 6, 0);
 
                 if (Accel != OffroadAccel || intTotalAccel + intTotalBonusAccel != intBaseOffroadAccel + intTotalBonusOffroadAccel)
                 {
@@ -2658,7 +2678,8 @@ namespace Chummer.Backend.Equipment
             {
                 int intBaseHandling = Handling;
                 int intBaseOffroadHandling = OffroadHandling;
-                int intTotalArmor = 0;
+                int intTotalArmor = Armor;
+                int intModArmor = 0;
 
                 // First check for mods that overwrite the handling value or add to armor
                 foreach (VehicleMod objMod in Mods)
@@ -2672,8 +2693,13 @@ namespace Chummer.Backend.Equipment
                     intBaseOffroadHandling = Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadHandling, "OffroadHandling", false), intBaseOffroadHandling);
                     if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["armor"]?.InnerText ?? objMod.Bonus?["armor"]?.InnerText : objMod.Bonus?["armor"]?.InnerText;
-                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, Armor, "Armor", false), intTotalArmor);
+                        strBonus = objMod.Bonus?["armor"]?.InnerText;
+                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false), intTotalArmor);
+                        if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                        {
+                            strBonus = objMod.WirelessBonus["armor"]?.InnerText;
+                            intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false), intTotalArmor);
+                        }
                     }
                 }
 
@@ -2684,17 +2710,25 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
-                    intTotalBonusHandling += ParseBonus(objMod.Bonus?["handling"]?.InnerText, objMod.Rating, intBaseOffroadHandling, "Handling");
-                    intTotalBonusOffroadHandling += ParseBonus(objMod.Bonus?["offroadhandling"]?.InnerText, objMod.Rating, intBaseOffroadHandling, "OffroadHandling");
+                    if (objMod.Bonus != null)
+                    {
+                        intTotalBonusHandling += ParseBonus(objMod.Bonus["handling"]?.InnerText, objMod.Rating, intBaseOffroadHandling, "Handling");
+                        intTotalBonusOffroadHandling += ParseBonus(objMod.Bonus["offroadhandling"]?.InnerText, objMod.Rating, intBaseOffroadHandling, "OffroadHandling");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod.Rating, intTotalArmor, "Armor");
+                    }
+
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
-                        intTotalBonusHandling += ParseBonus(objMod.WirelessBonus?["handling"]?.InnerText, objMod.Rating, intBaseOffroadHandling, "Handling");
-                        intTotalBonusOffroadHandling += ParseBonus(objMod.WirelessBonus?["offroadhandling"]?.InnerText, objMod.Rating, intBaseOffroadHandling, "OffroadHandling");
+                        intTotalBonusHandling += ParseBonus(objMod.WirelessBonus["handling"]?.InnerText, objMod.Rating, intBaseOffroadHandling, "Handling");
+                        intTotalBonusOffroadHandling += ParseBonus(objMod.WirelessBonus["offroadhandling"]?.InnerText, objMod.Rating, intBaseOffroadHandling, "OffroadHandling");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod.Rating, intTotalArmor, "Armor");
                     }
                 }
 
                 // Reduce handling of the drone if there is too much armor
-                int intPenalty = Math.Max((intTotalArmor - TotalBody * 3) / 3, 0);
+                int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 3, 0);
 
                 if (Handling != OffroadHandling
                     || intBaseHandling + intTotalBonusHandling != intBaseOffroadHandling + intTotalBonusOffroadHandling)
@@ -2716,6 +2750,21 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intArmor = Armor;
+
+                // First check for mods that overwrite the armor value
+                foreach (VehicleMod objMod in Mods)
+                {
+                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                        continue;
+
+                    string strLoop = objMod.Bonus?["armor"]?.InnerText;
+                    intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, intArmor, "Armor", false));
+                    if (!objMod.WirelessOn || objMod.WirelessBonus == null)
+                        continue;
+                    strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
+                    intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, intArmor, "Armor", false));
+                }
+
                 int intModArmor = 0;
 
                 // Add the Modification's Armor to the Vehicle's base Armor.
@@ -2725,12 +2774,11 @@ namespace Chummer.Backend.Equipment
                         continue;
 
                     string strLoop = objMod.Bonus?["armor"]?.InnerText;
-                    intModArmor += ParseBonus(strLoop, objMod.Rating, Armor, "Armor");
-                    intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, Armor, "Armor", false));
-                    if (!objMod.WirelessOn || objMod.WirelessBonus == null) continue;
+                    intModArmor += ParseBonus(strLoop, objMod.Rating, intArmor, "Armor");
+                    if (!objMod.WirelessOn || objMod.WirelessBonus == null)
+                        continue;
                     strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
-                    intModArmor += ParseBonus(strLoop, objMod.Rating, Armor, "Armor");
-                    intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, Armor, "Armor", false));
+                    intModArmor += ParseBonus(strLoop, objMod.Rating, intArmor, "Armor");
                 }
 
                 return Math.Min(MaxArmor, intModArmor + intArmor);

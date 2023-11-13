@@ -57,6 +57,7 @@ Application Changes:
 - Choices taken for mentor spirit or paragon bonuses are now always displayed under their respective description boxes. Pre-existing characters with issues related to the display of these choices will need to re-apply improvements for their Mentor Spirit or Paragon quality (or whatever granted them the mentor spirit or paragon).
 - Added RequirementsMet support for vehicle mods to validate against character properties. This allows for having a vehicle mod require a character quality, for example. 
 - Weapons and ammo types that cause the fire damage type (e.g. Flame Bracers) can now properly process other sources of damage and damage type modification.
+- Some inconsistent handling of drone armor mods and their effects on other stats when using Rigger 5.0's drone modding rules has been fixed.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
