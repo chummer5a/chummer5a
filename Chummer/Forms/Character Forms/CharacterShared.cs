@@ -9037,7 +9037,7 @@ namespace Chummer
                             //swallow this
                         }
                     }
-                    Task tskNew = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
+                    Task tskNew = Utils.RunInEmptyExecutionContext(() => Task.Run(() => DoUpdateCharacterInfo(objToken), objToken));
                     if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, null) != null)
                     {
                         Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);

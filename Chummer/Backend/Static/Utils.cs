@@ -1547,12 +1547,7 @@ namespace Chummer
                 int intIsOkToRunDoEvents = Interlocked.Decrement(ref _intIsOkToRunDoEvents);
                 if (blnForceDoEvents || intIsOkToRunDoEvents == 0)
                 {
-                    // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
-                    if (s_objEmptyExecutionContext != null)
-                        ExecutionContext.Run(s_objEmptyExecutionContext.CreateCopy(), state => Application.DoEvents(),
-                            null);
-                    else
-                        Application.DoEvents();
+                    RunInEmptyExecutionContext(Application.DoEvents);
                 }
             }
             finally
@@ -1561,7 +1556,43 @@ namespace Chummer
             }
         }
 
-        // Empty/default Execution Context that we need for manual calls of Application.DoEvents so that AsyncLocals in events do not flow from values set in main thread
+        /// <summary>
+        /// Run some code in a clean (empty) ExecutionContext.
+        /// Useful for weird ExecutionContext flow cases involving async (void) events where AsyncLocals used for locking end up flowing to them when they shouldn't.
+        /// </summary>
+        /// <param name="func">The code to run.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunInEmptyExecutionContext(Action func)
+        {
+            // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
+            if (s_objEmptyExecutionContext != null)
+                ExecutionContext.Run(s_objEmptyExecutionContext.CreateCopy(), _ => func.Invoke(),
+                    null);
+            else
+                func.Invoke();
+        }
+
+        /// <summary>
+        /// Run some code in a clean (empty) ExecutionContext.
+        /// Useful for weird ExecutionContext flow cases involving async (void) events where AsyncLocals used for locking end up flowing to them when they shouldn't.
+        /// </summary>
+        /// <param name="func">The code to run.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T RunInEmptyExecutionContext<T>(Func<T> func)
+        {
+            // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
+            if (s_objEmptyExecutionContext != null)
+            {
+                T objReturn = default;
+                ExecutionContext.Run(s_objEmptyExecutionContext.CreateCopy(), _ => objReturn = func.Invoke(),
+                    null);
+                return objReturn;
+            }
+
+            return func.Invoke();
+        }
+
+        // Empty/default Execution Context that we need for e.g. manual calls of Application.DoEvents so that AsyncLocals in events do not flow from values set in main thread
         private static readonly ExecutionContext s_objEmptyExecutionContext = ExecutionContext.Capture()?.CreateCopy();
 
         /// <summary>
