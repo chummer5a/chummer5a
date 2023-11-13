@@ -11051,6 +11051,7 @@ namespace Chummer
                 _objCachedEssenceLock.Dispose();
                 _objCachedSourceDetailLock.Dispose();
                 _objCachedPowerPointsUsedLock.Dispose();
+                _objAvailabilityMapLock.Dispose();
                 _objTradition.Dispose();
                 if (_lstCachedContactArchetypes != null)
                     Utils.ListItemListPool.Return(ref _lstCachedContactArchetypes);
@@ -11145,6 +11146,7 @@ namespace Chummer
                 await _objCachedEssenceLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedSourceDetailLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedPowerPointsUsedLock.DisposeAsync().ConfigureAwait(false);
+                await _objAvailabilityMapLock.DisposeAsync().ConfigureAwait(false);
                 await _objTradition.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedContactArchetypes != null)
                     Utils.ListItemListPool.Return(ref _lstCachedContactArchetypes);
@@ -30050,6 +30052,8 @@ namespace Chummer
             return LanguageManager.GetStringAsync("String_None", token: token);
         }
 
+        private readonly AsyncFriendlyReaderWriterLock _objAvailabilityMapLock = new AsyncFriendlyReaderWriterLock();
+
         private string GetAvailTestString(decimal decCost, int intAvailValue)
         {
             string strSpace = LanguageManager.GetString("String_Space");
@@ -30057,40 +30061,44 @@ namespace Chummer
             {
                 // Find the character's Negotiation total.
                 int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
-                if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
+                KeyValuePair<decimal, Tuple<string, string>>
+                    item;
+                using (_objAvailabilityMapLock.EnterUpgradeableReadLock())
                 {
-                    using (LockObject.EnterWriteLock())
+                    if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
                     {
-                        if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
+                        using (_objAvailabilityMapLock.EnterWriteLock())
                         {
-                            SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
-                                = Interlocked.Exchange(ref _dicAvailabilityMap, null)
-                                  ?? new SortedDictionary<decimal, Tuple<string, string>>();
-                            dicAvailabilityMap.Clear();
-                            foreach (XPathNavigator objNode in LoadDataXPath("options.xml")
-                                         .SelectAndCacheExpression("/chummer/availmap/avail"))
+                            if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
                             {
-                                decimal decValue = 0;
-                                if (objNode.TryGetDecFieldQuickly("value", ref decValue)
-                                    && !dicAvailabilityMap.ContainsKey(decValue))
+                                SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
+                                    = _dicAvailabilityMap
+                                      ?? new SortedDictionary<decimal, Tuple<string, string>>();
+                                dicAvailabilityMap.Clear();
+                                foreach (XPathNavigator objNode in LoadDataXPath("options.xml")
+                                             .SelectAndCacheExpression("/chummer/availmap/avail"))
                                 {
-                                    dicAvailabilityMap.Add(
-                                        decValue,
-                                        new Tuple<string, string>(
-                                            objNode.SelectSingleNodeAndCacheExpression("duration").Value,
-                                            objNode.SelectSingleNodeAndCacheExpression("interval")
-                                                   .Value));
+                                    decimal decValue = 0;
+                                    if (objNode.TryGetDecFieldQuickly("value", ref decValue)
+                                        && !dicAvailabilityMap.ContainsKey(decValue))
+                                    {
+                                        dicAvailabilityMap.Add(
+                                            decValue,
+                                            new Tuple<string, string>(
+                                                objNode.SelectSingleNodeAndCacheExpression("duration").Value,
+                                                objNode.SelectSingleNodeAndCacheExpression("interval")
+                                                       .Value));
+                                    }
                                 }
+
+                                _dicAvailabilityMap = dicAvailabilityMap;
                             }
-                            Interlocked.CompareExchange(ref _dicAvailabilityMap, dicAvailabilityMap, null);
                         }
                     }
                 }
 
-                KeyValuePair<decimal, Tuple<string, string>>
-                    item = _dicAvailabilityMap.FirstOrDefault(
-                        x => decCost
-                             < x.Key); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
+                item = _dicAvailabilityMap.FirstOrDefault(
+                        x => decCost < x.Key); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
                 // Determine the interval based on the item's price.
                 string strInterval = item.Value.Item1 + strSpace + LanguageManager.GetString(item.Value.Item2);
 
@@ -30108,49 +30116,59 @@ namespace Chummer
                 // Find the character's Negotiation total.
                 Skill objSkill = await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Negotiation", token).ConfigureAwait(false);
                 int intPool = objSkill != null ? await objSkill.GetPoolAsync(token).ConfigureAwait(false) : 0;
-                if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
+                KeyValuePair<decimal, Tuple<string, string>> item;
+                using (await _objAvailabilityMapLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    token.ThrowIfCancellationRequested();
+                    if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
+                        IAsyncDisposable objLocker
+                            = await _objAvailabilityMapLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
-                                = Interlocked.Exchange(ref _dicAvailabilityMap, null)
-                                  ?? new SortedDictionary<decimal, Tuple<string, string>>();
-                            dicAvailabilityMap.Clear();
-                            foreach (XPathNavigator objNode in (await LoadDataXPathAsync(
-                                                                         "options.xml", token: token).ConfigureAwait(false))
-                                                                     .SelectAndCacheExpression("/chummer/availmap/avail", token))
+                            token.ThrowIfCancellationRequested();
+                            if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
                             {
-                                decimal decValue = 0;
-                                if (objNode.TryGetDecFieldQuickly("value", ref decValue)
-                                    && !dicAvailabilityMap.ContainsKey(decValue))
+                                SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
+                                    = _dicAvailabilityMap
+                                      ?? new SortedDictionary<decimal, Tuple<string, string>>();
+                                dicAvailabilityMap.Clear();
+                                foreach (XPathNavigator objNode in (await LoadDataXPathAsync(
+                                             "options.xml", token: token).ConfigureAwait(false))
+                                         .SelectAndCacheExpression("/chummer/availmap/avail", token))
                                 {
-                                    dicAvailabilityMap.Add(
-                                        decValue,
-                                        new Tuple<string, string>(
-                                            (await objNode.SelectSingleNodeAndCacheExpressionAsync("duration", token).ConfigureAwait(false))
-                                            .Value,
-                                            (await objNode.SelectSingleNodeAndCacheExpressionAsync("interval", token).ConfigureAwait(false))
-                                            .Value));
+                                    decimal decValue = 0;
+                                    if (objNode.TryGetDecFieldQuickly("value", ref decValue)
+                                        && !dicAvailabilityMap.ContainsKey(decValue))
+                                    {
+                                        dicAvailabilityMap.Add(
+                                            decValue,
+                                            new Tuple<string, string>(
+                                                (await objNode
+                                                       .SelectSingleNodeAndCacheExpressionAsync("duration", token)
+                                                       .ConfigureAwait(false))
+                                                .Value,
+                                                (await objNode
+                                                       .SelectSingleNodeAndCacheExpressionAsync("interval", token)
+                                                       .ConfigureAwait(false))
+                                                .Value));
+                                    }
                                 }
-                            }
 
-                            Interlocked.CompareExchange(ref _dicAvailabilityMap, dicAvailabilityMap, null);
+                                _dicAvailabilityMap = dicAvailabilityMap;
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
 
-                KeyValuePair<decimal, Tuple<string, string>>
                     item = _dicAvailabilityMap.FirstOrDefault(
                         x => decCost
                              < x.Key); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
+                }
+
                 // Determine the interval based on the item's price.
                 string strInterval = item.Value.Item1 + strSpace + await LanguageManager.GetStringAsync(item.Value.Item2, token: token).ConfigureAwait(false);
 
