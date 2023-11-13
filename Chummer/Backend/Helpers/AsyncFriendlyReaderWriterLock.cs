@@ -67,34 +67,36 @@ namespace Chummer
 
             token.ThrowIfCancellationRequested();
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+            DebuggableSemaphoreSlim objNextSemaphore = null;
+            LinkedSemaphoreSlim objNextLinkedSemaphore;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    throw new InvalidOperationException(
-                        "Write lock was attempted to be acquired inside a non-upgradeable read lock.");
-            }
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                    if (intCountLocalReaders == int.MinValue)
+                        throw new InvalidOperationException(
+                            "Write lock was attempted to be acquired inside a non-upgradeable read lock.");
+                }
 
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                    0, objNextLinkedSemaphore, objCurrentLinkedSemaphore);
-            SafeWriterSemaphoreRelease objRelease =
-                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
+                if (objNextSemaphore == null)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+                // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+                // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+                // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
+                while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
+                       objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                objNextLinkedSemaphore =
+                    new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+            } while (objCurrentLinkedSemaphore.IsDisposed);
 
             // While we are attempting to acquire the write lock, act as if all previous upgradeable readers have been turned into writers
             ChangeNumActiveReaders(-intCountLocalReaders);
@@ -107,6 +109,14 @@ namespace Chummer
                 ChangeNumActiveReaders(intCountLocalReaders);
                 throw;
             }
+
+            _objAsyncLocalCurrentsContainer.Value =
+                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
+                    0, objNextLinkedSemaphore, objCurrentLinkedSemaphore);
+
+            SafeWriterSemaphoreRelease objRelease =
+                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                    objTopMostHeldWriterSemaphore, this);
 
             try
             {
@@ -134,34 +144,46 @@ namespace Chummer
                 return Task.FromException<IAsyncDisposable>(
                     new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+            DebuggableSemaphoreSlim objNextSemaphore = null;
+            LinkedSemaphoreSlim objNextLinkedSemaphore;
+            SafeWriterSemaphoreRelease objRelease;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    return Task.FromException<IAsyncDisposable>(
-                        new InvalidOperationException(
-                            "Write lock was attempted to be acquired inside a non-upgradeable read lock."));
-            }
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                    if (intCountLocalReaders == int.MinValue)
+                        return Task.FromException<IAsyncDisposable>(
+                            new InvalidOperationException(
+                                "Write lock was attempted to be acquired inside a non-upgradeable read lock."));
+                }
 
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+                if (objNextSemaphore == null)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+                // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+                // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+                // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
+                while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
+                       objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                objNextLinkedSemaphore =
+                    new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+                objRelease =
+                    new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                        objTopMostHeldWriterSemaphore, this);
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
             _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                     0, objNextLinkedSemaphore, objCurrentLinkedSemaphore);
-            SafeWriterSemaphoreRelease objRelease =
-                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
+
             return TakeWriteLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease,
                 intCountLocalReaders);
         }
@@ -179,34 +201,48 @@ namespace Chummer
             if (token.IsCancellationRequested)
                 return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+            DebuggableSemaphoreSlim objNextSemaphore = null;
+            LinkedSemaphoreSlim objNextLinkedSemaphore;
+            SafeWriterSemaphoreRelease objRelease;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    return Task.FromException<IAsyncDisposable>(
-                        new InvalidOperationException(
-                            "Write lock was attempted to be acquired inside a non-upgradeable read lock."));
-            }
+                if (token.IsCancellationRequested)
+                    return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                    if (intCountLocalReaders == int.MinValue)
+                        return Task.FromException<IAsyncDisposable>(
+                            new InvalidOperationException(
+                                "Write lock was attempted to be acquired inside a non-upgradeable read lock."));
+                }
 
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+                if (objNextSemaphore == null)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+                // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+                // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+                // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
+                while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
+                       objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                objNextLinkedSemaphore =
+                    new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+                objRelease =
+                    new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                        objTopMostHeldWriterSemaphore, this);
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
             _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                     0, objNextLinkedSemaphore, objCurrentLinkedSemaphore);
-            SafeWriterSemaphoreRelease objRelease =
-                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
+
             return TakeWriteLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease,
                 intCountLocalReaders, token);
         }
@@ -272,28 +308,37 @@ namespace Chummer
 
             token.ThrowIfCancellationRequested();
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+            DebuggableSemaphoreSlim objNextSemaphore = null;
+            LinkedSemaphoreSlim objNextLinkedSemaphore;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    throw new InvalidOperationException(
-                        "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock.");
-            }
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                    if (intCountLocalReaders == int.MinValue)
+                        throw new InvalidOperationException(
+                            "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock.");
+                }
 
-            token.ThrowIfCancellationRequested();
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+                token.ThrowIfCancellationRequested();
+                if (objNextSemaphore == null)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+                // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+                // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+                // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
+                while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
+                       objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
             {
@@ -340,40 +385,56 @@ namespace Chummer
 
             // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+            DebuggableSemaphoreSlim objNextSemaphore = null;
+            LinkedSemaphoreSlim objNextLinkedSemaphore;
+            SafeUpgradeableReaderSemaphoreRelease objRelease;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    return Task.FromException<IDisposable>(
-                        new InvalidOperationException(
-                            "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock."));
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                    if (intCountLocalReaders == int.MinValue)
+                        return Task.FromException<IDisposable>(
+                            new InvalidOperationException(
+                                "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock."));
+                }
+
+                if (objNextSemaphore == null)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+
+                // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+                // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+                // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+                // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
+                while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
+                       objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                objNextLinkedSemaphore =
+                    new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+                objRelease =
+                    new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                        objTopMostHeldWriterSemaphore, this);
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
+            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
+            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
+            {
+                ChangeNumActiveReaders(1);
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
+                        objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
+                return Task.FromResult<IDisposable>(objRelease);
             }
 
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
             _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
                     objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
-            SafeUpgradeableReaderSemaphoreRelease objRelease =
-                new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
-            {
-                ChangeNumActiveReaders(1);
-                return Task.FromResult<IDisposable>(objRelease);
-            }
 
             return TakeUpgradeableReadLockCoreAsync(objCurrentLinkedSemaphore, objRelease);
         }
@@ -399,40 +460,55 @@ namespace Chummer
             // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
             // To undo this change in case the request is canceled, we will register a callback that will only be disposed at the end of the async methods
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+            DebuggableSemaphoreSlim objNextSemaphore = null;
+            LinkedSemaphoreSlim objNextLinkedSemaphore;
+            SafeUpgradeableReaderSemaphoreRelease objRelease;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    return Task.FromException<IDisposable>(
-                        new InvalidOperationException(
-                            "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock."));
-            }
+                if (token.IsCancellationRequested)
+                    return Task.FromException<IDisposable>(new OperationCanceledException(token));
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                    if (intCountLocalReaders == int.MinValue)
+                        return Task.FromException<IDisposable>(
+                            new InvalidOperationException(
+                                "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock."));
+                }
 
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
-                    objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
-            SafeUpgradeableReaderSemaphoreRelease objRelease =
-                new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                if (objNextSemaphore == null)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+                // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+                // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+                // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
+                while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
+                       objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
+                    objNextSemaphore = Utils.SemaphorePool.Get();
+                objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+                objRelease = new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
                     objTopMostHeldWriterSemaphore, this);
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
             {
                 ChangeNumActiveReaders(1);
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
+                        objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
                 return Task.FromResult<IDisposable>(objRelease);
             }
+
+            _objAsyncLocalCurrentsContainer.Value =
+                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
+                    objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
 
             return TakeUpgradeableReadLockCoreAsync(objCurrentLinkedSemaphore, objRelease, token);
         }
@@ -592,16 +668,16 @@ namespace Chummer
                 if (objAsyncLocals != null)
                     (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
 
-                _objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                        objCurrentLinkedSemaphore,
-                        objTopMostHeldWriterSemaphore);
                 objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
                     objCurrentLinkedSemaphore,
                     objTopMostHeldWriterSemaphore, this);
                 if (intCountLocalReaders == int.MinValue)
                 {
                     ChangeNumActiveReaders(1);
+                    _objAsyncLocalCurrentsContainer.Value =
+                        new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                            objCurrentLinkedSemaphore,
+                            objTopMostHeldWriterSemaphore);
                     return Task.FromResult<IDisposable>(objRelease);
                 }
             } while (objCurrentLinkedSemaphore.IsDisposed);
@@ -609,9 +685,17 @@ namespace Chummer
             if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
             {
                 ChangeNumActiveReaders(1);
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                        objCurrentLinkedSemaphore,
+                        objTopMostHeldWriterSemaphore);
                 return Task.FromResult<IDisposable>(objRelease);
             }
 
+            _objAsyncLocalCurrentsContainer.Value =
+                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                    objCurrentLinkedSemaphore,
+                    objTopMostHeldWriterSemaphore);
             return TakeReadLockCoreAsync(objCurrentLinkedSemaphore, objRelease);
         }
 
@@ -652,20 +736,17 @@ namespace Chummer
             LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
             SafeReaderSemaphoreRelease objRelease;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objOriginalAsyncLocals = null;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
             do
             {
+                if (token.IsCancellationRequested)
+                    return Task.FromException<IDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals = _objAsyncLocalCurrentsContainer.Value;
                 if (objAsyncLocals != null)
                 {
                     (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                    if (objOriginalAsyncLocals == null)
-                        objOriginalAsyncLocals = objAsyncLocals;
                 }
-                else if (objOriginalAsyncLocals == null)
-                    objOriginalAsyncLocals = new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(0, _objTopLevelWriterSemaphore, null);
 
                 _objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
@@ -677,21 +758,28 @@ namespace Chummer
                 if (intCountLocalReaders == int.MinValue)
                 {
                     ChangeNumActiveReaders(1);
+                    _objAsyncLocalCurrentsContainer.Value =
+                        new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                            objCurrentLinkedSemaphore,
+                            objTopMostHeldWriterSemaphore);
                     return Task.FromResult<IDisposable>(objRelease);
-                }
-                if (token.IsCancellationRequested)
-                {
-                    _objAsyncLocalCurrentsContainer.Value = objOriginalAsyncLocals;
-                    return Task.FromException<IDisposable>(new OperationCanceledException(token));
                 }
             } while (objCurrentLinkedSemaphore.IsDisposed);
 
             if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
             {
                 ChangeNumActiveReaders(1);
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                        objCurrentLinkedSemaphore,
+                        objTopMostHeldWriterSemaphore);
                 return Task.FromResult<IDisposable>(objRelease);
             }
 
+            _objAsyncLocalCurrentsContainer.Value =
+                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
+                    objCurrentLinkedSemaphore,
+                    objTopMostHeldWriterSemaphore);
             return TakeReadLockCoreAsync(objCurrentLinkedSemaphore, objRelease, token);
         }
 
@@ -775,14 +863,18 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-
-            token.ThrowIfCancellationRequested();
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
+            {
+                token.ThrowIfCancellationRequested();
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+            } while (objCurrentLinkedSemaphore.IsDisposed);
 
             // Because we are a high-priority reader, we *must* temporarily acquire a write lock
             objCurrentLinkedSemaphore.SafeWaitAll(token, objTopMostHeldWriterSemaphore);
@@ -819,19 +911,27 @@ namespace Chummer
             }
 
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+            SafeHiPrioReaderSemaphoreRelease objRelease;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
+            {
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                objRelease = new SafeHiPrioReaderSemaphoreRelease(intCountLocalReaders,
+                    objCurrentLinkedSemaphore,
+                    objTopMostHeldWriterSemaphore, this);
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
             _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
                     objCurrentLinkedSemaphore,
                     objTopMostHeldWriterSemaphore);
-            SafeHiPrioReaderSemaphoreRelease objRelease = new SafeHiPrioReaderSemaphoreRelease(intCountLocalReaders,
-                objCurrentLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
+
             return TakeHiPrioReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease);
         }
 
@@ -856,19 +956,29 @@ namespace Chummer
                 return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
 
             int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+            LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+            SafeHiPrioReaderSemaphoreRelease objRelease;
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            do
+            {
+                if (token.IsCancellationRequested)
+                    return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+                objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
+                Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                    (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
+                objRelease = new SafeHiPrioReaderSemaphoreRelease(intCountLocalReaders,
+                    objCurrentLinkedSemaphore,
+                    objTopMostHeldWriterSemaphore, this);
+            } while (objCurrentLinkedSemaphore.IsDisposed);
+
             _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
                     objCurrentLinkedSemaphore,
                     objTopMostHeldWriterSemaphore);
-            SafeHiPrioReaderSemaphoreRelease objRelease = new SafeHiPrioReaderSemaphoreRelease(intCountLocalReaders,
-                objCurrentLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
+
             return TakeHiPrioReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease, token);
         }
 
