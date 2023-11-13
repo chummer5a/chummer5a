@@ -340,7 +340,7 @@ namespace Chummer
             } while (objCurrentLinkedSemaphore.IsDisposed);
 
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
+            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
             {
                 ChangeNumActiveReaders(1);
                 _objAsyncLocalCurrentsContainer.Value =
@@ -423,7 +423,7 @@ namespace Chummer
             } while (objCurrentLinkedSemaphore.IsDisposed);
 
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
+            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
             {
                 ChangeNumActiveReaders(1);
                 _objAsyncLocalCurrentsContainer.Value =
@@ -497,7 +497,7 @@ namespace Chummer
             } while (objCurrentLinkedSemaphore.IsDisposed);
 
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
+            if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
             {
                 ChangeNumActiveReaders(1);
                 _objAsyncLocalCurrentsContainer.Value =
