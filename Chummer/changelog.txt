@@ -78,6 +78,7 @@ Data Changes:
 - Universal Data Cord, Folding Ladder, Solar Panel, Detonating Cord (Low Yield and High Yield), and Safety Fuse items can now be bought with specific dimensions in addition to quantities instead of quantities and dimensions being rolled into one number.
 - 1 kilogram of Pet Food now properly weighs 1 kilogram.
 - Removed Psychmetry metamagic requirement from Sympathetic Linking metamagic.
+- Added a custom dataset for the provisional Shifter errata.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership

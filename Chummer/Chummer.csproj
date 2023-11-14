@@ -160,6 +160,12 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Shapeshifter Provisional Run Faster Errata\amend_shapeshifter_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shapeshifter Provisional Run Faster Errata\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="data\drugcomponents.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -25777,6 +25783,10 @@
     <Compile Remove="Forms\Selection Forms\SelectProgramOption.Designer.cs" />
     <Compile Remove="InheritedListView.cs" />
     <Compile Remove="packages\Codaxy.WkHtmlToPdf.0.5.8\content\PdfConvert.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="customdata\Shapeshifter Provisional Run Faster Errata\amend_shapeshifter_metatypes.xml" />
+    <None Remove="customdata\Shapeshifter Provisional Run Faster Errata\manifest.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
