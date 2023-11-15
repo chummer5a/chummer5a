@@ -156,6 +156,9 @@
     <Content Include="customdata\4e Critters Conversion\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\manifest.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -25785,6 +25788,7 @@
     <Compile Remove="packages\Codaxy.WkHtmlToPdf.0.5.8\content\PdfConvert.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="customdata\German Data Changes\amend_martialarts.xml" />
     <None Remove="customdata\Shapeshifter Provisional Run Faster Errata\amend_shapeshifter_metatypes.xml" />
     <None Remove="customdata\Shapeshifter Provisional Run Faster Errata\manifest.xml" />
   </ItemGroup>
