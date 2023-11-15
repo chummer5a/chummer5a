@@ -57,7 +57,7 @@ namespace Chummer
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject
+    public sealed class Character : INotifyMultiplePropertyChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -316,8 +316,7 @@ namespace Chummer
                      && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSettingDefaultValue, out _objSettings))
                 _objSettings = SettingsManager.LoadedCharacterSettings.First().Value;
 
-            using (_objSettings.LockObject.EnterWriteLock())
-                _objSettings.PropertyChanged += OptionsOnPropertyChanged;
+            _objSettings.PropertyChangedAsync += OptionsOnPropertyChanged;
             _objAttributeSection = new AttributeSection(this);
             using (_objAttributeSection.LockObject.EnterWriteLock())
             {
@@ -350,19 +349,21 @@ namespace Chummer
             _objTradition = new Tradition(this);
         }
 
-        private async Task CalendarOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task CalendarOnBeforeRemove(object sender, RemovingOldEventArgs e, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                await (await Calendar.GetValueAtAsync(e.OldIndex).ConfigureAwait(false)).DisposeAsync()
+                token.ThrowIfCancellationRequested();
+                await (await Calendar.GetValueAtAsync(e.OldIndex, token).ConfigureAwait(false)).DisposeAsync()
                     .ConfigureAwait(false);
             }
         }
 
         private bool _blnClearingInitiations;
 
-        private async Task InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_blnClearingInitiations || IsLoading || e.Action == NotifyCollectionChangedAction.Move)
                 return;
             bool blnUpdateSubmersion = false;
@@ -445,8 +446,9 @@ namespace Chummer
             // Need a complete recalculation because of potential issues where grades can change in between the grade getter and setter calls.
             int intSubmersion = 0;
             int intInitiation = 0;
-            using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // Don't do checks for update submersion/initiation in the accumulator because it's faster to just index counts than to do those checks every iteration.
                 foreach (InitiationGrade objItem in InitiationGrades)
                 {
@@ -457,18 +459,19 @@ namespace Chummer
                 }
 
                 if (blnUpdateSubmersion)
-                    await SetSubmersionGradeAsync(intSubmersion).ConfigureAwait(false);
+                    await SetSubmersionGradeAsync(intSubmersion, token).ConfigureAwait(false);
                 if (blnUpdateInitiation)
-                    await SetInitiateGradeAsync(intInitiation).ConfigureAwait(false);
+                    await SetInitiateGradeAsync(intInitiation, token).ConfigureAwait(false);
             }
         }
 
-        private async Task SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (SustainedCollection.Count == 0 || IsLoading)
                 return;
-            using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
@@ -477,8 +480,14 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Remove:
                         foreach (IHasInternalId objItem in e.OldItems)
                         {
-                            await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem))
-                                .ConfigureAwait(false);
+                            for (int i = await SustainedCollection.GetCountAsync(token); i >= 0; --i)
+                            {
+                                SustainedObject objLoop = await SustainedCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (!ReferenceEquals(objLoop.LinkedObject, objItem))
+                                    continue;
+                                await SustainedCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+                                await objLoop.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
 
                         break;
@@ -486,8 +495,14 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Replace:
                         foreach (IHasInternalId objItem in e.OldItems)
                         {
-                            await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem))
-                                .ConfigureAwait(false);
+                            for (int i = await SustainedCollection.GetCountAsync(token); i >= 0; --i)
+                            {
+                                SustainedObject objLoop = await SustainedCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (!ReferenceEquals(objLoop.LinkedObject, objItem))
+                                    continue;
+                                await SustainedCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+                                await objLoop.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
 
                         break;
@@ -496,13 +511,19 @@ namespace Chummer
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
-                        await SustainedCollection.RemoveAllAsync(async x =>
-                            !await Spells.AnyAsync(
-                                y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false)
-                            && !await ComplexForms.AnyAsync(
-                                y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false) &&
-                            !await CritterPowers.AnyAsync(
-                                y => ReferenceEquals(y, x.LinkedObject)).ConfigureAwait(false)).ConfigureAwait(false);
+                        for (int i = await SustainedCollection.GetCountAsync(token); i >= 0; --i)
+                        {
+                            SustainedObject objLoop = await SustainedCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (await Spells.AnyAsync(
+                                    y => ReferenceEquals(y, objLoop.LinkedObject), token: token).ConfigureAwait(false)
+                                || await ComplexForms.AnyAsync(
+                                    y => ReferenceEquals(y, objLoop.LinkedObject), token: token).ConfigureAwait(false)
+                                || await CritterPowers.AnyAsync(
+                                    y => ReferenceEquals(y, objLoop.LinkedObject), token: token).ConfigureAwait(false))
+                                continue;
+                            await SustainedCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            await objLoop.DisposeAsync().ConfigureAwait(false);
+                        }
                         break;
                 }
             }
@@ -884,236 +905,324 @@ namespace Chummer
             }
         }
 
-        private async void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private Task OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
-            await DoOptionsOnPropertyChanged(sender, e).ConfigureAwait(false);
+            return OptionsOnMultiplePropertyChanged(new[] { e.PropertyName }, token);
         }
 
-        private async Task DoOptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OptionsOnMultiplePropertyChanged(IReadOnlyCollection<string> lstProperties, CancellationToken token = default)
         {
-            switch (e?.PropertyName)
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                       out HashSet<string> setPropertiesToRefresh))
             {
-                case nameof(CharacterSettings.UseCalculatedPublicAwareness):
-                    OnPropertyChanged(nameof(CalculatedPublicAwareness));
-                    break;
-
-                case nameof(CharacterSettings.SpiritForceBasedOnTotalMAG):
-                    OnPropertyChanged(nameof(MaxSpiritForce));
-                    break;
-
-                case nameof(CharacterSettings.CyberlegMovement):
-                    OnPropertyChanged(nameof(Movement));
-                    break;
-
-                case nameof(CharacterSettings.AllowInitiationInCreateMode):
-                    OnPropertyChanged(nameof(AddInitiationsAllowed));
-                    break;
-
-                case nameof(CharacterSettings.MysAdeptAllowPpCareer):
-                    OnPropertyChanged(nameof(MysAdeptAllowPPCareer));
-                    break;
-
-                case nameof(CharacterSettings.MysAdeptSecondMAGAttribute):
-                    this.OnMultiplePropertyChanged(nameof(UseMysticAdeptPPs), nameof(AllowAdeptWayPowerDiscount));
-                    break;
-
-                case nameof(CharacterSettings.ContactPointsExpression):
-                    OnPropertyChanged(nameof(ContactPoints));
-                    break;
-
-                case nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue):
-                    await RefreshEssenceLossImprovementsAsync().ConfigureAwait(false);
-                    break;
-
-                case nameof(CharacterSettings.NuyenFormat):
-                    this.OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen),
-                                                   nameof(DisplayStolenNuyen));
-                    break;
-
-                case nameof(CharacterSettings.WeightFormat):
-                    this.OnMultiplePropertyChanged(nameof(LiftAndCarryLimits), nameof(DisplayTotalCarriedWeight));
-                    break;
-
-                case nameof(CharacterSettings.EssenceFormat):
-                case nameof(CharacterSettings.DontRoundEssenceInternally):
-                case nameof(CharacterSettings.EssenceModifierPostExpression):
-                    this.OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence),
-                                                   nameof(CyberwareEssence), nameof(EssenceHole));
-                    break;
-
-                case nameof(CharacterSettings.NuyenMaximumBP):
-                case nameof(CharacterSettings.UnrestrictedNuyen):
-                    OnPropertyChanged(nameof(TotalNuyenMaximumBP));
-                    break;
-
-                case nameof(CharacterSettings.KarmaMysticAdeptPowerPoint):
-                    OnPropertyChanged(nameof(CanAffordCareerPP));
-                    break;
-
-                case nameof(CharacterSettings.BuildMethod):
-                    OnPropertyChanged(nameof(EffectiveBuildMethod));
-                    break;
-
-                case nameof(CharacterSettings.AutomaticBackstory):
-                    OnPropertyChanged(nameof(EnableAutomaticStoryButton));
-                    break;
-
-                case nameof(CharacterSettings.ChargenKarmaToNuyenExpression):
-                    OnPropertyChanged(nameof(TotalStartingNuyen));
-                    break;
-
-                case nameof(CharacterSettings.LimbCount):
-                    OnPropertyChanged(nameof(LimbCount));
-                    break;
-
-                case nameof(CharacterSettings.MetatypeCostsKarmaMultiplier):
-                    OnPropertyChanged(nameof(DisplayMetatypeBP));
-                    break;
-
-                case nameof(CharacterSettings.RedlinerExcludes):
-                    OnPropertyChanged(nameof(RedlinerBonus));
-                    break;
-
-                case nameof(CharacterSettings.NoArmorEncumbrance):
-                    OnPropertyChanged(nameof(ArmorEncumbrance));
-                    break;
-
-                case nameof(CharacterSettings.UncappedArmorAccessoryBonuses):
-                    this.OnMultiplePropertyChanged(nameof(ArmorEncumbrance), nameof(GetArmorRatingWithImprovement));
-                    break;
-
-                case nameof(CharacterSettings.KarmaQuality):
-                case nameof(CharacterSettings.QualityKarmaLimit):
-                    this.OnMultiplePropertyChanged(nameof(PositiveQualityLimitKarma), nameof(PositiveQualityKarma),
-                                                   nameof(NegativeQualityLimitKarma), nameof(NegativeQualityKarma));
-                    break;
-
-                case nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled):
-                    this.OnMultiplePropertyChanged(nameof(PositiveQualityLimitKarma), nameof(PositiveQualityKarma));
-                    break;
-
-                case nameof(CharacterSettings.EnemyKarmaQualityLimit):
-                case nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus):
-                    this.OnMultiplePropertyChanged(nameof(NegativeQualityLimitKarma), nameof(NegativeQualityKarma));
-                    break;
-
-                case nameof(CharacterSettings.EnableEnemyTracking):
-                case nameof(CharacterSettings.KarmaEnemy):
-                    OnPropertyChanged(nameof(EnemyKarma));
-                    break;
-
-                case nameof(CharacterSettings.DicePenaltySustaining):
-                    OnPropertyChanged(nameof(SustainingPenalty));
-                    break;
-
-                case nameof(CharacterSettings.KarmaSpell):
-                    using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                foreach (string strPropertyName in lstProperties)
+                {
+                    switch (strPropertyName)
                     {
-                        if (await GetFreeSpellsAsync().ConfigureAwait(false) > 0)
-                            OnPropertyChanged(nameof(PositiveQualityKarma));
+                        case nameof(CharacterSettings.UseCalculatedPublicAwareness):
+                            setPropertiesToRefresh.Add(nameof(CalculatedPublicAwareness));
+                            break;
+
+                        case nameof(CharacterSettings.SpiritForceBasedOnTotalMAG):
+                            setPropertiesToRefresh.Add(nameof(MaxSpiritForce));
+                            break;
+
+                        case nameof(CharacterSettings.CyberlegMovement):
+                            setPropertiesToRefresh.Add(nameof(Movement));
+                            break;
+
+                        case nameof(CharacterSettings.AllowInitiationInCreateMode):
+                            setPropertiesToRefresh.Add(nameof(AddInitiationsAllowed));
+                            break;
+
+                        case nameof(CharacterSettings.MysAdeptAllowPpCareer):
+                            setPropertiesToRefresh.Add(nameof(MysAdeptAllowPPCareer));
+                            break;
+
+                        case nameof(CharacterSettings.MysAdeptSecondMAGAttribute):
+                            setPropertiesToRefresh.Add(nameof(UseMysticAdeptPPs));
+                            setPropertiesToRefresh.Add(nameof(AllowAdeptWayPowerDiscount));
+                            break;
+
+                        case nameof(CharacterSettings.ContactPointsExpression):
+                            setPropertiesToRefresh.Add(nameof(ContactPoints));
+                            break;
+
+                        case nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue):
+                            await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
+                            break;
+
+                        case nameof(CharacterSettings.NuyenFormat):
+                            setPropertiesToRefresh.Add(nameof(DisplayNuyen));
+                            setPropertiesToRefresh.Add(nameof(DisplayCareerNuyen));
+                            setPropertiesToRefresh.Add(nameof(DisplayStolenNuyen));
+                            break;
+
+                        case nameof(CharacterSettings.WeightFormat):
+                            setPropertiesToRefresh.Add(nameof(LiftAndCarryLimits));
+                            setPropertiesToRefresh.Add(nameof(DisplayTotalCarriedWeight));
+                            break;
+
+                        case nameof(CharacterSettings.EssenceFormat):
+                        case nameof(CharacterSettings.DontRoundEssenceInternally):
+                        case nameof(CharacterSettings.EssenceModifierPostExpression):
+                            setPropertiesToRefresh.Add(nameof(PrototypeTranshumanEssenceUsed));
+                            setPropertiesToRefresh.Add(nameof(BiowareEssence));
+                            setPropertiesToRefresh.Add(nameof(CyberwareEssence));
+                            setPropertiesToRefresh.Add(nameof(EssenceHole));
+                            break;
+
+                        case nameof(CharacterSettings.NuyenMaximumBP):
+                        case nameof(CharacterSettings.UnrestrictedNuyen):
+                            setPropertiesToRefresh.Add(nameof(TotalNuyenMaximumBP));
+                            break;
+
+                        case nameof(CharacterSettings.KarmaMysticAdeptPowerPoint):
+                            setPropertiesToRefresh.Add(nameof(CanAffordCareerPP));
+                            break;
+
+                        case nameof(CharacterSettings.BuildMethod):
+                            setPropertiesToRefresh.Add(nameof(EffectiveBuildMethod));
+                            break;
+
+                        case nameof(CharacterSettings.AutomaticBackstory):
+                            setPropertiesToRefresh.Add(nameof(EnableAutomaticStoryButton));
+                            break;
+
+                        case nameof(CharacterSettings.ChargenKarmaToNuyenExpression):
+                            setPropertiesToRefresh.Add(nameof(TotalStartingNuyen));
+                            break;
+
+                        case nameof(CharacterSettings.LimbCount):
+                            setPropertiesToRefresh.Add(nameof(LimbCount));
+                            break;
+
+                        case nameof(CharacterSettings.MetatypeCostsKarmaMultiplier):
+                            setPropertiesToRefresh.Add(nameof(DisplayMetatypeBP));
+                            break;
+
+                        case nameof(CharacterSettings.RedlinerExcludes):
+                            setPropertiesToRefresh.Add(nameof(RedlinerBonus));
+                            break;
+
+                        case nameof(CharacterSettings.NoArmorEncumbrance):
+                            setPropertiesToRefresh.Add(nameof(ArmorEncumbrance));
+                            break;
+
+                        case nameof(CharacterSettings.UncappedArmorAccessoryBonuses):
+                            setPropertiesToRefresh.Add(nameof(ArmorEncumbrance));
+                            setPropertiesToRefresh.Add(nameof(GetArmorRatingWithImprovement));
+                            break;
+
+                        case nameof(CharacterSettings.KarmaQuality):
+                        case nameof(CharacterSettings.QualityKarmaLimit):
+                            setPropertiesToRefresh.Add(nameof(PositiveQualityLimitKarma));
+                            setPropertiesToRefresh.Add(nameof(PositiveQualityKarma));
+                            setPropertiesToRefresh.Add(nameof(NegativeQualityLimitKarma));
+                            setPropertiesToRefresh.Add(nameof(NegativeQualityKarma));
+                            break;
+
+                        case nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled):
+                            setPropertiesToRefresh.Add(nameof(PositiveQualityLimitKarma));
+                            setPropertiesToRefresh.Add(nameof(PositiveQualityKarma));
+                            break;
+
+                        case nameof(CharacterSettings.EnemyKarmaQualityLimit):
+                        case nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus):
+                            setPropertiesToRefresh.Add(nameof(NegativeQualityLimitKarma));
+                            setPropertiesToRefresh.Add(nameof(NegativeQualityKarma));
+                            break;
+
+                        case nameof(CharacterSettings.EnableEnemyTracking):
+                        case nameof(CharacterSettings.KarmaEnemy):
+                            setPropertiesToRefresh.Add(nameof(EnemyKarma));
+                            break;
+
+                        case nameof(CharacterSettings.DicePenaltySustaining):
+                            setPropertiesToRefresh.Add(nameof(SustainingPenalty));
+                            break;
+
+                        case nameof(CharacterSettings.KarmaSpell):
+                            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (await GetFreeSpellsAsync(token).ConfigureAwait(false) > 0)
+                                    setPropertiesToRefresh.Add(nameof(PositiveQualityKarma));
+                            }
+                            break;
+
+                        case nameof(CharacterSettings.MinInitiativeDice):
+                            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                XPathNavigator objNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                if (objNode == null || await objNode.SelectSingleNodeAndCacheExpressionAsync("initiativedice", token: token) == null)
+                                {
+                                    _intInitiativeDice = Settings.MinInitiativeDice;
+                                    setPropertiesToRefresh.Add(nameof(InitiativeDice));
+                                }
+                            }
+                            break;
+
+                        case nameof(CharacterSettings.MaxInitiativeDice):
+                            setPropertiesToRefresh.Add(nameof(InitiativeDice));
+                            break;
+
+                        case nameof(CharacterSettings.MinAstralInitiativeDice):
+                        case nameof(CharacterSettings.MaxAstralInitiativeDice):
+                            setPropertiesToRefresh.Add(nameof(AstralInitiativeDice));
+                            break;
+
+                        case nameof(CharacterSettings.MinColdSimInitiativeDice):
+                        case nameof(CharacterSettings.MaxColdSimInitiativeDice):
+                            setPropertiesToRefresh.Add(nameof(MatrixInitiativeColdDice));
+                            break;
+
+                        case nameof(CharacterSettings.MinHotSimInitiativeDice):
+                            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                setPropertiesToRefresh.Add(nameof(MatrixInitiativeHotDice));
+                                if (await GetIsAIAsync(token))
+                                    setPropertiesToRefresh.Add(nameof(MatrixInitiativeDice));
+                            }
+                            break;
+
+                        case nameof(CharacterSettings.MaxHotSimInitiativeDice):
+                            setPropertiesToRefresh.Add(nameof(MatrixInitiativeHotDice));
+                            break;
+
+                        case nameof(CharacterSettings.LiftLimitExpression):
+                            setPropertiesToRefresh.Add(nameof(BaseLiftLimit));
+                            break;
+
+                        case nameof(CharacterSettings.CarryLimitExpression):
+                            setPropertiesToRefresh.Add(nameof(BaseCarryLimit));
+                            break;
+
+                        case nameof(CharacterSettings.EncumbranceIntervalExpression):
+                            setPropertiesToRefresh.Add(nameof(EncumbranceInterval));
+                            break;
+
+                        case nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit):
+                        case nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed):
+                        case nameof(CharacterSettings.DoEncumbrancePenaltyAgility):
+                        case nameof(CharacterSettings.DoEncumbrancePenaltyReaction):
+                            setPropertiesToRefresh.Add(nameof(Encumbrance));
+                            break;
+
+                        case nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit):
+                            if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                                setPropertiesToRefresh.Add(nameof(Encumbrance));
+                            break;
+
+                        case nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed):
+                            if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                                setPropertiesToRefresh.Add(nameof(Encumbrance));
+                            break;
+
+                        case nameof(CharacterSettings.EncumbrancePenaltyAgility):
+                            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (Settings.DoEncumbrancePenaltyAgility)
+                                    setPropertiesToRefresh.Add(nameof(Encumbrance));
+                            }
+                            break;
+
+                        case nameof(CharacterSettings.EncumbrancePenaltyReaction):
+                            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (Settings.DoEncumbrancePenaltyReaction)
+                                    setPropertiesToRefresh.Add(nameof(Encumbrance));
+                            }
+                            break;
+
+                        case nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier):
+                            setPropertiesToRefresh.Add(nameof(WoundModifier));
+                            setPropertiesToRefresh.Add(nameof(Encumbrance));
+                            break;
+
+                        case nameof(CharacterSettings.EncumbrancePenaltyWoundModifier):
+                            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (Settings.DoEncumbrancePenaltyWoundModifier)
+                                {
+                                    setPropertiesToRefresh.Add(nameof(WoundModifier));
+                                    setPropertiesToRefresh.Add(nameof(Encumbrance));
+                                }
+                            }
+                            break;
                     }
-                    break;
+                }
 
-                case nameof(CharacterSettings.MinInitiativeDice):
-                    using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                
+                using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (setPropertiesToRefresh.Count > 0)
                     {
-                        XPathNavigator objNode = await this.GetNodeXPathAsync().ConfigureAwait(false);
-                        if (objNode?.SelectSingleNodeAndCacheExpression("initiativedice") == null)
+                        await OnMultiplePropertyChangedAsync(setPropertiesToRefresh, token).ConfigureAwait(false);
+                    }
+
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = lstProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
                         {
-                            _intInitiativeDice = Settings.MinInitiativeDice;
-                            OnPropertyChanged(nameof(InitiativeDice));
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (SettingsPropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (SettingsPropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        SettingsPropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
                         }
                     }
-                    break;
-
-                case nameof(CharacterSettings.MaxInitiativeDice):
-                    OnPropertyChanged(nameof(InitiativeDice));
-                    break;
-
-                case nameof(CharacterSettings.MinAstralInitiativeDice):
-                case nameof(CharacterSettings.MaxAstralInitiativeDice):
-                    OnPropertyChanged(nameof(AstralInitiativeDice));
-                    break;
-
-                case nameof(CharacterSettings.MinColdSimInitiativeDice):
-                case nameof(CharacterSettings.MaxColdSimInitiativeDice):
-                    OnPropertyChanged(nameof(MatrixInitiativeColdDice));
-                    break;
-
-                case nameof(CharacterSettings.MinHotSimInitiativeDice):
-                    using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                    else if (SettingsPropertyChanged != null)
                     {
-                        if (IsAI)
-                            this.OnMultiplePropertyChanged(nameof(MatrixInitiativeDice),
-                                                           nameof(MatrixInitiativeHotDice));
-                        else
-                            OnPropertyChanged(nameof(MatrixInitiativeHotDice));
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (SettingsPropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyName in lstProperties)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    SettingsPropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyName));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
                     }
-                    break;
-
-                case nameof(CharacterSettings.MaxHotSimInitiativeDice):
-                    OnPropertyChanged(nameof(MatrixInitiativeHotDice));
-                    break;
-
-                case nameof(CharacterSettings.LiftLimitExpression):
-                    OnPropertyChanged(nameof(BaseLiftLimit));
-                    break;
-
-                case nameof(CharacterSettings.CarryLimitExpression):
-                    OnPropertyChanged(nameof(BaseCarryLimit));
-                    break;
-
-                case nameof(CharacterSettings.EncumbranceIntervalExpression):
-                    OnPropertyChanged(nameof(EncumbranceInterval));
-                    break;
-
-                case nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit):
-                case nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed):
-                case nameof(CharacterSettings.DoEncumbrancePenaltyAgility):
-                case nameof(CharacterSettings.DoEncumbrancePenaltyReaction):
-                    OnPropertyChanged(nameof(Encumbrance));
-                    break;
-
-                case nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit):
-                    if (Settings.DoEncumbrancePenaltyPhysicalLimit)
-                        OnPropertyChanged(nameof(Encumbrance));
-                    break;
-
-                case nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed):
-                    if (Settings.DoEncumbrancePenaltyMovementSpeed)
-                        OnPropertyChanged(nameof(Encumbrance));
-                    break;
-
-                case nameof(CharacterSettings.EncumbrancePenaltyAgility):
-                    using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
-                    {
-                        if (Settings.DoEncumbrancePenaltyAgility)
-                            OnPropertyChanged(nameof(Encumbrance));
-                    }
-                    break;
-
-                case nameof(CharacterSettings.EncumbrancePenaltyReaction):
-                    using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
-                    {
-                        if (Settings.DoEncumbrancePenaltyReaction)
-                            OnPropertyChanged(nameof(Encumbrance));
-                    }
-                    break;
-
-                case nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier):
-                    this.OnMultiplePropertyChanged(nameof(WoundModifier), nameof(Encumbrance));
-                    break;
-
-                case nameof(CharacterSettings.EncumbrancePenaltyWoundModifier):
-                    using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
-                    {
-                        if (Settings.DoEncumbrancePenaltyWoundModifier)
-                            this.OnMultiplePropertyChanged(nameof(WoundModifier), nameof(Encumbrance));
-                    }
-                    break;
+                }
             }
-
-            await Utils.RunOnMainThreadAsync(() => SettingsPropertyChanged?.Invoke(sender, e)).ConfigureAwait(false);
         }
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1138,19 +1247,20 @@ namespace Chummer
             }
         }
 
-        private async Task PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task PowersOnBeforeRemove(object sender, RemovingOldEventArgs e, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                Power objPower = await Powers.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                Power objPower = await Powers.GetValueAtAsync(e.OldIndex, token).ConfigureAwait(false);
                 if (objPower.AdeptWayDiscountEnabled)
-                    this.OnMultiplePropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled),
-                                                   nameof(AllowAdeptWayPowerDiscount));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(AnyPowerAdeptWayDiscountEnabled),
+                        nameof(AllowAdeptWayPowerDiscount));
                 // Do not need to dispose because deleting the power already disposes the power after removing it from the character
             }
         }
 
-        private async Task PowersOnListChanged(object sender, ListChangedEventArgs e)
+        private async Task PowersOnListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
@@ -1174,9 +1284,10 @@ namespace Chummer
                             HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                             strTemp.Add(nameof(PowerPointsUsed));
                             dicChangedProperties.Add(this, strTemp);
-                            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                             {
-                                Power objNewPower = Powers[e.NewIndex];
+                                token.ThrowIfCancellationRequested();
+                                Power objNewPower = await Powers.GetValueAtAsync(e.NewIndex, token);
                                 if (!IsLoading)
                                 {
                                     // Needed in order to properly process named sources where
@@ -1242,8 +1353,9 @@ namespace Chummer
                                     strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
                                     strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
                                     dicChangedProperties.Add(this, strTemp);
-                                    using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         foreach (Power objPower in Powers)
                                         {
                                             if (!dicChangedProperties.TryGetValue(objPower,
@@ -1290,7 +1402,7 @@ namespace Chummer
             }
         }
 
-        private async Task MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (IsLoading)
                 return;
@@ -1326,8 +1438,9 @@ namespace Chummer
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(MentorSpirits));
                     dicChangedProperties.Add(this, strTemp);
-                    using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (MentorSpirit objNewItem in lstImprovementSourcesToProcess)
                         {
                             // Needed in order to properly process named sources where
@@ -1371,7 +1484,7 @@ namespace Chummer
             }
         }
 
-        private async Task QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (IsLoading)
                 return;
@@ -1401,8 +1514,9 @@ namespace Chummer
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(Qualities));
                     dicChangedProperties.Add(this, strTemp);
-                    using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Power objPower in Powers)
                         {
                             HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
@@ -1457,7 +1571,7 @@ namespace Chummer
             }
         }
 
-        private async Task MartialArtsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MartialArtsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (IsLoading)
                 return;
@@ -1493,8 +1607,9 @@ namespace Chummer
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(MartialArts));
                     dicChangedProperties.Add(this, strTemp);
-                    using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (MartialArt objNewItem in lstImprovementSourcesToProcess)
                         {
                             // Needed in order to properly process named sources where
@@ -1538,7 +1653,7 @@ namespace Chummer
             }
         }
 
-        private async Task MetamagicsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MetamagicsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (IsLoading)
                 return;
@@ -1574,8 +1689,9 @@ namespace Chummer
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(Metamagics));
                     dicChangedProperties.Add(this, strTemp);
-                    using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Metamagic objNewItem in lstImprovementSourcesToProcess)
                         {
                             // Needed in order to properly process named sources where
@@ -1688,7 +1804,7 @@ namespace Chummer
             }
         }
 
-        private async Task GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
@@ -1711,8 +1827,9 @@ namespace Chummer
 
                                 if (IsLoading)
                                     continue;
-                                using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
                                     foreach (Improvement objImprovement in Improvements)
@@ -1773,8 +1890,9 @@ namespace Chummer
 
                                 if (IsLoading)
                                     continue;
-                                using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
                                     foreach (Improvement objImprovement in Improvements)
@@ -1836,8 +1954,9 @@ namespace Chummer
             }
         }
 
-        private async Task WeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task WeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
@@ -1852,6 +1971,7 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Add:
                             foreach (Weapon objNewItem in e.NewItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objNewItem.Equipped)
                                 {
                                     blnDoEncumbranceRefresh = true;
@@ -1859,12 +1979,14 @@ namespace Chummer
 
                                 if (IsLoading)
                                     continue;
-                                using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
                                     foreach (Improvement objImprovement in Improvements)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                             == objNewItem.InternalId
                                             &&
@@ -1874,6 +1996,7 @@ namespace Chummer
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
                                                 {
@@ -1893,6 +2016,7 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Remove:
                             foreach (Weapon objOldItem in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objOldItem.Equipped)
                                 {
                                     blnDoEncumbranceRefresh = true;
@@ -1905,6 +2029,7 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                             foreach (Weapon objOldItem in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objOldItem.Equipped)
                                 {
                                     blnDoEncumbranceRefresh = true;
@@ -1914,6 +2039,7 @@ namespace Chummer
 
                             foreach (Weapon objNewItem in e.NewItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objNewItem.Equipped)
                                 {
                                     blnDoEncumbranceRefresh = true;
@@ -1921,12 +2047,14 @@ namespace Chummer
 
                                 if (IsLoading)
                                     continue;
-                                using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
                                     foreach (Improvement objImprovement in Improvements)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                             == objNewItem.InternalId
                                             &&
@@ -1936,6 +2064,7 @@ namespace Chummer
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
                                                 {
@@ -1969,6 +2098,7 @@ namespace Chummer
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
+                        token.ThrowIfCancellationRequested();
                         kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
@@ -1984,8 +2114,9 @@ namespace Chummer
             }
         }
 
-        private async Task ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEquippedArmorRefresh = false;
@@ -2001,6 +2132,7 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Add:
                             foreach (Armor objNewItem in e.NewItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objNewItem.Equipped)
                                 {
                                     blnDoEquippedArmorRefresh = true;
@@ -2010,12 +2142,14 @@ namespace Chummer
 
                                 if (IsLoading)
                                     continue;
-                                using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
                                     foreach (Improvement objImprovement in Improvements)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                             == objNewItem.InternalId
                                             &&
@@ -2025,6 +2159,7 @@ namespace Chummer
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
                                                 {
@@ -2044,6 +2179,7 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Remove:
                             foreach (Armor objOldItem in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objOldItem.Equipped)
                                 {
                                     blnDoEquippedArmorRefresh = true;
@@ -2060,6 +2196,7 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                             foreach (Armor objOldItem in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objOldItem.Equipped)
                                 {
                                     blnDoEquippedArmorRefresh = true;
@@ -2073,6 +2210,7 @@ namespace Chummer
 
                             foreach (Armor objNewItem in e.NewItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objNewItem.Equipped)
                                 {
                                     blnDoEquippedArmorRefresh = true;
@@ -2082,12 +2220,14 @@ namespace Chummer
 
                                 if (IsLoading)
                                     continue;
-                                using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
                                     foreach (Improvement objImprovement in Improvements)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                             == objNewItem.InternalId
                                             &&
@@ -2097,6 +2237,7 @@ namespace Chummer
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
                                                 {
@@ -2142,6 +2283,7 @@ namespace Chummer
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
+                        token.ThrowIfCancellationRequested();
                         kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
@@ -2157,8 +2299,9 @@ namespace Chummer
             }
         }
 
-        private async Task CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
@@ -2178,17 +2321,20 @@ namespace Chummer
                             dicChangedProperties.Add(this, strTemp);
                             foreach (Cyberware objNewItem in e.NewItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objNewItem.IsModularCurrentlyEquipped)
                                     blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                                using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (!IsLoading)
                                     {
                                         // Needed in order to properly process named sources where
                                         // the tooltip was built before the object was added to the character
                                         foreach (Improvement objImprovement in Improvements)
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
                                                 objNewItem.InternalId && objImprovement.Enabled)
                                             {
@@ -2196,6 +2342,7 @@ namespace Chummer
                                                           string strPropertyToUpdate) in
                                                          objImprovement.GetRelevantPropertyChangers())
                                                 {
+                                                    token.ThrowIfCancellationRequested();
                                                     if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                             out HashSet<string> setChangedProperties))
                                                     {
@@ -2212,7 +2359,7 @@ namespace Chummer
                                     if (!blnDoCyberlimbAttributesRefresh
                                         && !Settings.DontUseCyberlimbCalculation && objNewItem.Parent == null
                                         && objNewItem.ParentVehicle == null
-                                        && await objNewItem.GetIsLimbAsync().ConfigureAwait(false)
+                                        && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
                                         && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
@@ -2229,15 +2376,17 @@ namespace Chummer
                             dicChangedProperties.Add(this, strTemp);
                             foreach (Cyberware objOldItem in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objOldItem.IsModularCurrentlyEquipped)
                                     blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
-                                using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (!blnDoCyberlimbAttributesRefresh
                                         && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
                                         && objOldItem.ParentVehicle == null
-                                        && await objOldItem.GetIsLimbAsync().ConfigureAwait(false)
+                                        && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
                                         && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
@@ -2252,19 +2401,21 @@ namespace Chummer
                             HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                             strTemp.Add(nameof(RedlinerBonus));
                             dicChangedProperties.Add(this, strTemp);
-                            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (!Settings.DontUseCyberlimbCalculation)
                                 {
                                     foreach (Cyberware objOldItem in e.OldItems)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (objOldItem.IsModularCurrentlyEquipped)
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                                         if (!blnDoCyberlimbAttributesRefresh
                                             && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
                                             && objOldItem.ParentVehicle == null
-                                            && await objOldItem.GetIsLimbAsync().ConfigureAwait(false)
+                                            && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
                                             && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
@@ -2273,13 +2424,14 @@ namespace Chummer
 
                                     foreach (Cyberware objNewItem in e.NewItems)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (objNewItem.IsModularCurrentlyEquipped)
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
                                         if (!blnDoCyberlimbAttributesRefresh
                                             && !Settings.DontUseCyberlimbCalculation && objNewItem.Parent == null
                                             && objNewItem.ParentVehicle == null
-                                            && await objNewItem.GetIsLimbAsync().ConfigureAwait(false)
+                                            && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
                                             && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
@@ -2293,10 +2445,14 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Reset:
                         {
                             blnDoEncumbranceRefresh = true;
-                            using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
                                 blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
+                            }
+
                             if (!dicChangedProperties.TryGetValue(this,
-                                                                  out HashSet<string> setChangedProperties))
+                                    out HashSet<string> setChangedProperties))
                             {
                                 setChangedProperties = Utils.StringHashSetPool.Get();
                                 dicChangedProperties.Add(this, setChangedProperties);
@@ -2322,11 +2478,13 @@ namespace Chummer
 
                     if (blnDoCyberlimbAttributesRefresh)
                     {
-                        using (await LockObject.EnterReadLockAsync().ConfigureAwait(false))
+                        using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                         {
+                            token.ThrowIfCancellationRequested();
                             foreach (string strAbbrev in Backend.Equipment.Cyberware.CyberlimbAttributeAbbrevs)
                             {
-                                CharacterAttrib objAttribute = await GetAttributeAsync(strAbbrev).ConfigureAwait(false);
+                                token.ThrowIfCancellationRequested();
+                                CharacterAttrib objAttribute = await GetAttributeAsync(strAbbrev, token: token).ConfigureAwait(false);
                                 if (objAttribute == null)
                                     continue;
                                 if (!dicChangedProperties.TryGetValue(objAttribute,
@@ -2343,6 +2501,7 @@ namespace Chummer
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
+                        token.ThrowIfCancellationRequested();
                         kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
@@ -2358,8 +2517,9 @@ namespace Chummer
             }
         }
 
-        private async Task SustainedObjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SustainedObjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoRefreshPenalties = false;
@@ -2386,7 +2546,7 @@ namespace Chummer
                     break;
             }
             if (blnDoRefreshPenalties)
-                await RefreshSustainingPenaltiesAsync().ConfigureAwait(false);
+                await RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
         }
 
         [HubTag]
@@ -8721,13 +8881,30 @@ namespace Chummer
                                     if (objSustained.InternalId !=
                                         Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
                                     {
-                                        if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            _lstSustainedObjects.Add(objSustained);
-                                        else
-                                            await _lstSustainedObjects.AddAsync(objSustained, token)
-                                                                      .ConfigureAwait(false);
+                                        try
+                                        {
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                _lstSustainedObjects.Add(objSustained);
+                                            else
+                                                await _lstSustainedObjects.AddAsync(objSustained, token)
+                                                    .ConfigureAwait(false);
+                                        }
+                                        catch
+                                        {
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                objSustained.Dispose();
+                                            else
+                                                await objSustained.DisposeAsync().ConfigureAwait(false);
+                                            throw;
+                                        }
                                     }
+                                    else if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objSustained.Dispose();
+                                    else
+                                        await objSustained.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
 
@@ -10963,8 +11140,7 @@ namespace Chummer
             using (LockObject.EnterWriteLock()) // Wait for all pending locks to get freed before disposing
             {
                 Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
-                using (_objSettings.LockObject.EnterWriteLock())
-                    _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                _objSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
                 ImprovementManager.ClearCachedValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 foreach (Image imgMugshot in _lstMugshots)
@@ -11040,6 +11216,8 @@ namespace Chummer
                 _lstVehicleLocations.Dispose();
                 _lstImprovementGroups.Dispose();
                 _lstLimitModifiers.Dispose();
+                foreach (SustainedObject objItem in _lstSustainedObjects)
+                    objItem.Dispose();
                 _lstSustainedObjects.Dispose();
                 _lstPrioritySkills.Dispose();
                 _objSkillsSection.Dispose();
@@ -11082,7 +11260,7 @@ namespace Chummer
                 IAsyncDisposable objLocker2 = await _objSettings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                    _objSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
                 }
                 finally
                 {
@@ -11134,6 +11312,7 @@ namespace Chummer
                 await _lstVehicleLocations.DisposeAsync().ConfigureAwait(false);
                 await _lstImprovementGroups.DisposeAsync().ConfigureAwait(false);
                 await _lstLimitModifiers.DisposeAsync().ConfigureAwait(false);
+                await _lstSustainedObjects.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstSustainedObjects.DisposeAsync().ConfigureAwait(false);
                 await _lstPrioritySkills.DisposeAsync().ConfigureAwait(false);
                 await _objSkillsSection.DisposeAsync().ConfigureAwait(false);
@@ -11268,6 +11447,7 @@ namespace Chummer
                 _lstArmorLocations.ForEach(x => x.Dispose(), token);
                 _lstWeaponLocations.ForEach(x => x.Dispose(), token);
                 _lstVehicleLocations.ForEach(x => x.Dispose(), token);
+                _lstSustainedObjects.ForEach(x => x.Dispose(), token);
                 // Reset all of the Lists.
                 // This kills the GC
                 ImprovementManager.ClearCachedValues(this, token);
@@ -11431,6 +11611,7 @@ namespace Chummer
                 await _lstArmorLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
                 await _lstWeaponLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
                 await _lstVehicleLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
+                await _lstSustainedObjects.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
                 // Reset all of the Lists.
                 // This kills the GC
                 ImprovementManager.ClearCachedValues(this, token);
@@ -14738,8 +14919,7 @@ namespace Chummer
                                         return;
                                     try
                                     {
-                                        using (objOldSettings.LockObject.EnterWriteLock())
-                                            objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                                        objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
                                     }
                                     catch (ObjectDisposedException)
                                     {
@@ -14750,8 +14930,7 @@ namespace Chummer
                                 {
                                     if (value == null)
                                         return;
-                                    using (value.LockObject.EnterWriteLock())
-                                        value.PropertyChanged += OptionsOnPropertyChanged;
+                                    value.PropertyChangedAsync += OptionsOnPropertyChanged;
                                 });
 
                             if (!blnActuallyDifferentSettings || IsLoading)
@@ -14761,20 +14940,18 @@ namespace Chummer
                             {
                                 Utils.SafelyRunSynchronously(async () =>
                                 {
-                                    foreach (string strProperty in await value.GetDifferingPropertyNamesAsync(objOldSettings).ConfigureAwait(false))
-                                        await DoOptionsOnPropertyChanged(
-                                                this, new PropertyChangedEventArgs(strProperty))
-                                            .ConfigureAwait(false);
+                                    await OptionsOnMultiplePropertyChanged(await value
+                                            .GetDifferingPropertyNamesAsync(objOldSettings).ConfigureAwait(false))
+                                        .ConfigureAwait(false);
                                 });
                             }
                             else
                             {
                                 Utils.SafelyRunSynchronously(async () =>
                                 {
-                                    foreach (string strProperty in await objOldSettings.GetDifferingPropertyNamesAsync(null).ConfigureAwait(false))
-                                        await DoOptionsOnPropertyChanged(
-                                                this, new PropertyChangedEventArgs(strProperty))
-                                            .ConfigureAwait(false);
+                                    await OptionsOnMultiplePropertyChanged(await objOldSettings
+                                            .GetDifferingPropertyNamesAsync(null).ConfigureAwait(false))
+                                        .ConfigureAwait(false);
                                 });
                             }
                         }
@@ -14836,7 +15013,7 @@ namespace Chummer
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                                objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
                             }
                             finally
                             {
@@ -14851,7 +15028,7 @@ namespace Chummer
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                value.PropertyChanged += OptionsOnPropertyChanged;
+                                value.PropertyChangedAsync += OptionsOnPropertyChanged;
                             }
                             finally
                             {
@@ -14864,15 +15041,15 @@ namespace Chummer
                         OnPropertyChanged();
                         if (value != null)
                         {
-                            foreach (string strProperty in await value.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false))
-                                await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty))
-                                    .ConfigureAwait(false);
+                            await OptionsOnMultiplePropertyChanged(await value
+                                    .GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
                         }
                         else
                         {
-                            foreach (string strProperty in await objOldSettings.GetDifferingPropertyNamesAsync(null, token).ConfigureAwait(false))
-                                await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty))
-                                    .ConfigureAwait(false);
+                            await OptionsOnMultiplePropertyChanged(await objOldSettings
+                                    .GetDifferingPropertyNamesAsync(null, token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -16194,6 +16371,73 @@ namespace Chummer
 
                 ImprovementManager.Commit(this);
                 return true;
+            }
+        }
+
+        private async Task<bool> RefreshAstralReputationImprovementsAsync(CancellationToken token = default)
+        {
+            if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
+            {
+                await EnqueuePostLoadAsyncMethodAsync(RefreshAstralReputationImprovementsAsync, token).ConfigureAwait(false);
+                return true;
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intCurrentTotalAstralReputation = TotalAstralReputation;
+                List<Improvement> lstCurrentAstralReputationImprovements = await (await GetImprovementsAsync(token).ConfigureAwait(false))
+                    .ToListAsync(x => x.ImproveSource == Improvement.ImprovementSource.AstralReputation, token).ConfigureAwait(false);
+                if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
+                    return true;
+                await ImprovementManager.RemoveImprovementsAsync(this, lstCurrentAstralReputationImprovements,
+                    token: token).ConfigureAwait(false);
+                try
+                {
+                    await ImprovementManager.CreateImprovementAsync(this, "Summoning",
+                        Improvement.ImprovementSource.AstralReputation,
+                        nameof(TotalAstralReputation).ToUpperInvariant(),
+                        Improvement.ImprovementType.Skill,
+                        Guid.NewGuid()
+                            .ToString("D", GlobalSettings.InvariantCultureInfo),
+                        -intCurrentTotalAstralReputation, token: token).ConfigureAwait(false);
+                    await ImprovementManager.CreateImprovementAsync(this, "Binding",
+                        Improvement.ImprovementSource.AstralReputation,
+                        nameof(TotalAstralReputation).ToUpperInvariant(),
+                        Improvement.ImprovementType.Skill,
+                        Guid.NewGuid()
+                            .ToString("D", GlobalSettings.InvariantCultureInfo),
+                        -intCurrentTotalAstralReputation, token: token).ConfigureAwait(false);
+                    await ImprovementManager.CreateImprovementAsync(this, "Banishing",
+                        Improvement.ImprovementSource.AstralReputation,
+                        nameof(TotalAstralReputation).ToUpperInvariant(),
+                        Improvement.ImprovementType.Skill,
+                        Guid.NewGuid()
+                            .ToString("D", GlobalSettings.InvariantCultureInfo),
+                        -intCurrentTotalAstralReputation, token: token).ConfigureAwait(false);
+                    if (intCurrentTotalAstralReputation >= 3)
+                        await ImprovementManager.CreateImprovementAsync(this, "Chain Breaker",
+                            Improvement.ImprovementSource.AstralReputation,
+                            nameof(TotalAstralReputation).ToUpperInvariant(),
+                            Improvement.ImprovementType.DisableQuality,
+                            Guid.NewGuid()
+                                .ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo),
+                            -intCurrentTotalAstralReputation, token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await ImprovementManager.RollbackAsync(this, token).ConfigureAwait(false);
+                    throw;
+                }
+
+                ImprovementManager.Commit(this);
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18415,6 +18659,8 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
+                    if (!MAGEnabled)
+                        return 0;
                     int intReturn = Settings.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value;
                     if (intReturn <= 0)
                         return 0;
@@ -18422,6 +18668,30 @@ namespace Chummer
                         intReturn *= 2;
                     return intReturn;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation.
+        /// </summary>
+        public async ValueTask<int> GetMaxSpiritForceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await GetMAGEnabledAsync(token))
+                    return 0;
+                CharacterAttrib objMag = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
+                int intReturn = await (await GetSettingsAsync(token).ConfigureAwait(false))
+                    .GetSpiritForceBasedOnTotalMAGAsync(token).ConfigureAwait(false)
+                    ? await objMag.GetTotalValueAsync(token).ConfigureAwait(false)
+                    : await objMag.GetValueAsync(token).ConfigureAwait(false);
+                if (intReturn <= 0)
+                    return 0;
+                if (await GetCreatedAsync(token).ConfigureAwait(false))
+                    intReturn *= 2;
+                return intReturn;
             }
         }
 
@@ -18468,6 +18738,8 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
+                    if (!RESEnabled)
+                        return 0;
                     int intReturn = RES.TotalValue;
                     if (intReturn <= 0)
                         return 0;
@@ -18475,6 +18747,27 @@ namespace Chummer
                         intReturn *= 2;
                     return intReturn;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum level of sprites compilable/registrable by the character. Limited to RES at creation.
+        /// </summary>
+        public async ValueTask<int> GetMaxSpriteLevelAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await GetRESEnabledAsync(token))
+                    return 0;
+                CharacterAttrib objRes = await GetAttributeAsync("RES", token: token).ConfigureAwait(false);
+                int intReturn = await objRes.GetTotalValueAsync(token).ConfigureAwait(false);
+                if (intReturn <= 0)
+                    return 0;
+                if (await GetCreatedAsync(token).ConfigureAwait(false))
+                    intReturn *= 2;
+                return intReturn;
             }
         }
 
@@ -20567,9 +20860,9 @@ namespace Chummer
                 _decCachedEssence = decimal.MinValue;
         }
 
-        public async ValueTask ResetCachedEssenceAsync(CancellationToken token = default)
+        public async Task ResetCachedEssenceAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker2 = await _objCachedEssenceLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await _objCachedEssenceLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -20577,7 +20870,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -28967,7 +29260,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshDealerConnectionDiscountsAsync(CancellationToken token = default)
+        public async Task RefreshDealerConnectionDiscountsAsync(CancellationToken token = default)
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
@@ -29397,7 +29690,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshBlackMarketDiscountsAsync(CancellationToken token = default)
+        public async Task RefreshBlackMarketDiscountsAsync(CancellationToken token = default)
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
@@ -32315,7 +32608,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshEssenceLossImprovementsAsync(CancellationToken token = default)
+        public async Task RefreshEssenceLossImprovementsAsync(CancellationToken token = default)
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
@@ -34182,7 +34475,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshArmorEncumbranceAsync(CancellationToken token = default)
+        public async Task RefreshArmorEncumbranceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
@@ -34257,7 +34550,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshWoundPenaltiesAsync(CancellationToken token = default)
+        public async Task RefreshWoundPenaltiesAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
@@ -34605,6 +34898,20 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether this character is a Mystic Adept uses PPs and can purchase PPs in career mode
+        /// </summary>
+        public async ValueTask<bool> GetMysAdeptAllowPPCareerAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false)
+                       && await (await GetSettingsAsync(token).ConfigureAwait(false))
+                           .GetMysAdeptAllowPpCareerAsync(token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Could this character buy Power Points in career mode if the optional/house rule is enabled
         /// </summary>
         public bool CanAffordCareerPP
@@ -34725,8 +35032,42 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
+
         // Kept separate for events that are meant to work off of changes to whatever settings the character even if they change
         public event PropertyChangedEventHandler SettingsPropertyChanged;
+
+        private readonly List<PropertyChangedAsyncEventHandler> _lstSettingsPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler SettingsPropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstSettingsPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstSettingsPropertyChangedAsync.Remove(value);
+            }
+        }
 
         #region Static
 
@@ -35448,6 +35789,11 @@ namespace Chummer
             this.OnMultiplePropertyChanged(strPropertyName);
         }
 
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
+        }
+
         private static readonly HashSet<string> s_SetPropertyNamesWithCachedValues = new HashSet<string>
         {
             nameof(CharacterGrammaticGender),
@@ -35603,7 +35949,34 @@ namespace Chummer
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                         RefreshAstralReputationImprovements();
 
-                    if (PropertyChanged != null)
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                        }
+
+                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -35623,8 +35996,10 @@ namespace Chummer
                         // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
                         if (setNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
                         {
+                            int intMaxLevel = MaxSpriteLevel;
                             if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
                             {
+                                int intMaxForce = MaxSpiritForce;
                                 foreach (Spirit objSpirit in Spirits)
                                 {
                                     using (objSpirit.LockObject.EnterUpgradeableReadLock())
@@ -35632,10 +36007,10 @@ namespace Chummer
                                         switch (objSpirit.EntityType)
                                         {
                                             case SpiritType.Sprite:
-                                                objSpirit.Force = MaxSpriteLevel;
+                                                objSpirit.Force = intMaxLevel;
                                                 break;
                                             case SpiritType.Spirit:
-                                                objSpirit.Force = MaxSpiritForce;
+                                                objSpirit.Force = intMaxForce;
                                                 break;
                                         }
                                     }
@@ -35655,14 +36030,297 @@ namespace Chummer
                         }
                         else if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
                         {
+                            int intMaxForce = MaxSpiritForce;
                             foreach (Spirit objSpirit in Spirits)
                             {
                                 using (objSpirit.LockObject.EnterUpgradeableReadLock())
                                 {
                                     if (objSpirit.EntityType == SpiritType.Spirit)
-                                        objSpirit.Force = MaxSpiritForce;
+                                        objSpirit.Force = intMaxForce;
                                 }
                             }
+                        }
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+            }
+
+            if (Program.MainForm == null || IsLoading)
+                return;
+            foreach (Character objLoopOpenCharacter in Program.OpenCharacters)
+            {
+                if (objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
+                {
+                    foreach (Spirit objSpirit in objLoopOpenCharacter.Spirits)
+                    {
+                        if (objSpirit.LinkedCharacter == this)
+                        {
+                            objSpirit.OnPropertyChanged(nameof(Spirit.LinkedCharacter));
+                        }
+                    }
+
+                    foreach (Contact objContact in objLoopOpenCharacter.Contacts)
+                    {
+                        if (objContact.LinkedCharacter == this)
+                        {
+                            objContact.OnPropertyChanged(nameof(Contact.LinkedCharacter));
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_CharacterDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in s_CharacterDependencyGraph
+                                         .GetWithAllDependentsEnumerable(
+                                             this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (setNamesOfChangedProperties.Overlaps(s_SetPropertyNamesWithCachedValues))
+                    {
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
+                                _strCachedCharacterGrammaticGender = string.Empty;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))
+                                _decCachedTotalStartingNuyen = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+                                _intCachedContactPoints = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(BaseCarryLimit)))
+                                _decCachedBaseCarryLimit = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(BaseLiftLimit)))
+                                _decCachedBaseLiftLimit = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(EncumbranceInterval)))
+                                _decCachedEncumbranceInterval = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalArmorRating)))
+                                _intCachedTotalArmorRating = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalFireArmorRating)))
+                                _intCachedTotalFireArmorRating = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalColdArmorRating)))
+                                _intCachedTotalColdArmorRating = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalElectricityArmorRating)))
+                                _intCachedTotalElectricityArmorRating = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalAcidArmorRating)))
+                                _intCachedTotalAcidArmorRating = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalFallingArmorRating)))
+                                _intCachedTotalFallingArmorRating = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TrustFund)))
+                                _intCachedTrustFund = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(RestrictedGear)))
+                                _intCachedRestrictedGear = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalCarriedWeight)))
+                                _decCachedTotalCarriedWeight = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
+                                _decCachedPowerPointsUsed = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(CyberwareEssence)))
+                                _decCachedCyberwareEssence = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(BiowareEssence))
+                                || setNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
+                            {
+                                _decCachedBiowareEssence = decimal.MinValue;
+                                _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(EssenceHole)))
+                                _decCachedEssenceHole = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(CareerNuyen)))
+                                _decCachedCareerNuyen = decimal.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(CareerKarma)))
+                                _intCachedCareerKarma = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(BoundSpiritLimit)))
+                                _intBoundSpiritLimit = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(RegisteredSpriteLimit)))
+                                _intRegisteredSpriteLimit = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(InitiationEnabled)))
+                                _intCachedInitiationEnabled = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
+                                _intCachedRedlinerBonus = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
+                                _intCachedEnemyKarma = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(Qualities)))
+                            {
+                                _intCachedNegativeQualities = int.MinValue;
+                                _intCachedNegativeQualityLimitKarma = int.MinValue;
+                                _intCachedPositiveQualityLimitKarma = int.MinValue;
+                                _intCachedPositiveQualities = int.MinValue;
+                                _intCachedMetagenicNegativeQualities = int.MinValue;
+                                _intCachedMetagenicPositiveQualities = int.MinValue;
+                            }
+                            else if (setNamesOfChangedProperties.Contains(nameof(MetagenicLimit)))
+                            {
+                                _intCachedMetagenicNegativeQualities = int.MinValue;
+                                _intCachedMetagenicPositiveQualities = int.MinValue;
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+
+                    List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                    if (setNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
+                        lstTasks.Add(RefreshDealerConnectionDiscountsAsync(token));
+                    if (setNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
+                        lstTasks.Add(RefreshBlackMarketDiscountsAsync(token));
+                    if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
+                        lstTasks.Add(RefreshRedlinerImprovementsAsync(token));
+                    if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                    {
+                        lstTasks.Add(ResetCachedEssenceAsync(token));
+                        lstTasks.Add(RefreshEssenceLossImprovementsAsync(token));
+                    }
+
+                    if (setNamesOfChangedProperties.Contains(nameof(ArmorEncumbrance)))
+                        lstTasks.Add(RefreshArmorEncumbranceAsync(token));
+                    if (setNamesOfChangedProperties.Contains(nameof(WoundModifier)))
+                        lstTasks.Add(RefreshWoundPenaltiesAsync(token));
+                    if (setNamesOfChangedProperties.Contains(nameof(SustainingPenalty)))
+                        lstTasks.Add(RefreshSustainingPenaltiesAsync(token));
+                    if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
+                        lstTasks.Add(RefreshAstralReputationImprovementsAsync(token));
+
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        lstTasks.Clear();
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+
+                    if (!await GetCreatedAsync(token).ConfigureAwait(false))
+                    {
+                        // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
+                        if (setNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
+                        {
+                            int intMaxLevel = await GetMaxSpriteLevelAsync(token);
+                            if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
+                            {
+                                int intMaxForce = await GetMaxSpiritForceAsync(token);
+                                await (await GetSpiritsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                                    async objSpirit =>
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        using (await objSpirit.LockObject.EnterUpgradeableReadLockAsync(token)
+                                                   .ConfigureAwait(false))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            switch (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false))
+                                            {
+                                                case SpiritType.Sprite:
+                                                    await objSpirit.SetForceAsync(intMaxLevel, token);
+                                                    break;
+                                                case SpiritType.Spirit:
+                                                    await objSpirit.SetForceAsync(intMaxForce, token);
+                                                    break;
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await (await GetSpiritsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                                    async objSpirit =>
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        using (await objSpirit.LockObject.EnterUpgradeableReadLockAsync(token)
+                                                   .ConfigureAwait(false))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
+                                                SpiritType.Sprite)
+                                                await objSpirit.SetForceAsync(intMaxLevel, token);
+                                        }
+                                    }, token).ConfigureAwait(false);
+                            }
+                        }
+                        else if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
+                        {
+                            int intMaxForce = await GetMaxSpiritForceAsync(token);
+                            await (await GetSpiritsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                                async objSpirit =>
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    using (await objSpirit.LockObject.EnterUpgradeableReadLockAsync(token)
+                                               .ConfigureAwait(false))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
+                                            SpiritType.Spirit)
+                                            await objSpirit.SetForceAsync(intMaxForce, token);
+                                    }
+                                }, token).ConfigureAwait(false);
                         }
                     }
                 }

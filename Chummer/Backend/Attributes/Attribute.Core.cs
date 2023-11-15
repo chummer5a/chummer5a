@@ -39,7 +39,7 @@ namespace Chummer.Backend.Attributes
     /// </summary>
     [HubClassTag("Abbrev", true, "TotalValue", "TotalValue")]
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
-    public sealed class CharacterAttrib : INotifyMultiplePropertyChanged, IHasLockObject
+    public sealed class CharacterAttrib : INotifyMultiplePropertyChangedAsync, IHasLockObject
     {
         private int _intMetatypeMin = 1;
         private int _intMetatypeMax = 6;
@@ -51,6 +51,23 @@ namespace Chummer.Backend.Attributes
         private AttributeCategory _eMetatypeCategory;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
 
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
@@ -69,10 +86,8 @@ namespace Chummer.Backend.Attributes
             _objCharacter = character;
             if (character != null)
             {
-                using (character.LockObject.EnterWriteLock())
-                    character.PropertyChanged += OnCharacterChanged;
-                using (character.Settings.LockObject.EnterWriteLock())
-                    character.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
+                character.PropertyChangedAsync += OnCharacterChanged;
+                character.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
             }
         }
 
@@ -546,7 +561,7 @@ namespace Chummer.Backend.Attributes
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intBase, value) == value)
                     return;
-                OnPropertyChanged(nameof(Base));
+                await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
             }
         }
 
@@ -562,7 +577,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
-                OnPropertyChanged(nameof(Base));
+                await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
             }
         }
 
@@ -666,7 +681,7 @@ namespace Chummer.Backend.Attributes
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intKarma, value) == value)
                     return;
-                OnPropertyChanged(nameof(Karma));
+                await OnPropertyChangedAsync(nameof(Karma), token).ConfigureAwait(false);
             }
         }
 
@@ -682,7 +697,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
-                OnPropertyChanged(nameof(Karma));
+                await OnPropertyChangedAsync(nameof(Karma), token).ConfigureAwait(false);
             }
         }
 
@@ -1864,7 +1879,7 @@ namespace Chummer.Backend.Attributes
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    OnMultiplePropertyChanged(lstProperties);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1970,7 +1985,7 @@ namespace Chummer.Backend.Attributes
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    OnMultiplePropertyChanged(lstProperties);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -2736,46 +2751,51 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnCharacterChanged(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
             switch (e.PropertyName)
             {
                 case nameof(Character.Karma):
-                    OnPropertyChanged(nameof(CanUpgradeCareer));
+                    await OnPropertyChangedAsync(nameof(CanUpgradeCareer), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
-                    OnPropertyChanged(nameof(BaseUnlocked));
+                    await OnPropertyChangedAsync(nameof(BaseUnlocked), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.LimbCount):
+                    if (!CharacterObject.Settings.DontUseCyberlimbCalculation
+                        && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
+                        && await CharacterObject.Cyberware.AnyAsync(
+                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                      .ConfigureAwait(false) &&
+                                                  !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware
+                                                      .LimbSlot), token: token).ConfigureAwait(false))
                     {
-                        if (!CharacterObject.Settings.DontUseCyberlimbCalculation &&
-                            Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
-                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
-                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
-                                                                        .Contains(objCyberware.LimbSlot)))
-                        {
-                            OnPropertyChanged(nameof(TotalValue));
-                        }
-
-                        break;
+                        await OnPropertyChangedAsync(nameof(TotalValue), token).ConfigureAwait(false);
                     }
+
+                    break;
             }
         }
 
-        private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             switch (e.PropertyName)
             {
                 case nameof(CharacterSettings.DontUseCyberlimbCalculation):
                     {
-                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
-                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
-                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
-                                                                        .Contains(objCyberware.LimbSlot)))
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
+                            && await CharacterObject.Cyberware.AnyAsync(
+                                async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                          .ConfigureAwait(false) &&
+                                                      !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware
+                                                          .LimbSlot), token: token).ConfigureAwait(false))
                         {
-                            this.OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
+                            await this.OnMultiplePropertyChangedAsync(token, nameof(TotalValue), nameof(HasModifiers)).ConfigureAwait(false);
                         }
 
                         break;
@@ -2783,30 +2803,33 @@ namespace Chummer.Backend.Attributes
                 case nameof(CharacterSettings.CyberlimbAttributeBonusCap):
                 case nameof(CharacterSettings.ExcludeLimbSlot):
                     {
-                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) && CharacterObject.Cyberware.Any(
-                                objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped
-                                                                    && !CharacterObject.Settings.ExcludeLimbSlot
-                                                                        .Contains(objCyberware.LimbSlot)))
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
+                            && await CharacterObject.Cyberware.AnyAsync(
+                                async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                          .ConfigureAwait(false) &&
+                                                      !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware
+                                                          .LimbSlot), token: token).ConfigureAwait(false))
                         {
-                            this.OnMultiplePropertyChanged(nameof(TotalValue));
+                            await this.OnMultiplePropertyChangedAsync(token, nameof(TotalValue)).ConfigureAwait(false);
                         }
 
                         break;
                     }
                 case nameof(CharacterSettings.UnclampAttributeMinimum):
                     {
-                        OnPropertyChanged(nameof(RawMinimum));
+                        await OnPropertyChangedAsync(nameof(RawMinimum), token).ConfigureAwait(false);
                         break;
                     }
                 case nameof(CharacterSettings.KarmaAttribute):
                 case nameof(CharacterSettings.AlternateMetatypeAttributeKarma):
                     {
-                        this.OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(UpgradeKarmaCost), nameof(TotalKarmaCost)).ConfigureAwait(false);
                         break;
                     }
                 case nameof(CharacterSettings.ReverseAttributePriorityOrder):
                     {
-                        OnPropertyChanged(nameof(TotalKarmaCost));
+                        await OnPropertyChangedAsync(nameof(TotalKarmaCost), token).ConfigureAwait(false);
                         break;
                     }
             }
@@ -2816,6 +2839,11 @@ namespace Chummer.Backend.Attributes
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             this.OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
         private static readonly HashSet<string> s_SetPropertyNamesWithCachedValues = new HashSet<string>
@@ -2867,7 +2895,34 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    if (PropertyChanged != null)
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                        }
+
+                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -2880,6 +2935,113 @@ namespace Chummer.Backend.Attributes
                                 }
                             }
                         });
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+            }
+        }
+
+        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in s_AttributeDependencyGraph
+                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (setNamesOfChangedProperties.Overlaps(s_SetPropertyNamesWithCachedValues))
+                    {
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+                                _intCachedCanUpgradeCareer = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(Value)))
+                                _intCachedValue = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalValue)))
+                                _intCachedTotalValue = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(UpgradeKarmaCost)))
+                                _intCachedUpgradeKarmaCost = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
+                                _strCachedToolTip = string.Empty;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -3221,8 +3383,7 @@ namespace Chummer.Backend.Attributes
                 {
                     try
                     {
-                        using (_objCharacter.LockObject.EnterWriteLock())
-                            _objCharacter.PropertyChanged -= OnCharacterChanged;
+                        _objCharacter.PropertyChangedAsync -= OnCharacterChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -3231,8 +3392,7 @@ namespace Chummer.Backend.Attributes
 
                     try
                     {
-                        using (_objCharacter.Settings.LockObject.EnterWriteLock())
-                            _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                        _objCharacter.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -3257,7 +3417,7 @@ namespace Chummer.Backend.Attributes
                             = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
-                            _objCharacter.PropertyChanged -= OnCharacterChanged;
+                            _objCharacter.PropertyChangedAsync -= OnCharacterChanged;
                         }
                         finally
                         {
@@ -3275,7 +3435,7 @@ namespace Chummer.Backend.Attributes
                                                                          .ConfigureAwait(false);
                         try
                         {
-                            _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                            _objCharacter.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
                         }
                         finally
                         {

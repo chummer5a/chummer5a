@@ -81,7 +81,7 @@ namespace Chummer.UI.Skills
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
-            Disposed += (sender, args) => UnbindSkillControl(CancellationToken.None);
+            Disposed += (sender, args) => UnbindSkillControl();
             SuspendLayout();
             pnlAttributes.SuspendLayout();
             tlpMain.SuspendLayout();
@@ -277,12 +277,10 @@ namespace Chummer.UI.Skills
                 ResumeLayout(true);
             }
 
-            using (_objSkill.LockObject.EnterWriteLock(objMyToken))
-                _objSkill.PropertyChanged += Skill_PropertyChanged;
+            _objSkill.PropertyChangedAsync += Skill_PropertyChanged;
             if (_objAttributeActive != null)
             {
-                using (_objAttributeActive.LockObject.EnterWriteLock(objMyToken))
-                    _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
+                _objAttributeActive.PropertyChangedAsync += Attribute_PropertyChanged;
             }
             Interlocked.Decrement(ref _intUpdatingSpec);
         }
@@ -295,21 +293,21 @@ namespace Chummer.UI.Skills
                                                        nameof(Skill.CurrentDisplayName),
                                                        x => x.GetCurrentDisplayNameAsync(_objMyToken)
                                                              .AsTask(),
-                                                       _objMyToken, _objMyToken);
+                                                       _objMyToken);
                 lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ForeColor = y, _objSkill,
                                                        nameof(Skill.PreferredColor),
                                                        x => x.GetPreferredColorAsync(_objMyToken).AsTask(),
-                                                       _objMyToken, _objMyToken);
+                                                       _objMyToken);
                 lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
                                                        nameof(Skill.SkillToolTip),
                                                        x => x.GetSkillToolTipAsync(_objMyToken).AsTask(),
-                                                       _objMyToken, _objMyToken);
+                                                       _objMyToken);
 
                 btnAttribute.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
                                                             nameof(Skill.DisplayAttribute),
                                                             x => x.GetDisplayAttributeAsync(_objMyToken)
                                                                   .AsTask(),
-                                                            _objMyToken, _objMyToken);
+                                                            _objMyToken);
 
                 RefreshPoolTooltipAndDisplay(_objMyToken);
 
@@ -319,41 +317,41 @@ namespace Chummer.UI.Skills
                         (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
                         nameof(Skill.Rating),
                         x => x.GetRatingAsync(_objMyToken).AsTask(),
-                        _objMyToken, _objMyToken);
+                        _objMyToken);
                     btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                      nameof(Skill.CanUpgradeCareer),
                                                                      x => x.GetCanUpgradeCareerAsync(
                                                                                _objMyToken)
                                                                            .AsTask(),
-                                                                     _objMyToken, _objMyToken);
+                                                                     _objMyToken);
                     btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
                                                                      nameof(Skill.UpgradeToolTip),
                                                                      x => x.GetUpgradeToolTipAsync(
                                                                                _objMyToken)
                                                                            .AsTask(),
-                                                                     _objMyToken, _objMyToken);
+                                                                     _objMyToken);
                     lblCareerSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
                                                                  nameof(Skill.CurrentDisplaySpecialization),
                                                                  x => x.GetCurrentDisplaySpecializationAsync(
                                                                      _objMyToken).AsTask(),
-                                                                 _objMyToken, _objMyToken);
+                                                                 _objMyToken);
                     btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                               nameof(Skill.CanAffordSpecialization),
                                                               x => x
                                                                    .GetCanAffordSpecializationAsync(
                                                                        _objMyToken)
                                                                    .AsTask(),
-                                                              _objMyToken, _objMyToken);
+                                                              _objMyToken);
                     btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
                                                               nameof(Skill.CanHaveSpecs),
                                                               x => x.GetCanHaveSpecsAsync(_objMyToken)
                                                                     .AsTask(),
-                                                              _objMyToken, _objMyToken);
+                                                              _objMyToken);
                     btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
                                                               nameof(Skill.AddSpecToolTip),
                                                               x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                     .AsTask(),
-                                                              _objMyToken, _objMyToken);
+                                                              _objMyToken);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))
@@ -393,16 +391,16 @@ namespace Chummer.UI.Skills
                                                             x => x
                                                                  .GetEffectiveBuildMethodUsesPriorityTablesAsync(
                                                                      _objMyToken).AsTask(),
-                                                            _objMyToken, _objMyToken);
+                                                            _objMyToken);
                     nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                             nameof(Skill.BaseUnlocked),
                                                             x => x.GetBaseUnlockedAsync(_objMyToken).AsTask(),
-                                                            _objMyToken, _objMyToken);
+                                                            _objMyToken);
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                             nameof(Skill.KarmaUnlocked),
                                                             x => x.GetKarmaUnlockedAsync(_objMyToken)
                                                                   .AsTask(),
-                                                            _objMyToken, _objMyToken);
+                                                            _objMyToken);
 
                     if (_objSkill.IsExoticSkill)
                     {
@@ -412,7 +410,7 @@ namespace Chummer.UI.Skills
                                                                      x => x
                                                                           .GetCurrentDisplaySpecializationAsync(
                                                                               _objMyToken).AsTask(),
-                                                                     _objMyToken, _objMyToken);
+                                                                     _objMyToken);
                     }
                     else
                     {
@@ -422,18 +420,18 @@ namespace Chummer.UI.Skills
                                        .EffectiveBuildMethodUsesPriorityTables),
                             x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
                                 _objMyToken).AsTask(),
-                            _objMyToken, _objMyToken);
+                            _objMyToken);
                         chkKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                 nameof(Skill.CanHaveSpecs),
                                                                 x => x.GetCanHaveSpecsAsync(_objMyToken)
                                                                       .AsTask(),
-                                                                _objMyToken, _objMyToken);
+                                                                _objMyToken);
 
                         cboSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                nameof(Skill.CanHaveSpecs),
                                                                x => x.GetCanHaveSpecsAsync(_objMyToken)
                                                                      .AsTask(),
-                                                               _objMyToken, _objMyToken);
+                                                               _objMyToken);
                         string strDisplaySpec = _objSkill.CurrentDisplaySpecialization;
                         Interlocked.Increment(ref _intUpdatingSpec);
                         try
@@ -456,12 +454,12 @@ namespace Chummer.UI.Skills
                 this.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                     nameof(Skill.Enabled),
                                                     x => x.GetEnabledAsync(_objMyToken).AsTask(),
-                                                    _objMyToken, _objMyToken);
+                                                    _objMyToken);
                 this.RegisterOneWayAsyncDataBinding((x, y) => x.BackColor = y, _objSkill,
                                                     nameof(Skill.PreferredControlColor),
                                                     x => x.GetPreferredControlColorAsync(_objMyToken)
                                                           .AsTask(),
-                                                    _objMyToken, _objMyToken);
+                                                    _objMyToken);
             }
             catch (OperationCanceledException)
             {
@@ -477,21 +475,21 @@ namespace Chummer.UI.Skills
                                                                  nameof(Skill.CurrentDisplayName),
                                                                  x => x.GetCurrentDisplayNameAsync(_objMyToken)
                                                                        .AsTask(),
-                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                                 _objMyToken).ConfigureAwait(false);
                 await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ForeColor = y, _objSkill,
                                                              nameof(Skill.PreferredColor),
                                                              x => x.GetPreferredColorAsync(_objMyToken).AsTask(),
-                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                             _objMyToken).ConfigureAwait(false);
                 await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
                                                              nameof(Skill.SkillToolTip),
                                                              x => x.GetSkillToolTipAsync(_objMyToken).AsTask(),
-                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                             _objMyToken).ConfigureAwait(false);
 
                 await btnAttribute.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objSkill,
                                                                   nameof(Skill.DisplayAttribute),
                                                                   x => x.GetDisplayAttributeAsync(_objMyToken)
                                                                         .AsTask(),
-                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                                  _objMyToken).ConfigureAwait(false);
 
                 await RefreshPoolTooltipAndDisplayAsync(_objMyToken).ConfigureAwait(false);
 
@@ -501,26 +499,26 @@ namespace Chummer.UI.Skills
                         (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
                         nameof(Skill.Rating),
                         x => x.GetRatingAsync(_objMyToken).AsTask(),
-                        _objMyToken, _objMyToken).ConfigureAwait(false);
+                        _objMyToken).ConfigureAwait(false);
                     await btnCareerIncrease.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                            nameof(Skill.CanUpgradeCareer),
                                                                            x => x.GetCanUpgradeCareerAsync(
                                                                                    _objMyToken)
                                                                                .AsTask(),
-                                                                           _objMyToken, _objMyToken)
+                                                                           _objMyToken)
                                            .ConfigureAwait(false);
                     await btnCareerIncrease.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
                                                                            nameof(Skill.UpgradeToolTip),
                                                                            x => x.GetUpgradeToolTipAsync(
                                                                                    _objMyToken)
                                                                                .AsTask(),
-                                                                           _objMyToken, _objMyToken)
+                                                                           _objMyToken)
                                            .ConfigureAwait(false);
                     await lblCareerSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objSkill,
                                                                        nameof(Skill.CurrentDisplaySpecialization),
                                                                        x => x.GetCurrentDisplaySpecializationAsync(
                                                                            _objMyToken).AsTask(),
-                                                                       _objMyToken, _objMyToken)
+                                                                       _objMyToken)
                                        .ConfigureAwait(false);
                     await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                     nameof(Skill.CanAffordSpecialization),
@@ -528,17 +526,17 @@ namespace Chummer.UI.Skills
                                                                          .GetCanAffordSpecializationAsync(
                                                                              _objMyToken)
                                                                          .AsTask(),
-                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                                    _objMyToken).ConfigureAwait(false);
                     await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
                                                                     nameof(Skill.CanHaveSpecs),
                                                                     x => x.GetCanHaveSpecsAsync(_objMyToken)
                                                                           .AsTask(),
-                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                                    _objMyToken).ConfigureAwait(false);
                     await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
                                                                     nameof(Skill.AddSpecToolTip),
                                                                     x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                           .AsTask(),
-                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                                    _objMyToken).ConfigureAwait(false);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))
@@ -583,16 +581,16 @@ namespace Chummer.UI.Skills
                                                                   x => x
                                                                        .GetEffectiveBuildMethodUsesPriorityTablesAsync(
                                                                            _objMyToken).AsTask(),
-                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                                  _objMyToken).ConfigureAwait(false);
                     await nudSkill.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                   nameof(Skill.BaseUnlocked),
                                                                   x => x.GetBaseUnlockedAsync(_objMyToken).AsTask(),
-                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                                  _objMyToken).ConfigureAwait(false);
                     await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                   nameof(Skill.KarmaUnlocked),
                                                                   x => x.GetKarmaUnlockedAsync(_objMyToken)
                                                                         .AsTask(),
-                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                                  _objMyToken).ConfigureAwait(false);
 
                     if (_objSkill.IsExoticSkill)
                     {
@@ -602,7 +600,7 @@ namespace Chummer.UI.Skills
                                                                            x => x
                                                                                .GetCurrentDisplaySpecializationAsync(
                                                                                    _objMyToken).AsTask(),
-                                                                           _objMyToken, _objMyToken)
+                                                                           _objMyToken)
                                            .ConfigureAwait(false);
                     }
                     else
@@ -613,19 +611,19 @@ namespace Chummer.UI.Skills
                                        .EffectiveBuildMethodUsesPriorityTables),
                             x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
                                 _objMyToken).AsTask(),
-                            _objMyToken, _objMyToken).ConfigureAwait(false);
+                            _objMyToken).ConfigureAwait(false);
                         await chkKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                       nameof(Skill.CanHaveSpecs),
                                                                       x => x.GetCanHaveSpecsAsync(_objMyToken)
                                                                           .AsTask(),
-                                                                      _objMyToken, _objMyToken)
+                                                                      _objMyToken)
                                       .ConfigureAwait(false);
 
                         await cboSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                           nameof(Skill.CanHaveSpecs),
                                                                           x => x.GetCanHaveSpecsAsync(_objMyToken)
                                                                               .AsTask(),
-                                                                          _objMyToken, _objMyToken)
+                                                                          _objMyToken)
                                      .ConfigureAwait(false);
                         string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(_objMyToken)
                                                                .ConfigureAwait(false);
@@ -658,12 +656,12 @@ namespace Chummer.UI.Skills
                 await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                           nameof(Skill.Enabled),
                                                           x => x.GetEnabledAsync(_objMyToken).AsTask(),
-                                                          _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                          _objMyToken).ConfigureAwait(false);
                 await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.BackColor = y, _objSkill,
                                                           nameof(Skill.PreferredControlColor),
                                                           x => x.GetPreferredControlColorAsync(_objMyToken)
                                                                 .AsTask(),
-                                                          _objMyToken, _objMyToken).ConfigureAwait(false);
+                                                          _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -676,7 +674,7 @@ namespace Chummer.UI.Skills
             AdjustForDpi();
         }
 
-        private async void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private async Task Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs, CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -688,22 +686,23 @@ namespace Chummer.UI.Skills
             //if name of changed is null it does magic to change all, otherwise it only does one.
             try
             {
+                token.ThrowIfCancellationRequested();
                 switch (propertyChangedEventArgs?.PropertyName)
                 {
                     case null:
                         blnUpdateAll = true;
                         goto case nameof(Skill.DisplayOtherAttribute);
                     case nameof(Skill.DisplayOtherAttribute):
-                        await RefreshPoolTooltipAndDisplayAsync(_objMyToken).ConfigureAwait(false);
+                        await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
                         if (blnUpdateAll)
                             goto case nameof(Skill.Default);
                         break;
 
                     case nameof(Skill.Default):
-                        bool blnDefault = await _objSkill.GetDefaultAsync(_objMyToken).ConfigureAwait(false);
+                        bool blnDefault = await _objSkill.GetDefaultAsync(token).ConfigureAwait(false);
                         await lblName
                               .DoThreadSafeAsync(x => x.Font = !blnDefault ? _fntItalicName : _fntNormalName,
-                                                 token: _objMyToken).ConfigureAwait(false);
+                                                 token: token).ConfigureAwait(false);
                         if (blnUpdateAll)
                             goto case nameof(Skill.DefaultAttribute);
                         break;
@@ -711,14 +710,15 @@ namespace Chummer.UI.Skills
                     case nameof(Skill.DefaultAttribute):
                         if (cboSelectAttribute != null)
                         {
+                            string strAbbrev = _objSkill.AttributeObject.Abbrev;
                             await cboSelectAttribute
-                                  .DoThreadSafeAsync(x => x.SelectedValue = _objSkill.AttributeObject.Abbrev,
-                                                     token: _objMyToken).ConfigureAwait(false);
-                            await DoSelectAttributeClosed(_objMyToken).ConfigureAwait(false);
+                                  .DoThreadSafeAsync(x => x.SelectedValue = strAbbrev,
+                                                     token: token).ConfigureAwait(false);
+                            await DoSelectAttributeClosed(token).ConfigureAwait(false);
                         }
                         else
                         {
-                            await SetAttributeActiveAsync(_objSkill.AttributeObject, _objMyToken).ConfigureAwait(false);
+                            await SetAttributeActiveAsync(_objSkill.AttributeObject, token).ConfigureAwait(false);
                         }
 
                         if (blnUpdateAll)
@@ -734,9 +734,9 @@ namespace Chummer.UI.Skills
                                 if (intOldUpdating == 0)
                                 {
                                     string strDisplaySpec = await _objSkill
-                                                                  .GetTopMostDisplaySpecializationAsync(_objMyToken)
+                                                                  .GetTopMostDisplaySpecializationAsync(token)
                                                                   .ConfigureAwait(false);
-                                    await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: _objMyToken)
+                                    await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: token)
                                                  .ConfigureAwait(false);
                                 }
                             }
@@ -751,17 +751,17 @@ namespace Chummer.UI.Skills
                         break;
 
                     case nameof(Skill.CGLSpecializations):
-                        if (cboSpec != null && await cboSpec.DoThreadSafeFuncAsync(x => x.Visible, token: _objMyToken)
+                        if (cboSpec != null && await cboSpec.DoThreadSafeFuncAsync(x => x.Visible, token: token)
                                                             .ConfigureAwait(false))
                         {
-                            string strOldSpec = await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: _objMyToken)
+                            string strOldSpec = await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: token)
                                                              .ConfigureAwait(false);
                             IReadOnlyList<ListItem> lstSpecializations
-                                = await _objSkill.GetCGLSpecializationsAsync(_objMyToken).ConfigureAwait(false);
+                                = await _objSkill.GetCGLSpecializationsAsync(token).ConfigureAwait(false);
                             Interlocked.Increment(ref _intUpdatingSpec);
                             try
                             {
-                                await cboSpec.PopulateWithListItemsAsync(lstSpecializations, token: _objMyToken)
+                                await cboSpec.PopulateWithListItemsAsync(lstSpecializations, token: token)
                                              .ConfigureAwait(false);
                                 await cboSpec.DoThreadSafeAsync(x =>
                                 {
@@ -773,7 +773,7 @@ namespace Chummer.UI.Skills
                                         if (x.SelectedIndex == -1)
                                             x.Text = strOldSpec;
                                     }
-                                }, token: _objMyToken).ConfigureAwait(false);
+                                }, token: token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -786,12 +786,10 @@ namespace Chummer.UI.Skills
                         break;
 
                     case nameof(Skill.Specializations):
-                    {
-                        if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject, _objMyToken)
-                                         .ConfigureAwait(false) is CharacterShared frmParent)
-                            await frmParent.RequestCharacterUpdate(_objMyToken).ConfigureAwait(false);
+                        if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject, token)
+                                .ConfigureAwait(false) is CharacterShared frmParent)
+                            await frmParent.RequestCharacterUpdate(token).ConfigureAwait(false);
                         break;
-                    }
                 }
             }
             catch (OperationCanceledException)
@@ -800,19 +798,20 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void Attribute_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private async Task Attribute_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs, CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
 
             try
             {
+                token.ThrowIfCancellationRequested();
                 switch (propertyChangedEventArgs?.PropertyName)
                 {
                     case null:
                     case nameof(CharacterAttrib.Abbrev):
                     case nameof(CharacterAttrib.TotalValue):
-                        await RefreshPoolTooltipAndDisplayAsync(_objMyToken).ConfigureAwait(false);
+                        await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
                         break;
                 }
             }
@@ -972,8 +971,7 @@ namespace Chummer.UI.Skills
                             return;
                         try
                         {
-                            using (objOldAttrib.LockObject.EnterWriteLock())
-                                objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+                            objOldAttrib.PropertyChangedAsync -= Attribute_PropertyChanged;
                         }
                         catch (ObjectDisposedException)
                         {
@@ -984,8 +982,7 @@ namespace Chummer.UI.Skills
                     {
                         if (value == null)
                             return;
-                        using (value.LockObject.EnterWriteLock())
-                            value.PropertyChanged += Attribute_PropertyChanged;
+                        value.PropertyChangedAsync += Attribute_PropertyChanged;
                     });
 
                 btnAttribute.Font = value == _objSkill.AttributeObject
@@ -1007,7 +1004,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+                    objOldAttrib.PropertyChangedAsync -= Attribute_PropertyChanged;
                 }
                 finally
                 {
@@ -1021,7 +1018,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    value.PropertyChanged += Attribute_PropertyChanged;
+                    value.PropertyChangedAsync += Attribute_PropertyChanged;
                 }
                 finally
                 {
@@ -1145,13 +1142,12 @@ namespace Chummer.UI.Skills
             lblName.DoThreadSafe(x => x.MinimumSize = new Size(intNewNameWidth - x.Margin.Right - pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width), x.MinimumSize.Height));
         }
 
-        private void UnbindSkillControl(CancellationToken token = default)
+        private void UnbindSkillControl()
         {
             _tmrSpecChangeTimer?.Dispose();
             try
             {
-                using (_objSkill.LockObject.EnterWriteLock(token))
-                    _objSkill.PropertyChanged -= Skill_PropertyChanged;
+                _objSkill.PropertyChangedAsync -= Skill_PropertyChanged;
             }
             catch (ObjectDisposedException)
             {
@@ -1161,8 +1157,7 @@ namespace Chummer.UI.Skills
             {
                 try
                 {
-                    using (AttributeActive.LockObject.EnterWriteLock(token))
-                        AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+                    AttributeActive.PropertyChangedAsync -= Attribute_PropertyChanged;
                 }
                 catch (ObjectDisposedException)
                 {

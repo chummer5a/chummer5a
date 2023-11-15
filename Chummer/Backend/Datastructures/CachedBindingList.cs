@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -262,9 +263,9 @@ namespace Chummer
         public int OldIndex { get; }
     }
 
-    public delegate Task AsyncBeforeRemoveEventHandler(object sender, RemovingOldEventArgs e);
+    public delegate Task AsyncBeforeRemoveEventHandler(object sender, RemovingOldEventArgs e, CancellationToken token = default);
 
-    public delegate Task AsyncAddingNewEventHandler(object sender, AddingNewEventArgs e);
+    public delegate Task AsyncAddingNewEventHandler(object sender, AddingNewEventArgs e, CancellationToken token = default);
 
-    public delegate Task AsyncListChangedEventHandler(object sender, ListChangedEventArgs e);
+    public delegate Task AsyncListChangedEventHandler(object sender, ListChangedEventArgs e, CancellationToken token = default);
 }

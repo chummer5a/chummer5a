@@ -8629,16 +8629,16 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                async Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y)
+                async Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
                 {
                     await this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
-                        funcMakeDirty).ConfigureAwait(false);
+                        funcMakeDirty, token: token).ConfigureAwait(false);
                 }
 
-                async Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y)
+                async Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
                 {
                     await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
-                        funcMakeDirty).ConfigureAwait(false);
+                        funcMakeDirty, token: token).ConfigureAwait(false);
                 }
 
                 Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);

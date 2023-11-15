@@ -54,7 +54,7 @@ namespace Chummer
         }
     }
 
-    public sealed class CharacterSettings : INotifyMultiplePropertyChanged, IHasName, IHasLockObject
+    public sealed class CharacterSettings : INotifyMultiplePropertyChangedAsync, IHasName, IHasLockObject
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -277,10 +277,32 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             this.OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
@@ -319,12 +341,48 @@ namespace Chummer
                         if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
                             _intCachedWeightDecimals = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
-                            RecalculateEnabledCustomDataDirectories();
-                        if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                        {
+                            if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                            {
+                                Utils.RunWithoutThreadLock(() => RecalculateEnabledCustomDataDirectories(),
+                                    () => RecalculateBookXPath());
+                            }
+                            else
+                                RecalculateEnabledCustomDataDirectories();
+                        }
+                        else if (setNamesOfChangedProperties.Contains(nameof(Books)))
                             RecalculateBookXPath();
                     }
 
-                    if (PropertyChanged != null)
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                        }
+
+                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -337,6 +395,121 @@ namespace Chummer
                                 }
                             }
                         });
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+            }
+        }
+
+        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnDoingCopy)
+                    return;
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in s_CharacterSettingsDependencyGraph
+                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
+                            _intCachedMaxNuyenDecimals = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
+                            _intCachedMinNuyenDecimals = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
+                            _intCachedEssenceDecimals = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
+                            _intCachedWeightDecimals = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+                        {
+                            if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                                await Task.WhenAll(RecalculateEnabledCustomDataDirectoriesAsync(token),
+                                    RecalculateBookXPathAsync(token)).ConfigureAwait(false);
+                            else
+                                await RecalculateEnabledCustomDataDirectoriesAsync(token).ConfigureAwait(false);
+                        }
+                        else if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                            await RecalculateBookXPathAsync(token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -683,7 +856,7 @@ namespace Chummer
                     _blnDoingCopy = blnOldDoingCopy;
                 }
 
-                OnMultiplePropertyChanged(lstPropertiesToUpdate);
+                await OnMultiplePropertyChangedAsync(lstPropertiesToUpdate, token).ConfigureAwait(false);
             }
             finally
             {
@@ -5020,7 +5193,7 @@ namespace Chummer
         /// <summary>
         /// XPath query used to filter items based on the user's selected source books.
         /// </summary>
-        public async ValueTask RecalculateBookXPathAsync(CancellationToken token = default)
+        public async Task RecalculateBookXPathAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5196,7 +5369,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RecalculateEnabledCustomDataDirectoriesAsync(CancellationToken token = default)
+        public async Task RecalculateEnabledCustomDataDirectoriesAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -5384,6 +5557,19 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not a Spirit's Maximum Force is based on the character's total MAG.
+        /// </summary>
+        public async ValueTask<bool> GetSpiritForceBasedOnTotalMAGAsync(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnSpiritForceBasedOnTotalMAG;
             }
         }
 

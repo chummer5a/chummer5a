@@ -105,7 +105,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await _objSpirit.CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
+                _objSpirit.CharacterObject.PropertyChangedAsync += RebuildSpiritListOnTraditionChange;
             }
             finally
             {
@@ -117,8 +117,7 @@ namespace Chummer
 
         public void UnbindSpiritControl()
         {
-            using (_objSpirit.CharacterObject.LockObject.EnterWriteLock())
-                _objSpirit.CharacterObject.PropertyChanged -= RebuildSpiritListOnTraditionChange;
+            _objSpirit.CharacterObject.PropertyChangedAsync -= RebuildSpiritListOnTraditionChange;
 
             foreach (Control objControl in Controls)
             {
@@ -367,17 +366,19 @@ namespace Chummer
         #region Methods
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public async void RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e)
+        public Task RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            if (e?.PropertyName == nameof(Character.MagicTradition))
-            {
-                await RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition).ConfigureAwait(false);
-            }
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            return e?.PropertyName == nameof(Character.MagicTradition)
+                ? RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition, token)
+                : Task.CompletedTask;
         }
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public async ValueTask RebuildSpiritList(Tradition objTradition, CancellationToken token = default)
+        public async Task RebuildSpiritList(Tradition objTradition, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objTradition == null)
                 return;
             string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? _objSpirit.Name;

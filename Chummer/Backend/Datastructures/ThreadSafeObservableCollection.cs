@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IAsyncProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChangedAsync, IAsyncProducerConsumerCollection<T>, IHasLockObject
     {
         [CLSCompliant(false)]
         protected readonly EnhancedObservableCollection<T> _lstData;
@@ -903,16 +904,56 @@ namespace Chummer
         public virtual event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore CA1070
 
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            Utils.RunOnMainThread(() =>
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            using (LockObject.EnterUpgradeableReadLock())
             {
-                using (LockObject.EnterUpgradeableReadLock())
+                if (_lstPropertyChangedAsync.Count > 0)
+                    Utils.RunWithoutThreadLock(_lstPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))), CancellationToken.None);
+                if (PropertyChanged != null)
+                    Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
+            }
+        }
+
+        public async Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_lstPropertyChangedAsync.Count > 0)
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName));
+                    await Task.WhenAll(_lstPropertyChangedAsync.Select(x => x.Invoke(this, objArgs, token)))
+                        .ConfigureAwait(false);
                 }
-            });
+
+                token.ThrowIfCancellationRequested();
+                if (PropertyChanged != null)
+                {
+                    await Utils.RunOnMainThreadAsync(() => PropertyChanged?.Invoke(this, objArgs), token)
+                        .ConfigureAwait(false);
+                }
+            }
         }
 
         private int _intIsDisposed;

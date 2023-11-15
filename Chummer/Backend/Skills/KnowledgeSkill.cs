@@ -469,6 +469,22 @@ namespace Chummer.Backend.Skills
                 _intCachedCyberwareRating = int.MinValue;
         }
 
+        protected override async Task ResetCachedCyberwareRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _intCachedCyberwareRating = int.MinValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// The attributeValue this skill have from Skilljacks + Knowsoft
         /// </summary>

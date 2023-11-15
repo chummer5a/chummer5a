@@ -137,10 +137,9 @@ namespace Chummer
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
             using (objCharacter.LockObject.EnterWriteLock())
             {
-                objCharacter.PropertyChanged += OnCharacterPropertyChanged;
-                objCharacter.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;
-                using (objCharacter.AttributeSection.LockObject.EnterWriteLock())
-                    objCharacter.AttributeSection.PropertyChanged += MakeDirtyWithCharacterUpdate;
+                objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
+                objCharacter.SettingsPropertyChangedAsync += OnCharacterSettingsPropertyChanged;
+                objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
             }
 
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -831,20 +830,17 @@ namespace Chummer
                                     await lblCMStun.RegisterOneWayAsyncDataBindingAsync(
                                                        (x, y) => x.Text = y, CharacterObject,
                                                        nameof(Character.DisplayStunCM),
-                                                       x => x.GetDisplayStunCMAsync(GenericToken), GenericToken,
-                                                       GenericToken)
+                                                       x => x.GetDisplayStunCMAsync(GenericToken), GenericToken)
                                                    .ConfigureAwait(false);
                                     await lblCMStun.RegisterOneWayAsyncDataBindingAsync(
                                                        (x, y) => x.ToolTipText = y, CharacterObject,
                                                        nameof(Character.StunCMToolTip),
-                                                       x => x.GetStunCMToolTipAsync(GenericToken), GenericToken,
-                                                       GenericToken)
+                                                       x => x.GetStunCMToolTipAsync(GenericToken), GenericToken)
                                                    .ConfigureAwait(false);
                                     await lblCMStunLabel.RegisterOneWayAsyncDataBindingAsync(
                                                             (x, y) => x.Text = y, CharacterObject,
                                                             nameof(Character.StunCMLabelText),
-                                                            x => x.GetStunCMLabelTextAsync(GenericToken), GenericToken,
-                                                            GenericToken)
+                                                            x => x.GetStunCMLabelTextAsync(GenericToken), GenericToken)
                                                         .ConfigureAwait(false);
 
                                     await lblESSMax.DoOneWayDataBindingAsync("Text", CharacterObject,
@@ -1069,23 +1065,19 @@ namespace Chummer
                                     await lblMentorSpirit.RegisterOneWayAsyncDataBindingAsync(
                                         (x, y) => x.Text = y, CharacterObject,
                                         nameof(Character.FirstMentorSpiritDisplayName),
-                                        x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken,
-                                        GenericToken).ConfigureAwait(false);
+                                        x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken).ConfigureAwait(false);
                                     await lblMentorSpiritInformation.RegisterOneWayAsyncDataBindingAsync(
                                         (x, y) => x.Text = y, CharacterObject,
                                         nameof(Character.FirstMentorSpiritDisplayInformation),
-                                        x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken,
-                                        GenericToken).ConfigureAwait(false);
+                                        x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken).ConfigureAwait(false);
                                     await lblParagon.RegisterOneWayAsyncDataBindingAsync(
                                         (x, y) => x.Text = y, CharacterObject,
                                         nameof(Character.FirstMentorSpiritDisplayName),
-                                        x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken,
-                                        GenericToken).ConfigureAwait(false);
+                                        x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken).ConfigureAwait(false);
                                     await lblParagonInformation.RegisterOneWayAsyncDataBindingAsync(
                                         (x, y) => x.Text = y, CharacterObject,
                                         nameof(Character.FirstMentorSpiritDisplayInformation),
-                                        x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken,
-                                        GenericToken).ConfigureAwait(false);
+                                        x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken).ConfigureAwait(false);
 
                                     await lblSurprise.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                                                                nameof(Character.SurpriseToolTip), GenericToken)
@@ -1214,7 +1206,7 @@ namespace Chummer
                                     {
                                         // Run through all appropriate property changers
                                         foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                                            await DoOnCharacterPropertyChanged(
+                                            await OnCharacterPropertyChanged(this,
                                                 new PropertyChangedEventArgs(objProperty.Name)).ConfigureAwait(false);
                                     }
 
@@ -1438,11 +1430,11 @@ namespace Chummer
             }
         }
 
-        private async Task PowersBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async Task PowersBeforeRemove(object sender, RemovingOldEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshPowerCollectionBeforeRemove(treMetamagic, e, GenericToken).ConfigureAwait(false);
+                await RefreshPowerCollectionBeforeRemove(treMetamagic, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1450,11 +1442,11 @@ namespace Chummer
             }
         }
 
-        private async Task PowersListChanged(object sender, ListChangedEventArgs e)
+        private async Task PowersListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, GenericToken)
+                await RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1463,11 +1455,11 @@ namespace Chummer
             }
         }
 
-        private async Task SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, e, GenericToken).ConfigureAwait(false);
+                await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1475,11 +1467,11 @@ namespace Chummer
             }
         }
 
-        private async Task ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes, e, GenericToken)
+                await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1488,11 +1480,11 @@ namespace Chummer
             }
         }
 
-        private async Task ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshArtCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, GenericToken).ConfigureAwait(false);
+                await RefreshArtCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1500,11 +1492,11 @@ namespace Chummer
             }
         }
 
-        private async Task EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, GenericToken)
+                await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1513,11 +1505,11 @@ namespace Chummer
             }
         }
 
-        private async Task MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshMetamagicCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, GenericToken)
+                await RefreshMetamagicCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1526,11 +1518,11 @@ namespace Chummer
             }
         }
 
-        private async Task InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, GenericToken).ConfigureAwait(false);
+                await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1538,11 +1530,11 @@ namespace Chummer
             }
         }
 
-        private async Task AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, e, GenericToken).ConfigureAwait(false);
+                await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1550,16 +1542,16 @@ namespace Chummer
             }
         }
 
-        private async Task CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, e, GenericToken).ConfigureAwait(false);
+                await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, e, token).ConfigureAwait(false);
                 bool blnVisible
                     = await CharacterObject.CritterPowers
                                            .AnyAsync(x => x.Name == "Inhabitation" || x.Name == "Possession",
-                                                     GenericToken).ConfigureAwait(false);
-                await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialPossess.Visible = blnVisible, GenericToken)
+                                                     token).ConfigureAwait(false);
+                await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialPossess.Visible = blnVisible, token)
                                    .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1568,11 +1560,11 @@ namespace Chummer
             }
         }
 
-        private async Task QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout, e, GenericToken).ConfigureAwait(false);
+                await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1580,11 +1572,11 @@ namespace Chummer
             }
         }
 
-        private async Task MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, e, GenericToken).ConfigureAwait(false);
+                await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1592,11 +1584,11 @@ namespace Chummer
             }
         }
 
-        private async Task LifestylesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task LifestylesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, e, GenericToken)
+                await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1605,12 +1597,12 @@ namespace Chummer
             }
         }
 
-        private async Task ImprovementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ImprovementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation,
-                                                cmsImprovement, lmtControl.LimitContextMenuStrip, e, GenericToken)
+                                                cmsImprovement, lmtControl.LimitContextMenuStrip, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1619,11 +1611,11 @@ namespace Chummer
             }
         }
 
-        private async Task ImprovementGroupCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ImprovementGroupCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshCustomImprovementLocations(treImprovements, cmsImprovementLocation, e, GenericToken)
+                await RefreshCustomImprovementLocations(treImprovements, cmsImprovementLocation, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1632,11 +1624,11 @@ namespace Chummer
             }
         }
 
-        private async Task CalendarWeekListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
+        private async Task CalendarWeekListChanged(object sender, ListChangedEventArgs listChangedEventArgs, CancellationToken token = default)
         {
             try
             {
-                await RefreshCalendar(lstCalendar, listChangedEventArgs, GenericToken).ConfigureAwait(false);
+                await RefreshCalendar(lstCalendar, listChangedEventArgs, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1644,11 +1636,11 @@ namespace Chummer
             }
         }
 
-        private async Task ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshContacts(panContacts, panEnemies, panPets, e, GenericToken).ConfigureAwait(false);
+                await RefreshContacts(panContacts, panEnemies, panPets, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1656,11 +1648,11 @@ namespace Chummer
             }
         }
 
-        private async Task SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshSpirits(panSpirits, panSprites, e, GenericToken).ConfigureAwait(false);
+                await RefreshSpirits(panSpirits, panSprites, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1668,12 +1660,12 @@ namespace Chummer
             }
         }
 
-        private async Task SustainedSpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SustainedSpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers,
-                                             chkPsycheActiveMagician, chkPsycheActiveTechnomancer, e, GenericToken)
+                                             chkPsycheActiveMagician, chkPsycheActiveTechnomancer, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1682,17 +1674,17 @@ namespace Chummer
             }
         }
 
-        private async Task AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshAttributes(pnlAttributes, e, lblAttributes, -1,
                                         await lblAttributesAug
-                                              .DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken)
+                                              .DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
                                               .ConfigureAwait(false),
                                         await lblAttributesMetatype
-                                              .DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken)
-                                              .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                              .DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
+                                              .ConfigureAwait(false), token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1700,11 +1692,11 @@ namespace Chummer
             }
         }
 
-        private async Task ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, e, GenericToken)
+                await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1713,11 +1705,11 @@ namespace Chummer
             }
         }
 
-        private async Task ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshArmorLocations(treArmor, cmsArmorLocation, e, GenericToken).ConfigureAwait(false);
+                await RefreshArmorLocations(treArmor, cmsArmorLocation, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1725,12 +1717,12 @@ namespace Chummer
             }
         }
 
-        private async Task WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                     cmsWeaponAccessoryGear, e, GenericToken).ConfigureAwait(false);
+                                     cmsWeaponAccessoryGear, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1738,11 +1730,11 @@ namespace Chummer
             }
         }
 
-        private async Task WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshWeaponLocations(treWeapons, cmsWeaponLocation, e, GenericToken).ConfigureAwait(false);
+                await RefreshWeaponLocations(treWeapons, cmsWeaponLocation, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1750,17 +1742,17 @@ namespace Chummer
             }
         }
 
-        private async Task GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshGears(treGear, cmsGearLocation, cmsGear, null,
-                                   await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                   await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, token)
                                                      .ConfigureAwait(false),
-                                   await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                   await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, token)
                                                           .ConfigureAwait(false),
-                                   e, GenericToken).ConfigureAwait(false);
-                await RefreshFociFromGear(treFoci, null, e, GenericToken).ConfigureAwait(false);
+                                   e, token).ConfigureAwait(false);
+                await RefreshFociFromGear(treFoci, null, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1768,11 +1760,11 @@ namespace Chummer
             }
         }
 
-        private async Task DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshDrugs(treCustomDrugs, e, GenericToken).ConfigureAwait(false);
+                await RefreshDrugs(treCustomDrugs, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1780,11 +1772,11 @@ namespace Chummer
             }
         }
 
-        private async Task GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshGearLocations(treGear, cmsGearLocation, e, GenericToken).ConfigureAwait(false);
+                await RefreshGearLocations(treGear, cmsGearLocation, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1792,11 +1784,11 @@ namespace Chummer
             }
         }
 
-        private async Task CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, e, GenericToken)
+                await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1805,13 +1797,13 @@ namespace Chummer
             }
         }
 
-        private async Task VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
                                       cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
-                                      cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, e, GenericToken)
+                                      cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, e, token)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1820,11 +1812,11 @@ namespace Chummer
             }
         }
 
-        private async Task VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                await RefreshVehicleLocations(treVehicles, cmsVehicleLocation, e, GenericToken).ConfigureAwait(false);
+                await RefreshVehicleLocations(treVehicles, cmsVehicleLocation, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1921,14 +1913,14 @@ namespace Chummer
                             IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                             try
                             {
-                                CharacterObject.AttributeSection.PropertyChanged -= MakeDirtyWithCharacterUpdate;
+                                CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                             }
                             finally
                             {
                                 await objLocker2.DisposeAsync().ConfigureAwait(false);
                             }
-                            CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                            CharacterObject.SettingsPropertyChanged -= OnCharacterSettingsPropertyChanged;
+                            CharacterObject.PropertyChangedAsync -= OnCharacterPropertyChanged;
+                            CharacterObject.SettingsPropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
                         }
                         finally
                         {
@@ -2039,46 +2031,41 @@ namespace Chummer
 
         #region Character Events
 
-        private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            await DoOnCharacterPropertyChanged(e).ConfigureAwait(false);
-        }
-
-        private async ValueTask DoOnCharacterPropertyChanged(PropertyChangedEventArgs e)
+        private async Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             if (_blnReapplyImprovements)
                 return;
-            await SetDirty(true).ConfigureAwait(false);
+            await SetDirty(true, token).ConfigureAwait(false);
             try
             {
                 switch (e.PropertyName)
                 {
                     case nameof(Character.CharacterName):
-                        await UpdateWindowTitleAsync(false, GenericToken).ConfigureAwait(false);
+                        await UpdateWindowTitleAsync(false, token).ConfigureAwait(false);
                         break;
 
                     case nameof(Character.DisplayNuyen):
                         await StatusStrip
-                              .DoThreadSafeAsync(() => tslNuyen.Text = CharacterObject.DisplayNuyen, GenericToken)
+                              .DoThreadSafeAsync(() => tslNuyen.Text = CharacterObject.DisplayNuyen, token)
                               .ConfigureAwait(false);
                         break;
 
                     case nameof(Character.DisplayKarma):
                         await StatusStrip
-                              .DoThreadSafeAsync(() => tslKarma.Text = CharacterObject.DisplayKarma, GenericToken)
+                              .DoThreadSafeAsync(() => tslKarma.Text = CharacterObject.DisplayKarma, token)
                               .ConfigureAwait(false);
                         break;
 
                     case nameof(Character.DisplayEssence):
                         await StatusStrip
-                              .DoThreadSafeAsync(() => tslEssence.Text = CharacterObject.DisplayEssence, GenericToken)
+                              .DoThreadSafeAsync(() => tslEssence.Text = CharacterObject.DisplayEssence, token)
                               .ConfigureAwait(false);
                         break;
 
                     case nameof(Character.DisplayTotalCarriedWeight):
                         await StatusStrip.DoThreadSafeAsync(
                                              () => tslCarriedWeight.Text = CharacterObject.DisplayTotalCarriedWeight,
-                                             GenericToken)
+                                             token)
                                          .ConfigureAwait(false);
                         break;
 
@@ -2086,7 +2073,7 @@ namespace Chummer
                         await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.ForeColor
                                                                 = CharacterObject.Encumbrance > 0
                                                                     ? ColorManager.ErrorColor
-                                                                    : ColorManager.ControlText, GenericToken)
+                                                                    : ColorManager.ControlText, token)
                                          .ConfigureAwait(false);
                         break;
 
@@ -2106,12 +2093,12 @@ namespace Chummer
                     case nameof(Character.ActiveCommlink):
                     case nameof(Character.Nuyen):
                     case nameof(Character.Karma):
-                        await RequestCharacterUpdate().ConfigureAwait(false);
+                        await RequestCharacterUpdate(token).ConfigureAwait(false);
                         break;
 
                     case nameof(Character.Source):
                     case nameof(Character.Page):
-                        await CharacterObject.SetSourceDetailAsync(lblMetatypeSource, GenericToken)
+                        await CharacterObject.SetSourceDetailAsync(lblMetatypeSource, token)
                                              .ConfigureAwait(false);
                         break;
 
@@ -2119,18 +2106,18 @@ namespace Chummer
                     case nameof(Character.CMThreshold):
                     case nameof(Character.CMThresholdOffsets):
                         await ProcessCharacterConditionMonitorBoxDisplays(
-                            panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(GenericToken).ConfigureAwait(false),
-                            await CharacterObject.GetCMThresholdAsync(GenericToken).ConfigureAwait(false),
-                            await CharacterObject.GetPhysicalCMThresholdOffsetAsync(GenericToken).ConfigureAwait(false),
-                            await CharacterObject.GetCMOverflowAsync(GenericToken).ConfigureAwait(false),
+                            panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(token).ConfigureAwait(false),
+                            await CharacterObject.GetCMThresholdAsync(token).ConfigureAwait(false),
+                            await CharacterObject.GetPhysicalCMThresholdOffsetAsync(token).ConfigureAwait(false),
+                            await CharacterObject.GetCMOverflowAsync(token).ConfigureAwait(false),
                             chkPhysicalCM_CheckedChanged, true,
-                            CharacterObject.PhysicalCMFilled, GenericToken).ConfigureAwait(false);
+                            CharacterObject.PhysicalCMFilled, token).ConfigureAwait(false);
                         await ProcessCharacterConditionMonitorBoxDisplays(
-                                panStunCM, await CharacterObject.GetStunCMAsync(GenericToken).ConfigureAwait(false),
-                                await CharacterObject.GetCMThresholdAsync(GenericToken).ConfigureAwait(false),
-                                await CharacterObject.GetStunCMThresholdOffsetAsync(GenericToken).ConfigureAwait(false),
+                                panStunCM, await CharacterObject.GetStunCMAsync(token).ConfigureAwait(false),
+                                await CharacterObject.GetCMThresholdAsync(token).ConfigureAwait(false),
+                                await CharacterObject.GetStunCMThresholdOffsetAsync(token).ConfigureAwait(false),
                                 0,
-                                chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled, GenericToken)
+                                chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled, token)
                             .ConfigureAwait(false);
                         break;
 
@@ -2138,11 +2125,11 @@ namespace Chummer
                     case nameof(Character.StunCMFilled):
                     case nameof(Character.StunCMThresholdOffset):
                         await ProcessCharacterConditionMonitorBoxDisplays(
-                                panStunCM, await CharacterObject.GetStunCMAsync(GenericToken).ConfigureAwait(false),
-                                await CharacterObject.GetCMThresholdAsync(GenericToken).ConfigureAwait(false),
-                                await CharacterObject.GetStunCMThresholdOffsetAsync(GenericToken).ConfigureAwait(false),
+                                panStunCM, await CharacterObject.GetStunCMAsync(token).ConfigureAwait(false),
+                                await CharacterObject.GetCMThresholdAsync(token).ConfigureAwait(false),
+                                await CharacterObject.GetStunCMThresholdOffsetAsync(token).ConfigureAwait(false),
                                 0,
-                                chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled, GenericToken)
+                                chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled, token)
                             .ConfigureAwait(false);
                         break;
 
@@ -2150,75 +2137,75 @@ namespace Chummer
                     case nameof(Character.PhysicalCMFilled):
                     case nameof(Character.PhysicalCMThresholdOffset):
                         await ProcessCharacterConditionMonitorBoxDisplays(
-                            panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(GenericToken).ConfigureAwait(false),
-                            await CharacterObject.GetCMThresholdAsync(GenericToken).ConfigureAwait(false),
-                            await CharacterObject.GetPhysicalCMThresholdOffsetAsync(GenericToken).ConfigureAwait(false),
-                            await CharacterObject.GetCMOverflowAsync(GenericToken).ConfigureAwait(false),
+                            panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(token).ConfigureAwait(false),
+                            await CharacterObject.GetCMThresholdAsync(token).ConfigureAwait(false),
+                            await CharacterObject.GetPhysicalCMThresholdOffsetAsync(token).ConfigureAwait(false),
+                            await CharacterObject.GetCMOverflowAsync(token).ConfigureAwait(false),
                             chkPhysicalCM_CheckedChanged, true,
-                            CharacterObject.PhysicalCMFilled, GenericToken).ConfigureAwait(false);
+                            CharacterObject.PhysicalCMFilled, token).ConfigureAwait(false);
                         break;
 
                     case nameof(Character.MAGEnabled):
                     {
-                        if (CharacterObject.MAGEnabled)
+                        if (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
                         {
                             await tabCharacterTabs.DoThreadSafeAsync(x =>
                             {
                                 if (!x.TabPages.Contains(tabInitiation))
                                     x.TabPages.Insert(3, tabInitiation);
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
 
-                            await UpdateInitiationCost(GenericToken).ConfigureAwait(false);
+                            await UpdateInitiationCost(token).ConfigureAwait(false);
 
                             string strTemp1 = await LanguageManager
-                                                    .GetStringAsync("Tab_Initiation", token: GenericToken)
+                                                    .GetStringAsync("Tab_Initiation", token: token)
                                                     .ConfigureAwait(false);
-                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strTemp1, GenericToken)
+                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strTemp1, token)
                                                .ConfigureAwait(false);
                             string strTemp2 = await LanguageManager
-                                                    .GetStringAsync("Button_AddMetamagic", token: GenericToken)
+                                                    .GetStringAsync("Button_AddMetamagic", token: token)
                                                     .ConfigureAwait(false);
                             await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strTemp2,
-                                                                 GenericToken).ConfigureAwait(false);
+                                token).ConfigureAwait(false);
                             string strTemp3 = await LanguageManager
-                                                    .GetStringAsync("Button_AddInitiateGrade", token: GenericToken)
+                                                    .GetStringAsync("Button_AddInitiateGrade", token: token)
                                                     .ConfigureAwait(false);
-                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strTemp3, GenericToken)
+                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strTemp3, token)
                                                  .ConfigureAwait(false);
                             string strTemp4 = await LanguageManager
-                                                    .GetStringAsync("Button_RemoveInitiateGrade", token: GenericToken)
+                                                    .GetStringAsync("Button_RemoveInitiateGrade", token: token)
                                                     .ConfigureAwait(false);
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strTemp4, GenericToken)
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strTemp4, token)
                                                     .ConfigureAwait(false);
                             string strTemp5 = await LanguageManager
-                                                    .GetStringAsync("String_InitiationType", token: GenericToken)
+                                                    .GetStringAsync("String_InitiationType", token: token)
                                                     .ConfigureAwait(false);
-                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strTemp5, GenericToken)
+                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strTemp5, token)
                                                    .ConfigureAwait(false);
                             string strTemp6 = await LanguageManager
-                                                    .GetStringAsync("String_InitiationGroup", token: GenericToken)
+                                                    .GetStringAsync("String_InitiationGroup", token: token)
                                                     .ConfigureAwait(false);
-                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp6, GenericToken)
+                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp6, token)
                                                     .ConfigureAwait(false);
                             string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                                                 .GetStringAsync(
-                                                                    "Checkbox_InitiationOrdeal", token: GenericToken).ConfigureAwait(false),
+                                                                    "Checkbox_InitiationOrdeal", token: token).ConfigureAwait(false),
                                                             CharacterObjectSettings.KarmaMAGInitiationOrdealPercent
                                                                 .ToString(
                                                                     "P", GlobalSettings.CultureInfo));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, GenericToken)
+                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, token)
                                                      .ConfigureAwait(false);
                             string strText2 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                                                 .GetStringAsync(
-                                                                    "Checkbox_InitiationGroup", token: GenericToken).ConfigureAwait(false),
+                                                                    "Checkbox_InitiationGroup", token: token).ConfigureAwait(false),
                                                             CharacterObjectSettings.KarmaMAGInitiationGroupPercent
                                                                 .ToString(
                                                                     "P", GlobalSettings.CultureInfo));
-                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, GenericToken)
+                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, token)
                                                     .ConfigureAwait(false);
                             string strText3 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                                                 .GetStringAsync(
-                                                                    "Checkbox_InitiationSchooling", token: GenericToken)
+                                                                    "Checkbox_InitiationSchooling", token: token)
                                                                 .ConfigureAwait(false),
                                                             CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent
                                                                 .ToString(
@@ -2227,30 +2214,30 @@ namespace Chummer
                             {
                                 x.Text = strText3;
                                 x.Enabled = true;
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                             await cmsMetamagic.DoThreadSafeAsync(() =>
                             {
                                 tsMetamagicAddArt.Visible = true;
                                 tsMetamagicAddEnchantment.Visible = true;
                                 tsMetamagicAddEnhancement.Visible = true;
                                 tsMetamagicAddRitual.Visible = true;
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
                                                               await LanguageManager.GetStringAsync(
-                                                                  "Tip_ImproveInitiateGrade", token: GenericToken).ConfigureAwait(false),
+                                                                  "Tip_ImproveInitiateGrade", token: token).ConfigureAwait(false),
                                                               CharacterObject.InitiateGrade + 1,
                                                               CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation);
-                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
+                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
                             string strTemp7 = await LanguageManager
-                                                    .GetStringAsync("Checkbox_JoinedGroup", token: GenericToken)
+                                                    .GetStringAsync("Checkbox_JoinedGroup", token: token)
                                                     .ConfigureAwait(false);
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, GenericToken)
+                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, token)
                                               .ConfigureAwait(false);
 
-                            if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG, GenericToken)
+                            if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG, token)
                                                       .ConfigureAwait(false))
                             {
-                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.MAG, GenericToken)
+                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.MAG, token)
                                                      .ConfigureAwait(false);
                             }
 
@@ -2258,51 +2245,51 @@ namespace Chummer
                             {
                                 CharacterAttrib objMAGAdept =
                                     await CharacterObject.AttributeSection
-                                                         .GetAttributeByNameAsync("MAGAdept", GenericToken)
+                                                         .GetAttributeByNameAsync("MAGAdept", token)
                                                          .ConfigureAwait(false);
-                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, GenericToken)
+                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, token)
                                                           .ConfigureAwait(false))
                                 {
-                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept, GenericToken)
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept, token)
                                                          .ConfigureAwait(false);
                                 }
                             }
                         }
                         else
                         {
-                            if (!CharacterObject.RESEnabled)
+                            if (!await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
                                 await tabCharacterTabs
-                                      .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken)
+                                      .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
                                       .ConfigureAwait(false);
 
                             if (CharacterObject.AttributeSection.Attributes != null)
                             {
-                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.MAG, GenericToken)
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.MAG, token)
                                                      .ConfigureAwait(false);
-                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.MAGAdept, GenericToken)
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.MAGAdept, token)
                                                      .ConfigureAwait(false);
                             }
                         }
 
                         await gpbGearBondedFoci
-                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken)
+                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, token)
                               .ConfigureAwait(false);
-                        await lblAstralINI.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken)
+                        await lblAstralINI.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, token)
                                           .ConfigureAwait(false);
 
-                        await RequestCharacterUpdate().ConfigureAwait(false);
+                        await RequestCharacterUpdate(token).ConfigureAwait(false);
                     }
                         break;
 
                     case nameof(Character.RESEnabled):
                     {
-                        if (CharacterObject.RESEnabled)
+                        if (await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
                         {
                             await tabCharacterTabs.DoThreadSafeAsync(x =>
                             {
                                 if (!x.TabPages.Contains(tabInitiation))
                                     x.TabPages.Insert(3, tabInitiation);
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
 
                             /*
                             int intEssenceLoss = 0;
@@ -2311,57 +2298,57 @@ namespace Chummer
                             // If the character options permit submersion in create mode, show the Initiation page.
                             */
 
-                            await UpdateInitiationCost(GenericToken).ConfigureAwait(false);
+                            await UpdateInitiationCost(token).ConfigureAwait(false);
 
                             string strTemp1 = await LanguageManager
-                                                    .GetStringAsync("Tab_Submersion", token: GenericToken)
+                                                    .GetStringAsync("Tab_Submersion", token: token)
                                                     .ConfigureAwait(false);
-                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strTemp1, GenericToken)
+                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strTemp1, token)
                                                .ConfigureAwait(false);
                             string strTemp2 = await LanguageManager
-                                                    .GetStringAsync("Button_AddEcho", token: GenericToken)
+                                                    .GetStringAsync("Button_AddEcho", token: token)
                                                     .ConfigureAwait(false);
                             await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strTemp2,
-                                                                 GenericToken).ConfigureAwait(false);
+                                token).ConfigureAwait(false);
                             string strTemp3 = await LanguageManager
-                                                    .GetStringAsync("Button_AddSubmersionGrade", token: GenericToken)
+                                                    .GetStringAsync("Button_AddSubmersionGrade", token: token)
                                                     .ConfigureAwait(false);
-                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strTemp3, GenericToken)
+                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strTemp3, token)
                                                  .ConfigureAwait(false);
                             string strTemp4 = await LanguageManager
-                                                    .GetStringAsync("Button_RemoveSubmersionGrade", token: GenericToken)
+                                                    .GetStringAsync("Button_RemoveSubmersionGrade", token: token)
                                                     .ConfigureAwait(false);
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strTemp4, GenericToken)
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strTemp4, token)
                                                     .ConfigureAwait(false);
                             string strTemp5 = await LanguageManager
-                                                    .GetStringAsync("String_SubmersionType", token: GenericToken)
+                                                    .GetStringAsync("String_SubmersionType", token: token)
                                                     .ConfigureAwait(false);
-                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strTemp5, GenericToken)
+                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strTemp5, token)
                                                    .ConfigureAwait(false);
                             string strTemp6 = await LanguageManager
-                                                    .GetStringAsync("String_SubmersionNetwork", token: GenericToken)
+                                                    .GetStringAsync("String_SubmersionNetwork", token: token)
                                                     .ConfigureAwait(false);
-                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp6, GenericToken)
+                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp6, token)
                                                     .ConfigureAwait(false);
                             string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                                                 .GetStringAsync(
-                                                                    "Checkbox_SubmersionTask", token: GenericToken).ConfigureAwait(false),
+                                                                    "Checkbox_SubmersionTask", token: token).ConfigureAwait(false),
                                                             CharacterObjectSettings.KarmaRESInitiationOrdealPercent
                                                                 .ToString(
                                                                     "P", GlobalSettings.CultureInfo));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, GenericToken)
+                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, token)
                                                      .ConfigureAwait(false);
                             string strText2 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                                                 .GetStringAsync(
-                                                                    "Checkbox_NetworkSubmersion", token: GenericToken).ConfigureAwait(false),
+                                                                    "Checkbox_NetworkSubmersion", token: token).ConfigureAwait(false),
                                                             CharacterObjectSettings.KarmaRESInitiationGroupPercent
                                                                 .ToString(
                                                                     "P", GlobalSettings.CultureInfo));
-                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, GenericToken)
+                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, token)
                                                     .ConfigureAwait(false);
                             string strText3 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                                                 .GetStringAsync(
-                                                                    "Checkbox_InitiationSchooling", token: GenericToken)
+                                                                    "Checkbox_InitiationSchooling", token: token)
                                                                 .ConfigureAwait(false),
                                                             CharacterObjectSettings.KarmaRESInitiationSchoolingPercent
                                                                 .ToString(
@@ -2370,48 +2357,48 @@ namespace Chummer
                             {
                                 x.Text = strText3;
                                 x.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                             await cmsMetamagic.DoThreadSafeAsync(() =>
                             {
                                 tsMetamagicAddArt.Visible = false;
                                 tsMetamagicAddEnchantment.Visible = false;
                                 tsMetamagicAddEnhancement.Visible = false;
                                 tsMetamagicAddRitual.Visible = false;
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
                                                               await LanguageManager.GetStringAsync(
-                                                                  "Tip_ImproveSubmersionGrade", token: GenericToken).ConfigureAwait(false),
+                                                                  "Tip_ImproveSubmersionGrade", token: token).ConfigureAwait(false),
                                                               CharacterObject.SubmersionGrade + 1,
                                                               CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation);
-                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
+                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
                             string strTemp7 = await LanguageManager
-                                                    .GetStringAsync("Checkbox_JoinedNetwork", token: GenericToken)
+                                                    .GetStringAsync("Checkbox_JoinedNetwork", token: token)
                                                     .ConfigureAwait(false);
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, GenericToken)
+                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, token)
                                               .ConfigureAwait(false);
 
                             if (CharacterObject.AttributeSection.Attributes != null && !await CharacterObject
                                     .AttributeSection.Attributes.ContainsAsync(
-                                        CharacterObject.RES, GenericToken).ConfigureAwait(false))
+                                        CharacterObject.RES, token).ConfigureAwait(false))
                             {
-                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.RES, GenericToken)
+                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.RES, token)
                                                      .ConfigureAwait(false);
                             }
                         }
                         else
                         {
-                            if (!CharacterObject.MAGEnabled)
+                            if (!await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
                                 await tabCharacterTabs
-                                      .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken)
+                                      .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
                                       .ConfigureAwait(false);
                             if (CharacterObject.AttributeSection.Attributes != null)
                             {
-                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.RES, GenericToken)
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.RES, token)
                                                      .ConfigureAwait(false);
                             }
                         }
 
-                        await RequestCharacterUpdate().ConfigureAwait(false);
+                        await RequestCharacterUpdate(token).ConfigureAwait(false);
                     }
                         break;
 
@@ -2419,18 +2406,18 @@ namespace Chummer
                     {
                         if (CharacterObject.AttributeSection.Attributes != null)
                         {
-                            if (CharacterObject.DEPEnabled)
+                            if (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
                             {
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(
-                                        CharacterObject.DEP, GenericToken).ConfigureAwait(false))
+                                        CharacterObject.DEP, token).ConfigureAwait(false))
                                 {
-                                    await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.DEP, GenericToken)
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.DEP, token)
                                                          .ConfigureAwait(false);
                                 }
                             }
                             else
                             {
-                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.DEP, GenericToken)
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.DEP, token)
                                                      .ConfigureAwait(false);
                             }
                         }
@@ -2442,12 +2429,12 @@ namespace Chummer
                         using (new FetchSafelyFromPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstPrimaryArm))
                         {
-                            if (await CharacterObject.GetAmbidextrousAsync(GenericToken).ConfigureAwait(false))
+                            if (await CharacterObject.GetAmbidextrousAsync(token).ConfigureAwait(false))
                             {
                                 lstPrimaryArm.Add(new ListItem("Ambidextrous",
                                                                await LanguageManager.GetStringAsync(
-                                                                   "String_Ambidextrous", token: GenericToken).ConfigureAwait(false)));
-                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = false, GenericToken)
+                                                                   "String_Ambidextrous", token: token).ConfigureAwait(false)));
+                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = false, token)
                                                    .ConfigureAwait(false);
                             }
                             else
@@ -2456,26 +2443,26 @@ namespace Chummer
                                 lstPrimaryArm.Add(new ListItem(
                                                       "Left",
                                                       await LanguageManager.GetStringAsync(
-                                                          "String_Improvement_SideLeft", token: GenericToken).ConfigureAwait(false)));
+                                                          "String_Improvement_SideLeft", token: token).ConfigureAwait(false)));
                                 lstPrimaryArm.Add(new ListItem(
                                                       "Right",
                                                       await LanguageManager.GetStringAsync(
-                                                          "String_Improvement_SideRight", token: GenericToken).ConfigureAwait(false)));
+                                                          "String_Improvement_SideRight", token: token).ConfigureAwait(false)));
                                 lstPrimaryArm.Sort(CompareListItems.CompareNames);
-                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = true, GenericToken)
+                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = true, token)
                                                    .ConfigureAwait(false);
                             }
 
                             string strPrimaryArm = CharacterObject.PrimaryArm;
 
-                            await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm, GenericToken)
+                            await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm, token)
                                                .ConfigureAwait(false);
                             await cboPrimaryArm.DoThreadSafeAsync(x =>
                             {
                                 x.SelectedValue = strPrimaryArm;
                                 if (x.SelectedIndex == -1)
                                     x.SelectedIndex = 0;
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }
                     }
                         break;
@@ -2483,55 +2470,56 @@ namespace Chummer
                     case nameof(Character.MagicianEnabled):
                     {
                         // Change to the status of Magician being enabled.
-                        if (CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled)
+                        bool blnMagicianEnabled = await CharacterObject.GetMagicianEnabledAsync(token).ConfigureAwait(false);
+                        if (blnMagicianEnabled || await CharacterObject.GetAdeptEnabledAsync(token).ConfigureAwait(false))
                         {
                             await tabCharacterTabs.DoThreadSafeAsync(x =>
                             {
                                 if (!x.TabPages.Contains(tabMagician))
                                     x.TabPages.Insert(3, tabMagician);
-                            }, GenericToken).ConfigureAwait(false);
-                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken)
+                            }, token).ConfigureAwait(false);
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, token)
                                              .ConfigureAwait(false);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                            if (await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
                             {
                                 CharacterAttrib objMAGAdept =
                                     await CharacterObject.AttributeSection
-                                                         .GetAttributeByNameAsync("MAGAdept", GenericToken)
+                                                         .GetAttributeByNameAsync("MAGAdept", token)
                                                          .ConfigureAwait(false);
-                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, GenericToken)
+                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, token)
                                                           .ConfigureAwait(false))
                                 {
-                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept, GenericToken)
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept, token)
                                                          .ConfigureAwait(false);
                                 }
                             }
                         }
                         else
                         {
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician), GenericToken)
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician), token)
                                                   .ConfigureAwait(false);
-                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, GenericToken)
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, token)
                                              .ConfigureAwait(false);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
                             {
                                 CharacterAttrib objMAGAdept =
                                     await CharacterObject.AttributeSection
-                                                         .GetAttributeByNameAsync("MAGAdept", GenericToken)
+                                                         .GetAttributeByNameAsync("MAGAdept", token)
                                                          .ConfigureAwait(false);
-                                if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, GenericToken)
+                                if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, token)
                                                          .ConfigureAwait(false))
                                 {
-                                    await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept, GenericToken)
+                                    await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept, token)
                                                          .ConfigureAwait(false);
                                 }
                             }
                         }
 
                         await cmdAddSpirit
-                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled, GenericToken)
+                              .DoThreadSafeAsync(x => x.Visible = blnMagicianEnabled, token)
                               .ConfigureAwait(false);
                         await panSpirits
-                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled, GenericToken)
+                              .DoThreadSafeAsync(x => x.Visible = blnMagicianEnabled, token)
                               .ConfigureAwait(false);
                     }
                         break;
@@ -2539,25 +2527,25 @@ namespace Chummer
                     case nameof(Character.AdeptEnabled):
                     {
                         // Change to the status of Adept being enabled.
-                        if (CharacterObject.AdeptEnabled)
+                        if (await CharacterObject.GetAdeptEnabledAsync(token).ConfigureAwait(false))
                         {
                             await tabCharacterTabs.DoThreadSafeAsync(x =>
                             {
                                 if (!x.TabPages.Contains(tabMagician))
                                     x.TabPages.Insert(3, tabMagician);
-                            }, GenericToken).ConfigureAwait(false);
-                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken)
+                            }, token).ConfigureAwait(false);
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, token)
                                              .ConfigureAwait(false);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                            if (await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
                             {
                                 CharacterAttrib objMAGAdept =
                                     await CharacterObject.AttributeSection
-                                                         .GetAttributeByNameAsync("MAGAdept", GenericToken)
+                                                         .GetAttributeByNameAsync("MAGAdept", token)
                                                          .ConfigureAwait(false);
-                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, GenericToken)
+                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, token)
                                                           .ConfigureAwait(false))
                                 {
-                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept, GenericToken)
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept, token)
                                                          .ConfigureAwait(false);
                                 }
                             }
@@ -2566,36 +2554,36 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabAdept))
                                     x.TabPages.Insert(3, tabAdept);
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }
                         else
                         {
-                            if (!CharacterObject.MagicianEnabled)
+                            if (!await CharacterObject.GetMagicianEnabledAsync(token).ConfigureAwait(false))
                             {
                                 await tabCharacterTabs
-                                      .DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician), GenericToken)
+                                      .DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician), token)
                                       .ConfigureAwait(false);
-                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, GenericToken)
+                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, token)
                                                  .ConfigureAwait(false);
-                                if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
+                                if (await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                                 {
                                     CharacterAttrib objMAGAdept =
                                         await CharacterObject.AttributeSection
-                                                             .GetAttributeByNameAsync("MAGAdept", GenericToken)
+                                                             .GetAttributeByNameAsync("MAGAdept", token)
                                                              .ConfigureAwait(false);
-                                    if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, GenericToken)
+                                    if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, token)
                                                              .ConfigureAwait(false))
                                     {
-                                        await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept, GenericToken)
+                                        await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept, token)
                                                              .ConfigureAwait(false);
                                     }
                                 }
                             }
                             else
-                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken)
+                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, token)
                                                  .ConfigureAwait(false);
 
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabAdept), GenericToken)
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabAdept), token)
                                                   .ConfigureAwait(false);
                         }
                     }
@@ -2610,12 +2598,12 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabTechnomancer))
                                     x.TabPages.Insert(3, tabTechnomancer);
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }
                         else
                         {
                             await tabCharacterTabs
-                                  .DoThreadSafeAsync(x => x.TabPages.Remove(tabTechnomancer), GenericToken)
+                                  .DoThreadSafeAsync(x => x.TabPages.Remove(tabTechnomancer), token)
                                   .ConfigureAwait(false);
                         }
                     }
@@ -2630,12 +2618,12 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabAdvancedPrograms))
                                     x.TabPages.Insert(3, tabAdvancedPrograms);
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }
                         else
                         {
                             await tabCharacterTabs
-                                  .DoThreadSafeAsync(x => x.TabPages.Remove(tabAdvancedPrograms), GenericToken)
+                                  .DoThreadSafeAsync(x => x.TabPages.Remove(tabAdvancedPrograms), token)
                                   .ConfigureAwait(false);
                         }
                     }
@@ -2650,11 +2638,11 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabCritter))
                                     x.TabPages.Insert(3, tabCritter);
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }
                         else
                         {
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabCritter), GenericToken)
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabCritter), token)
                                                   .ConfigureAwait(false);
                         }
                     }
@@ -2668,17 +2656,17 @@ namespace Chummer
                             Improvement objDisablingImprovement = (await ImprovementManager
                                                                          .GetCachedImprovementListForValueOfAsync(
                                                                              CharacterObject,
-                                                                             Improvement.ImprovementType.DisableBioware, token: GenericToken)
+                                                                             Improvement.ImprovementType.DisableBioware, token: token)
                                                                          .ConfigureAwait(false))
                                 .FirstOrDefault();
                             if (objDisablingImprovement != null)
                             {
                                 strBiowareDisabledSource =
-                                    await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false) + '(' +
+                                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
                                     await CharacterObject
-                                          .GetObjectNameAsync(objDisablingImprovement, token: GenericToken)
+                                          .GetObjectNameAsync(objDisablingImprovement, token: token)
                                           .ConfigureAwait(false) + ')' +
-                                    await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
+                                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                             }
 
                             foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
@@ -2686,10 +2674,10 @@ namespace Chummer
                                                  x.SourceType == Improvement.ImprovementSource.Bioware
                                                  && x.SourceID != Cyberware.EssenceHoleGUID
                                                  && x.SourceID != Cyberware.EssenceAntiHoleGUID
-                                                 && await x.GetIsModularCurrentlyEquippedAsync(GenericToken)
+                                                 && await x.GetIsModularCurrentlyEquippedAsync(token)
                                                            .ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
-                                                     || x.CanRemoveThroughImprovements), GenericToken)
+                                                     || x.CanRemoveThroughImprovements), token)
                                          .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
@@ -2697,29 +2685,29 @@ namespace Chummer
                                     if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
                                     if (objCyberware.Parent != null)
-                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware, GenericToken)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)
                                                           .ConfigureAwait(false);
-                                    await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken)
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware, token)
                                                          .ConfigureAwait(false);
-                                    await objCyberware.ChangeModularEquipAsync(false, token: GenericToken)
+                                    await objCyberware.ChangeModularEquipAsync(false, token: token)
                                                       .ConfigureAwait(false);
                                 }
                                 else
                                 {
-                                    await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
+                                    await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     string strEntry = await LanguageManager
                                                             .GetStringAsync(
-                                                                "String_ExpenseSoldBioware", token: GenericToken)
+                                                                "String_ExpenseSoldBioware", token: token)
                                                             .ConfigureAwait(false);
                                     objExpense.Create(0,
                                                       strEntry + strBiowareDisabledSource +
-                                                      await objCyberware.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                      await objCyberware.GetCurrentDisplayNameShortAsync(token)
                                                                         .ConfigureAwait(false),
                                                       ExpenseType.Nuyen,
                                                       DateTime.Now);
                                     await CharacterObject.ExpenseEntries
-                                                         .AddWithSortAsync(objExpense, token: GenericToken)
+                                                         .AddWithSortAsync(objExpense, token: token)
                                                          .ConfigureAwait(false);
                                 }
                             }
@@ -2736,17 +2724,17 @@ namespace Chummer
                                                                          .GetCachedImprovementListForValueOfAsync(
                                                                              CharacterObject,
                                                                              Improvement.ImprovementType
-                                                                                 .DisableCyberware, token: GenericToken)
+                                                                                 .DisableCyberware, token: token)
                                                                          .ConfigureAwait(false))
                                 .FirstOrDefault();
                             if (objDisablingImprovement != null)
                             {
                                 strCyberwareDisabledSource =
-                                    await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false) + '(' +
+                                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
                                     await CharacterObject
-                                          .GetObjectNameAsync(objDisablingImprovement, token: GenericToken)
+                                          .GetObjectNameAsync(objDisablingImprovement, token: token)
                                           .ConfigureAwait(false) + ')' +
-                                    await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
+                                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                             }
 
                             foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
@@ -2754,9 +2742,9 @@ namespace Chummer
                                                  x.SourceType == Improvement.ImprovementSource.Cyberware
                                                  && x.SourceID != Cyberware.EssenceHoleGUID
                                                  && x.SourceID != Cyberware.EssenceAntiHoleGUID
-                                                 && await x.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false)
+                                                 && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
-                                                     || x.CanRemoveThroughImprovements), GenericToken)
+                                                     || x.CanRemoveThroughImprovements), token)
                                          .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
@@ -2764,27 +2752,27 @@ namespace Chummer
                                     if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
                                     if (objCyberware.Parent != null)
-                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware, GenericToken)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)
                                                           .ConfigureAwait(false);
-                                    await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken).ConfigureAwait(false);
-                                    await objCyberware.ChangeModularEquipAsync(false, token: GenericToken).ConfigureAwait(false);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                                    await objCyberware.ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
                                 }
                                 else
                                 {
-                                    await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
+                                    await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     string strEntry
-                                        = await LanguageManager.GetStringAsync("String_ExpenseSoldCyberware", token: GenericToken)
+                                        = await LanguageManager.GetStringAsync("String_ExpenseSoldCyberware", token: token)
                                                                .ConfigureAwait(false);
                                     objExpense.Create(0,
                                                       strEntry + strCyberwareDisabledSource +
                                                       await objCyberware
-                                                            .GetCurrentDisplayNameShortAsync(token: GenericToken)
+                                                            .GetCurrentDisplayNameShortAsync(token: token)
                                                             .ConfigureAwait(false),
                                                       ExpenseType.Nuyen,
                                                       DateTime.Now);
                                     await CharacterObject.ExpenseEntries
-                                                         .AddWithSortAsync(objExpense, token: GenericToken)
+                                                         .AddWithSortAsync(objExpense, token: token)
                                                          .ConfigureAwait(false);
                                 }
                             }
@@ -2800,16 +2788,16 @@ namespace Chummer
                             Improvement objExConImprovement = (await ImprovementManager
                                                                      .GetCachedImprovementListForValueOfAsync(
                                                                          CharacterObject,
-                                                                         Improvement.ImprovementType.ExCon, token: GenericToken)
+                                                                         Improvement.ImprovementType.ExCon, token: token)
                                                                      .ConfigureAwait(false))
                                 .FirstOrDefault();
                             if (objExConImprovement != null)
                             {
                                 strExConString
-                                    = await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false) + '(' +
-                                      await CharacterObject.GetObjectNameAsync(objExConImprovement, token: GenericToken)
+                                    = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                                      await CharacterObject.GetObjectNameAsync(objExConImprovement, token: token)
                                                            .ConfigureAwait(false) + ')' +
-                                      await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
+                                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                             }
 
                             foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
@@ -2817,12 +2805,12 @@ namespace Chummer
                                                  x.SourceID != Cyberware.EssenceHoleGUID
                                                  && x.SourceID != Cyberware.EssenceAntiHoleGUID
                                                  && x.Grade.Name != "None"
-                                                 && await x.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false)
+                                                 && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
-                                                     || x.CanRemoveThroughImprovements), GenericToken)
+                                                     || x.CanRemoveThroughImprovements), token)
                                          .ConfigureAwait(false))
                             {
-                                char chrAvail = (await objCyberware.TotalAvailTupleAsync(false, GenericToken)
+                                char chrAvail = (await objCyberware.TotalAvailTupleAsync(false, token)
                                                                    .ConfigureAwait(false)).Suffix;
                                 if (chrAvail != 'R' && chrAvail != 'F')
                                     continue;
@@ -2831,29 +2819,29 @@ namespace Chummer
                                     if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
                                     if (objCyberware.Parent != null)
-                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware, GenericToken)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)
                                                           .ConfigureAwait(false);
-                                    await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken)
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware, token)
                                                          .ConfigureAwait(false);
-                                    await objCyberware.ChangeModularEquipAsync(false, token: GenericToken)
+                                    await objCyberware.ChangeModularEquipAsync(false, token: token)
                                                       .ConfigureAwait(false);
                                 }
                                 else
                                 {
-                                    await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
+                                    await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     string strEntry = await LanguageManager.GetStringAsync(
                                         objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
                                             ? "String_ExpenseSoldCyberware"
-                                            : "String_ExpenseSoldBioware", token: GenericToken).ConfigureAwait(false);
+                                            : "String_ExpenseSoldBioware", token: token).ConfigureAwait(false);
                                     objExpense.Create(0,
                                                       strEntry + strExConString
                                                                + await objCyberware
-                                                                       .GetCurrentDisplayNameShortAsync(GenericToken)
+                                                                       .GetCurrentDisplayNameShortAsync(token)
                                                                        .ConfigureAwait(false),
                                                       ExpenseType.Nuyen, DateTime.Now);
                                     await CharacterObject.ExpenseEntries
-                                                         .AddWithSortAsync(objExpense, token: GenericToken)
+                                                         .AddWithSortAsync(objExpense, token: token)
                                                          .ConfigureAwait(false);
                                 }
                             }
@@ -2870,20 +2858,20 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabInitiation))
                                     x.TabPages.Insert(3, tabInitiation);
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }
                         else
                         {
                             await tabCharacterTabs
-                                  .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken)
+                                  .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
                                   .ConfigureAwait(false);
                         }
 
                         await gpbInitiationType
-                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled, GenericToken)
+                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled, token)
                               .ConfigureAwait(false);
                         await gpbInitiationGroup
-                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled, GenericToken)
+                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled, token)
                               .ConfigureAwait(false);
                     }
                         break;
@@ -2891,59 +2879,62 @@ namespace Chummer
                     case nameof(Character.QuickeningEnabled):
                     {
                         await cmdQuickenSpell
-                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.QuickeningEnabled, GenericToken)
+                              .DoThreadSafeAsync(x => x.Visible = CharacterObject.QuickeningEnabled, token)
                               .ConfigureAwait(false);
                         break;
                     }
                     case nameof(Character.FirstMentorSpiritDisplayName):
                     {
-                        MentorSpirit objMentor = await CharacterObject.MentorSpirits.FirstOrDefaultAsync(GenericToken)
+                        MentorSpirit objMentor = await CharacterObject.MentorSpirits.FirstOrDefaultAsync(token)
                                                                       .ConfigureAwait(false);
                         if (objMentor != null)
                         {
-                            await objMentor.SetSourceDetailAsync(lblMentorSpiritSource, GenericToken)
+                            await objMentor.SetSourceDetailAsync(lblMentorSpiritSource, token)
                                            .ConfigureAwait(false);
-                            await objMentor.SetSourceDetailAsync(lblParagonSource, GenericToken).ConfigureAwait(false);
+                            await objMentor.SetSourceDetailAsync(lblParagonSource, token).ConfigureAwait(false);
                         }
 
                         break;
                     }
                     case nameof(Character.HasMentorSpirit):
                     {
+                        bool blnHasMentor = CharacterObject.HasMentorSpirit;
                         await gpbMagicianMentorSpirit.DoThreadSafeAsync(
-                            x => x.Visible = CharacterObject.HasMentorSpirit, GenericToken).ConfigureAwait(false);
+                            x => x.Visible = blnHasMentor, token).ConfigureAwait(false);
                         await gpbTechnomancerParagon.DoThreadSafeAsync(
-                            x => x.Visible = CharacterObject.HasMentorSpirit, GenericToken).ConfigureAwait(false);
+                            x => x.Visible = blnHasMentor, token).ConfigureAwait(false);
                         break;
                     }
                     case nameof(Character.UseMysticAdeptPPs):
                     {
+                        bool blnUseMysticAdeptPPs = await CharacterObject.GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false);
                         await lblMysticAdeptAssignment.DoThreadSafeAsync(
-                            x => x.Visible = CharacterObject.UseMysticAdeptPPs, GenericToken).ConfigureAwait(false);
+                            x => x.Visible = blnUseMysticAdeptPPs, token).ConfigureAwait(false);
                         await lblMysticAdeptMAGAdept.DoThreadSafeAsync(
-                            x => x.Visible = CharacterObject.UseMysticAdeptPPs, GenericToken).ConfigureAwait(false);
+                            x => x.Visible = blnUseMysticAdeptPPs, token).ConfigureAwait(false);
                         break;
                     }
                     case nameof(Character.MysAdeptAllowPPCareer):
                     {
+                        bool blnMysAdeptAllowPPCareer = await CharacterObject.GetMysAdeptAllowPPCareerAsync(token).ConfigureAwait(false);
                         await cmdIncreasePowerPoints.DoThreadSafeAsync(
-                            x => x.Visible = CharacterObject.MysAdeptAllowPPCareer, GenericToken).ConfigureAwait(false);
+                            x => x.Visible = blnMysAdeptAllowPPCareer, token).ConfigureAwait(false);
                         break;
                     }
                     case nameof(Character.MetatypeCategory):
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
+                        await RequestCharacterUpdate(token).ConfigureAwait(false);
                         await mnuCreateMenu.DoThreadSafeAsync(
                             () => mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie",
-                            GenericToken).ConfigureAwait(false);
+                            token).ConfigureAwait(false);
                         break;
                     }
                     case nameof(Character.IsSprite):
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
+                        await RequestCharacterUpdate(token).ConfigureAwait(false);
                         await mnuCreateMenu.DoThreadSafeAsync(
                                                () => mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite,
-                                               GenericToken)
+                                               token)
                                            .ConfigureAwait(false);
                         break;
                     }
@@ -2952,8 +2943,8 @@ namespace Chummer
                         if (!IsLoading)
                         {
                             foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
-                                await DoOnCharacterSettingsPropertyChanged(
-                                    new PropertyChangedEventArgs(objProperty.Name)).ConfigureAwait(false);
+                                await OnCharacterSettingsPropertyChanged(this,
+                                    new PropertyChangedEventArgs(objProperty.Name), token).ConfigureAwait(false);
                         }
 
                         break;
@@ -2966,15 +2957,11 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            await DoOnCharacterSettingsPropertyChanged(e).ConfigureAwait(false);
-        }
-
-        private async ValueTask DoOnCharacterSettingsPropertyChanged(PropertyChangedEventArgs e)
+        private async Task OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
                     switch (e.PropertyName)
@@ -2984,7 +2971,7 @@ namespace Chummer
                             {
                                 cmdArmorDecrease.Visible = CharacterObjectSettings.ArmorDegradation;
                                 cmdArmorIncrease.Visible = CharacterObjectSettings.ArmorDegradation;
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                             break;
 
                         case nameof(CharacterSettings.Books):
@@ -2992,30 +2979,30 @@ namespace Chummer
                             if (IsLoading)
                                 break;
                             CursorWait objCursorWait
-                                = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                                = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                             try
                             {
-                                await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken)
+                                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token)
                                           .ConfigureAwait(false);
                                 try
                                 {
-                                    if (await CharacterObjectSettings.BookEnabledAsync("RF", GenericToken)
+                                    if (await CharacterObjectSettings.BookEnabledAsync("RF", token)
                                                                      .ConfigureAwait(false))
                                     {
                                         await cmdAddLifestyle
                                               .DoThreadSafeAsync(x => x.SplitMenuStrip = cmsAdvancedLifestyle,
-                                                                 GenericToken)
+                                                                 token)
                                               .ConfigureAwait(false);
                                     }
                                     else
                                     {
                                         await cmdAddLifestyle
                                               .DoThreadSafeAsync(x => x.SplitMenuStrip = null,
-                                                                 GenericToken)
+                                                                 token)
                                               .ConfigureAwait(false);
                                     }
 
-                                    if (!await CharacterObjectSettings.BookEnabledAsync("FA", GenericToken)
+                                    if (!await CharacterObjectSettings.BookEnabledAsync("FA", token)
                                                                       .ConfigureAwait(false))
                                     {
                                         await this.DoThreadSafeAsync(() =>
@@ -3023,8 +3010,8 @@ namespace Chummer
                                             lblWildReputation.Visible = false;
                                             nudWildReputation.Visible = false;
                                             lblWildReputationTotal.Visible = false;
-                                        }, GenericToken).ConfigureAwait(false);
-                                        if (!await CharacterObjectSettings.BookEnabledAsync("SG", GenericToken)
+                                        }, token).ConfigureAwait(false);
+                                        if (!await CharacterObjectSettings.BookEnabledAsync("SG", token)
                                                                           .ConfigureAwait(false))
                                         {
                                             await this.DoThreadSafeAsync(() =>
@@ -3032,7 +3019,7 @@ namespace Chummer
                                                 lblAstralReputation.Visible = false;
                                                 nudAstralReputation.Visible = false;
                                                 lblAstralReputationTotal.Visible = false;
-                                            }, GenericToken).ConfigureAwait(false);
+                                            }, token).ConfigureAwait(false);
                                         }
                                         else
                                         {
@@ -3041,7 +3028,7 @@ namespace Chummer
                                                 lblAstralReputation.Visible = true;
                                                 nudAstralReputation.Visible = true;
                                                 lblAstralReputationTotal.Visible = true;
-                                            }, GenericToken).ConfigureAwait(false);
+                                            }, token).ConfigureAwait(false);
                                         }
                                     }
                                     else
@@ -3054,60 +3041,60 @@ namespace Chummer
                                             lblAstralReputation.Visible = true;
                                             nudAstralReputation.Visible = true;
                                             lblAstralReputationTotal.Visible = true;
-                                        }, GenericToken).ConfigureAwait(false);
+                                        }, token).ConfigureAwait(false);
                                     }
 
                                     // Refresh all trees because enabled sources can change the nodes that are visible
                                     await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout,
-                                                           token: GenericToken).ConfigureAwait(false);
-                                    await RefreshSpirits(panSpirits, panSprites, token: GenericToken)
+                                                           token: token).ConfigureAwait(false);
+                                    await RefreshSpirits(panSpirits, panSprites, token: token)
                                         .ConfigureAwait(false);
                                     await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes,
-                                                        token: GenericToken).ConfigureAwait(false);
+                                                        token: token).ConfigureAwait(false);
                                     await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
-                                                              cmsInitiationNotes, token: GenericToken)
+                                                              cmsInitiationNotes, token: token)
                                         .ConfigureAwait(false);
                                     await RefreshPowerCollectionListChanged(
-                                            treMetamagic, cmsMetamagic, cmsInitiationNotes, token: GenericToken)
+                                            treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token)
                                         .ConfigureAwait(false);
                                     await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                                                  token: GenericToken).ConfigureAwait(false);
-                                    await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, token: GenericToken)
+                                                                  token: token).ConfigureAwait(false);
+                                    await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, token: token)
                                         .ConfigureAwait(false);
-                                    await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, token: GenericToken)
+                                    await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, token: token)
                                         .ConfigureAwait(false);
                                     await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique,
-                                                             token: GenericToken).ConfigureAwait(false);
+                                                             token: token).ConfigureAwait(false);
                                     await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle,
-                                                            token: GenericToken).ConfigureAwait(false);
-                                    await RefreshContacts(panContacts, panEnemies, panPets, token: GenericToken)
+                                                            token: token).ConfigureAwait(false);
+                                    await RefreshContacts(panContacts, panEnemies, panPets, token: token)
                                         .ConfigureAwait(false);
                                     await RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms,
                                                                  flpSustainedCritterPowers, chkPsycheActiveMagician,
-                                                                 chkPsycheActiveTechnomancer, token: GenericToken)
+                                                                 chkPsycheActiveTechnomancer, token: token)
                                         .ConfigureAwait(false);
 
                                     await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear,
-                                                       token: GenericToken).ConfigureAwait(false);
+                                                       token: token).ConfigureAwait(false);
                                     await RefreshGears(treGear, cmsGearLocation, cmsGear, null,
                                                        await chkCommlinks.DoThreadSafeFuncAsync(
-                                                           x => x.Checked, GenericToken).ConfigureAwait(false),
+                                                           x => x.Checked, token).ConfigureAwait(false),
                                                        await chkHideLoadedAmmo.DoThreadSafeFuncAsync(
-                                                           x => x.Checked, GenericToken).ConfigureAwait(false),
-                                                       token: GenericToken).ConfigureAwait(false);
-                                    await RefreshFociFromGear(treFoci, null, token: GenericToken).ConfigureAwait(false);
+                                                           x => x.Checked, token).ConfigureAwait(false),
+                                                       token: token).ConfigureAwait(false);
+                                    await RefreshFociFromGear(treFoci, null, token: token).ConfigureAwait(false);
                                     await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear,
-                                                           token: GenericToken).ConfigureAwait(false);
+                                                           token: token).ConfigureAwait(false);
                                     await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                                         cmsWeaponAccessoryGear, token: GenericToken)
+                                                         cmsWeaponAccessoryGear, token: token)
                                         .ConfigureAwait(false);
                                     await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
                                                           cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                                           cmsVehicleGear,
                                                           cmsWeaponMount,
                                                           cmsVehicleCyberware, cmsVehicleCyberwareGear,
-                                                          token: GenericToken).ConfigureAwait(false);
-                                    await RefreshDrugs(treCustomDrugs, token: GenericToken).ConfigureAwait(false);
+                                                          token: token).ConfigureAwait(false);
+                                    await RefreshDrugs(treCustomDrugs, token: token).ConfigureAwait(false);
                                     await this.DoThreadSafeAsync(() =>
                                     {
                                         treWeapons.SortCustomOrder();
@@ -3119,12 +3106,12 @@ namespace Chummer
                                         treVehicles.SortCustomOrder();
                                         treCritterPowers.SortCustomOrder();
                                         treImprovements.SortCustomOrder(true);
-                                    }, GenericToken).ConfigureAwait(false);
+                                    }, token).ConfigureAwait(false);
 
                                     XPathNavigator xmlTraditionsBaseChummerNode =
                                         await (await CharacterObject.LoadDataXPathAsync(
-                                                  "traditions.xml", token: GenericToken).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", GenericToken)
+                                                  "traditions.xml", token: token).ConfigureAwait(false))
+                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", token)
                                               .ConfigureAwait(false);
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstTraditions))
@@ -3134,23 +3121,23 @@ namespace Chummer
                                             foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                                          "traditions/tradition["
                                                          + await CharacterObjectSettings
-                                                                 .BookXPathAsync(token: GenericToken)
+                                                                 .BookXPathAsync(token: token)
                                                                  .ConfigureAwait(false)
                                                          + ']'))
                                             {
                                                 string strName
                                                     = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", GenericToken).ConfigureAwait(false))
+                                                        "name", token).ConfigureAwait(false))
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstTraditions.Add(new ListItem(
                                                                           (await xmlTradition
                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "id", GenericToken).ConfigureAwait(false))
+                                                                                  "id", token).ConfigureAwait(false))
                                                                           ?.Value ?? strName,
                                                                           (await xmlTradition
                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                                  "translate", token).ConfigureAwait(false))
                                                                           ?.Value ?? strName));
                                             }
                                         }
@@ -3162,15 +3149,15 @@ namespace Chummer
                                                 0,
                                                 new ListItem(
                                                     "None",
-                                                    await LanguageManager.GetStringAsync("String_None", token: GenericToken)
+                                                    await LanguageManager.GetStringAsync("String_None", token: token)
                                                                          .ConfigureAwait(false)));
                                             if (!lstTraditions.SequenceEqual(
                                                     await cboTradition.DoThreadSafeFuncAsync(
-                                                                          x => x.Items.Cast<ListItem>(), GenericToken)
+                                                                          x => x.Items.Cast<ListItem>(), token)
                                                                       .ConfigureAwait(false)))
                                             {
                                                 await cboTradition.PopulateWithListItemsAsync(
-                                                    lstTraditions, GenericToken).ConfigureAwait(false);
+                                                    lstTraditions, token).ConfigureAwait(false);
                                                 await cboTradition.DoThreadSafeAsync(x =>
                                                 {
                                                     if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -3178,7 +3165,7 @@ namespace Chummer
                                                             = CharacterObject.MagicTradition.SourceID.ToString();
                                                     else if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                                         x.SelectedIndex = 0;
-                                                }, GenericToken).ConfigureAwait(false);
+                                                }, token).ConfigureAwait(false);
                                             }
                                         }
                                         else
@@ -3187,7 +3174,7 @@ namespace Chummer
                                             {
                                                 cboTradition.Visible = false;
                                                 lblTraditionLabel.Visible = false;
-                                            }, GenericToken).ConfigureAwait(false);
+                                            }, token).ConfigureAwait(false);
                                         }
                                     }
 
@@ -3198,19 +3185,19 @@ namespace Chummer
                                         {
                                             foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode
                                                          .SelectAndCacheExpression(
-                                                             "drainattributes/drainattribute", GenericToken))
+                                                             "drainattributes/drainattribute", token))
                                             {
                                                 string strName
                                                     = (await xmlDrain
                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                 "name", GenericToken).ConfigureAwait(false))
+                                                                 "name", token).ConfigureAwait(false))
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
                                                     && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                                 {
                                                     string strTranslatedName = (await xmlDrain
                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                            "translate", GenericToken).ConfigureAwait(false))?.Value ?? strName;
+                                                            "translate", token).ConfigureAwait(false))?.Value ?? strName;
                                                     lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
                                                 }
                                             }
@@ -3218,7 +3205,7 @@ namespace Chummer
 
                                         lstDrainAttributes.Sort(CompareListItems.CompareNames);
                                         lstDrainAttributes.Insert(0, ListItem.Blank);
-                                        await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, GenericToken)
+                                        await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, token)
                                                       .ConfigureAwait(false);
                                     }
 
@@ -3228,7 +3215,7 @@ namespace Chummer
                                         foreach (Improvement improvement in await ImprovementManager
                                                      .GetCachedImprovementListForValueOfAsync(
                                                          CharacterObject,
-                                                         Improvement.ImprovementType.LimitSpiritCategory, token: GenericToken)
+                                                         Improvement.ImprovementType.LimitSpiritCategory, token: token)
                                                      .ConfigureAwait(false))
                                         {
                                             limit.Add(improvement.ImprovedName);
@@ -3241,11 +3228,11 @@ namespace Chummer
                                             if (xmlTraditionsBaseChummerNode != null)
                                             {
                                                 foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
-                                                             .SelectAndCacheExpression("spirits/spirit", GenericToken))
+                                                             .SelectAndCacheExpression("spirits/spirit", token))
                                                 {
                                                     string strSpiritName
                                                         = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "name", GenericToken).ConfigureAwait(false))
+                                                            "name", token).ConfigureAwait(false))
                                                         ?.Value;
                                                     if (!string.IsNullOrEmpty(strSpiritName)
                                                         && (limit.Count == 0 || limit.Contains(strSpiritName)))
@@ -3253,7 +3240,7 @@ namespace Chummer
                                                         lstSpirit.Add(new ListItem(strSpiritName,
                                                                           (await xmlSpirit
                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                                  "translate", token).ConfigureAwait(false))
                                                                           ?.Value
                                                                           ?? strSpiritName));
                                                     }
@@ -3261,25 +3248,25 @@ namespace Chummer
                                             }
 
                                             lstSpirit.Sort(CompareListItems.CompareNames);
-                                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, GenericToken)
+                                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, token)
                                                                  .ConfigureAwait(false);
                                             await cboSpiritDetection
-                                                  .PopulateWithListItemsAsync(lstSpirit, GenericToken)
+                                                  .PopulateWithListItemsAsync(lstSpirit, token)
                                                   .ConfigureAwait(false);
-                                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, GenericToken)
+                                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, token)
                                                                  .ConfigureAwait(false);
-                                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit, GenericToken)
+                                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit, token)
                                                                    .ConfigureAwait(false);
                                             await cboSpiritManipulation.PopulateWithListItemsAsync(
-                                                lstSpirit, GenericToken).ConfigureAwait(false);
+                                                lstSpirit, token).ConfigureAwait(false);
                                         }
                                     }
 
                                     // Populate the Technomancer Streams list.
                                     xmlTraditionsBaseChummerNode =
                                         await (await CharacterObject.LoadDataXPathAsync(
-                                                  "streams.xml", token: GenericToken).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", GenericToken)
+                                                  "streams.xml", token: token).ConfigureAwait(false))
+                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", token)
                                               .ConfigureAwait(false);
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstStreams))
@@ -3289,23 +3276,23 @@ namespace Chummer
                                             foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                                          "traditions/tradition["
                                                          + await CharacterObjectSettings
-                                                                 .BookXPathAsync(token: GenericToken)
+                                                                 .BookXPathAsync(token: token)
                                                                  .ConfigureAwait(false)
                                                          + ']'))
                                             {
                                                 string strName
                                                     = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", GenericToken).ConfigureAwait(false))
+                                                        "name", token).ConfigureAwait(false))
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstStreams.Add(new ListItem(
                                                                        (await xmlTradition
                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "id", GenericToken).ConfigureAwait(false))
+                                                                                  "id", token).ConfigureAwait(false))
                                                                        ?.Value ?? strName,
                                                                        (await xmlTradition
                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                                  "translate", token).ConfigureAwait(false))
                                                                        ?.Value ?? strName));
                                             }
                                         }
@@ -3317,14 +3304,14 @@ namespace Chummer
                                                 0,
                                                 new ListItem(
                                                     "None",
-                                                    await LanguageManager.GetStringAsync("String_None", token: GenericToken)
+                                                    await LanguageManager.GetStringAsync("String_None", token: token)
                                                                          .ConfigureAwait(false)));
                                             if (!lstStreams.SequenceEqual(
                                                     await cboStream.DoThreadSafeFuncAsync(
-                                                                       x => x.Items.Cast<ListItem>(), GenericToken)
+                                                                       x => x.Items.Cast<ListItem>(), token)
                                                                    .ConfigureAwait(false)))
                                             {
-                                                await cboStream.PopulateWithListItemsAsync(lstStreams, GenericToken)
+                                                await cboStream.PopulateWithListItemsAsync(lstStreams, token)
                                                                .ConfigureAwait(false);
                                                 await cboStream.DoThreadSafeAsync(x =>
                                                 {
@@ -3333,7 +3320,7 @@ namespace Chummer
                                                             = CharacterObject.MagicTradition.SourceID.ToString();
                                                     else if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                                         x.SelectedIndex = 0;
-                                                }, GenericToken).ConfigureAwait(false);
+                                                }, token).ConfigureAwait(false);
                                             }
                                         }
                                         else
@@ -3342,15 +3329,15 @@ namespace Chummer
                                             {
                                                 cboStream.Visible = false;
                                                 lblStreamLabel.Visible = false;
-                                            }, GenericToken).ConfigureAwait(false);
+                                            }, token).ConfigureAwait(false);
                                         }
                                     }
 
-                                    await RefreshSelectedVehicle(GenericToken).ConfigureAwait(false);
+                                    await RefreshSelectedVehicle(token).ConfigureAwait(false);
                                 }
                                 finally
                                 {
-                                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
+                                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token)
                                               .ConfigureAwait(false);
                                 }
                             }
@@ -3363,15 +3350,15 @@ namespace Chummer
                         }
                         case nameof(CharacterSettings.AllowFreeGrids):
                         {
-                            if (!await CharacterObjectSettings.BookEnabledAsync("HT", GenericToken).ConfigureAwait(false))
+                            if (!await CharacterObjectSettings.BookEnabledAsync("HT", token).ConfigureAwait(false))
                             {
-                                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken)
+                                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token)
                                                                            .ConfigureAwait(false);
                                 try
                                 {
-                                    await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, token: GenericToken)
+                                    await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, token: token)
                                         .ConfigureAwait(false);
-                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), token)
                                                        .ConfigureAwait(false);
                                 }
                                 finally
@@ -3385,7 +3372,7 @@ namespace Chummer
                         case nameof(CharacterSettings.EnableEnemyTracking):
                         {
                             CursorWait objCursorWait
-                                = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                                = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                             try
                             {
                                 await this.DoThreadSafeAsync(x =>
@@ -3409,8 +3396,8 @@ namespace Chummer
                                     {
                                         x.ResumeLayout();
                                     }
-                                }, GenericToken).ConfigureAwait(false);
-                                await RefreshContacts(panContacts, panEnemies, panPets, token: GenericToken)
+                                }, token).ConfigureAwait(false);
+                                await RefreshContacts(panContacts, panEnemies, panPets, token: token)
                                     .ConfigureAwait(false);
                             }
                             finally
@@ -3424,7 +3411,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await RequestCharacterUpdate(token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -4694,22 +4681,22 @@ namespace Chummer
                         if (blnMAGEnabled != CharacterObject.MAGEnabled)
                         {
                             CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                            await DoOnCharacterPropertyChanged(
-                                new PropertyChangedEventArgs(nameof(Character.MAGEnabled))).ConfigureAwait(false);
+                            await OnCharacterPropertyChanged(this,
+                                new PropertyChangedEventArgs(nameof(Character.MAGEnabled)), token).ConfigureAwait(false);
                         }
 
                         if (blnRESEnabled != CharacterObject.RESEnabled)
                         {
                             CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                            await DoOnCharacterPropertyChanged(
-                                new PropertyChangedEventArgs(nameof(Character.RESEnabled))).ConfigureAwait(false);
+                            await OnCharacterPropertyChanged(this,
+                                new PropertyChangedEventArgs(nameof(Character.RESEnabled)), token).ConfigureAwait(false);
                         }
 
                         if (blnDEPEnabled != CharacterObject.DEPEnabled)
                         {
                             CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                            await DoOnCharacterPropertyChanged(
-                                new PropertyChangedEventArgs(nameof(Character.DEPEnabled))).ConfigureAwait(false);
+                            await OnCharacterPropertyChanged(this,
+                                new PropertyChangedEventArgs(nameof(Character.DEPEnabled)), token).ConfigureAwait(false);
                         }
 
                         Task tskUpdate = await RequestCharacterUpdate(token).ConfigureAwait(false);
@@ -24897,9 +24884,9 @@ namespace Chummer
             }
         }
 
-        private async Task ExpenseEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ExpenseEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            await DoExpenseEntriesCollectionChanged(e, GenericToken).ConfigureAwait(false);
+            await DoExpenseEntriesCollectionChanged(e, token).ConfigureAwait(false);
         }
 
         private async ValueTask DoExpenseEntriesCollectionChanged(NotifyCollectionChangedEventArgs e,
@@ -26627,15 +26614,19 @@ namespace Chummer
                         if (objCommlink.IsActiveCommlink(CharacterObject))
                         {
                             if (objCommlink.IsHomeNode(CharacterObject))
-                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                          nameof(Character.MatrixInitiativeColdValue),
-                                                                          nameof(Character.MatrixInitiativeHotValue));
+                                await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
+                                    nameof(Character.MatrixInitiativeValue),
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                             else
-                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                          nameof(Character.MatrixInitiativeHotValue));
+                                await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                         }
                         else
-                            CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                            await CharacterObject
+                                .OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), GenericToken)
+                                .ConfigureAwait(false);
                     }
 
                     await RequestCharacterUpdate().ConfigureAwait(false);

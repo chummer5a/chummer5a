@@ -270,7 +270,7 @@ namespace Chummer
                         try
                         {
                             _objGenericToken.ThrowIfCancellationRequested();
-                            objSettings.PropertyChanged += OnSelectedSettingChanged;
+                            objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
                         }
                         finally
                         {
@@ -303,7 +303,7 @@ namespace Chummer
                     try
                     {
                         _objGenericToken.ThrowIfCancellationRequested();
-                        _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+                        _objSelectedSetting.PropertyChangedAsync -= OnSelectedSettingChanged;
                     }
                     finally
                     {
@@ -366,17 +366,17 @@ namespace Chummer
             _objGenericFormClosingCancellationTokenSource.Cancel(false);
         }
 
-        private async void OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             if (e.PropertyName == nameof(CharacterSettings.Books)
                 || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
             {
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        await LoadContent(_objGenericToken).ConfigureAwait(false);
+                        await LoadContent(token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -443,7 +443,7 @@ namespace Chummer
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    objPreviousSettings.PropertyChanged -= OnSelectedSettingChanged;
+                                    objPreviousSettings.PropertyChangedAsync -= OnSelectedSettingChanged;
                                 }
                                 finally
                                 {
@@ -457,7 +457,7 @@ namespace Chummer
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    objSettings.PropertyChanged += OnSelectedSettingChanged;
+                                    objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
                                 }
                                 finally
                                 {

@@ -375,16 +375,14 @@ namespace Chummer.UI.Skills
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken).AsTask(), objMyToken,
-                            objMyToken)
+                                    objMyToken).AsTask(), objMyToken)
                         .ConfigureAwait(false);
                     await lblActiveSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                             nameof(Character
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken).AsTask(), objMyToken,
-                            objMyToken)
+                                    objMyToken).AsTask(), objMyToken)
                         .ConfigureAwait(false);
                     await lblBuyWithKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
                             _objCharacter,
@@ -392,8 +390,7 @@ namespace Chummer.UI.Skills
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken).AsTask(), objMyToken,
-                            objMyToken)
+                                    objMyToken).AsTask(), objMyToken)
                         .ConfigureAwait(false);
 
                     await lblKnoSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
@@ -401,12 +398,12 @@ namespace Chummer.UI.Skills
                         nameof(SkillsSection.HasKnowledgePoints),
                         x => x.GetHasKnowledgePointsAsync(objMyToken)
                             .AsTask(),
-                        objMyToken, objMyToken).ConfigureAwait(false);
+                        objMyToken).ConfigureAwait(false);
                     await lblKnoBwk.RegisterOneWayAsyncDataBindingAsync(
                         (x, y) => x.Visible = y, _objCharacter.SkillsSection,
                         nameof(SkillsSection.HasKnowledgePoints),
                         x => x.GetHasKnowledgePointsAsync(objMyToken).AsTask(),
-                        objMyToken, objMyToken).ConfigureAwait(false);
+                        objMyToken).ConfigureAwait(false);
                     await UpdateKnoSkillRemainingAsync(objMyToken).ConfigureAwait(false);
                 }
 
@@ -418,7 +415,7 @@ namespace Chummer.UI.Skills
                     _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
                     _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
                     _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
-                    _objCharacter.SkillsSection.PropertyChanged += SkillsSectionOnPropertyChanged;
+                    _objCharacter.SkillsSection.PropertyChangedAsync += SkillsSectionOnPropertyChanged;
                 }
                 finally
                 {
@@ -440,16 +437,17 @@ namespace Chummer.UI.Skills
             MakeDirtyWithCharacterUpdate?.Invoke(sender, e);
         }
 
-        private async void SkillsSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task SkillsSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
+                token.ThrowIfCancellationRequested();
                 if ((e.PropertyName == nameof(SkillsSection.KnowledgeSkillPointsRemain)
                      || e.PropertyName == nameof(SkillsSection.KnowledgeSkillPoints)
                      || e.PropertyName == nameof(SkillsSection.SkillPointsSpentOnKnoskills))
-                    && _objCharacter != null && !await _objCharacter.GetCreatedAsync(MyToken).ConfigureAwait(false))
+                    && _objCharacter != null && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {
-                    await UpdateKnoSkillRemainingAsync(MyToken).ConfigureAwait(false);
+                    await UpdateKnoSkillRemainingAsync(token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -583,7 +581,7 @@ namespace Chummer.UI.Skills
                         _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
                         _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
                         _objCharacter.SkillsSection.KnowledgeSkills.ListChanged -= KnowledgeSkillsOnListChanged;
-                        _objCharacter.SkillsSection.PropertyChanged -= SkillsSectionOnPropertyChanged;
+                        _objCharacter.SkillsSection.PropertyChangedAsync -= SkillsSectionOnPropertyChanged;
                     }
                 }
                 catch (ObjectDisposedException)

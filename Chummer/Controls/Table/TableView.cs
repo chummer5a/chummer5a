@@ -557,19 +557,20 @@ namespace Chummer.UI.Table
             await DoFilter(token: token).ConfigureAwait(false);
         }
 
-        private async Task ItemsChanged(object sender, ListChangedEventArgs e)
+        private async Task ItemsChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
                 {
-                    T item = await Items.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
+                    T item = await Items.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
                     if (e.PropertyDescriptor == null)
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                         try
                         {
-                            await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+                            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                             try
                             {
                                 TableRow row = _lstRowCells[e.NewIndex];
@@ -577,20 +578,20 @@ namespace Chummer.UI.Table
                                 {
                                     if (row.Parent == null)
                                     {
-                                        await this.DoThreadSafeAsync(x => x.Controls.Add(row)).ConfigureAwait(false);
+                                        await this.DoThreadSafeAsync(x => x.Controls.Add(row), token: token).ConfigureAwait(false);
                                     }
                                 }
                                 else if (row.Parent != null)
                                 {
-                                    await this.DoThreadSafeAsync(x => x.Controls.Remove(row)).ConfigureAwait(false);
+                                    await this.DoThreadSafeAsync(x => x.Controls.Remove(row), token: token).ConfigureAwait(false);
                                 }
 
-                                await UpdateRow(e.NewIndex, item).ConfigureAwait(false);
-                                Sort(false);
+                                await UpdateRow(e.NewIndex, item, token).ConfigureAwait(false);
+                                Sort(false, token);
                             }
                             finally
                             {
-                                await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
+                                await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                             }
                         }
                         finally
@@ -600,7 +601,7 @@ namespace Chummer.UI.Table
                     }
                     else
                     {
-                        await ItemPropertyChanged(e.NewIndex, item, e.PropertyDescriptor.Name).ConfigureAwait(false);
+                        await ItemPropertyChanged(e.NewIndex, item, e.PropertyDescriptor.Name, token).ConfigureAwait(false);
                     }
 
                     break;
@@ -608,28 +609,28 @@ namespace Chummer.UI.Table
 
                 case ListChangedType.ItemAdded:
                 {
-                    T item = await Items.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
+                    T item = await Items.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
                     Control[] lstToAdd = new Control[_columns.Count];
                     for (int i = 0; i < _columns.Count; i++)
                     {
                         TableColumn<T> column = _columns[i];
                         IList<TableCell> cells = _lstCells[i].cells;
-                        TableCell newCell = await CreateCell(item, column).ConfigureAwait(false);
+                        TableCell newCell = await CreateCell(item, column, token).ConfigureAwait(false);
                         cells.Insert(e.NewIndex, newCell);
                         lstToAdd[i] = newCell;
                     }
 
-                    TableRow row = await this.DoThreadSafeFuncAsync(x => x.CreateRow()).ConfigureAwait(false);
+                    TableRow row = await this.DoThreadSafeFuncAsync(x => x.CreateRow(), token: token).ConfigureAwait(false);
                     _lstRowCells.Insert(e.NewIndex, row);
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                         try
                         {
                             if (await Filter(item).ConfigureAwait(false))
                             {
-                                await this.DoThreadSafeAsync(x => x.Controls.Add(row)).ConfigureAwait(false);
+                                await this.DoThreadSafeAsync(x => x.Controls.Add(row), token: token).ConfigureAwait(false);
                             }
 
                             await row.DoThreadSafeAsync(x =>
@@ -643,14 +644,14 @@ namespace Chummer.UI.Table
                                 {
                                     x.ResumeLayout(false);
                                 }
-                            }).ConfigureAwait(false);
+                            }, token: token).ConfigureAwait(false);
 
                             _lstPermutation.Add(_lstPermutation.Count);
-                            Sort(false);
+                            Sort(false, token);
                         }
                         finally
                         {
-                            await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
+                            await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -668,10 +669,10 @@ namespace Chummer.UI.Table
                         cells.RemoveAt(e.NewIndex);
                     }
 
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                         try
                         {
                             await this.DoThreadSafeAsync(x =>
@@ -683,15 +684,15 @@ namespace Chummer.UI.Table
                                 }
 
                                 row.Dispose();
-                            }).ConfigureAwait(false);
+                            }, token: token).ConfigureAwait(false);
 
                             _lstRowCells.RemoveAt(e.NewIndex);
                             _lstPermutation.Remove(_lstPermutation.Count - 1);
-                            Sort(false);
+                            Sort(false, token);
                         }
                         finally
                         {
-                            await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
+                            await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -742,7 +743,7 @@ namespace Chummer.UI.Table
                         }
                     }
 
-                    Sort();
+                    Sort(token: token);
                     break;
                 }
             }
