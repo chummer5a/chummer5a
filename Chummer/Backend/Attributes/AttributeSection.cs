@@ -292,31 +292,31 @@ namespace Chummer.Backend.Attributes
 
                     // Not creating a new collection here so that CollectionChanged events from previous list are kept
                     _lstAttributes.Clear();
-                    _lstAttributes.Add(_objCharacter.BOD);
-                    _lstAttributes.Add(_objCharacter.AGI);
-                    _lstAttributes.Add(_objCharacter.REA);
-                    _lstAttributes.Add(_objCharacter.STR);
-                    _lstAttributes.Add(_objCharacter.CHA);
-                    _lstAttributes.Add(_objCharacter.INT);
-                    _lstAttributes.Add(_objCharacter.LOG);
-                    _lstAttributes.Add(_objCharacter.WIL);
-                    _lstAttributes.Add(_objCharacter.EDG);
+                    _lstAttributes.Add(GetAttributeByName("BOD", token));
+                    _lstAttributes.Add(GetAttributeByName("AGI", token));
+                    _lstAttributes.Add(GetAttributeByName("REA", token));
+                    _lstAttributes.Add(GetAttributeByName("STR", token));
+                    _lstAttributes.Add(GetAttributeByName("CHA", token));
+                    _lstAttributes.Add(GetAttributeByName("INT", token));
+                    _lstAttributes.Add(GetAttributeByName("LOG", token));
+                    _lstAttributes.Add(GetAttributeByName("WIL", token));
+                    _lstAttributes.Add(GetAttributeByName("EDG", token));
 
                     if (_objCharacter.MAGEnabled)
                     {
-                        _lstAttributes.Add(_objCharacter.MAG);
+                        _lstAttributes.Add(GetAttributeByName("MAG", token));
                         if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                            _lstAttributes.Add(_objCharacter.MAGAdept);
+                            _lstAttributes.Add(GetAttributeByName("MAGAdept", token));
                     }
 
                     if (_objCharacter.RESEnabled)
                     {
-                        _lstAttributes.Add(_objCharacter.RES);
+                        _lstAttributes.Add(GetAttributeByName("RES", token));
                     }
 
                     if (_objCharacter.DEPEnabled)
                     {
-                        _lstAttributes.Add(_objCharacter.DEP);
+                        _lstAttributes.Add(GetAttributeByName("DEP", token));
                     }
                 }
             }
@@ -643,32 +643,45 @@ namespace Chummer.Backend.Attributes
                                                        CustomActivity.OperationType.RequestOperation,
                                                        charNode.InnerText))
                     {
-                        int intOldBODBase = _objCharacter.BOD.Base;
-                        int intOldBODKarma = _objCharacter.BOD.Karma;
-                        int intOldAGIBase = _objCharacter.AGI.Base;
-                        int intOldAGIKarma = _objCharacter.AGI.Karma;
-                        int intOldREABase = _objCharacter.REA.Base;
-                        int intOldREAKarma = _objCharacter.REA.Karma;
-                        int intOldSTRBase = _objCharacter.STR.Base;
-                        int intOldSTRKarma = _objCharacter.STR.Karma;
-                        int intOldCHABase = _objCharacter.CHA.Base;
-                        int intOldCHAKarma = _objCharacter.CHA.Karma;
-                        int intOldINTBase = _objCharacter.INT.Base;
-                        int intOldINTKarma = _objCharacter.INT.Karma;
-                        int intOldLOGBase = _objCharacter.LOG.Base;
-                        int intOldLOGKarma = _objCharacter.LOG.Karma;
-                        int intOldWILBase = _objCharacter.WIL.Base;
-                        int intOldWILKarma = _objCharacter.WIL.Karma;
-                        int intOldEDGBase = _objCharacter.EDG.Base;
-                        int intOldEDGKarma = _objCharacter.EDG.Karma;
-                        int intOldMAGBase = _objCharacter.MAG.Base;
-                        int intOldMAGKarma = _objCharacter.MAG.Karma;
-                        int intOldMAGAdeptBase = _objCharacter.MAGAdept.Base;
-                        int intOldMAGAdeptKarma = _objCharacter.MAGAdept.Karma;
-                        int intOldRESBase = _objCharacter.RES.Base;
-                        int intOldRESKarma = _objCharacter.RES.Karma;
-                        int intOldDEPBase = _objCharacter.DEP.Base;
-                        int intOldDEPKarma = _objCharacter.DEP.Karma;
+                        CharacterAttrib objBod = GetAttributeByName("BOD", token);
+                        int intOldBODBase = objBod.Base;
+                        int intOldBODKarma = objBod.Karma;
+                        CharacterAttrib objAgi = GetAttributeByName("AGI", token);
+                        int intOldAGIBase = objAgi.Base;
+                        int intOldAGIKarma = objAgi.Karma;
+                        CharacterAttrib objRea = GetAttributeByName("REA", token);
+                        int intOldREABase = objRea.Base;
+                        int intOldREAKarma = objRea.Karma;
+                        CharacterAttrib objStr = GetAttributeByName("STR", token);
+                        int intOldSTRBase = objStr.Base;
+                        int intOldSTRKarma = objStr.Karma;
+                        CharacterAttrib objCha = GetAttributeByName("CHA", token);
+                        int intOldCHABase = objCha.Base;
+                        int intOldCHAKarma = objCha.Karma;
+                        CharacterAttrib objInt = GetAttributeByName("INT", token);
+                        int intOldINTBase = objInt.Base;
+                        int intOldINTKarma = objInt.Karma;
+                        CharacterAttrib objLog = GetAttributeByName("LOG", token);
+                        int intOldLOGBase = objLog.Base;
+                        int intOldLOGKarma = objLog.Karma;
+                        CharacterAttrib objWil = GetAttributeByName("WIL", token);
+                        int intOldWILBase = objWil.Base;
+                        int intOldWILKarma = objWil.Karma;
+                        CharacterAttrib objEdg = GetAttributeByName("EDG", token);
+                        int intOldEDGBase = objEdg.Base;
+                        int intOldEDGKarma = objEdg.Karma;
+                        CharacterAttrib objMag = GetAttributeByName("MAG", token);
+                        int intOldMAGBase = objMag.Base;
+                        int intOldMAGKarma = objMag.Karma;
+                        CharacterAttrib objMagAdept = GetAttributeByName("MAGAdept", token);
+                        int intOldMAGAdeptBase = objMagAdept.Base;
+                        int intOldMAGAdeptKarma = objMagAdept.Karma;
+                        CharacterAttrib objRes = GetAttributeByName("RES", token);
+                        int intOldRESBase = objRes.Base;
+                        int intOldRESKarma = objRes.Karma;
+                        CharacterAttrib objDep = GetAttributeByName("DEP", token);
+                        int intOldDEPBase = objDep.Base;
+                        int intOldDEPKarma = objDep.Karma;
                         AttributeList.Clear();
                         SpecialAttributeList.Clear();
 
@@ -691,105 +704,105 @@ namespace Chummer.Backend.Attributes
                             }
                         }
 
-                        _objCharacter.BOD.AssignLimits(
+                        objBod.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["bodmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["bodmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["bodaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.AGI.AssignLimits(
+                        objAgi.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["agimin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["agimax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["agiaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.REA.AssignLimits(
+                        objRea.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["reamin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["reamax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["reaaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.STR.AssignLimits(
+                        objStr.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["strmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["strmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["straug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.CHA.AssignLimits(
+                        objCha.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["chamin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["chamax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["chaaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.INT.AssignLimits(
+                        objInt.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["intmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["intmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["intaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.LOG.AssignLimits(
+                        objLog.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["logmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["logmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["logaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.WIL.AssignLimits(
+                        objWil.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["wilmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["wilmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["wilaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.MAG.AssignLimits(
+                        objMag.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.RES.AssignLimits(
+                        objRes.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["resmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["resaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.EDG.AssignLimits(
+                        objEdg.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["edgmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["edgmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["edgaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.DEP.AssignLimits(
+                        objDep.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["depmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["depaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.MAGAdept.AssignLimits(
+                        objMagAdept.AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerText, intValue, intMinModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intValue, intMaxModifier, token: token),
                             CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerText, intValue, intMaxModifier, token: token));
-                        _objCharacter.ESS.AssignLimits(
+                        GetAttributeByName("ESS", token).AssignLimits(
                             CommonFunctions.ExpressionToInt(charNode["essmin"]?.InnerText, intValue, token: token),
                             CommonFunctions.ExpressionToInt(charNode["essmax"]?.InnerText, intValue, token: token),
                             CommonFunctions.ExpressionToInt(charNode["essaug"]?.InnerText, intValue, token: token));
 
-                        _objCharacter.BOD.Base = Math.Min(intOldBODBase, _objCharacter.BOD.PriorityMaximum);
-                        _objCharacter.BOD.Karma = Math.Min(intOldBODKarma, _objCharacter.BOD.KarmaMaximum);
-                        _objCharacter.AGI.Base = Math.Min(intOldAGIBase, _objCharacter.AGI.PriorityMaximum);
-                        _objCharacter.AGI.Karma = Math.Min(intOldAGIKarma, _objCharacter.AGI.KarmaMaximum);
-                        _objCharacter.REA.Base = Math.Min(intOldREABase, _objCharacter.REA.PriorityMaximum);
-                        _objCharacter.REA.Karma = Math.Min(intOldREAKarma, _objCharacter.REA.KarmaMaximum);
-                        _objCharacter.STR.Base = Math.Min(intOldSTRBase, _objCharacter.STR.PriorityMaximum);
-                        _objCharacter.STR.Karma = Math.Min(intOldSTRKarma, _objCharacter.STR.KarmaMaximum);
-                        _objCharacter.CHA.Base = Math.Min(intOldCHABase, _objCharacter.CHA.PriorityMaximum);
-                        _objCharacter.CHA.Karma = Math.Min(intOldCHAKarma, _objCharacter.CHA.KarmaMaximum);
-                        _objCharacter.INT.Base = Math.Min(intOldINTBase, _objCharacter.INT.PriorityMaximum);
-                        _objCharacter.INT.Karma = Math.Min(intOldINTKarma, _objCharacter.INT.KarmaMaximum);
-                        _objCharacter.LOG.Base = Math.Min(intOldLOGBase, _objCharacter.LOG.PriorityMaximum);
-                        _objCharacter.LOG.Karma = Math.Min(intOldLOGKarma, _objCharacter.LOG.KarmaMaximum);
-                        _objCharacter.WIL.Base = Math.Min(intOldWILBase, _objCharacter.WIL.PriorityMaximum);
-                        _objCharacter.WIL.Karma = Math.Min(intOldWILKarma, _objCharacter.WIL.KarmaMaximum);
-                        _objCharacter.EDG.Base = Math.Min(intOldEDGBase, _objCharacter.EDG.PriorityMaximum);
-                        _objCharacter.EDG.Karma = Math.Min(intOldEDGKarma, _objCharacter.EDG.KarmaMaximum);
+                        objBod.Base = Math.Min(intOldBODBase, objBod.PriorityMaximum);
+                        objBod.Karma = Math.Min(intOldBODKarma, objBod.KarmaMaximum);
+                        objAgi.Base = Math.Min(intOldAGIBase, objAgi.PriorityMaximum);
+                        objAgi.Karma = Math.Min(intOldAGIKarma, objAgi.KarmaMaximum);
+                        objRea.Base = Math.Min(intOldREABase, objRea.PriorityMaximum);
+                        objRea.Karma = Math.Min(intOldREAKarma, objRea.KarmaMaximum);
+                        objStr.Base = Math.Min(intOldSTRBase, objStr.PriorityMaximum);
+                        objStr.Karma = Math.Min(intOldSTRKarma, objStr.KarmaMaximum);
+                        objCha.Base = Math.Min(intOldCHABase, objCha.PriorityMaximum);
+                        objCha.Karma = Math.Min(intOldCHAKarma, objCha.KarmaMaximum);
+                        objInt.Base = Math.Min(intOldINTBase, objInt.PriorityMaximum);
+                        objInt.Karma = Math.Min(intOldINTKarma, objInt.KarmaMaximum);
+                        objLog.Base = Math.Min(intOldLOGBase, objLog.PriorityMaximum);
+                        objLog.Karma = Math.Min(intOldLOGKarma, objLog.KarmaMaximum);
+                        objWil.Base = Math.Min(intOldWILBase, objWil.PriorityMaximum);
+                        objWil.Karma = Math.Min(intOldWILKarma, objWil.KarmaMaximum);
+                        objEdg.Base = Math.Min(intOldEDGBase, objEdg.PriorityMaximum);
+                        objEdg.Karma = Math.Min(intOldEDGKarma, objEdg.KarmaMaximum);
 
                         if (_objCharacter.MAGEnabled)
                         {
-                            _objCharacter.MAG.Base = Math.Min(intOldMAGBase, _objCharacter.MAG.PriorityMaximum);
-                            _objCharacter.MAG.Karma = Math.Min(intOldMAGKarma, _objCharacter.MAG.KarmaMaximum);
+                            objMag.Base = Math.Min(intOldMAGBase, objMag.PriorityMaximum);
+                            objMag.Karma = Math.Min(intOldMAGKarma, objMag.KarmaMaximum);
                             if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                             {
-                                _objCharacter.MAGAdept.Base =
-                                    Math.Min(intOldMAGAdeptBase, _objCharacter.MAGAdept.PriorityMaximum);
-                                _objCharacter.MAGAdept.Karma =
-                                    Math.Min(intOldMAGAdeptKarma, _objCharacter.MAGAdept.KarmaMaximum);
+                                objMagAdept.Base =
+                                    Math.Min(intOldMAGAdeptBase, objMagAdept.PriorityMaximum);
+                                objMagAdept.Karma =
+                                    Math.Min(intOldMAGAdeptKarma, objMagAdept.KarmaMaximum);
                             }
                         }
 
                         if (_objCharacter.RESEnabled)
                         {
-                            _objCharacter.RES.Base = Math.Min(intOldRESBase, _objCharacter.RES.PriorityMaximum);
-                            _objCharacter.RES.Karma = Math.Min(intOldRESKarma, _objCharacter.RES.KarmaMaximum);
+                            objRes.Base = Math.Min(intOldRESBase, objRes.PriorityMaximum);
+                            objRes.Karma = Math.Min(intOldRESKarma, objRes.KarmaMaximum);
                         }
 
                         if (_objCharacter.DEPEnabled)
                         {
-                            _objCharacter.DEP.Base = Math.Min(intOldDEPBase, _objCharacter.DEP.PriorityMaximum);
-                            _objCharacter.DEP.Karma = Math.Min(intOldDEPKarma, _objCharacter.DEP.KarmaMaximum);
+                            objDep.Base = Math.Min(intOldDEPBase, objDep.PriorityMaximum);
+                            objDep.Karma = Math.Min(intOldDEPKarma, objDep.KarmaMaximum);
                         }
 
                         InitializeAttributesList(token);
