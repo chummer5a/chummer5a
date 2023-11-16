@@ -477,7 +477,9 @@ namespace Chummer
                              .ConfigureAwait(false);
             await cboBaseLifestyle.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.BaseLifestyle)).ConfigureAwait(false);
             await chkTrustFund.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.TrustFund)).ConfigureAwait(false);
-            await chkTrustFund.DoOneWayDataBindingAsync("Enabled", _objLifestyle, nameof(Lifestyle.IsTrustFundEligible)).ConfigureAwait(false);
+            await chkTrustFund.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objLifestyle,
+                    nameof(Lifestyle.IsTrustFundEligible), x => x.GetIsTrustFundEligibleAsync().AsTask())
+                .ConfigureAwait(false);
             await chkPrimaryTenant.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant)).ConfigureAwait(false);
             await lblCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                                                          nameof(Lifestyle.DisplayTotalMonthlyCost),

@@ -882,6 +882,16 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<bool> GetReadOnlyAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnReadOnly;
+            }
+        }
+
         /// <summary>
         /// Total points used for this contact.
         /// </summary>
@@ -1909,6 +1919,19 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Contact Color.
+        /// </summary>
+        public async ValueTask<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _objColor;
             }
         }
 

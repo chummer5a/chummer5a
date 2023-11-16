@@ -34,6 +34,7 @@ namespace Chummer
     public partial class SpiritControl : UserControl
     {
         private readonly Spirit _objSpirit;
+        private readonly CancellationToken _objMyToken;
         private bool _blnLoading = true;
 
         // Events.
@@ -43,76 +44,117 @@ namespace Chummer
 
         #region Control Events
 
-        public SpiritControl(Spirit objSpirit)
+        public SpiritControl(Spirit objSpirit, CancellationToken objMyToken)
         {
-            _objSpirit = objSpirit;
+            _objSpirit = objSpirit ?? throw new ArgumentNullException(nameof(objSpirit));
+            _objMyToken = objMyToken;
             InitializeComponent();
 
             Disposed += (sender, args) => UnbindSpiritControl();
 
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            this.UpdateLightDarkMode(objMyToken);
+            this.TranslateWinForm(token: objMyToken);
             foreach (ToolStripItem tssItem in cmsSpirit.Items)
             {
-                tssItem.UpdateLightDarkMode();
-                tssItem.TranslateToolStripItemsRecursively();
+                tssItem.UpdateLightDarkMode(objMyToken);
+                tssItem.TranslateToolStripItemsRecursively(token: objMyToken);
             }
         }
 
         private async void SpiritControl_Load(object sender, EventArgs e)
         {
-            bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
-            await nudForce.DoOneWayDataBindingAsync("Enabled", _objSpirit.CharacterObject, nameof(Character.Created)).ConfigureAwait(false);
-            await chkBound.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Bound)).ConfigureAwait(false);
-            await chkBound.DoOneWayDataBindingAsync("Enabled", _objSpirit.CharacterObject, nameof(Character.Created)).ConfigureAwait(false);
-            await cboSpiritName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.Name)).ConfigureAwait(false);
-            await txtCritterName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.CritterName)).ConfigureAwait(false);
-            await txtCritterName.DoOneWayDataBindingAsync("Enabled", _objSpirit, nameof(Spirit.NoLinkedCharacter)).ConfigureAwait(false);
-            await nudForce.DoOneWayDataBindingAsync("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel)).ConfigureAwait(false);
-            await nudServices.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.ServicesOwed)).ConfigureAwait(false);
-            await nudForce.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.Force)).ConfigureAwait(false);
-            await chkFettered.DoOneWayDataBindingAsync("Enabled", _objSpirit, nameof(Spirit.AllowFettering)).ConfigureAwait(false);
-            await chkFettered.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Fettered)).ConfigureAwait(false);
-            if (blnIsSpirit)
-            {
-                string strText = await LanguageManager.GetStringAsync("Label_Spirit_Force").ConfigureAwait(false);
-                await lblForce.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
-                string strText2 = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound").ConfigureAwait(false);
-                await chkBound.DoThreadSafeAsync(x => x.Text = strText2).ConfigureAwait(false);
-                await cmdLink.SetToolTipTextAsync(await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit").ConfigureAwait(false)).ConfigureAwait(false);
-                string strTooltip = await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes").ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
-            }
-            else
-            {
-                string strText = await LanguageManager.GetStringAsync("Label_Sprite_Rating").ConfigureAwait(false);
-                await lblForce.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
-                string strText2 = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed").ConfigureAwait(false);
-                await lblServices.DoThreadSafeAsync(x => x.Text = strText2).ConfigureAwait(false);
-                string strText3 = await LanguageManager.GetStringAsync("Label_Sprite_Registered").ConfigureAwait(false);
-                await chkBound.DoThreadSafeAsync(x => x.Text = strText3).ConfigureAwait(false);
-                string strText4 = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet").ConfigureAwait(false);
-                await chkFettered.DoThreadSafeAsync(x => x.Text = strText4).ConfigureAwait(false);
-                await cmdLink.SetToolTipTextAsync(await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit").ConfigureAwait(false)).ConfigureAwait(false);
-                string strTooltip = await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes").ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
-            }
-
-            IAsyncDisposable objLocker = await _objSpirit.CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                _objSpirit.CharacterObject.PropertyChangedAsync += RebuildSpiritListOnTraditionChange;
+                bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
+                await nudForce.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit.CharacterObject,
+                        nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken).AsTask(), _objMyToken)
+                    .ConfigureAwait(false);
+                await chkBound.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Bound), token: _objMyToken).ConfigureAwait(false);
+                await chkBound.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit.CharacterObject,
+                        nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken).AsTask(), _objMyToken)
+                    .ConfigureAwait(false);
+                await cboSpiritName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.Name), token: _objMyToken).ConfigureAwait(false);
+                await txtCritterName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.CritterName), token: _objMyToken)
+                    .ConfigureAwait(false);
+                await txtCritterName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit,
+                        nameof(Spirit.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), _objMyToken)
+                    .ConfigureAwait(false);
+                await nudForce.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objSpirit.CharacterObject,
+                        blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel),
+                        x => blnIsSpirit
+                            ? x.GetMaxSpiritForceAsync(_objMyToken).AsTask()
+                            : x.GetMaxSpriteLevelAsync(_objMyToken).AsTask(), _objMyToken)
+                    .ConfigureAwait(false);
+                await nudServices.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.ServicesOwed), token: _objMyToken)
+                    .ConfigureAwait(false);
+                await nudForce.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.Force), token: _objMyToken).ConfigureAwait(false);
+                await chkFettered.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit,
+                        nameof(Spirit.AllowFettering), x => x.GetAllowFetteringAsync(_objMyToken), _objMyToken)
+                    .ConfigureAwait(false);
+                await chkFettered.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Fettered), token: _objMyToken)
+                    .ConfigureAwait(false);
+                if (blnIsSpirit)
+                {
+                    string strText = await LanguageManager.GetStringAsync("Label_Spirit_Force", token: _objMyToken).ConfigureAwait(false);
+                    await lblForce.DoThreadSafeAsync(x => x.Text = strText, _objMyToken).ConfigureAwait(false);
+                    string strText2 =
+                        await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound", token: _objMyToken).ConfigureAwait(false);
+                    await chkBound.DoThreadSafeAsync(x => x.Text = strText2, _objMyToken).ConfigureAwait(false);
+                    await cmdLink
+                        .SetToolTipTextAsync(await LanguageManager
+                            .GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName)
+                                ? "Tip_Spirit_OpenFile"
+                                : "Tip_Spirit_LinkSpirit", token: _objMyToken).ConfigureAwait(false), _objMyToken).ConfigureAwait(false);
+                    string strTooltip =
+                        await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes", token: _objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                    await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    string strText = await LanguageManager.GetStringAsync("Label_Sprite_Rating", token: _objMyToken).ConfigureAwait(false);
+                    await lblForce.DoThreadSafeAsync(x => x.Text = strText, _objMyToken).ConfigureAwait(false);
+                    string strText2 = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed", token: _objMyToken)
+                        .ConfigureAwait(false);
+                    await lblServices.DoThreadSafeAsync(x => x.Text = strText2, _objMyToken).ConfigureAwait(false);
+                    string strText3 = await LanguageManager.GetStringAsync("Label_Sprite_Registered", token: _objMyToken)
+                        .ConfigureAwait(false);
+                    await chkBound.DoThreadSafeAsync(x => x.Text = strText3, _objMyToken).ConfigureAwait(false);
+                    string strText4 = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet", token: _objMyToken).ConfigureAwait(false);
+                    await chkFettered.DoThreadSafeAsync(x => x.Text = strText4, _objMyToken).ConfigureAwait(false);
+                    await cmdLink
+                        .SetToolTipTextAsync(await LanguageManager
+                            .GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName)
+                                ? "Tip_Sprite_OpenFile"
+                                : "Tip_Sprite_LinkSpirit", token: _objMyToken).ConfigureAwait(false), _objMyToken).ConfigureAwait(false);
+                    string strTooltip =
+                        await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes", token: _objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                    await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
+                }
+
+                IAsyncDisposable objLocker =
+                    await _objSpirit.CharacterObject.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
+                try
+                {
+                    _objMyToken.ThrowIfCancellationRequested();
+                    _objSpirit.CharacterObject.PropertyChangedAsync += RebuildSpiritListOnTraditionChange;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                _blnLoading = false;
             }
-
-            _blnLoading = false;
         }
 
         public void UnbindSpiritControl()
@@ -178,140 +220,182 @@ namespace Chummer
 
         private async void tsContactOpen_Click(object sender, EventArgs e)
         {
-            if (_objSpirit.LinkedCharacter != null)
+            try
             {
-                Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objSpirit.LinkedCharacter).ConfigureAwait(false)
-                    ? _objSpirit.LinkedCharacter
-                    : null;
-                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm).ConfigureAwait(false);
-                try
+                if (_objSpirit.LinkedCharacter != null)
                 {
-                    if (objOpenCharacter == null)
+                    Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objSpirit.LinkedCharacter, _objMyToken)
+                        .ConfigureAwait(false)
+                        ? _objSpirit.LinkedCharacter
+                        : null;
+                    CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
+                    try
                     {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                               = await Program.CreateAndShowProgressBarAsync(
-                                   _objSpirit.LinkedCharacter.FileName, Character.NumLoadingSections).ConfigureAwait(false))
-                            objOpenCharacter = await Program.LoadCharacterAsync(
-                                _objSpirit.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm).ConfigureAwait(false);
+                        if (objOpenCharacter == null)
+                        {
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                   = await Program.CreateAndShowProgressBarAsync(
+                                           _objSpirit.LinkedCharacter.FileName, Character.NumLoadingSections, _objMyToken)
+                                       .ConfigureAwait(false))
+                                objOpenCharacter = await Program.LoadCharacterAsync(
+                                        _objSpirit.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
+                                    .ConfigureAwait(false);
+                        }
+
+                        if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
+                            await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    bool blnUseRelative = false;
+
+                    // Make sure the file still exists before attempting to load it.
+                    if (!File.Exists(_objSpirit.FileName))
+                    {
+                        bool blnError = false;
+                        // If the file doesn't exist, use the relative path if one is available.
+                        if (string.IsNullOrEmpty(_objSpirit.RelativeFileName))
+                            blnError = true;
+                        else if (!File.Exists(Path.GetFullPath(_objSpirit.RelativeFileName)))
+                            blnError = true;
+                        else
+                            blnUseRelative = true;
+
+                        if (blnError)
+                        {
+                            Program.ShowScrollableMessageBox(
+                                string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
+                                        .ConfigureAwait(false), _objSpirit.FileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                     }
 
-                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
-                        await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    string strFile = blnUseRelative
+                        ? Path.GetFullPath(_objSpirit.RelativeFileName)
+                        : _objSpirit.FileName;
+                    Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
                 }
             }
-            else
+            catch (OperationCanceledException)
             {
-                bool blnUseRelative = false;
-
-                // Make sure the file still exists before attempting to load it.
-                if (!File.Exists(_objSpirit.FileName))
-                {
-                    bool blnError = false;
-                    // If the file doesn't exist, use the relative path if one is available.
-                    if (string.IsNullOrEmpty(_objSpirit.RelativeFileName))
-                        blnError = true;
-                    else if (!File.Exists(Path.GetFullPath(_objSpirit.RelativeFileName)))
-                        blnError = true;
-                    else
-                        blnUseRelative = true;
-
-                    if (blnError)
-                    {
-                        Program.ShowScrollableMessageBox(
-                            string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_FileNotFound")
-                                                               .ConfigureAwait(false), _objSpirit.FileName),
-                            await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                }
-                string strFile = blnUseRelative ? Path.GetFullPath(_objSpirit.RelativeFileName) : _objSpirit.FileName;
-                Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
+                // swallow this
             }
         }
 
         private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
-            // Remove the file association from the Contact.
-            if (Program.ShowScrollableMessageBox(
-                    await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation").ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation")
-                                         .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                == DialogResult.Yes)
+            try
             {
-                _objSpirit.FileName = string.Empty;
-                _objSpirit.RelativeFileName = string.Empty;
-                string strText = await LanguageManager.GetStringAsync(
-                                                          _objSpirit.EntityType == SpiritType.Spirit
-                                                              ? "Tip_Spirit_LinkSpirit"
-                                                              : "Tip_Sprite_LinkSprite")
-                                                      .ConfigureAwait(false);
-                await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
+                // Remove the file association from the Contact.
+                if (Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation", token: _objMyToken)
+                            .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation", token: _objMyToken)
+                            .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    == DialogResult.Yes)
+                {
+                    _objSpirit.FileName = string.Empty;
+                    _objSpirit.RelativeFileName = string.Empty;
+                    string strText = await LanguageManager.GetStringAsync(
+                            await _objSpirit.GetEntityTypeAsync(_objMyToken) == SpiritType.Spirit
+                                ? "Tip_Spirit_LinkSpirit"
+                                : "Tip_Sprite_LinkSprite", token: _objMyToken)
+                        .ConfigureAwait(false);
+                    await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
 
-                // Set the relative path.
-                Uri uriApplication = new Uri(Utils.GetStartupPath);
-                Uri uriFile = new Uri(_objSpirit.FileName);
-                Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                _objSpirit.RelativeFileName = "../" + uriRelative;
+                    // Set the relative path.
+                    Uri uriApplication = new Uri(Utils.GetStartupPath);
+                    Uri uriFile = new Uri(_objSpirit.FileName);
+                    Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+                    _objSpirit.RelativeFileName = "../" + uriRelative;
 
-                ContactDetailChanged?.Invoke(this, e);
+                    ContactDetailChanged?.Invoke(this, e);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
             }
         }
 
         private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
-            string strFileName = string.Empty;
-            string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|'
-                +
-                await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
-                await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
-                await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
-            // Prompt the user to select a save file to associate with this Contact.
-            // Prompt the user to select a save file to associate with this Contact.
-            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+            try
             {
-                using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                string strFileName = string.Empty;
+                string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objMyToken).ConfigureAwait(false) +
+                                   '|'
+                                   +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objMyToken).ConfigureAwait(false) +
+                                   '|' +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken).ConfigureAwait(false) +
+                                   '|' +
+                                   await LanguageManager.GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
+                // Prompt the user to select a save file to associate with this Contact.
+                // Prompt the user to select a save file to associate with this Contact.
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                 {
-                    dlgOpenFile.Filter = strFilter;
-                    if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                     {
-                        dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
-                        dlgOpenFile.FileName = Path.GetFileName(_objSpirit.FileName);
+                        dlgOpenFile.Filter = strFilter;
+                        if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+                        {
+                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
+                            dlgOpenFile.FileName = Path.GetFileName(_objSpirit.FileName);
+                        }
+
+                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                        strFileName = dlgOpenFile.FileName;
+                        return eReturn;
                     }
+                }, token: _objMyToken).ConfigureAwait(false);
 
-                    DialogResult eReturn = dlgOpenFile.ShowDialog(x);
-                    strFileName = dlgOpenFile.FileName;
-                    return eReturn;
-                }
-            }).ConfigureAwait(false);
-
-            if (eResult != DialogResult.OK)
-                return;
-            _objSpirit.FileName = strFileName;
-            string strText = await LanguageManager.GetStringAsync(
-                _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile").ConfigureAwait(false);
-            await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
-            ContactDetailChanged?.Invoke(this, e);
+                if (eResult != DialogResult.OK)
+                    return;
+                _objSpirit.FileName = strFileName;
+                string strText = await LanguageManager.GetStringAsync(
+                        await _objSpirit.GetEntityTypeAsync(_objMyToken) == SpiritType.Spirit
+                            ? "Tip_Spirit_OpenFile"
+                            : "Tip_Sprite_OpenFile", token: _objMyToken)
+                    .ConfigureAwait(false);
+                await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
+                ContactDetailChanged?.Invoke(this, e);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private async void tsCreateCharacter_Click(object sender, EventArgs e)
         {
-            string strSpiritName = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(strSpiritName))
+            try
             {
-                Program.ShowScrollableMessageBox(
-                    await LanguageManager.GetStringAsync("Message_SelectCritterType").ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType").ConfigureAwait(false),
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                string strSpiritName = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: _objMyToken)
+                    .ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strSpiritName))
+                {
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync("Message_SelectCritterType", token: _objMyToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType", token: _objMyToken).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            await CreateCritter(strSpiritName, nudForce.ValueAsInt).ConfigureAwait(false);
+                await CreateCritter(strSpiritName, nudForce.ValueAsInt, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private void cmdLink_Click(object sender, EventArgs e)
@@ -336,20 +420,33 @@ namespace Chummer
 
         private async void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (ThreadSafeForm<EditNotes> frmSpiritNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor)).ConfigureAwait(false))
+            try
             {
-                if (await frmSpiritNotes.ShowDialogSafeAsync(_objSpirit.CharacterObject).ConfigureAwait(false) != DialogResult.OK)
-                    return;
-                _objSpirit.Notes = frmSpiritNotes.MyForm.Notes;
+                using (ThreadSafeForm<EditNotes> frmSpiritNotes = await ThreadSafeForm<EditNotes>
+                           .GetAsync(() => new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor), _objMyToken)
+                           .ConfigureAwait(false))
+                {
+                    if (await frmSpiritNotes.ShowDialogSafeAsync(_objSpirit.CharacterObject, _objMyToken).ConfigureAwait(false) !=
+                        DialogResult.OK)
+                        return;
+                    _objSpirit.Notes = frmSpiritNotes.MyForm.Notes;
+                }
+
+                string strTooltip = await LanguageManager
+                    .GetStringAsync(await _objSpirit.GetEntityTypeAsync(_objMyToken) == SpiritType.Spirit
+                        ? "Tip_Spirit_EditNotes"
+                        : "Tip_Sprite_EditNotes", token: _objMyToken).ConfigureAwait(false);
+
+                if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
+
+                ContactDetailChanged?.Invoke(this, e);
             }
-
-            string strTooltip = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes").ConfigureAwait(false);
-
-            if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-            await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
-
-            ContactDetailChanged?.Invoke(this, e);
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         #endregion Control Events

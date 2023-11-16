@@ -1269,11 +1269,33 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     if (_intCachedAllowFettering < 0)
-                        _intCachedAllowFettering = (EntityType == SpiritType.Spirit
-                                                    || EntityType == SpiritType.Sprite
+                    {
+                        SpiritType eMyType = EntityType;
+                        _intCachedAllowFettering = (eMyType == SpiritType.Spirit
+                                                    || eMyType == SpiritType.Sprite
                                                     && CharacterObject.AllowSpriteFettering).ToInt32();
+                    }
+
                     return _intCachedAllowFettering > 0;
                 }
+            }
+        }
+
+        public async Task<bool> GetAllowFetteringAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedAllowFettering < 0)
+                {
+                    SpiritType eMyType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                    _intCachedAllowFettering = (eMyType == SpiritType.Spirit
+                                                || eMyType == SpiritType.Sprite
+                                                && await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false)).ToInt32();
+                }
+
+                return _intCachedAllowFettering > 0;
             }
         }
 
@@ -1708,6 +1730,15 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _objLinkedCharacter == null;
+            }
+        }
+
+        public async Task<bool> GetNoLinkedCharacterAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _objLinkedCharacter == null;
             }
         }
 

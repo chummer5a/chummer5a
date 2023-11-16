@@ -1201,6 +1201,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Base Lifestyle.
+        /// </summary>
+        public async ValueTask<string> GetBaseLifestyleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strBaseLifestyle;
+            }
+        }
+
+        /// <summary>
         /// Base Lifestyle Points awarded by the lifestyle.
         /// </summary>
         public int LP
@@ -1707,9 +1720,32 @@ namespace Chummer.Backend.Equipment
 
         public bool IsTrustFundEligible => StaticIsTrustFundEligible(_objCharacter, BaseLifestyle);
 
+        public async ValueTask<bool> GetIsTrustFundEligibleAsync(CancellationToken token = default)
+        {
+            return await StaticIsTrustFundEligibleAsync(_objCharacter,
+                await GetBaseLifestyleAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+        }
+
         public static bool StaticIsTrustFundEligible(Character objCharacter, string strBaseLifestyle)
         {
             switch (objCharacter.TrustFund)
+            {
+                case 1:
+                case 4:
+                    return strBaseLifestyle == "Medium";
+
+                case 2:
+                    return strBaseLifestyle == "Low";
+
+                case 3:
+                    return strBaseLifestyle == "High";
+            }
+            return false;
+        }
+
+        public static async ValueTask<bool> StaticIsTrustFundEligibleAsync(Character objCharacter, string strBaseLifestyle, CancellationToken token = default)
+        {
+            switch (await objCharacter.GetTrustFundAsync(token).ConfigureAwait(false))
             {
                 case 1:
                 case 4:

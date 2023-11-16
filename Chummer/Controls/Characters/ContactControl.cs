@@ -970,14 +970,17 @@ namespace Chummer
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
                                                                x => x.GetQuickTextAsync(token).AsTask(), token: token).ConfigureAwait(false);
-            await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(_objContact.Name), token).ConfigureAwait(false);
-            await txtContactLocation.DoDataBindingAsync("Text", _objContact, nameof(_objContact.Location), token).ConfigureAwait(false);
-            await cmdDelete.DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(_objContact.ReadOnly), token).ConfigureAwait(false);
-            await this.DoOneWayDataBindingAsync("BackColor", _objContact, nameof(_objContact.PreferredColor), token).ConfigureAwait(false);
+            await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(Contact.Name), token).ConfigureAwait(false);
+            await txtContactLocation.DoDataBindingAsync("Text", _objContact, nameof(Contact.Location), token).ConfigureAwait(false);
+            await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
+                nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken).AsTask(), token).ConfigureAwait(false);
+            await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.BackColor = y, _objContact,
+                    nameof(Contact.PreferredColor), x => x.GetPreferredColorAsync(_objMyToken).AsTask(), token)
+                .ConfigureAwait(false);
 
             // Properties controllable by the character themselves
             await txtContactName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                nameof(_objContact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token).ConfigureAwait(false);
+                nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token).ConfigureAwait(false);
         }
 
         private Label lblConnection;
@@ -1111,21 +1114,21 @@ namespace Chummer
                                  .ConfigureAwait(false);
                     await chkFamily.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Family), token)
                                    .ConfigureAwait(false);
-                    await chkFamily
-                          .DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(Contact.IsEnemy), token)
-                          .ConfigureAwait(false);
+                    await chkFamily.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
+                            nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken).AsTask(), token)
+                        .ConfigureAwait(false);
                     await chkBlackmail.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Blackmail), token)
                                       .ConfigureAwait(false);
-                    await chkBlackmail
-                          .DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(Contact.IsEnemy), token)
-                          .ConfigureAwait(false);
+                    await chkBlackmail.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
+                            nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken).AsTask(), token)
+                        .ConfigureAwait(false);
                     await nudLoyalty.DoDataBindingAsync("Value", _objContact, nameof(Contact.Loyalty), token)
                                     .ConfigureAwait(false);
                     await nudConnection.DoDataBindingAsync("Value", _objContact, nameof(Contact.Connection), token)
                                        .ConfigureAwait(false);
-                    await nudConnection
-                          .DoOneWayNegatableDataBindingAsync("Enabled", _objContact, nameof(Contact.ReadOnly), token)
-                          .ConfigureAwait(false);
+                    await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
+                            nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken).AsTask(), token)
+                        .ConfigureAwait(false);
                     await chkGroup.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                        nameof(Contact.GroupEnabled),
                                                                        // ReSharper disable once MethodSupportsCancellation

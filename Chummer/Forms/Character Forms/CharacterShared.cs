@@ -207,6 +207,7 @@ namespace Chummer
                 CharacterObject.Calendar.ListChangedAsync += MakeDirty;
                 CharacterObject.SustainedCollection.CollectionChangedAsync += MakeDirty;
                 CharacterObject.ExpenseEntries.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.LimitModifiers.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
             }
             else
             {
@@ -240,6 +241,7 @@ namespace Chummer
                 CharacterObject.Calendar.ListChangedAsync -= MakeDirty;
                 CharacterObject.SustainedCollection.CollectionChangedAsync -= MakeDirty;
                 CharacterObject.ExpenseEntries.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.LimitModifiers.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
             }
         }
 
@@ -6862,7 +6864,7 @@ namespace Chummer
                                         break;
                                     await this.DoThreadSafeAsync(() =>
                                     {
-                                        PetControl objContactControl = new PetControl(objContact);
+                                        PetControl objContactControl = new PetControl(objContact, GenericToken);
                                         // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                         objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                         objContactControl.DeleteContact += DeletePet;
@@ -6935,7 +6937,7 @@ namespace Chummer
                                             break;
                                         await panPets.DoThreadSafeAsync(x =>
                                         {
-                                            PetControl objContactControl = new PetControl(objContact);
+                                            PetControl objContactControl = new PetControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeletePet;
@@ -7146,7 +7148,7 @@ namespace Chummer
                                             break;
                                         await panPets.DoThreadSafeAsync(x =>
                                         {
-                                            PetControl objContactControl = new PetControl(objContact);
+                                            PetControl objContactControl = new PetControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeletePet;
@@ -8196,7 +8198,7 @@ namespace Chummer
                                 return;
 
                             SpiritControl objSpiritControl
-                                = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), token)
+                                = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit, GenericToken), token)
                                             .ConfigureAwait(false);
 
                             // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -8258,7 +8260,7 @@ namespace Chummer
                                     continue;
 
                                 SpiritControl objSpiritControl
-                                    = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit),
+                                    = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit, GenericToken),
                                                                        token).ConfigureAwait(false);
 
                                 // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -8467,7 +8469,7 @@ namespace Chummer
                                     continue;
 
                                 SpiritControl objSpiritControl
-                                    = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit),
+                                    = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit, GenericToken),
                                                                        token).ConfigureAwait(false);
 
                                 // Attach an EventHandler for the ServicesOwedChanged Event.
