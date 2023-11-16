@@ -6828,7 +6828,7 @@ namespace Chummer
                                         break;
                                     await this.DoThreadSafeAsync(() =>
                                     {
-                                        ContactControl objContactControl = new ContactControl(objContact);
+                                        ContactControl objContactControl = new ContactControl(objContact, GenericToken);
                                         // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                         objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                         objContactControl.DeleteContact += DeleteContact;
@@ -6845,7 +6845,7 @@ namespace Chummer
                                         break;
                                     await this.DoThreadSafeAsync(() =>
                                     {
-                                        ContactControl objContactControl = new ContactControl(objContact);
+                                        ContactControl objContactControl = new ContactControl(objContact, GenericToken);
                                         // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                         objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                         objContactControl.DeleteContact += DeleteEnemy;
@@ -6901,7 +6901,7 @@ namespace Chummer
                                             break;
                                         await panContacts.DoThreadSafeAsync(x =>
                                         {
-                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            ContactControl objContactControl = new ContactControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteContact;
@@ -6918,7 +6918,7 @@ namespace Chummer
                                             break;
                                         await panEnemies.DoThreadSafeAsync(x =>
                                         {
-                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            ContactControl objContactControl = new ContactControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;
@@ -7112,7 +7112,7 @@ namespace Chummer
                                             break;
                                         await panContacts.DoThreadSafeAsync(x =>
                                         {
-                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            ContactControl objContactControl = new ContactControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteContact;
@@ -7129,7 +7129,7 @@ namespace Chummer
                                             break;
                                         await panEnemies.DoThreadSafeAsync(x =>
                                         {
-                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            ContactControl objContactControl = new ContactControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;

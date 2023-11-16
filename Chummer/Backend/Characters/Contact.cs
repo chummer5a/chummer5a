@@ -2203,6 +2203,15 @@ namespace Chummer
             }
         }
 
+        public async Task<bool> GetNoLinkedCharacterAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _objLinkedCharacter == null;
+            }
+        }
+
         public void RefreshLinkedCharacter(bool blnShowError = false, CancellationToken token = default)
         {
             using (LockObject.EnterUpgradeableReadLock(token))
