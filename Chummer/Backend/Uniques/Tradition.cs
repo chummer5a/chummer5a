@@ -45,7 +45,7 @@ namespace Chummer.Backend.Uniques
     /// A Tradition
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    public sealed class Tradition : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, INotifyMultiplePropertyChanged, IHasLockObject
+    public sealed class Tradition : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, INotifyMultiplePropertyChangedAsync, IHasLockObject
     {
         private Guid _guiID;
         private Guid _guiSourceID;
@@ -76,8 +76,7 @@ namespace Chummer.Backend.Uniques
             _objCharacter = objCharacter;
             if (objCharacter != null)
             {
-                using (objCharacter.LockObject.EnterWriteLock())
-                    objCharacter.PropertyChanged += RefreshDrainExpression;
+                objCharacter.PropertyChangedAsync += RefreshDrainExpression;
             }
         }
 
@@ -101,7 +100,7 @@ namespace Chummer.Backend.Uniques
                             = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
-                            _objCharacter.PropertyChanged -= RefreshDrainExpression;
+                            _objCharacter.PropertyChangedAsync -= RefreshDrainExpression;
                         }
                         finally
                         {
@@ -131,8 +130,7 @@ namespace Chummer.Backend.Uniques
                 {
                     try
                     {
-                        using (_objCharacter.LockObject.EnterWriteLock())
-                            _objCharacter.PropertyChanged -= RefreshDrainExpression;
+                        _objCharacter.PropertyChangedAsync -= RefreshDrainExpression;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -700,6 +698,19 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// ImprovementSource Type.
+        /// </summary>
+        public async ValueTask<TraditionType> GetTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _eTraditionType;
+            }
+        }
+
+        /// <summary>
         /// The GUID of the Custom entry in the Magical Tradition file
         /// </summary>
         public const string CustomMagicalTraditionGuid = "616ba093-306c-45fc-8f41-0b98c8cccb46";
@@ -974,15 +985,13 @@ namespace Chummer.Backend.Uniques
                                 if (!value.Contains(strAttribute))
                                 {
                                     CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                                    using (objAttrib.LockObject.EnterWriteLock())
-                                        objAttrib.PropertyChanged -= RefreshDrainValue;
+                                    objAttrib.PropertyChangedAsync -= RefreshDrainValue;
                                 }
                             }
                             else if (value.Contains(strAttribute))
                             {
                                 CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                                using (objAttrib.LockObject.EnterWriteLock())
-                                    objAttrib.PropertyChanged += RefreshDrainValue;
+                                objAttrib.PropertyChangedAsync += RefreshDrainValue;
                             }
                         }
 
@@ -993,9 +1002,34 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Magician's Tradition Drain Attributes.
+        /// </summary>
+        public async ValueTask<string> GetDrainExpressionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await _objCharacter.GetAdeptEnabledAsync(token).ConfigureAwait(false) &&
+                    !await _objCharacter.GetMagicianEnabledAsync(token).ConfigureAwait(false))
+                {
+                    return "{BOD} + {WIL}";
+                }
+
+                return _strDrainExpression;
+            }
+        }
+
+        /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
         public string DisplayDrainExpression => DisplayDrainExpressionMethod(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Magician's Tradition Drain Attributes for display purposes.
+        /// </summary>
+        public ValueTask<string> GetDisplayDrainExpressionAsync(CancellationToken token = default) =>
+            DisplayDrainExpressionMethodAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
@@ -1054,6 +1088,50 @@ namespace Chummer.Backend.Uniques
             }
         }
 
+        /// <summary>
+        /// Magician's total amount of dice for resisting drain.
+        /// </summary>
+        public async ValueTask<int> GetDrainValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                TraditionType eType = await GetTypeAsync(token).ConfigureAwait(false);
+                if (eType == TraditionType.None)
+                    return 0;
+                string strDrainAttributes = await GetDrainExpressionAsync(token).ConfigureAwait(false);
+                string strDrain;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdDrain))
+                {
+                    sbdDrain.Append(strDrainAttributes);
+                    await _objCharacter.AttributeSection
+                        .ProcessAttributesInXPathAsync(sbdDrain, strDrainAttributes, token: token)
+                        .ConfigureAwait(false);
+                    strDrain = sbdDrain.ToString();
+                }
+
+                if (!decimal.TryParse(strDrain, out decimal decDrain))
+                {
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                        .EvaluateInvariantXPathAsync(strDrain, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decDrain = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                }
+
+                // Add any Improvements for Drain Resistance.
+                if (eType == TraditionType.RES)
+                    decDrain += await ImprovementManager.ValueOfAsync(_objCharacter,
+                        Improvement.ImprovementType.FadingResistance, token: token).ConfigureAwait(false);
+                else
+                    decDrain += await ImprovementManager.ValueOfAsync(_objCharacter,
+                        Improvement.ImprovementType.DrainResistance, token: token).ConfigureAwait(false);
+
+                return decDrain.StandardRound();
+            }
+        }
+
         public string DrainValueToolTip
         {
             get
@@ -1091,16 +1169,62 @@ namespace Chummer.Backend.Uniques
             }
         }
 
-        public void RefreshDrainExpression(object sender, PropertyChangedEventArgs e)
+        public async ValueTask<string> GetDrainValueToolTipAsync(CancellationToken token = default)
         {
-            if (Type == TraditionType.MAG && (e?.PropertyName == nameof(Character.AdeptEnabled) || e?.PropertyName == nameof(Character.MagicianEnabled)))
-                OnPropertyChanged(nameof(DrainExpression));
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                TraditionType eType = await GetTypeAsync(token).ConfigureAwait(false);
+                if (eType == TraditionType.None)
+                    return string.Empty;
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                    .ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(DrainExpression);
+                    // Update the Fading CharacterAttribute Value.
+                    await _objCharacter.AttributeSection
+                        .ProcessAttributesInXPathForTooltipAsync(sbdToolTip, DrainExpression, token: token)
+                        .ConfigureAwait(false);
+
+                    List<Improvement> lstUsedImprovements
+                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                            _objCharacter,
+                            eType == TraditionType.RES
+                                ? Improvement.ImprovementType.FadingResistance
+                                : Improvement.ImprovementType.DrainResistance, token: token).ConfigureAwait(false);
+                    foreach (Improvement objLoopImprovement in lstUsedImprovements)
+                    {
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token)
+                                .ConfigureAwait(false)).Append(strSpace)
+                            .Append('(')
+                            .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                            .Append(')');
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
         }
 
-        public void RefreshDrainValue(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshDrainExpression(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
-            if (Type != TraditionType.None && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
-                OnPropertyChanged(nameof(DrainValue));
+            if ((e?.PropertyName == nameof(Character.AdeptEnabled) ||
+                 e?.PropertyName == nameof(Character.MagicianEnabled)) &&
+                await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.MAG)
+                await OnPropertyChangedAsync(nameof(DrainExpression), token).ConfigureAwait(false);
+        }
+
+        public async Task RefreshDrainValue(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue) &&
+                await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None)
+                await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
         }
 
         public IReadOnlyList<string> AvailableSpirits => _lstAvailableSpirits;
@@ -1506,8 +1630,6 @@ namespace Chummer.Backend.Uniques
         private XmlNode _xmlCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
@@ -1675,10 +1797,34 @@ namespace Chummer.Backend.Uniques
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             this.OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
@@ -1704,7 +1850,34 @@ namespace Chummer.Backend.Uniques
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (PropertyChanged != null)
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                        }
+
+                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -1726,6 +1899,93 @@ namespace Chummer.Backend.Uniques
                 }
 
                 _objCharacter?.OnPropertyChanged(nameof(Character.MagicTradition));
+            }
+        }
+
+        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in s_AttributeDependencyGraph
+                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+
+                if (_objCharacter != null)
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.MagicTradition), token).ConfigureAwait(false);
             }
         }
 

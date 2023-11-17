@@ -2554,6 +2554,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// ImprovementSource Type.
+        /// </summary>
+        public async ValueTask<Improvement.ImprovementSource> GetSourceTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _eImprovementSource;
+            }
+        }
+
+        /// <summary>
         /// Cyberware name.
         /// </summary>
         public string Name
@@ -2609,6 +2622,16 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async ValueTask<bool> GetInheritAttributesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnInheritAttributes;
+            }
+        }
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -2622,6 +2645,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public async ValueTask<Guid> GetSourceIDAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _guiSourceID;
+            }
+        }
+
+        /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
         public string SourceIDString
@@ -2630,6 +2666,19 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                     return _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public async ValueTask<string> GetSourceIDStringAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
 
@@ -2721,6 +2770,7 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage,
             CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
@@ -2991,7 +3041,7 @@ namespace Chummer.Backend.Equipment
                 int intCount = 0;
                 if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs?.All(l => l != LimbSlot) != false)
                 {
-                    intCount += await GetLimbSlotCountAsync(token);
+                    intCount += await GetLimbSlotCountAsync(token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -5344,6 +5394,19 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Is the Bioware's cost affected by Prototype Transhuman?
+        /// </summary>
+        public async ValueTask<bool> GetPrototypeTranshumanAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnPrototypeTranshuman;
+            }
+        }
+
         public string EssencePropertyName
         {
             get
@@ -5365,6 +5428,30 @@ namespace Chummer.Backend.Equipment
                         default:
                             return nameof(Character.Essence);
                     }
+                }
+            }
+        }
+
+        public async ValueTask<string> GetEssencePropertyNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await _objCharacter.GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false) && await GetPrototypeTranshumanAsync(token).ConfigureAwait(false))
+                    return nameof(Character.PrototypeTranshumanEssenceUsed);
+                if (SourceID.Equals(EssenceHoleGUID) || SourceID.Equals(EssenceAntiHoleGUID))
+                    return nameof(Character.EssenceHole);
+                switch (SourceType)
+                {
+                    case Improvement.ImprovementSource.Bioware:
+                        return nameof(Character.BiowareEssence);
+
+                    case Improvement.ImprovementSource.Cyberware:
+                        return nameof(Character.CyberwareEssence);
+
+                    default:
+                        return nameof(Character.Essence);
                 }
             }
         }

@@ -5674,6 +5674,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not characters may use Initiation/Submersion in Create mode.
+        /// </summary>
+        public async ValueTask<bool> GetAllowInitiationInCreateModeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnAllowInitiationInCreateMode;
+            }
+        }
+
+        /// <summary>
         /// Whether or not characters can spend skill points on broken groups.
         /// </summary>
         public bool UsePointsOnBrokenGroups
@@ -7514,6 +7527,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Display format for Essence.
+        /// </summary>
+        public async ValueTask<string> GetEssenceFormatAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strEssenceFormat;
+            }
+        }
+
+        /// <summary>
         /// Only round essence when its value is displayed
         /// </summary>
         public bool DontRoundEssenceInternally
@@ -8253,6 +8279,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetMaxKnowledgeSkillRatingAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
@@ -8282,6 +8309,19 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether Life Modules should automatically generate a character background.
+        /// </summary>
+        public async ValueTask<bool> GetAutomaticBackstoryAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnAutomaticBackstory;
             }
         }
 
