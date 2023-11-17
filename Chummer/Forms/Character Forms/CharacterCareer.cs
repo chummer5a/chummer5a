@@ -14398,8 +14398,6 @@ namespace Chummer
                                    () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
                                    GenericToken).ConfigureAwait(false))
                         {
-                            if (!string.IsNullOrEmpty(strCategories))
-                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
                             if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
