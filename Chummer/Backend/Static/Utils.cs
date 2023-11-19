@@ -2007,23 +2007,22 @@ namespace Chummer
                 return aobjReturn;
             }
             List<Task<T>> lstTasks = new List<Task<T>>(MaxParallelBatchSize);
-            int intCounter = 0;
             int intOffset = 0;
             for (int i = 0; i < intLength; ++i)
             {
-                lstTasks[intCounter++] = Task.Run(afuncToRun[i], token);
-                if (intCounter != MaxParallelBatchSize)
-                    continue;
-                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
-                while (!tskLoop.IsCompleted)
-                    SafeSleep(token);
-                if (tskLoop.Exception != null)
-                    throw tskLoop.Exception;
-                for (int j = 0; j < MaxParallelBatchSize; ++j)
-                    aobjReturn[i] = lstTasks[j].GetAwaiter().GetResult();
-                intOffset += MaxParallelBatchSize;
-                intCounter = 0;
-                lstTasks.Clear();
+                if (i != 0 && i % MaxParallelBatchSize == 0)
+                {
+                    Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
+                    while (!tskLoop.IsCompleted)
+                        SafeSleep(token);
+                    if (tskLoop.Exception != null)
+                        throw tskLoop.Exception;
+                    for (int j = 0; j < MaxParallelBatchSize; ++j)
+                        aobjReturn[intOffset + j] = lstTasks[j].GetAwaiter().GetResult();
+                    intOffset += MaxParallelBatchSize;
+                    lstTasks.Clear();
+                }
+                lstTasks.Add(Task.Run(afuncToRun[i], token));
             }
             int intFinalBatchSize = lstTasks.Count;
             if (intFinalBatchSize != 0)
@@ -2152,19 +2151,19 @@ namespace Chummer
             int intOffset = 0;
             for (int i = 0; i < intLength; ++i)
             {
-                lstTasks[intCounter++] = Task.Run(afuncToRun[i], token);
-                if (intCounter != MaxParallelBatchSize)
-                    continue;
-                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
-                while (!tskLoop.IsCompleted)
-                    SafeSleep(token);
-                if (tskLoop.Exception != null)
-                    throw tskLoop.Exception;
-                for (int j = 0; j < MaxParallelBatchSize; ++j)
-                    aobjReturn[i] = lstTasks[j].GetAwaiter().GetResult();
-                intOffset += MaxParallelBatchSize;
-                intCounter = 0;
-                lstTasks.Clear();
+                if (i != 0 && i % MaxParallelBatchSize == 0)
+                {
+                    Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
+                    while (!tskLoop.IsCompleted)
+                        SafeSleep(token);
+                    if (tskLoop.Exception != null)
+                        throw tskLoop.Exception;
+                    for (int j = 0; j < MaxParallelBatchSize; ++j)
+                        aobjReturn[intOffset + j] = lstTasks[j].GetAwaiter().GetResult();
+                    intOffset += MaxParallelBatchSize;
+                    lstTasks.Clear();
+                }
+                lstTasks.Add(Task.Run(afuncToRun[i], token));
             }
             int intFinalBatchSize = lstTasks.Count;
             if (intFinalBatchSize != 0)
