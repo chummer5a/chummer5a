@@ -91,7 +91,7 @@ namespace SevenZip.Compression.LZ
             }
         }
 
-        public virtual async ValueTask ReadBlockAsync(CancellationToken token = default)
+        public virtual async Task ReadBlockAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_streamEndWasReached)
@@ -156,9 +156,10 @@ namespace SevenZip.Compression.LZ
             ReadBlock();
         }
 
-        public ValueTask InitAsync(CancellationToken token = default)
+        public Task InitAsync(CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             _bufferOffset = 0;
             _pos = 0;
             _streamPos = 0;
@@ -181,8 +182,11 @@ namespace SevenZip.Compression.LZ
             }
         }
 
-        public async ValueTask MovePosAsync(CancellationToken token = default)
+        public Task MovePosAsync(CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+
             unchecked
             {
                 _pos++;
@@ -191,9 +195,11 @@ namespace SevenZip.Compression.LZ
                     uint pointerToPosition = _bufferOffset + _pos;
                     if (pointerToPosition > _pointerToLastSafePosition)
                         MoveBlock();
-                    await ReadBlockAsync(token).ConfigureAwait(false);
+                    return ReadBlockAsync(token);
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         public byte GetIndexByte(int index)

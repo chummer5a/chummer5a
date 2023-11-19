@@ -659,7 +659,7 @@ namespace Chummer
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
-        private async ValueTask SetDocumentText(string strText, CancellationToken token = default)
+        private async Task SetDocumentText(string strText, CancellationToken token = default)
         {
             int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height, token).ConfigureAwait(false);
             string strDocumentText
@@ -673,7 +673,7 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the characters (and therefore content) of the Viewer window.
         /// </summary>
-        private async ValueTask RefreshCharacters(CancellationToken token = default)
+        private async Task RefreshCharacters(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
@@ -772,7 +772,7 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the sheet of the Viewer window.
         /// </summary>
-        private async ValueTask RefreshSheet(CancellationToken token = default)
+        private async Task RefreshSheet(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewSource = new CancellationTokenSource();
@@ -1139,7 +1139,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> DoPdfPrinterShortcut(string strPdfPrinterName, CancellationToken token = default)
+        private async Task<bool> DoPdfPrinterShortcut(string strPdfPrinterName, CancellationToken token = default)
         {
             // We've got a proper, built-in PDF printer, so let's use that instead of wkhtmltopdf
             string strOldHeader = null;
@@ -1235,7 +1235,7 @@ namespace Chummer
             return true;
         }
 
-        private async ValueTask PopulateXsltList(CancellationToken token = default)
+        private async Task PopulateXsltList(CancellationToken token = default)
         {
             List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(
                 await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
@@ -1253,7 +1253,7 @@ namespace Chummer
         /// <summary>
         /// Set the XSL sheet that will be selected by default.
         /// </summary>
-        public ValueTask SetSelectedSheet(string strSheet, CancellationToken token = default)
+        public Task SetSelectedSheet(string strSheet, CancellationToken token = default)
         {
             _strSelectedSheet = strSheet;
             return RefreshSheet(token);

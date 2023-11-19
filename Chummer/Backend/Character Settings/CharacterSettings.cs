@@ -713,7 +713,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask CopyValuesAsync(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "", CancellationToken token = default)
+        public async Task CopyValuesAsync(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "", CancellationToken token = default)
         {
             if (objOther == null || objOther == this)
                 return;
@@ -807,10 +807,7 @@ namespace Chummer
                                         token.ThrowIfCancellationRequested();
                                         await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
                                         await objOther._dicCustomDataDirectoryKeys
-                                            .ForEachAsync(
-                                                kvpOther => _dicCustomDataDirectoryKeys
-                                                    .AddAsync(kvpOther.Key, kvpOther.Value, token)
-                                                    .AsTask(), token).ConfigureAwait(false);
+                                            .ForEachAsync(kvpOther => _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value, token), token).ConfigureAwait(false);
                                     }
                                     finally
                                     {
@@ -932,7 +929,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<List<string>> GetDifferingPropertyNamesAsync(CharacterSettings objOther, CancellationToken token = default)
+        public async Task<List<string>> GetDifferingPropertyNamesAsync(CharacterSettings objOther, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<string> lstReturn = new List<string>();
@@ -1068,7 +1065,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> HasIdenticalSettingsAsync(CharacterSettings objOther, CancellationToken token = default)
+        public async Task<bool> HasIdenticalSettingsAsync(CharacterSettings objOther, CancellationToken token = default)
         {
             if (objOther == null)
                 return false;
@@ -1174,7 +1171,7 @@ namespace Chummer
         /// Gets a number based on every single private property of the setting.
         /// If two settings have unequal Hash Codes, they will never actually be equal.
         /// </summary>
-        public async ValueTask<int> GetEquatableHashCodeAsync(CancellationToken token = default)
+        public async Task<int> GetEquatableHashCodeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2100,7 +2097,7 @@ namespace Chummer
         /// <param name="strNewFileName">New file name to use. If empty, uses the existing, built-in file name.</param>
         /// <param name="blnClearSourceGuid">Whether to clear SourceId after a successful save or not. Used to turn built-in options into custom ones.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask<bool> SaveAsync(string strNewFileName = "", bool blnClearSourceGuid = false,
+        public async Task<bool> SaveAsync(string strNewFileName = "", bool blnClearSourceGuid = false,
                                                CancellationToken token = default)
         {
             // Create the settings directory if it does not exist.
@@ -4597,7 +4594,7 @@ namespace Chummer
         /// <summary>
         /// Method being used to build the character.
         /// </summary>
-        public async ValueTask<CharacterBuildMethod> GetBuildMethodAsync(CancellationToken token = default)
+        public async Task<CharacterBuildMethod> GetBuildMethodAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -4615,7 +4612,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetBuildMethodUsesPriorityTablesAsync(CancellationToken token = default)
+        public async Task<bool> GetBuildMethodUsesPriorityTablesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -4626,17 +4623,17 @@ namespace Chummer
 
         public bool BuildMethodIsPriority => BuildMethod == CharacterBuildMethod.Priority;
 
-        public async ValueTask<bool> GetBuildMethodIsPriorityAsync(CancellationToken token = default) =>
+        public async Task<bool> GetBuildMethodIsPriorityAsync(CancellationToken token = default) =>
             await GetBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.Priority;
 
         public bool BuildMethodIsSumtoTen => BuildMethod == CharacterBuildMethod.SumtoTen;
 
-        public async ValueTask<bool> GetBuildMethodIsSumtoTenAsync(CancellationToken token = default) =>
+        public async Task<bool> GetBuildMethodIsSumtoTenAsync(CancellationToken token = default) =>
             await GetBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen;
 
         public bool BuildMethodIsLifeModule => BuildMethod == CharacterBuildMethod.LifeModule;
 
-        public async ValueTask<bool> GetBuildMethodIsLifeModuleAsync(CancellationToken token = default) =>
+        public async Task<bool> GetBuildMethodIsLifeModuleAsync(CancellationToken token = default) =>
             await GetBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.LifeModule;
 
         /// <summary>
@@ -4722,7 +4719,7 @@ namespace Chummer
         /// <summary>
         /// Amount of Karma that is used to create the character.
         /// </summary>
-        public async ValueTask<int> GetBuildKarmaAsync(CancellationToken token = default)
+        public async Task<int> GetBuildKarmaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -4754,7 +4751,7 @@ namespace Chummer
         /// <summary>
         /// Limit on the amount of karma that can be spent at creation on qualities
         /// </summary>
-        public async ValueTask<int> GetQualityKarmaLimitAsync(CancellationToken token = default)
+        public async Task<int> GetQualityKarmaLimitAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -4851,7 +4848,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of Build Points that can be spent on Nuyen.
         /// </summary>
-        public async ValueTask<decimal> GetNuyenMaximumBPAsync(CancellationToken token = default)
+        public async Task<decimal> GetNuyenMaximumBPAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5026,7 +5023,7 @@ namespace Chummer
 
         public string DictionaryKey => BuiltInOption ? SourceIdString : FileName;
 
-        public async ValueTask<string> GetDictionaryKeyAsync(CancellationToken token = default)
+        public async Task<string> GetDictionaryKeyAsync(CancellationToken token = default)
         {
             return await GetBuiltInOptionAsync(token).ConfigureAwait(false)
                 ? await GetSourceIdAsync(token).ConfigureAwait(false)
@@ -5053,7 +5050,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask<bool> BookEnabledAsync(string strCode, CancellationToken token = default)
+        public async Task<bool> BookEnabledAsync(string strCode, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5112,7 +5109,7 @@ namespace Chummer
         /// <summary>
         /// XPath query used to filter items based on the user's selected source books and optional rules.
         /// </summary>
-        public async ValueTask<string> BookXPathAsync(bool excludeHidden = true, CancellationToken token = default)
+        public async Task<string> BookXPathAsync(bool excludeHidden = true, CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPath))
@@ -5231,7 +5228,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<LockingTypedOrderedDictionary<string, bool>> GetCustomDataDirectoryKeysAsync(
+        public async Task<LockingTypedOrderedDictionary<string, bool>> GetCustomDataDirectoryKeysAsync(
             CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -5250,7 +5247,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<IReadOnlyList<string>> GetEnabledCustomDataDirectoryPathsAsync(
+        public async Task<IReadOnlyList<string>> GetEnabledCustomDataDirectoryPathsAsync(
             CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -5269,7 +5266,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<IReadOnlyList<CustomDataDirectoryInfo>> GetEnabledCustomDataDirectoryInfosAsync(
+        public async Task<IReadOnlyList<CustomDataDirectoryInfo>> GetEnabledCustomDataDirectoryInfosAsync(
             CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -5294,7 +5291,7 @@ namespace Chummer
         /// <summary>
         /// A HashSet that can be used for fast queries, which content is (and should) always identical to the IReadOnlyList EnabledCustomDataDirectoryInfos
         /// </summary>
-        public async ValueTask<IReadOnlyCollection<Guid>> GetEnabledCustomDataDirectoryInfoGuidsAsync(
+        public async Task<IReadOnlyCollection<Guid>> GetEnabledCustomDataDirectoryInfoGuidsAsync(
             CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -5458,7 +5455,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> GetSourceIdAsync(CancellationToken token = default)
+        public async Task<string> GetSourceIdAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5476,7 +5473,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetBuiltInOptionAsync(CancellationToken token = default)
+        public async Task<bool> GetBuiltInOptionAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5563,7 +5560,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not a Spirit's Maximum Force is based on the character's total MAG.
         /// </summary>
-        public async ValueTask<bool> GetSpiritForceBasedOnTotalMAGAsync(CancellationToken token)
+        public async Task<bool> GetSpiritForceBasedOnTotalMAGAsync(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -5676,7 +5673,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not characters may use Initiation/Submersion in Create mode.
         /// </summary>
-        public async ValueTask<bool> GetAllowInitiationInCreateModeAsync(CancellationToken token = default)
+        public async Task<bool> GetAllowInitiationInCreateModeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -5714,7 +5711,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not characters can spend skill points on broken groups.
         /// </summary>
-        public async ValueTask<bool> GetUsePointsOnBrokenGroupsAsync(CancellationToken token = default)
+        public async Task<bool> GetUsePointsOnBrokenGroupsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5851,7 +5848,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not to use stats from Cyberlegs when calculating movement rates
         /// </summary>
-        public async ValueTask<bool> GetCyberlegMovementAsync(CancellationToken token = default)
+        public async Task<bool> GetCyberlegMovementAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5887,7 +5884,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetMysAdeptAllowPpCareerAsync(CancellationToken token = default)
+        public async Task<bool> GetMysAdeptAllowPpCareerAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5927,7 +5924,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetMysAdeptSecondMAGAttributeAsync(CancellationToken token = default)
+        public async Task<bool> GetMysAdeptSecondMAGAttributeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5945,7 +5942,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetMysAdeptSecondMAGAttributeEnabledAsync(CancellationToken token = default)
+        public async Task<bool> GetMysAdeptSecondMAGAttributeEnabledAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -5979,7 +5976,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how many contact points the character has
         /// </summary>
-        public async ValueTask<string> GetContactPointsExpressionAsync(CancellationToken token = default)
+        public async Task<string> GetContactPointsExpressionAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6013,7 +6010,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how many knowledge points the character has
         /// </summary>
-        public async ValueTask<string> GetKnowledgePointsExpressionAsync(CancellationToken token = default)
+        public async Task<string> GetKnowledgePointsExpressionAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6053,7 +6050,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how much nuyen the character gets at character creation
         /// </summary>
-        public async ValueTask<string> GetChargenKarmaToNuyenExpressionAsync(CancellationToken token = default)
+        public async Task<string> GetChargenKarmaToNuyenExpressionAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6065,7 +6062,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how much nuyen the character gets at character creation
         /// </summary>
-        public async ValueTask SetChargenKarmaToNuyenExpressionAsync(string value, CancellationToken token = default)
+        public async Task SetChargenKarmaToNuyenExpressionAsync(string value, CancellationToken token = default)
         {
             value = value.CleanXPath().Trim('\"');
             // A safety check to make sure that we always still account for Priority-given Nuyen
@@ -6202,7 +6199,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not Armor
         /// </summary>
-        public async ValueTask<bool> GetDroneArmorMultiplierEnabledAsync(CancellationToken token = default)
+        public async Task<bool> GetDroneArmorMultiplierEnabledAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6339,7 +6336,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not specializations in an active skill (permanently) break a skill group.
         /// </summary>
-        public async ValueTask<bool> GetSpecializationsBreakSkillGroupsAsync(CancellationToken token = default)
+        public async Task<bool> GetSpecializationsBreakSkillGroupsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6375,7 +6372,7 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public async ValueTask<HashSet<string>> GetBooksWritableAsync(CancellationToken token = default)
+        public async Task<HashSet<string>> GetBooksWritableAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6387,7 +6384,7 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public async ValueTask<IReadOnlyCollection<string>> GetBooksAsync(CancellationToken token = default)
+        public async Task<IReadOnlyCollection<string>> GetBooksAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6411,7 +6408,7 @@ namespace Chummer
         /// <summary>
         /// File name of the option (if it is not a built-in one).
         /// </summary>
-        public async ValueTask<string> GetFileNameAsync(CancellationToken token = default)
+        public async Task<string> GetFileNameAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6443,7 +6440,7 @@ namespace Chummer
         /// <summary>
         /// Setting name.
         /// </summary>
-        public async ValueTask<string> GetNameAsync(CancellationToken token = default)
+        public async Task<string> GetNameAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6484,7 +6481,7 @@ namespace Chummer
         /// <summary>
         /// Setting name to display in the UI.
         /// </summary>
-        public async ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        public async Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6555,7 +6552,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<int> GetMetatypeCostsKarmaMultiplierAsync(CancellationToken token = default)
+        public async Task<int> GetMetatypeCostsKarmaMultiplierAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6709,7 +6706,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not characters can have more than 25 BP in Positive Qualities.
         /// </summary>
-        public async ValueTask<bool> GetExceedPositiveQualitiesAsync(CancellationToken token = default)
+        public async Task<bool> GetExceedPositiveQualitiesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6746,7 +6743,7 @@ namespace Chummer
         /// <summary>
         /// If true, the karma cost of qualities is doubled after the initial 25.
         /// </summary>
-        public async ValueTask<bool> GetExceedPositiveQualitiesCostDoubledAsync(CancellationToken token = default)
+        public async Task<bool> GetExceedPositiveQualitiesCostDoubledAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6785,7 +6782,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not characters can have more than 25 BP in Negative Qualities.
         /// </summary>
-        public async ValueTask<bool> GetExceedNegativeQualitiesAsync(CancellationToken token = default)
+        public async Task<bool> GetExceedNegativeQualitiesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6822,7 +6819,7 @@ namespace Chummer
         /// <summary>
         /// If true, the character will not receive additional BP from Negative Qualities past the initial 25
         /// </summary>
-        public async ValueTask<bool> GetExceedNegativeQualitiesNoBonusAsync(CancellationToken token = default)
+        public async Task<bool> GetExceedNegativeQualitiesNoBonusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -7066,7 +7063,7 @@ namespace Chummer
         /// <summary>
         /// Format in which nuyen values should be displayed (does not include nuyen symbol).
         /// </summary>
-        public async ValueTask<string> GetNuyenFormatAsync(CancellationToken token = default)
+        public async Task<string> GetNuyenFormatAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -7099,7 +7096,7 @@ namespace Chummer
         /// <summary>
         /// Format in which weight values should be displayed (does not include kg units).
         /// </summary>
-        public async ValueTask<string> GetWeightFormatAsync(CancellationToken token = default)
+        public async Task<string> GetWeightFormatAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -7191,7 +7188,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine the maximum weight the character can lift in kg
         /// </summary>
-        public async ValueTask<string> GetLiftLimitExpressionAsync(CancellationToken token = default)
+        public async Task<string> GetLiftLimitExpressionAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -7226,7 +7223,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine the maximum weight the character can lift in kg
         /// </summary>
-        public async ValueTask<string> GetCarryLimitExpressionAsync(CancellationToken token = default)
+        public async Task<string> GetCarryLimitExpressionAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -7261,7 +7258,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine the amount of weight necessary to increase encumbrance penalties by one tick
         /// </summary>
-        public async ValueTask<string> GetEncumbranceIntervalExpressionAsync(CancellationToken token = default)
+        public async Task<string> GetEncumbranceIntervalExpressionAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -7594,7 +7591,7 @@ namespace Chummer
         /// <summary>
         /// Display format for Essence.
         /// </summary>
-        public async ValueTask<string> GetEssenceFormatAsync(CancellationToken token = default)
+        public async Task<string> GetEssenceFormatAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -7657,7 +7654,7 @@ namespace Chummer
         /// <summary>
         /// Allow Enemies to be bought and tracked like in 4e?
         /// </summary>
-        public async ValueTask<bool> GetEnableEnemyTrackingAsync(CancellationToken token = default)
+        public async Task<bool> GetEnableEnemyTrackingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -7769,7 +7766,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not characters are unrestricted in the number of points they can invest in Nuyen.
         /// </summary>
-        public async ValueTask<bool> GetUnrestrictedNuyenAsync(CancellationToken token = default)
+        public async Task<bool> GetUnrestrictedNuyenAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -7856,7 +7853,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user is allowed to break Skill Groups while in Create Mode.
         /// </summary>
-        public async ValueTask<bool> GetStrictSkillGroupsInCreateModeAsync(CancellationToken token = default)
+        public async Task<bool> GetStrictSkillGroupsInCreateModeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -7893,7 +7890,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
         /// </summary>
-        public async ValueTask<bool> GetAllowPointBuySpecializationsOnKarmaSkillsAsync(
+        public async Task<bool> GetAllowPointBuySpecializationsOnKarmaSkillsAsync(
             CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8006,7 +8003,7 @@ namespace Chummer
         /// <summary>
         /// House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
         /// </summary>
-        public async ValueTask<bool> GetCompensateSkillGroupKarmaDifferenceAsync(CancellationToken token = default)
+        public async Task<bool> GetCompensateSkillGroupKarmaDifferenceAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8093,7 +8090,7 @@ namespace Chummer
         /// <summary>
         /// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
         /// </summary>
-        public async ValueTask<bool> GetFreeSpiritPowerPointsMAGAsync(CancellationToken token = default)
+        public async Task<bool> GetFreeSpiritPowerPointsMAGAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8155,7 +8152,7 @@ namespace Chummer
         /// <summary>
         /// Use Rigger 5.0 drone modding rules
         /// </summary>
-        public async ValueTask<bool> GetDroneModsAsync(CancellationToken token = default)
+        public async Task<bool> GetDroneModsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8232,7 +8229,7 @@ namespace Chummer
         /// <summary>
         /// Maximum skill rating in character creation
         /// </summary>
-        public async ValueTask<int> GetMaxSkillRatingCreateAsync(CancellationToken token = default)
+        public async Task<int> GetMaxSkillRatingCreateAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8264,7 +8261,7 @@ namespace Chummer
         /// <summary>
         /// Maximum knowledge skill rating in character creation
         /// </summary>
-        public async ValueTask<int> GetMaxKnowledgeSkillRatingCreateAsync(CancellationToken token = default)
+        public async Task<int> GetMaxKnowledgeSkillRatingCreateAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8303,7 +8300,7 @@ namespace Chummer
         /// <summary>
         /// Maximum skill rating
         /// </summary>
-        public async ValueTask<int> GetMaxSkillRatingAsync(CancellationToken token = default)
+        public async Task<int> GetMaxSkillRatingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8342,7 +8339,7 @@ namespace Chummer
         /// <summary>
         /// Maximum knowledge skill rating
         /// </summary>
-        public async ValueTask<int> GetMaxKnowledgeSkillRatingAsync(CancellationToken token = default)
+        public async Task<int> GetMaxKnowledgeSkillRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8380,7 +8377,7 @@ namespace Chummer
         /// <summary>
         /// Whether Life Modules should automatically generate a character background.
         /// </summary>
-        public async ValueTask<bool> GetAutomaticBackstoryAsync(CancellationToken token = default)
+        public async Task<bool> GetAutomaticBackstoryAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8418,7 +8415,7 @@ namespace Chummer
         /// <summary>
         /// Whether to use the rules from SR4 to calculate Public Awareness.
         /// </summary>
-        public async ValueTask<bool> GetUseCalculatedPublicAwarenessAsync(CancellationToken token = default)
+        public async Task<bool> GetUseCalculatedPublicAwarenessAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8480,7 +8477,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetPrioritySpellsAsAdeptPowersAsync(CancellationToken token = default)
+        public async Task<bool> GetPrioritySpellsAsAdeptPowersAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8542,7 +8539,7 @@ namespace Chummer
         /// <summary>
         /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating.
         /// </summary>
-        public async ValueTask<bool> GetIncreasedImprovedAbilityMultiplierAsync(CancellationToken token = default)
+        public async Task<bool> GetIncreasedImprovedAbilityMultiplierAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8631,7 +8628,7 @@ namespace Chummer
         /// <summary>
         /// Override the maximum value of bonuses that can affect cyberlimbs.
         /// </summary>
-        public async ValueTask<bool> GetCyberlimbAttributeBonusCapOverrideAsync(CancellationToken token = default)
+        public async Task<bool> GetCyberlimbAttributeBonusCapOverrideAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -8707,7 +8704,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number of initiative dice
         /// </summary>
-        public async ValueTask<int> GetMinInitiativeDiceAsync(CancellationToken token = default)
+        public async Task<int> GetMinInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8740,7 +8737,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of initiative dice
         /// </summary>
-        public async ValueTask<int> GetMaxInitiativeDiceAsync(CancellationToken token = default)
+        public async Task<int> GetMaxInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8773,7 +8770,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number of initiative dice in Astral
         /// </summary>
-        public async ValueTask<int> GetMinAstralInitiativeDiceAsync(CancellationToken token = default)
+        public async Task<int> GetMinAstralInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8806,7 +8803,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of initiative dice in Astral
         /// </summary>
-        public async ValueTask<int> GetMaxAstralInitiativeDiceAsync(CancellationToken token = default)
+        public async Task<int> GetMaxAstralInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8839,7 +8836,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number of initiative dice in cold sim VR
         /// </summary>
-        public async ValueTask<int> GetMinColdSimInitiativeDiceAsync(CancellationToken token = default)
+        public async Task<int> GetMinColdSimInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8872,7 +8869,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of initiative dice in cold sim VR
         /// </summary>
-        public async ValueTask<int> GetMaxColdSimInitiativeDiceAsync(CancellationToken token = default)
+        public async Task<int> GetMaxColdSimInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8905,7 +8902,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number of initiative dice in hot sim VR
         /// </summary>
-        public async ValueTask<int> GetMinHotSimInitiativeDiceAsync(CancellationToken token = default)
+        public async Task<int> GetMinHotSimInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8938,7 +8935,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of initiative dice in hot sim VR
         /// </summary>
-        public async ValueTask<int> GetMaxHotSimInitiativeDiceAsync(CancellationToken token = default)
+        public async Task<int> GetMaxHotSimInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8975,7 +8972,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to improve an Attribute = New Rating X this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaAttributeAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaAttributeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9007,7 +9004,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a Quality = BP Cost x this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaQualityAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaQualityAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9039,7 +9036,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a Specialization for an active skill = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaSpecializationAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaSpecializationAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9071,7 +9068,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a Specialization for a knowledge skill = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaKnowledgeSpecializationAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaKnowledgeSpecializationAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9103,7 +9100,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a new Knowledge Skill = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaNewKnowledgeSkillAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaNewKnowledgeSkillAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9135,7 +9132,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a new Active Skill = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaNewActiveSkillAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaNewActiveSkillAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9167,7 +9164,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a new Skill Group = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaNewSkillGroupAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaNewSkillGroupAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9199,7 +9196,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to improve a Knowledge Skill = New Rating x this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaImproveKnowledgeSkillAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaImproveKnowledgeSkillAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9231,7 +9228,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to improve an Active Skill = New Rating x this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaImproveActiveSkillAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaImproveActiveSkillAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9263,7 +9260,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to improve a Skill Group = New Rating x this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaImproveSkillGroupAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaImproveSkillGroupAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9295,7 +9292,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for each Spell = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaSpellAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaSpellAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9347,7 +9344,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a new Complex Form = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaNewComplexFormAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaNewComplexFormAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9379,7 +9376,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a new AI Program
         /// </summary>
-        public async ValueTask<int> GetKarmaNewAIProgramAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaNewAIProgramAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9411,7 +9408,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a new AI Advanced Program
         /// </summary>
-        public async ValueTask<int> GetKarmaNewAIAdvancedProgramAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaNewAIAdvancedProgramAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9443,7 +9440,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a Contact = (Connection + Loyalty) x this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaContactAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaContactAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9475,7 +9472,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for an Enemy = (Connection + Loyalty) x this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaEnemyAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaEnemyAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9507,7 +9504,7 @@ namespace Chummer
         /// <summary>
         /// Maximum amount of remaining Karma that is carried over to the character once they are created.
         /// </summary>
-        public async ValueTask<int> GetKarmaCarryoverAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaCarryoverAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9539,7 +9536,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a Spirit = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaSpiritAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaSpiritAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9571,7 +9568,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a Martial Arts Technique = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaTechniqueAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaTechniqueAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9603,7 +9600,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
         /// </summary>
-        public async ValueTask<int> GetKarmaInitiationAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaInitiationAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9635,7 +9632,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
         /// </summary>
-        public async ValueTask<int> GetKarmaInitiationFlatAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaInitiationFlatAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9667,7 +9664,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a Metamagic = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaMetamagicAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaMetamagicAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9699,7 +9696,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to join a Group = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaJoinGroupAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaJoinGroupAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9731,7 +9728,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to leave a Group = this value.
         /// </summary>
-        public async ValueTask<int> GetKarmaLeaveGroupAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaLeaveGroupAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9763,7 +9760,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Alchemical Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaAlchemicalFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaAlchemicalFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9795,7 +9792,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Banishing Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaBanishingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaBanishingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9827,7 +9824,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Binding Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaBindingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaBindingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9859,7 +9856,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Centering Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaCenteringFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaCenteringFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9891,7 +9888,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Counterspelling Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaCounterspellingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaCounterspellingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9923,7 +9920,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Disenchanting Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaDisenchantingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaDisenchantingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9955,7 +9952,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Flexible Signature Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaFlexibleSignatureFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaFlexibleSignatureFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -9987,7 +9984,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Masking Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaMaskingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaMaskingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10016,7 +10013,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Power Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaPowerFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaPowerFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10045,7 +10042,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Qi Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaQiFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaQiFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10077,7 +10074,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Ritual Spellcasting Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaRitualSpellcastingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaRitualSpellcastingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10109,7 +10106,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Spellcasting Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaSpellcastingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaSpellcastingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10141,7 +10138,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Spell Shaping Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaSpellShapingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaSpellShapingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10173,7 +10170,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Summoning Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaSummoningFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaSummoningFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10205,7 +10202,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Sustaining Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaSustainingFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaSustainingFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10237,7 +10234,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Weapon Foci.
         /// </summary>
-        public async ValueTask<int> GetKarmaWeaponFocusAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaWeaponFocusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10269,7 +10266,7 @@ namespace Chummer
         /// <summary>
         /// How much Karma a single Power Point costs for a Mystic Adept.
         /// </summary>
-        public async ValueTask<int> GetKarmaMysticAdeptPowerPointAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaMysticAdeptPowerPointAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -10301,7 +10298,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for fetting a spirit (gets multiplied by Force).
         /// </summary>
-        public async ValueTask<int> GetKarmaSpiritFetteringAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaSpiritFetteringAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {

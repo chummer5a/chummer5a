@@ -67,11 +67,11 @@ namespace Chummer
             {
                 bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
                 await nudForce.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit.CharacterObject,
-                        nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken).AsTask(), _objMyToken)
+                        nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
                 await chkBound.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Bound), token: _objMyToken).ConfigureAwait(false);
                 await chkBound.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit.CharacterObject,
-                        nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken).AsTask(), _objMyToken)
+                        nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
                 await cboSpiritName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.Name), token: _objMyToken).ConfigureAwait(false);
                 await txtCritterName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.CritterName), token: _objMyToken)
@@ -82,8 +82,8 @@ namespace Chummer
                 await nudForce.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objSpirit.CharacterObject,
                         blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel),
                         x => blnIsSpirit
-                            ? x.GetMaxSpiritForceAsync(_objMyToken).AsTask()
-                            : x.GetMaxSpriteLevelAsync(_objMyToken).AsTask(), _objMyToken)
+                            ? x.GetMaxSpiritForceAsync(_objMyToken)
+                            : x.GetMaxSpriteLevelAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
                 await nudServices.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.ServicesOwed), token: _objMyToken)
                     .ConfigureAwait(false);
@@ -681,7 +681,7 @@ namespace Chummer
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private async ValueTask CreateCritter(string strCritterName, int intForce, CancellationToken token = default)
+        private async Task CreateCritter(string strCritterName, int intForce, CancellationToken token = default)
         {
             // Code from frmMetatype.
             XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml", token: token).ConfigureAwait(false);

@@ -1475,7 +1475,7 @@ namespace Chummer
         /// <param name="intCount"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async ValueTask<ThreadSafeForm<LoadingBar>> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1, CancellationToken token = default)
+        public static async Task<ThreadSafeForm<LoadingBar>> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             ThreadSafeForm<LoadingBar> frmReturn = await ThreadSafeForm<LoadingBar>.GetAsync(() => new LoadingBar { CharacterFile = strFile }, token).ConfigureAwait(false);

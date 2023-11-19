@@ -657,7 +657,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -863,7 +863,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -899,7 +899,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -918,9 +918,9 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Sourcebook.
@@ -986,7 +986,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
@@ -1203,7 +1203,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Lifestyle.
         /// </summary>
-        public async ValueTask<string> GetBaseLifestyleAsync(CancellationToken token = default)
+        public async Task<string> GetBaseLifestyleAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1237,7 +1237,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalLPAsync(CancellationToken token = default)
+        public async Task<int> GetTotalLPAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1487,7 +1487,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalComfortsMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalComfortsMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1512,7 +1512,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalSecurityMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalSecurityMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1537,7 +1537,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalAreaMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalAreaMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1720,7 +1720,7 @@ namespace Chummer.Backend.Equipment
 
         public bool IsTrustFundEligible => StaticIsTrustFundEligible(_objCharacter, BaseLifestyle);
 
-        public async ValueTask<bool> GetIsTrustFundEligibleAsync(CancellationToken token = default)
+        public async Task<bool> GetIsTrustFundEligibleAsync(CancellationToken token = default)
         {
             return await StaticIsTrustFundEligibleAsync(_objCharacter,
                 await GetBaseLifestyleAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1743,7 +1743,7 @@ namespace Chummer.Backend.Equipment
             return false;
         }
 
-        public static async ValueTask<bool> StaticIsTrustFundEligibleAsync(Character objCharacter, string strBaseLifestyle, CancellationToken token = default)
+        public static async Task<bool> StaticIsTrustFundEligibleAsync(Character objCharacter, string strBaseLifestyle, CancellationToken token = default)
         {
             switch (await objCharacter.GetTrustFundAsync(token).ConfigureAwait(false))
             {
@@ -1968,7 +1968,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetCityAsync(CancellationToken token = default)
+        public async Task<string> GetCityAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1977,7 +1977,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask SetCityAsync(string value, CancellationToken token = default)
+        public async Task SetCityAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2004,7 +2004,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetDistrictAsync(CancellationToken token = default)
+        public async Task<string> GetDistrictAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2013,7 +2013,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask SetDistrictAsync(string value, CancellationToken token = default)
+        public async Task SetDistrictAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2040,7 +2040,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetBoroughAsync(CancellationToken token = default)
+        public async Task<string> GetBoroughAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2049,7 +2049,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask SetBoroughAsync(string value, CancellationToken token = default)
+        public async Task SetBoroughAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2078,7 +2078,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Lifestyle, counting all purchased months.
         /// </summary>
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2110,7 +2110,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetCostMultiplierAsync(CancellationToken token = default)
+        public async Task<decimal> GetCostMultiplierAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2157,7 +2157,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Area of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalAreaAsync(CancellationToken token = default)
+        public async Task<int> GetTotalAreaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2187,7 +2187,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Comforts of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalComfortsAsync(CancellationToken token = default)
+        public async Task<int> GetTotalComfortsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2218,7 +2218,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Security of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalSecurityAsync(CancellationToken token = default)
+        public async Task<int> GetTotalSecurityAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2244,7 +2244,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetAreaDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetAreaDeltaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2270,7 +2270,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetComfortsDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetComfortsDeltaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2297,7 +2297,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetSecurityDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetSecurityDeltaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2324,7 +2324,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedAreaAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedAreaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2351,7 +2351,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedComfortsAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedComfortsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2379,7 +2379,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedSecurityAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedSecurityAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2408,7 +2408,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
         /// </summary>
-        public async ValueTask<decimal> GetBaseCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetBaseCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2436,7 +2436,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
-        public async ValueTask<decimal> GetBaseCostMultiplierAsync(CancellationToken token = default)
+        public async Task<decimal> GetBaseCostMultiplierAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2513,7 +2513,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total monthly cost of the Lifestyle.
         /// </summary>
-        public async ValueTask<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
         {
             decimal decReturn = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -2583,7 +2583,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetDisplayTotalMonthlyCostAsync(CancellationToken token = default)
+        public async Task<string> GetDisplayTotalMonthlyCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -3090,7 +3090,7 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {

@@ -368,7 +368,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treLimit"></param>
         /// <param name="token"></param>
-        protected async ValueTask UpdateLimitModifier(TreeView treLimit, CancellationToken token = default)
+        protected async Task UpdateLimitModifier(TreeView treLimit, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (treLimit == null)
@@ -420,7 +420,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treNode"></param>
         /// <param name="token"></param>
-        protected async ValueTask WriteNotes(TreeNode treNode, CancellationToken token = default)
+        protected async Task WriteNotes(TreeNode treNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!(treNode?.Tag is IHasNotes objNotes))
@@ -461,7 +461,7 @@ namespace Chummer
 
         #region Refresh Treeviews and Panels
 
-        protected async ValueTask RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1, CancellationToken token = default)
+        protected async Task RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1, CancellationToken token = default)
         {
             if (pnlAttributes == null)
                 return;
@@ -688,7 +688,7 @@ namespace Chummer
         /// <param name="cmsInitiationNotes">ContextMenuStrip that will be added to spells in the initiations tree.</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        protected async ValueTask RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treSpells == null)
                 return;
@@ -1030,7 +1030,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treAIPrograms == null)
                 return;
@@ -1049,7 +1049,7 @@ namespace Chummer
 
                     // Add AI Programs.
                     await CharacterObject.AIPrograms
-                                         .ForEachAsync(objAIProgram => AddToTree(objAIProgram, false).AsTask(), token)
+                                         .ForEachAsync(objAIProgram => AddToTree(objAIProgram, false), token)
                                          .ConfigureAwait(false);
 
                     await treAIPrograms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
@@ -1177,7 +1177,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshComplexForms(TreeView treComplexForms, TreeView treMetamagic, ContextMenuStrip cmsComplexForm, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshComplexForms(TreeView treComplexForms, TreeView treMetamagic, ContextMenuStrip cmsComplexForm, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treComplexForms == null)
                 return;
@@ -1381,7 +1381,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshInitiationGrades(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshInitiationGrades(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treMetamagic == null)
                 return;
@@ -1644,7 +1644,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -1739,7 +1739,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -1835,7 +1835,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null, CancellationToken token = default)
+        protected async Task RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -1897,7 +1897,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        protected async ValueTask RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs, CancellationToken token = default)
+        protected async Task RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -1913,7 +1913,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -2042,7 +2042,7 @@ namespace Chummer
         /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        protected async ValueTask RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treCritterPowers == null)
                 return;
@@ -2061,7 +2061,7 @@ namespace Chummer
                           string.Empty;
                     await treCritterPowers.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
                     // Add the Critter Powers that exist.
-                    await CharacterObject.CritterPowers.ForEachAsync(objPower => AddToTree(objPower, false).AsTask(), token)
+                    await CharacterObject.CritterPowers.ForEachAsync(objPower => AddToTree(objPower, false), token)
                                          .ConfigureAwait(false);
 
                     await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
@@ -2225,7 +2225,7 @@ namespace Chummer
         /// <param name="fntStrikeout">Font to use for disabled qualities (e.g. cybereyes-disabled Low Light Vision).</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        protected async ValueTask RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, Font fntNormal, Font fntStrikeout, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, Font fntNormal, Font fntStrikeout, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treQualities == null)
                 return;
@@ -2553,7 +2553,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treQualities">TreeView to insert the qualities into.</param>
         /// <param name="token">Cancellation token to use.</param>
-        protected async ValueTask RefreshQualityNames(TreeView treQualities, CancellationToken token = default)
+        protected async Task RefreshQualityNames(TreeView treQualities, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (treQualities == null)
@@ -2575,7 +2575,7 @@ namespace Chummer
                             if (objQualityNode.Tag is Quality objLoopQuality)
                                 lstNames.Add(new Tuple<TreeNode, Task<string>>(
                                                  objQualityNode,
-                                                 objLoopQuality.GetCurrentDisplayNameAsync(token).AsTask()));
+                                                 objLoopQuality.GetCurrentDisplayNameAsync(token)));
                         }
                     }
 
@@ -2601,7 +2601,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        protected async ValueTask RemoveAddedQualities(XPathNodeIterator objNodeList, CancellationToken token = default)
+        protected async Task RemoveAddedQualities(XPathNodeIterator objNodeList, CancellationToken token = default)
         {
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
@@ -2629,7 +2629,7 @@ namespace Chummer
 
         #region Locations
 
-        protected async ValueTask RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -2653,7 +2653,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treGear == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -2677,7 +2677,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treVehicles == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -2703,7 +2703,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treVehicles == null || objVehicle == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -2728,7 +2728,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treWeapons == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -2753,7 +2753,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treImprovements == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -2938,7 +2938,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
+        private async Task RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
                                                 ICollection<Location> lstLocations,
                                                 NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs,
                                                 string strSelectedId, string strNodeName,
@@ -2949,7 +2949,7 @@ namespace Chummer
                 .ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
+        private async Task RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
                                                 Func<int> funcOffset, ICollection<Location> lstLocations,
                                                 NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
                                                 bool rootSibling = true, CancellationToken token = default)
@@ -3135,7 +3135,7 @@ namespace Chummer
 
         #endregion Locations
 
-        protected async ValueTask RefreshWeapons(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshWeapons(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treWeapons == null)
                 return;
@@ -3328,7 +3328,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treArmor == null)
                 return;
@@ -3682,7 +3682,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treArmor == null || objArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -3833,7 +3833,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, bool blnCommlinksOnly, bool blnHideLoadedAmmo, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, bool blnCommlinksOnly, bool blnHideLoadedAmmo, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treGear == null)
                 return;
@@ -4016,7 +4016,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treGear == null)
                 return;
@@ -4039,7 +4039,7 @@ namespace Chummer
 
                         // Add Drugs.
                         await CharacterObject.Drugs
-                                             .ForEachAsync(objDrug => AddToTree(objDrug, -1, false).AsTask(), token)
+                                             .ForEachAsync(objDrug => AddToTree(objDrug, -1, false), token)
                                              .ConfigureAwait(false);
 
                         await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
@@ -4140,7 +4140,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treCyberware == null)
                 return;
@@ -4417,7 +4417,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshVehicles(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshVehicles(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treVehicles == null)
                 return;
@@ -5302,7 +5302,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        public async Task RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treFoci == null)
                 return;
@@ -5783,7 +5783,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treMartialArts == null)
                 return;
@@ -5994,7 +5994,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
         {
             if (treMartialArts == null || objMartialArt == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -6103,7 +6103,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the list of Improvements.
         /// </summary>
-        protected async ValueTask RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treImprovements == null)
                 return;
@@ -6484,7 +6484,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle,
+        protected async Task RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle,
                                          ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treLifestyles == null)
@@ -6507,7 +6507,7 @@ namespace Chummer
                         if (await CharacterObject.Lifestyles.GetCountAsync(token).ConfigureAwait(false) > 0)
                         {
                             await CharacterObject.Lifestyles
-                                                 .ForEachAsync(objLifestyle => AddToTree(objLifestyle, false).AsTask(),
+                                                 .ForEachAsync(objLifestyle => AddToTree(objLifestyle, false),
                                                                token).ConfigureAwait(false);
 
                             await treLifestyles.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
@@ -6644,7 +6644,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the Calendar List.
         /// </summary>
-        public async ValueTask RefreshCalendar(ListView lstCalendar, ListChangedEventArgs listChangedEventArgs = null, CancellationToken token = default)
+        public async Task RefreshCalendar(ListView lstCalendar, ListChangedEventArgs listChangedEventArgs = null, CancellationToken token = default)
         {
             if (lstCalendar == null)
                 return;
@@ -7181,7 +7181,7 @@ namespace Chummer
         /// <param name="chkPsycheActiveTechnomancer">Checkbox for Psyche in the tab for complex forms.</param>
         /// <param name="notifyCollectionChangedEventArgs"></param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask RefreshSustainedSpells(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CheckBox chkPsycheActiveMagician, CheckBox chkPsycheActiveTechnomancer, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        public async Task RefreshSustainedSpells(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CheckBox chkPsycheActiveMagician, CheckBox chkPsycheActiveTechnomancer, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (pnlSustainedSpells == null && pnlSustainedComplexForms == null && pnlSustainedCritterPowers == null)
                 return;
@@ -8001,7 +8001,7 @@ namespace Chummer
                 source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
         }
 
-        protected async ValueTask AddContact(CancellationToken token = default)
+        protected async Task AddContact(CancellationToken token = default)
         {
             Contact objContact = new Contact(CharacterObject)
             {
@@ -8035,7 +8035,7 @@ namespace Chummer
 
         #region PetControl Events
 
-        protected async ValueTask AddPet(CancellationToken token = default)
+        protected async Task AddPet(CancellationToken token = default)
         {
             Contact objContact = new Contact(CharacterObject)
             {
@@ -8070,7 +8070,7 @@ namespace Chummer
 
         #region EnemyControl Events
 
-        protected async ValueTask AddEnemy(CancellationToken token = default)
+        protected async Task AddEnemy(CancellationToken token = default)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             Contact objContact = new Contact(CharacterObject)
@@ -8106,7 +8106,7 @@ namespace Chummer
 
         #region Additional Relationships Tab Control Events
 
-        protected async ValueTask AddContactsFromFile(CancellationToken token = default)
+        protected async Task AddContactsFromFile(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -8164,7 +8164,7 @@ namespace Chummer
 
         #endregion Additional Relationships Tab Control Events
 
-        public async ValueTask RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        public async Task RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (panSpirits == null && panSprites == null)
                 return;
@@ -8509,7 +8509,7 @@ namespace Chummer
 
         #region SpiritControl Events
 
-        protected async ValueTask AddSpirit(CancellationToken token = default)
+        protected async Task AddSpirit(CancellationToken token = default)
         {
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && await CharacterObject.Spirits.CountAsync(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered, token).ConfigureAwait(false) >= CharacterObject.BoundSpiritLimit)
@@ -8533,7 +8533,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        protected async ValueTask AddSprite(CancellationToken token = default)
+        protected async Task AddSprite(CancellationToken token = default)
         {
             // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
             if (!CharacterObject.IgnoreRules &&
@@ -8587,7 +8587,7 @@ namespace Chummer
         /// <summary>
         /// Add a mugshot to the character.
         /// </summary>
-        protected async ValueTask<bool> AddMugshot(CancellationToken token = default)
+        protected async Task<bool> AddMugshot(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -8741,7 +8741,7 @@ namespace Chummer
         protected MouseButtons DragButton { get; set; } = MouseButtons.None;
         protected bool DraggingGear { get; set; }
 
-        protected async ValueTask DoTreeDragDrop(object sender, DragEventArgs e, TreeView treView, ItemTreeViewTypes eType, CancellationToken token = default)
+        protected async Task DoTreeDragDrop(object sender, DragEventArgs e, TreeView treView, ItemTreeViewTypes eType, CancellationToken token = default)
         {
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = await ((TreeView)sender).DoThreadSafeFuncAsync(x => x.GetNodeAt(pt), token).ConfigureAwait(false);
@@ -9027,7 +9027,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<Task> RequestCharacterUpdate(CancellationToken token = default)
+        public async Task<Task> RequestCharacterUpdate(CancellationToken token = default)
         {
             if (IsLoading)
                 return _tskUpdateCharacterInfo;
@@ -9224,7 +9224,7 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
+        public virtual async Task<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objSource = null;
@@ -9296,7 +9296,7 @@ namespace Chummer
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
-        public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
+        public virtual async Task<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objSource = null;
@@ -9480,7 +9480,7 @@ namespace Chummer
 
         #region Vehicles Tab
 
-        public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null, CancellationToken token = default)
+        public async Task PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);

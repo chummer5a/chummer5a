@@ -1313,7 +1313,7 @@ namespace Chummer
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<int> ValueToIntAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
+        public static async Task<int> ValueToIntAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strValue))
                 return 0;
@@ -1398,7 +1398,7 @@ namespace Chummer
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<decimal> ValueToDecAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
+        public static async Task<decimal> ValueToDecAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strValue))
                 return 0;
@@ -2453,7 +2453,7 @@ namespace Chummer
             return true;
         }
 
-        private static async ValueTask<Tuple<bool, string>> ProcessBonusAsync(Character objCharacter, Improvement.ImprovementSource objImprovementSource,
+        private static async Task<Tuple<bool, string>> ProcessBonusAsync(Character objCharacter, Improvement.ImprovementSource objImprovementSource,
                                          string strSourceName,
                                          int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique,
                                          bool blnIgnoreMethodNotFound = false, CancellationToken token = default)
@@ -3272,7 +3272,7 @@ namespace Chummer
                                     await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
                                         objKnowledgeSkill => objCharacter.SkillsSection.KnowledgeSkills
                                                                          .RemoveAsync(objKnowledgeSkill, token)
-                                                                         .AsTask(), token: token).ConfigureAwait(false);
+                                                                         , token: token).ConfigureAwait(false);
                                 }
                             }
 
@@ -3858,7 +3858,7 @@ namespace Chummer
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
         /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<decimal> RemoveImprovementsAsync(Character objCharacter,
+        public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
                                                                        Improvement.ImprovementSource objImprovementSource,
                                                                        string strSourceName = "", CancellationToken token = default)
         {
@@ -4161,7 +4161,7 @@ namespace Chummer
                                     await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
                                         objKnowledgeSkill => objCharacter.SkillsSection.KnowledgeSkills
                                                                          .RemoveAsync(objKnowledgeSkill, token)
-                                                                         .AsTask(), token).ConfigureAwait(false);
+                                                                         , token).ConfigureAwait(false);
                                 }
                             }
 
@@ -4223,10 +4223,8 @@ namespace Chummer
                                         if (objSkill.InternalId == strImprovedName)
                                         {
                                             await Task.WhenAll(
-                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill, token)
-                                                            .AsTask(),
-                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)
-                                                            .AsTask()).ConfigureAwait(false);
+                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill, token),
+                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -4280,10 +4278,8 @@ namespace Chummer
                                             if (objKnoSkill.InternalId == strImprovedName)
                                             {
                                                 await Task.WhenAll(
-                                                    objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnoSkill, token)
-                                                                .AsTask(),
-                                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)
-                                                                .AsTask()).ConfigureAwait(false);
+                                                    objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnoSkill, token),
+                                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)).ConfigureAwait(false);
                                             }
                                         }
                                     }
@@ -4950,7 +4946,7 @@ namespace Chummer
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<Improvement> CreateImprovementAsync(Character objCharacter, string strImprovedName,
+        public static async Task<Improvement> CreateImprovementAsync(Character objCharacter, string strImprovedName,
                                                                           Improvement.ImprovementSource objImprovementSource,
                                                                           string strSourceName, Improvement.ImprovementType objImprovementType,
                                                                           string strUnique,
@@ -5078,7 +5074,7 @@ namespace Chummer
         /// <summary>
         /// Rollback all of the Improvements from the Transaction List.
         /// </summary>
-        public static async ValueTask RollbackAsync(Character objCharacter, CancellationToken token = default)
+        public static async Task RollbackAsync(Character objCharacter, CancellationToken token = default)
         {
             Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))

@@ -306,7 +306,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -613,7 +613,7 @@ namespace Chummer
         /// <summary>
         /// Translated Descriptors.
         /// </summary>
-        public async ValueTask<string> DisplayDescriptorsAsync(string strLanguage = "", CancellationToken token = default)
+        public async Task<string> DisplayDescriptorsAsync(string strLanguage = "", CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -720,7 +720,7 @@ namespace Chummer
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public async ValueTask<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
@@ -836,7 +836,7 @@ namespace Chummer
         /// <summary>
         /// Translated Drain Value.
         /// </summary>
-        public async ValueTask<string> DisplayDvAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayDvAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1035,7 +1035,7 @@ namespace Chummer
         /// <summary>
         /// Translated Range.
         /// </summary>
-        public async ValueTask<string> DisplayRangeAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayRangeAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1149,7 +1149,7 @@ namespace Chummer
         /// <summary>
         /// Translated Damage.
         /// </summary>
-        public async ValueTask<string> DisplayDamageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayDamageAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1421,7 +1421,7 @@ namespace Chummer
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
@@ -1576,7 +1576,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1633,7 +1633,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists.
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1665,10 +1665,10 @@ namespace Chummer
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -2110,7 +2110,7 @@ namespace Chummer
             return true;
         }
 
-        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             if (blnConfirmDelete && !await CommonFunctions
                                            .ConfirmDeleteAsync(

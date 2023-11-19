@@ -559,7 +559,7 @@ namespace Chummer
                 await cboExtra.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
         }
 
-        private async ValueTask BuildExtraList(string strSelectedCategory, CancellationToken token = default)
+        private async Task BuildExtraList(string strSelectedCategory, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;

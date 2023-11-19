@@ -480,7 +480,7 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        private static async ValueTask UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
+        private static async Task UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
                                            CancellationToken token = default)
         {
             if (objParent == null)
@@ -968,7 +968,7 @@ namespace Chummer
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "",
+        public static async Task<string> ProcessCompoundString(string strInput, string strLanguage = "",
                                                                     Character objCharacter = null,
                                                                     bool blnUseTranslateExtra = false,
                                                                     CancellationToken token = default)
@@ -1134,7 +1134,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public static async ValueTask VerifyStrings(string strLanguage, CancellationToken token = default)
+        public static async Task VerifyStrings(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strMessage;

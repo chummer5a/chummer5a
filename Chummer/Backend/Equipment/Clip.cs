@@ -58,7 +58,7 @@ namespace Chummer.Backend.Equipment
             return _objWeapon.DisplayName(objCulture, strLanguage);
         }
 
-        public ValueTask<string> DisplayWeaponNameAsync(CultureInfo objCulture = null, string strLanguage = "", CancellationToken token = default)
+        public Task<string> DisplayWeaponNameAsync(CultureInfo objCulture = null, string strLanguage = "", CancellationToken token = default)
         {
             return _objWeapon.DisplayNameAsync(objCulture, strLanguage, token);
         }
@@ -68,7 +68,7 @@ namespace Chummer.Backend.Equipment
             return _objWeapon.DisplayNameShort(strLanguage);
         }
 
-        public ValueTask<string> DisplayWeaponNameShortAsync(string strLanguage = "", CancellationToken token = default)
+        public Task<string> DisplayWeaponNameShortAsync(string strLanguage = "", CancellationToken token = default)
         {
             return _objWeapon.DisplayNameShortAsync(strLanguage, token);
         }
@@ -84,7 +84,7 @@ namespace Chummer.Backend.Equipment
         public Task<string> DisplayAmmoNameAsync(string strLanguage = "", CancellationToken token = default)
         {
             if (AmmoGear != null)
-                return AmmoGear.DisplayNameShortAsync(strLanguage, token).AsTask();
+                return AmmoGear.DisplayNameShortAsync(strLanguage, token);
             return Ammo > 0
                 ? LanguageManager.GetStringAsync("String_MountInternal", strLanguage, token: token)
                 : LanguageManager.GetStringAsync("String_None", strLanguage, token: token);
@@ -179,7 +179,7 @@ namespace Chummer.Backend.Equipment
             writer.WriteEndElement();
         }
 
-        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        internal async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (AmmoGear == null && Ammo == 0) //Don't save empty clips, we are recreating them anyway. Save those kb
                 return;

@@ -327,7 +327,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoExport(CancellationToken token = default)
+        private async Task DoExport(CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(_strXslt))
                 return;
@@ -624,7 +624,7 @@ namespace Chummer
 
         #region XML
 
-        private async ValueTask ExportNormal(string destination = null, CancellationToken token = default)
+        private async Task ExportNormal(string destination = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strSaveFile = destination;
@@ -830,7 +830,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask SetTextToWorkerResult(string strText, CancellationToken token = default)
+        private async Task SetTextToWorkerResult(string strText, CancellationToken token = default)
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
@@ -859,7 +859,7 @@ namespace Chummer
 
         #region JSON
 
-        private async ValueTask ExportJson(string destination = null, CancellationToken token = default)
+        private async Task ExportJson(string destination = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strSaveFile = destination;

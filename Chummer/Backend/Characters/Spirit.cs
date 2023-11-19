@@ -323,7 +323,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -589,7 +589,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "", CancellationToken token = default)
+        private async Task PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "", CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -897,7 +897,7 @@ namespace Chummer
         /// <summary>
         /// Name of the Spirit.
         /// </summary>
-        public async ValueTask<string> GetCritterNameAsync(CancellationToken token = default)
+        public async Task<string> GetCritterNameAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -922,7 +922,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        public async Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1052,7 +1052,7 @@ namespace Chummer
         /// <summary>
         /// The Spirit's Force.
         /// </summary>
-        public async ValueTask<int> GetForceAsync(CancellationToken token = default)
+        public async Task<int> GetForceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1065,7 +1065,7 @@ namespace Chummer
         /// <summary>
         /// The Spirit's Force.
         /// </summary>
-        public async ValueTask SetForceAsync(int value, CancellationToken token = default)
+        public async Task SetForceAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -1160,7 +1160,7 @@ namespace Chummer
         /// <summary>
         /// The Spirit's type, either Spirit or Sprite.
         /// </summary>
-        public async ValueTask<SpiritType> GetEntityTypeAsync(CancellationToken token = default)
+        public async Task<SpiritType> GetEntityTypeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -2209,7 +2209,7 @@ namespace Chummer
                     {
                         int iLocal = i;
                         atskMugshotImages[i]
-                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token).AsTask(), token);
+                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token), token);
                     }
                     await _lstMugshots.AddRangeAsync(await Task.WhenAll(atskMugshotImages).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
@@ -2224,7 +2224,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask PrintMugshots(XmlWriter objWriter, CancellationToken token = default)
+        public async Task PrintMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;

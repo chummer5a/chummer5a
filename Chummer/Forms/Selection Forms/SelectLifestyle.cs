@@ -448,7 +448,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedId = await cboLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedId))
@@ -528,7 +528,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the LP value for the selected items.
         /// </summary>
-        private async ValueTask CalculateValues(bool blnIncludePercentage = true, CancellationToken token = default)
+        private async Task CalculateValues(bool blnIncludePercentage = true, CancellationToken token = default)
         {
             if (_intSkipRefresh > 0)
                 return;
@@ -703,7 +703,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treTree">TreeView to sort.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async ValueTask SortTree(TreeView treTree, CancellationToken token = default)
+        private static async Task SortTree(TreeView treTree, CancellationToken token = default)
         {
             TreeNode[] lstNodes = await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Cast<TreeNode>().ToArray(), token: token).ConfigureAwait(false);
             await treTree.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
@@ -721,7 +721,7 @@ namespace Chummer
         /// <summary>
         /// Populates The District list after a City was selected
         /// </summary>
-        private async ValueTask RefreshDistrictList(CancellationToken token = default)
+        private async Task RefreshDistrictList(CancellationToken token = default)
         {
             string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedCityRefresh))
@@ -752,7 +752,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the BoroughList based on the selected District to generate a cascading dropdown menu
         /// </summary>
-        private async ValueTask RefreshBoroughList(CancellationToken token = default)
+        private async Task RefreshBoroughList(CancellationToken token = default)
         {
             string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedCityRefresh))

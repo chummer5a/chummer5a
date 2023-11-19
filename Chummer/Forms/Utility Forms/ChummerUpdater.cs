@@ -332,7 +332,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateChangelog(CancellationToken token = default)
+        private async Task PopulateChangelog(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!_blnFormClosing)
@@ -356,7 +356,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask LoadConnection(CancellationToken token = default)
+        private async Task LoadConnection(CancellationToken token = default)
         {
             while (_clientChangelogDownloader.IsBusy)
             {
@@ -672,7 +672,7 @@ namespace Chummer
         /// </summary>
         public string CurrentVersion { get; }
 
-        public async ValueTask DoVersionTextUpdate(CancellationToken token = default)
+        public async Task DoVersionTextUpdate(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strLatestVersion = LatestVersion.TrimStartOnce("Nightly-v");
@@ -848,7 +848,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> CreateBackupZip(CancellationToken token = default)
+        private async Task<bool> CreateBackupZip(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             //Create a backup file in the temp directory.
@@ -916,7 +916,7 @@ namespace Chummer
             return true;
         }
 
-        private async ValueTask DoUpdate(CancellationToken token = default)
+        private async Task DoUpdate(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
@@ -990,7 +990,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoCleanReinstall(CancellationToken token = default)
+        private async Task DoCleanReinstall(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt", token: token).ConfigureAwait(false),
@@ -1041,7 +1041,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete, CancellationToken token = default)
+        private async Task InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnDoRestart = true;
@@ -1331,7 +1331,7 @@ namespace Chummer
                 await Utils.RestartApplication(token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask DownloadUpdates(CancellationToken token = default)
+        private async Task DownloadUpdates(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))

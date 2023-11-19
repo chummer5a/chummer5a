@@ -342,7 +342,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -426,7 +426,7 @@ namespace Chummer
         /// <summary>
         /// The Reason for the Entry expense.
         /// </summary>
-        public async ValueTask<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
         {
             if (Refund)
                 return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token).ConfigureAwait(false) + ')';

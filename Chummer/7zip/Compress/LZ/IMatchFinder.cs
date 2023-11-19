@@ -30,7 +30,7 @@ namespace SevenZip.Compression.LZ
 
         void Init();
 
-        ValueTask InitAsync(CancellationToken token = default);
+        Task InitAsync(CancellationToken token = default);
 
         void ReleaseStream();
 
@@ -48,10 +48,10 @@ namespace SevenZip.Compression.LZ
 
         uint GetMatches(uint[] distances);
 
-        ValueTask<uint> GetMatchesAsync(uint[] distances, CancellationToken token = default);
+        Task<uint> GetMatchesAsync(uint[] distances, CancellationToken token = default);
 
         void Skip(uint num);
 
-        ValueTask SkipAsync(uint num, CancellationToken token = default);
+        Task SkipAsync(uint num, CancellationToken token = default);
     }
 }

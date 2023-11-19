@@ -275,7 +275,7 @@ namespace SevenZip.Compression.LZMA
             m_PosAlignDecoder.Init();
         }
 
-        private async ValueTask InitAsync(Stream inStream, Stream outStream, CancellationToken token = default)
+        private async Task InitAsync(Stream inStream, Stream outStream, CancellationToken token = default)
         {
             await m_RangeDecoder.InitAsync(inStream, token).ConfigureAwait(false);
             await m_OutWindow.InitAsync(outStream, _solid, token).ConfigureAwait(false);
@@ -528,7 +528,7 @@ namespace SevenZip.Compression.LZMA
             return m_OutWindow.Train(stream);
         }
 
-        public ValueTask<bool> TrainAsync(Stream stream, CancellationToken token = default)
+        public Task<bool> TrainAsync(Stream stream, CancellationToken token = default)
         {
             _solid = true;
             return m_OutWindow.TrainAsync(stream, token);

@@ -728,7 +728,7 @@ namespace Chummer
         /// <summary>
         /// Update the Gear's information based on the Gear selected and current Rating.
         /// </summary>
-        private async ValueTask UpdateGearInfo(CancellationToken token = default)
+        private async Task UpdateGearInfo(CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
@@ -1236,12 +1236,12 @@ namespace Chummer
             }
         }
 
-        private ValueTask<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
+        private Task<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
         {
             return RefreshList(strCategory, false, token);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory = "", CancellationToken token = default)
+        private async Task<bool> RefreshList(string strCategory = "", CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
@@ -1255,7 +1255,7 @@ namespace Chummer
                 return await RefreshList(strCategory, true, objJoinedCancellationTokenSource.Token).ConfigureAwait(false);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
+        private async Task<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
         {
             bool blnAnyItem = false;
             if (string.IsNullOrEmpty(strCategory))

@@ -274,7 +274,7 @@ namespace Chummer
             await RefreshCategory().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshCategory(CancellationToken token = default)
+        private async Task RefreshCategory(CancellationToken token = default)
         {
             await trePowers.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
 

@@ -436,7 +436,7 @@ namespace Chummer.Plugins
             }
         }
 
-        public async ValueTask<IReadOnlyList<IPlugin>> GetMyActivePluginsAsync(CancellationToken token = default)
+        public async Task<IReadOnlyList<IPlugin>> GetMyActivePluginsAsync(CancellationToken token = default)
         {
             if (!GlobalSettings.PluginsEnabled)
                 return Array.Empty<IPlugin>();

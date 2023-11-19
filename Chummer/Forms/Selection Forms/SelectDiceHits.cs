@@ -84,7 +84,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoRoll(CancellationToken token = default)
+        private async Task DoRoll(CancellationToken token = default)
         {
             int intResult = 0;
             for (int i = 0; i < Dice; ++i)

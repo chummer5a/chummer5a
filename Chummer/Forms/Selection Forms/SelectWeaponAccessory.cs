@@ -95,7 +95,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of available weapon accessories.
         /// </summary>
-        private async ValueTask RefreshList(CancellationToken token = default)
+        private async Task RefreshList(CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
             {
@@ -353,7 +353,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask UpdateGearInfo(bool blnUpdateMountComboBoxes = true, CancellationToken token = default)
+        private async Task UpdateGearInfo(bool blnUpdateMountComboBoxes = true, CancellationToken token = default)
         {
             if (_blnLoading)
                 return;

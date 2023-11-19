@@ -358,7 +358,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask LoadContactList(CancellationToken token = default)
+        private async Task LoadContactList(CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
             {
@@ -400,7 +400,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoDataBindings(CancellationToken token = default)
+        private async Task DoDataBindings(CancellationToken token = default)
         {
             string strMetatype = await _objContact.GetMetatypeAsync(token).ConfigureAwait(false);
             await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatype, token: token).ConfigureAwait(false);
@@ -412,7 +412,7 @@ namespace Chummer
 
             await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(Contact.Name), token).ConfigureAwait(false);
             await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.BackColor = y, _objContact,
-                    nameof(Contact.PreferredColor), x => x.GetPreferredColorAsync(_objMyToken).AsTask(), token)
+                    nameof(Contact.PreferredColor), x => x.GetPreferredColorAsync(_objMyToken), token)
                 .ConfigureAwait(false);
 
             // Properties controllable by the character themselves

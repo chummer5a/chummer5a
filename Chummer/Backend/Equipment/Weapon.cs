@@ -993,7 +993,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recreates the single internal clip used by weapons that have an ammo capacity but do not require ammo (i.e. they use charges)
         /// </summary>
-        private async ValueTask RecreateInternalClipAsync(CancellationToken token = default)
+        private async Task RecreateInternalClipAsync(CancellationToken token = default)
         {
             if (RequireAmmo || string.IsNullOrWhiteSpace(Ammo) || Ammo == "0")
                 return;
@@ -1490,7 +1490,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             // Find the piece of Gear that created this item if applicable
             Gear objGear = null;
@@ -2054,7 +2054,7 @@ namespace Chummer.Backend.Equipment
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -2065,12 +2065,12 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
@@ -2090,7 +2090,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Display name.
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
@@ -2238,7 +2238,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public async ValueTask<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             switch (Category)
             {
@@ -2282,7 +2282,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Ammo Category.
         /// </summary>
-        public async ValueTask<string> DisplayAmmoCategoryAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayAmmoCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -2589,7 +2589,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
@@ -2945,11 +2945,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon's total Concealability including all Accessories and Modifications.
         /// </summary>
-        public async ValueTask<string> CalculatedConcealabilityAsync(CultureInfo objCulture, CancellationToken token = default)
+        public async Task<string> CalculatedConcealabilityAsync(CultureInfo objCulture, CancellationToken token = default)
         {
             int intReturn = Concealability
                             + await WeaponAccessories
-                                    .SumAsync(x => x.Equipped, x => x.GetTotalConcealabilityAsync(token).AsTask(),
+                                    .SumAsync(x => x.Equipped, x => x.GetTotalConcealabilityAsync(token),
                                               token: token).ConfigureAwait(false)
                             // Factor in the character's Concealability modifiers.
                             + (await ImprovementManager
@@ -3588,7 +3588,7 @@ namespace Chummer.Backend.Equipment
                       "(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage, token: token));
         }
 
-        public static async ValueTask<string> ReplaceStringsAsync(string strInput, string strLanguage, CancellationToken token = default)
+        public static async Task<string> ReplaceStringsAsync(string strInput, string strLanguage, CancellationToken token = default)
         {
             return strLanguage == GlobalSettings.DefaultLanguage
                 ? strInput
@@ -4234,12 +4234,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Cost to use when working with Total Cost price modifiers for Weapon Mods.
         /// </summary>
-        public async ValueTask<decimal> MultipliableCostAsync(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
+        public async Task<decimal> MultipliableCostAsync(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return await GetOwnCostAsync(token).ConfigureAwait(false)
                    // Run through the list of Weapon Mods.
-                   + await WeaponAccessories.SumAsync(x => objExcludeAccessory != x && x.Equipped && !x.IncludedInWeapon, x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+                   + await WeaponAccessories.SumAsync(x => objExcludeAccessory != x && x.Equipped && !x.IncludedInWeapon, x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -4289,17 +4289,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total cost including Accessories and Modifications.
         /// </summary>
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return await GetOwnCostAsync(token).ConfigureAwait(false)
                    // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
                    + await WeaponAccessories
-                           .SumAsync(objAccessory => objAccessory.GetTotalCostAsync(token).AsTask(), token)
+                           .SumAsync(objAccessory => objAccessory.GetTotalCostAsync(token), token)
                            .ConfigureAwait(false)
                    // Include the cost of any Underbarrel Weapon.
                    + await Children
-                           .SumAsync(objUnderbarrel => objUnderbarrel.GetTotalCostAsync(token).AsTask(),
+                           .SumAsync(objUnderbarrel => objUnderbarrel.GetTotalCostAsync(token),
                                      token).ConfigureAwait(false);
         }
 
@@ -4359,7 +4359,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Weapon itself.
         /// </summary>
-        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
@@ -5130,7 +5130,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The full Reach of the Weapons including the Character's Reach.
         /// </summary>
-        public async ValueTask<int> GetTotalReachAsync(CancellationToken token = default)
+        public async Task<int> GetTotalReachAsync(CancellationToken token = default)
         {
             decimal decReach = Reach + await WeaponAccessories.SumAsync(x => x.Equipped, i => i.Reach, token: token).ConfigureAwait(false);
             if (RangeType == "Melee")
@@ -5316,7 +5316,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The full Accuracy of the Weapon including modifiers from accessories.
         /// </summary>
-        public async ValueTask<int> GetTotalAccuracyAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
+        public async Task<int> GetTotalAccuracyAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             int intAccuracy = 0;
             string strAccuracy = Accuracy;
@@ -5500,7 +5500,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
         /// </summary>
-        public async ValueTask<string> GetAccuracyAsync(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
+        public async Task<string> GetAccuracyAsync(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             int intTotalAccuracy = await GetTotalAccuracyAsync(blnIncludeAmmo, token).ConfigureAwait(false);
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
@@ -5533,7 +5533,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayRange => DisplayRange(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayRangeAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayRangeAsync(CancellationToken token = default) =>
             DisplayRangeAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -5568,7 +5568,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The string for the Weapon's Range category
         /// </summary>
-        public async ValueTask<string> DisplayRangeAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayRangeAsync(string strLanguage, CancellationToken token = default)
         {
             string strRange = Range;
             if (string.IsNullOrWhiteSpace(strRange))
@@ -5605,7 +5605,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayAlternateRange => DisplayAlternateRange(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayAlternateRangeAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayAlternateRangeAsync(CancellationToken token = default) =>
             DisplayAlternateRangeAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -5638,7 +5638,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The string for the Weapon's Range category (setter is English-only).
         /// </summary>
-        public async ValueTask<string> DisplayAlternateRangeAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayAlternateRangeAsync(string strLanguage, CancellationToken token = default)
         {
             string strRange = AlternateRange.Trim();
             if (!string.IsNullOrEmpty(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -5765,7 +5765,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnUseAlternateRange">Use alternate range instead of the weapon's main range.</param>
         /// <param name="blnIncludeAmmo">Whether to include any range modifications from the currently loaded ammo.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private async ValueTask<int> GetRangeAsync(string strFindRange, bool blnUseAlternateRange,
+        private async Task<int> GetRangeAsync(string strFindRange, bool blnUseAlternateRange,
                                                    bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strRangeCategory = Category;
@@ -5884,7 +5884,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon's total Range bonus from Accessories.
         /// </summary>
-        public async ValueTask<int> GetRangeBonusAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
+        public async Task<int> GetRangeBonusAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             // Weapon Mods.
             int intRangeBonus = await WeaponAccessories.SumAsync(x => x.Equipped, x => x.RangeBonus, token: token).ConfigureAwait(false);
@@ -6026,7 +6026,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
         /// </summary>
-        public async ValueTask<Dictionary<string, string>> GetRangeStringsAsync(CultureInfo objCulture, bool blnIncludeAmmo = true, CancellationToken token = default)
+        public async Task<Dictionary<string, string>> GetRangeStringsAsync(CultureInfo objCulture, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             int intRangeModifier = await GetRangeBonusAsync(blnIncludeAmmo, token).ConfigureAwait(false) + 100;
             int intMin = await GetRangeAsync("min", false, blnIncludeAmmo, token).ConfigureAwait(false);
@@ -6495,7 +6495,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Dice Pool size for the Active Skill required to use the Weapon.
         /// </summary>
-        public async ValueTask<int> GetDicePoolAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
+        public async Task<int> GetDicePoolAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             int intDicePool = 0;
             decimal decDicePoolModifier = await WeaponAccessories.SumAsync(a => a.Equipped, a => a.DicePool, token: token).ConfigureAwait(false);
@@ -6749,7 +6749,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        internal async ValueTask<string> GetRelevantSpecializationAsync(CancellationToken token = default)
+        internal async Task<string> GetRelevantSpecializationAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(_strRelevantSpec))
@@ -7327,7 +7327,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
-        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability.
@@ -7340,7 +7340,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false))
                          .ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
@@ -7457,7 +7457,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability as a triple.
         /// </summary>
-        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
             bool blnModifyParentAvail = false;
             string strAvail = Avail;
@@ -8122,7 +8122,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Toggle the Wireless Bonus for this weapon accessory.
         /// </summary>
-        public async ValueTask RefreshWirelessBonusesAsync(CancellationToken token = default)
+        public async Task RefreshWirelessBonusesAsync(CancellationToken token = default)
         {
             if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
             {
@@ -8267,7 +8267,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
-        public async ValueTask<decimal> DeleteWeaponAsync(bool blnDoRemoval = true, CancellationToken token = default)
+        public async Task<decimal> DeleteWeaponAsync(bool blnDoRemoval = true, CancellationToken token = default)
         {
             // Remove the Weapon from the character.
             if (blnDoRemoval)
@@ -8291,10 +8291,10 @@ namespace Chummer.Backend.Equipment
             await UnloadAllAsync(token).ConfigureAwait(false);
 
             // Remove any children the Gear may have.
-            decimal decReturn = await Children.SumAsync(x => x.DeleteWeaponAsync(false, token).AsTask(), token: token)
+            decimal decReturn = await Children.SumAsync(x => x.DeleteWeaponAsync(false, token), token: token)
                                               .ConfigureAwait(false)
                                 + await WeaponAccessories
-                                        .SumAsync(x => x.DeleteWeaponAccessoryAsync(false, token).AsTask(), token)
+                                        .SumAsync(x => x.DeleteWeaponAccessoryAsync(false, token), token)
                                         .ConfigureAwait(false);
 
             foreach (Weapon objDeleteWeapon in await _objCharacter.Weapons
@@ -8388,7 +8388,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits,
+        public async Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits,
                                                         StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems,
                                                         CancellationToken token = default)
         {
@@ -8446,7 +8446,7 @@ namespace Chummer.Backend.Equipment
             return intRestrictedCount;
         }
 
-        public async ValueTask Reload(IAsyncCollection<Gear> lstGears, TreeView treGearView,
+        public async Task Reload(IAsyncCollection<Gear> lstGears, TreeView treGearView,
                                       CancellationToken token = default)
         {
             List<string> lstCount = new List<string>(1);
@@ -8790,7 +8790,7 @@ namespace Chummer.Backend.Equipment
             return objAmmo;
         }
 
-        private static async ValueTask<Gear> UnloadGearAsync(IAsyncCollection<Gear> lstGears, Clip clipToUnload,
+        private static async Task<Gear> UnloadGearAsync(IAsyncCollection<Gear> lstGears, Clip clipToUnload,
                                                              CancellationToken token = default)
         {
             Gear objAmmo = clipToUnload.AmmoGear;
@@ -9268,7 +9268,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private async ValueTask RemoveAmmoSlotsAsync(WeaponAccessory objAccessory, CancellationToken token = default)
+        private async Task RemoveAmmoSlotsAsync(WeaponAccessory objAccessory, CancellationToken token = default)
         {
             for (int i = _lstAmmo.Count - 1; i >= 0; i--)
             {
@@ -9302,7 +9302,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Unload every clip.
         /// </summary>
-        public async ValueTask UnloadAllAsync(CancellationToken token = default)
+        public async Task UnloadAllAsync(CancellationToken token = default)
         {
             IAsyncCollection<Gear> gears = ParentVehicle != null
                 ? ParentVehicle.GearChildren
@@ -9454,7 +9454,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private async ValueTask<IHasMatrixAttributes> GetMatrixAttributesOverrideAsync(CancellationToken token = default)
+        private async Task<IHasMatrixAttributes> GetMatrixAttributesOverrideAsync(CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(ParentID))
                 return null;
@@ -9649,19 +9649,19 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+        public Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
 
-        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
+        public Task<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
 
-        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        public async Task<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             decimal decReturn = Stolen == blnStolen ? await GetOwnCostAsync(token).ConfigureAwait(false) : 0;
 
             // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-            decReturn += await WeaponAccessories.SumAsync(objAccessory => objAccessory.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+            decReturn += await WeaponAccessories.SumAsync(objAccessory => objAccessory.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
 
             // Include the cost of any Underbarrel Weapon.
-            decReturn += await Children.SumAsync(objUnderbarrel => objUnderbarrel.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+            decReturn += await Children.SumAsync(objUnderbarrel => objUnderbarrel.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
 
             return decReturn;
         }
@@ -10044,7 +10044,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Checks whether a given WeaponAccessory is allowed to be added to this weapon.
         /// </summary>
-        public async ValueTask<bool> CheckAccessoryRequirementsAsync(XPathNavigator objXmlAccessory,
+        public async Task<bool> CheckAccessoryRequirementsAsync(XPathNavigator objXmlAccessory,
                                                                      CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -10250,7 +10250,7 @@ namespace Chummer.Backend.Equipment
             _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
         }
 
-        public async ValueTask ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
+        public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;

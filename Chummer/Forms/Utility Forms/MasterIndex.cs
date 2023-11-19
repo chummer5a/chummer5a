@@ -46,7 +46,7 @@ namespace Chummer
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
 
-        private static async ValueTask<CharacterSettings> GetInitialSetting(CancellationToken token = default)
+        private static async Task<CharacterSettings> GetInitialSetting(CancellationToken token = default)
         {
             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
             if (dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting, out CharacterSettings objReturn))
@@ -136,7 +136,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private async ValueTask PopulateCharacterSettings(CancellationToken token = default)
+        private async Task PopulateCharacterSettings(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -1044,7 +1044,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask ForceRepopulateCharacterSettings(CancellationToken token = default)
+        public async Task ForceRepopulateCharacterSettings(CancellationToken token = default)
         {
             _objGenericToken.ThrowIfCancellationRequested();
             token.ThrowIfCancellationRequested();

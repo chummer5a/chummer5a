@@ -125,7 +125,7 @@ namespace Chummer
 
         #endregion Properties
 
-        private async ValueTask BuildList(CancellationToken token = default)
+        private async Task BuildList(CancellationToken token = default)
         {
             string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))

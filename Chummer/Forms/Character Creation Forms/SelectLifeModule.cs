@@ -69,7 +69,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask BuildTree(string stageString, CancellationToken token = default)
+        private async Task BuildTree(string stageString, CancellationToken token = default)
         {
             TreeNode[] aobjNodes = await BuildList(_xmlLifeModulesDocumentChummerNode.Select("modules/module" + stageString), token).ConfigureAwait(false);
             await treModules.DoThreadSafeAsync(x =>
@@ -79,7 +79,7 @@ namespace Chummer
             }, token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask<TreeNode[]> BuildList(XPathNodeIterator lstXmlNodes, CancellationToken token = default)
+        private async Task<TreeNode[]> BuildList(XPathNodeIterator lstXmlNodes, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<TreeNode> lstTreeNodes = new List<TreeNode>();
@@ -312,7 +312,7 @@ namespace Chummer
             await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private async ValueTask<string> GetSelectString(CancellationToken token = default)
+        private async Task<string> GetSelectString(CancellationToken token = default)
         {
             string strReturn = "[(" + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false);
 

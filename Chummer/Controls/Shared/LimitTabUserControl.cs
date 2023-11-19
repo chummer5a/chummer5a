@@ -98,28 +98,28 @@ namespace Chummer.UI.Shared
                 return;
 
             await lblPhysical.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objCharacter,
-                    nameof(Character.LimitPhysical), x => x.GetLimitPhysicalAsync(_objMyToken).AsTask(), token)
+                    nameof(Character.LimitPhysical), x => x.GetLimitPhysicalAsync(_objMyToken), token)
                 .ConfigureAwait(false);
             await lblPhysical.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objCharacter,
-                    nameof(Character.LimitPhysicalToolTip), x => x.GetLimitPhysicalToolTipAsync(_objMyToken).AsTask(), token)
+                    nameof(Character.LimitPhysicalToolTip), x => x.GetLimitPhysicalToolTipAsync(_objMyToken), token)
                 .ConfigureAwait(false);
             await lblMental.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objCharacter,
-                    nameof(Character.LimitMental), x => x.GetLimitMentalAsync(_objMyToken).AsTask(), token)
+                    nameof(Character.LimitMental), x => x.GetLimitMentalAsync(_objMyToken), token)
                 .ConfigureAwait(false);
             await lblMental.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objCharacter,
-                    nameof(Character.LimitMentalToolTip), x => x.GetLimitMentalToolTipAsync(_objMyToken).AsTask(), token)
+                    nameof(Character.LimitMentalToolTip), x => x.GetLimitMentalToolTipAsync(_objMyToken), token)
                 .ConfigureAwait(false);
             await lblSocial.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objCharacter,
-                    nameof(Character.LimitSocial), x => x.GetLimitSocialAsync(_objMyToken).AsTask(), token)
+                    nameof(Character.LimitSocial), x => x.GetLimitSocialAsync(_objMyToken), token)
                 .ConfigureAwait(false);
             await lblSocial.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objCharacter,
-                    nameof(Character.LimitSocialToolTip), x => x.GetLimitSocialToolTipAsync(_objMyToken).AsTask(), token)
+                    nameof(Character.LimitSocialToolTip), x => x.GetLimitSocialToolTipAsync(_objMyToken), token)
                 .ConfigureAwait(false);
             await lblAstral.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objCharacter,
-                    nameof(Character.LimitAstral), x => x.GetLimitAstralAsync(_objMyToken).AsTask(), token)
+                    nameof(Character.LimitAstral), x => x.GetLimitAstralAsync(_objMyToken), token)
                 .ConfigureAwait(false);
             await lblAstral.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objCharacter,
-                    nameof(Character.LimitAstralToolTip), x => x.GetLimitAstralToolTipAsync(_objMyToken).AsTask(), token)
+                    nameof(Character.LimitAstralToolTip), x => x.GetLimitAstralToolTipAsync(_objMyToken), token)
                 .ConfigureAwait(false);
 
             _objCharacter.LimitModifiers.CollectionChangedAsync += LimitModifierCollectionChanged;
@@ -251,7 +251,7 @@ namespace Chummer.UI.Shared
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
         /// <param name="token"></param>
-        private async ValueTask WriteNotes(IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
+        private async Task WriteNotes(IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
         {
             using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token).ConfigureAwait(false))
             {
@@ -279,7 +279,7 @@ namespace Chummer.UI.Shared
         /// <summary>
         /// Edit and update a Limit Modifier.
         /// </summary>
-        protected async ValueTask UpdateLimitModifier(CancellationToken token = default)
+        protected async Task UpdateLimitModifier(CancellationToken token = default)
         {
             TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, token: token).ConfigureAwait(false);
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
@@ -551,7 +551,7 @@ namespace Chummer.UI.Shared
                 }
             }
 
-            async ValueTask<TreeNode> GetLimitModifierParentNode(int intTargetLimit)
+            async Task<TreeNode> GetLimitModifierParentNode(int intTargetLimit)
             {
                 TreeNode objParentNode = aobjLimitNodes[intTargetLimit];
                 if (objParentNode == null)

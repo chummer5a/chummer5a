@@ -444,7 +444,7 @@ namespace Chummer
         /// </summary>
         /// <param name="character"></param>
         /// <param name="token"></param>
-        public async ValueTask AddToken(Character character, CancellationToken token = default)
+        public async Task AddToken(Character character, CancellationToken token = default)
         {
             if (character == null)
                 return;

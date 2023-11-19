@@ -356,7 +356,7 @@ namespace Chummer
         /// <param name="blnIsNullSuccess"   >Should a null or empty result be treated as success?</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<bool> IsCharacterAttributeXPathValidOrNullAsync(string strXPathExpression, bool blnIsNullSuccess = true, CancellationToken token = default)
+        public static async Task<bool> IsCharacterAttributeXPathValidOrNullAsync(string strXPathExpression, bool blnIsNullSuccess = true, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strXPathExpression))
                 return blnIsNullSuccess;
@@ -1144,7 +1144,7 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static async Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
@@ -1183,7 +1183,7 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static async Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
@@ -1231,7 +1231,7 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static async Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
@@ -1295,7 +1295,7 @@ namespace Chummer
         /// <summary>
         /// Fetch the in-book description of a given object.
         /// </summary>
-        public static async ValueTask<string> GetBookNotesAsync(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter, CancellationToken token = default)
+        public static async Task<string> GetBookNotesAsync(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strEnglishNameOnPage = strName;
@@ -1456,7 +1456,7 @@ namespace Chummer
         /// <param name="intOffset">Dice offset.</param>
         /// <param name="intMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<int> ExpressionToIntAsync(string strIn, int intForce = 0, int intOffset = 0, int intMinValueFromForce = 1, CancellationToken token = default)
+        public static async Task<int> ExpressionToIntAsync(string strIn, int intForce = 0, int intOffset = 0, int intMinValueFromForce = 1, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(strIn))
@@ -1546,7 +1546,7 @@ namespace Chummer
         /// <param name="decMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async ValueTask<decimal> ExpressionToDecimalAsync(string strIn, int intForce = 0, decimal decOffset = 0, decimal decMinValueFromForce = 1.0m, CancellationToken token = default)
+        public static async Task<decimal> ExpressionToDecimalAsync(string strIn, int intForce = 0, decimal decOffset = 0, decimal decMinValueFromForce = 1.0m, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(strIn))
@@ -1606,7 +1606,7 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to delete an item.
         /// </summary>
-        public static async ValueTask<bool> ConfirmDeleteAsync(string strMessage, CancellationToken token = default)
+        public static async Task<bool> ConfirmDeleteAsync(string strMessage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return !GlobalSettings.ConfirmDelete ||
@@ -1627,7 +1627,7 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to spend their Karma and did not accidentally click the button.
         /// </summary>
-        public static async ValueTask<bool> ConfirmKarmaExpenseAsync(string strMessage, CancellationToken token = default)
+        public static async Task<bool> ConfirmKarmaExpenseAsync(string strMessage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return !GlobalSettings.ConfirmKarmaExpense ||
@@ -1711,7 +1711,7 @@ namespace Chummer
         /// </summary>
         /// <param name="sender">Control from which this method was called.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask OpenPdfFromControl(object sender, CancellationToken token = default)
+        public static async Task OpenPdfFromControl(object sender, CancellationToken token = default)
         {
             if (!(sender is Control objControl))
                 return;
@@ -1750,7 +1750,7 @@ namespace Chummer
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalSettings.PdfAppPath.</param>
         /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false, CancellationToken token = default)
+        public static async Task OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
@@ -1938,7 +1938,7 @@ namespace Chummer
         }
 
         [CLSCompliant(false)]
-        public static async ValueTask<string> GetPdfTextFromPageSafeAsync(PdfDocument objDocument, int intPage, CancellationToken token = default)
+        public static async Task<string> GetPdfTextFromPageSafeAsync(PdfDocument objDocument, int intPage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Very hacky implementation of a locker, but we need it because iText's Pdf document readers are not thread-safe

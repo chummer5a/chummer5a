@@ -63,13 +63,13 @@ namespace Chummer.Backend.Skills
             return new Tuple<bool, string>(false, string.Empty);
         }
 
-        public static async ValueTask<bool> IsExoticSkillNameAsync(Character objCharacter, string strSkillName,
+        public static async Task<bool> IsExoticSkillNameAsync(Character objCharacter, string strSkillName,
                                                                    CancellationToken token = default)
         {
             return (await IsExoticSkillNameTupleAsync(objCharacter, strSkillName, token).ConfigureAwait(false)).Item1;
         }
 
-        public static async ValueTask<Tuple<bool, string>> IsExoticSkillNameTupleAsync(Character objCharacter, string strSkillName,
+        public static async Task<Tuple<bool, string>> IsExoticSkillNameTupleAsync(Character objCharacter, string strSkillName,
                                                                    CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -99,7 +99,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
+        public override async Task<bool> GetAllowDeleteAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -144,7 +144,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async ValueTask<string> GetSpecificAsync(CancellationToken token = default)
+        public async Task<string> GetSpecificAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -153,7 +153,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async ValueTask SetSpecificAsync(string value, CancellationToken token = default)
+        public async Task SetSpecificAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -175,7 +175,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async ValueTask<string> DisplaySpecificAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplaySpecificAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -189,14 +189,14 @@ namespace Chummer.Backend.Skills
 
         public string CurrentDisplaySpecific => DisplaySpecific(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplaySpecificAsync(CancellationToken token = default) => DisplaySpecificAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplaySpecificAsync(CancellationToken token = default) => DisplaySpecificAsync(GlobalSettings.Language, token);
 
         public override string DisplaySpecialization(string strLanguage)
         {
             return DisplaySpecific(strLanguage);
         }
 
-        public override ValueTask<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
+        public override Task<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
         {
             return DisplaySpecificAsync(strLanguage, token);
         }

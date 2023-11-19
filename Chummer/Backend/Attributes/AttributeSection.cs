@@ -254,7 +254,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributesAsync(CancellationToken token = default)
+        public async Task<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -322,7 +322,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private async ValueTask InitializeAttributesListAsync(CancellationToken token = default)
+        private async Task InitializeAttributesListAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -1278,7 +1278,7 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-        private static async ValueTask<CharacterAttrib> RemakeAttributeAsync(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode, CancellationToken token = default)
+        private static async Task<CharacterAttrib> RemakeAttributeAsync(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode, CancellationToken token = default)
         {
             if (objNewAttribute == null)
                 return null;
@@ -1333,7 +1333,7 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        internal async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1393,7 +1393,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<CharacterAttrib> GetAttributeByNameAsync(string abbrev, CancellationToken token = default)
+        public async Task<CharacterAttrib> GetAttributeByNameAsync(string abbrev, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1416,7 +1416,7 @@ namespace Chummer.Backend.Attributes
                 return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
         }
 
-        public async ValueTask<BindingSource> GetAttributeBindingByNameAsync(string abbrev, CancellationToken token = default)
+        public async Task<BindingSource> GetAttributeBindingByNameAsync(string abbrev, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1460,7 +1460,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public static async ValueTask CopyAttributeAsync(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XPathNavigator xmlDoc, CancellationToken token = default)
+        public static async Task CopyAttributeAsync(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XPathNavigator xmlDoc, CancellationToken token = default)
         {
             if (objSource == null || objTarget == null)
                 return;
@@ -1756,7 +1756,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public async Task<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -1838,7 +1838,7 @@ namespace Chummer.Backend.Attributes
             return strReturn;
         }
 
-        public async ValueTask ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public async Task ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
@@ -1963,7 +1963,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        internal async ValueTask ResetAsync(bool blnFirstTime = false, CancellationToken token = default)
+        internal async Task ResetAsync(bool blnFirstTime = false, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -2072,7 +2072,7 @@ namespace Chummer.Backend.Attributes
         /// Reset the databindings for all character attributes.
         /// This method is used to support hot-swapping attributes for shapeshifters.
         /// </summary>
-        public async ValueTask ResetBindingsAsync(CancellationToken token = default)
+        public async Task ResetBindingsAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker1 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -2112,7 +2112,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="objAttribute">Attribute to raise to its metatype maximum.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute,
+        public async Task<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute,
                                                                     CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -2152,7 +2152,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributeListAsync(CancellationToken token = default)
+        public async Task<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributeListAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2173,7 +2173,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetSpecialAttributeListAsync(CancellationToken token = default)
+        public async Task<ThreadSafeObservableCollection<CharacterAttrib>> GetSpecialAttributeListAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2209,7 +2209,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<CharacterAttrib.AttributeCategory> GetAttributeCategoryAsync(CancellationToken token = default)
+        public async Task<CharacterAttrib.AttributeCategory> GetAttributeCategoryAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {

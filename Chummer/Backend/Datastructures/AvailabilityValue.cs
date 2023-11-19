@@ -101,12 +101,12 @@ namespace Chummer
             return strBaseAvail;
         }
 
-        public ValueTask<string> ToStringAsync(CancellationToken token = default)
+        public Task<string> ToStringAsync(CancellationToken token = default)
         {
             return ToStringAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
         }
 
-        public async ValueTask<string> ToStringAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> ToStringAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strBaseAvail = Value.ToString(objCulture);
             if (AddToParent && Value >= 0)

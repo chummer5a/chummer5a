@@ -288,7 +288,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask ResetLifestyleQualitiesTree(CancellationToken token = default)
+        private async Task ResetLifestyleQualitiesTree(CancellationToken token = default)
         {
             TreeNode nodPositiveQualityRoot = null;
             TreeNode nodNegativeQualityRoot = null;
@@ -465,54 +465,54 @@ namespace Chummer
             await nudSecurity.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity)).ConfigureAwait(false);
             await nudArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
                                                          nameof(Lifestyle.AreaDelta),
-                                                         x => x.GetAreaDeltaAsync().AsTask())
+                                                         x => x.GetAreaDeltaAsync())
                          .ConfigureAwait(false);
             await nudComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
                                                              nameof(Lifestyle.ComfortsDelta),
-                                                             x => x.GetComfortsDeltaAsync().AsTask())
+                                                             x => x.GetComfortsDeltaAsync())
                              .ConfigureAwait(false);
             await nudSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
                                                              nameof(Lifestyle.SecurityDelta),
-                                                             x => x.GetSecurityDeltaAsync().AsTask())
+                                                             x => x.GetSecurityDeltaAsync())
                              .ConfigureAwait(false);
             await cboBaseLifestyle.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.BaseLifestyle)).ConfigureAwait(false);
             await chkTrustFund.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.TrustFund)).ConfigureAwait(false);
             await chkTrustFund.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objLifestyle,
-                    nameof(Lifestyle.IsTrustFundEligible), x => x.GetIsTrustFundEligibleAsync().AsTask())
+                    nameof(Lifestyle.IsTrustFundEligible), x => x.GetIsTrustFundEligibleAsync())
                 .ConfigureAwait(false);
             await chkPrimaryTenant.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant)).ConfigureAwait(false);
             await lblCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                                                          nameof(Lifestyle.DisplayTotalMonthlyCost),
-                                                         x => x.GetDisplayTotalMonthlyCostAsync().AsTask())
+                                                         x => x.GetDisplayTotalMonthlyCostAsync())
                          .ConfigureAwait(false);
             await lblArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                                                               nameof(Lifestyle.FormattedArea),
-                                                              x => x.GetFormattedAreaAsync().AsTask())
+                                                              x => x.GetFormattedAreaAsync())
                               .ConfigureAwait(false);
             await lblComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                                                                  nameof(Lifestyle.FormattedComforts),
-                                                                 x => x.GetFormattedComfortsAsync().AsTask())
+                                                                 x => x.GetFormattedComfortsAsync())
                                  .ConfigureAwait(false);
             await lblSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y,
                                                              _objLifestyle,
                                                              nameof(Lifestyle.FormattedSecurity),
-                                                             x => x.GetFormattedSecurityAsync().AsTask())
+                                                             x => x.GetFormattedSecurityAsync())
                              .ConfigureAwait(false);
             await lblAreaTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
                                                               nameof(Lifestyle.TotalArea),
-                                                              x => x.GetTotalAreaAsync().AsTask())
+                                                              x => x.GetTotalAreaAsync())
                               .ConfigureAwait(false);
             await lblComfortTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
                                                                  nameof(Lifestyle.TotalComforts),
-                                                                 x => x.GetTotalComfortsAsync().AsTask())
+                                                                 x => x.GetTotalComfortsAsync())
                                  .ConfigureAwait(false);
             await lblSecurityTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
                                                                   nameof(Lifestyle.TotalSecurity),
-                                                                  x => x.GetTotalSecurityAsync().AsTask())
+                                                                  x => x.GetTotalSecurityAsync())
                                   .ConfigureAwait(false);
             await lblTotalLP.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
                                                             nameof(Lifestyle.TotalLP),
-                                                            x => x.GetTotalLPAsync().AsTask())
+                                                            x => x.GetTotalLPAsync())
                             .ConfigureAwait(false);
 
             await cboBaseLifestyle.DoThreadSafeAsync(x =>
@@ -832,7 +832,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strLifestyleName = await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strLifestyleName))
@@ -876,7 +876,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshSelectedLifestyle(CancellationToken token = default)
+        private async Task RefreshSelectedLifestyle(CancellationToken token = default)
         {
             if (_intSkipRefresh > 0)
                 return;
@@ -984,7 +984,7 @@ namespace Chummer
         /// <summary>
         /// Populates The District list after a City was selected
         /// </summary>
-        private async ValueTask RefreshDistrictList(CancellationToken token = default)
+        private async Task RefreshDistrictList(CancellationToken token = default)
         {
             string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedCityRefresh))
@@ -1014,7 +1014,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the BoroughList based on the selected District to generate a cascading dropdown menu
         /// </summary>
-        private async ValueTask RefreshBoroughList(CancellationToken token = default)
+        private async Task RefreshBoroughList(CancellationToken token = default)
         {
             string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedCityRefresh))

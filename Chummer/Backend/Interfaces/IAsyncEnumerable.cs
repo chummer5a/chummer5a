@@ -27,7 +27,7 @@ namespace Chummer
 {
     public interface IAsyncEnumerable<T> : IEnumerable<T>
     {
-        ValueTask<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default);
+        Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default);
     }
 
     public static class AsyncEnumerableExtensions

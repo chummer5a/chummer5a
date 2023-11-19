@@ -707,7 +707,7 @@ namespace Chummer
         /// <summary>
         /// Accept the values on the Form and create the required XML data.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             // Make sure a value has been selected if necessary.
             if (await txtTranslateSelection.DoThreadSafeFuncAsync(x => x.Visible, token: token).ConfigureAwait(false) && string.IsNullOrEmpty(await txtSelect.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)))
@@ -873,7 +873,7 @@ namespace Chummer
         /// <param name="strToTranslate"> The string which to translate. Usually name. Guid in the case of adept powers.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        private async ValueTask<string> TranslateField(string strImprovementType, string strToTranslate, CancellationToken token = default)
+        private async Task<string> TranslateField(string strImprovementType, string strToTranslate, CancellationToken token = default)
         {
             XPathNavigator objXmlNode;
             switch (strImprovementType)

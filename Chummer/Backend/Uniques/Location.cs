@@ -192,12 +192,12 @@ namespace Chummer
             return DisplayNameShort(strLanguage);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
             return DisplayNameAsync(GlobalSettings.Language, token);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
         {
             return DisplayNameShortAsync(GlobalSettings.Language, token);
         }
@@ -205,7 +205,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage = "", CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage = "", CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
                 return Name;
@@ -224,7 +224,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public ValueTask<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;

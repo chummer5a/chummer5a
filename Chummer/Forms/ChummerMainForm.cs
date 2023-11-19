@@ -1216,7 +1216,7 @@ namespace Chummer
 
         private CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
 
-        private async ValueTask DoCacheGitVersion(CancellationToken token = default)
+        private async Task DoCacheGitVersion(CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
@@ -3834,7 +3834,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoPopulateMruToolstripMenu(string strText = "", CancellationToken token = default)
+        private async Task DoPopulateMruToolstripMenu(string strText = "", CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
@@ -4029,7 +4029,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0, CancellationToken token = default)
+        public async Task OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0, CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)

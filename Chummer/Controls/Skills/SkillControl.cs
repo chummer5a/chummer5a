@@ -292,21 +292,21 @@ namespace Chummer.UI.Skills
                 lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
                                                        nameof(Skill.CurrentDisplayName),
                                                        x => x.GetCurrentDisplayNameAsync(_objMyToken)
-                                                             .AsTask(),
+                                                             ,
                                                        _objMyToken);
                 lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ForeColor = y, _objSkill,
                                                        nameof(Skill.PreferredColor),
-                                                       x => x.GetPreferredColorAsync(_objMyToken).AsTask(),
+                                                       x => x.GetPreferredColorAsync(_objMyToken),
                                                        _objMyToken);
                 lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
                                                        nameof(Skill.SkillToolTip),
-                                                       x => x.GetSkillToolTipAsync(_objMyToken).AsTask(),
+                                                       x => x.GetSkillToolTipAsync(_objMyToken),
                                                        _objMyToken);
 
                 btnAttribute.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
                                                             nameof(Skill.DisplayAttribute),
                                                             x => x.GetDisplayAttributeAsync(_objMyToken)
-                                                                  .AsTask(),
+                                                                  ,
                                                             _objMyToken);
 
                 RefreshPoolTooltipAndDisplay(_objMyToken);
@@ -316,41 +316,41 @@ namespace Chummer.UI.Skills
                     lblCareerRating.RegisterOneWayAsyncDataBinding(
                         (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
                         nameof(Skill.Rating),
-                        x => x.GetRatingAsync(_objMyToken).AsTask(),
+                        x => x.GetRatingAsync(_objMyToken),
                         _objMyToken);
                     btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                      nameof(Skill.CanUpgradeCareer),
                                                                      x => x.GetCanUpgradeCareerAsync(
                                                                                _objMyToken)
-                                                                           .AsTask(),
+                                                                           ,
                                                                      _objMyToken);
                     btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
                                                                      nameof(Skill.UpgradeToolTip),
                                                                      x => x.GetUpgradeToolTipAsync(
                                                                                _objMyToken)
-                                                                           .AsTask(),
+                                                                           ,
                                                                      _objMyToken);
                     lblCareerSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
                                                                  nameof(Skill.CurrentDisplaySpecialization),
                                                                  x => x.GetCurrentDisplaySpecializationAsync(
-                                                                     _objMyToken).AsTask(),
+                                                                     _objMyToken),
                                                                  _objMyToken);
                     btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                               nameof(Skill.CanAffordSpecialization),
                                                               x => x
                                                                    .GetCanAffordSpecializationAsync(
                                                                        _objMyToken)
-                                                                   .AsTask(),
+                                                                   ,
                                                               _objMyToken);
                     btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
                                                               nameof(Skill.CanHaveSpecs),
                                                               x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                    .AsTask(),
+                                                                    ,
                                                               _objMyToken);
                     btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
                                                               nameof(Skill.AddSpecToolTip),
                                                               x => x.GetAddSpecToolTipAsync(_objMyToken)
-                                                                    .AsTask(),
+                                                                    ,
                                                               _objMyToken);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -390,16 +390,16 @@ namespace Chummer.UI.Skills
                                                                        .EffectiveBuildMethodUsesPriorityTables),
                                                             x => x
                                                                  .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                                                     _objMyToken).AsTask(),
+                                                                     _objMyToken),
                                                             _objMyToken);
                     nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                             nameof(Skill.BaseUnlocked),
-                                                            x => x.GetBaseUnlockedAsync(_objMyToken).AsTask(),
+                                                            x => x.GetBaseUnlockedAsync(_objMyToken),
                                                             _objMyToken);
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                             nameof(Skill.KarmaUnlocked),
                                                             x => x.GetKarmaUnlockedAsync(_objMyToken)
-                                                                  .AsTask(),
+                                                                  ,
                                                             _objMyToken);
 
                     if (_objSkill.IsExoticSkill)
@@ -409,7 +409,7 @@ namespace Chummer.UI.Skills
                                                                          Skill.CurrentDisplaySpecialization),
                                                                      x => x
                                                                           .GetCurrentDisplaySpecializationAsync(
-                                                                              _objMyToken).AsTask(),
+                                                                              _objMyToken),
                                                                      _objMyToken);
                     }
                     else
@@ -419,18 +419,18 @@ namespace Chummer.UI.Skills
                             nameof(Character
                                        .EffectiveBuildMethodUsesPriorityTables),
                             x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                _objMyToken).AsTask(),
+                                _objMyToken),
                             _objMyToken);
                         chkKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                 nameof(Skill.CanHaveSpecs),
                                                                 x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                      .AsTask(),
+                                                                      ,
                                                                 _objMyToken);
 
                         cboSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                nameof(Skill.CanHaveSpecs),
                                                                x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                     .AsTask(),
+                                                                     ,
                                                                _objMyToken);
                         string strDisplaySpec = _objSkill.CurrentDisplaySpecialization;
                         Interlocked.Increment(ref _intUpdatingSpec);
@@ -453,12 +453,12 @@ namespace Chummer.UI.Skills
 
                 this.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                     nameof(Skill.Enabled),
-                                                    x => x.GetEnabledAsync(_objMyToken).AsTask(),
+                                                    x => x.GetEnabledAsync(_objMyToken),
                                                     _objMyToken);
                 this.RegisterOneWayAsyncDataBinding((x, y) => x.BackColor = y, _objSkill,
                                                     nameof(Skill.PreferredControlColor),
                                                     x => x.GetPreferredControlColorAsync(_objMyToken)
-                                                          .AsTask(),
+                                                          ,
                                                     _objMyToken);
             }
             catch (OperationCanceledException)
@@ -474,21 +474,21 @@ namespace Chummer.UI.Skills
                 await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objSkill,
                                                                  nameof(Skill.CurrentDisplayName),
                                                                  x => x.GetCurrentDisplayNameAsync(_objMyToken)
-                                                                       .AsTask(),
+                                                                       ,
                                                                  _objMyToken).ConfigureAwait(false);
                 await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ForeColor = y, _objSkill,
                                                              nameof(Skill.PreferredColor),
-                                                             x => x.GetPreferredColorAsync(_objMyToken).AsTask(),
+                                                             x => x.GetPreferredColorAsync(_objMyToken),
                                                              _objMyToken).ConfigureAwait(false);
                 await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
                                                              nameof(Skill.SkillToolTip),
-                                                             x => x.GetSkillToolTipAsync(_objMyToken).AsTask(),
+                                                             x => x.GetSkillToolTipAsync(_objMyToken),
                                                              _objMyToken).ConfigureAwait(false);
 
                 await btnAttribute.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objSkill,
                                                                   nameof(Skill.DisplayAttribute),
                                                                   x => x.GetDisplayAttributeAsync(_objMyToken)
-                                                                        .AsTask(),
+                                                                        ,
                                                                   _objMyToken).ConfigureAwait(false);
 
                 await RefreshPoolTooltipAndDisplayAsync(_objMyToken).ConfigureAwait(false);
@@ -498,26 +498,26 @@ namespace Chummer.UI.Skills
                     await lblCareerRating.RegisterOneWayAsyncDataBindingAsync(
                         (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
                         nameof(Skill.Rating),
-                        x => x.GetRatingAsync(_objMyToken).AsTask(),
+                        x => x.GetRatingAsync(_objMyToken),
                         _objMyToken).ConfigureAwait(false);
                     await btnCareerIncrease.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                            nameof(Skill.CanUpgradeCareer),
                                                                            x => x.GetCanUpgradeCareerAsync(
                                                                                    _objMyToken)
-                                                                               .AsTask(),
+                                                                               ,
                                                                            _objMyToken)
                                            .ConfigureAwait(false);
                     await btnCareerIncrease.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
                                                                            nameof(Skill.UpgradeToolTip),
                                                                            x => x.GetUpgradeToolTipAsync(
                                                                                    _objMyToken)
-                                                                               .AsTask(),
+                                                                               ,
                                                                            _objMyToken)
                                            .ConfigureAwait(false);
                     await lblCareerSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objSkill,
                                                                        nameof(Skill.CurrentDisplaySpecialization),
                                                                        x => x.GetCurrentDisplaySpecializationAsync(
-                                                                           _objMyToken).AsTask(),
+                                                                           _objMyToken),
                                                                        _objMyToken)
                                        .ConfigureAwait(false);
                     await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
@@ -525,17 +525,17 @@ namespace Chummer.UI.Skills
                                                                     x => x
                                                                          .GetCanAffordSpecializationAsync(
                                                                              _objMyToken)
-                                                                         .AsTask(),
+                                                                         ,
                                                                     _objMyToken).ConfigureAwait(false);
                     await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
                                                                     nameof(Skill.CanHaveSpecs),
                                                                     x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                          .AsTask(),
+                                                                          ,
                                                                     _objMyToken).ConfigureAwait(false);
                     await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
                                                                     nameof(Skill.AddSpecToolTip),
                                                                     x => x.GetAddSpecToolTipAsync(_objMyToken)
-                                                                          .AsTask(),
+                                                                          ,
                                                                     _objMyToken).ConfigureAwait(false);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -580,16 +580,16 @@ namespace Chummer.UI.Skills
                                                                              .EffectiveBuildMethodUsesPriorityTables),
                                                                   x => x
                                                                        .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                                                           _objMyToken).AsTask(),
+                                                                           _objMyToken),
                                                                   _objMyToken).ConfigureAwait(false);
                     await nudSkill.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                   nameof(Skill.BaseUnlocked),
-                                                                  x => x.GetBaseUnlockedAsync(_objMyToken).AsTask(),
+                                                                  x => x.GetBaseUnlockedAsync(_objMyToken),
                                                                   _objMyToken).ConfigureAwait(false);
                     await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                   nameof(Skill.KarmaUnlocked),
                                                                   x => x.GetKarmaUnlockedAsync(_objMyToken)
-                                                                        .AsTask(),
+                                                                        ,
                                                                   _objMyToken).ConfigureAwait(false);
 
                     if (_objSkill.IsExoticSkill)
@@ -599,7 +599,7 @@ namespace Chummer.UI.Skills
                                                                                Skill.CurrentDisplaySpecialization),
                                                                            x => x
                                                                                .GetCurrentDisplaySpecializationAsync(
-                                                                                   _objMyToken).AsTask(),
+                                                                                   _objMyToken),
                                                                            _objMyToken)
                                            .ConfigureAwait(false);
                     }
@@ -610,19 +610,19 @@ namespace Chummer.UI.Skills
                             nameof(Character
                                        .EffectiveBuildMethodUsesPriorityTables),
                             x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                _objMyToken).AsTask(),
+                                _objMyToken),
                             _objMyToken).ConfigureAwait(false);
                         await chkKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                       nameof(Skill.CanHaveSpecs),
                                                                       x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                          .AsTask(),
+                                                                          ,
                                                                       _objMyToken)
                                       .ConfigureAwait(false);
 
                         await cboSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                           nameof(Skill.CanHaveSpecs),
                                                                           x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                              .AsTask(),
+                                                                              ,
                                                                           _objMyToken)
                                      .ConfigureAwait(false);
                         string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(_objMyToken)
@@ -655,12 +655,12 @@ namespace Chummer.UI.Skills
 
                 await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                           nameof(Skill.Enabled),
-                                                          x => x.GetEnabledAsync(_objMyToken).AsTask(),
+                                                          x => x.GetEnabledAsync(_objMyToken),
                                                           _objMyToken).ConfigureAwait(false);
                 await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.BackColor = y, _objSkill,
                                                           nameof(Skill.PreferredControlColor),
                                                           x => x.GetPreferredControlColorAsync(_objMyToken)
-                                                                .AsTask(),
+                                                                ,
                                                           _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -943,7 +943,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async ValueTask DoSelectAttributeClosed(CancellationToken token = default)
+        private async Task DoSelectAttributeClosed(CancellationToken token = default)
         {
             await btnAttribute.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
             await cboSelectAttribute.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
@@ -993,7 +993,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async ValueTask SetAttributeActiveAsync(CharacterAttrib value, CancellationToken token = default)
+        private async Task SetAttributeActiveAsync(CharacterAttrib value, CancellationToken token = default)
         {
             CharacterAttrib objOldAttrib = Interlocked.Exchange(ref _objAttributeActive, value);
             if (objOldAttrib == value)
@@ -1046,7 +1046,7 @@ namespace Chummer.UI.Skills
                 : 0;
 
         [UsedImplicitly]
-        public async ValueTask ResetSelectAttribute(CancellationToken token = default)
+        public async Task ResetSelectAttribute(CancellationToken token = default)
         {
             if (!CustomAttributeSet)
                 return;

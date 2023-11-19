@@ -184,7 +184,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        internal async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -334,7 +334,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Minimum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
         /// </summary>
-        public async ValueTask<int> GetMetatypeMinimumAsync(CancellationToken token = default)
+        public async Task<int> GetMetatypeMinimumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -413,7 +413,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Maximum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
         /// </summary>
-        public async ValueTask<int> GetMetatypeMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetMetatypeMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -495,7 +495,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
         /// </summary>
-        private async ValueTask<int> GetMetatypeAugmentedMaximumAsync(CancellationToken token = default)
+        private async Task<int> GetMetatypeAugmentedMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -541,7 +541,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Current base value (priority points spent) of the CharacterAttribute.
         /// </summary>
-        public async ValueTask<int> GetBaseAsync(CancellationToken token = default)
+        public async Task<int> GetBaseAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -553,7 +553,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Current base value (priority points spent) of the CharacterAttribute.
         /// </summary>
-        public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
+        public async Task SetBaseAsync(int value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -568,7 +568,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Current base value (priority points spent) of the CharacterAttribute.
         /// </summary>
-        public async ValueTask ModifyBaseAsync(int value, CancellationToken token = default)
+        public async Task ModifyBaseAsync(int value, CancellationToken token = default)
         {
             if (value == 0)
                 return;
@@ -596,7 +596,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Total Value of Base Points as used by internal methods
         /// </summary>
-        public async ValueTask<int> GetTotalBaseAsync(CancellationToken token = default)
+        public async Task<int> GetTotalBaseAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -622,7 +622,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<int> GetFreeBaseAsync(CancellationToken token = default)
+        public async Task<int> GetFreeBaseAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -661,7 +661,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Current karma value of the CharacterAttribute.
         /// </summary>
-        public async ValueTask<int> GetKarmaAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -673,7 +673,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Current karma value of the CharacterAttribute.
         /// </summary>
-        public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
+        public async Task SetKarmaAsync(int value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -688,7 +688,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Current karma value of the CharacterAttribute.
         /// </summary>
-        public async ValueTask ModifyKarmaAsync(int value, CancellationToken token = default)
+        public async Task ModifyKarmaAsync(int value, CancellationToken token = default)
         {
             if (value == 0)
                 return;
@@ -728,7 +728,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Current value of the CharacterAttribute before modifiers are applied.
         /// </summary>
-        public async ValueTask<int> GetValueAsync(CancellationToken token = default)
+        public async Task<int> GetValueAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -829,7 +829,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Total Maximum value of the CharacterAttribute before essence modifiers are applied but .
         /// </summary>
-        public async ValueTask<int> MaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
+        public async Task<int> MaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -925,7 +925,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
         /// </summary>
-        public async ValueTask<string> GetDisplayValueAsync(CancellationToken token = default)
+        public async Task<string> GetDisplayValueAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -966,7 +966,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
         /// </summary>
-        public async ValueTask<int> GetAttributeModifiersAsync(CancellationToken token = default)
+        public async Task<int> GetAttributeModifiersAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1005,7 +1005,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
         /// </summary>
-        public async ValueTask<int> GetAttributeValueModifiersAsync(CancellationToken token = default)
+        public async Task<int> GetAttributeValueModifiersAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1153,7 +1153,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's Minimum value.
         /// </summary>
-        public async ValueTask<int> GetMinimumModifiersAsync(CancellationToken token = default)
+        public async Task<int> GetMinimumModifiersAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1211,7 +1211,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's Maximum value.
         /// </summary>
-        public async ValueTask<int> GetMaximumModifiersAsync(CancellationToken token = default)
+        public async Task<int> GetMaximumModifiersAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1260,7 +1260,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's Augmented Maximum value.
         /// </summary>
-        public async ValueTask<int> GetAugmentedMaximumModifiersAsync(CancellationToken token = default)
+        public async Task<int> GetAugmentedMaximumModifiersAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1362,7 +1362,7 @@ namespace Chummer.Backend.Attributes
                         return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
-                    async ValueTask<Tuple<int, int>> ProcessCyberlimbsAsync(IEnumerable<Cyberware> lstToCheck)
+                    async Task<Tuple<int, int>> ProcessCyberlimbsAsync(IEnumerable<Cyberware> lstToCheck)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
@@ -1509,7 +1509,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
-        public async ValueTask<int> GetTotalValueAsync(CancellationToken token = default)
+        public async Task<int> GetTotalValueAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1540,7 +1540,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers), uncapped by its zero.
         /// </summary>
-        public async ValueTask<int> GetRawMinimumAsync(CancellationToken token = default)
+        public async Task<int> GetRawMinimumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1584,7 +1584,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
         /// </summary>
-        public async ValueTask<int> GetTotalMinimumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalMinimumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1629,7 +1629,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's combined Maximum value (Metatype Maximum + Modifiers).
         /// </summary>
-        public async ValueTask<int> GetTotalMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1668,7 +1668,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's combined Augmented Maximum value (Metatype Augmented Maximum + Modifiers).
         /// </summary>
-        public async ValueTask<int> GetTotalAugmentedMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalAugmentedMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1785,7 +1785,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// CharacterAttribute Limits
         /// </summary>
-        public async ValueTask<string> GetAugmentedMetatypeLimitsAsync(CancellationToken token = default)
+        public async Task<string> GetAugmentedMetatypeLimitsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1844,7 +1844,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="intMax">Metatype's maximum value for the CharacterAttribute.</param>
         /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask AssignLimitsAsync(int intMin, int intMax, int intAug, CancellationToken token = default)
+        public async Task AssignLimitsAsync(int intMin, int intMax, int intAug, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1942,7 +1942,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="intMax">Metatype's maximum value for the CharacterAttribute.</param>
         /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask AssignBaseKarmaLimitsAsync(int intBase, int intKarma, int intMin, int intMax, int intAug, CancellationToken token = default)
+        public async Task AssignBaseKarmaLimitsAsync(int intBase, int intKarma, int intMin, int intMax, int intAug, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2348,7 +2348,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<bool> GetAtMetatypeMaximumAsync(CancellationToken token = default)
+        public async Task<bool> GetAtMetatypeMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2367,7 +2367,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<int> GetKarmaMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetKarmaMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2387,7 +2387,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<int> GetPriorityMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetPriorityMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2488,7 +2488,7 @@ namespace Chummer.Backend.Attributes
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
         /// <returns>Price in karma</returns>
-        public async ValueTask<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
+        public async Task<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2730,7 +2730,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<bool> GetCanUpgradeCareerAsync(CancellationToken token = default)
+        public async Task<bool> GetCanUpgradeCareerAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -3209,7 +3209,7 @@ namespace Chummer.Backend.Attributes
                 : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Short", strLanguage, token: token);
         }
 
-        public async ValueTask Upgrade(int intAmount = 1, CancellationToken token = default)
+        public async Task Upgrade(int intAmount = 1, CancellationToken token = default)
         {
             if (intAmount <= 0)
                 return;
@@ -3304,7 +3304,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask Degrade(int intAmount, CancellationToken token = default)
+        public async Task Degrade(int intAmount, CancellationToken token = default)
         {
             if (intAmount <= 0)
                 return;

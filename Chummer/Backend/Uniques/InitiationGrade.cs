@@ -154,7 +154,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -443,12 +443,12 @@ namespace Chummer
             return true;
         }
 
-        public ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        public Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             return RemoveAsync(blnConfirmDelete, true, token);
         }
 
-        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete, bool blnPerformGradeCheck,
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete, bool blnPerformGradeCheck,
                                                  CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

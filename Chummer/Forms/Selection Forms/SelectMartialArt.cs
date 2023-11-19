@@ -237,7 +237,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts list.
         /// </summary>
-        private async ValueTask RefreshArtList(CancellationToken token = default)
+        private async Task RefreshArtList(CancellationToken token = default)
         {
             string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
             if (ShowQualities)

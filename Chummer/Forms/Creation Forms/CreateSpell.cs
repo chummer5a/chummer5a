@@ -607,7 +607,7 @@ namespace Chummer
         /// <summary>
         /// Re-calculate the Drain modifiers based on the currently-selected options.
         /// </summary>
-        private async ValueTask ChangeModifiers(CancellationToken token = default)
+        private async Task ChangeModifiers(CancellationToken token = default)
         {
             foreach (Control objControl in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls, token: token).ConfigureAwait(false))
             {
@@ -953,7 +953,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the Spell's Drain Value based on the currently-selected options.
         /// </summary>
-        private async ValueTask<string> CalculateDrain(CancellationToken token = default)
+        private async Task<string> CalculateDrain(CancellationToken token = default)
         {
             if (_blnLoading)
                 return string.Empty;
@@ -1056,7 +1056,7 @@ namespace Chummer
         /// <summary>
         /// Accept the values of the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strMessage = string.Empty;
             // Make sure a name has been provided.

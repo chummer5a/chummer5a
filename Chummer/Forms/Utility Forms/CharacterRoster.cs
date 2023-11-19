@@ -118,7 +118,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetMyEventHandlers(bool deleteThem = false, CancellationToken token = default)
+        public async Task SetMyEventHandlers(bool deleteThem = false, CancellationToken token = default)
         {
             ThreadSafeObservableCollection<CharacterShared>
                 lstToProcess1 = Program.MainForm.OpenCharacterEditorForms;
@@ -631,7 +631,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshMruLists(string strMruType, CancellationToken token = default)
+        public async Task RefreshMruLists(string strMruType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (treCharacterList.IsNullOrDisposed())
@@ -1060,7 +1060,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshNodeTexts(ICollection<string> lstNames = null, CancellationToken token = default)
+        public async Task RefreshNodeTexts(ICollection<string> lstNames = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (treCharacterList.IsNullOrDisposed())
@@ -1640,7 +1640,7 @@ namespace Chummer
         /// <summary>
         /// Remove all character caches from the cached dictionary that are not present in any of the form's lists (and are therefore unnecessary).
         /// </summary>
-        private async ValueTask PurgeUnusedCharacterCaches(CancellationToken token = default)
+        private async Task PurgeUnusedCharacterCaches(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches.ToArray())
@@ -1753,7 +1753,7 @@ namespace Chummer
         /// <summary>
         /// Update the labels and images based on the selected treenode.
         /// </summary>
-        public async ValueTask UpdateCharacter(CharacterCache objCache, CancellationToken token = default)
+        public async Task UpdateCharacter(CharacterCache objCache, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed(), token).ConfigureAwait(false)) // Safety check for external calls

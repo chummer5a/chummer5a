@@ -277,7 +277,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask UpdateWeaponInfo(CancellationToken token = default)
+        private async Task UpdateWeaponInfo(CancellationToken token = default)
         {
             if (_intLoading > 0)
                 return;
@@ -450,7 +450,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false, CancellationToken token = default)
+        private async Task<bool> BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false, CancellationToken token = default)
         {
             await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
             try
@@ -919,7 +919,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask<bool> RefreshList(CancellationToken token = default)
+        private async Task<bool> RefreshList(CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;

@@ -332,7 +332,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<Image> ToImageAsync(this string strBase64String, CancellationToken token = default)
+        public static async Task<Image> ToImageAsync(this string strBase64String, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strBase64String)
@@ -363,7 +363,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat, CancellationToken token = default)
+        public static async Task<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strBase64String))

@@ -536,7 +536,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -711,6 +711,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Quality's name.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strName;
+            }
+        }
+
+        /// <summary>
         /// Does the quality come from being a Changeling?
         /// </summary>
         public bool Metagenic
@@ -719,6 +732,19 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _blnMetagenic;
+            }
+        }
+
+        /// <summary>
+        /// Does the quality come from being a Changeling?
+        /// </summary>
+        public async Task<bool> GetMetagenicAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnMetagenic;
             }
         }
 
@@ -808,7 +834,7 @@ namespace Chummer
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
@@ -946,6 +972,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Quality Type.
+        /// </summary>
+        public async Task<QualityType> GetTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _eQualityType;
+            }
+        }
+
+        /// <summary>
         /// Source of the Quality.
         /// </summary>
         public QualitySource OriginSource
@@ -962,6 +1001,19 @@ namespace Chummer
                     if (InterlockedExtensions.Exchange(ref _eQualitySource, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Source of the Quality.
+        /// </summary>
+        public async Task<QualitySource> GetOriginSourceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _eQualitySource;
             }
         }
 
@@ -1007,6 +1059,38 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Number of Build Points the Quality costs.
+        /// </summary>
+        ///
+        public async Task<int> GetBPAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token))
+            {
+                token.ThrowIfCancellationRequested();
+                int intValue = 0;
+                if (_nodDiscounts?.TryGetInt32FieldQuickly("value", ref intValue) != true)
+                    return _intBP;
+                int intReturn = _intBP;
+                if (await _nodDiscounts.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                {
+                    switch (await GetTypeAsync(token).ConfigureAwait(false))
+                    {
+                        case QualityType.Positive:
+                            intReturn += intValue;
+                            break;
+
+                        case QualityType.Negative:
+                            intReturn -= intValue;
+                            break;
+                    }
+                }
+
+                return intReturn;
+            }
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public string DisplayNameShort(string strLanguage)
@@ -1021,7 +1105,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -1085,7 +1169,7 @@ namespace Chummer
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// If there is more than one instance of the same quality, it's: Name (Extra) Number
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1134,12 +1218,12 @@ namespace Chummer
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -1309,6 +1393,44 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Quality contributes towards the character's Quality BP limits.
+        /// </summary>
+        public async Task<bool> GetContributeToLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token))
+            {
+                token.ThrowIfCancellationRequested();
+                QualitySource eQualitySource = await GetOriginSourceAsync(token).ConfigureAwait(false);
+                if (eQualitySource == QualitySource.Metatype
+                    || eQualitySource == QualitySource.MetatypeRemovable
+                    || eQualitySource == QualitySource.MetatypeRemovedAtChargen
+                    || eQualitySource == QualitySource.Heritage)
+                    return false;
+
+                // Positive Metagenic Qualities are free if you're a Changeling.
+                if (Metagenic && await _objCharacter.GetMetagenicLimitAsync(token) > 0)
+                    return false;
+
+                // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+                if (Name == "Mentor Spirit" && await _objCharacter.Qualities.AnyAsync(
+                        objQuality =>
+                            objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way", token: token))
+                    return false;
+
+                return _blnContributeToLimit
+                       && (await ImprovementManager
+                           .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                               Improvement.ImprovementType.FreeQuality,
+                               SourceIDString, token: token)).Count == 0
+                       && (await ImprovementManager
+                           .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                               Improvement.ImprovementType.FreeQuality, Name, token: token)).Count
+                       == 0;
             }
         }
 
@@ -1894,7 +2016,7 @@ namespace Chummer
         /// <param name="intNewQualityRating">Rating of the new quality to add. All of the old quality's ratings will be removed</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<bool> Swap(Quality objOldQuality, XmlNode objXmlQuality, int intNewQualityRating,
+        public async Task<bool> Swap(Quality objOldQuality, XmlNode objXmlQuality, int intNewQualityRating,
                                           CancellationToken token = default)
         {
             if (objOldQuality == null)
@@ -2259,7 +2381,7 @@ namespace Chummer
         /// TODO: make Quality properly inherit from ICanRemove by also putting the UI stuff in here as well
         /// </summary>
         /// <returns>Nuyen cost of the actual removal (necessary for removing some stuff that adds qualities as part of their effects).</returns>
-        public async ValueTask<decimal> DeleteQualityAsync(bool blnFullRemoval = false,
+        public async Task<decimal> DeleteQualityAsync(bool blnFullRemoval = false,
                                                            CancellationToken token = default)
         {
             try

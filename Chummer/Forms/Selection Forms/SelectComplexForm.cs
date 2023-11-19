@@ -269,7 +269,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask BuildComplexFormList(CancellationToken token = default)
+        private async Task BuildComplexFormList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;

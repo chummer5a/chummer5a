@@ -1126,7 +1126,7 @@ namespace Chummer
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
         /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
         /// <param name="token">Cancellation token to listen to for this assignment.</param>
-        public static async ValueTask RegisterOneWayAsyncDataBindingAsync<T1, T2, T3>(
+        public static async Task RegisterOneWayAsyncDataBindingAsync<T1, T2, T3>(
             this T1 objControl, Action<T1, T3> funcControlSetter, T2 objDataSource, string strDataMember,
             Func<T2, Task<T3>> funcAsyncDataGetter, CancellationToken token = default)
             where T1 : Control where T2 : INotifyPropertyChangedAsync

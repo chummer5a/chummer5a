@@ -98,7 +98,7 @@ namespace Chummer.Backend.Skills
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -170,7 +170,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -191,7 +191,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The Skill to which this specialization belongs
         /// </summary>
-        public async ValueTask<Skill> GetParentAsync(CancellationToken token = default)
+        public async Task<Skill> GetParentAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -437,7 +437,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The bonus this specialization gives to relevant dicepools
         /// </summary>
-        public async ValueTask<int> GetSpecializationBonusAsync(CancellationToken token = default)
+        public async Task<int> GetSpecializationBonusAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {

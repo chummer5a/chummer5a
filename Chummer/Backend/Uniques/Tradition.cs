@@ -161,7 +161,7 @@ namespace Chummer.Backend.Uniques
             }
         }
 
-        public async ValueTask ResetTraditionAsync(CancellationToken token = default)
+        public async Task ResetTraditionAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -494,7 +494,7 @@ namespace Chummer.Backend.Uniques
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -700,7 +700,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// ImprovementSource Type.
         /// </summary>
-        public async ValueTask<TraditionType> GetTypeAsync(CancellationToken token = default)
+        public async Task<TraditionType> GetTypeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -802,7 +802,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -867,7 +867,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -886,11 +886,11 @@ namespace Chummer.Backend.Uniques
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// What type of forms do spirits of these traditions come in? Defaults to Materialization.
@@ -1004,7 +1004,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Magician's Tradition Drain Attributes.
         /// </summary>
-        public async ValueTask<string> GetDrainExpressionAsync(CancellationToken token = default)
+        public async Task<string> GetDrainExpressionAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1028,7 +1028,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
-        public ValueTask<string> GetDisplayDrainExpressionAsync(CancellationToken token = default) =>
+        public Task<string> GetDisplayDrainExpressionAsync(CancellationToken token = default) =>
             DisplayDrainExpressionMethodAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
@@ -1042,7 +1042,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
-        public ValueTask<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
         {
             return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltipAsync(DrainExpression, objCultureInfo, strLanguage, false, token: token);
         }
@@ -1091,7 +1091,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Magician's total amount of dice for resisting drain.
         /// </summary>
-        public async ValueTask<int> GetDrainValueAsync(CancellationToken token = default)
+        public async Task<int> GetDrainValueAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1169,7 +1169,7 @@ namespace Chummer.Backend.Uniques
             }
         }
 
-        public async ValueTask<string> GetDrainValueToolTipAsync(CancellationToken token = default)
+        public async Task<string> GetDrainValueToolTipAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))

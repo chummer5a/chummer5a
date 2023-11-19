@@ -73,7 +73,7 @@ namespace Chummer
         /// <param name="funcDelegateToAdd">Delegate to add to CollectionChanged</param>
         /// <param name="token">CancellationToken to listen to.</param>
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
-        public async ValueTask<bool> AddTaggedCollectionChangedAsync(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
+        public async Task<bool> AddTaggedCollectionChangedAsync(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -130,7 +130,7 @@ namespace Chummer
         /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
         /// <param name="token">CancellationToken to listen to.</param>
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
-        public async ValueTask<bool> RemoveTaggedCollectionChangedAsync(object objTag, CancellationToken token = default)
+        public async Task<bool> RemoveTaggedCollectionChangedAsync(object objTag, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -183,7 +183,7 @@ namespace Chummer
         /// <param name="funcDelegateToAdd">Delegate to add to CollectionChanged</param>
         /// <param name="token">CancellationToken to listen to.</param>
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
-        public async ValueTask<bool> AddTaggedCollectionChangedAsync(object objTag, AsyncNotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
+        public async Task<bool> AddTaggedCollectionChangedAsync(object objTag, AsyncNotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -240,7 +240,7 @@ namespace Chummer
         /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
         /// <param name="token">CancellationToken to listen to.</param>
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
-        public async ValueTask<bool> RemoveTaggedAsyncCollectionChangedAsync(object objTag, CancellationToken token = default)
+        public async Task<bool> RemoveTaggedAsyncCollectionChangedAsync(object objTag, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -308,7 +308,7 @@ namespace Chummer
         /// <param name="funcDelegateToAdd">Delegate to add to CollectionChanged</param>
         /// <param name="token">CancellationToken to listen to.</param>
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
-        public async ValueTask<bool> AddTaggedBeforeClearCollectionChangedAsync(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
+        public async Task<bool> AddTaggedBeforeClearCollectionChangedAsync(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -365,7 +365,7 @@ namespace Chummer
         /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
         /// <param name="token">CancellationToken to listen to.</param>
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
-        public async ValueTask<bool> RemoveTaggedBeforeClearCollectionChangedAsync(object objTag, CancellationToken token = default)
+        public async Task<bool> RemoveTaggedBeforeClearCollectionChangedAsync(object objTag, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -419,7 +419,7 @@ namespace Chummer
         /// <param name="funcDelegateToAdd">Delegate to add to CollectionChanged</param>
         /// <param name="token">CancellationToken to listen to.</param>
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
-        public async ValueTask<bool> AddTaggedBeforeClearCollectionChangedAsync(object objTag, AsyncNotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
+        public async Task<bool> AddTaggedBeforeClearCollectionChangedAsync(object objTag, AsyncNotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -476,7 +476,7 @@ namespace Chummer
         /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
         /// <param name="token">CancellationToken to listen to.</param>
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
-        public async ValueTask<bool> RemoveTaggedAsyncBeforeClearCollectionChangedAsync(object objTag, CancellationToken token = default)
+        public async Task<bool> RemoveTaggedAsyncBeforeClearCollectionChangedAsync(object objTag, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try

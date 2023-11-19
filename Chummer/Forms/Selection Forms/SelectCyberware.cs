@@ -315,7 +315,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask ProcessGradeChanged(CancellationToken token = default)
+        private async Task ProcessGradeChanged(CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
@@ -471,7 +471,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoRefreshSelectedCyberware(CancellationToken token = default)
+        private async Task DoRefreshSelectedCyberware(CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
@@ -1011,7 +1011,7 @@ namespace Chummer
         /// <summary>
         /// Update the Cyberware's information based on the Cyberware selected and current Rating.
         /// </summary>
-        private async ValueTask UpdateCyberwareInfo(CancellationToken token = default)
+        private async Task UpdateCyberwareInfo(CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
@@ -1145,7 +1145,7 @@ namespace Chummer
                                                                         async () => CyberwareParent != null
                                                                             ? (await CyberwareParent.GearChildren
                                                                                 .SumParallelAsync(
-                                                                                    x => x.GetTotalCostAsync(token).AsTask(), token: token)
+                                                                                    x => x.GetTotalCostAsync(token), token: token)
                                                                                 .ConfigureAwait(false))
                                                                             .ToString(GlobalSettings.InvariantCultureInfo)
                                                                             : "0", token: token)
@@ -1390,12 +1390,12 @@ namespace Chummer
 
         private int _intSkipListRefresh;
 
-        private ValueTask<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
+        private Task<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
         {
             return RefreshList(strCategory, false, token);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory = "", CancellationToken token = default)
+        private async Task<bool> RefreshList(string strCategory = "", CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
@@ -1409,7 +1409,7 @@ namespace Chummer
                 return await RefreshList(strCategory, true, objJoinedCancellationTokenSource.Token).ConfigureAwait(false);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate,
+        private async Task<bool> RefreshList(string strCategory, bool blnDoUIUpdate,
                                                   CancellationToken token = default)
         {
             if ((_intLoading > 0 || _intSkipListRefresh > 0) && blnDoUIUpdate)
@@ -1871,7 +1871,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedId = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedId))
@@ -1972,7 +1972,7 @@ namespace Chummer
         /// <param name="strForceGrade">If not empty, force this grade to be selected.</param>
         /// <param name="blnHideBannedGrades">Whether to hide grades banned by the character's gameplay options.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private async ValueTask PopulateGrades(ICollection<string> setDisallowedGrades = null, bool blnForce = false, string strForceGrade = "", bool blnHideBannedGrades = true, CancellationToken token = default)
+        private async Task PopulateGrades(ICollection<string> setDisallowedGrades = null, bool blnForce = false, string strForceGrade = "", bool blnHideBannedGrades = true, CancellationToken token = default)
         {
             if (_blnPopulatingGrades)
                 return;
@@ -2091,7 +2091,7 @@ namespace Chummer
 
         private bool _blnPopulatingCategories;
 
-        private async ValueTask PopulateCategories(CancellationToken token = default)
+        private async Task PopulateCategories(CancellationToken token = default)
         {
             if (_blnPopulatingCategories)
                 return;

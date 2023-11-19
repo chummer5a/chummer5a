@@ -40,6 +40,6 @@ namespace Chummer
 
         Task LoadMugshotsAsync(XPathNavigator xmlSavedNode, CancellationToken token = default);
 
-        ValueTask PrintMugshots(XmlWriter objWriter, CancellationToken token = default);
+        Task PrintMugshots(XmlWriter objWriter, CancellationToken token = default);
     }
 }

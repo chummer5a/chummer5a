@@ -184,7 +184,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async ValueTask InitAsync(Stream stream, CancellationToken token = default)
+        public async Task InitAsync(Stream stream, CancellationToken token = default)
         {
             // Stream.Init(stream);
             Stream = stream;
@@ -229,7 +229,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async ValueTask NormalizeAsync(CancellationToken token = default)
+        public async Task NormalizeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked
@@ -275,7 +275,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public ValueTask DecodeAsync(uint start, uint size, uint total, CancellationToken token = default)
+        public Task DecodeAsync(uint start, uint size, uint total, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked
@@ -345,7 +345,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async ValueTask<uint> DecodeBitAsync(uint size0, int numTotalBits, CancellationToken token = default)
+        public async Task<uint> DecodeBitAsync(uint size0, int numTotalBits, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked

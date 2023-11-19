@@ -72,8 +72,7 @@ namespace Chummer
                                     (await sbdAmmoName.Append(strSpace).Append('[')
                                                       .AppendJoinAsync(',' + strSpace,
                                                                        objGear.Children.Select(
-                                                                           x => x.GetCurrentDisplayNameShortAsync()
-                                                                               .AsTask())).ConfigureAwait(false))
+                                                                           x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false))
                                         .Append(']');
                                 }
 

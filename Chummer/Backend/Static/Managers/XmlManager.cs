@@ -60,7 +60,7 @@ namespace Chummer
             /// <summary>
             /// Whether or not the XML content has been successfully checked for duplicate guids.
             /// </summary>
-            public async ValueTask<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
+            public async Task<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
@@ -69,7 +69,7 @@ namespace Chummer
                 }
             }
 
-            public async ValueTask SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
+            public async Task SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
@@ -105,7 +105,7 @@ namespace Chummer
             /// <summary>
             /// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
             /// </summary>
-            public async ValueTask<XmlDocument> GetXmlContentAsync(CancellationToken token = default)
+            public async Task<XmlDocument> GetXmlContentAsync(CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
                 while (true)
@@ -160,7 +160,7 @@ namespace Chummer
             /// <summary>
             /// Set the XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
             /// </summary>
-            public async ValueTask SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
+            public async Task SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
                 using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
@@ -215,7 +215,7 @@ namespace Chummer
             /// XmlContent, but in a form that is much faster to navigate
             /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
             /// </summary>
-            public async ValueTask<XPathDocument> GetXPathContentAsync(CancellationToken token = default)
+            public async Task<XPathDocument> GetXPathContentAsync(CancellationToken token = default)
             {
                 while (true)
                 {
@@ -330,7 +330,7 @@ namespace Chummer
             }
         }
 
-        public static async ValueTask RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
+        public static async Task RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -1071,7 +1071,7 @@ namespace Chummer
             }
         }
 
-        private static async ValueTask AppendTranslationsAsync(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
+        private static async Task AppendTranslationsAsync(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             foreach (XPathNavigator objChild in xmlTranslationListParentNode.SelectAndCacheExpression("*", token))
@@ -2245,7 +2245,7 @@ namespace Chummer
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="lstBooks">List of books.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask Verify(string strLanguage, ICollection<string> lstBooks,
+        public static async Task Verify(string strLanguage, ICollection<string> lstBooks,
                                              CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

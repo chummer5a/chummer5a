@@ -946,7 +946,7 @@ namespace Chummer
         /// <param name="objWriter">XmlWriter to use.</param>
         /// <param name="lstGear">List of Gear to write.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async ValueTask WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear, CancellationToken token = default)
+        private static async Task WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear, CancellationToken token = default)
         {
             // <gears>
             await objWriter.WriteStartElementAsync("gears", token: token).ConfigureAwait(false);

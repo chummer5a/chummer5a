@@ -111,7 +111,7 @@ namespace Chummer
             await RefreshCategories().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshCategories(CancellationToken token = default)
+        private async Task RefreshCategories(CancellationToken token = default)
         {
             // Update the list of Kits based on the selected Category.
 
@@ -953,7 +953,7 @@ namespace Chummer
             Close();
         }
 
-        private async ValueTask WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
+        private async Task WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
         {
             XPathNavigator xmlNameNode = objXmlGear.SelectSingleNodeAndCacheExpression("name");
             string strName = xmlNameNode?.Value ?? string.Empty;

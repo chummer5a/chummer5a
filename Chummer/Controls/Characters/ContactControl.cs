@@ -841,14 +841,14 @@ namespace Chummer
 
         public bool Expanded => tlpStatBlock?.DoThreadSafeFunc(x => x.Visible) == true;
 
-        public async ValueTask<bool> GetExpandedAsync(CancellationToken token = default)
+        public async Task<bool> GetExpandedAsync(CancellationToken token = default)
         {
             if (tlpStatBlock != null)
                 return await tlpStatBlock.DoThreadSafeFuncAsync(x => x.Visible, token).ConfigureAwait(false);
             return false;
         }
 
-        public async ValueTask SetExpandedAsync(bool value, CancellationToken token = default)
+        public async Task SetExpandedAsync(bool value, CancellationToken token = default)
         {
             await cmdExpand.DoThreadSafeAsync(x =>
             {
@@ -931,7 +931,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask LoadContactList(CancellationToken token = default)
+        private async Task LoadContactList(CancellationToken token = default)
         {
             if (_objContact.IsEnemy)
             {
@@ -964,18 +964,18 @@ namespace Chummer
             }, token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask DoDataBindings(CancellationToken token = default)
+        private async Task DoDataBindings(CancellationToken token = default)
         {
             await lblQuickStats.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objContact,
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
-                                                               x => x.GetQuickTextAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                                                               x => x.GetQuickTextAsync(token), token: token).ConfigureAwait(false);
             await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(Contact.Name), token).ConfigureAwait(false);
             await txtContactLocation.DoDataBindingAsync("Text", _objContact, nameof(Contact.Location), token).ConfigureAwait(false);
             await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
-                nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken).AsTask(), token).ConfigureAwait(false);
+                nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken), token).ConfigureAwait(false);
             await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.BackColor = y, _objContact,
-                    nameof(Contact.PreferredColor), x => x.GetPreferredColorAsync(_objMyToken).AsTask(), token)
+                    nameof(Contact.PreferredColor), x => x.GetPreferredColorAsync(_objMyToken), token)
                 .ConfigureAwait(false);
 
             // Properties controllable by the character themselves
@@ -993,7 +993,7 @@ namespace Chummer
         private ColorableCheckBox chkFamily;
         private ButtonWithToolTip cmdLink;
 
-        private async ValueTask CreateSecondRowAsync(CancellationToken token = default)
+        private async Task CreateSecondRowAsync(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -1115,39 +1115,39 @@ namespace Chummer
                     await chkFamily.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Family), token)
                                    .ConfigureAwait(false);
                     await chkFamily.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
-                            nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken).AsTask(), token)
+                            nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken), token)
                         .ConfigureAwait(false);
                     await chkBlackmail.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Blackmail), token)
                                       .ConfigureAwait(false);
                     await chkBlackmail.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
-                            nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken).AsTask(), token)
+                            nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken), token)
                         .ConfigureAwait(false);
                     await nudLoyalty.DoDataBindingAsync("Value", _objContact, nameof(Contact.Loyalty), token)
                                     .ConfigureAwait(false);
                     await nudConnection.DoDataBindingAsync("Value", _objContact, nameof(Contact.Connection), token)
                                        .ConfigureAwait(false);
                     await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
-                            nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken).AsTask(), token)
+                            nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken), token)
                         .ConfigureAwait(false);
                     await chkGroup.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                        nameof(Contact.GroupEnabled),
                                                                        // ReSharper disable once MethodSupportsCancellation
-                                                                       x => x.GetGroupEnabledAsync(token).AsTask(),
+                                                                       x => x.GetGroupEnabledAsync(token),
                                                                        token: token).ConfigureAwait(false);
                     await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                       nameof(Contact.FreeEnabled),
                                                                       // ReSharper disable once MethodSupportsCancellation
-                                                                      x => x.GetFreeEnabledAsync(token).AsTask(),
+                                                                      x => x.GetFreeEnabledAsync(token),
                                                                       token: token).ConfigureAwait(false);
                     await nudLoyalty.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                          nameof(Contact.LoyaltyEnabled),
                                                                          // ReSharper disable once MethodSupportsCancellation
-                                                                         x => x.GetLoyaltyEnabledAsync(token).AsTask(),
+                                                                         x => x.GetLoyaltyEnabledAsync(token),
                                                                          token: token).ConfigureAwait(false);
                     await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact,
                                                                             nameof(Contact.ConnectionMaximum),
                                                                             // ReSharper disable once MethodSupportsCancellation
-                                                                            x => x.GetConnectionMaximumAsync(token).AsTask(),
+                                                                            x => x.GetConnectionMaximumAsync(token),
                                                                             token: token).ConfigureAwait(false);
                     string strToolTipText;
                     if (_objContact.IsEnemy)
@@ -1452,7 +1452,7 @@ namespace Chummer
         /// <summary>
         /// Method to dynamically create stat block is separated out so that we only create it if the control is expanded
         /// </summary>
-        private async ValueTask CreateStatBlockAsync(CancellationToken token = default)
+        private async Task CreateStatBlockAsync(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -1964,7 +1964,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask LoadStatBlockListsAsync(CancellationToken token = default)
+        private async Task LoadStatBlockListsAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Read the list of Categories from the XML file.

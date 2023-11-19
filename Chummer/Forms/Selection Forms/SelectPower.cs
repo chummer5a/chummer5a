@@ -208,7 +208,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask BuildPowerList(CancellationToken token = default)
+        private async Task BuildPowerList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -291,7 +291,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedId = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))

@@ -40,7 +40,7 @@ namespace Chummer
             _dicPersistence.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
-        public async ValueTask<string> GetStory(string strLanguage = "", CancellationToken token = default)
+        public async Task<string> GetStory(string strLanguage = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(strLanguage))
@@ -183,7 +183,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> Macro(string innerText, XPathNavigator xmlBaseMacrosNode, CancellationToken token = default)
+        public async Task<string> Macro(string innerText, XPathNavigator xmlBaseMacrosNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(innerText))

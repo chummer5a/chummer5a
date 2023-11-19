@@ -130,7 +130,7 @@ namespace Chummer
             await cboGrade.PopulateWithListItemsAsync(_lstGrade, token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask UpdateCustomDrugStats(CancellationToken token = default)
+        private async Task UpdateCustomDrugStats(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             Drug objNewDrug = new Drug(_objCharacter)
@@ -159,7 +159,7 @@ namespace Chummer
                 await objOldDrug.DisposeAsync().ConfigureAwait(false);
         }
 
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Make sure the suite and file name fields are populated.
@@ -183,7 +183,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
         }
 
-        private async ValueTask AddSelectedComponent(CancellationToken token = default)
+        private async Task AddSelectedComponent(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!(await treAvailableComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is DrugNodeData objNodeData) || objNodeData.Level == -1)

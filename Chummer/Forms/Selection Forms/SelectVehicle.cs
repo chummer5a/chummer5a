@@ -389,7 +389,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the selected Vehicle.
         /// </summary>
-        private async ValueTask UpdateSelectedVehicle(CancellationToken token = default)
+        private async Task UpdateSelectedVehicle(CancellationToken token = default)
         {
             if (_intLoading > 0)
                 return;
@@ -493,7 +493,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the cost information for the selected Vehicle.
         /// </summary>
-        private async ValueTask UpdateSelectedVehicleCost(CancellationToken token = default)
+        private async Task UpdateSelectedVehicleCost(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -558,7 +558,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshList(CancellationToken token = default)
+        private async Task RefreshList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -610,7 +610,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask BuildVehicleList(XPathNodeIterator objXmlVehicleList, CancellationToken token = default)
+        private async Task BuildVehicleList(XPathNodeIterator objXmlVehicleList, CancellationToken token = default)
         {
             await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
             try
@@ -873,7 +873,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             XPathNavigator xmlVehicle = null;
             switch (tabViews.SelectedIndex)

@@ -1394,7 +1394,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -1500,7 +1500,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask PrintWeaponBonusEntries(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, bool blnForcePrintAllBlocks = false, CancellationToken token = default)
+        public async Task PrintWeaponBonusEntries(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, bool blnForcePrintAllBlocks = false, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -1788,7 +1788,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private async ValueTask<int> ProcessRatingStringAsync(string strExpression, CancellationToken token = default)
+        private async Task<int> ProcessRatingStringAsync(string strExpression, CancellationToken token = default)
         {
             if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
@@ -2013,7 +2013,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
@@ -2688,7 +2688,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
-        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability of the Gear and its accessories.
@@ -2701,7 +2701,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability of the Gear and its accessories.
         /// </summary>
-        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
         }
@@ -2785,7 +2785,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability as a triple.
         /// </summary>
-        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnModifyParentAvail = false;
@@ -3102,7 +3102,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the just the Gear itself before we factor in any multipliers.
         /// </summary>
-        public async ValueTask<decimal> GetOwnCostPreMultipliersAsync(CancellationToken token = default)
+        public async Task<decimal> GetOwnCostPreMultipliersAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strCostExpression = Cost;
@@ -3127,7 +3127,7 @@ namespace Chummer.Backend.Equipment
             decimal decTotalChildrenCost = 0;
             if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && strCostExpression.Contains("Children Cost"))
             {
-                decTotalChildrenCost += await Children.SumAsync(x => x.GetCalculatedCostAsync(token).AsTask(), token).ConfigureAwait(false);
+                decTotalChildrenCost += await Children.SumAsync(x => x.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
             }
 
             if (string.IsNullOrEmpty(strCostExpression))
@@ -3193,7 +3193,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal CalculatedCost => OwnCostPreMultipliers * Quantity / CostFor;
 
-        public async ValueTask<decimal> GetCalculatedCostAsync(CancellationToken token)
+        public async Task<decimal> GetCalculatedCostAsync(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             return await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity / CostFor;
@@ -3220,12 +3220,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Gear and its accessories.
         /// </summary>
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
 
             // Add in the cost of all child components.
-            decimal decPlugin = await Children.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+            decimal decPlugin = await Children.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
 
             // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
@@ -3252,16 +3252,16 @@ namespace Chummer.Backend.Equipment
             return OwnCostPreMultipliers * Quantity * intParentMultiplier / CostFor + decPlugin * Quantity;
         }
 
-        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+        public Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
 
-        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
+        public Task<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
 
-        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        public async Task<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
 
             // Add in the cost of all child components.
-            decimal decPlugin = await Children.SumAsync(x => x.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+            decimal decPlugin = await Children.SumAsync(x => x.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
             if (Stolen != blnStolen)
                 return decPlugin * Quantity;
 
@@ -3281,7 +3281,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
-        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token)
+        public async Task<decimal> GetOwnCostAsync(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             return (await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false)
@@ -3470,7 +3470,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -3534,7 +3534,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, CancellationToken token = default)
         {
             string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
@@ -3568,11 +3568,11 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token: token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token: token);
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
 
         /// <summary>
         /// Weapon Bonus Damage.
@@ -3610,7 +3610,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus Damage.
         /// </summary>
-        public async ValueTask<string> WeaponBonusDamageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> WeaponBonusDamageAsync(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (WeaponBonus == null)
@@ -3761,7 +3761,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus Damage.
         /// </summary>
-        public async ValueTask<string> FlechetteWeaponBonusDamageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> FlechetteWeaponBonusDamageAsync(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (FlechetteWeaponBonus == null)
@@ -4027,7 +4027,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnEquipped">Whether or not the Gear should be marked as Equipped.</param>
         /// <param name="blnSkipEncumbranceOnPropertyChanged">Whether we should skip notifying our character that they should re-check their encumbrance. Set to `true` if this is a batch operation and there is going to be a refresh later anyway.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask ChangeEquippedStatusAsync(bool blnEquipped,
+        public async Task ChangeEquippedStatusAsync(bool blnEquipped,
                                                          bool blnSkipEncumbranceOnPropertyChanged = false,
                                                          CancellationToken token = default)
         {
@@ -4167,7 +4167,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Toggle the Wireless Bonus for this gear.
         /// </summary>
-        public async ValueTask RefreshWirelessBonusesAsync(CancellationToken token = default)
+        public async Task RefreshWirelessBonusesAsync(CancellationToken token = default)
         {
             if (_objCharacter?.IsLoading != false)
                 return;
@@ -4368,7 +4368,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to delete a piece of Gear and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
-        public async ValueTask<decimal> DeleteGearAsync(bool blnDoRemoval = true, CancellationToken token = default)
+        public async Task<decimal> DeleteGearAsync(bool blnDoRemoval = true, CancellationToken token = default)
         {
             if (blnDoRemoval)
             {
@@ -4391,7 +4391,7 @@ namespace Chummer.Backend.Equipment
             LoadedIntoClip = null;
 
             // Remove any children the Gear may have.
-            decimal decReturn = await Children.SumAsync(x => x.DeleteGearAsync(false, token).AsTask(), token)
+            decimal decReturn = await Children.SumAsync(x => x.DeleteGearAsync(false, token), token)
                                               .ConfigureAwait(false);
 
             // Remove the Gear Weapon created by the Gear if applicable.
@@ -4534,7 +4534,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-        public async ValueTask ReaddImprovements(TreeView treGears, StringBuilder sbdOutdatedItems,
+        public async Task ReaddImprovements(TreeView treGears, StringBuilder sbdOutdatedItems,
                                                  IReadOnlyCollection<string> lstInternalIdFilter,
                                                  Improvement.ImprovementSource eSource
                                                      = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true,
@@ -4627,7 +4627,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
+        public async Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
             int intRestrictedCount = 0;
             if (!IncludedInParent)
@@ -4811,7 +4811,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="intNewRating">New rating that the focus is supposed to have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the new rating complies by focus limits or the gear is not bonded, false otherwise</returns>
-        public async ValueTask<bool> RefreshSingleFocusRating(TreeView treFoci, int intNewRating, CancellationToken token = default)
+        public async Task<bool> RefreshSingleFocusRating(TreeView treFoci, int intNewRating, CancellationToken token = default)
         {
             if (Bonded)
             {
@@ -5355,7 +5355,7 @@ namespace Chummer.Backend.Equipment
             this.RefreshMatrixAttributeArray(_objCharacter);
         }
 
-        public async ValueTask ProcessHeroLabGearPluginsAsync(XPathNavigator xmlGearImportNode, IList<Weapon> lstWeapons, CancellationToken token = default)
+        public async Task ProcessHeroLabGearPluginsAsync(XPathNavigator xmlGearImportNode, IList<Weapon> lstWeapons, CancellationToken token = default)
         {
             if (xmlGearImportNode == null)
                 return;

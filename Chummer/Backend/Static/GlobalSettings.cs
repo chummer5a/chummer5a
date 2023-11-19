@@ -870,7 +870,7 @@ namespace Chummer
 
         #region Methods
 
-        public static async ValueTask SaveOptionsToRegistry(CancellationToken token = default)
+        public static async Task SaveOptionsToRegistry(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             try
@@ -1393,7 +1393,7 @@ namespace Chummer
             }
         }
 
-        public static async ValueTask SetLanguageAsync(string value, CancellationToken token = default)
+        public static async Task SetLanguageAsync(string value, CancellationToken token = default)
         {
             if (Interlocked.Exchange(ref _strLanguage, value) == value)
                 return;
@@ -1709,7 +1709,7 @@ namespace Chummer
             }
         }
 
-        private static async ValueTask LoadSourcebookInfosAsync(CancellationToken token = default)
+        private static async Task LoadSourcebookInfosAsync(CancellationToken token = default)
         {
             if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) != 0)
                 return;

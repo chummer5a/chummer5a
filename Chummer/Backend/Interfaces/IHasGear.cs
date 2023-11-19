@@ -30,6 +30,6 @@ namespace Chummer
         TaggedObservableCollection<Gear> GearChildren { get; }
 
         //TODO: Make this dynamically update without having to validate the character.
-        ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default);
+        Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default);
     }
 }

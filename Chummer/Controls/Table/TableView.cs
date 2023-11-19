@@ -244,7 +244,7 @@ namespace Chummer.UI.Table
             Disposed += (sender, args) => DisposeAll();
         }
 
-        private async ValueTask ItemPropertyChanged(int intIndex, T objItem, string strProperty, CancellationToken token = default)
+        private async Task ItemPropertyChanged(int intIndex, T objItem, string strProperty, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -328,7 +328,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        private async ValueTask UpdateCell(TableColumn<T> column, TableCell cell, T item, CancellationToken token = default)
+        private async Task UpdateCell(TableColumn<T> column, TableCell cell, T item, CancellationToken token = default)
         {
             Func<T, Task<object>> funcExtractor = column.Extractor;
             object objNewValue = funcExtractor == null ? item : await funcExtractor(item).ConfigureAwait(false);
@@ -342,7 +342,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        private async ValueTask UpdateRow(int index, T item, CancellationToken token = default)
+        private async Task UpdateRow(int index, T item, CancellationToken token = default)
         {
             for (int i = 0; i < _columns.Count; i++)
             {
@@ -355,14 +355,14 @@ namespace Chummer.UI.Table
             }
         }
 
-        private async ValueTask<TableCell> CreateCell(T item, TableColumn<T> column, CancellationToken token = default)
+        private async Task<TableCell> CreateCell(T item, TableColumn<T> column, CancellationToken token = default)
         {
             TableCell cell = await this.DoThreadSafeFuncAsync(column.CreateCell, token: token).ConfigureAwait(false);
             await UpdateCell(column, cell, item, token).ConfigureAwait(false);
             return cell;
         }
 
-        private async ValueTask CreateCellsForColumn(int insertIndex, TableColumn<T> column, CancellationToken token = default)
+        private async Task CreateCellsForColumn(int insertIndex, TableColumn<T> column, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -469,7 +469,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        internal async ValueTask ColumnAdded(TableColumn<T> column, CancellationToken token = default)
+        internal async Task ColumnAdded(TableColumn<T> column, CancellationToken token = default)
         {
             column.MakeLive();
             int index = _columns.Count - 1;
@@ -491,7 +491,7 @@ namespace Chummer.UI.Table
             Controls.Clear();
         }
 
-        private async ValueTask DoFilter(bool performLayout = true, CancellationToken token = default)
+        private async Task DoFilter(bool performLayout = true, CancellationToken token = default)
         {
             if (Items == null)
                 return;
@@ -549,7 +549,7 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, Task<bool>> Filter => _funcFilter;
 
-        public async ValueTask SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
+        public async Task SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
         {
             Func<T, Task<bool>> objNewValue = value ?? _funcDefaultFilter;
             if (Interlocked.Exchange(ref _funcFilter, objNewValue) == objNewValue)
@@ -791,7 +791,7 @@ namespace Chummer.UI.Table
                                 {
                                     int j1 = j;
                                     TableCell cell
-                                        = Utils.SafelyRunSynchronously(() => CreateCell(value[j1], column).AsTask());
+                                        = Utils.SafelyRunSynchronously(() => CreateCell(value[j1], column));
                                     cells.Add(cell);
                                     _lstRowCells[j1].Controls.Add(cell);
                                 }
@@ -829,12 +829,12 @@ namespace Chummer.UI.Table
                             for (int i = 0; i < intLimit; i++)
                             {
                                 int i1 = i;
-                                Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]).AsTask());
+                                Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]));
                             }
                         }
 
                         Sort(false);
-                        Utils.SafelyRunSynchronously(() => DoFilter().AsTask());
+                        Utils.SafelyRunSynchronously(() => DoFilter());
                     }
                     finally
                     {

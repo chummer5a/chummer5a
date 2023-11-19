@@ -772,7 +772,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint,
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint,
                                      CancellationToken token = default)
         {
             if (objWriter == null)
@@ -882,7 +882,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetReadOnlyAsync(CancellationToken token = default)
+        public async Task<bool> GetReadOnlyAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -941,7 +941,7 @@ namespace Chummer
         /// <summary>
         /// Name of the Contact.
         /// </summary>
-        public async ValueTask<string> GetNameAsync(CancellationToken token = default)
+        public async Task<string> GetNameAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -954,7 +954,7 @@ namespace Chummer
 
         public string CurrentDisplayName => Name;
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             GetNameAsync(token);
 
         public string DisplayRoleMethod(string strLanguage)
@@ -989,7 +989,7 @@ namespace Chummer
         public Task<string> GetDisplayRoleAsync(CancellationToken token = default) =>
             DisplayRoleMethodAsync(GlobalSettings.Language, token);
 
-        public async ValueTask SetDisplayRoleAsync(string value, CancellationToken token = default)
+        public async Task SetDisplayRoleAsync(string value, CancellationToken token = default)
         {
             Role = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
                                                                   token).ConfigureAwait(false);
@@ -1059,7 +1059,7 @@ namespace Chummer
         /// <summary>
         /// Contact's Connection Rating.
         /// </summary>
-        public async ValueTask<int> GetConnectionAsync(CancellationToken token = default)
+        public async Task<int> GetConnectionAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1096,7 +1096,7 @@ namespace Chummer
         /// <summary>
         /// Contact's Loyalty Rating (or Enemy's Incidence Rating).
         /// </summary>
-        public async ValueTask<int> GetLoyaltyAsync(CancellationToken token = default)
+        public async Task<int> GetLoyaltyAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1200,7 +1200,7 @@ namespace Chummer
         public Task<string> GetDisplayMetatypeAsync(CancellationToken token = default) =>
             DisplayMetatypeMethodAsync(GlobalSettings.Language, token);
 
-        public async ValueTask SetDisplayMetatypeAsync(string value, CancellationToken token = default)
+        public async Task SetDisplayMetatypeAsync(string value, CancellationToken token = default)
         {
             Metatype = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
                                                                       token).ConfigureAwait(false);
@@ -1244,7 +1244,7 @@ namespace Chummer
         /// <summary>
         /// Metatype of this Contact.
         /// </summary>
-        public async ValueTask<string> GetMetatypeAsync(CancellationToken token = default)
+        public async Task<string> GetMetatypeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1300,7 +1300,7 @@ namespace Chummer
         public Task<string> GetDisplayGenderAsync(CancellationToken token = default) =>
             DisplayGenderMethodAsync(GlobalSettings.Language, token);
 
-        public async ValueTask SetDisplayGenderAsync(string value, CancellationToken token = default)
+        public async Task SetDisplayGenderAsync(string value, CancellationToken token = default)
         {
             Gender = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
                                                                     token).ConfigureAwait(false);
@@ -1329,7 +1329,7 @@ namespace Chummer
         /// <summary>
         /// Gender of this Contact.
         /// </summary>
-        public async ValueTask<string> GetGenderAsync(CancellationToken token = default)
+        public async Task<string> GetGenderAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1371,7 +1371,7 @@ namespace Chummer
         public Task<string> GetDisplayAgeAsync(CancellationToken token = default) =>
             DisplayAgeMethodAsync(GlobalSettings.Language, token);
 
-        public async ValueTask SetDisplayAgeAsync(string value, CancellationToken token = default)
+        public async Task SetDisplayAgeAsync(string value, CancellationToken token = default)
         {
             Age = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
                                      .ConfigureAwait(false);
@@ -1400,7 +1400,7 @@ namespace Chummer
         /// <summary>
         /// How old is this Contact.
         /// </summary>
-        public async ValueTask<string> GetAgeAsync(CancellationToken token = default)
+        public async Task<string> GetAgeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1442,7 +1442,7 @@ namespace Chummer
         public Task<string> GetDisplayTypeAsync(CancellationToken token = default) =>
             DisplayTypeMethodAsync(GlobalSettings.Language, token);
 
-        public async ValueTask SetDisplayTypeAsync(string value, CancellationToken token = default)
+        public async Task SetDisplayTypeAsync(string value, CancellationToken token = default)
         {
             Type = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
                                       .ConfigureAwait(false);
@@ -1503,7 +1503,7 @@ namespace Chummer
         public Task<string> GetDisplayPreferredPaymentAsync(CancellationToken token = default) =>
             DisplayPreferredPaymentMethodAsync(GlobalSettings.Language, token);
 
-        public async ValueTask SetDisplayPreferredPaymentAsync(string value, CancellationToken token = default)
+        public async Task SetDisplayPreferredPaymentAsync(string value, CancellationToken token = default)
         {
             PreferredPayment = await _objCharacter
                                      .ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
@@ -1564,7 +1564,7 @@ namespace Chummer
         public Task<string> GetDisplayHobbiesViceAsync(CancellationToken token = default) =>
             DisplayHobbiesViceMethodAsync(GlobalSettings.Language, token);
 
-        public async ValueTask SetDisplayHobbiesViceAsync(string value, CancellationToken token = default)
+        public async Task SetDisplayHobbiesViceAsync(string value, CancellationToken token = default)
         {
             HobbiesVice = await _objCharacter
                                 .ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
@@ -1625,7 +1625,7 @@ namespace Chummer
         public Task<string> GetDisplayPersonalLifeAsync(CancellationToken token = default) =>
             DisplayPersonalLifeMethodAsync(GlobalSettings.Language, token);
 
-        public async ValueTask SetDisplayPersonalLifeAsync(string value, CancellationToken token = default)
+        public async Task SetDisplayPersonalLifeAsync(string value, CancellationToken token = default)
         {
             PersonalLife = await _objCharacter
                                  .ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
@@ -1680,7 +1680,7 @@ namespace Chummer
         /// <summary>
         /// Is this contact a group contact?
         /// </summary>
-        public async ValueTask<bool> GetIsGroupAsync(CancellationToken token = default)
+        public async Task<bool> GetIsGroupAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1699,7 +1699,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetLoyaltyEnabledAsync(CancellationToken token = default)
+        public async Task<bool> GetLoyaltyEnabledAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1718,7 +1718,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<int> GetConnectionMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetConnectionMaximumAsync(CancellationToken token = default)
         {
             using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1740,7 +1740,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> GetQuickTextAsync(CancellationToken token = default)
+        public async Task<string> GetQuickTextAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1774,7 +1774,7 @@ namespace Chummer
         /// <summary>
         /// The Contact's type, either Contact or Enemy.
         /// </summary>
-        public async ValueTask<ContactType> GetEntityTypeAsync(CancellationToken token = default)
+        public async Task<ContactType> GetEntityTypeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1786,7 +1786,7 @@ namespace Chummer
 
         public bool IsEnemy => EntityType == ContactType.Enemy;
 
-        public async ValueTask<bool> GetIsEnemyAsync(CancellationToken token = default)
+        public async Task<bool> GetIsEnemyAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Enemy;
@@ -1925,7 +1925,7 @@ namespace Chummer
         /// <summary>
         /// Contact Color.
         /// </summary>
-        public async ValueTask<Color> GetPreferredColorAsync(CancellationToken token = default)
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1979,7 +1979,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not this is a free contact.
         /// </summary>
-        public async ValueTask<bool> GetFreeAsync(CancellationToken token = default)
+        public async Task<bool> GetFreeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -2023,7 +2023,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> GetFreeEnabledAsync(CancellationToken token = default)
+        public async Task<bool> GetFreeEnabledAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -2032,10 +2032,11 @@ namespace Chummer
                 if (_intCachedFreeFromImprovement < 0)
                 {
                     _intCachedFreeFromImprovement = ((await ImprovementManager
-                                                            .GetCachedImprovementListForValueOfAsync(
-                                                                CharacterObject,
-                                                                Improvement.ImprovementType.ContactMakeFree,
-                                                                UniqueId, token: token).ConfigureAwait(false)).Count
+                                                         .GetCachedImprovementListForValueOfAsync(
+                                                             CharacterObject,
+                                                             Improvement.ImprovementType.ContactMakeFree,
+                                                             await GetUniqueIdAsync(token).ConfigureAwait(false),
+                                                             token: token).ConfigureAwait(false)).Count
                                                      > 0)
                         .ToInt32();
                 }
@@ -2072,11 +2073,11 @@ namespace Chummer
                     if (_intCachedGroupEnabled < 0)
                     {
                         _intCachedGroupEnabled = (!ReadOnly && ImprovementManager
-                                                               .GetCachedImprovementListForValueOf(
-                                                                   CharacterObject,
-                                                                   Improvement.ImprovementType.ContactForceGroup,
-                                                                   UniqueId)
-                                                               .Count == 0).ToInt32();
+                            .GetCachedImprovementListForValueOf(
+                                CharacterObject,
+                                Improvement.ImprovementType.ContactForceGroup,
+                                UniqueId)
+                            .Count == 0).ToInt32();
                     }
 
                     return _intCachedGroupEnabled > 0;
@@ -2087,7 +2088,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not the contact's group status can be modified through the UI
         /// </summary>
-        public async ValueTask<bool> GetGroupEnabledAsync(CancellationToken token = default)
+        public async Task<bool> GetGroupEnabledAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -2096,10 +2097,11 @@ namespace Chummer
                 if (_intCachedGroupEnabled < 0)
                 {
                     _intCachedGroupEnabled = (!ReadOnly && (await ImprovementManager
-                                                                  .GetCachedImprovementListForValueOfAsync(
-                                                                      CharacterObject,
-                                                                      Improvement.ImprovementType.ContactForceGroup,
-                                                                      UniqueId, token: token).ConfigureAwait(false))
+                            .GetCachedImprovementListForValueOfAsync(
+                                CharacterObject,
+                                Improvement.ImprovementType.ContactForceGroup,
+                                await GetUniqueIdAsync(token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false))
                         .Count
                         == 0).ToInt32();
                 }
@@ -2175,7 +2177,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<int> GetForcedLoyaltyAsync(CancellationToken token = default)
+        public async Task<int> GetForcedLoyaltyAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -2713,7 +2715,7 @@ namespace Chummer
                     {
                         int iLocal = i;
                         atskMugshotImages[i]
-                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token).AsTask(), token);
+                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token), token);
                     }
                     await _lstMugshots.AddRangeAsync(await Task.WhenAll(atskMugshotImages).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
@@ -2728,7 +2730,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask PrintMugshots(XmlWriter objWriter, CancellationToken token = default)
+        public async Task PrintMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;

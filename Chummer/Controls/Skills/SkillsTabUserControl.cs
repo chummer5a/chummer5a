@@ -81,7 +81,7 @@ namespace Chummer.UI.Skills
             lblKnowledgeSkillPoints.Text = strText;
         }
 
-        private async ValueTask UpdateKnoSkillRemainingAsync(CancellationToken token = default)
+        private async Task UpdateKnoSkillRemainingAsync(CancellationToken token = default)
         {
             SkillsSection objSkillSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
             string strText =
@@ -139,7 +139,7 @@ namespace Chummer.UI.Skills
 
         public Character CachedCharacter { get; set; }
 
-        public async ValueTask RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
+        public async Task RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
         {
             if (CachedCharacter != null)
             {
@@ -375,14 +375,14 @@ namespace Chummer.UI.Skills
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken).AsTask(), objMyToken)
+                                    objMyToken), objMyToken)
                         .ConfigureAwait(false);
                     await lblActiveSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                             nameof(Character
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken).AsTask(), objMyToken)
+                                    objMyToken), objMyToken)
                         .ConfigureAwait(false);
                     await lblBuyWithKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
                             _objCharacter,
@@ -390,19 +390,19 @@ namespace Chummer.UI.Skills
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken).AsTask(), objMyToken)
+                                    objMyToken), objMyToken)
                         .ConfigureAwait(false);
 
                     await lblKnoSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
                         _objCharacter.SkillsSection,
                         nameof(SkillsSection.HasKnowledgePoints),
                         x => x.GetHasKnowledgePointsAsync(objMyToken)
-                            .AsTask(),
+                            ,
                         objMyToken).ConfigureAwait(false);
                     await lblKnoBwk.RegisterOneWayAsyncDataBindingAsync(
                         (x, y) => x.Visible = y, _objCharacter.SkillsSection,
                         nameof(SkillsSection.HasKnowledgePoints),
-                        x => x.GetHasKnowledgePointsAsync(objMyToken).AsTask(),
+                        x => x.GetHasKnowledgePointsAsync(objMyToken),
                         objMyToken).ConfigureAwait(false);
                     await UpdateKnoSkillRemainingAsync(objMyToken).ConfigureAwait(false);
                 }
@@ -539,7 +539,7 @@ namespace Chummer.UI.Skills
                 || e.ListChangedType == ListChangedType.ItemDeleted)
             {
                 RefreshSkillLabels();
-                // Special, hacky fix to force skill group displays to refresh when skill lists could change (e.g., because skill groups can end up getting
+                // Special, hacky fix to force skill group displays to refresh when skill lists could change (e.g, because skill groups can end up getting
                 // added before their skills do through said skills' constructors and how they are used, making them not show up in the UI initially)
                 if (e.ListChangedType == ListChangedType.Reset || e.ListChangedType == ListChangedType.ItemDeleted)
                 {

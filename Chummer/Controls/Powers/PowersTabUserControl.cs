@@ -101,7 +101,7 @@ namespace Chummer.UI.Powers
             }
         }
 
-        public async ValueTask RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
+        public async Task RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
         {
             if (CachedCharacter != null)
             {
@@ -191,7 +191,7 @@ namespace Chummer.UI.Powers
                 }, token: token).ConfigureAwait(false);
                 await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
                     nameof(Character.DisplayPowerPointsRemaining),
-                    x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
+                    x => x.GetDisplayPowerPointsRemainingAsync(MyToken),
                     MyToken).ConfigureAwait(false);
             }
             finally
@@ -448,7 +448,7 @@ namespace Chummer.UI.Powers
         /// <summary>
         /// Calculate the number of Adept Power Points used.
         /// </summary>
-        public async ValueTask CalculatePowerPoints(CancellationToken token = default)
+        public async Task CalculatePowerPoints(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try

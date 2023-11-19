@@ -81,7 +81,7 @@ namespace Chummer
             return objReturn;
         }
 
-        public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
+        public async Task<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
         {
             LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this, token).ConfigureAwait(false);
             objReturn.SetEnumerator(_dicData.GetEnumerator());
@@ -95,7 +95,7 @@ namespace Chummer
                 _dicData.Add(item.Key, item.Value);
         }
 
-        public async ValueTask AddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        public async Task AddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -109,7 +109,7 @@ namespace Chummer
             }
         }
 
-        public ValueTask AddAsync(object key, object value, CancellationToken token = default)
+        public Task AddAsync(object key, object value, CancellationToken token = default)
         {
             return AddAsync((TKey)key, (TValue)value, token);
         }
@@ -122,7 +122,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
-        public async ValueTask ClearAsync(CancellationToken token = default)
+        public async Task ClearAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -143,7 +143,7 @@ namespace Chummer
                 return _dicData.Contains(item);
         }
 
-        public async ValueTask<bool> ContainsAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        public async Task<bool> ContainsAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -179,7 +179,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
-        public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int index, CancellationToken token = default)
+        public async Task CopyToAsync(KeyValuePair<TKey, TValue>[] array, int index, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -193,7 +193,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
-        public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
+        public async Task CopyToAsync(Array array, int index, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -223,7 +223,7 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public async ValueTask<Tuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
+        public async Task<Tuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -259,7 +259,7 @@ namespace Chummer
                 : new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
         }
 
-        public async ValueTask<KeyValuePair<TKey, TValue>[]> ToArrayAsync(CancellationToken token = default)
+        public async Task<KeyValuePair<TKey, TValue>[]> ToArrayAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -300,7 +300,7 @@ namespace Chummer
                 return _dicData.Remove(key);
         }
 
-        public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -324,7 +324,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<bool> RemoveAsync(TKey key, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(TKey key, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -338,7 +338,7 @@ namespace Chummer
             }
         }
 
-        public ValueTask<bool> RemoveAsync(object key, CancellationToken token = default)
+        public Task<bool> RemoveAsync(object key, CancellationToken token = default)
         {
             return RemoveAsync((TKey)key, token);
         }
@@ -354,7 +354,7 @@ namespace Chummer
                 return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
         }
 
-        public async ValueTask<Tuple<bool, TValue>> TryRemoveAsync(TKey key, CancellationToken token = default)
+        public async Task<Tuple<bool, TValue>> TryRemoveAsync(TKey key, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -421,7 +421,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<int> GetCountAsync(CancellationToken token = default)
+        public async Task<int> GetCountAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -447,7 +447,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.ContainsKey" />
-        public async ValueTask<bool> ContainsKeyAsync(TKey key, CancellationToken token = default)
+        public async Task<bool> ContainsKeyAsync(TKey key, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -464,7 +464,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Dictionary{TKey, TValue}.ContainsValue" />
-        public async ValueTask<bool> ContainsValueAsync(TValue value, CancellationToken token = default)
+        public async Task<bool> ContainsValueAsync(TValue value, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -480,7 +480,7 @@ namespace Chummer
                 _dicData.Add(key, value);
         }
 
-        public async ValueTask AddAsync(TKey key, TValue value, CancellationToken token = default)
+        public async Task AddAsync(TKey key, TValue value, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -510,7 +510,7 @@ namespace Chummer
             return true;
         }
 
-        public async ValueTask<bool> TryAddAsync(TKey key, TValue value, CancellationToken token = default)
+        public async Task<bool> TryAddAsync(TKey key, TValue value, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -539,7 +539,7 @@ namespace Chummer
             return TryAdd(item.Key, item.Value);
         }
 
-        public ValueTask<bool> TryAddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        public Task<bool> TryAddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             return TryAddAsync(item.Key, item.Value, token);
         }
@@ -560,7 +560,7 @@ namespace Chummer
             return true;
         }
 
-        public async ValueTask<bool> TryUpdateAsync(TKey key, TValue value, CancellationToken token = default)
+        public async Task<bool> TryUpdateAsync(TKey key, TValue value, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -588,7 +588,7 @@ namespace Chummer
             return TryUpdate(item.Key, item.Value);
         }
 
-        public ValueTask<bool> TryUpdateAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        public Task<bool> TryUpdateAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             return TryUpdateAsync(item.Key, item.Value, token);
         }
@@ -647,7 +647,7 @@ namespace Chummer
         /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public async ValueTask<TValue> GetOrAddAsync(TKey key, Func<TKey, TValue> addValueFactory, CancellationToken token = default)
+        public async Task<TValue> GetOrAddAsync(TKey key, Func<TKey, TValue> addValueFactory, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -678,7 +678,7 @@ namespace Chummer
         /// <param name="addValue">The value to be added for an absent key</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public async ValueTask<TValue> GetOrAddAsync(TKey key, TValue addValue, CancellationToken token = default)
+        public async Task<TValue> GetOrAddAsync(TKey key, TValue addValue, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -708,7 +708,7 @@ namespace Chummer
         /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public async ValueTask<TValue> GetOrAddAsync(TKey key, Func<TKey, Task<TValue>> addValueFactory, CancellationToken token = default)
+        public async Task<TValue> GetOrAddAsync(TKey key, Func<TKey, Task<TValue>> addValueFactory, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -739,7 +739,7 @@ namespace Chummer
         /// <param name="addValue">The value to be added for an absent key</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public async ValueTask<TValue> GetOrAddAsync(TKey key, Task<TValue> addValue, CancellationToken token = default)
+        public async Task<TValue> GetOrAddAsync(TKey key, Task<TValue> addValue, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -798,7 +798,7 @@ namespace Chummer
         /// <param name="addValueFactory">The function used to generate a value for an absent key. Should be an expensive function. If it isn't, use GetOrAdd instead.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public async ValueTask<TValue> GetOrCheapAddAsync(TKey key, Func<TKey, TValue> addValueFactory, CancellationToken token = default)
+        public async Task<TValue> GetOrCheapAddAsync(TKey key, Func<TKey, TValue> addValueFactory, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -831,7 +831,7 @@ namespace Chummer
         /// <param name="addValueFactory">The function used to generate a value for an absent key. Should be an expensive function. If it isn't, use GetOrAdd instead.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public async ValueTask<TValue> GetOrCheapAddAsync(TKey key, Func<TKey, Task<TValue>> addValueFactory, CancellationToken token = default)
+        public async Task<TValue> GetOrCheapAddAsync(TKey key, Func<TKey, Task<TValue>> addValueFactory, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -933,7 +933,7 @@ namespace Chummer
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, Func<TKey, TValue> addValueFactory,
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Func<TKey, TValue> addValueFactory,
                                                         Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
@@ -987,7 +987,7 @@ namespace Chummer
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
+        public async Task<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             IAsyncDisposable objLocker;
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -1037,7 +1037,7 @@ namespace Chummer
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, Func<TKey, Task<TValue>> addValueFactory,
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Func<TKey, Task<TValue>> addValueFactory,
                                                         Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
@@ -1090,7 +1090,7 @@ namespace Chummer
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, Task<TValue> addValue, Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Task<TValue> addValue, Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
             IAsyncDisposable objLocker;
@@ -1142,7 +1142,7 @@ namespace Chummer
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, Func<TKey, TValue> addValueFactory,
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Func<TKey, TValue> addValueFactory,
                                                         Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
@@ -1195,7 +1195,7 @@ namespace Chummer
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
+        public async Task<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
             IAsyncDisposable objLocker;
@@ -1246,7 +1246,7 @@ namespace Chummer
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, Func<TKey, Task<TValue>> addValueFactory,
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Func<TKey, Task<TValue>> addValueFactory,
                                                         Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
@@ -1299,7 +1299,7 @@ namespace Chummer
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, Task<TValue> addValue, Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Task<TValue> addValue, Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
             IAsyncDisposable objLocker;
@@ -1355,7 +1355,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
-        public async ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
+        public async Task<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1394,7 +1394,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<TValue> GetValueAtAsync(TKey key, CancellationToken token = default)
+        public async Task<TValue> GetValueAtAsync(TKey key, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1403,7 +1403,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetValueAtAsync(TKey key, TValue value, CancellationToken token = default)
+        public async Task SetValueAtAsync(TKey key, TValue value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1456,7 +1456,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<ICollection<TKey>> GetKeysAsync(CancellationToken token = default)
+        public async Task<ICollection<TKey>> GetKeysAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1465,7 +1465,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default)
+        public async Task<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1498,7 +1498,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<ICollection<TValue>> GetValuesAsync(CancellationToken token = default)
+        public async Task<ICollection<TValue>> GetValuesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1507,7 +1507,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default)
+        public async Task<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {

@@ -25,7 +25,7 @@ namespace Chummer
     public static class CancellationTokenExtensions
     {
         /// <summary>
-        /// Returns a cancellation token in task form, i.e., as a task that runs forever until the cancellation token is fired.
+        /// Returns a cancellation token in task form, i.e, as a task that runs forever until the cancellation token is fired.
         /// </summary>
         public static Task AsTask(this CancellationToken token)
         {
