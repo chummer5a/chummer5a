@@ -7064,6 +7064,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Format in which nuyen values should be displayed (does not include nuyen symbol).
+        /// </summary>
+        public async ValueTask<string> GetNuyenFormatAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNuyenFormat;
+            }
+        }
+
+        /// <summary>
         /// Format in which weight values should be displayed (does not include kg units).
         /// </summary>
         public string WeightFormat
@@ -7080,6 +7093,19 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _strWeightFormat, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Format in which weight values should be displayed (does not include kg units).
+        /// </summary>
+        public async ValueTask<string> GetWeightFormatAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strWeightFormat;
             }
         }
 
@@ -7163,6 +7189,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The XPath expression to use to determine the maximum weight the character can lift in kg
+        /// </summary>
+        public async ValueTask<string> GetLiftLimitExpressionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strLiftLimitExpression;
+            }
+        }
+
+        /// <summary>
         /// The XPath expression to use to determine the maximum weight the character can carry in kg
         /// </summary>
         public string CarryLimitExpression
@@ -7185,6 +7224,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The XPath expression to use to determine the maximum weight the character can lift in kg
+        /// </summary>
+        public async ValueTask<string> GetCarryLimitExpressionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strCarryLimitExpression;
+            }
+        }
+
+        /// <summary>
         /// The XPath expression to use to determine the amount of weight necessary to increase encumbrance penalties by one tick
         /// </summary>
         public string EncumbranceIntervalExpression
@@ -7203,6 +7255,19 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the amount of weight necessary to increase encumbrance penalties by one tick
+        /// </summary>
+        public async ValueTask<string> GetEncumbranceIntervalExpressionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strEncumbranceIntervalExpression;
             }
         }
 
@@ -8351,6 +8416,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether to use the rules from SR4 to calculate Public Awareness.
+        /// </summary>
+        public async ValueTask<bool> GetUseCalculatedPublicAwarenessAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnUseCalculatedPublicAwareness;
+            }
+        }
+
+        /// <summary>
         /// Whether Martial Arts grant a free specialization in a skill.
         /// </summary>
         public bool FreeMartialArtSpecialization
@@ -8627,6 +8705,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of initiative dice
+        /// </summary>
+        public async ValueTask<int> GetMinInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMinInitiativeDice;
+            }
+        }
+
+        /// <summary>
         /// Maximum number of initiative dice
         /// </summary>
         public int MaxInitiativeDice
@@ -8643,6 +8734,19 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _intMaxInitiativeDice, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice
+        /// </summary>
+        public async ValueTask<int> GetMaxInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMaxInitiativeDice;
             }
         }
 
@@ -8667,6 +8771,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of initiative dice in Astral
+        /// </summary>
+        public async ValueTask<int> GetMinAstralInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMinAstralInitiativeDice;
+            }
+        }
+
+        /// <summary>
         /// Maximum number of initiative dice in Astral
         /// </summary>
         public int MaxAstralInitiativeDice
@@ -8683,6 +8800,19 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _intMaxAstralInitiativeDice, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in Astral
+        /// </summary>
+        public async ValueTask<int> GetMaxAstralInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMaxAstralInitiativeDice;
             }
         }
 
@@ -8707,6 +8837,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of initiative dice in cold sim VR
+        /// </summary>
+        public async ValueTask<int> GetMinColdSimInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMinColdSimInitiativeDice;
+            }
+        }
+
+        /// <summary>
         /// Maximum number of initiative dice in cold sim VR
         /// </summary>
         public int MaxColdSimInitiativeDice
@@ -8723,6 +8866,19 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _intMaxColdSimInitiativeDice, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in cold sim VR
+        /// </summary>
+        public async ValueTask<int> GetMaxColdSimInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMaxColdSimInitiativeDice;
             }
         }
 
@@ -8747,6 +8903,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of initiative dice in hot sim VR
+        /// </summary>
+        public async ValueTask<int> GetMinHotSimInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMinHotSimInitiativeDice;
+            }
+        }
+
+        /// <summary>
         /// Maximum number of initiative dice in hot sim VR
         /// </summary>
         public int MaxHotSimInitiativeDice
@@ -8763,6 +8932,19 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _intMaxHotSimInitiativeDice, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in hot sim VR
+        /// </summary>
+        public async ValueTask<int> GetMaxHotSimInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMaxHotSimInitiativeDice;
             }
         }
 

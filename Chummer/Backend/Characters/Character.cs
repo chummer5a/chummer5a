@@ -16281,6 +16281,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Street Cred.
+        /// </summary>
+        public async ValueTask<int> GetStreetCredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intStreetCred;
+            }
+        }
+
+        /// <summary>
         /// Burnt Street Cred.
         /// </summary>
         public int BurntStreetCred
@@ -16298,6 +16311,19 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Burnt Street Cred.
+        /// </summary>
+        public async ValueTask<int> GetBurntStreetCredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intBurntStreetCred;
             }
         }
 
@@ -16324,6 +16350,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Notoriety.
+        /// </summary>
+        public async ValueTask<int> GetNotorietyAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intNotoriety;
+            }
+        }
+
+        /// <summary>
         /// Public Awareness.
         /// </summary>
         public int PublicAwareness
@@ -16342,6 +16381,19 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Public Awareness.
+        /// </summary>
+        public async ValueTask<int> GetPublicAwarenessAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intPublicAwareness;
             }
         }
 
@@ -16505,6 +16557,39 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Tooltip to use for Astral Reputation total.
+        /// </summary>
+        public async ValueTask<string> GetAstralReputationTooltipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                       out StringBuilder sbdReturn))
+            {
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(
+                        (await GetAstralReputationAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                            .CultureInfo));
+
+                    foreach (Improvement objImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(this,
+                                     Improvement.ImprovementType.AstralReputation, token: token)
+                                 .ConfigureAwait(false))
+                    {
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false))
+                            .Append(strSpace).Append('(')
+                            .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+                }
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
         /// Astral Reputation (SG 207).
         /// </summary>
         public int TotalAstralReputation
@@ -16517,6 +16602,24 @@ namespace Chummer
                         AstralReputation + ImprovementManager
                                            .ValueOf(this, Improvement.ImprovementType.AstralReputation)
                                            .StandardRound());
+            }
+        }
+
+        /// <summary>
+        /// Astral Reputation (SG 207).
+        /// </summary>
+        public async ValueTask<int> GetTotalAstralReputationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return Math.Max(
+                    0,
+                    await GetAstralReputationAsync(token).ConfigureAwait(false) +
+                    (await ImprovementManager
+                        .ValueOfAsync(this, Improvement.ImprovementType.AstralReputation, token: token)
+                        .ConfigureAwait(false)).StandardRound());
             }
         }
 
@@ -16538,6 +16641,19 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Points of Astral Reputation that have added or removed manually (latter usually by burning Wild Reputation).
+        /// </summary>
+        public async ValueTask<int> GetAstralReputationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intBaseAstralReputation;
             }
         }
 
@@ -16572,6 +16688,38 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Tooltip to use for Wild Reputation total.
+        /// </summary>
+        public async ValueTask<string> GetWildReputationTooltipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                       out StringBuilder sbdReturn))
+            {
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append((await GetWildReputationAsync(token).ConfigureAwait(false))
+                        .ToString(GlobalSettings.CultureInfo).ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(this,
+                                     Improvement.ImprovementType.AstralReputationWild, token: token)
+                                 .ConfigureAwait(false))
+                    {
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false))
+                            .Append(strSpace).Append('(')
+                            .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+                }
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
         /// Total Reputation with Wild Spirits (FA 175).
         /// </summary>
         public int TotalWildReputation
@@ -16583,6 +16731,22 @@ namespace Chummer
                                     WildReputation
                                     + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild)
                                                         .StandardRound());
+            }
+        }
+
+        /// <summary>
+        /// Total Reputation with Wild Spirits (FA 175).
+        /// </summary>
+        public async ValueTask<int> GetTotalWildReputationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return Math.Max(0,
+                    await GetWildReputationAsync(token).ConfigureAwait(false) + (await ImprovementManager
+                        .ValueOfAsync(this, Improvement.ImprovementType.AstralReputationWild, token: token)
+                        .ConfigureAwait(false)).StandardRound());
             }
         }
 
@@ -16604,6 +16768,19 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Points of Astral Reputation that have added or removed manually (latter usually by burning Wild Reputation).
+        /// </summary>
+        public async ValueTask<int> GetWildReputationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intBaseWildReputation;
             }
         }
 
@@ -16856,7 +17033,7 @@ namespace Chummer
             {
                 if (Interlocked.Exchange(ref _intContactPointsUsed, value) == value)
                     return;
-                OnPropertyChanged();
+                await OnPropertyChangedAsync(nameof(ContactPointsUsed), token);
             }
         }
 
@@ -16869,6 +17046,19 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return BaseCarryLimit + CurrentLiftCarryHits * 10m;
+            }
+        }
+
+        /// <summary>
+        /// Lift limit (in kg) with added Lift and Carry hits.
+        /// </summary>
+        public async ValueTask<decimal> GetCarryLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetBaseCarryLimitAsync(token) + await GetCurrentLiftCarryHitsAsync(token) * 10m;
             }
         }
 
@@ -16911,6 +17101,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Carry limit (in kg) without added Lift and Carry hits.
+        /// </summary>
+        public async ValueTask<decimal> GetBaseCarryLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decReturn = _decCachedBaseCarryLimit;
+                if (decReturn != decimal.MinValue)
+                    return decReturn;
+                string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
+                    .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
+                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        await (await GetAttributeSectionAsync(token).ConfigureAwait(false))
+                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token)
+                                .ConfigureAwait(false);
+                        return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                    }
+                }
+                else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                             out decReturn))
+                {
+                    return _decCachedBaseCarryLimit = decReturn;
+                }
+
+                return _decCachedBaseCarryLimit = 0;
+            }
+        }
+
+        /// <summary>
         /// Lift limit (in kg) with added Lift and Carry hits.
         /// </summary>
         public decimal LiftLimit
@@ -16919,6 +17148,19 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return BaseLiftLimit + CurrentLiftCarryHits * 10m;
+            }
+        }
+
+        /// <summary>
+        /// Lift limit (in kg) with added Lift and Carry hits.
+        /// </summary>
+        public async ValueTask<decimal> GetLiftLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetBaseLiftLimitAsync(token) + await GetCurrentLiftCarryHitsAsync(token) * 10m;
             }
         }
 
@@ -16957,6 +17199,45 @@ namespace Chummer
 
                     return _decCachedBaseLiftLimit = 0;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Carry limit (in kg) without added Lift and Carry hits.
+        /// </summary>
+        public async ValueTask<decimal> GetBaseLiftLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decReturn = _decCachedBaseLiftLimit;
+                if (decReturn != decimal.MinValue)
+                    return decReturn;
+                string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
+                    .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
+                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        await (await GetAttributeSectionAsync(token).ConfigureAwait(false))
+                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token)
+                                .ConfigureAwait(false);
+                        return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                    }
+                }
+                else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                             out decReturn))
+                {
+                    return _decCachedBaseLiftLimit = decReturn;
+                }
+
+                return _decCachedBaseLiftLimit = 0;
             }
         }
 
@@ -17334,7 +17615,7 @@ namespace Chummer
                         && !objEntry.Refund)
                         return objEntry.Amount.StandardRound();
                     return 0;
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
             }
         }
 
@@ -17389,7 +17670,7 @@ namespace Chummer
                         && !objEntry.Refund)
                         return objEntry.Amount;
                     return 0;
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
             }
         }
 
@@ -21694,14 +21975,10 @@ namespace Chummer
         /// <summary>
         /// Physical Initiative.
         /// </summary>
-        public string Initiative
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return GetInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
-            }
-        }
+        public string Initiative => GetInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        public ValueTask<string> GetInitiativeAsync(CancellationToken token = default) =>
+            GetInitiativeAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public string GetInitiative(CultureInfo objCulture, string strLanguage)
         {
@@ -21711,14 +21988,26 @@ namespace Chummer
                                      InitiativeDice.ToString(objCulture));
         }
 
+        public async ValueTask<string> GetInitiativeAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return string.Format(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
+                    (await GetInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                    (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture));
+            }
+        }
+
         public string InitiativeToolTip
         {
             get
             {
                 using (LockObject.EnterReadLock())
                 {
-                    int intINTAttributeModifiers = INT.AttributeModifiers;
                     int intREAAttributeModifiers = REA.AttributeModifiers;
+                    int intINTAttributeModifiers = INT.AttributeModifiers;
                     string strSpace = LanguageManager.GetString("String_Space");
 
                     string strInit = REA.DisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalSettings.CultureInfo)
@@ -21738,6 +22027,47 @@ namespace Chummer
                     return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
                                          strInit, InitiativeDice.ToString(GlobalSettings.CultureInfo));
                 }
+            }
+        }
+
+        public async ValueTask<string> GetInitiativeToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objRea = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
+                CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                int intREAAttributeModifiers = await objRea.GetAttributeModifiersAsync(token).ConfigureAwait(false);
+                int intINTAttributeModifiers = await objInt.GetAttributeModifiersAsync(token).ConfigureAwait(false);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                    .ConfigureAwait(false);
+                string strInit =
+                    await objRea.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) +
+                    strSpace + '(' +
+                    (await objRea.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
+                    ')' + strSpace + '+' + strSpace +
+                    await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) +
+                    strSpace + '(' +
+                    (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
+                    ')';
+                decimal decFromImprovements = await ImprovementManager
+                    .ValueOfAsync(this, Improvement.ImprovementType.Initiative, token: token).ConfigureAwait(false);
+                int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
+                if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 ||
+                    intWoundModifier != 0)
+                {
+                    strInit += strSpace + '+' + strSpace +
+                               await LanguageManager.GetStringAsync("Tip_Modifiers", token: token)
+                                   .ConfigureAwait(false) + strSpace + '(' +
+                               (decFromImprovements + intINTAttributeModifiers + intREAAttributeModifiers +
+                                intWoundModifier)
+                               .ToString(GlobalSettings.CultureInfo) + ')';
+                }
+
+                return string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false),
+                    strInit, (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
             }
         }
 
@@ -21762,6 +22092,28 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Initiative Dice.
+        /// </summary>
+        public async ValueTask<int> GetInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intExtraIP = _intInitiativeDice +
+                                 (await ImprovementManager.ValueOfAsync(this,
+                                     Improvement.ImprovementType.InitiativeDice, token: token).ConfigureAwait(false))
+                                 .StandardRound() +
+                                 (await ImprovementManager.ValueOfAsync(this,
+                                     Improvement.ImprovementType.InitiativeDiceAdd, token: token).ConfigureAwait(false))
+                                 .StandardRound();
+                return Math.Min(intExtraIP,
+                    await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMaxInitiativeDiceAsync(token)
+                        .ConfigureAwait(false));
+            }
+        }
+
         [HubTag]
         public int InitiativeValue
         {
@@ -21775,12 +22127,37 @@ namespace Chummer
                         return 0;
                     }
 
-                    int intINI = INT.TotalValue + REA.TotalValue + WoundModifier;
-                    intINI += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative).StandardRound();
-                    if (intINI < 0)
-                        intINI = 0;
-                    return intINI;
+                    int intINI = INT.TotalValue + REA.TotalValue + WoundModifier + ImprovementManager
+                        .ValueOf(this, Improvement.ImprovementType.Initiative).StandardRound();
+                    return Math.Max(intINI, 0);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Initiative Dice.
+        /// </summary>
+        public async ValueTask<int> GetInitiativeValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objRea = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
+                CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                if (objInt == null || objRea == null)
+                {
+                    Utils.BreakIfDebug();
+                    return 0;
+                }
+
+                int intINI = await objInt.GetTotalValueAsync(token).ConfigureAwait(false) +
+                             await objRea.GetTotalValueAsync(token).ConfigureAwait(false) +
+                             await GetWoundModifierAsync(token).ConfigureAwait(false) + (await ImprovementManager
+                                 .ValueOfAsync(this, Improvement.ImprovementType.Initiative, token: token)
+                                 .ConfigureAwait(false))
+                             .StandardRound();
+                return Math.Max(intINI, 0);
             }
         }
 
@@ -21791,14 +22168,10 @@ namespace Chummer
         /// <summary>
         /// Astral Initiative.
         /// </summary>
-        public string AstralInitiative
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return GetAstralInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
-            }
-        }
+        public string AstralInitiative => GetAstralInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        public ValueTask<string> GetAstralInitiativeAsync(CancellationToken token = default) =>
+            GetAstralInitiativeAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
@@ -21806,6 +22179,18 @@ namespace Chummer
                 return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
                                      AstralInitiativeValue.ToString(objCulture),
                                      AstralInitiativeDice.ToString(objCulture));
+        }
+
+        public async ValueTask<string> GetAstralInitiativeAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return string.Format(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
+                    (await GetAstralInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                    (await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture));
+            }
         }
 
         public string AstralInitiativeToolTip
@@ -21830,6 +22215,39 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetAstralInitiativeToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                int intINTAttributeModifiers = await objInt.GetAttributeModifiersAsync(token).ConfigureAwait(false);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                    .ConfigureAwait(false);
+                string strInit =
+                    await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) +
+                    strSpace + '(' +
+                    (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
+                    ')' + strSpace + '×' + strSpace + 2.ToString(GlobalSettings.CultureInfo);
+                
+                int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
+                if (intINTAttributeModifiers != 0 || intWoundModifier != 0)
+                {
+                    strInit += strSpace + '+' + strSpace +
+                               await LanguageManager.GetStringAsync("Tip_Modifiers", token: token)
+                                   .ConfigureAwait(false) + strSpace + '(' +
+                               (intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                }
+
+                return string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false),
+                    strInit,
+                    (await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                        .CultureInfo));
+            }
+        }
+
         /// <summary>
         /// Astral Initiative Value.
         /// </summary>
@@ -21843,6 +22261,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Astral Initiative Value.
+        /// </summary>
+        public async ValueTask<int> GetAstralInitiativeValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) * 2 +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Astral Initiative Dice.
         /// </summary>
         public int AstralInitiativeDice
@@ -21850,10 +22283,22 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                {
-                    int intReturn = Settings.MinAstralInitiativeDice;
-                    return Math.Min(intReturn, Settings.MaxAstralInitiativeDice);
-                }
+                    return Math.Min(Settings.MinAstralInitiativeDice, Settings.MaxAstralInitiativeDice);
+            }
+        }
+
+        /// <summary>
+        /// Astral Initiative Dice.
+        /// </summary>
+        public async ValueTask<int> GetAstralInitiativeDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                return Math.Min(await objSettings.GetMinAstralInitiativeDiceAsync(token).ConfigureAwait(false),
+                    await objSettings.GetMaxAstralInitiativeDiceAsync(token).ConfigureAwait(false));
             }
         }
 
@@ -21866,20 +22311,34 @@ namespace Chummer
         /// <summary>
         /// Formatted AR Matrix Initiative.
         /// </summary>
-        public string MatrixInitiative
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return GetMatrixInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
-            }
-        }
+        public string MatrixInitiative => GetMatrixInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Formatted AR Matrix Initiative.
+        /// </summary>
+        public ValueTask<string> GetMatrixInitiativeAsync(CancellationToken token = default) =>
+            GetMatrixInitiativeAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
             using (LockObject.EnterReadLock())
                 return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
                                      MatrixInitiativeValue, MatrixInitiativeDice);
+        }
+
+        public async ValueTask<string> GetMatrixInitiativeAsync(CultureInfo objCulture, string strLanguageToPrint,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return string.Format(objCulture,
+                    await LanguageManager.GetStringAsync("String_Initiative", strLanguageToPrint, token: token)
+                        .ConfigureAwait(false),
+                    await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false),
+                    await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
+            }
         }
 
         public string MatrixInitiativeToolTip
@@ -21945,6 +22404,59 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetMatrixInitiativeToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                int intINTAttributeModifiers = await objInt.GetAttributeModifiersAsync(token).ConfigureAwait(false);
+
+                string strInit;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    strInit = await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+
+                    IHasMatrixAttributes objHomeNode = await GetHomeNodeAsync(token).ConfigureAwait(false);
+                    if (objHomeNode != null)
+                    {
+                        int intHomeNodeDP = await objHomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                        if (HomeNode is Vehicle objHomeNodeVehicle)
+                        {
+                            int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                            if (intHomeNodePilot > intHomeNodeDP)
+                                intHomeNodeDP = intHomeNodePilot;
+                        }
+
+                        strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + '(' + intHomeNodeDP.ToString(GlobalSettings.CultureInfo) + ')';
+                    }
+
+                    int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
+                    if (intINTAttributeModifiers != 0 || intWoundModifier != 0)
+                    {
+                        strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + '(' + (intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                    }
+                }
+                else
+                {
+                    CharacterAttrib objRea = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
+                    int intREAAttributeModifiers = await objRea.GetAttributeModifiersAsync(token).ConfigureAwait(false);
+
+                    strInit = await objRea.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '(' + (await objRea.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '+' + strSpace + objInt.DisplayAbbrev + strSpace + '(' + objInt.Value.ToString(GlobalSettings.CultureInfo) + ')';
+                    decimal decFromImprovements = await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.Initiative, token: token).ConfigureAwait(false);
+                    int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
+                    if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || intWoundModifier != 0)
+                    {
+                        strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + '(' + (decFromImprovements + intINTAttributeModifiers + intREAAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                    }
+                }
+
+                return string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false), strInit, await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
+            }
+        }
+
         /// <summary>
         /// AR Matrix Initiative Value.
         /// </summary>
@@ -21979,6 +22491,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// AR Matrix Initiative Value.
+        /// </summary>
+        public async ValueTask<int> GetMatrixInitiativeValueAsync(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    int intINI =
+                        await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false))
+                            .GetTotalValueAsync(token).ConfigureAwait(false) +
+                        await GetWoundModifierAsync(token).ConfigureAwait(false);
+                    IHasMatrixAttributes objHomeNode = await GetHomeNodeAsync(token).ConfigureAwait(false);
+                    if (objHomeNode != null)
+                    {
+                        int intHomeNodeDP = await objHomeNode.GetTotalMatrixAttributeAsync("Data Processing", token)
+                            .ConfigureAwait(false);
+                        if (objHomeNode is Vehicle objHomeNodeVehicle)
+                        {
+                            int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                            if (intHomeNodePilot > intHomeNodeDP)
+                                intHomeNodeDP = intHomeNodePilot;
+                        }
+
+                        intINI += intHomeNodeDP;
+                    }
+
+                    return intINI;
+                }
+
+                return await GetInitiativeValueAsync(token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// AR Matrix Initiative Dice.
         /// </summary>
         public int MatrixInitiativeDice
@@ -22007,21 +22556,53 @@ namespace Chummer
             }
         }
 
-        #endregion AR
+        /// <summary>
+        /// AR Matrix Initiative Dice.
+        /// </summary>
+        public async ValueTask<int> GetMatrixInitiativeDiceAsync(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intReturn;
+                // A.I.s always have 4 Matrix Initiative Dice.
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                    intReturn =
+                        await (await GetSettingsAsync(token).ConfigureAwait(false))
+                            .GetMinHotSimInitiativeDiceAsync(token).ConfigureAwait(false) +
+                        (await ImprovementManager
+                            .ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiativeDice, token: token)
+                            .ConfigureAwait(false)).StandardRound();
+                else
+                    intReturn = await GetInitiativeDiceAsync(token).ConfigureAwait(false);
 
-        #region Cold Sim
+                // Add in any additional Matrix Initiative Pass bonuses.
+                intReturn +=
+                    (await ImprovementManager
+                        .ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiativeDiceAdd, token: token)
+                        .ConfigureAwait(false)).StandardRound();
+
+                return Math.Min(intReturn,
+                    await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMaxInitiativeDiceAsync(token)
+                        .ConfigureAwait(false));
+            }
+        }
+
+#endregion AR
+
+#region Cold Sim
 
         /// <summary>
         /// Matrix Initiative via VR with Cold Sim.
         /// </summary>
-        public string MatrixInitiativeCold
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return GetMatrixInitiativeCold(GlobalSettings.CultureInfo, GlobalSettings.Language);
-            }
-        }
+        public string MatrixInitiativeCold => GetMatrixInitiativeCold(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Matrix Initiative via VR with Cold Sim.
+        /// </summary>
+        public ValueTask<string> GetMatrixInitiativeColdAsync(CancellationToken token = default) =>
+            GetMatrixInitiativeColdAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public string GetMatrixInitiativeCold(CultureInfo objCulture, string strLanguageToPrint)
         {
@@ -22037,6 +22618,30 @@ namespace Chummer
                     LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
                                               strLanguageToPrint),
                     MatrixInitiativeColdValue, MatrixInitiativeColdDice);
+            }
+        }
+
+        public async ValueTask<string> GetMatrixInitiativeColdAsync(CultureInfo objCulture, string strLanguageToPrint,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return await GetMatrixInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false);
+                }
+
+                return string.Format(objCulture,
+                    await LanguageManager
+                        .GetStringAsync(
+                            await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null
+                                ? "String_MatrixInitiative"
+                                : "String_Initiative", strLanguageToPrint, token: token)
+                        .ConfigureAwait(false),
+                    await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false),
+                    await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
             }
         }
 
@@ -22084,6 +22689,46 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetMatrixInitiativeColdToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return await GetMatrixInitiativeToolTipAsync(token).ConfigureAwait(false);
+                }
+
+                CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                int intINTAttributeModifiers = await objInt.GetAttributeModifiersAsync(token).ConfigureAwait(false);
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+
+                string strInit = await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+
+                IHasMatrixAttributes objActiveCommlink = await GetActiveCommlinkAsync(token).ConfigureAwait(false);
+                if (objActiveCommlink != null)
+                {
+                    strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + '(' + (await objActiveCommlink.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                }
+
+                decimal decFromImprovements = await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiative, token: token).ConfigureAwait(false);
+                int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
+                if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intWoundModifier != 0)
+                {
+                    strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + '(' + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                }
+
+                return string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync(
+                        objActiveCommlink == null
+                            ? "String_MatrixInitiativeLong"
+                            : "String_Initiative", token: token).ConfigureAwait(false),
+                    strInit, await GetMatrixInitiativeColdDiceAsync(token).ConfigureAwait(false));
+            }
+        }
+
         /// <summary>
         /// Cold Sim Matrix Initiative Value.
         /// </summary>
@@ -22103,6 +22748,32 @@ namespace Chummer
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative)
                                              .StandardRound();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Cold Sim Matrix Initiative Value.
+        /// </summary>
+        public async ValueTask<int> GetMatrixInitiativeColdValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false);
+                }
+
+                IHasMatrixAttributes objCommlink = await GetActiveCommlinkAsync(token).ConfigureAwait(false);
+                int intCommlinkDP = objCommlink != null
+                    ? await objCommlink.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false)
+                    : 0;
+                return await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) + intCommlinkDP +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false) + (await ImprovementManager
+                           .ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiative, token: token)
+                           .ConfigureAwait(false)).StandardRound();
             }
         }
 
@@ -22130,21 +22801,43 @@ namespace Chummer
             }
         }
 
-        #endregion Cold Sim
+        /// <summary>
+        /// Cold Sim Matrix Initiative Dice.
+        /// </summary>
+        public async ValueTask<int> GetMatrixInitiativeColdDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false);
+                }
 
-        #region Hot Sim
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                return Math.Min(
+                    await objSettings.GetMinColdSimInitiativeDiceAsync(token).ConfigureAwait(false) +
+                    (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiativeDice, token: token)
+                        .ConfigureAwait(false)).StandardRound(),
+                    await objSettings.GetMaxColdSimInitiativeDiceAsync(token).ConfigureAwait(false));
+            }
+        }
+
+#endregion Cold Sim
+
+#region Hot Sim
 
         /// <summary>
         /// Matrix Initiative via VR with Hot Sim.
         /// </summary>
-        public string MatrixInitiativeHot
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return GetMatrixInitiativeHot(GlobalSettings.CultureInfo, GlobalSettings.Language);
-            }
-        }
+        public string MatrixInitiativeHot => GetMatrixInitiativeHot(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Matrix Initiative via VR with Hot Sim.
+        /// </summary>
+        public ValueTask<string> GetMatrixInitiativeHotAsync(CancellationToken token = default) =>
+            GetMatrixInitiativeHotAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public string GetMatrixInitiativeHot(CultureInfo objCulture, string strLanguageToPrint)
         {
@@ -22160,6 +22853,30 @@ namespace Chummer
                     LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
                                               strLanguageToPrint),
                     MatrixInitiativeHotValue, MatrixInitiativeHotDice);
+            }
+        }
+
+        public async ValueTask<string> GetMatrixInitiativeHotAsync(CultureInfo objCulture, string strLanguageToPrint,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return await GetMatrixInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false);
+                }
+
+                return string.Format(objCulture,
+                    await LanguageManager
+                        .GetStringAsync(
+                            await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null
+                                ? "String_MatrixInitiative"
+                                : "String_Initiative", strLanguageToPrint, token: token)
+                        .ConfigureAwait(false),
+                    await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false),
+                    await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
             }
         }
 
@@ -22207,6 +22924,46 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetMatrixInitiativeHotToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return await GetMatrixInitiativeToolTipAsync(token).ConfigureAwait(false);
+                }
+
+                CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                int intINTAttributeModifiers = await objInt.GetAttributeModifiersAsync(token).ConfigureAwait(false);
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+
+                string strInit = await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+
+                IHasMatrixAttributes objActiveCommlink = await GetActiveCommlinkAsync(token).ConfigureAwait(false);
+                if (objActiveCommlink != null)
+                {
+                    strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + '(' + (await objActiveCommlink.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                }
+
+                decimal decFromImprovements = await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiative, token: token).ConfigureAwait(false);
+                int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
+                if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intWoundModifier != 0)
+                {
+                    strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + '(' + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                }
+
+                return string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync(
+                        objActiveCommlink == null
+                            ? "String_MatrixInitiativeLong"
+                            : "String_Initiative", token: token).ConfigureAwait(false),
+                    strInit, await GetMatrixInitiativeHotDiceAsync(token).ConfigureAwait(false));
+            }
+        }
+
         /// <summary>
         /// Hot Sim Matrix Initiative Value.
         /// </summary>
@@ -22230,6 +22987,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Hot Sim Matrix Initiative Value.
+        /// </summary>
+        public async ValueTask<int> GetMatrixInitiativeHotValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false);
+                }
+
+                IHasMatrixAttributes objCommlink = await GetActiveCommlinkAsync(token).ConfigureAwait(false);
+                int intCommlinkDP = objCommlink != null
+                    ? await objCommlink.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false)
+                    : 0;
+                return await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) + intCommlinkDP +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false) + (await ImprovementManager
+                           .ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiative, token: token)
+                           .ConfigureAwait(false)).StandardRound();
+            }
+        }
+
+        /// <summary>
         /// Hot Sim Matrix Initiative Dice.
         /// </summary>
         public int MatrixInitiativeHotDice
@@ -22245,11 +23028,34 @@ namespace Chummer
 
                     return Math.Min(
                         Settings.MinHotSimInitiativeDice + ImprovementManager
-                                                           .ValueOf(
-                                                               this, Improvement.ImprovementType.MatrixInitiativeDice)
-                                                           .StandardRound(),
+                                                            .ValueOf(
+                                                                this, Improvement.ImprovementType.MatrixInitiativeDice)
+                                                            .StandardRound(),
                         Settings.MaxHotSimInitiativeDice);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Hot Sim Matrix Initiative Dice.
+        /// </summary>
+        public async ValueTask<int> GetMatrixInitiativeHotDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    return await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false);
+                }
+
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                return Math.Min(
+                    await objSettings.GetMinHotSimInitiativeDiceAsync(token).ConfigureAwait(false) +
+                    (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiativeDice, token: token)
+                        .ConfigureAwait(false)).StandardRound(),
+                    await objSettings.GetMaxHotSimInitiativeDiceAsync(token).ConfigureAwait(false));
             }
         }
 
@@ -22334,6 +23140,27 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Composure (WIL + CHA).
+        /// </summary>
+        public async ValueTask<int> GetComposureAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) +
+                       await (await GetAttributeAsync("CHA", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.Composure, token: token)
+                           .ConfigureAwait(false)).StandardRound() +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false) +
+                       await GetSustainingPenaltyAsync(token).ConfigureAwait(false);
+            }
+        }
+
         public string ComposureToolTip
         {
             get
@@ -22386,6 +23213,28 @@ namespace Chummer
                            .StandardRound()
                            + SustainingPenalty
                            + WoundModifier;
+            }
+        }
+
+        /// <summary>
+        /// Judge Intentions (INT + CHA).
+        /// </summary>
+        public async ValueTask<int> GetJudgeIntentionsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) +
+                       await (await GetAttributeAsync("CHA", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.JudgeIntentions, token: token)
+                        + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.JudgeIntentionsOffense, token: token)
+                            .ConfigureAwait(false)).StandardRound() +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false) +
+                       await GetSustainingPenaltyAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -22452,6 +23301,28 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Judge Intentions Resist (CHA + WIL).
+        /// </summary>
+        public async ValueTask<int> GetJudgeIntentionsResistAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("CHA", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) +
+                       await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.JudgeIntentions, token: token)
+                        + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.JudgeIntentionsDefense, token: token)
+                            .ConfigureAwait(false)).StandardRound() +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false) +
+                       await GetSustainingPenaltyAsync(token).ConfigureAwait(false);
+            }
+        }
+
         public string JudgeIntentionsResistToolTip
         {
             get
@@ -22508,6 +23379,27 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Lifting and Carrying (STR + BOD).
+        /// </summary>
+        public async ValueTask<int> GetLiftAndCarryAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) +
+                       await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.LiftAndCarry, token: token)
+                           .ConfigureAwait(false)).StandardRound() +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false) +
+                       await GetSustainingPenaltyAsync(token).ConfigureAwait(false);
+            }
+        }
+
         public string LiftAndCarryToolTip
         {
             get
@@ -22560,6 +23452,20 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetLiftAndCarryLimitsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                string strFormat = await (await GetSettingsAsync(token)).GetWeightFormatAsync(token);
+                return string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync("Label_OtherLiftAndCarryLimitsFormat", token: token),
+                    LiftLimit.ToString(strFormat, GlobalSettings.CultureInfo),
+                    CarryLimit.ToString(strFormat, GlobalSettings.CultureInfo));
+            }
+        }
+
         /// <summary>
         /// Memory (LOG + WIL).
         /// </summary>
@@ -22572,6 +23478,27 @@ namespace Chummer
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory).StandardRound()
                            + WoundModifier
                            + SustainingPenalty;
+            }
+        }
+
+        /// <summary>
+        /// Memory (LOG + WIL).
+        /// </summary>
+        public async ValueTask<int> GetMemoryAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) +
+                       await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.Memory, token: token)
+                           .ConfigureAwait(false)).StandardRound() +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false) +
+                       await GetSustainingPenaltyAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -22627,6 +23554,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Resist test to Fatigue damage (BOD + WIL).
+        /// </summary>
+        public async ValueTask<int> GetFatigueResistAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) +
+                       await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.FatigueResist, token: token)
+                           .ConfigureAwait(false)).StandardRound();
+            }
+        }
+
+        /// <summary>
         /// Resist test to Radiation damage (BOD + WIL).
         /// </summary>
         public int RadiationResist
@@ -22641,6 +23587,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Resist test to Radiation damage (BOD + WIL).
+        /// </summary>
+        public async ValueTask<int> GetRadiationResistAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) +
+                       await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.RadiationResist, token: token)
+                           .ConfigureAwait(false)).StandardRound();
+            }
+        }
+
+        /// <summary>
         /// Resist test to Sonic Attacks damage (WIL).
         /// </summary>
         public int SonicResist
@@ -22650,6 +23615,23 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SonicResist)
                                                               .StandardRound();
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Sonic Attacks damage (WIL).
+        /// </summary>
+        public async ValueTask<int> GetSonicResistAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SonicResist, token: token)
+                           .ConfigureAwait(false)).StandardRound();
             }
         }
 
@@ -22883,6 +23865,35 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Dicepool for natural recovery from Stun CM box damage (BOD + WIL).
+        /// </summary>
+        public async ValueTask<int> GetStunCMNaturalRecoveryAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                // Matrix damage for A.I.s is not naturally repaired
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                    return 0;
+                int intReturn =
+                    await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token)
+                        .ConfigureAwait(false) +
+                    await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token)
+                        .ConfigureAwait(false) +
+                    (await ImprovementManager
+                        .ValueOfAsync(this, Improvement.ImprovementType.StunCMRecovery, token: token)
+                        .ConfigureAwait(false)).StandardRound();
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this,
+                            Improvement.ImprovementType.AddESStoStunCMRecovery, token: token).ConfigureAwait(false))
+                    .Count > 0)
+                    intReturn += (await EssenceAsync(token: token).ConfigureAwait(false)).ToInt32();
+                return intReturn;
+            }
+        }
+
+        /// <summary>
         /// Dicepool for natural recovery from Physical CM box damage (2 x BOD).
         /// </summary>
         public int PhysicalCMNaturalRecovery
@@ -22891,35 +23902,79 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
+                    int intReturn;
                     if (IsAI)
                     {
                         if (HomeNode is Vehicle)
                             return 0;
 
                         // A.I.s can restore Core damage via Software + Depth [Data Processing] (1 day) Extended Test
-                        int intAIReturn =
+                        intReturn =
                             (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute("DEP") ??
                              DEP.TotalValue - 1) +
                             ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery)
                                               .StandardRound();
-                        if (ImprovementManager
-                            .GetCachedImprovementListForValueOf(
-                                this, Improvement.ImprovementType.AddESStoPhysicalCMRecovery).Count
-                            > 0)
-                            intAIReturn += Essence().ToInt32();
-                        return intAIReturn;
+                    }
+                    else
+                    {
+                        intReturn = 2 * BOD.TotalValue +
+                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery)
+                                        .StandardRound();
                     }
 
-                    int intReturn = 2 * BOD.TotalValue +
-                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery)
-                                                      .StandardRound();
                     if (ImprovementManager
-                        .GetCachedImprovementListForValueOf(
-                            this, Improvement.ImprovementType.AddESStoPhysicalCMRecovery).Count
+                            .GetCachedImprovementListForValueOf(
+                                this, Improvement.ImprovementType.AddESStoPhysicalCMRecovery).Count
                         > 0)
                         intReturn += Essence().ToInt32();
                     return intReturn;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Dicepool for natural recovery from Physical CM box damage (2 x BOD).
+        /// </summary>
+        public async ValueTask<int> GetPhysicalCMNaturalRecoveryAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intReturn;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (HomeNode is Vehicle)
+                        return 0;
+
+                    // A.I.s can restore Core damage via Software + Depth [Data Processing] (1 day) Extended Test
+                    Skill objSoftware =
+                        await SkillsSection.GetActiveSkillAsync("Software", token).ConfigureAwait(false);
+                    intReturn = (objSoftware != null
+                                    ? await objSoftware.PoolOtherAttributeAsync("DEP", token: token)
+                                        .ConfigureAwait(false)
+                                    : await (await GetAttributeAsync("DEP", token: token).ConfigureAwait(false))
+                                        .GetTotalValueAsync(token).ConfigureAwait(false) - 1) +
+                                (await ImprovementManager
+                                    .ValueOfAsync(this, Improvement.ImprovementType.PhysicalCMRecovery, token: token)
+                                    .ConfigureAwait(false)).StandardRound();
+                }
+                else
+                {
+                    intReturn =
+                        2 * await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                            .GetTotalValueAsync(token).ConfigureAwait(false) +
+                        (await ImprovementManager
+                            .ValueOfAsync(this, Improvement.ImprovementType.PhysicalCMRecovery, token: token)
+                            .ConfigureAwait(false)).StandardRound();
+                }
+
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this,
+                            Improvement.ImprovementType.AddESStoPhysicalCMRecovery, token: token).ConfigureAwait(false))
+                    .Count > 0)
+                    intReturn += (await EssenceAsync(token: token).ConfigureAwait(false)).ToInt32();
+                return intReturn;
             }
         }
 
@@ -22951,6 +24006,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Amount of Street Cred the character has earned through standard means.
+        /// </summary>
+        public async ValueTask<int> GetCalculatedStreetCredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                // Street Cred = Career Karma / 10, rounded down
+                int intReturn = await GetCareerKarmaAsync(token).ConfigureAwait(false) / (10 +
+                    (await ImprovementManager
+                        .ValueOfAsync(this, Improvement.ImprovementType.StreetCredMultiplier, token: token)
+                        .ConfigureAwait(false)).StandardRound());
+
+                // Deduct burnt Street Cred.
+                intReturn -= await GetBurntStreetCredAsync(token).ConfigureAwait(false);
+
+                return intReturn;
+            }
+        }
+
+        /// <summary>
         /// Character's total amount of Street Cred (earned + GM awarded).
         /// </summary>
         public int TotalStreetCred
@@ -22961,6 +24038,23 @@ namespace Chummer
                     return Math.Max(
                         CalculatedStreetCred + StreetCred +
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCred).StandardRound(), 0);
+            }
+        }
+
+        /// <summary>
+        /// Character's total amount of Street Cred (earned + GM awarded).
+        /// </summary>
+        public async ValueTask<int> GetTotalStreetCredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return Math.Max(
+                    await GetCalculatedStreetCredAsync(token).ConfigureAwait(false) +
+                    await GetStreetCredAsync(token).ConfigureAwait(false) +
+                    (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.StreetCred, token: token)
+                        .ConfigureAwait(false)).StandardRound(), 0);
             }
         }
 
@@ -22980,12 +24074,39 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetCareerDisplayStreetCredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intTotalStreetCred = await GetTotalStreetCredAsync(token).ConfigureAwait(false);
+                int intCalculatedStreetCred =
+                    intTotalStreetCred - await GetStreetCredAsync(token).ConfigureAwait(false);
+                return (intCalculatedStreetCred >= 0
+                           ? " + " + intCalculatedStreetCred.ToString(GlobalSettings.CultureInfo)
+                           : " - " + (-intCalculatedStreetCred).ToString(GlobalSettings.CultureInfo)) + " = " +
+                       intTotalStreetCred.ToString(GlobalSettings.CultureInfo);
+            }
+        }
+
         public bool CanBurnStreetCred
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return Created && TotalStreetCred >= 2;
+            }
+        }
+
+        public async ValueTask<bool> GetCanBurnStreetCredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetCreatedAsync(token).ConfigureAwait(false) &&
+                       await GetTotalStreetCredAsync(token).ConfigureAwait(false) >= 2;
             }
         }
 
@@ -23025,15 +24146,61 @@ namespace Chummer
                                           this, Improvement.ImprovementType.StreetCredMultiplier)))
                                      .ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (BurntStreetCred != 0)
+                        int intBurnedStreetCred = BurntStreetCred;
+                        if (intBurnedStreetCred != 0)
                             sbdReturn.Append(strSpace).Append('-').Append(strSpace)
                                      .Append(LanguageManager.GetString("String_BurntStreetCred")).Append(strSpace)
                                      .Append('(')
-                                     .Append(BurntStreetCred.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                     .Append(intBurnedStreetCred.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     return sbdReturn.ToString();
                 }
+            }
+        }
+
+        public async ValueTask<string> GetStreetCredTooltipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(
+                        (await GetStreetCredAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.StreetCred,
+                                     token: token).ConfigureAwait(false))
+                    {
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false))
+                            .Append(strSpace).Append('(')
+                            .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[')
+                        .Append(await LanguageManager.GetStringAsync("String_CareerKarma", token: token)
+                            .ConfigureAwait(false)).Append(strSpace).Append('÷').Append(strSpace)
+                        .Append((10 + await ImprovementManager
+                            .ValueOfAsync(this, Improvement.ImprovementType.StreetCredMultiplier, token: token)
+                            .ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(']').Append(strSpace)
+                        .Append('(')
+                        .Append((await GetCareerKarmaAsync(token).ConfigureAwait(false) / (10 + await ImprovementManager
+                            .ValueOfAsync(this, Improvement.ImprovementType.StreetCredMultiplier, token: token)
+                            .ConfigureAwait(false))).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intBurnedStreetCred = await GetBurntStreetCredAsync(token).ConfigureAwait(false);
+                    if (intBurnedStreetCred != 0)
+                        sbdReturn.Append(strSpace).Append('-').Append(strSpace)
+                            .Append(await LanguageManager.GetStringAsync("String_BurntStreetCred", token: token)
+                                .ConfigureAwait(false)).Append(strSpace).Append('(')
+                            .Append(intBurnedStreetCred.ToString(GlobalSettings.CultureInfo)).Append(')');
+                }
+
+                return sbdReturn.ToString();
             }
         }
 
@@ -23057,6 +24224,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Amount of Notoriety the character has earned through standard means.
+        /// </summary>
+        public async ValueTask<int> GetCalculatedNotorietyAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
+                int intReturn =
+                    (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.Notoriety, token: token)
+                        .ConfigureAwait(false)).StandardRound() -
+                    await GetBurntStreetCredAsync(token).ConfigureAwait(false) / 2; // + Contacts.Count(x => x.EntityType == ContactType.Enemy);
+
+                return intReturn;
+            }
+        }
+
+        /// <summary>
         /// Character's total amount of Notoriety (earned + GM awarded - burnt Street Cred).
         /// </summary>
         public int TotalNotoriety
@@ -23065,6 +24251,20 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return CalculatedNotoriety + Notoriety;
+            }
+        }
+
+        /// <summary>
+        /// Character's total amount of Notoriety (earned + GM awarded - burnt Street Cred).
+        /// </summary>
+        public async ValueTask<int> GetTotalNotorietyAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetCalculatedNotorietyAsync(token).ConfigureAwait(false) +
+                       await GetNotorietyAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -23083,6 +24283,23 @@ namespace Chummer
                                  (-intCalculatedNotoriety).ToString(GlobalSettings.CultureInfo)) + strSpace + '=' +
                            strSpace + TotalNotoriety.ToString(GlobalSettings.CultureInfo);
                 }
+            }
+        }
+
+        public async ValueTask<string> GetCareerDisplayNotorietyAsync(CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intCalculatedNotoriety = await GetCalculatedNotorietyAsync(token).ConfigureAwait(false);
+                return (intCalculatedNotoriety >= 0
+                           ? strSpace + '+' + strSpace + intCalculatedNotoriety.ToString(GlobalSettings.CultureInfo)
+                           : strSpace + '-' + strSpace +
+                             (-intCalculatedNotoriety).ToString(GlobalSettings.CultureInfo)) +
+                       strSpace + '=' + strSpace +
+                       (await GetTotalNotorietyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             }
         }
 
@@ -23110,15 +24327,51 @@ namespace Chummer
                                      .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                         }
 
-                        if (BurntStreetCred > 0)
+                        int intBurnedStreetCred = BurntStreetCred;
+                        if (intBurnedStreetCred != 0)
                             sbdReturn.Append(strSpace).Append('-').Append(strSpace)
                                      .Append(LanguageManager.GetString("String_BurntStreetCred")).Append(
                                          strSpace).Append('(')
-                                     .Append((BurntStreetCred / 2).ToString(GlobalSettings.CultureInfo)).Append(')');
+                                     .Append((intBurnedStreetCred / 2).ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     return sbdReturn.ToString();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tooltip to use for Notoriety total.
+        /// </summary>
+        public async ValueTask<string> GetNotorietyTooltipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(Notoriety.ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.Notoriety,
+                                     token: token).ConfigureAwait(false))
+                    {
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                            .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    int intBurnedStreetCred = await GetBurntStreetCredAsync(token).ConfigureAwait(false);
+                    if (intBurnedStreetCred != 0)
+                        sbdReturn.Append(strSpace).Append('-').Append(strSpace)
+                            .Append(await LanguageManager.GetStringAsync("String_BurntStreetCred", token: token).ConfigureAwait(false))
+                            .Append(strSpace).Append('(')
+                            .Append((intBurnedStreetCred / 2).ToString(GlobalSettings.CultureInfo)).Append(')');
+                }
+
+                return sbdReturn.ToString();
             }
         }
 
@@ -23145,6 +24398,30 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Amount of Public Awareness the character has earned through standard means.
+        /// </summary>
+        public async ValueTask<int> GetCalculatedPublicAwarenessAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intReturn =
+                    (await ImprovementManager
+                        .ValueOfAsync(this, Improvement.ImprovementType.PublicAwareness, token: token)
+                        .ConfigureAwait(false)).StandardRound();
+                if (await Settings.GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
+                {
+                    // Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
+                    intReturn += (await GetTotalStreetCredAsync(token).ConfigureAwait(false) +
+                                  await GetTotalNotorietyAsync(token).ConfigureAwait(false)) / 3;
+                }
+
+                return intReturn;
+            }
+        }
+
+        /// <summary>
         /// Character's total amount of Public Awareness (earned + GM awarded).
         /// </summary>
         public int TotalPublicAwareness
@@ -23154,10 +24431,27 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     int intReturn = PublicAwareness + CalculatedPublicAwareness;
-                    if (Erased && intReturn >= 1)
+                    if (intReturn >= 1 && Erased)
                         return 1;
                     return intReturn;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's total amount of Public Awareness (earned + GM awarded).
+        /// </summary>
+        public async ValueTask<int> GetTotalPublicAwarenessAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intReturn = await GetPublicAwarenessAsync(token).ConfigureAwait(false) +
+                                await GetCalculatedPublicAwarenessAsync(token).ConfigureAwait(false);
+                if (intReturn >= 1 && await GetErasedAsync(token).ConfigureAwait(false))
+                    return 1;
+                return intReturn;
             }
         }
 
@@ -23169,7 +24463,7 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     int intTotalPublicAwareness = TotalPublicAwareness;
-                    int intCalculatedPublicAwareness = intTotalPublicAwareness - PublicAwareness;
+                    int intCalculatedPublicAwareness = CalculatedPublicAwareness;
                     return (intCalculatedPublicAwareness >= 0
                                ? strSpace + '+' + strSpace +
                                  intCalculatedPublicAwareness.ToString(GlobalSettings.CultureInfo)
@@ -23177,6 +24471,24 @@ namespace Chummer
                                  (-intCalculatedPublicAwareness).ToString(GlobalSettings.CultureInfo)) + strSpace +
                            '=' + strSpace + intTotalPublicAwareness.ToString(GlobalSettings.CultureInfo);
                 }
+            }
+        }
+
+        public async ValueTask<string> GetCareerDisplayPublicAwarenessAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intTotalPublicAwareness = await GetTotalPublicAwarenessAsync(token).ConfigureAwait(false);
+                int intCalculatedPublicAwareness = await GetCalculatedPublicAwarenessAsync(token).ConfigureAwait(false);
+                return (intCalculatedPublicAwareness >= 0
+                           ? strSpace + '+' + strSpace +
+                             intCalculatedPublicAwareness.ToString(GlobalSettings.CultureInfo)
+                           : strSpace + '-' + strSpace +
+                             (-intCalculatedPublicAwareness).ToString(GlobalSettings.CultureInfo)) + strSpace +
+                       '=' + strSpace + intTotalPublicAwareness.ToString(GlobalSettings.CultureInfo);
             }
         }
 
@@ -23247,6 +24559,75 @@ namespace Chummer
 
                     return sbdReturn.ToString();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Public Awareness Tooltip.
+        /// </summary>
+        public async ValueTask<string> GetPublicAwarenessTooltipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                       out StringBuilder sbdReturn))
+            {
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(PublicAwareness.ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(this,
+                                     Improvement.ImprovementType.PublicAwareness, token: token).ConfigureAwait(false))
+                    {
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false))
+                            .Append(strSpace).Append('(')
+                            .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    if (await Settings.GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
+                    {
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[')
+                            .Append(await LanguageManager.GetStringAsync("String_StreetCred", token: token)
+                                .ConfigureAwait(false)).Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await LanguageManager.GetStringAsync("String_Notoriety", token: token)
+                                .ConfigureAwait(false)).Append(']').Append(strSpace).Append('÷').Append(strSpace)
+                            .Append(3.ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append('(').Append(
+                                ((await GetTotalStreetCredAsync(token).ConfigureAwait(false) +
+                                  await GetTotalNotorietyAsync(token).ConfigureAwait(false)) / 3)
+                                .ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    if (await GetErasedAsync(token).ConfigureAwait(false))
+                    {
+                        int intTotalPublicAwareness = PublicAwareness + CalculatedPublicAwareness;
+                        if (intTotalPublicAwareness > 1)
+                        {
+                            string strErasedString = Qualities.FirstOrDefault(x => x.Name == "Erased")
+                                ?.CurrentDisplayNameShort;
+                            if (string.IsNullOrEmpty(strErasedString))
+                            {
+                                XPathNavigator xmlErasedQuality =
+                                    (await LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
+                                    .SelectSingleNodeAndCacheExpression("chummer/qualities/quality[name = \"Erased\"]");
+                                if (xmlErasedQuality != null)
+                                {
+                                    strErasedString =
+                                        xmlErasedQuality.SelectSingleNodeAndCacheExpression("translate")?.Value ??
+                                        "Erased";
+                                }
+                            }
+
+                            sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(strErasedString)
+                                .Append(strSpace).Append('(')
+                                .Append((intTotalPublicAwareness - 1).ToString(GlobalSettings.CultureInfo)).Append(')');
+                        }
+                    }
+                }
+
+                return sbdReturn.ToString();
             }
         }
 
@@ -24256,6 +25637,29 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetDamageResistancePoolAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intBody = 0;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intBody = await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                }
+                else
+                    intBody = await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+
+                return intBody + await GetTotalArmorRatingAsync(token).ConfigureAwait(false) +
+                       (await ImprovementManager
+                           .ValueOfAsync(this, Improvement.ImprovementType.DamageResistance, token: token)
+                           .ConfigureAwait(false)).StandardRound();
+            }
+        }
+
         public string DamageResistancePoolToolTip
         {
             get
@@ -24301,6 +25705,52 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetDamageResistancePoolToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intBody;
+                string strBodyAbbrev;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    intBody = HomeNode is Vehicle objVehicle ? await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 0;
+                    strBodyAbbrev = await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    CharacterAttrib objBod = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
+                    intBody = await objBod.GetTotalValueAsync(token).ConfigureAwait(false);
+                    strBodyAbbrev = await objBod.GetDisplayAbbrevAsync(GlobalSettings.Language, token: token).ConfigureAwait(false);
+                }
+
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                        .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace).Append('+')
+                        .Append(strSpace).Append(await LanguageManager.GetStringAsync("Tip_Armor", token: token).ConfigureAwait(false))
+                        .Append(strSpace).Append('(')
+                        .Append((await GetTotalArmorRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
+                        .Append(')');
+
+                    foreach (Improvement objLoopImprovement in
+                             await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                 this, Improvement.ImprovementType.DamageResistance, token: token).ConfigureAwait(false))
+                    {
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false)).Append(strSpace)
+                            .Append('(').Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                            .Append(')');
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+        }
+
         public int CurrentCounterspellingDice
         {
             get
@@ -24319,6 +25769,16 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetCurrentCounterspellingDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intCurrentCounterspellingDice;
+            }
+        }
+
         public int CurrentLiftCarryHits
         {
             get
@@ -24334,6 +25794,16 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public async ValueTask<int> GetCurrentLiftCarryHitsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intCurrentLiftCarryHits;
             }
         }
 
@@ -24459,9 +25929,9 @@ namespace Chummer
 
         #endregion Dodge
 
-            #region Spell Defense
+        #region Spell Defense
 
-            #region Indirect Dodge
+        #region Indirect Dodge
 
         public int SpellDefenseIndirectDodge
         {
@@ -25457,6 +26927,9 @@ namespace Chummer
 
         #endregion Spell Defense
 
+        /// <summary>
+        /// Surprise test (REA + INT).
+        /// </summary>
         public int Surprise
         {
             get
@@ -25467,6 +26940,27 @@ namespace Chummer
                                                               .StandardRound()
                                           + WoundModifier
                                           + SustainingPenalty;
+            }
+        }
+
+        /// <summary>
+        /// Surprise test (REA + INT).
+        /// </summary>
+        public async ValueTask<int> GetSurpriseAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("REA", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token).ConfigureAwait(false) +
+                       await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false))
+                           .GetTotalValueAsync(token)
+                           .ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.Surprise, token: token)
+                           .ConfigureAwait(false)).StandardRound() +
+                       await GetWoundModifierAsync(token).ConfigureAwait(false) +
+                       await GetSustainingPenaltyAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -27156,8 +28650,8 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return await GetEffectiveBuildMethodIsLifeModuleAsync(token) &&
-                       await (await GetSettingsAsync(token).ConfigureAwait(false)).GetAutomaticBackstoryAsync(token);
+                return await GetEffectiveBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false) &&
+                       await (await GetSettingsAsync(token).ConfigureAwait(false)).GetAutomaticBackstoryAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -31060,10 +32554,24 @@ namespace Chummer
                                        this, Improvement.ImprovementType.Overclocker).Count > 0;
 
         /// <summary>
-        /// Whether or not MadeMan is enabled.
+        /// Whether or not Overclocker is enabled.
+        /// </summary>
+        public async ValueTask<bool> GetOverclockerAsync(CancellationToken token = default) =>
+            (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
+                Improvement.ImprovementType.Overclocker, token: token).ConfigureAwait(false)).Count > 0;
+
+        /// <summary>
+        /// Whether or not Made Man is enabled.
         /// </summary>
         public bool MadeMan => ImprovementManager
                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.MadeMan).Count > 0;
+
+        /// <summary>
+        /// Whether or not Made Man is enabled.
+        /// </summary>
+        public async ValueTask<bool> GetMadeManAsync(CancellationToken token = default) =>
+            (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
+                Improvement.ImprovementType.MadeMan, token: token).ConfigureAwait(false)).Count > 0;
 
         /// <summary>
         /// Whether or not Fame is enabled.
@@ -31073,11 +32581,25 @@ namespace Chummer
                             > 0;
 
         /// <summary>
+        /// Whether or not Fame is enabled.
+        /// </summary>
+        public async ValueTask<bool> GetFameAsync(CancellationToken token = default) =>
+            (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
+                Improvement.ImprovementType.Fame, token: token).ConfigureAwait(false)).Count > 0;
+
+        /// <summary>
         /// Whether or not Erased is enabled.
         /// </summary>
         public bool Erased => ImprovementManager
                               .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Erased).Count
                               > 0;
+
+        /// <summary>
+        /// Whether or not Erased is enabled.
+        /// </summary>
+        public async ValueTask<bool> GetErasedAsync(CancellationToken token = default) =>
+            (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
+                Improvement.ImprovementType.Erased, token: token).ConfigureAwait(false)).Count > 0;
 
         /// <summary>
         /// Whether or not the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
@@ -31092,7 +32614,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> GetAllowSpriteFetteringAsync(CancellationToken token = default) =>
             (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
-                Improvement.ImprovementType.AllowSpriteFettering).ConfigureAwait(false)).Count > 0;
+                Improvement.ImprovementType.AllowSpriteFettering, token: token).ConfigureAwait(false)).Count > 0;
 
         /// <summary>
         /// Extended Availability Test information for an item based on the character's Negotiate Skill.
@@ -32339,6 +33861,34 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// The Active Commlink of the character. Returns null if character has no active commlink.
+        /// </summary>
+        public async ValueTask<IHasMatrixAttributes> GetActiveCommlinkAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _objActiveCommlink;
+            }
+        }
+
+        /// <summary>
+        /// The Active Commlink of the character. Returns null if character has no active commlink.
+        /// </summary>
+        public async ValueTask SetActiveCommlinkAsync(IHasMatrixAttributes value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _objActiveCommlink, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(ActiveCommlink), token).ConfigureAwait(false);
+            }
+        }
+
         private IHasMatrixAttributes _objHomeNode;
 
         /// <summary>
@@ -32359,6 +33909,34 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Home Node. Returns null if home node is not set to any item.
+        /// </summary>
+        public async ValueTask<IHasMatrixAttributes> GetHomeNodeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _objHomeNode;
+            }
+        }
+
+        /// <summary>
+        /// Home Node. Returns null if home node is not set to any item.
+        /// </summary>
+        public async ValueTask SetHomeNodeAsync(IHasMatrixAttributes value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _objHomeNode, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(HomeNode), token).ConfigureAwait(false);
             }
         }
 

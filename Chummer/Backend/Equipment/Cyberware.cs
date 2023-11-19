@@ -6458,6 +6458,102 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                string strExpression = this.GetMatrixAttributeString(strAttributeName);
+                if (string.IsNullOrEmpty(strExpression))
+                {
+                    switch (strAttributeName)
+                    {
+                        case "Device Rating":
+                            return _objGrade.DeviceRating;
+
+                        case "Program Limit":
+                            if (await GetIsCommlinkAsync(token).ConfigureAwait(false))
+                            {
+                                strExpression = this.GetMatrixAttributeString("Device Rating");
+                                if (string.IsNullOrEmpty(strExpression))
+                                    return _objGrade.DeviceRating;
+                            }
+                            else
+                                return _objGrade.DeviceRating;
+
+                            break;
+
+                        case "Data Processing":
+                        case "Firewall":
+                            strExpression = this.GetMatrixAttributeString("Device Rating");
+                            if (string.IsNullOrEmpty(strExpression))
+                                return _objGrade.DeviceRating;
+                            break;
+
+                        default:
+                            return 0;
+                    }
+                }
+
+                if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strExpression = strValues[Math.Max(0, Math.Min(Rating, strValues.Length) - 1)].Trim('[', ']');
+                }
+
+                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        {
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
+                                () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0)
+                                    .ToString(
+                                        GlobalSettings
+                                            .InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                    () => Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0", token: token)
+                                .ConfigureAwait(false);
+                            if (await Children.GetCountAsync(token).ConfigureAwait(false) +
+                                await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                                strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            {
+                                int intTotalChildrenValue = await Children
+                                    .SumAsync(x => x.GetIsModularCurrentlyEquippedAsync(token),
+                                        x => x.GetBaseMatrixAttributeAsync(strMatrixAttribute, token), token: token)
+                                    .ConfigureAwait(false);
+
+                                intTotalChildrenValue += await GearChildren
+                                    .SumAsync(x => x.Equipped,
+                                        x => x.GetBaseMatrixAttributeAsync(strMatrixAttribute, token), token: token)
+                                    .ConfigureAwait(false);
+
+                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                    intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            }
+                        }
+
+                        await _objCharacter.AttributeSection
+                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token)
+                                .ConfigureAwait(false);
+                        return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                    }
+                }
+
+                int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
+                return intReturn;
+            }
+        }
+
         public int GetBonusMatrixAttribute(string strAttributeName)
         {
             if (string.IsNullOrEmpty(strAttributeName))
@@ -6492,6 +6588,30 @@ namespace Chummer.Backend.Equipment
             }
 
             return intReturn;
+        }
+
+        public async Task<int> GetBonusMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strAttributeName))
+                return 0;
+
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intReturn = await GetOverclockedAsync(token).ConfigureAwait(false) == strAttributeName ? 1 : 0;
+
+                if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
+                    strAttributeName = "Mod " + strAttributeName;
+
+                intReturn += await Children.SumAsync(x => x.GetIsModularCurrentlyEquippedAsync(token),
+                    x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token: token).ConfigureAwait(false);
+
+                intReturn += await GearChildren.SumAsync(x => x.Equipped,
+                    x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token).ConfigureAwait(false);
+
+                return intReturn;
+            }
         }
 
         /// <summary>
@@ -7776,15 +7896,13 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// ASDF attribute boosted by Overclocker.
-        /// </summary>
+        /// <inheritdoc />
         public string Overclocked
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _strOverclocked;
+                    return _objCharacter.Overclocker ? _strOverclocked : string.Empty;
             }
             set
             {
@@ -7793,9 +7911,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// String to determine if gear can form persona or grants persona forming to its parent.
-        /// </summary>
+        /// <inheritdoc />
+        public async Task<string> GetOverclockedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await _objCharacter.GetOverclockerAsync(token).ConfigureAwait(false) ? _strOverclocked : string.Empty;
+        }
+
+        /// <inheritdoc />
         public string CanFormPersona
         {
             get
@@ -7810,6 +7933,18 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <inheritdoc />
+        public async Task<string> GetCanFormPersonaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strCanFormPersona;
+            }
+        }
+
+        /// <inheritdoc />
         public bool IsCommlink
         {
             get
@@ -7820,6 +7955,23 @@ namespace Chummer.Backend.Equipment
                            || (ChildrenWithMatrixAttributes.Any(x => x.CanFormPersona.Contains("Parent")) &&
                                this.GetTotalMatrixAttribute("Device Rating") > 0);
                 }
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> GetIsCommlinkAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return (await GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Self")
+                       || (await ChildrenWithMatrixAttributes
+                               .AnyAsync(
+                                   async x =>
+                                       (await x.GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Parent"),
+                                   token: token).ConfigureAwait(false) &&
+                           await this.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false) > 0);
             }
         }
 

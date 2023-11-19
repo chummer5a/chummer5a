@@ -3132,13 +3132,18 @@ namespace Chummer.Backend.Equipment
             set => _strModAttributeArray = value;
         }
 
-        /// <summary>
-        /// ASDF attribute boosted by Overclocker.
-        /// </summary>
+        /// <inheritdoc />
         public string Overclocked
         {
             get => _strOverclocked;
             set => _strOverclocked = value;
+        }
+
+        /// <inheritdoc />
+        public async Task<string> GetOverclockedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await _objCharacter.GetOverclockerAsync(token).ConfigureAwait(false) ? _strOverclocked : string.Empty;
         }
 
         /// <summary>
@@ -3153,7 +3158,27 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool IsCommlink => GearChildren.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
+        /// <summary>
+        /// String to determine if gear can form persona or grants persona forming to its parent.
+        /// </summary>
+        public Task<string> GetCanFormPersonaAsync(CancellationToken token = default) => token.IsCancellationRequested
+            ? Task.FromCanceled<string>(token)
+            : Task.FromResult(string.Empty);
+
+        public bool IsCommlink => GearChildren.Any(x => x.CanFormPersona.Contains("Parent")) &&
+                                  this.GetTotalMatrixAttribute("Device Rating") > 0;
+
+        /// <summary>
+        /// String to determine if gear can form persona or grants persona forming to its parent.
+        /// </summary>
+        public async Task<bool> GetIsCommlinkAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await GearChildren.AnyAsync(
+                       async x => (await x.GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Parent"),
+                       token: token).ConfigureAwait(false) &&
+                   await this.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false) > 0;
+        }
 
         /// <summary>
         /// 0 for Vehicles.
@@ -3482,8 +3507,6 @@ namespace Chummer.Backend.Equipment
             return intRestrictedCount;
         }
 
-
-
         /// <summary>
         /// Checks whether a given VehicleMod is allowed to be added to this vehicle.
         /// </summary>
@@ -3701,6 +3724,35 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Locate a piece of Cyberware within this vehicle based on a predicate.
+        /// </summary>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<Cyberware> FindVehicleCyberwareAsync([NotNull] Func<Cyberware, bool> funcPredicate, CancellationToken token = default)
+        {
+            Cyberware objReturn = null;
+            await Mods.ForEachWithBreakAsync(async objMod =>
+            {
+                objReturn = await objMod.Cyberware.DeepFirstOrDefaultAsync(x => x.Children, funcPredicate, token: token).ConfigureAwait(false);
+                return objReturn == null;
+            }, token).ConfigureAwait(false);
+            if (objReturn != null)
+                return objReturn;
+
+            await WeaponMounts.ForEachWithBreakAsync(async objMount =>
+            {
+                await objMount.Mods.ForEachWithBreakAsync(async objMod =>
+                {
+                    objReturn = await objMod.Cyberware.DeepFirstOrDefaultAsync(x => x.Children, funcPredicate, token: token).ConfigureAwait(false);
+                    return objReturn == null;
+                }, token).ConfigureAwait(false);
+                return objReturn == null;
+            }, token).ConfigureAwait(false);
+
+            return objReturn;
+        }
+
+        /// <summary>
         /// Locate a VehicleMod within this vehicle based on a predicate.
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
@@ -3722,9 +3774,10 @@ namespace Chummer.Backend.Equipment
                 objFoundWeaponMount = null;
                 return objMod;
             }
+
             foreach (WeaponMount objMount in WeaponMounts)
             {
-                objMod = Mods.FirstOrDefault(funcPredicate);
+                objMod = objMount.Mods.FirstOrDefault(funcPredicate);
                 if (objMod != null)
                 {
                     objFoundWeaponMount = objMount;
@@ -3734,6 +3787,115 @@ namespace Chummer.Backend.Equipment
 
             objFoundWeaponMount = null;
             return null;
+        }
+
+        /// <summary>
+        /// Locate a VehicleMod within this vehicle based on a predicate.
+        /// </summary>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<VehicleMod> FindVehicleModAsync([NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
+        {
+            VehicleMod objMod = await Mods.FirstOrDefaultAsync(funcPredicate, token).ConfigureAwait(false);
+            if (objMod != null)
+                return objMod;
+
+            await WeaponMounts.ForEachWithBreakAsync(async objMount =>
+            {
+                objMod = await objMount.Mods.FirstOrDefaultAsync(funcPredicate, token).ConfigureAwait(false);
+                return objMod == null;
+            }, token).ConfigureAwait(false);
+
+            return null;
+        }
+
+        /// <summary>
+        /// Locate a piece of Gear within one of a character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        public Gear FindVehicleGear(string strGuid)
+        {
+            return FindVehicleGear(strGuid, out WeaponAccessory _, out Cyberware _);
+        }
+
+        /// <summary>
+        /// Locate a piece of Gear within one of a character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        public Gear FindVehicleGear(string strGuid, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        {
+            if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                Gear objReturn = GearChildren.DeepFindById(strGuid);
+                if (objReturn != null)
+                {
+                    objFoundWeaponAccessory = null;
+                    objFoundCyberware = null;
+                    return objReturn;
+                }
+
+                // Look for any Gear that might be attached to this Vehicle through Weapon Accessories or Cyberware.
+                foreach (VehicleMod objMod in Mods)
+                {
+                    // Weapon Accessories.
+                    objReturn = objMod.Weapons.FindWeaponGear(strGuid, out WeaponAccessory objAccessory);
+
+                    if (objReturn != null)
+                    {
+                        objFoundWeaponAccessory = objAccessory;
+                        objFoundCyberware = null;
+                        return objReturn;
+                    }
+
+                    // Cyberware.
+                    objReturn = objMod.Cyberware.FindCyberwareGear(strGuid, out Cyberware objCyberware);
+
+                    if (objReturn != null)
+                    {
+                        objFoundWeaponAccessory = null;
+                        objFoundCyberware = objCyberware;
+                        return objReturn;
+                    }
+                }
+            }
+
+            objFoundWeaponAccessory = null;
+            objFoundCyberware = null;
+            return null;
+        }
+
+        /// <summary>
+        /// Locate a piece of Gear within one of a character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<Gear> FindVehicleGearAsync(string strGuid, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+                return null;
+            Gear objReturn = await GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+            if (objReturn != null)
+                return objReturn;
+
+            // Look for any Gear that might be attached to this Vehicle through Weapon Accessories or Cyberware.
+            await Mods.ForEachWithBreakAsync(async objMod =>
+            {
+                // Weapon Accessories.
+                objReturn = await objMod.Weapons.FindWeaponGearAsync(strGuid, token).ConfigureAwait(false);
+
+                if (objReturn != null)
+                    return false;
+
+                // Cyberware.
+                objReturn = await objMod.Cyberware.FindCyberwareGearAsync(strGuid, token).ConfigureAwait(false);
+
+                return objReturn == null;
+            }, token).ConfigureAwait(false);
+
+            return objReturn;
         }
 
         public int GetBaseMatrixAttribute(string strAttributeName)
@@ -3797,16 +3959,74 @@ namespace Chummer.Backend.Equipment
             return !int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
         }
 
+        public async Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strExpression = this.GetMatrixAttributeString(strAttributeName);
+            if (string.IsNullOrEmpty(strExpression))
+            {
+                switch (strAttributeName)
+                {
+                    case "Device Rating":
+                        return Pilot;
+
+                    case "Program Limit":
+                    case "Data Processing":
+                    case "Firewall":
+                        strExpression = this.GetMatrixAttributeString("Device Rating");
+                        if (string.IsNullOrEmpty(strExpression))
+                            return Pilot;
+                        break;
+
+                    default:
+                        return 0;
+                }
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    if (ChildrenWithMatrixAttributes.Any())
+                    {
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        {
+                            if (strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            {
+                                int intTotalChildrenValue = await ChildrenWithMatrixAttributes.SumAsync(async objChild =>
+                                {
+                                    if (objChild is Gear objGear && objGear.Equipped ||
+                                        objChild is Weapon objWeapon && objWeapon.Equipped)
+                                    {
+                                        return await objChild.GetBaseMatrixAttributeAsync(strMatrixAttribute, token);
+                                    }
+
+                                    return 0;
+                                }, token);
+
+                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                                 intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            }
+                        }
+                    }
+
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token);
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token);
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                }
+            }
+
+            return !int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
+        }
+
         public int GetBonusMatrixAttribute(string strAttributeName)
         {
             if (string.IsNullOrEmpty(strAttributeName))
                 return 0;
-            int intReturn = 0;
-
-            if (Overclocked == strAttributeName)
-            {
-                ++intReturn;
-            }
+            int intReturn = Overclocked == strAttributeName ? 1 : 0;
 
             string strAttributeNodeName = string.Empty;
             switch (strAttributeName)
@@ -3846,6 +4066,55 @@ namespace Chummer.Backend.Equipment
                     intReturn += loopGear.GetTotalMatrixAttribute(strAttributeName);
                 }
             }
+
+            return intReturn;
+        }
+
+        public async Task<int> GetBonusMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strAttributeName))
+                return 0;
+            int intReturn = await GetOverclockedAsync(token).ConfigureAwait(false) == strAttributeName ? 1 : 0;
+
+            string strAttributeNodeName = string.Empty;
+            switch (strAttributeName)
+            {
+                case "Device Rating":
+                    strAttributeNodeName = "devicerating";
+                    break;
+
+                case "Program Limit":
+                    strAttributeNodeName = "programs";
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(strAttributeNodeName))
+            {
+                intReturn += await Mods.SumAsync(objMod =>
+                {
+                    int intInnerReturn = 0;
+                    XmlNode objBonus = objMod.Bonus?[strAttributeNodeName];
+                    if (objBonus != null)
+                    {
+                        intInnerReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
+                    }
+
+                    objBonus = objMod.WirelessOn ? objMod.WirelessBonus?[strAttributeNodeName] : null;
+                    if (objBonus != null)
+                    {
+                        intInnerReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
+                    }
+
+                    return intInnerReturn;
+                }, token).ConfigureAwait(false);
+            }
+
+            if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
+                strAttributeName = "Mod " + strAttributeName;
+
+            intReturn += await GearChildren
+                .SumAsync(x => x.Equipped, x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token)
+                .ConfigureAwait(false);
 
             return intReturn;
         }

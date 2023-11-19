@@ -1114,28 +1114,56 @@ namespace Chummer
                                             x => x.GetDisplayNuyenAsync(GenericToken).AsTask(), GenericToken)
                                         .ConfigureAwait(false);
 
-                                    await lblStreetCredTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.TotalStreetCred), GenericToken).ConfigureAwait(false);
-                                    await lblStreetCredTotal.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                        nameof(Character.StreetCredTooltip), GenericToken).ConfigureAwait(false);
-                                    await lblNotorietyTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.TotalNotoriety), GenericToken).ConfigureAwait(false);
-                                    await lblNotorietyTotal.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                        nameof(Character.NotorietyTooltip), GenericToken).ConfigureAwait(false);
-                                    await lblPublicAwareTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.TotalPublicAwareness), GenericToken).ConfigureAwait(false);
-                                    await lblPublicAwareTotal.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                        nameof(Character.PublicAwarenessTooltip), GenericToken).ConfigureAwait(false);
-                                    await lblAstralReputationTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.TotalAstralReputation), GenericToken).ConfigureAwait(false);
-                                    await lblAstralReputationTotal.DoOneWayDataBindingAsync(
-                                        "ToolTipText", CharacterObject,
-                                        nameof(Character.AstralReputationTooltip), GenericToken).ConfigureAwait(false);
-                                    await lblWildReputationTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.TotalWildReputation), GenericToken).ConfigureAwait(false);
-                                    await lblWildReputationTotal.DoOneWayDataBindingAsync(
-                                        "ToolTipText", CharacterObject,
-                                        nameof(Character.WildReputationTooltip), GenericToken).ConfigureAwait(false);
+                                    await lblStreetCredTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y.ToString(GlobalSettings.Language), CharacterObject,
+                                            nameof(Character.TotalStreetCred),
+                                            x => x.GetTotalStreetCredAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblStreetCredTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.ToolTipText = y, CharacterObject,
+                                            nameof(Character.StreetCredTooltip),
+                                            x => x.GetStreetCredTooltipAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblNotorietyTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y.ToString(GlobalSettings.Language), CharacterObject,
+                                            nameof(Character.TotalNotoriety),
+                                            x => x.GetTotalNotorietyAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblNotorietyTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.ToolTipText = y, CharacterObject,
+                                            nameof(Character.NotorietyTooltip),
+                                            x => x.GetNotorietyTooltipAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblPublicAwareTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y.ToString(GlobalSettings.Language), CharacterObject,
+                                            nameof(Character.TotalPublicAwareness),
+                                            x => x.GetTotalPublicAwarenessAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblPublicAwareTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.ToolTipText = y, CharacterObject,
+                                            nameof(Character.PublicAwarenessTooltip),
+                                            x => x.GetPublicAwarenessTooltipAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblAstralReputationTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                            nameof(Character.TotalAstralReputation),
+                                            x => x.GetTotalAstralReputationAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblAstralReputationTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.ToolTipText = y, CharacterObject,
+                                            nameof(Character.AstralReputationTooltip),
+                                            x => x.GetAstralReputationTooltipAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblWildReputationTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                            nameof(Character.TotalWildReputation),
+                                            x => x.GetTotalWildReputationAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
+                                    await lblWildReputationTotal.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.ToolTipText = y, CharacterObject,
+                                            nameof(Character.WildReputationTooltip),
+                                            x => x.GetWildReputationTooltipAsync(GenericToken).AsTask(), GenericToken)
+                                        .ConfigureAwait(false);
 
                                     await lblMentorSpirit.RegisterOneWayAsyncDataBindingAsync(
                                         (x, y) => x.Text = y, CharacterObject,
@@ -1154,64 +1182,92 @@ namespace Chummer
                                         nameof(Character.FirstMentorSpiritDisplayInformation),
                                         x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken), GenericToken).ConfigureAwait(false);
 
+                                    await lblSurprise.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                                                               nameof(Character.SurpriseToolTip), GenericToken)
+                                                     .ConfigureAwait(false);
+                                    await lblSurprise.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                        nameof(Character.Surprise),
+                                        x => x.GetSurpriseAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
                                     await lblComposure.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character.ComposureToolTip), GenericToken).ConfigureAwait(false);
-                                    await lblComposure.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.Composure), GenericToken).ConfigureAwait(false);
-                                    await lblSurprise.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                                                               nameof(Character.SurpriseToolTip),
-                                                                               GenericToken).ConfigureAwait(false);
-                                    await lblSurprise.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                                                               nameof(Character.Surprise), GenericToken)
-                                                     .ConfigureAwait(false);
+                                    await lblComposure.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                        nameof(Character.Composure),
+                                        x => x.GetComposureAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
                                     await lblJudgeIntentions.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character.JudgeIntentionsToolTip), GenericToken).ConfigureAwait(false);
-                                    await lblJudgeIntentions.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.JudgeIntentions), GenericToken).ConfigureAwait(false);
+                                    await lblJudgeIntentions.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                        nameof(Character.JudgeIntentions),
+                                        x => x.GetJudgeIntentionsAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
                                     await lblLiftCarry.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character.LiftAndCarryToolTip), GenericToken).ConfigureAwait(false);
-                                    await lblLiftCarry.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.LiftAndCarry), GenericToken).ConfigureAwait(false);
+                                    await lblLiftCarry.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                        nameof(Character.LiftAndCarry),
+                                        x => x.GetLiftAndCarryAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
                                     await lblMemory.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                                                             nameof(Character.MemoryToolTip),
-                                                                             GenericToken).ConfigureAwait(false);
-                                    await lblMemory
-                                          .DoOneWayDataBindingAsync("Text", CharacterObject, nameof(Character.Memory),
-                                                                    GenericToken).ConfigureAwait(false);
+                                                                             nameof(Character.MemoryToolTip), GenericToken)
+                                                   .ConfigureAwait(false);
+                                    await lblMemory.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                        nameof(Character.Memory),
+                                        x => x.GetMemoryAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
 
-                                    await lblLiftCarryLimits.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.LiftAndCarryLimits), GenericToken).ConfigureAwait(false);
+                                    await lblLiftCarryLimits.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.LiftAndCarryLimits),
+                                        x => x.GetLiftAndCarryLimitsAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
 
-                                    await lblINI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                                                          nameof(Character.InitiativeToolTip),
-                                                                          GenericToken).ConfigureAwait(false);
-                                    await lblINI
-                                          .DoOneWayDataBindingAsync("Text", CharacterObject,
-                                                                    nameof(Character.Initiative), GenericToken)
-                                          .ConfigureAwait(false);
-                                    await lblAstralINI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                        nameof(Character.AstralInitiativeToolTip), GenericToken).ConfigureAwait(false);
-                                    await lblAstralINI.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.AstralInitiative), GenericToken).ConfigureAwait(false);
-                                    await lblMatrixINI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                        nameof(Character.MatrixInitiativeToolTip), GenericToken).ConfigureAwait(false);
-                                    await lblMatrixINI.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.MatrixInitiative), GenericToken).ConfigureAwait(false);
-                                    await lblMatrixINICold.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                                              nameof(Character.MatrixInitiativeColdToolTip),
-                                                              GenericToken)
-                                                          .ConfigureAwait(false);
-                                    await lblMatrixINICold.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.MatrixInitiativeCold), GenericToken).ConfigureAwait(false);
-                                    await lblMatrixINIHot.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                                             nameof(Character.MatrixInitiativeHotToolTip), GenericToken)
-                                                         .ConfigureAwait(false);
-                                    await lblMatrixINIHot.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.MatrixInitiativeHot), GenericToken).ConfigureAwait(false);
-                                    await lblRiggingINI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
-                                        nameof(Character.InitiativeToolTip), GenericToken).ConfigureAwait(false);
-                                    await lblRiggingINI.DoOneWayDataBindingAsync("Text", CharacterObject,
-                                        nameof(Character.Initiative), GenericToken).ConfigureAwait(false);
+                                    await lblINI.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.ToolTipText = y, CharacterObject,
+                                        nameof(Character.InitiativeToolTip),
+                                        x => x.GetInitiativeToolTipAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblINI.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.Initiative),
+                                        x => x.GetInitiativeAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblAstralINI.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.ToolTipText = y, CharacterObject,
+                                        nameof(Character.AstralInitiativeToolTip),
+                                        x => x.GetAstralInitiativeToolTipAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblAstralINI.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.AstralInitiative),
+                                        x => x.GetAstralInitiativeAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINI.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.ToolTipText = y, CharacterObject,
+                                        nameof(Character.MatrixInitiativeToolTip),
+                                        x => x.GetMatrixInitiativeToolTipAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINI.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.MatrixInitiative),
+                                        x => x.GetMatrixInitiativeAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINICold.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.ToolTipText = y, CharacterObject,
+                                        nameof(Character.MatrixInitiativeColdToolTip),
+                                        x => x.GetMatrixInitiativeColdToolTipAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINICold.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.MatrixInitiativeCold),
+                                        x => x.GetMatrixInitiativeColdAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINIHot.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.ToolTipText = y, CharacterObject,
+                                        nameof(Character.MatrixInitiativeHotToolTip),
+                                        x => x.GetMatrixInitiativeHotToolTipAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINIHot.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.MatrixInitiativeHot),
+                                        x => x.GetMatrixInitiativeHotAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblRiggingINI.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.ToolTipText = y, CharacterObject,
+                                        nameof(Character.InitiativeToolTip),
+                                        x => x.GetInitiativeToolTipAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
+                                    await lblRiggingINI.RegisterOneWayAsyncDataBindingAsync(
+                                        (x, y) => x.Text = y, CharacterObject,
+                                        nameof(Character.Initiative),
+                                        x => x.GetInitiativeAsync(GenericToken).AsTask(), GenericToken).ConfigureAwait(false);
                                 }
 
                                 using (Timekeeper.StartSyncron(

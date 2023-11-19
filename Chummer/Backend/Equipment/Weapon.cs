@@ -7844,6 +7844,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                if (!_objCharacter.Overclocker)
+                    return string.Empty;
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
                 return objThis != null ? objThis.Overclocked : _strOverclocked;
             }
@@ -7857,9 +7859,17 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// Empty for Weapons.
-        /// </summary>
+        /// <inheritdoc />
+        public async Task<string> GetOverclockedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!await _objCharacter.GetOverclockerAsync(token).ConfigureAwait(false))
+                return string.Empty;
+            IHasMatrixAttributes objThis = await GetMatrixAttributesOverrideAsync(token).ConfigureAwait(false);
+            return objThis != null ? await objThis.GetOverclockedAsync(token).ConfigureAwait(false) : _strOverclocked;
+        }
+
+        /// <inheritdoc />
         public string CanFormPersona
         {
             get
@@ -7875,6 +7885,15 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <inheritdoc />
+        public async Task<string> GetCanFormPersonaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IHasMatrixAttributes objThis = await GetMatrixAttributesOverrideAsync(token).ConfigureAwait(false);
+            return objThis != null ? await objThis.GetCanFormPersonaAsync(token).ConfigureAwait(false) : string.Empty;
+        }
+
+        /// <inheritdoc />
         public bool IsCommlink
         {
             get
@@ -7882,6 +7901,14 @@ namespace Chummer.Backend.Equipment
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
                 return objThis?.IsCommlink == true;
             }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> GetIsCommlinkAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IHasMatrixAttributes objThis = await GetMatrixAttributesOverrideAsync(token).ConfigureAwait(false);
+            return objThis != null && await objThis.GetIsCommlinkAsync(token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -9209,27 +9236,27 @@ namespace Chummer.Backend.Equipment
 
         private IEnumerable<WeaponAccessory> GetClipProvidingAccessories()
         {
-            foreach (WeaponAccessory accessory in WeaponAccessories)
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
-                for (int i = 0; i < accessory.AmmoSlots; i++)
+                for (int i = 0; i < objAccessory.AmmoSlots; i++)
                 {
-                    yield return accessory;
+                    yield return objAccessory;
                 }
             }
         }
 
-        private void AddAmmoSlots(WeaponAccessory accessory)
+        private void AddAmmoSlots(WeaponAccessory objAccessory)
         {
-            for (int i = 0; i < accessory.AmmoSlots; i++)
-                _lstAmmo.Add(new Clip(_objCharacter, accessory, this, null, 0));
+            for (int i = 0; i < objAccessory.AmmoSlots; i++)
+                _lstAmmo.Add(new Clip(_objCharacter, objAccessory, this, null, 0));
         }
 
-        private void RemoveAmmoSlots(WeaponAccessory accessory)
+        private void RemoveAmmoSlots(WeaponAccessory objAccessory)
         {
             for (int i = _lstAmmo.Count - 1; i >= 0; i--)
             {
                 Clip clip = _lstAmmo[i];
-                if (clip.OwnedBy == accessory.InternalId)
+                if (clip.OwnedBy == objAccessory.InternalId)
                 {
                     if (ActiveAmmoSlot == i + 1)
                         ActiveAmmoSlot = 1;
@@ -9241,12 +9268,12 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private async ValueTask RemoveAmmoSlotsAsync(WeaponAccessory accessory, CancellationToken token = default)
+        private async ValueTask RemoveAmmoSlotsAsync(WeaponAccessory objAccessory, CancellationToken token = default)
         {
             for (int i = _lstAmmo.Count - 1; i >= 0; i--)
             {
                 Clip clip = _lstAmmo[i];
-                if (clip.OwnedBy == accessory.InternalId)
+                if (clip.OwnedBy == objAccessory.InternalId)
                 {
                     if (ActiveAmmoSlot == i + 1)
                         ActiveAmmoSlot = 1;
@@ -9299,22 +9326,308 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                IHasMatrixAttributes objReturn = null;
-                if (!string.IsNullOrEmpty(ParentID))
+                if (string.IsNullOrEmpty(ParentID))
+                    return null;
+                IHasMatrixAttributes objReturn = _objCharacter.Gear.DeepFindById(ParentID);
+                if (objReturn != null)
+                    return objReturn;
+                foreach (Armor objArmor in _objCharacter.Armor)
                 {
-                    objReturn = (_objCharacter.Gear.DeepFindById(ParentID) ??
-                                 _objCharacter.Vehicles.FindVehicleGear(ParentID) ??
-                                 _objCharacter.Weapons.FindWeaponGear(ParentID) ??
-                                 (IHasMatrixAttributes)_objCharacter.Armor.FirstOrDefault(x => x.InternalId == ParentID) ??
-                                 _objCharacter.Armor.FindArmorGear(ParentID) ??
-                                 _objCharacter.Cyberware.FindCyberwareGear(ParentID)) ??
-                                ((_objCharacter.Cyberware.DeepFindById(ParentID) ??
-                                  _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)) ??
-                                 ((_objCharacter.Weapons.DeepFindById(ParentID) ??
-                                   _objCharacter.Vehicles.FindVehicleWeapon(ParentID)) ?? (IHasMatrixAttributes)_objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == ParentID)));
+                    if (objArmor.InternalId == ParentID)
+                        return objArmor;
+                    objReturn = objArmor.GearChildren.DeepFindById(ParentID);
+                    if (objReturn != null)
+                        return objReturn;
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    {
+                        objReturn = objMod.GearChildren.DeepFindById(ParentID);
+                        if (objReturn != null)
+                            return objReturn;
+                    }
                 }
-                return objReturn;
+
+                foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                {
+                    if (objWeapon.InternalId == ParentID)
+                        return objWeapon;
+                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                    {
+                        objReturn = objAccessory.GearChildren.DeepFindById(ParentID);
+                        if (objReturn != null)
+                            return objReturn;
+                    }
+                }
+
+                foreach (Cyberware objCyberware in _objCharacter.Cyberware.GetAllDescendants(x => x.Children))
+                {
+                    if (objCyberware.InternalId == ParentID)
+                        return objCyberware;
+                    objReturn = objCyberware.GearChildren.DeepFindById(ParentID);
+                    if (objReturn != null)
+                        return objReturn;
+                }
+
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                {
+                    if (objVehicle.InternalId == ParentID)
+                        return objVehicle;
+                    objReturn = objVehicle.GearChildren.DeepFindById(ParentID);
+                    if (objReturn != null)
+                        return objReturn;
+                    foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                    {
+                        if (objWeapon.InternalId == ParentID)
+                            return objWeapon;
+                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                        {
+                            objReturn = objAccessory.GearChildren.DeepFindById(ParentID);
+                            if (objReturn != null)
+                                return objReturn;
+                        }
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                        {
+                            if (objWeapon.InternalId == ParentID)
+                                return objWeapon;
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            {
+                                objReturn = objAccessory.GearChildren.DeepFindById(ParentID);
+                                if (objReturn != null)
+                                    return objReturn;
+                            }
+                        }
+
+                        foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                        {
+                            if (objCyberware.InternalId == ParentID)
+                                return objCyberware;
+                            objReturn = objCyberware.GearChildren.DeepFindById(ParentID);
+                            if (objReturn != null)
+                                return objReturn;
+                        }
+                    }
+
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                        {
+                            if (objWeapon.InternalId == ParentID)
+                                return objWeapon;
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            {
+                                objReturn = objAccessory.GearChildren.DeepFindById(ParentID);
+                                if (objReturn != null)
+                                    return objReturn;
+                            }
+                        }
+
+                        foreach (VehicleMod objMod in objMount.Mods)
+                        {
+                            foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                            {
+                                if (objWeapon.InternalId == ParentID)
+                                    return objWeapon;
+                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                {
+                                    objReturn = objAccessory.GearChildren.DeepFindById(ParentID);
+                                    if (objReturn != null)
+                                        return objReturn;
+                                }
+                            }
+
+                            foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                            {
+                                if (objCyberware.InternalId == ParentID)
+                                    return objCyberware;
+                                objReturn = objCyberware.GearChildren.DeepFindById(ParentID);
+                                if (objReturn != null)
+                                    return objReturn;
+                            }
+                        }
+                    }
+                }
+
+                return null;
             }
+        }
+
+        private async ValueTask<IHasMatrixAttributes> GetMatrixAttributesOverrideAsync(CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(ParentID))
+                return null;
+            IHasMatrixAttributes objReturn = await _objCharacter.Gear.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+            if (objReturn != null)
+                return objReturn;
+            await _objCharacter.Armor.ForEachWithBreakAsync(async objArmor =>
+            {
+                if (objArmor.InternalId == ParentID)
+                {
+                    objReturn = objArmor;
+                    return false;
+                }
+
+                objReturn = await objArmor.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                if (objReturn != null)
+                    return false;
+                await objArmor.ArmorMods.ForEachWithBreakAsync(async objMod =>
+                {
+                    objReturn = await objMod.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                    return objReturn == null;
+                }, token).ConfigureAwait(false);
+
+                return objReturn == null;
+            }, token).ConfigureAwait(false);
+            if (objReturn != null)
+                return objReturn;
+
+            foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children, token))
+            {
+                if (objWeapon.InternalId == ParentID)
+                    return objWeapon;
+                await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                {
+                    objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                    return objReturn == null;
+                }, token).ConfigureAwait(false);
+                if (objReturn != null)
+                    return objReturn;
+            }
+
+            foreach (Cyberware objCyberware in _objCharacter.Cyberware.GetAllDescendants(x => x.Children, token))
+            {
+                if (objCyberware.InternalId == ParentID)
+                    return objCyberware;
+                objReturn = await objCyberware.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                if (objReturn != null)
+                    return objReturn;
+            }
+
+            await _objCharacter.Vehicles.ForEachWithBreakAsync(async objVehicle =>
+            {
+                if (objVehicle.InternalId == ParentID)
+                {
+                    objReturn = objVehicle;
+                    return false;
+                }
+
+                objReturn = await objVehicle.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                if (objReturn != null)
+                    return false;
+                foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children, token))
+                {
+                    if (objWeapon.InternalId == ParentID)
+                    {
+                        objReturn = objWeapon;
+                        return false;
+                    }
+
+                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                    {
+                        objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                        return objReturn == null;
+                    }, token).ConfigureAwait(false);
+                    if (objReturn != null)
+                        return false;
+                }
+
+                await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                {
+                    foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children, token))
+                    {
+                        if (objWeapon.InternalId == ParentID)
+                        {
+                            objReturn = objWeapon;
+                            return false;
+                        }
+
+                        await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                        {
+                            objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                            return objReturn == null;
+                        }, token).ConfigureAwait(false);
+                        if (objReturn != null)
+                            return false;
+                    }
+
+                    foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children, token))
+                    {
+                        if (objCyberware.InternalId == ParentID)
+                        {
+                            objReturn = objCyberware;
+                            return false;
+                        }
+
+                        objReturn = await objCyberware.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                        if (objReturn != null)
+                            return false;
+                    }
+
+                    return objReturn == null;
+                }, token).ConfigureAwait(false);
+
+                await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
+                {
+                    foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children, token))
+                    {
+                        if (objWeapon.InternalId == ParentID)
+                        {
+                            objReturn = objWeapon;
+                            return false;
+                        }
+
+                        await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                        {
+                            objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                            return objReturn == null;
+                        }, token).ConfigureAwait(false);
+                        if (objReturn != null)
+                            return false;
+                    }
+
+                    await objMount.Mods.ForEachWithBreakAsync(async objMod =>
+                    {
+                        foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children, token))
+                        {
+                            if (objWeapon.InternalId == ParentID)
+                            {
+                                objReturn = objWeapon;
+                                return false;
+                            }
+
+                            await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                            {
+                                objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                                return objReturn == null;
+                            }, token).ConfigureAwait(false);
+                            if (objReturn != null)
+                                return false;
+                        }
+
+                        foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children, token))
+                        {
+                            if (objCyberware.InternalId == ParentID)
+                            {
+                                objReturn = objCyberware;
+                                return false;
+                            }
+
+                            objReturn = await objCyberware.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                            if (objReturn != null)
+                                return false;
+                        }
+
+                        return objReturn == null;
+                    }, token).ConfigureAwait(false);
+
+                    return objReturn == null;
+                }, token).ConfigureAwait(false);
+                return objReturn == null;
+            }, token).ConfigureAwait(false);
+
+            return null;
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -9432,6 +9745,86 @@ namespace Chummer.Backend.Equipment
             return intReturn;
         }
 
+        public async Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IHasMatrixAttributes objThis = await GetMatrixAttributesOverrideAsync(token).ConfigureAwait(false);
+            if (objThis != null)
+                return await objThis.GetBaseMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false);
+            string strExpression = this.GetMatrixAttributeString(strAttributeName);
+            if (string.IsNullOrEmpty(strExpression))
+            {
+                switch (strAttributeName)
+                {
+                    case "Device Rating":
+                        strExpression = "2";
+                        break;
+
+                    case "Program Limit":
+                        if (await GetIsCommlinkAsync(token).ConfigureAwait(false))
+                        {
+                            strExpression = this.GetMatrixAttributeString("Device Rating");
+                            if (string.IsNullOrEmpty(strExpression))
+                                strExpression = "2";
+                        }
+                        else
+                            strExpression = "0";
+
+                        break;
+
+                    case "Data Processing":
+                    case "Firewall":
+                        strExpression = this.GetMatrixAttributeString("Device Rating");
+                        if (string.IsNullOrEmpty(strExpression))
+                            strExpression = "2";
+                        break;
+
+                    default:
+                        strExpression = "0";
+                        break;
+                }
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                    {
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
+                            () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(
+                                GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                () => Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0", token: token)
+                            .ConfigureAwait(false);
+                        if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                            strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                        {
+                            int intTotalChildrenValue = await Children.SumAsync(x => x.Equipped,
+                                    x => x.GetBaseMatrixAttributeAsync(strMatrixAttribute, token), token)
+                                .ConfigureAwait(false);
+                            sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                    }
+
+                    await _objCharacter.AttributeSection
+                        .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    // Replace the division sign with "div" since we're using XPath.
+                    sbdValue.Replace("/", " div ");
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token)
+                            .ConfigureAwait(false);
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                }
+            }
+
+            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
+            return intReturn;
+        }
+
         public int GetBonusMatrixAttribute(string strAttributeName)
         {
             if (string.IsNullOrEmpty(strAttributeName))
@@ -9456,6 +9849,25 @@ namespace Chummer.Backend.Equipment
                     intReturn += objLoopWeapon.GetTotalMatrixAttribute(strAttributeName);
                 }
             }
+
+            return intReturn;
+        }
+
+        public async Task<int> GetBonusMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strAttributeName))
+                return 0;
+            IHasMatrixAttributes objThis = await GetMatrixAttributesOverrideAsync(token);
+            if (objThis != null)
+                return await objThis.GetBonusMatrixAttributeAsync(strAttributeName, token);
+            int intReturn = await GetOverclockedAsync(token).ConfigureAwait(false) == strAttributeName ? 1 : 0;
+
+            if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
+                strAttributeName = "Mod " + strAttributeName;
+
+            intReturn += await Children.SumAsync(x => x.Equipped && x.ParentID != InternalId,
+                x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token);
 
             return intReturn;
         }

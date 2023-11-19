@@ -21,6 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Chummer.Annotations;
 
 namespace Chummer
 {
@@ -34,11 +37,23 @@ namespace Chummer
         public static T DeepFindById<T>(this IEnumerable<T> lstHaystack, string strGuid) where T : IHasChildren<T>, IHasInternalId
         {
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
-            {
                 return default;
-            }
-
             return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid);
+        }
+
+        /// <summary>
+        /// Locate an object (Needle) within a list and its children (Haystack) based on GUID match.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Needle to Find.</param>
+        /// <param name="lstHaystack">Haystack to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<T> DeepFindByIdAsync<T>(this IAsyncEnumerable<T> lstHaystack, string strGuid, CancellationToken token = default) where T : IHasChildren<T>, IHasInternalId
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T>(token);
+            if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
+                return Task.FromResult<T>(default);
+            return lstHaystack.DeepFirstOrDefaultAsync(x => x.Children, x => x.InternalId == strGuid, token: token);
         }
 
         /// <summary>
@@ -169,6 +184,102 @@ namespace Chummer
             if (lstCollection is List<T> lstCastedCollection)
                 return lstCastedCollection.FindAll(predicate);
             return lstCollection.Where(x => predicate(x)).ToList();
+        }
+
+        public static async Task<int> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    intReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            return intReturn;
+        }
+
+        public static async Task<long> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    lngReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            return lngReturn;
+        }
+
+        public static async Task<short> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<short>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            short shtReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    shtReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            return shtReturn;
+        }
+
+        public static async Task<float> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    fltReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            return fltReturn;
+        }
+
+        public static async Task<double> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    dblReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            return dblReturn;
+        }
+
+        public static async Task<decimal> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    decReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            return decReturn;
         }
     }
 }
