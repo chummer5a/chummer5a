@@ -41,7 +41,7 @@ namespace Chummer
             return new LockingEnumerator<T>(objMyRelease);
         }
 
-        public static async ValueTask<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
+        public static async Task<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
             IDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try

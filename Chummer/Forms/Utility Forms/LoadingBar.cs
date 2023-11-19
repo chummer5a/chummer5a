@@ -83,7 +83,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public async ValueTask ResetAsync(int intMaxProgressBarValue = 100, CancellationToken token = default)
+        public async Task ResetAsync(int intMaxProgressBarValue = 100, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
@@ -167,7 +167,7 @@ namespace Chummer
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
         /// <param name="eUseTextPattern">The text pattern to use in combination with <paramref name="strStepName"/>, e.g. "Loading", "Saving", et al.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public async ValueTask PerformStepAsync(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading, CancellationToken token = default)
+        public async Task PerformStepAsync(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())

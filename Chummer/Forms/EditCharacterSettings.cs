@@ -82,13 +82,11 @@ namespace Chummer
 
             _dicCharacterCustomDataDirectoryInfos = new LockingTypedOrderedDictionary<object, bool>();
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
-            using (_objCharacterSettings.LockObject.EnterWriteLock())
-                _objCharacterSettings.PropertyChanged += SettingsChanged;
+            _objCharacterSettings.PropertyChangedAsync += SettingsChanged;
             Disposed += (sender, args) =>
             {
                 _dicCharacterCustomDataDirectoryInfos.Dispose();
-                using (_objCharacterSettings.LockObject.EnterWriteLock())
-                    _objCharacterSettings.PropertyChanged -= SettingsChanged;
+                _objCharacterSettings.PropertyChangedAsync -= SettingsChanged;
                 _objCharacterSettings.Dispose();
                 Utils.ListItemListPool.Return(ref _lstSettings);
                 Utils.StringHashSetPool.Return(ref _setPermanentSourcebooks);
@@ -1141,7 +1139,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask PopulateSourcebookTreeView(CancellationToken token = default)
+        private async Task PopulateSourcebookTreeView(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Load the Sourcebook information.
@@ -1207,7 +1205,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateCustomDataDirectoryTreeView(CancellationToken token = default)
+        private async Task PopulateCustomDataDirectoryTreeView(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             object objOldSelected = await treCustomDataDirectories
@@ -1386,7 +1384,7 @@ namespace Chummer
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
-        private async ValueTask PopulateOptions(CancellationToken token = default)
+        private async Task PopulateOptions(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -1414,7 +1412,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulatePriorityTableList(CancellationToken token = default)
+        private async Task PopulatePriorityTableList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -1478,7 +1476,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateLimbCountList(CancellationToken token = default)
+        private async Task PopulateLimbCountList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -1547,7 +1545,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateAllowedGrades(CancellationToken token = default)
+        private async Task PopulateAllowedGrades(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -1684,7 +1682,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RebuildCustomDataDirectoryInfosAsync(CancellationToken token = default)
+        private async Task RebuildCustomDataDirectoryInfosAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject
                 .EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -1715,7 +1713,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask SetToolTips(CancellationToken token = default)
+        private async Task SetToolTips(CancellationToken token = default)
         {
             await chkUnarmedSkillImprovements
                   .SetToolTipAsync(
@@ -1755,16 +1753,16 @@ namespace Chummer
                       .WordWrap(), token).ConfigureAwait(false);
         }
 
-        private async ValueTask SetupDataBindings(CancellationToken token = default)
+        private async Task SetupDataBindings(CancellationToken token = default)
         {
             await cmdRename.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
                                                                 nameof(CharacterSettings.BuiltInOption),
-                                                                x => x.GetBuiltInOptionAsync(token).AsTask(),
+                                                                x => x.GetBuiltInOptionAsync(token),
                                                                 token: token)
                            .ConfigureAwait(false);
             await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
                                                                 nameof(CharacterSettings.BuiltInOption),
-                                                                x => x.GetBuiltInOptionAsync(token).AsTask(),
+                                                                x => x.GetBuiltInOptionAsync(token),
                                                                 token: token)
                            .ConfigureAwait(false);
 
@@ -1777,7 +1775,7 @@ namespace Chummer
                                                                        x => x
                                                                             .GetBuildMethodUsesPriorityTablesAsync(
                                                                                 token)
-                                                                            .AsTask(), token: token)
+                                                                            , token: token)
                                   .ConfigureAwait(false);
             await cboPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                        nameof(CharacterSettings
@@ -1785,28 +1783,28 @@ namespace Chummer
                                                                        x => x
                                                                             .GetBuildMethodUsesPriorityTablesAsync(
                                                                                 token)
-                                                                            .AsTask(), token: token)
+                                                                            , token: token)
                                   .ConfigureAwait(false);
             await lblPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                     nameof(CharacterSettings.BuildMethodIsPriority),
                                                                     x => x.GetBuildMethodIsPriorityAsync(token)
-                                                                          .AsTask(),
+                                                                          ,
                                                                     token: token).ConfigureAwait(false);
             await txtPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                     nameof(CharacterSettings.BuildMethodIsPriority),
                                                                     x => x.GetBuildMethodIsPriorityAsync(token)
-                                                                          .AsTask(),
+                                                                          ,
                                                                     token: token).ConfigureAwait(false);
             await txtPriorities
                   .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.PriorityArray), token)
                   .ConfigureAwait(false);
             await lblSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings.BuildMethodIsSumtoTen),
-                                                                  x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
+                                                                  x => x.GetBuildMethodIsSumtoTenAsync(token),
                                                                   token: token).ConfigureAwait(false);
             await nudSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings.BuildMethodIsSumtoTen),
-                                                                  x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
+                                                                  x => x.GetBuildMethodIsSumtoTenAsync(token),
                                                                   token: token).ConfigureAwait(false);
             await nudSumToTen
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.SumtoTen), token)
@@ -1965,7 +1963,7 @@ namespace Chummer
             await nudCyberlimbAttributeBonusCap.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride),
-                x => x.GetCyberlimbAttributeBonusCapOverrideAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetCyberlimbAttributeBonusCapOverrideAsync(token), token: token).ConfigureAwait(false);
             await nudCyberlimbAttributeBonusCap
                   .DoDataBindingAsync("Value", _objCharacterSettings,
                                       nameof(CharacterSettings.CyberlimbAttributeBonusCap), token)
@@ -2044,14 +2042,14 @@ namespace Chummer
             await flpKarmaGainedFromEnemies.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
-                x => x.GetEnableEnemyTrackingAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetEnableEnemyTrackingAsync(token), token: token).ConfigureAwait(false);
             await nudKarmaGainedFromEnemies
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaEnemy), token)
                   .ConfigureAwait(false);
             await chkEnemyKarmaQualityLimit.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
-                x => x.GetEnableEnemyTrackingAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetEnableEnemyTrackingAsync(token), token: token).ConfigureAwait(false);
             await chkEnemyKarmaQualityLimit
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.EnemyKarmaQualityLimit), token).ConfigureAwait(false);
@@ -2082,7 +2080,7 @@ namespace Chummer
             await chkMysAdPp.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
-                x => x.GetMysAdeptSecondMAGAttributeAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetMysAdeptSecondMAGAttributeAsync(token), token: token).ConfigureAwait(false);
             await chkPrioritySpellsAsAdeptPowers
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.PrioritySpellsAsAdeptPowers), token)
@@ -2090,7 +2088,7 @@ namespace Chummer
             await chkPrioritySpellsAsAdeptPowers.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
-                x => x.GetMysAdeptSecondMAGAttributeAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetMysAdeptSecondMAGAttributeAsync(token), token: token).ConfigureAwait(false);
             await chkMysAdeptSecondMAGAttribute
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.MysAdeptSecondMAGAttribute), token)
@@ -2098,7 +2096,7 @@ namespace Chummer
             await chkMysAdeptSecondMAGAttribute.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttributeEnabled),
-                x => x.GetMysAdeptSecondMAGAttributeEnabledAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetMysAdeptSecondMAGAttributeEnabledAsync(token), token: token).ConfigureAwait(false);
             await chkUsePointsOnBrokenGroups
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.UsePointsOnBrokenGroups), token).ConfigureAwait(false);
@@ -2151,7 +2149,7 @@ namespace Chummer
             await nudDroneArmorMultiplier.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.DroneArmorMultiplierEnabled),
-                x => x.GetDroneArmorMultiplierEnabledAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetDroneArmorMultiplierEnabledAsync(token), token: token).ConfigureAwait(false);
             await nudDroneArmorMultiplier
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.DroneArmorMultiplier),
                                       token).ConfigureAwait(false);
@@ -2164,7 +2162,7 @@ namespace Chummer
             await chkExceedNegativeQualitiesNoBonus.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedNegativeQualities),
-                x => x.GetExceedNegativeQualitiesAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetExceedNegativeQualitiesAsync(token), token: token).ConfigureAwait(false);
             await chkExceedNegativeQualitiesNoBonus
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus), token)
@@ -2175,7 +2173,7 @@ namespace Chummer
             await chkExceedPositiveQualitiesCostDoubled.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedPositiveQualities),
-                x => x.GetExceedPositiveQualitiesAsync(token).AsTask(), token: token).ConfigureAwait(false);
+                x => x.GetExceedPositiveQualitiesAsync(token), token: token).ConfigureAwait(false);
             await chkExceedPositiveQualitiesCostDoubled
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled), token)
@@ -2341,7 +2339,7 @@ namespace Chummer
                   .ConfigureAwait(false);
         }
 
-        private async ValueTask PopulateSettingsList(CancellationToken token = default)
+        private async Task PopulateSettingsList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -2381,9 +2379,9 @@ namespace Chummer
             }
         }
 
-        private async void SettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async Task SettingsChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (Interlocked.CompareExchange(ref _intLoading, 1, 0) == 0)
@@ -2391,16 +2389,16 @@ namespace Chummer
                     try
                     {
                         await SetIsDirtyAsync(!await _objCharacterSettings
-                                                .HasIdenticalSettingsAsync(_objReferenceCharacterSettings)
-                                                .ConfigureAwait(false)).ConfigureAwait(false);
+                                                .HasIdenticalSettingsAsync(_objReferenceCharacterSettings, token)
+                                                .ConfigureAwait(false), token).ConfigureAwait(false);
                         switch (e.PropertyName)
                         {
                             case nameof(CharacterSettings.EnabledCustomDataDirectoryPaths):
-                                await PopulateOptions().ConfigureAwait(false);
+                                await PopulateOptions(token).ConfigureAwait(false);
                                 break;
 
                             case nameof(CharacterSettings.PriorityTable):
-                                await PopulatePriorityTableList().ConfigureAwait(false);
+                                await PopulatePriorityTableList(token).ConfigureAwait(false);
                                 break;
                         }
                     }
@@ -2415,21 +2413,21 @@ namespace Chummer
                     {
                         case nameof(CharacterSettings.BuiltInOption):
                         {
-                            bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync().ConfigureAwait(false);
+                            bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync(token).ConfigureAwait(false);
                             await cmdSave.DoThreadSafeAsync(
                                 x => x.Enabled = IsDirty && blnAllTextBoxesLegal
-                                                         && !_objCharacterSettings.BuiltInOption).ConfigureAwait(false);
+                                                         && !_objCharacterSettings.BuiltInOption, token: token).ConfigureAwait(false);
                             break;
                         }
                         case nameof(CharacterSettings.PriorityArray):
                         case nameof(CharacterSettings.BuildMethod):
                         {
-                            bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync().ConfigureAwait(false);
-                            await cmdSaveAs.DoThreadSafeAsync(x => x.Enabled = IsDirty && blnAllTextBoxesLegal)
+                            bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync(token).ConfigureAwait(false);
+                            await cmdSaveAs.DoThreadSafeAsync(x => x.Enabled = IsDirty && blnAllTextBoxesLegal, token: token)
                                            .ConfigureAwait(false);
                             await cmdSave.DoThreadSafeAsync(
                                 x => x.Enabled = IsDirty && blnAllTextBoxesLegal
-                                                         && !_objCharacterSettings.BuiltInOption).ConfigureAwait(false);
+                                                         && !_objCharacterSettings.BuiltInOption, token: token).ConfigureAwait(false);
                             break;
                         }
                         // Not data-bound so that the setter can be asynchronous
@@ -2437,7 +2435,7 @@ namespace Chummer
                         {
                             await txtNuyenExpression.DoThreadSafeAsync(
                                                         x => x.Text = _objCharacterSettings
-                                                            .ChargenKarmaToNuyenExpression)
+                                                            .ChargenKarmaToNuyenExpression, token: token)
                                                     .ConfigureAwait(false);
                             break;
                         }
@@ -2477,7 +2475,7 @@ namespace Chummer
                        _objCharacterSettings.EncumbranceIntervalExpression);
         }
 
-        private async ValueTask<bool> IsAllTextBoxesLegalAsync(CancellationToken token = default)
+        private async Task<bool> IsAllTextBoxesLegalAsync(CancellationToken token = default)
         {
             if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority
                 && _objCharacterSettings.PriorityArray.Length != 5)
@@ -2538,7 +2536,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask SetIsDirtyAsync(bool value, CancellationToken token = default)
+        private async Task SetIsDirtyAsync(bool value, CancellationToken token = default)
         {
             int intNewValue = value.ToInt32();
             if (Interlocked.Exchange(ref _intDirty, intNewValue) == intNewValue)

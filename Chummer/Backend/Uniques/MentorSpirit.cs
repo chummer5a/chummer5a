@@ -411,7 +411,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -598,7 +598,7 @@ namespace Chummer
         /// <summary>
         /// Choices related to the mentor as it should be displayed in the UI.
         /// </summary>
-        public async ValueTask<string> DisplayExtrasAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayExtrasAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -758,7 +758,7 @@ namespace Chummer
         /// <summary>
         /// Advantage of the mentor as it should be displayed in the UI.
         /// </summary>
-        public async ValueTask<string> DisplayAdvantageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayAdvantageAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -811,7 +811,7 @@ namespace Chummer
         /// <summary>
         /// Disadvantage of the mentor as it should be displayed in the UI.
         /// </summary>
-        public async ValueTask<string> DisplayDisadvantageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayDisadvantageAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -844,7 +844,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -864,12 +864,12 @@ namespace Chummer
 
         public string CurrentDisplayName => CurrentDisplayNameShort;
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
         {
             return DisplayNameShortAsync(GlobalSettings.Language, token);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
             return GetCurrentDisplayNameShortAsync(token);
         }
@@ -932,7 +932,7 @@ namespace Chummer
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;

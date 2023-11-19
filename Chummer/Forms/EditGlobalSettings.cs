@@ -1089,7 +1089,7 @@ namespace Chummer
 
         private bool _blnPromptPdfReaderOnLoad;
 
-        public async ValueTask DoLinkPdfReader(CancellationToken token = default)
+        public async Task DoLinkPdfReader(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_intLoading > 0)
@@ -1100,7 +1100,7 @@ namespace Chummer
 
         private string _strSelectCodeOnRefresh = string.Empty;
 
-        public async ValueTask DoLinkPdf(string strCode, CancellationToken token = default)
+        public async Task DoLinkPdf(string strCode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_intLoading > 0)
@@ -1117,7 +1117,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PromptPdfLocation(CancellationToken token = default)
+        private async Task PromptPdfLocation(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!await txtPDFLocation.DoThreadSafeFuncAsync(x => x.Enabled, token).ConfigureAwait(false))
@@ -1187,7 +1187,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PromptPdfAppPath(CancellationToken token = default)
+        private async Task PromptPdfAppPath(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Prompt the user to select a save file to associate with this Contact.
@@ -1257,7 +1257,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask TranslateForm(CancellationToken token = default)
+        private async Task TranslateForm(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             await this.TranslateWinFormAsync(_strSelectedLanguage, token: token).ConfigureAwait(false);
@@ -1283,7 +1283,7 @@ namespace Chummer
             await PopulateDpiScalingMethods(token).ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshGlobalSourcebookInfosListView(CancellationToken token = default)
+        private async Task RefreshGlobalSourcebookInfosListView(CancellationToken token = default)
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
@@ -1338,7 +1338,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateCustomDataDirectoryListBox(CancellationToken token = default)
+        private async Task PopulateCustomDataDirectoryListBox(CancellationToken token = default)
         {
             ListItem objOldSelected;
             Interlocked.Increment(ref _intSkipRefresh);
@@ -1409,7 +1409,7 @@ namespace Chummer
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
-        private async ValueTask PopulateOptions(CancellationToken token = default)
+        private async Task PopulateOptions(CancellationToken token = default)
         {
             await RefreshGlobalSourcebookInfosListView(token).ConfigureAwait(false);
             await PopulateCustomDataDirectoryListBox(token).ConfigureAwait(false);
@@ -1518,7 +1518,7 @@ namespace Chummer
                                                           .ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private async ValueTask SaveGlobalOptions(CancellationToken token = default)
+        private async Task SaveGlobalOptions(CancellationToken token = default)
         {
             GlobalSettings.AutomaticUpdate
                 = await chkAutomaticUpdate.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
@@ -1676,13 +1676,13 @@ namespace Chummer
         /// <summary>
         /// Save the global settings to the registry.
         /// </summary>
-        private async ValueTask SaveRegistrySettings(CancellationToken token = default)
+        private async Task SaveRegistrySettings(CancellationToken token = default)
         {
             await SaveGlobalOptions(token).ConfigureAwait(false);
             await GlobalSettings.SaveOptionsToRegistry(token).ConfigureAwait(false);
         }
 
-        private async ValueTask PopulateDefaultCharacterSettingLists(CancellationToken token = default)
+        private async Task PopulateDefaultCharacterSettingLists(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -1744,7 +1744,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateChum5lzCompressionLevelOptions(CancellationToken token = default)
+        private async Task PopulateChum5lzCompressionLevelOptions(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -1785,7 +1785,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateMugshotCompressionOptions(CancellationToken token = default)
+        private async Task PopulateMugshotCompressionOptions(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -1854,7 +1854,7 @@ namespace Chummer
                                               .ConfigureAwait(false);
         }
 
-        private async ValueTask PopulatePdfParameters(CancellationToken token = default)
+        private async Task PopulatePdfParameters(CancellationToken token = default)
         {
             int intIndex = 0;
 
@@ -1923,7 +1923,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateApplicationInsightsOptions(CancellationToken token = default)
+        private async Task PopulateApplicationInsightsOptions(CancellationToken token = default)
         {
             string strOldSelected
                 = await cboUseLoggingApplicationInsights.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
@@ -1958,7 +1958,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateColorModes(CancellationToken token = default)
+        private async Task PopulateColorModes(CancellationToken token = default)
         {
             string strOldSelected = await cboColorMode.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                                                       .ConfigureAwait(false)
@@ -1987,7 +1987,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateDpiScalingMethods(CancellationToken token = default)
+        private async Task PopulateDpiScalingMethods(CancellationToken token = default)
         {
             string strOldSelected = await cboDpiScalingMethod.DoThreadSafeFuncAsync(
                                                                  x => x.SelectedValue?.ToString()
@@ -2035,7 +2035,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask SetToolTips(CancellationToken token = default)
+        private async Task SetToolTips(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             await cboUseLoggingApplicationInsights.SetToolTipAsync(string.Format(_objSelectedCultureInfo,
@@ -2051,7 +2051,7 @@ namespace Chummer
                                                                          .WordWrap(), token).ConfigureAwait(false);
         }
 
-        private async ValueTask PopulateLanguageList(CancellationToken token = default)
+        private async Task PopulateLanguageList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
@@ -2096,7 +2096,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateSheetLanguageList(CancellationToken token = default)
+        private async Task PopulateSheetLanguageList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -2163,7 +2163,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateXsltList(CancellationToken token = default)
+        private async Task PopulateXsltList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strSelectedSheetLanguage = await cboSheetLanguage
@@ -2307,7 +2307,7 @@ namespace Chummer
             }, token);
         }
 
-        private async ValueTask UpdateSourcebookInfoPath(string strPath, CancellationToken token = default)
+        private async Task UpdateSourcebookInfoPath(string strPath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strTag = await lstGlobalSourcebookInfos
@@ -2557,7 +2557,7 @@ namespace Chummer
             return lstReturn;
         }
 
-        private static async ValueTask<List<SourcebookInfo>> ScanPDFForMatchingText(
+        private static async Task<List<SourcebookInfo>> ScanPDFForMatchingText(
             FileSystemInfo fileInfo, ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2660,7 +2660,7 @@ namespace Chummer
 
             return lstReturn;
 
-            async ValueTask<string> GetPageTextFromPDF(PdfDocument objInnerPdfDocument, int intPage)
+            async Task<string> GetPageTextFromPDF(PdfDocument objInnerPdfDocument, int intPage)
             {
                 // Loop through each page, starting at the listed page + offset.
                 if (intPage >= objInnerPdfDocument.GetNumberOfPages())

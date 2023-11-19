@@ -368,8 +368,8 @@ namespace Chummer
                         = await objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
                     try
                     {
-                        objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                        objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+                        objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
+                        objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
                     }
                     finally
                     {
@@ -659,7 +659,7 @@ namespace Chummer
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
-        private async ValueTask SetDocumentText(string strText, CancellationToken token = default)
+        private async Task SetDocumentText(string strText, CancellationToken token = default)
         {
             int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height, token).ConfigureAwait(false);
             string strDocumentText
@@ -673,7 +673,7 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the characters (and therefore content) of the Viewer window.
         /// </summary>
-        private async ValueTask RefreshCharacters(CancellationToken token = default)
+        private async Task RefreshCharacters(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
@@ -772,7 +772,7 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the sheet of the Viewer window.
         /// </summary>
-        private async ValueTask RefreshSheet(CancellationToken token = default)
+        private async Task RefreshSheet(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewSource = new CancellationTokenSource();
@@ -1139,7 +1139,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> DoPdfPrinterShortcut(string strPdfPrinterName, CancellationToken token = default)
+        private async Task<bool> DoPdfPrinterShortcut(string strPdfPrinterName, CancellationToken token = default)
         {
             // We've got a proper, built-in PDF printer, so let's use that instead of wkhtmltopdf
             string strOldHeader = null;
@@ -1235,7 +1235,7 @@ namespace Chummer
             return true;
         }
 
-        private async ValueTask PopulateXsltList(CancellationToken token = default)
+        private async Task PopulateXsltList(CancellationToken token = default)
         {
             List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(
                 await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
@@ -1253,7 +1253,7 @@ namespace Chummer
         /// <summary>
         /// Set the XSL sheet that will be selected by default.
         /// </summary>
-        public ValueTask SetSelectedSheet(string strSheet, CancellationToken token = default)
+        public Task SetSelectedSheet(string strSheet, CancellationToken token = default)
         {
             _strSelectedSheet = strSheet;
             return RefreshSheet(token);
@@ -1275,24 +1275,24 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                        objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
-                        objCharacter.Cyberware.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Armor.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Weapons.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Gear.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Contacts.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.ExpenseEntries.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.MentorSpirits.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Powers.ListChanged -= OnCharacterListChanged;
-                        objCharacter.Qualities.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.MartialArts.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Metamagics.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Spells.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.ComplexForms.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.CritterPowers.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.SustainedCollection.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.InitiationGrades.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
+                        objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
+                        objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Weapons.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Gear.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Contacts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.ExpenseEntries.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.MentorSpirits.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Powers.ListChangedAsync -= OnCharacterListChanged;
+                        objCharacter.Qualities.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.MartialArts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Metamagics.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Spells.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.ComplexForms.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.CritterPowers.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
                     }
                     finally
                     {
@@ -1308,25 +1308,25 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
-                        objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
+                        objCharacter.PropertyChangedAsync += ObjCharacterOnPropertyChanged;
+                        objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
                         // TODO: Make these also work for any children collection changes
-                        objCharacter.Cyberware.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Armor.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Weapons.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Gear.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Contacts.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.ExpenseEntries.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.MentorSpirits.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Powers.ListChanged += OnCharacterListChanged;
-                        objCharacter.Qualities.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.MartialArts.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Metamagics.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Spells.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.ComplexForms.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.CritterPowers.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.SustainedCollection.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.InitiationGrades.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
+                        objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
                     }
                     finally
                     {
@@ -1356,7 +1356,7 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterListChanged(object sender, ListChangedEventArgs e)
+        private async Task OnCharacterListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
             if (e.ListChangedType == ListChangedType.ItemMoved
                 || e.ListChangedType == ListChangedType.PropertyDescriptorAdded
@@ -1365,7 +1365,7 @@ namespace Chummer
                 return;
             try
             {
-                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
+                await RefreshCharacters(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1373,13 +1373,13 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             try
             {
-                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
+                await RefreshCharacters(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1387,12 +1387,12 @@ namespace Chummer
             }
         }
 
-        private async void ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 if (e.PropertyName == nameof(CharacterSettings.Name))
-                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
+                    await UpdateWindowTitleAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1400,13 +1400,13 @@ namespace Chummer
             }
         }
 
-        private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
-                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
-                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
+                    await UpdateWindowTitleAsync(token).ConfigureAwait(false);
+                await RefreshCharacters(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

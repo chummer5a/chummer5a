@@ -244,7 +244,7 @@ namespace Chummer.UI.Table
             Disposed += (sender, args) => DisposeAll();
         }
 
-        private async ValueTask ItemPropertyChanged(int intIndex, T objItem, string strProperty, CancellationToken token = default)
+        private async Task ItemPropertyChanged(int intIndex, T objItem, string strProperty, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -328,7 +328,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        private async ValueTask UpdateCell(TableColumn<T> column, TableCell cell, T item, CancellationToken token = default)
+        private async Task UpdateCell(TableColumn<T> column, TableCell cell, T item, CancellationToken token = default)
         {
             Func<T, Task<object>> funcExtractor = column.Extractor;
             object objNewValue = funcExtractor == null ? item : await funcExtractor(item).ConfigureAwait(false);
@@ -342,7 +342,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        private async ValueTask UpdateRow(int index, T item, CancellationToken token = default)
+        private async Task UpdateRow(int index, T item, CancellationToken token = default)
         {
             for (int i = 0; i < _columns.Count; i++)
             {
@@ -355,14 +355,14 @@ namespace Chummer.UI.Table
             }
         }
 
-        private async ValueTask<TableCell> CreateCell(T item, TableColumn<T> column, CancellationToken token = default)
+        private async Task<TableCell> CreateCell(T item, TableColumn<T> column, CancellationToken token = default)
         {
             TableCell cell = await this.DoThreadSafeFuncAsync(column.CreateCell, token: token).ConfigureAwait(false);
             await UpdateCell(column, cell, item, token).ConfigureAwait(false);
             return cell;
         }
 
-        private async ValueTask CreateCellsForColumn(int insertIndex, TableColumn<T> column, CancellationToken token = default)
+        private async Task CreateCellsForColumn(int insertIndex, TableColumn<T> column, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -469,7 +469,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        internal async ValueTask ColumnAdded(TableColumn<T> column, CancellationToken token = default)
+        internal async Task ColumnAdded(TableColumn<T> column, CancellationToken token = default)
         {
             column.MakeLive();
             int index = _columns.Count - 1;
@@ -491,7 +491,7 @@ namespace Chummer.UI.Table
             Controls.Clear();
         }
 
-        private async ValueTask DoFilter(bool performLayout = true, CancellationToken token = default)
+        private async Task DoFilter(bool performLayout = true, CancellationToken token = default)
         {
             if (Items == null)
                 return;
@@ -549,7 +549,7 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, Task<bool>> Filter => _funcFilter;
 
-        public async ValueTask SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
+        public async Task SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
         {
             Func<T, Task<bool>> objNewValue = value ?? _funcDefaultFilter;
             if (Interlocked.Exchange(ref _funcFilter, objNewValue) == objNewValue)
@@ -557,19 +557,20 @@ namespace Chummer.UI.Table
             await DoFilter(token: token).ConfigureAwait(false);
         }
 
-        private async Task ItemsChanged(object sender, ListChangedEventArgs e)
+        private async Task ItemsChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
                 {
-                    T item = await Items.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
+                    T item = await Items.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
                     if (e.PropertyDescriptor == null)
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                         try
                         {
-                            await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+                            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                             try
                             {
                                 TableRow row = _lstRowCells[e.NewIndex];
@@ -577,20 +578,20 @@ namespace Chummer.UI.Table
                                 {
                                     if (row.Parent == null)
                                     {
-                                        await this.DoThreadSafeAsync(x => x.Controls.Add(row)).ConfigureAwait(false);
+                                        await this.DoThreadSafeAsync(x => x.Controls.Add(row), token: token).ConfigureAwait(false);
                                     }
                                 }
                                 else if (row.Parent != null)
                                 {
-                                    await this.DoThreadSafeAsync(x => x.Controls.Remove(row)).ConfigureAwait(false);
+                                    await this.DoThreadSafeAsync(x => x.Controls.Remove(row), token: token).ConfigureAwait(false);
                                 }
 
-                                await UpdateRow(e.NewIndex, item).ConfigureAwait(false);
-                                Sort(false);
+                                await UpdateRow(e.NewIndex, item, token).ConfigureAwait(false);
+                                Sort(false, token);
                             }
                             finally
                             {
-                                await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
+                                await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                             }
                         }
                         finally
@@ -600,7 +601,7 @@ namespace Chummer.UI.Table
                     }
                     else
                     {
-                        await ItemPropertyChanged(e.NewIndex, item, e.PropertyDescriptor.Name).ConfigureAwait(false);
+                        await ItemPropertyChanged(e.NewIndex, item, e.PropertyDescriptor.Name, token).ConfigureAwait(false);
                     }
 
                     break;
@@ -608,28 +609,28 @@ namespace Chummer.UI.Table
 
                 case ListChangedType.ItemAdded:
                 {
-                    T item = await Items.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
+                    T item = await Items.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
                     Control[] lstToAdd = new Control[_columns.Count];
                     for (int i = 0; i < _columns.Count; i++)
                     {
                         TableColumn<T> column = _columns[i];
                         IList<TableCell> cells = _lstCells[i].cells;
-                        TableCell newCell = await CreateCell(item, column).ConfigureAwait(false);
+                        TableCell newCell = await CreateCell(item, column, token).ConfigureAwait(false);
                         cells.Insert(e.NewIndex, newCell);
                         lstToAdd[i] = newCell;
                     }
 
-                    TableRow row = await this.DoThreadSafeFuncAsync(x => x.CreateRow()).ConfigureAwait(false);
+                    TableRow row = await this.DoThreadSafeFuncAsync(x => x.CreateRow(), token: token).ConfigureAwait(false);
                     _lstRowCells.Insert(e.NewIndex, row);
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                         try
                         {
                             if (await Filter(item).ConfigureAwait(false))
                             {
-                                await this.DoThreadSafeAsync(x => x.Controls.Add(row)).ConfigureAwait(false);
+                                await this.DoThreadSafeAsync(x => x.Controls.Add(row), token: token).ConfigureAwait(false);
                             }
 
                             await row.DoThreadSafeAsync(x =>
@@ -643,14 +644,14 @@ namespace Chummer.UI.Table
                                 {
                                     x.ResumeLayout(false);
                                 }
-                            }).ConfigureAwait(false);
+                            }, token: token).ConfigureAwait(false);
 
                             _lstPermutation.Add(_lstPermutation.Count);
-                            Sort(false);
+                            Sort(false, token);
                         }
                         finally
                         {
-                            await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
+                            await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -668,10 +669,10 @@ namespace Chummer.UI.Table
                         cells.RemoveAt(e.NewIndex);
                     }
 
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                         try
                         {
                             await this.DoThreadSafeAsync(x =>
@@ -683,15 +684,15 @@ namespace Chummer.UI.Table
                                 }
 
                                 row.Dispose();
-                            }).ConfigureAwait(false);
+                            }, token: token).ConfigureAwait(false);
 
                             _lstRowCells.RemoveAt(e.NewIndex);
                             _lstPermutation.Remove(_lstPermutation.Count - 1);
-                            Sort(false);
+                            Sort(false, token);
                         }
                         finally
                         {
-                            await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
+                            await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -742,7 +743,7 @@ namespace Chummer.UI.Table
                         }
                     }
 
-                    Sort();
+                    Sort(token: token);
                     break;
                 }
             }
@@ -790,7 +791,7 @@ namespace Chummer.UI.Table
                                 {
                                     int j1 = j;
                                     TableCell cell
-                                        = Utils.SafelyRunSynchronously(() => CreateCell(value[j1], column).AsTask());
+                                        = Utils.SafelyRunSynchronously(() => CreateCell(value[j1], column));
                                     cells.Add(cell);
                                     _lstRowCells[j1].Controls.Add(cell);
                                 }
@@ -828,12 +829,12 @@ namespace Chummer.UI.Table
                             for (int i = 0; i < intLimit; i++)
                             {
                                 int i1 = i;
-                                Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]).AsTask());
+                                Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]));
                             }
                         }
 
                         Sort(false);
-                        Utils.SafelyRunSynchronously(() => DoFilter().AsTask());
+                        Utils.SafelyRunSynchronously(() => DoFilter());
                     }
                     finally
                     {

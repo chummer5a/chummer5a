@@ -116,7 +116,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static async ValueTask<IReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
+        public static async Task<IReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
         {
             do
             {
@@ -169,7 +169,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static async ValueTask<ConcurrentDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
+        public static async Task<ConcurrentDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
         {
             do
             {
@@ -277,7 +277,7 @@ namespace Chummer
             Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 1);
         }
 
-        private static async ValueTask LoadCharacterSettingsAsync(CancellationToken token = default)
+        private static async Task LoadCharacterSettingsAsync(CancellationToken token = default)
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
             s_DicLoadedCharacterSettings.Clear();
@@ -375,7 +375,7 @@ namespace Chummer
             Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 1);
         }
 
-        private static async ValueTask AddSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task AddSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
@@ -416,7 +416,7 @@ namespace Chummer
             }
         }
 
-        private static async ValueTask RemoveSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task RemoveSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
@@ -469,7 +469,7 @@ namespace Chummer
             }
         }
 
-        private static async ValueTask ReloadSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task ReloadSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
@@ -534,7 +534,7 @@ namespace Chummer
             }
         }
 
-        private static async ValueTask<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, CancellationToken token = default)
+        private static async Task<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, CancellationToken token = default)
         {
             int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).RaiseToPower(2)
                                             + (await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false))

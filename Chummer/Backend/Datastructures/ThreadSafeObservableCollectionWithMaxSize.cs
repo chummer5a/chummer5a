@@ -67,7 +67,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Insert" />
-        public override async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
+        public override async Task InsertAsync(int index, T item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -108,7 +108,7 @@ namespace Chummer
             }
         }
 
-        public override async ValueTask AddAsync(T item, CancellationToken token = default)
+        public override async Task AddAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -132,7 +132,7 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        public override async Task<bool> TryAddAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {

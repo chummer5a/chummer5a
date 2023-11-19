@@ -299,7 +299,7 @@ namespace Chummer
         /// <summary>
         /// The cost in Karma to bind this Stacked Focus.
         /// </summary>
-        public async ValueTask<int> GetBindingCostAsync(CancellationToken token = default)
+        public async Task<int> GetBindingCostAsync(CancellationToken token = default)
         {
             decimal decCost = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -470,7 +470,7 @@ namespace Chummer
         /// <summary>
         /// Stacked Focus Name.
         /// </summary>
-        public async ValueTask<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
@@ -495,7 +495,7 @@ namespace Chummer
 
         public string CurrentDisplayName => Name(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => NameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => NameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// List of Gear that make up the Stacked Focus.

@@ -26,18 +26,18 @@ namespace Chummer
 {
     public interface IAsyncReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>, IAsyncReadOnlyCollection<KeyValuePair<TKey, TValue>>
     {
-        ValueTask<bool> ContainsKeyAsync(TKey key, CancellationToken token = default);
+        Task<bool> ContainsKeyAsync(TKey key, CancellationToken token = default);
 
-        ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
+        Task<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
 
-        ValueTask<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default);
+        Task<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default);
 
-        ValueTask<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default);
+        Task<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default);
     }
 
     public static class AsyncReadOnlyDictionaryExtensions
     {
-        public static async ValueTask<bool> EqualsByValueAsync(
+        public static async Task<bool> EqualsByValueAsync(
             this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
             IAsyncDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {
@@ -69,7 +69,7 @@ namespace Chummer
             return true;
         }
 
-        public static async ValueTask<bool> EqualsByValueAsync(
+        public static async Task<bool> EqualsByValueAsync(
             this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
             IAsyncReadOnlyDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {
@@ -101,7 +101,7 @@ namespace Chummer
             return true;
         }
 
-        public static async ValueTask<bool> EqualsByValueAsync(
+        public static async Task<bool> EqualsByValueAsync(
             this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
             IDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {
@@ -130,7 +130,7 @@ namespace Chummer
             return true;
         }
 
-        public static async ValueTask<bool> EqualsByValueAsync(
+        public static async Task<bool> EqualsByValueAsync(
             this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
             IReadOnlyDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {

@@ -229,7 +229,7 @@ namespace Chummer
             return (Rating * decKarmaMultiplier + decExtraKarmaCost).StandardRound();
         }
 
-        public async ValueTask<int> BindingKarmaCostAsync(CancellationToken token = default)
+        public async Task<int> BindingKarmaCostAsync(CancellationToken token = default)
         {
             Gear objFocusGear = GearObject;
             // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.

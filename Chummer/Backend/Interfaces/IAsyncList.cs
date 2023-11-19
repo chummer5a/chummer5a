@@ -28,15 +28,15 @@ namespace Chummer
 {
     public interface IAsyncList<T> : IList<T>, IAsyncCollection<T>
     {
-        ValueTask<T> GetValueAtAsync(int index, CancellationToken token = default);
+        Task<T> GetValueAtAsync(int index, CancellationToken token = default);
 
-        ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default);
+        Task SetValueAtAsync(int index, T value, CancellationToken token = default);
 
-        ValueTask<int> IndexOfAsync(T item, CancellationToken token = default);
+        Task<int> IndexOfAsync(T item, CancellationToken token = default);
 
-        ValueTask InsertAsync(int index, T item, CancellationToken token = default);
+        Task InsertAsync(int index, T item, CancellationToken token = default);
 
-        ValueTask RemoveAtAsync(int index, CancellationToken token = default);
+        Task RemoveAtAsync(int index, CancellationToken token = default);
     }
 
     public static class AsyncListExtensions

@@ -48,7 +48,7 @@ namespace Chummer.UI.Powers
             _objMyToken = objMyToken;
             InitializeComponent();
 
-            Disposed += (sender, args) => UnbindPowersTabUserControl(CancellationToken.None);
+            Disposed += (sender, args) => UnbindPowersTabUserControl();
 
             this.UpdateLightDarkMode(token: objMyToken);
             this.TranslateWinForm(token: objMyToken);
@@ -101,7 +101,7 @@ namespace Chummer.UI.Powers
             }
         }
 
-        public async ValueTask RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
+        public async Task RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
         {
             if (CachedCharacter != null)
             {
@@ -191,8 +191,8 @@ namespace Chummer.UI.Powers
                 }, token: token).ConfigureAwait(false);
                 await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
                     nameof(Character.DisplayPowerPointsRemaining),
-                    x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
-                    MyToken, MyToken).ConfigureAwait(false);
+                    x => x.GetDisplayPowerPointsRemainingAsync(MyToken),
+                    MyToken).ConfigureAwait(false);
             }
             finally
             {
@@ -209,7 +209,7 @@ namespace Chummer.UI.Powers
             try
             {
                 MyToken.ThrowIfCancellationRequested();
-                _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                _objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
             }
             finally
             {
@@ -217,23 +217,23 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private void UnbindPowersTabUserControl(CancellationToken token = default)
+        private void UnbindPowersTabUserControl()
         {
             if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.Powers.ListChangedAsync -= OnPowersListChanged;
-                using (_objCharacter.LockObject.EnterWriteLock(token))
-                    _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
             }
         }
 
-        private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (e.PropertyName == nameof(Character.PowerPointsTotal)
                     || e.PropertyName == nameof(Character.PowerPointsUsed))
-                    await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+                    await CalculatePowerPoints(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -241,11 +241,12 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private async Task OnPowersListChanged(object sender, ListChangedEventArgs e)
+        private async Task OnPowersListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
                     switch (e.ListChangedType)
@@ -256,7 +257,7 @@ namespace Chummer.UI.Powers
                             if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                             {
                                 // recalculation of power points on rating/free levels change
-                                await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+                                await CalculatePowerPoints(token).ConfigureAwait(false);
                             }
 
                             break;
@@ -264,7 +265,7 @@ namespace Chummer.UI.Powers
                         case ListChangedType.Reset:
                         case ListChangedType.ItemAdded:
                         case ListChangedType.ItemDeleted:
-                            await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+                            await CalculatePowerPoints(token).ConfigureAwait(false);
                             break;
                     }
                 }
@@ -447,7 +448,7 @@ namespace Chummer.UI.Powers
         /// <summary>
         /// Calculate the number of Adept Power Points used.
         /// </summary>
-        public async ValueTask CalculatePowerPoints(CancellationToken token = default)
+        public async Task CalculatePowerPoints(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try

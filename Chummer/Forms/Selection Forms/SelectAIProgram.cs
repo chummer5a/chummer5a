@@ -199,7 +199,7 @@ namespace Chummer
         /// <summary>
         /// Update the Program's information based on the Program selected.
         /// </summary>
-        private async ValueTask UpdateProgramInfo(CancellationToken token = default)
+        private async Task UpdateProgramInfo(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -278,7 +278,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the displayed lists
         /// </summary>
-        private async ValueTask RefreshList(CancellationToken token = default)
+        private async Task RefreshList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -321,7 +321,7 @@ namespace Chummer
         /// <summary>
         /// Update the Program List based on a base program node list.
         /// </summary>
-        private async ValueTask UpdateProgramList(XPathNodeIterator objXmlNodeList, CancellationToken token = default)
+        private async Task UpdateProgramList(XPathNodeIterator objXmlNodeList, CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
@@ -376,7 +376,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedId = await lstAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))

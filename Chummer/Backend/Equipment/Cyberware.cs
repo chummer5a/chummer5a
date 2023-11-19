@@ -2089,7 +2089,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint,
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint,
             CancellationToken token = default)
         {
             if (objWriter == null)
@@ -2554,6 +2554,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// ImprovementSource Type.
+        /// </summary>
+        public async Task<Improvement.ImprovementSource> GetSourceTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _eImprovementSource;
+            }
+        }
+
+        /// <summary>
         /// Cyberware name.
         /// </summary>
         public string Name
@@ -2609,6 +2622,16 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task<bool> GetInheritAttributesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnInheritAttributes;
+            }
+        }
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -2622,6 +2645,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public async Task<Guid> GetSourceIDAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _guiSourceID;
+            }
+        }
+
+        /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
         public string SourceIDString
@@ -2630,6 +2666,19 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                     return _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public async Task<string> GetSourceIDStringAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
 
@@ -2648,7 +2697,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -2666,7 +2715,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
 
         public static Guid EssenceHoleGUID { get; } = new Guid("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
@@ -2718,9 +2767,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage,
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage,
             CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
@@ -2771,7 +2821,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
@@ -2797,7 +2847,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public async ValueTask<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
@@ -2943,7 +2993,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The amount of body "slots" a Cyberlimb occupies.
         /// </summary>
-        public async ValueTask<int> GetLimbSlotCountAsync(CancellationToken token = default)
+        public async Task<int> GetLimbSlotCountAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2991,7 +3041,7 @@ namespace Chummer.Backend.Equipment
                 int intCount = 0;
                 if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs?.All(l => l != LimbSlot) != false)
                 {
-                    intCount += await GetLimbSlotCountAsync(token);
+                    intCount += await GetLimbSlotCountAsync(token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -3196,7 +3246,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
@@ -3556,7 +3606,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Toggle the Wireless Bonus for this weapon accessory.
         /// </summary>
-        public async ValueTask RefreshWirelessBonusesAsync(CancellationToken token = default)
+        public async Task RefreshWirelessBonusesAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -4214,7 +4264,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Rating.
         /// </summary>
-        public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
+        public async Task<int> GetRatingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -4438,7 +4488,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Minimum Rating.
         /// </summary>
-        public async ValueTask<int> GetMinRatingAsync(CancellationToken token = default)
+        public async Task<int> GetMinRatingAsync(CancellationToken token = default)
         {
             int intReturn = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -4569,7 +4619,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Maximum Rating.
         /// </summary>
-        public async ValueTask<int> GetMaxRatingAsync(CancellationToken token = default)
+        public async Task<int> GetMaxRatingAsync(CancellationToken token = default)
         {
             int intReturn = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -5344,6 +5394,19 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Is the Bioware's cost affected by Prototype Transhuman?
+        /// </summary>
+        public async Task<bool> GetPrototypeTranshumanAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnPrototypeTranshuman;
+            }
+        }
+
         public string EssencePropertyName
         {
             get
@@ -5365,6 +5428,30 @@ namespace Chummer.Backend.Equipment
                         default:
                             return nameof(Character.Essence);
                     }
+                }
+            }
+        }
+
+        public async Task<string> GetEssencePropertyNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await _objCharacter.GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false) && await GetPrototypeTranshumanAsync(token).ConfigureAwait(false))
+                    return nameof(Character.PrototypeTranshumanEssenceUsed);
+                if (SourceID.Equals(EssenceHoleGUID) || SourceID.Equals(EssenceAntiHoleGUID))
+                    return nameof(Character.EssenceHole);
+                switch (SourceType)
+                {
+                    case Improvement.ImprovementSource.Bioware:
+                        return nameof(Character.BiowareEssence);
+
+                    case Improvement.ImprovementSource.Cyberware:
+                        return nameof(Character.CyberwareEssence);
+
+                    default:
+                        return nameof(Character.Essence);
                 }
             }
         }
@@ -5488,7 +5575,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
-        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability of the Cyberware and its plugins.
@@ -5498,7 +5585,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Availability of the Vehicle.
         /// </summary>
-        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
         }
@@ -5625,7 +5712,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability as a triple.
         /// </summary>
-        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6371,6 +6458,102 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                string strExpression = this.GetMatrixAttributeString(strAttributeName);
+                if (string.IsNullOrEmpty(strExpression))
+                {
+                    switch (strAttributeName)
+                    {
+                        case "Device Rating":
+                            return _objGrade.DeviceRating;
+
+                        case "Program Limit":
+                            if (await GetIsCommlinkAsync(token).ConfigureAwait(false))
+                            {
+                                strExpression = this.GetMatrixAttributeString("Device Rating");
+                                if (string.IsNullOrEmpty(strExpression))
+                                    return _objGrade.DeviceRating;
+                            }
+                            else
+                                return _objGrade.DeviceRating;
+
+                            break;
+
+                        case "Data Processing":
+                        case "Firewall":
+                            strExpression = this.GetMatrixAttributeString("Device Rating");
+                            if (string.IsNullOrEmpty(strExpression))
+                                return _objGrade.DeviceRating;
+                            break;
+
+                        default:
+                            return 0;
+                    }
+                }
+
+                if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strExpression = strValues[Math.Max(0, Math.Min(Rating, strValues.Length) - 1)].Trim('[', ']');
+                }
+
+                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        {
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
+                                () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0)
+                                    .ToString(
+                                        GlobalSettings
+                                            .InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                    () => Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0", token: token)
+                                .ConfigureAwait(false);
+                            if (await Children.GetCountAsync(token).ConfigureAwait(false) +
+                                await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                                strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            {
+                                int intTotalChildrenValue = await Children
+                                    .SumAsync(x => x.GetIsModularCurrentlyEquippedAsync(token),
+                                        x => x.GetBaseMatrixAttributeAsync(strMatrixAttribute, token), token: token)
+                                    .ConfigureAwait(false);
+
+                                intTotalChildrenValue += await GearChildren
+                                    .SumAsync(x => x.Equipped,
+                                        x => x.GetBaseMatrixAttributeAsync(strMatrixAttribute, token), token: token)
+                                    .ConfigureAwait(false);
+
+                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                    intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            }
+                        }
+
+                        await _objCharacter.AttributeSection
+                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token)
+                                .ConfigureAwait(false);
+                        return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                    }
+                }
+
+                int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
+                return intReturn;
+            }
+        }
+
         public int GetBonusMatrixAttribute(string strAttributeName)
         {
             if (string.IsNullOrEmpty(strAttributeName))
@@ -6405,6 +6588,30 @@ namespace Chummer.Backend.Equipment
             }
 
             return intReturn;
+        }
+
+        public async Task<int> GetBonusMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strAttributeName))
+                return 0;
+
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intReturn = await GetOverclockedAsync(token).ConfigureAwait(false) == strAttributeName ? 1 : 0;
+
+                if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
+                    strAttributeName = "Mod " + strAttributeName;
+
+                intReturn += await Children.SumAsync(x => x.GetIsModularCurrentlyEquippedAsync(token),
+                    x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token: token).ConfigureAwait(false);
+
+                intReturn += await GearChildren.SumAsync(x => x.Equipped,
+                    x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token).ConfigureAwait(false);
+
+                return intReturn;
+            }
         }
 
         /// <summary>
@@ -6570,7 +6777,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the just the Cyberware itself before we factor in any multipliers.
         /// </summary>
-        public async ValueTask<decimal> CalculatedOwnCostPreMultipliersAsync(int intRating, Grade objGrade, CancellationToken token = default)
+        public async Task<decimal> CalculatedOwnCostPreMultipliersAsync(int intRating, Grade objGrade, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6600,20 +6807,20 @@ namespace Chummer.Backend.Equipment
                     if (strCostExpression.Contains("Parent Cost"))
                         strParentCost = _objParent.Cost;
                     if (strCostExpression.Contains("Parent Gear Cost"))
-                        decTotalParentGearCost += await _objParent.GearChildren.SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token).AsTask(), token).ConfigureAwait(false);
+                        decTotalParentGearCost += await _objParent.GearChildren.SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
                 }
 
                 decimal decTotalGearCost = 0;
                 if (strCostExpression.Contains("Gear Cost"))
                 {
-                    decTotalGearCost += await GearChildren.SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token).AsTask(), token).ConfigureAwait(false);
+                    decTotalGearCost += await GearChildren.SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
                 }
 
                 decimal decTotalChildrenCost = 0;
                 if (strCostExpression.Contains("Children Cost"))
                 {
                     decTotalChildrenCost += await Children.SumAsync(
-                        loopWare => loopWare.CalculatedTotalCostAsync(loopWare.Rating, objGrade, token).AsTask(),
+                        loopWare => loopWare.CalculatedTotalCostAsync(loopWare.Rating, objGrade, token),
                         token).ConfigureAwait(false);
                 }
 
@@ -6676,7 +6883,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Cyberware and its plugins.
         /// </summary>
-        public async ValueTask<decimal> CalculatedTotalCostAsync(int intRating, Grade objGrade, CancellationToken token = default)
+        public async Task<decimal> CalculatedTotalCostAsync(int intRating, Grade objGrade, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6693,7 +6900,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identical to TotalCost, but without the Improvement and Suite multipliers which would otherwise be doubled.
         /// </summary>
-        private async ValueTask<decimal> CalculatedTotalCostWithoutModifiersAsync(int intRating, Grade objGrade, CancellationToken token = default)
+        private async Task<decimal> CalculatedTotalCostWithoutModifiersAsync(int intRating, Grade objGrade, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6747,7 +6954,7 @@ namespace Chummer.Backend.Equipment
                 }, token).ConfigureAwait(false);
 
                 // Add in the cost of all Gear plugins.
-                decReturn += await GearChildren.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+                decReturn += await GearChildren.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
 
                 return decReturn;
             }
@@ -6811,11 +7018,11 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+        public Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
 
-        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
+        public Task<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
 
-        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        public async Task<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6824,13 +7031,13 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(int intRating, Grade objGrade, bool blnStolen, CancellationToken token = default)
+        public async Task<decimal> CalculatedStolenTotalCostAsync(int intRating, Grade objGrade, bool blnStolen, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 AsyncLazy<decimal> decCost = new AsyncLazy<decimal>(
-                    () => CalculatedOwnCostPreMultipliersAsync(intRating, objGrade, token).AsTask(),
+                    () => CalculatedOwnCostPreMultipliersAsync(intRating, objGrade, token),
                     Utils.JoinableTaskFactory);
                 decimal decReturn = Stolen == blnStolen ? await decCost.GetValueAsync(token).ConfigureAwait(false) : 0;
 
@@ -6899,7 +7106,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Cost of just the Cyberware itself.
         /// </summary>
-        public async ValueTask<decimal> CalculatedOwnCostAsync(int intRating, Grade objGrade, CancellationToken token = default)
+        public async Task<decimal> CalculatedOwnCostAsync(int intRating, Grade objGrade, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6928,7 +7135,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -6946,7 +7153,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -7245,7 +7452,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cyberlimb attribute value (before modifiers and customization).
         /// </summary>
-        public async ValueTask<int> GetAttributeBaseValueAsync(string strAbbrev, CancellationToken token = default)
+        public async Task<int> GetAttributeBaseValueAsync(string strAbbrev, CancellationToken token = default)
         {
             if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
                 return 0;
@@ -7312,7 +7519,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Unaugmented Cyberlimb attribute value (before modifiers).
         /// </summary>
-        public async ValueTask<int> GetAttributeValueAsync(string strAbbrev, CancellationToken token = default)
+        public async Task<int> GetAttributeValueAsync(string strAbbrev, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
@@ -7425,7 +7632,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total value for an attribute on a cyberlimb.
         /// </summary>
-        public async ValueTask<int> GetAttributeTotalValueAsync(string strAbbrev, CancellationToken token = default)
+        public async Task<int> GetAttributeTotalValueAsync(string strAbbrev, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
@@ -7689,15 +7896,13 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// ASDF attribute boosted by Overclocker.
-        /// </summary>
+        /// <inheritdoc />
         public string Overclocked
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _strOverclocked;
+                    return _objCharacter.Overclocker ? _strOverclocked : string.Empty;
             }
             set
             {
@@ -7706,9 +7911,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// String to determine if gear can form persona or grants persona forming to its parent.
-        /// </summary>
+        /// <inheritdoc />
+        public async Task<string> GetOverclockedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await _objCharacter.GetOverclockerAsync(token).ConfigureAwait(false) ? _strOverclocked : string.Empty;
+        }
+
+        /// <inheritdoc />
         public string CanFormPersona
         {
             get
@@ -7723,6 +7933,18 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <inheritdoc />
+        public async Task<string> GetCanFormPersonaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strCanFormPersona;
+            }
+        }
+
+        /// <inheritdoc />
         public bool IsCommlink
         {
             get
@@ -7733,6 +7955,23 @@ namespace Chummer.Backend.Equipment
                            || (ChildrenWithMatrixAttributes.Any(x => x.CanFormPersona.Contains("Parent")) &&
                                this.GetTotalMatrixAttribute("Device Rating") > 0);
                 }
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> GetIsCommlinkAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return (await GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Self")
+                       || (await ChildrenWithMatrixAttributes
+                               .AnyAsync(
+                                   async x =>
+                                       (await x.GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Parent"),
+                                   token: token).ConfigureAwait(false) &&
+                           await this.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false) > 0);
             }
         }
 
@@ -8093,7 +8332,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
-        public async ValueTask<decimal> DeleteCyberwareAsync(bool blnDoRemoval = true,
+        public async Task<decimal> DeleteCyberwareAsync(bool blnDoRemoval = true,
                                                              bool blnIncreaseEssenceHole = true,
                                                              CancellationToken token = default)
         {
@@ -8145,7 +8384,7 @@ namespace Chummer.Backend.Equipment
 
                 // Remove any children the Gear may have.
                 decReturn = await Children
-                                  .SumAsync(x => x.DeleteCyberwareAsync(false, token: token).AsTask(),
+                                  .SumAsync(x => x.DeleteCyberwareAsync(false, token: token),
                                             token: token)
                                   .ConfigureAwait(false);
 
@@ -8394,7 +8633,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                decReturn += await GearChildren.SumAsync(x => x.DeleteGearAsync(false, token).AsTask(), token)
+                decReturn += await GearChildren.SumAsync(x => x.DeleteGearAsync(false, token), token)
                                                .ConfigureAwait(false);
 
                 // Fix for legacy characters with old addqualities improvements.
@@ -8437,7 +8676,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
+        public async Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
             int intRestrictedCount = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -8629,16 +8868,16 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                async Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y)
+                async Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
                 {
                     await this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
-                        funcMakeDirty).ConfigureAwait(false);
+                        funcMakeDirty, token: token).ConfigureAwait(false);
                 }
 
-                async Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y)
+                async Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
                 {
                     await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
-                        funcMakeDirty).ConfigureAwait(false);
+                        funcMakeDirty, token: token).ConfigureAwait(false);
                 }
 
                 Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);

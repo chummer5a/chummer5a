@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -170,5 +171,5 @@ namespace Chummer
         }
     }
 
-    public delegate Task AsyncNotifyCollectionChangedEventHandler(object sender, NotifyCollectionChangedEventArgs e);
+    public delegate Task AsyncNotifyCollectionChangedEventHandler(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default);
 }

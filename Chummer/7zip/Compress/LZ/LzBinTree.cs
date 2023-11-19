@@ -85,7 +85,7 @@ namespace SevenZip.Compression.LZ
             ReduceOffsets(-1);
         }
 
-        public new async ValueTask InitAsync(CancellationToken token = default)
+        public new async Task InitAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             await base.InitAsync(token).ConfigureAwait(false);
@@ -104,7 +104,7 @@ namespace SevenZip.Compression.LZ
                 Normalize();
         }
 
-        public new async ValueTask MovePosAsync(CancellationToken token = default)
+        public new async Task MovePosAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (++_cyclicBufferPos >= _cyclicBufferSize)
@@ -314,7 +314,7 @@ namespace SevenZip.Compression.LZ
         }
 
         [CLSCompliant(false)]
-        public async ValueTask<uint> GetMatchesAsync(uint[] distances, CancellationToken token = default)
+        public async Task<uint> GetMatchesAsync(uint[] distances, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked
@@ -564,7 +564,7 @@ namespace SevenZip.Compression.LZ
         }
 
         [CLSCompliant(false)]
-        public async ValueTask SkipAsync(uint num, CancellationToken token = default)
+        public async Task SkipAsync(uint num, CancellationToken token = default)
         {
             unchecked
             {

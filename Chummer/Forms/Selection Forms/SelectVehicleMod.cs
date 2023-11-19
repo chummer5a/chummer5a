@@ -284,7 +284,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Mods.
         /// </summary>
-        private async ValueTask RefreshList(CancellationToken token = default)
+        private async Task RefreshList(CancellationToken token = default)
         {
             string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
@@ -436,7 +436,7 @@ namespace Chummer
         /// <summary>
         /// Update the Mod's information based on the Mod selected and current Rating.
         /// </summary>
-        private async ValueTask UpdateGearInfo(CancellationToken token = default)
+        private async Task UpdateGearInfo(CancellationToken token = default)
         {
             if (_blnLoading || _blnSkipUpdate)
                 return;
@@ -959,7 +959,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<string> ReplaceStrings(string strInput, int intExtraSlots = 0, CancellationToken token = default)
+        private async Task<string> ReplaceStrings(string strInput, int intExtraSlots = 0, CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {

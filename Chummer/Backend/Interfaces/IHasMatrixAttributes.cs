@@ -32,8 +32,15 @@ namespace Chummer
     {
         int GetBaseMatrixAttribute(string strAttributeName);
 
+        Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default);
+
         int GetBonusMatrixAttribute(string strAttributeName);
 
+        Task<int> GetBonusMatrixAttributeAsync(string strAttributeName, CancellationToken token = default);
+
+        /// <summary>
+        /// Whether or not the Gear qualifies as a Program in the printout XML.
+        /// </summary>
         bool IsProgram { get; }
         string Attack { get; set; }
         string Sleaze { get; set; }
@@ -43,10 +50,31 @@ namespace Chummer
         string ModSleaze { get; set; }
         string ModDataProcessing { get; set; }
         string ModFirewall { get; set; }
-        string Overclocked { get; set; }
 
+        /// <summary>
+        /// ASDF attribute boosted by Overclocker.
+        /// </summary>
+        string Overclocked { get; set; }
+        /// <summary>
+        /// ASDF attribute boosted by Overclocker.
+        /// </summary>
+        Task<string> GetOverclockedAsync(CancellationToken token = default);
+        /// <summary>
+        /// String to determine if the device can form persona or grants persona forming to its parent.
+        /// </summary>
         string CanFormPersona { get; set; }
+        /// <summary>
+        /// String to determine if the device can form persona or grants persona forming to its parent.
+        /// </summary>
+        Task<string> GetCanFormPersonaAsync(CancellationToken token = default);
+        /// <summary>
+        /// Is this device one that can form a persona?
+        /// </summary>
         bool IsCommlink { get; }
+        /// <summary>
+        /// Is this device one that can form a persona?
+        /// </summary>
+        Task<bool> GetIsCommlinkAsync(CancellationToken token = default);
 
         string DeviceRating { get; set; }
         int BaseMatrixBoxes { get; }
@@ -79,6 +107,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Get the total value of a Matrix attribute of this gear after children and Overclocker
+        /// </summary>
+        public static async Task<int> GetTotalMatrixAttributeAsync(this IHasMatrixAttributes objThis,
+            string strAttributeName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null)
+                return 0;
+            return await objThis.GetBaseMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false) +
+                   await objThis.GetBonusMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Whether or not this Commlink is active and counting towards the character's Matrix Initiative.
         /// </summary>
         public static bool IsActiveCommlink(this IHasMatrixAttributes objThis, Character objCharacter)
@@ -86,6 +127,18 @@ namespace Chummer
             if (objThis == null || objCharacter == null)
                 return false;
             return objCharacter.ActiveCommlink == objThis;
+        }
+
+        /// <summary>
+        /// Whether or not this Commlink is active and counting towards the character's Matrix Initiative.
+        /// </summary>
+        public static async Task<bool> IsActiveCommlinkAsync(this IHasMatrixAttributes objThis,
+            Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null || objCharacter == null)
+                return false;
+            return await objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == objThis;
         }
 
         /// <summary>
@@ -107,6 +160,26 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Set a Commlink to be active and count towards the character's Matrix Initiative.
+        /// </summary>
+        public static async Task SetActiveCommlinkAsync(this IHasMatrixAttributes objThis, Character objCharacter,
+            bool blnValue, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null || objCharacter == null)
+                return;
+
+            if (blnValue && objThis.IsCommlink)
+            {
+                await objCharacter.SetActiveCommlinkAsync(objThis, token).ConfigureAwait(false);
+            }
+            else if (await objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == objThis)
+            {
+                await objCharacter.SetActiveCommlinkAsync(null, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether or not this is an A.I.'s Home Node.
         /// </summary>
         public static bool IsHomeNode(this IHasMatrixAttributes objThis, Character objCharacter)
@@ -114,6 +187,18 @@ namespace Chummer
             if (objThis == null || objCharacter == null)
                 return false;
             return objCharacter.HomeNode == objThis;
+        }
+
+        /// <summary>
+        /// Whether or not this is an A.I.'s Home Node.
+        /// </summary>
+        public static async Task<bool> IsHomeNodeAsync(this IHasMatrixAttributes objThis, Character objCharacter,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null || objCharacter == null)
+                return false;
+            return await objCharacter.GetHomeNodeAsync(token).ConfigureAwait(false) == objThis;
         }
 
         /// <summary>
@@ -126,8 +211,20 @@ namespace Chummer
 
             if (blnValue)
                 objCharacter.HomeNode = objThis;
-            else if (objCharacter.ActiveCommlink == objThis)
-                objCharacter.ActiveCommlink = null;
+            else if (objCharacter.HomeNode == objThis)
+                objCharacter.HomeNode = null;
+        }
+
+        public static async Task SetHomeNodeAsync(this IHasMatrixAttributes objThis, Character objCharacter, bool blnValue,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null || objCharacter == null)
+                return;
+            if (blnValue)
+                await objCharacter.SetHomeNodeAsync(objThis, token).ConfigureAwait(false);
+            else if (await objCharacter.GetHomeNodeAsync(token).ConfigureAwait(false) == objThis)
+                await objCharacter.SetHomeNodeAsync(null, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -135,7 +232,6 @@ namespace Chummer
         /// </summary>
         /// <param name="strAttributeName">Name of the Matrix Attribute</param>
         /// <param name="objThis">Object whose Matrix Attribute to get.</param>
-        /// <returns></returns>
         public static string GetMatrixAttributeString(this IHasMatrixAttributes objThis, string strAttributeName)
         {
             if (objThis == null)
@@ -317,7 +413,9 @@ namespace Chummer
         /// <summary>
         /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
         /// </summary>
-        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall, CancellationToken token = default)
+        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis,
+            ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing,
+            ElasticComboBox cboFirewall, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objThis == null)
@@ -331,14 +429,14 @@ namespace Chummer
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
-            int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
-            int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
-            int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
-            int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
-            int intBonusAttack = objThis.GetBonusMatrixAttribute("Attack");
-            int intBonusSleaze = objThis.GetBonusMatrixAttribute("Sleaze");
-            int intBonusDataProcessing = objThis.GetBonusMatrixAttribute("Data Processing");
-            int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
+            int intBaseAttack = await objThis.GetBaseMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+            int intBaseSleaze = await objThis.GetBaseMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+            int intBaseDataProcessing = await objThis.GetBaseMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+            int intBaseFirewall = await objThis.GetBaseMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
+            int intBonusAttack = await objThis.GetBonusMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+            int intBonusSleaze = await objThis.GetBonusMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+            int intBonusDataProcessing = await objThis.GetBonusMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+            int intBonusFirewall = await objThis.GetBonusMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
 
             await cboAttack.DoThreadSafeAsync(x =>
             {
@@ -553,7 +651,10 @@ namespace Chummer
             return false;
         }
 
-        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis, Character objCharacter, ElasticComboBox cboChangedAttribute, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall, CancellationToken token = default)
+        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis,
+            Character objCharacter, ElasticComboBox cboChangedAttribute, ElasticComboBox cboAttack,
+            ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objThis == null)
@@ -597,30 +698,39 @@ namespace Chummer
             else
                 return false;
 
-            int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
+            int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                .ConfigureAwait(false);
             bool blnRefreshCharacter = false;
             bool blnDPChanged = cboChangedAttribute == cboDataProcessing;
             // Find the combo with the same value as this one and change it to the missing value.
-            if (cboChangedAttribute != cboAttack && await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
+            if (cboChangedAttribute != cboAttack &&
+                await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ==
+                intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Attack);
                 objThis.Attack = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboSleaze && await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
+            else if (cboChangedAttribute != cboSleaze &&
+                     await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ==
+                     intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Sleaze);
                 objThis.Sleaze = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (!blnDPChanged && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
+            else if (!blnDPChanged &&
+                     await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ==
+                     intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.DataProcessing);
                 objThis.DataProcessing = strTemp;
                 blnRefreshCharacter = true;
                 blnDPChanged = true;
             }
-            else if (cboChangedAttribute != cboFirewall && await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
+            else if (cboChangedAttribute != cboFirewall &&
+                     await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ==
+                     intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Firewall);
                 objThis.Firewall = strTemp;
@@ -629,24 +739,30 @@ namespace Chummer
 
             if (blnRefreshCharacter)
             {
-                await objThis.RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall, token).ConfigureAwait(false);
-                if (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter))
+                await objThis
+                    .RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall, token)
+                    .ConfigureAwait(false);
+                if (await objThis.IsActiveCommlinkAsync(objCharacter, token).ConfigureAwait(false) ||
+                    await objThis.IsHomeNodeAsync(objCharacter, token).ConfigureAwait(false))
                 {
                     if (blnDPChanged)
                     {
-                        if (objThis.IsActiveCommlink(objCharacter))
+                        if (await objThis.IsActiveCommlinkAsync(objCharacter, token).ConfigureAwait(false))
                         {
-                            if (objThis.IsHomeNode(objCharacter))
-                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                       nameof(Character.MatrixInitiativeColdValue),
-                                                                       nameof(Character.MatrixInitiativeHotValue));
+                            if (await objThis.IsHomeNodeAsync(objCharacter, token).ConfigureAwait(false))
+                                await objCharacter.OnMultiplePropertyChangedAsync(token,
+                                    nameof(Character.MatrixInitiativeValue),
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                             else
-                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                       nameof(Character.MatrixInitiativeHotValue));
+                                await objCharacter.OnMultiplePropertyChangedAsync(token,
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                         }
                         else
-                            objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                            await objCharacter.OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), token).ConfigureAwait(false);
                     }
+
                     return true;
                 }
             }

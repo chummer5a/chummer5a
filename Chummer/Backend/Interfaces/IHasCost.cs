@@ -26,6 +26,6 @@ namespace Chummer
     {
         decimal TotalCost { get; }
 
-        ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default);
+        Task<decimal> GetTotalCostAsync(CancellationToken token = default);
     }
 }

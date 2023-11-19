@@ -841,7 +841,7 @@ namespace Chummer
         /// <param name="blnAddMarkerIfOpen">Whether to add an asterisk to the beginning of the name if the character is open.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> CalculatedNameAsync(bool blnAddMarkerIfOpen = true, CancellationToken token = default)
+        public async Task<string> CalculatedNameAsync(bool blnAddMarkerIfOpen = true, CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strReturn;

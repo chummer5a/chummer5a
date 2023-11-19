@@ -26,17 +26,17 @@ namespace Chummer
 {
     public interface IAsyncCollection<T> : ICollection<T>, IAsyncEnumerable<T>
     {
-        ValueTask<int> GetCountAsync(CancellationToken token = default);
+        Task<int> GetCountAsync(CancellationToken token = default);
 
-        ValueTask AddAsync(T item, CancellationToken token = default);
+        Task AddAsync(T item, CancellationToken token = default);
 
-        ValueTask ClearAsync(CancellationToken token = default);
+        Task ClearAsync(CancellationToken token = default);
 
-        ValueTask<bool> ContainsAsync(T item, CancellationToken token = default);
+        Task<bool> ContainsAsync(T item, CancellationToken token = default);
 
-        ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default);
+        Task CopyToAsync(T[] array, int index, CancellationToken token = default);
 
-        ValueTask<bool> RemoveAsync(T item, CancellationToken token = default);
+        Task<bool> RemoveAsync(T item, CancellationToken token = default);
     }
 
     public static class AsyncCollectionExtensions

@@ -511,7 +511,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the displayed lists
         /// </summary>
-        private async ValueTask RefreshList(CancellationToken token = default)
+        private async Task RefreshList(CancellationToken token = default)
         {
             if (_intLoading > 0)
                 return;
@@ -569,7 +569,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objXmlArmorList">XmlNodeList of Armors to render.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private async ValueTask BuildArmorList(XmlNodeList objXmlArmorList, CancellationToken token = default)
+        private async Task BuildArmorList(XmlNodeList objXmlArmorList, CancellationToken token = default)
         {
             decimal decBaseMarkup = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
             bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
@@ -729,7 +729,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedId = string.Empty;
             CursorWait objCursorWait
@@ -788,7 +788,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
         }
 
-        private async ValueTask UpdateArmorInfo(CancellationToken token = default)
+        private async Task UpdateArmorInfo(CancellationToken token = default)
         {
             if (_intLoading > 0)
                 return;

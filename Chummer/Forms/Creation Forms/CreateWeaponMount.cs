@@ -596,7 +596,7 @@ namespace Chummer
 
         public bool AllowDiscounts { get; set; }
 
-        private async ValueTask UpdateInfo(CancellationToken token = default)
+        private async Task UpdateInfo(CancellationToken token = default)
         {
             if (_intLoading > 0)
                 return;
@@ -1010,7 +1010,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshComboBoxes(CancellationToken token = default)
+        private async Task RefreshComboBoxes(CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IAsyncProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChangedAsync, IAsyncProducerConsumerCollection<T>, IHasLockObject
     {
         [CLSCompliant(false)]
         protected readonly EnhancedObservableCollection<T> _lstData;
@@ -82,7 +83,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool IsFixedSize => false;
 
-        public async ValueTask<int> GetCountAsync(CancellationToken token = default)
+        public async Task<int> GetCountAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -104,7 +105,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Remove(T)" />
-        public async ValueTask<bool> RemoveAsync(T item, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(T item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -126,7 +127,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.RemoveAt" />
-        public async ValueTask RemoveAtAsync(int index, CancellationToken token = default)
+        public async Task RemoveAtAsync(int index, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -166,7 +167,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<T> GetValueAtAsync(int index, CancellationToken token = default)
+        public async Task<T> GetValueAtAsync(int index, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -175,7 +176,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
+        public async Task SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -213,7 +214,7 @@ namespace Chummer
                 _lstData.Add(item);
         }
 
-        public virtual async ValueTask AddAsync(T item, CancellationToken token = default)
+        public virtual async Task AddAsync(T item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -241,7 +242,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Clear" />
-        public async ValueTask ClearAsync(CancellationToken token = default)
+        public async Task ClearAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -268,7 +269,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Insert" />
-        public virtual async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
+        public virtual async Task InsertAsync(int index, T item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -290,7 +291,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Move" />
-        public async ValueTask MoveAsync(int oldIndex, int newIndex, CancellationToken token = default)
+        public async Task MoveAsync(int oldIndex, int newIndex, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -317,7 +318,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Contains" />
-        public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
+        public async Task<bool> ContainsAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -345,7 +346,7 @@ namespace Chummer
                 _lstData.CopyTo(array, arrayIndex);
         }
 
-        public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
+        public async Task CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -355,7 +356,7 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public virtual async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        public virtual async Task<bool> TryAddAsync(T item, CancellationToken token = default)
         {
             await AddAsync(item, token).ConfigureAwait(false);
             return true;
@@ -388,7 +389,7 @@ namespace Chummer
             return false;
         }
 
-        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        public async Task<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -432,7 +433,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
+        public async Task<T[]> ToArrayAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -453,7 +454,7 @@ namespace Chummer
             return objReturn;
         }
 
-        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
+        public async Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
         {
             LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this, token).ConfigureAwait(false);
             objReturn.SetEnumerator(_lstData.GetEnumerator());
@@ -473,7 +474,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.IndexOf(T)" />
-        public async ValueTask<int> IndexOfAsync(T item, CancellationToken token = default)
+        public async Task<int> IndexOfAsync(T item, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -623,7 +624,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Sort()" />
-        public async ValueTask SortAsync(CancellationToken token = default)
+        public async Task SortAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -677,7 +678,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
-        public async ValueTask SortAsync(IComparer<T> comparer, CancellationToken token = default)
+        public async Task SortAsync(IComparer<T> comparer, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -731,7 +732,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
-        public async ValueTask SortAsync(int index, int count, IComparer<T> comparer, CancellationToken token = default)
+        public async Task SortAsync(int index, int count, IComparer<T> comparer, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -785,7 +786,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
-        public async ValueTask SortAsync(Comparison<T> comparison, CancellationToken token = default)
+        public async Task SortAsync(Comparison<T> comparison, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -903,16 +904,56 @@ namespace Chummer
         public virtual event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore CA1070
 
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            Utils.RunOnMainThread(() =>
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            using (LockObject.EnterUpgradeableReadLock())
             {
-                using (LockObject.EnterUpgradeableReadLock())
+                if (_lstPropertyChangedAsync.Count > 0)
+                    Utils.RunWithoutThreadLock(_lstPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))), CancellationToken.None);
+                if (PropertyChanged != null)
+                    Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
+            }
+        }
+
+        public async Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_lstPropertyChangedAsync.Count > 0)
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName));
+                    await Task.WhenAll(_lstPropertyChangedAsync.Select(x => x.Invoke(this, objArgs, token)))
+                        .ConfigureAwait(false);
                 }
-            });
+
+                token.ThrowIfCancellationRequested();
+                if (PropertyChanged != null)
+                {
+                    await Utils.RunOnMainThreadAsync(() => PropertyChanged?.Invoke(this, objArgs), token)
+                        .ConfigureAwait(false);
+                }
+            }
         }
 
         private int _intIsDisposed;

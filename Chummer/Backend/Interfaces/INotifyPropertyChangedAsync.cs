@@ -17,19 +17,19 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public interface IHasGear
+    public interface INotifyPropertyChangedAsync : INotifyPropertyChanged
     {
-        TaggedObservableCollection<Gear> GearChildren { get; }
+        event PropertyChangedAsyncEventHandler PropertyChangedAsync;
 
-        //TODO: Make this dynamically update without having to validate the character.
-        Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default);
+        Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default);
     }
+
+    public delegate Task PropertyChangedAsyncEventHandler(object sender, PropertyChangedEventArgs e, CancellationToken token = default);
 }

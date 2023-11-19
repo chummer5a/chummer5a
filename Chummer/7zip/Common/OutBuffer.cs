@@ -67,11 +67,14 @@ namespace SevenZip.Buffer
                 FlushData();
         }
 
-        public async ValueTask WriteByteAsync(byte b, CancellationToken token = default)
+        public Task WriteByteAsync(byte b, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             m_Buffer[m_Pos++] = b;
             if (m_Pos >= m_BufferSize)
-                await FlushDataAsync(token).ConfigureAwait(false);
+                return FlushDataAsync(token);
+            return Task.CompletedTask;
         }
 
         public void FlushData()
@@ -82,7 +85,7 @@ namespace SevenZip.Buffer
             m_Pos = 0;
         }
 
-        public async ValueTask FlushDataAsync(CancellationToken token = default)
+        public async Task FlushDataAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (m_Pos == 0)

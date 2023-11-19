@@ -170,7 +170,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Arts.
         /// </summary>
-        private async ValueTask BuildList(CancellationToken token = default)
+        private async Task BuildList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;

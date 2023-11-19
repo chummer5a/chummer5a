@@ -496,7 +496,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -968,7 +968,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
-        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability of the VehicleMod.
@@ -981,7 +981,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Availability of the Vehicle.
         /// </summary>
-        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
         }
@@ -1111,7 +1111,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability as a triple.
         /// </summary>
-        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
             bool blnModifyParentAvail = false;
             string strAvail = Avail;
@@ -1407,7 +1407,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the VehicleMod.
         /// </summary>
-        public async ValueTask<decimal> TotalCostInMountCreation(int intSlots, CancellationToken token = default)
+        public async Task<decimal> TotalCostInMountCreation(int intSlots, CancellationToken token = default)
         {
             decimal decReturn = 0;
             if (!IncludedInVehicle)
@@ -1506,8 +1506,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            return decReturn + await Weapons.SumAsync(x => x.ParentID != InternalId, x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false)
-                             + await Cyberware.SumAsync(x => x.ParentID != InternalId, x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+            return decReturn + await Weapons.SumAsync(x => x.ParentID != InternalId, x => x.GetTotalCostAsync(token), token).ConfigureAwait(false)
+                             + await Cyberware.SumAsync(x => x.ParentID != InternalId, x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1515,11 +1515,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal TotalCost => OwnCost + Weapons.Sum(x => x.TotalCost) + Cyberware.Sum(x => x.TotalCost);
 
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             return await GetOwnCostAsync(token).ConfigureAwait(false)
-                   + await Weapons.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false)
-                   + await Cyberware.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+                   + await Weapons.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false)
+                   + await Cyberware.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1598,7 +1598,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Vehicle Mod itself.
         /// </summary>
-        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             decimal decReturn = 0;
             // If the cost is determined by the Rating, evaluate the expression.
@@ -1755,7 +1755,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The number of Slots the Mod consumes.
         /// </summary>
-        public async ValueTask<int> GetCalculatedSlotsAsync(CancellationToken token = default)
+        public async Task<int> GetCalculatedSlotsAsync(CancellationToken token = default)
         {
             string strSlotsExpression = Slots;
             if (strSlotsExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
@@ -1850,7 +1850,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -1861,7 +1861,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -1881,7 +1881,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
@@ -1894,7 +1894,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
@@ -1974,7 +1974,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle arm/leg Strength.
         /// </summary>
-        public async ValueTask<int> GetTotalStrengthAsync(CancellationToken token = default)
+        public async Task<int> GetTotalStrengthAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!Name.ContainsAny(new[] { "ARM", "LEG" }, StringComparison.OrdinalIgnoreCase))
@@ -2010,7 +2010,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle arm/leg Agility.
         /// </summary>
-        public async ValueTask<int> GetTotalAgilityAsync(CancellationToken token = default)
+        public async Task<int> GetTotalAgilityAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!Name.ContainsAny(new[] { "ARM", "LEG" }, StringComparison.OrdinalIgnoreCase))
@@ -2135,7 +2135,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-        public async ValueTask<decimal> DeleteVehicleModAsync(bool blnDoRemoval = true,
+        public async Task<decimal> DeleteVehicleModAsync(bool blnDoRemoval = true,
                                                               CancellationToken token = default)
         {
             if (blnDoRemoval)
@@ -2146,9 +2146,9 @@ namespace Chummer.Backend.Equipment
                     await Parent.Mods.RemoveAsync(this, token).ConfigureAwait(false);
             }
 
-            decimal decReturn = await Weapons.SumAsync(x => x.DeleteWeaponAsync(false, token).AsTask(), token)
+            decimal decReturn = await Weapons.SumAsync(x => x.DeleteWeaponAsync(false, token), token)
                                              .ConfigureAwait(false)
-                                + await Cyberware.SumAsync(x => x.DeleteCyberwareAsync(false, token: token).AsTask(),
+                                + await Cyberware.SumAsync(x => x.DeleteCyberwareAsync(false, token: token),
                                                            token).ConfigureAwait(false);
 
             await DisposeSelfAsync().ConfigureAwait(false);
@@ -2163,7 +2163,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
+        public async Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
             int intRestrictedCount = 0;
             if (!IncludedInVehicle)
@@ -2299,17 +2299,17 @@ namespace Chummer.Backend.Equipment
             return d;
         }
 
-        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+        public Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
 
-        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
+        public Task<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
 
-        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        public async Task<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             decimal d = 0;
             if (Stolen == blnStolen)
                 d += await GetOwnCostAsync(token).ConfigureAwait(false);
-            d += await Weapons.SumAsync(objWeapon => objWeapon.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
-            d += await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+            d += await Weapons.SumAsync(objWeapon => objWeapon.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
+            d += await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
             return d;
         }
 

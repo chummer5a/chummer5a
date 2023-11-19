@@ -385,7 +385,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask CleanUpOldCharacters(CancellationToken token = default)
+        private async Task CleanUpOldCharacters(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!(_aobjCharacters?.Length > 0))

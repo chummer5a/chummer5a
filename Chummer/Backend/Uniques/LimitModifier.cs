@@ -123,7 +123,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -252,7 +252,7 @@ namespace Chummer
             return _strCachedDisplayCondition;
         }
 
-        public async ValueTask<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
         {
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
@@ -306,7 +306,7 @@ namespace Chummer
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
@@ -324,7 +324,7 @@ namespace Chummer
             return strReturn;
         }
 
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strBonus;
             if (_intBonus > 0)

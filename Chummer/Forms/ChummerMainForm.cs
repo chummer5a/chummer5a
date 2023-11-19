@@ -171,25 +171,28 @@ namespace Chummer
             }
         }
 
-        private async Task OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
             try
             {
                 foreach (ExportCharacter objOldForm in e.OldItems)
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (Character objCharacter in objOldForm.CharacterObjects)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (objCharacter == null)
                             continue;
-                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: token).ConfigureAwait(false)
                                 && Program.MainForm.OpenFormsWithCharacters.All(
                                     x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                         }
                         else
                             await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -202,8 +205,9 @@ namespace Chummer
             }
         }
 
-        private async Task OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intFormClosing > 0)
                 return;
             switch (e.Action)
@@ -211,6 +215,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     foreach (ExportCharacter objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
@@ -238,17 +243,19 @@ namespace Chummer
                     {
                         foreach (ExportCharacter objOldForm in e.OldItems)
                         {
+                            token.ThrowIfCancellationRequested();
                             foreach (Character objCharacter in objOldForm.CharacterObjects)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objCharacter == null)
                                     continue;
-                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && Program.MainForm.OpenFormsWithCharacters.All(
                                             x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                        await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
                                 else
                                     await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -267,19 +274,21 @@ namespace Chummer
                         {
                             foreach (ExportCharacter objOldForm in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (e.NewItems.Contains(objOldForm))
                                     continue;
                                 foreach (Character objCharacter in objOldForm.CharacterObjects)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (objCharacter == null)
                                         continue;
-                                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                     {
                                         if (await Program.OpenCharacters.AllAsync(
-                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: token).ConfigureAwait(false)
                                             && Program.MainForm.OpenFormsWithCharacters.All(
                                                 x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                            await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                            await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                     }
                                     else
                                         await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -294,6 +303,7 @@ namespace Chummer
 
                     foreach (ExportCharacter objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (e.OldItems.Contains(objNewForm))
                             continue;
 
@@ -320,25 +330,28 @@ namespace Chummer
             }
         }
 
-        private async Task OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
             try
             {
                 foreach (CharacterSheetViewer objOldForm in e.OldItems)
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (Character objCharacter in objOldForm.CharacterObjects)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (objCharacter == null)
                             continue;
-                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: token).ConfigureAwait(false)
                                 && OpenFormsWithCharacters.All(
                                     x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                         }
                         else
                             await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -351,8 +364,9 @@ namespace Chummer
             }
         }
 
-        private async Task OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intFormClosing > 0)
                 return;
             switch (e.Action)
@@ -360,6 +374,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     foreach (CharacterSheetViewer objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
@@ -388,17 +403,19 @@ namespace Chummer
                     {
                         foreach (CharacterSheetViewer objOldForm in e.OldItems)
                         {
+                            token.ThrowIfCancellationRequested();
                             foreach (Character objCharacter in objOldForm.CharacterObjects)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objCharacter == null)
                                     continue;
-                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && OpenFormsWithCharacters.All(
                                             x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                        await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
                                 else
                                     await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -415,19 +432,21 @@ namespace Chummer
                     {
                         foreach (CharacterSheetViewer objOldForm in e.OldItems)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (e.NewItems.Contains(objOldForm))
                                 continue;
                             foreach (Character objCharacter in objOldForm.CharacterObjects)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objCharacter == null)
                                     continue;
-                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && Program.MainForm.OpenFormsWithCharacters.All(
                                             x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                        await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
                                 else
                                     await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -437,6 +456,7 @@ namespace Chummer
 
                     foreach (CharacterSheetViewer objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (e.OldItems.Contains(objNewForm))
                             continue;
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
@@ -466,8 +486,9 @@ namespace Chummer
         private int _intSkipReopenUntilAllClear;
         private ConcurrentBag<Character> _lstCharactersToReopen = new ConcurrentBag<Character>();
 
-        private async Task OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
             Interlocked.Increment(ref _intSkipReopenUntilAllClear);
@@ -475,6 +496,7 @@ namespace Chummer
             {
                 foreach (CharacterShared objOldForm in e.OldItems)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
                     {
                         _lstCharactersToReopen.Add(objOldCreateForm.CharacterObject);
@@ -484,15 +506,15 @@ namespace Chummer
                     Character objCharacter = objOldForm.CharacterObject;
                     if (objCharacter == null)
                         continue;
-                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken)
+                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, token)
                                      .ConfigureAwait(false))
                     {
                         if (await Program.OpenCharacters
                                          .AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
-                                                   token: _objGenericToken).ConfigureAwait(false)
+                                                   token: token).ConfigureAwait(false)
                             && Program.MainForm.OpenFormsWithCharacters.All(
                                 x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                            await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken)
+                            await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                          .ConfigureAwait(false);
                     }
                     else
@@ -511,8 +533,9 @@ namespace Chummer
             }
         }
 
-        private async Task OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intFormClosing > 0)
                 return;
             switch (e.Action)
@@ -520,6 +543,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     foreach (CharacterShared objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
@@ -547,6 +571,7 @@ namespace Chummer
                     {
                         foreach (CharacterShared objOldForm in e.OldItems)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
                             {
                                 _lstCharactersToReopen.Add(objOldCreateForm.CharacterObject);
@@ -555,11 +580,11 @@ namespace Chummer
                             Character objCharacter = objOldForm.CharacterObject;
                             if (objCharacter == null)
                                 continue;
-                            if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                            if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: token).ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                             }
                             else
                                 await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -577,6 +602,7 @@ namespace Chummer
                         {
                             foreach (CharacterShared objOldForm in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (e.NewItems.Contains(objOldForm))
                                     continue;
                                 if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
@@ -587,13 +613,13 @@ namespace Chummer
                                 Character objCharacter = objOldForm.CharacterObject;
                                 if (objCharacter == null)
                                     continue;
-                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && Program.MainForm.OpenFormsWithCharacters.All(
                                             x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                        await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
                                 else
                                     await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -607,6 +633,7 @@ namespace Chummer
 
                     foreach (CharacterShared objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (e.OldItems.Contains(objNewForm))
                             continue;
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
@@ -1085,8 +1112,7 @@ namespace Chummer
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
-                                objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                            objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
                         }
 
                         break;
@@ -1099,8 +1125,7 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
-                                        objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                                    objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -1119,8 +1144,7 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
-                                        objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                                    objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -1131,8 +1155,7 @@ namespace Chummer
 
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
-                                objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                            objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
                         }
 
                         break;
@@ -1193,7 +1216,7 @@ namespace Chummer
 
         private CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
 
-        private async ValueTask DoCacheGitVersion(CancellationToken token = default)
+        private async Task DoCacheGitVersion(CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
@@ -2298,17 +2321,17 @@ namespace Chummer
             }
         }
 
-        public async void UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e)
+        public async Task UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
-                if (e?.PropertyName == nameof(Character.CharacterName) && sender is Character objCharacter
-                                                                       && await tabForms.DoThreadSafeFuncAsync(
-                                                                           x => x.TabCount, token: _objGenericToken).ConfigureAwait(false)
-                                                                       > 0)
+                if (e?.PropertyName == nameof(Character.CharacterName)
+                    && sender is Character objCharacter
+                    && await tabForms.DoThreadSafeFuncAsync(x => x.TabCount, token: token).ConfigureAwait(false) > 0)
                 {
-                    await UpdateCharacterTabTitle(objCharacter, objCharacter.CharacterName.Trim(), _objGenericToken).ConfigureAwait(false);
+                    await UpdateCharacterTabTitle(objCharacter, objCharacter.CharacterName.Trim(), token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -2617,7 +2640,7 @@ namespace Chummer
                                                                        .ConfigureAwait(false);
                         try
                         {
-                            objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                            objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
                         }
                         finally
                         {
@@ -3811,7 +3834,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoPopulateMruToolstripMenu(string strText = "", CancellationToken token = default)
+        private async Task DoPopulateMruToolstripMenu(string strText = "", CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
@@ -4006,7 +4029,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0, CancellationToken token = default)
+        public async Task OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0, CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)

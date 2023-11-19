@@ -608,7 +608,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask ProcessTalentsIndexChanged(CancellationToken token = default)
+        private async Task ProcessTalentsIndexChanged(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -1347,7 +1347,7 @@ namespace Chummer
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        private async ValueTask MetatypeSelected(CancellationToken token = default)
+        private async Task MetatypeSelected(CancellationToken token = default)
         {
             using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2209,7 +2209,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3, CancellationToken token = default)
+        private async Task AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3, CancellationToken token = default)
         {
             List<Improvement> lstOldFreeSkillImprovements
                 = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, type, token: token).ConfigureAwait(false);
@@ -2309,7 +2309,7 @@ namespace Chummer
         /// <summary>
         /// Manages adjusting priority selections to prevent doubling up in Priority mode.
         /// </summary>
-        private async ValueTask ManagePriorityItems(ComboBox comboBox, bool blnForce = false, CancellationToken token = default)
+        private async Task ManagePriorityItems(ComboBox comboBox, bool blnForce = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!blnForce && _objCharacter.EffectiveBuildMethod != CharacterBuildMethod.Priority)
@@ -2398,7 +2398,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<int> SumToTen(bool blnDoUIUpdate = true, CancellationToken token = default)
+        private async Task<int> SumToTen(bool blnDoUIUpdate = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intReturn;
@@ -2437,7 +2437,7 @@ namespace Chummer
             return intReturn;
         }
 
-        private async ValueTask RefreshSelectedMetatype(CancellationToken token = default)
+        private async Task RefreshSelectedMetatype(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -2949,7 +2949,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateTalents(CancellationToken token = default)
+        private async Task PopulateTalents(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -3142,7 +3142,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateMetavariants(CancellationToken token = default)
+        private async Task PopulateMetavariants(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -3349,7 +3349,7 @@ namespace Chummer
         /// <summary>
         /// Populate the list of Metatypes.
         /// </summary>
-        private async ValueTask PopulateMetatypes(CancellationToken token = default)
+        private async Task PopulateMetatypes(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -3488,7 +3488,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask LoadMetatypes(CancellationToken token = default)
+        private async Task LoadMetatypes(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();

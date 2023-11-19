@@ -192,8 +192,7 @@ namespace Chummer.UI.Attributes
                     await nudBase.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                                                                  nameof(Character
                                                                             .EffectiveBuildMethodUsesPriorityTables),
-                                                                 x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync()
-                                                                       .AsTask()).ConfigureAwait(false);
+                                                                 x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync()).ConfigureAwait(false);
                     await nudBase.DoOneWayDataBindingAsync("Maximum", _dataSource,
                                                            nameof(CharacterAttrib.PriorityMaximum)).ConfigureAwait(false);
                     await nudBase.DoOneWayDataBindingAsync("Enabled", _dataSource,
@@ -443,7 +442,7 @@ namespace Chummer.UI.Attributes
         /// attribute at their natural maximum limit; the special attributes of Magic, Edge,
         /// and Resonance are not included in this limitation.
         /// </summary>
-        private async ValueTask<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
+        private async Task<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
         {
             CharacterAttrib objAttribute = await GetAttributeObjectAsync(token).ConfigureAwait(false);
             using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -474,7 +473,7 @@ namespace Chummer.UI.Attributes
             _objCachedCharacterAttrib ?? (_objCachedCharacterAttrib =
                 _objCharacter.AttributeSection.GetAttributeByName(AttributeName));
 
-        public async ValueTask<CharacterAttrib> GetAttributeObjectAsync(CancellationToken token = default) =>
+        public async Task<CharacterAttrib> GetAttributeObjectAsync(CancellationToken token = default) =>
             _objCachedCharacterAttrib ?? (_objCachedCharacterAttrib =
                 await _objCharacter.AttributeSection.GetAttributeByNameAsync(AttributeName, token).ConfigureAwait(false));
 

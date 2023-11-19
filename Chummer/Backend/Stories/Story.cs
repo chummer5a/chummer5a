@@ -125,7 +125,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<StoryModule> GeneratePersistentModule(string strFunction, CancellationToken token = default)
+        public async Task<StoryModule> GeneratePersistentModule(string strFunction, CancellationToken token = default)
         {
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.TryGetNodeByNameOrId("storypools/storypool", strFunction);
             if (xmlStoryPool != null)
@@ -189,7 +189,7 @@ namespace Chummer
             return null;
         }
 
-        public async ValueTask GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -210,7 +210,7 @@ namespace Chummer
                     _dicPersistentModules.TryRemove(strKey, out _);
                 }
 
-                await Modules.ForEachAsync(x => x.TestRunToGeneratePersistents(objCulture, strLanguage, token).AsTask(), token)
+                await Modules.ForEachAsync(x => x.TestRunToGeneratePersistents(objCulture, strLanguage, token), token)
                              .ConfigureAwait(false);
                 _blnNeedToRegeneratePersistents = false;
             }
@@ -220,7 +220,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try

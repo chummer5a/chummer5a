@@ -218,7 +218,7 @@ namespace Chummer
         /// <summary>
         /// Update the information for the selected Armor Mod.
         /// </summary>
-        private async ValueTask UpdateSelectedArmor(CancellationToken token = default)
+        private async Task UpdateSelectedArmor(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -461,7 +461,7 @@ namespace Chummer
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshList(CancellationToken token = default)
+        private async Task RefreshList(CancellationToken token = default)
         {
             string strFilter = string.Empty;
             // Populate the Mods list.

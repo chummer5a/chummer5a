@@ -90,25 +90,25 @@ namespace Chummer
                 try
                 {
                     _objGenericToken.ThrowIfCancellationRequested();
-                    _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
-                    _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
+                    _objCharacter.PropertyChangedAsync += ObjCharacterOnPropertyChanged;
+                    _objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
                     // TODO: Make these also work for any children collection changes
-                    _objCharacter.Cyberware.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Armor.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Weapons.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Gear.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Contacts.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.ExpenseEntries.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.MentorSpirits.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Powers.ListChanged += OnCharacterListChanged;
-                    _objCharacter.Qualities.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.MartialArts.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Metamagics.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Spells.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.ComplexForms.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.CritterPowers.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.SustainedCollection.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.InitiationGrades.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
+                    _objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
                 }
                 finally
                 {
@@ -165,13 +165,13 @@ namespace Chummer
             }
         }
 
-        private async void ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 if (e.PropertyName == nameof(CharacterSettings.Name))
-                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
-                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+                    await UpdateWindowTitleAsync(token).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -179,13 +179,13 @@ namespace Chummer
             }
         }
 
-        private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
-                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
-                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+                    await UpdateWindowTitleAsync(token).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -193,7 +193,7 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterListChanged(object sender, ListChangedEventArgs e)
+        private async Task OnCharacterListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
             if (e.ListChangedType == ListChangedType.ItemMoved
                 || e.ListChangedType == ListChangedType.PropertyDescriptorAdded
@@ -202,7 +202,7 @@ namespace Chummer
                 return;
             try
             {
-                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -210,13 +210,13 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             try
             {
-                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -245,24 +245,24 @@ namespace Chummer
                                                                  .ConfigureAwait(false);
             try
             {
-                _objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                _objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
-                _objCharacter.Cyberware.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Armor.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Weapons.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Gear.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Contacts.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.ExpenseEntries.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.MentorSpirits.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Powers.ListChanged -= OnCharacterListChanged;
-                _objCharacter.Qualities.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.MartialArts.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Metamagics.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Spells.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.ComplexForms.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.CritterPowers.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.SustainedCollection.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.InitiationGrades.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
+                _objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
+                _objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Weapons.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Gear.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Contacts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.ExpenseEntries.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.MentorSpirits.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Powers.ListChangedAsync -= OnCharacterListChanged;
+                _objCharacter.Qualities.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.MartialArts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Metamagics.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Spells.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.ComplexForms.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.CritterPowers.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
             }
             finally
             {
@@ -327,7 +327,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoExport(CancellationToken token = default)
+        private async Task DoExport(CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(_strXslt))
                 return;
@@ -624,7 +624,7 @@ namespace Chummer
 
         #region XML
 
-        private async ValueTask ExportNormal(string destination = null, CancellationToken token = default)
+        private async Task ExportNormal(string destination = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strSaveFile = destination;
@@ -830,7 +830,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask SetTextToWorkerResult(string strText, CancellationToken token = default)
+        private async Task SetTextToWorkerResult(string strText, CancellationToken token = default)
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
@@ -859,7 +859,7 @@ namespace Chummer
 
         #region JSON
 
-        private async ValueTask ExportJson(string destination = null, CancellationToken token = default)
+        private async Task ExportJson(string destination = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strSaveFile = destination;

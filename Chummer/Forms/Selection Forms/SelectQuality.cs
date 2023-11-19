@@ -366,7 +366,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask UpdateCostLabel(XPathNavigator xmlQuality, CancellationToken token = default)
+        private async Task UpdateCostLabel(XPathNavigator xmlQuality, CancellationToken token = default)
         {
             if (xmlQuality != null)
             {
@@ -483,7 +483,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Qualities.
         /// </summary>
-        private async ValueTask BuildQualityList(CancellationToken token = default)
+        private async Task BuildQualityList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -683,7 +683,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedQuality = await lstQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedQuality))

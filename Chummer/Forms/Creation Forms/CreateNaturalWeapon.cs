@@ -121,7 +121,7 @@ namespace Chummer
             nudReach.Left = lblReach.Left + intWidth + 6;
         }
 
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             // Assemble the DV from the fields.
             string strDamage = await cboDVBase.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);

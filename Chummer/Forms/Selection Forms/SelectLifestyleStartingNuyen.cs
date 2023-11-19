@@ -70,7 +70,7 @@ namespace Chummer
             await RefreshResultLabel().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshResultLabel(CancellationToken token = default)
+        private async Task RefreshResultLabel(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -95,7 +95,7 @@ namespace Chummer
             await RefreshBaseLifestyle().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshBaseLifestyle(CancellationToken token = default)
+        private async Task RefreshBaseLifestyle(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_blnIsSelectLifestyleRefreshing)
@@ -122,7 +122,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshSelectLifestyle(CancellationToken token = default)
+        private async Task RefreshSelectLifestyle(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -186,7 +186,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshCalculation(CancellationToken token = default)
+        private async Task RefreshCalculation(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -229,7 +229,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoRoll(CancellationToken token = default)
+        private async Task DoRoll(CancellationToken token = default)
         {
             int intResult = 0;
             for (int i = 0; i < SelectedLifestyle.Dice; ++i)

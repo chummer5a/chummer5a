@@ -3674,7 +3674,7 @@ namespace Chummer
         /// <summary>
         ///     Evaluates the availability of a given node against Availability Limits in Create Mode
         /// </summary>
-        public static async ValueTask<bool> CheckAvailRestrictionAsync(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
+        public static async Task<bool> CheckAvailRestrictionAsync(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
             return objXmlGear != null && await objXmlGear.CreateNavigator().CheckAvailRestrictionAsync(objCharacter, intRating, intAvailModifier, token).ConfigureAwait(false);
         }
@@ -3688,7 +3688,7 @@ namespace Chummer
         /// <param name="intAvailModifier">Availability Modifier from other sources.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Returns False if not permitted with the current gameplay restrictions. Returns True if valid.</returns>
-        public static async ValueTask<bool> CheckAvailRestrictionAsync(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
+        public static async Task<bool> CheckAvailRestrictionAsync(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
             if (objXmlGear == null)
                 return false;
@@ -3805,7 +3805,7 @@ namespace Chummer
             return decMaxNuyen >= decCost * decCostMultiplier;
         }
 
-        public static async ValueTask<bool> CheckNuyenRestrictionAsync(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        public static async Task<bool> CheckNuyenRestrictionAsync(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
             return objXmlGear != null && await objXmlGear.CreateNavigator()
                                                          .CheckNuyenRestrictionAsync(
@@ -3821,7 +3821,7 @@ namespace Chummer
         /// <param name="intRating">Effective Rating of the object.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Returns False if not permitted with the current restrictions. Returns True if valid.</returns>
-        public static async ValueTask<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        public static async Task<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
             if (objXmlGear == null)
                 return false;

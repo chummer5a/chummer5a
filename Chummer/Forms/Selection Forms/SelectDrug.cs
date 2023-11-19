@@ -136,7 +136,7 @@ namespace Chummer
             await ProcessGradeChanged().ConfigureAwait(false);
         }
 
-        private async ValueTask ProcessGradeChanged(CancellationToken token = default)
+        private async Task ProcessGradeChanged(CancellationToken token = default)
         {
             if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                 return;
@@ -621,7 +621,7 @@ namespace Chummer
         /// <summary>
         /// Update the Drug's information based on the Drug selected and current Rating.
         /// </summary>
-        private async ValueTask UpdateDrugInfo(CancellationToken token = default)
+        private async Task UpdateDrugInfo(CancellationToken token = default)
         {
             XPathNavigator objXmlDrug = null;
             string strSelectedId = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
@@ -787,17 +787,17 @@ namespace Chummer
 
         private int _intSkipListRefresh;
 
-        private ValueTask<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
+        private Task<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
         {
             return RefreshList(strCategory, false, token);
         }
 
-        private ValueTask<bool> RefreshList(string strCategory = "", CancellationToken token = default)
+        private Task<bool> RefreshList(string strCategory = "", CancellationToken token = default)
         {
             return RefreshList(strCategory, true, token);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate,
+        private async Task<bool> RefreshList(string strCategory, bool blnDoUIUpdate,
                                                   CancellationToken token = default)
         {
             if ((_intLoading > 0 || _intSkipListRefresh > 0) && blnDoUIUpdate)
@@ -973,7 +973,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedId = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedId))
@@ -1029,7 +1029,7 @@ namespace Chummer
         /// <param name="blnForce">Force grades to be repopulated.</param>
         /// <param name="strForceGrade">If not empty, force this grade to be selected.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private async ValueTask PopulateGrades(ICollection<string> setDisallowedGrades = null, bool blnForce = false, string strForceGrade = "", CancellationToken token = default)
+        private async Task PopulateGrades(ICollection<string> setDisallowedGrades = null, bool blnForce = false, string strForceGrade = "", CancellationToken token = default)
         {
             if (_blnPopulatingGrades)
                 return;

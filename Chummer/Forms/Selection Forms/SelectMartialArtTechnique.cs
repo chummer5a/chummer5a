@@ -177,7 +177,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts Techniques list.
         /// </summary>
-        private async ValueTask RefreshTechniquesList(CancellationToken token = default)
+        private async Task RefreshTechniquesList(CancellationToken token = default)
         {
             string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);

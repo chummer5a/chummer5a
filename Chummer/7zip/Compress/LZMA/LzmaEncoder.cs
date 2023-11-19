@@ -520,7 +520,7 @@ namespace SevenZip.Compression.LZMA
             _additionalOffset++;
         }
 
-        private async ValueTask<Tuple<uint, uint>> ReadMatchDistancesAsync(CancellationToken token = default)
+        private async Task<Tuple<uint, uint>> ReadMatchDistancesAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             uint lenRes = 0;
@@ -545,7 +545,7 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        private async ValueTask MovePosAsync(uint num, CancellationToken token = default)
+        private async Task MovePosAsync(uint num, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (num > 0)
@@ -1173,7 +1173,7 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        private async ValueTask<Tuple<uint, uint>> GetOptimumAsync(uint position, CancellationToken token = default)
+        private async Task<Tuple<uint, uint>> GetOptimumAsync(uint position, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_optimumEndIndex != _optimumCurrentIndex)
@@ -1968,7 +1968,7 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        public async ValueTask<Tuple<long, long, bool>> CodeOneBlockAsync(CancellationToken token = default)
+        public async Task<Tuple<long, long, bool>> CodeOneBlockAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long inSize = 0;

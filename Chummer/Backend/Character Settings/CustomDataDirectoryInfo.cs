@@ -302,7 +302,7 @@ namespace Chummer
         /// <param name="objCharacterSettings"></param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all missing dependencies as a single string</returns>
-        public async ValueTask<string> CheckDependencyAsync(CharacterSettings objCharacterSettings,
+        public async Task<string> CheckDependencyAsync(CharacterSettings objCharacterSettings,
                                                             CancellationToken token = default)
         {
             int intMyLoadOrderPosition
@@ -459,7 +459,7 @@ namespace Chummer
         /// <param name="objCharacterSettings"></param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
-        public async ValueTask<string> CheckIncompatibilityAsync(CharacterSettings objCharacterSettings,
+        public async Task<string> CheckIncompatibilityAsync(CharacterSettings objCharacterSettings,
                                                                  CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -554,7 +554,7 @@ namespace Chummer
         /// <param name="presentIncompatibilities">The string of all incompatibilities that are active</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async ValueTask<string> BuildIncompatibilityDependencyStringAsync(
+        public static async Task<string> BuildIncompatibilityDependencyStringAsync(
             string missingDependency = "", string presentIncompatibilities = "", CancellationToken token = default)
         {
             string strReturn = string.Empty;
@@ -772,7 +772,7 @@ namespace Chummer
             : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
                             LanguageManager.GetString("String_Space"), MyVersion);
 
-        public async ValueTask<string> GetDisplayNameAsync(CancellationToken token = default)
+        public async Task<string> GetDisplayNameAsync(CancellationToken token = default)
         {
             return MyVersion == default
                 ? Name
@@ -952,7 +952,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> GetDisplayNameAsync(CancellationToken token = default)
+        public async Task<string> GetDisplayNameAsync(CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 

@@ -31,7 +31,7 @@ using NLog;
 
 namespace Chummer
 {
-    public class SustainedObject : IHasInternalId, INotifyPropertyChanged
+    public sealed class SustainedObject : IHasInternalId, INotifyPropertyChangedAsync, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -157,7 +157,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -262,7 +262,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
@@ -308,7 +308,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
@@ -333,7 +333,7 @@ namespace Chummer
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
         public string Name
@@ -362,12 +362,49 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly ThreadSafeList<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new ThreadSafeList<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add => _lstPropertyChangedAsync.Add(value);
+            remove => _lstPropertyChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName)));
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            if (_lstPropertyChangedAsync.Count > 0)
+                Utils.RunWithoutThreadLock(_lstPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))), CancellationToken.None);
+            if (PropertyChanged != null)
+                Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
             if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
                 _objCharacter.RefreshSustainingPenalties();
+        }
+
+        public async Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            if (await _lstPropertyChangedAsync.GetCountAsync(token).ConfigureAwait(false) > 0)
+                await Task.WhenAll(_lstPropertyChangedAsync.Select(x => x.Invoke(this, objArgs, token))).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (PropertyChanged != null)
+                await Utils.RunOnMainThreadAsync(() => PropertyChanged?.Invoke(this, objArgs), token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
+                await _objCharacter.RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
+        }
+
+        public void Dispose()
+        {
+            _lstPropertyChangedAsync.Dispose();
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            return _lstPropertyChangedAsync.DisposeAsync();
         }
     }
 }

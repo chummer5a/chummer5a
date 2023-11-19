@@ -80,14 +80,14 @@ namespace Chummer
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static ValueTask<int> NextD6ModuloBiasRemovedAsync(this Random objRandom, CancellationToken token = default)
+        public static Task<int> NextD6ModuloBiasRemovedAsync(this Random objRandom, CancellationToken token = default)
         {
             if (objRandom == null)
                 throw new ArgumentNullException(nameof(objRandom));
             const int intModuloCheck = int.MaxValue - 1;  // Faster Modulo bias removal for 1d6
             int intLoopResult = 0;
             return DoLoop();
-            async ValueTask<int> DoLoop()
+            async Task<int> DoLoop()
             {
                 await Task.Run(async () =>
                 {
@@ -117,14 +117,14 @@ namespace Chummer
         /// <param name="objRandom">Instance of Random to use.</param>
         /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static ValueTask<int> NextModuloBiasRemovedAsync(this Random objRandom, int maxValue, CancellationToken token = default)
+        public static Task<int> NextModuloBiasRemovedAsync(this Random objRandom, int maxValue, CancellationToken token = default)
         {
             if (objRandom == null)
                 throw new ArgumentNullException(nameof(objRandom));
             int intModuloCheck = int.MaxValue - int.MaxValue % maxValue;
             int intLoopResult = 0;
             return DoLoop();
-            async ValueTask<int> DoLoop()
+            async Task<int> DoLoop()
             {
                 await Task.Run(async () =>
                 {

@@ -17,19 +17,19 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public interface IHasGear
+    public static class CancellationTokenExtensions
     {
-        TaggedObservableCollection<Gear> GearChildren { get; }
-
-        //TODO: Make this dynamically update without having to validate the character.
-        Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default);
+        /// <summary>
+        /// Returns a cancellation token in task form, i.e, as a task that runs forever until the cancellation token is fired.
+        /// </summary>
+        public static Task AsTask(this CancellationToken token)
+        {
+            return Task.Delay(Timeout.Infinite, token);
+        }
     }
 }

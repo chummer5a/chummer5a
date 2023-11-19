@@ -104,7 +104,7 @@ namespace Chummer
             Dispose();
         }
 
-        public async ValueTask DeletePowerAsync(CancellationToken token = default)
+        public async Task DeletePowerAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -282,7 +282,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -435,7 +435,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -754,7 +754,7 @@ namespace Chummer
         /// </summary>
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -779,7 +779,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -805,7 +805,7 @@ namespace Chummer
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -831,7 +831,7 @@ namespace Chummer
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -971,7 +971,7 @@ namespace Chummer
         /// <summary>
         /// The current 'paid' Rating of the Power.
         /// </summary>
-        public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
+        public async Task<int> GetRatingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1004,7 +1004,7 @@ namespace Chummer
         /// <summary>
         /// The current Rating of the Power, including any Free Levels.
         /// </summary>
-        public async ValueTask<int> GetTotalRatingAsync(CancellationToken token = default)
+        public async Task<int> GetTotalRatingAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1085,7 +1085,7 @@ namespace Chummer
         /// <summary>
         /// Free levels of the power.
         /// </summary>
-        public async ValueTask<int> GetFreeLevelsAsync(CancellationToken token = default)
+        public async Task<int> GetFreeLevelsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1200,7 +1200,7 @@ namespace Chummer
         /// <summary>
         /// Total number of Power Points the Power costs.
         /// </summary>
-        public async ValueTask<decimal> GetPowerPointsAsync(CancellationToken token = default)
+        public async Task<decimal> GetPowerPointsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1263,7 +1263,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> GetDisplayPointsAsync(CancellationToken token = default)
+        public async Task<string> GetDisplayPointsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1322,7 +1322,7 @@ namespace Chummer
         /// Free Power Points that apply to the Power. Calculated as Improvement Rating * 0.25.
         /// Typically used for Qi Foci.
         /// </summary>
-        public async ValueTask<decimal> GetFreePointsAsync(CancellationToken token = default)
+        public async Task<decimal> GetFreePointsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1403,7 +1403,7 @@ namespace Chummer
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1719,7 +1719,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<int> GetTotalMaximumLevelsAsync(CancellationToken token = default)
+        public async Task<int> GetTotalMaximumLevelsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2095,7 +2095,7 @@ namespace Chummer
         /// <summary>
         /// ToolTip that shows how the Power is calculating its Modified Rating.
         /// </summary>
-        public async ValueTask<string> GetToolTipAsync(CancellationToken token = default)
+        public async Task<string> GetToolTipAsync(CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))

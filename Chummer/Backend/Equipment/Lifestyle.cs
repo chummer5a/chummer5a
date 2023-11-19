@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IHasLockObject, IHasCost
+    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertyChangedAsync, IHasLockObject, IHasCost
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -657,7 +657,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -863,7 +863,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -899,7 +899,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -918,9 +918,9 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Sourcebook.
@@ -986,7 +986,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
@@ -1201,6 +1201,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Base Lifestyle.
+        /// </summary>
+        public async Task<string> GetBaseLifestyleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strBaseLifestyle;
+            }
+        }
+
+        /// <summary>
         /// Base Lifestyle Points awarded by the lifestyle.
         /// </summary>
         public int LP
@@ -1224,7 +1237,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalLPAsync(CancellationToken token = default)
+        public async Task<int> GetTotalLPAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1474,7 +1487,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalComfortsMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalComfortsMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1499,7 +1512,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalSecurityMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalSecurityMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1524,7 +1537,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalAreaMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalAreaMaximumAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1707,9 +1720,32 @@ namespace Chummer.Backend.Equipment
 
         public bool IsTrustFundEligible => StaticIsTrustFundEligible(_objCharacter, BaseLifestyle);
 
+        public async Task<bool> GetIsTrustFundEligibleAsync(CancellationToken token = default)
+        {
+            return await StaticIsTrustFundEligibleAsync(_objCharacter,
+                await GetBaseLifestyleAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+        }
+
         public static bool StaticIsTrustFundEligible(Character objCharacter, string strBaseLifestyle)
         {
             switch (objCharacter.TrustFund)
+            {
+                case 1:
+                case 4:
+                    return strBaseLifestyle == "Medium";
+
+                case 2:
+                    return strBaseLifestyle == "Low";
+
+                case 3:
+                    return strBaseLifestyle == "High";
+            }
+            return false;
+        }
+
+        public static async Task<bool> StaticIsTrustFundEligibleAsync(Character objCharacter, string strBaseLifestyle, CancellationToken token = default)
+        {
+            switch (await objCharacter.GetTrustFundAsync(token).ConfigureAwait(false))
             {
                 case 1:
                 case 4:
@@ -1932,7 +1968,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetCityAsync(CancellationToken token = default)
+        public async Task<string> GetCityAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1941,7 +1977,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask SetCityAsync(string value, CancellationToken token = default)
+        public async Task SetCityAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1968,7 +2004,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetDistrictAsync(CancellationToken token = default)
+        public async Task<string> GetDistrictAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1977,7 +2013,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask SetDistrictAsync(string value, CancellationToken token = default)
+        public async Task SetDistrictAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2004,7 +2040,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetBoroughAsync(CancellationToken token = default)
+        public async Task<string> GetBoroughAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2013,7 +2049,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask SetBoroughAsync(string value, CancellationToken token = default)
+        public async Task SetBoroughAsync(string value, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2042,7 +2078,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Lifestyle, counting all purchased months.
         /// </summary>
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2074,7 +2110,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetCostMultiplierAsync(CancellationToken token = default)
+        public async Task<decimal> GetCostMultiplierAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2121,7 +2157,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Area of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalAreaAsync(CancellationToken token = default)
+        public async Task<int> GetTotalAreaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2151,7 +2187,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Comforts of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalComfortsAsync(CancellationToken token = default)
+        public async Task<int> GetTotalComfortsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2182,7 +2218,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Security of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalSecurityAsync(CancellationToken token = default)
+        public async Task<int> GetTotalSecurityAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2208,7 +2244,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetAreaDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetAreaDeltaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2234,7 +2270,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetComfortsDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetComfortsDeltaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2261,7 +2297,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetSecurityDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetSecurityDeltaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2288,7 +2324,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedAreaAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedAreaAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2315,7 +2351,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedComfortsAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedComfortsAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2343,7 +2379,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedSecurityAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedSecurityAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2372,7 +2408,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
         /// </summary>
-        public async ValueTask<decimal> GetBaseCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetBaseCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2400,7 +2436,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
-        public async ValueTask<decimal> GetBaseCostMultiplierAsync(CancellationToken token = default)
+        public async Task<decimal> GetBaseCostMultiplierAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2477,7 +2513,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total monthly cost of the Lifestyle.
         /// </summary>
-        public async ValueTask<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
         {
             decimal decReturn = 0;
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -2547,7 +2583,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetDisplayTotalMonthlyCostAsync(CancellationToken token = default)
+        public async Task<string> GetDisplayTotalMonthlyCostAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2834,10 +2870,32 @@ namespace Chummer.Backend.Equipment
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             this.OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
@@ -2871,7 +2929,35 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    if (PropertyChanged != null)
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                        }
+
+                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -2884,6 +2970,98 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         });
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+            }
+        }
+
+        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in s_LifestyleDependencyGraph
+                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (setNamesOfChangedProperties.Contains(nameof(BaseLifestyle)))
+                    {
+                        await LifestyleQualities.ForEachAsync(x =>
+                                x.OnPropertyChanged(nameof(LifestyleQuality.CanBeFreeByLifestyle)), token)
+                            .ConfigureAwait(false);
+                    }
+
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2912,7 +3090,7 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {

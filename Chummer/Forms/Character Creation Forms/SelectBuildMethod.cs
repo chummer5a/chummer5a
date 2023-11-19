@@ -225,7 +225,7 @@ namespace Chummer
             _objGenericCancellationTokenSource.Cancel(false);
         }
 
-        private async ValueTask RepopulateCharacterSettings(CharacterSettings objSelected = null,
+        private async Task RepopulateCharacterSettings(CharacterSettings objSelected = null,
                                                             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -329,7 +329,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask ProcessCharacterSettingIndexChanged(CancellationToken token = default)
+        private async Task ProcessCharacterSettingIndexChanged(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();

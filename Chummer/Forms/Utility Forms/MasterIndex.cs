@@ -46,7 +46,7 @@ namespace Chummer
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
 
-        private static async ValueTask<CharacterSettings> GetInitialSetting(CancellationToken token = default)
+        private static async Task<CharacterSettings> GetInitialSetting(CancellationToken token = default)
         {
             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
             if (dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting, out CharacterSettings objReturn))
@@ -136,7 +136,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private async ValueTask PopulateCharacterSettings(CancellationToken token = default)
+        private async Task PopulateCharacterSettings(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -270,7 +270,7 @@ namespace Chummer
                         try
                         {
                             _objGenericToken.ThrowIfCancellationRequested();
-                            objSettings.PropertyChanged += OnSelectedSettingChanged;
+                            objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
                         }
                         finally
                         {
@@ -303,7 +303,7 @@ namespace Chummer
                     try
                     {
                         _objGenericToken.ThrowIfCancellationRequested();
-                        _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+                        _objSelectedSetting.PropertyChangedAsync -= OnSelectedSettingChanged;
                     }
                     finally
                     {
@@ -366,17 +366,17 @@ namespace Chummer
             _objGenericFormClosingCancellationTokenSource.Cancel(false);
         }
 
-        private async void OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             if (e.PropertyName == nameof(CharacterSettings.Books)
                 || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
             {
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        await LoadContent(_objGenericToken).ConfigureAwait(false);
+                        await LoadContent(token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -443,7 +443,7 @@ namespace Chummer
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    objPreviousSettings.PropertyChanged -= OnSelectedSettingChanged;
+                                    objPreviousSettings.PropertyChangedAsync -= OnSelectedSettingChanged;
                                 }
                                 finally
                                 {
@@ -457,7 +457,7 @@ namespace Chummer
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    objSettings.PropertyChanged += OnSelectedSettingChanged;
+                                    objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
                                 }
                                 finally
                                 {
@@ -1044,7 +1044,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask ForceRepopulateCharacterSettings(CancellationToken token = default)
+        public async Task ForceRepopulateCharacterSettings(CancellationToken token = default)
         {
             _objGenericToken.ThrowIfCancellationRequested();
             token.ThrowIfCancellationRequested();
