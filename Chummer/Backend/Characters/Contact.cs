@@ -919,6 +919,36 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Total points used for this contact.
+        /// </summary>
+        public async Task<int> GetContactPointsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetFreeAsync(token).ConfigureAwait(false))
+                    return 0;
+                decimal decReturn = await GetConnectionAsync(token).ConfigureAwait(false) +
+                                    await GetLoyaltyAsync(token).ConfigureAwait(false);
+                if (await GetFamilyAsync(token).ConfigureAwait(false))
+                    ++decReturn;
+                if (await GetBlackmailAsync(token).ConfigureAwait(false))
+                    decReturn += 2;
+                decReturn +=
+                    await ImprovementManager
+                        .ValueOfAsync(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount, token: token)
+                        .ConfigureAwait(false);
+                decReturn = Math.Max(
+                    decReturn,
+                    2 + await ImprovementManager
+                        .ValueOfAsync(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum, token: token)
+                        .ConfigureAwait(false));
+                return decReturn.StandardRound();
+            }
+        }
+
+        /// <summary>
         /// Name of the Contact.
         /// </summary>
         public string Name
@@ -1994,7 +2024,7 @@ namespace Chummer
                                                             .GetCachedImprovementListForValueOfAsync(
                                                                 CharacterObject,
                                                                 Improvement.ImprovementType.ContactMakeFree,
-                                                                UniqueId, token: token).ConfigureAwait(false)).Count
+                                                                await GetUniqueIdAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).Count
                                                      > 0)
                         .ToInt32();
                 }
@@ -2054,6 +2084,19 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strUnique;
+            }
+        }
+
+        /// <summary>
+        /// Unique ID for this contact
+        /// </summary>
+        public async Task<string> GetUniqueIdAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strUnique;
             }
         }
 
@@ -2132,6 +2175,16 @@ namespace Chummer
             }
         }
 
+        public async Task<bool> GetBlackmailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnBlackmail;
+            }
+        }
+
         public bool Family
         {
             get
@@ -2151,6 +2204,16 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        public async Task<bool> GetFamilyAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnFamily;
             }
         }
 
@@ -2190,7 +2253,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                                                                    CharacterObject,
                                                                                    Improvement.ImprovementType
-                                                                                       .ContactForcedLoyalty, UniqueId,
+                                                                                       .ContactForcedLoyalty, await GetUniqueIdAsync(token).ConfigureAwait(false),
                                                                                    token: token)
                                                                                .ConfigureAwait(false))
                 {

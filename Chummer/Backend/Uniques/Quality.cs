@@ -654,6 +654,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public async Task<string> GetSourceIDStringAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token))
+            {
+                token.ThrowIfCancellationRequested();
+                return _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
+
+        /// <summary>
         /// Internal identifier which will be used to identify this Quality in the Improvement system.
         /// </summary>
         public string InternalId
@@ -1065,7 +1078,7 @@ namespace Chummer
         public async Task<int> GetBPAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intValue = 0;
@@ -1402,7 +1415,7 @@ namespace Chummer
         public async Task<bool> GetContributeToLimitAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 QualitySource eQualitySource = await GetOriginSourceAsync(token).ConfigureAwait(false);
@@ -1413,23 +1426,27 @@ namespace Chummer
                     return false;
 
                 // Positive Metagenic Qualities are free if you're a Changeling.
-                if (Metagenic && await _objCharacter.GetMetagenicLimitAsync(token) > 0)
+                if (await GetMetagenicAsync(token).ConfigureAwait(false) && await _objCharacter.GetMetagenicLimitAsync(token).ConfigureAwait(false) > 0)
                     return false;
 
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                if (Name == "Mentor Spirit" && await _objCharacter.Qualities.AnyAsync(
-                        objQuality =>
-                            objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way", token: token))
+                string strName = await GetNameAsync(token).ConfigureAwait(false);
+                if (strName == "Mentor Spirit" && await _objCharacter.Qualities.AnyAsync(
+                        async objQuality =>
+                        {
+                            string strInnerName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
+                            return strInnerName == "The Beast's Way" || strInnerName == "The Spiritual Way";
+                        }, token: token).ConfigureAwait(false))
                     return false;
 
                 return _blnContributeToLimit
                        && (await ImprovementManager
                            .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                Improvement.ImprovementType.FreeQuality,
-                               SourceIDString, token: token)).Count == 0
+                               await GetSourceIDStringAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).Count == 0
                        && (await ImprovementManager
                            .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                               Improvement.ImprovementType.FreeQuality, Name, token: token)).Count
+                               Improvement.ImprovementType.FreeQuality, strName, token: token).ConfigureAwait(false)).Count
                        == 0;
             }
         }
@@ -1454,6 +1471,27 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not the Quality contributes towards the character's Quality BP limits.
+        /// </summary>
+        public async Task<bool> GetContributeToMetagenicLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                QualitySource eQualitySource = await GetOriginSourceAsync(token).ConfigureAwait(false);
+                if (eQualitySource == QualitySource.Metatype
+                    || eQualitySource == QualitySource.MetatypeRemovable
+                    || eQualitySource == QualitySource.MetatypeRemovedAtChargen
+                    || eQualitySource == QualitySource.Heritage)
+                    return false;
+
+                return await GetMetagenicAsync(token).ConfigureAwait(false) &&
+                       await _objCharacter.GetMetagenicLimitAsync(token).ConfigureAwait(false) > 0;
+            }
+        }
+
+        /// <summary>
         /// Whether this quality can be purchased in stages, i.e. allowing the character to go into karmic debt
         /// </summary>
         public bool StagedPurchase
@@ -1470,10 +1508,8 @@ namespace Chummer
                     if (_blnStagedPurchase == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnStagedPurchase = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1511,6 +1547,47 @@ namespace Chummer
                                                                   Improvement.ImprovementType.FreeQuality, Name).Count
                            == 0;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Quality contributes towards the character's Total BP.
+        /// </summary>
+        public async Task<bool> GetContributeToBPAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                QualitySource eQualitySource = await GetOriginSourceAsync(token).ConfigureAwait(false);
+                if (eQualitySource == QualitySource.Metatype
+                    || eQualitySource == QualitySource.MetatypeRemovable
+                    || eQualitySource == QualitySource.Heritage)
+                    return false;
+
+                if (await GetMetagenicAsync(token).ConfigureAwait(false) &&
+                    await _objCharacter.GetMetagenicLimitAsync(token).ConfigureAwait(false) > 0)
+                    return false;
+
+                // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+                string strName = await GetNameAsync(token).ConfigureAwait(false);
+                if (strName == "Mentor Spirit" && await _objCharacter.Qualities.AnyAsync(
+                        async objQuality =>
+                        {
+                            string strInnerName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
+                            return strInnerName == "The Beast's Way" || strInnerName == "The Spiritual Way";
+                        }, token: token).ConfigureAwait(false))
+                    return false;
+
+                return _blnContributeToBP
+                       && (await ImprovementManager
+                           .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                               Improvement.ImprovementType.FreeQuality,
+                               await GetSourceIDStringAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).Count == 0
+                       && (await ImprovementManager
+                           .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                               Improvement.ImprovementType.FreeQuality, strName, token: token).ConfigureAwait(false)).Count
+                       == 0;
             }
         }
 
@@ -1579,10 +1656,8 @@ namespace Chummer
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _colNotes = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }

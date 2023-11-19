@@ -7689,6 +7689,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Do Enemies count towards Negative Quality Karma limit in create mode?
+        /// </summary>
+        public async Task<bool> GetEnemyKarmaQualityLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnEnemyKarmaQualityLimit;
+            }
+        }
+
+        /// <summary>
         /// Whether or not Capacity limits should be enforced.
         /// </summary>
         public bool EnforceCapacity
