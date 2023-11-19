@@ -163,7 +163,13 @@ namespace Chummer
                 return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
             if (!frmForm.IsHandleCreated)
             {
-                IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+                Utils.RunOnMainThread(() =>
+                {
+                    if (!frmForm.IsHandleCreated)
+                    {
+                        IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+                    }
+                }, token);
             }
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
@@ -196,7 +202,13 @@ namespace Chummer
                 return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
             if (!frmForm.IsHandleCreated)
             {
-                IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+                Utils.RunOnMainThread(() =>
+                {
+                    if (!frmForm.IsHandleCreated)
+                    {
+                        IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+                    }
+                }, token);
             }
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
@@ -1075,13 +1087,17 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            Utils.RunOnMainThread(() =>
+            if (!objControl.IsHandleCreated)
             {
-                if (!objControl.IsHandleCreated)
+                Utils.RunOnMainThread(() =>
                 {
-                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
-                }
-            }, token);
+                    if (!objControl.IsHandleCreated)
+                    {
+                        IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                    }
+                }, token);
+            }
+
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
@@ -1117,13 +1133,17 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            await Utils.RunOnMainThreadAsync(() =>
+            if (!objControl.IsHandleCreated)
             {
-                if (!objControl.IsHandleCreated)
+                await Utils.RunOnMainThreadAsync(() =>
                 {
-                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
-                }
-            }, token).ConfigureAwait(false);
+                    if (!objControl.IsHandleCreated)
+                    {
+                        IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                    }
+                }, token).ConfigureAwait(false);
+            }
+
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
             await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
                 .ConfigureAwait(false);
