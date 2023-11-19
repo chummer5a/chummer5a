@@ -2723,7 +2723,17 @@ namespace Chummer
                     {
                         CharacterShared frmToClose = lstToClose1[i];
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        frmToClose.DoThreadSafe(x => x.Close());
+                        frmToClose.DoThreadSafe(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                        });
                         objFormCharacter.Dispose();
                     }
                 }
@@ -2741,7 +2751,17 @@ namespace Chummer
                     {
                         ExportCharacter frmToClose = lstToClose2[i];
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        frmToClose.DoThreadSafe(x => x.Close());
+                        frmToClose.DoThreadSafe(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                        });
                         objFormCharacter.Dispose();
                     }
                 }
@@ -2759,7 +2779,17 @@ namespace Chummer
                     {
                         CharacterSheetViewer frmToClose = lstToClose3[i];
                         List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
-                        frmToClose.DoThreadSafe(x => x.Close());
+                        frmToClose.DoThreadSafe(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                        });
                         foreach (Character objFormCharacter in lstFormCharacters)
                             objFormCharacter.Dispose();
                     }
@@ -2791,8 +2821,17 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                         Character objFormCharacter = frmToClose.CharacterObject;
                         // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x => x.Close())
-                                        .ConfigureAwait(false);
+                        await frmToClose.DoThreadSafeAsync(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                        }).ConfigureAwait(false);
                         await objFormCharacter.DisposeAsync().ConfigureAwait(false);
                     }
                 }
@@ -2823,8 +2862,17 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                         Character objFormCharacter = frmToClose.CharacterObject;
                         // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x => x.Close())
-                                        .ConfigureAwait(false);
+                        await frmToClose.DoThreadSafeAsync(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                        }).ConfigureAwait(false);
                         await objFormCharacter.DisposeAsync().ConfigureAwait(false);
                     }
                 }
@@ -2856,8 +2904,17 @@ namespace Chummer
                                                                 .ConfigureAwait(false);
                         List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
                         // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x => x.Close())
-                                        .ConfigureAwait(false);
+                        await frmToClose.DoThreadSafeAsync(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                        }).ConfigureAwait(false);
                         foreach (Character objFormCharacter in lstFormCharacters)
                             await objFormCharacter.DisposeAsync().ConfigureAwait(false);
                     }
