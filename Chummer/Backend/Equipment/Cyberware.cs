@@ -5632,9 +5632,7 @@ namespace Chummer.Backend.Equipment
                         sbdAvail.CheapReplace(strAvail, "Rating",
                                               () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                        foreach (CharacterAttrib objLoopAttribute in
-                                 _objCharacter.AttributeSection.AttributeList.Concat(
-                                     _objCharacter.AttributeSection.SpecialAttributeList))
+                        foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                         {
                             sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
                                                   () => objLoopAttribute.TotalValue.ToString(

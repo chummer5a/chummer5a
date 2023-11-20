@@ -2231,9 +2231,7 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
-                        foreach (CharacterAttrib objLoopAttribute in
-                                 _objCharacter.AttributeSection.AttributeList.Concat(
-                                     _objCharacter.AttributeSection.SpecialAttributeList))
+                        foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
                         {
                             sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
                                                   () => objLoopAttribute.TotalValue.ToString(

@@ -619,7 +619,6 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock(token))
             using (AttributeSection.LockObject.EnterReadLock(token))
-            using (AttributeSection.Attributes.LockObject.EnterReadLock(token))
             {
                 Stack<IDisposable> stkLockers = new Stack<IDisposable>();
                 try
@@ -1676,7 +1675,7 @@ namespace Chummer
 
             if (lstImprovementSourcesToProcess.Count == 0)
             {
-                OnPropertyChanged(nameof(Metamagics));
+                await OnPropertyChangedAsync(nameof(Metamagics), token).ConfigureAwait(false);
                 return;
             }
 
