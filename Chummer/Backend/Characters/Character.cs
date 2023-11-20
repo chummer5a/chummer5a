@@ -9311,8 +9311,12 @@ namespace Chummer
                                                  kvpToProcess in
                                              dicChangedProperties)
                                     {
-                                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(
-                                            kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                                        if (blnSync)
+                                            kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                                        else
+                                            await kvpToProcess.Key
+                                                .OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token)
+                                                .ConfigureAwait(false);
                                     }
                                 }
                                 finally
