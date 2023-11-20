@@ -19066,20 +19066,267 @@
     </accessory>
     <!-- End Region -->
     <!-- Region Attune Item -->
-    <accessory>
+     <accessory>
       <id>0fcf55fa-afb4-487c-93f2-f41d6fc4e769</id>
-      <name>Attuned Item</name>
+      <name>Attuned Item: (IG 1)</name>
       <mount />
       <avail>0</avail>
       <cost>0</cost>
       <source>SG</source>
       <page>124</page>
-      <rating>0</rating>
       <accuracy>1</accuracy>
       <required>
-        <oneof>
+        <allof>
           <spell>Attune Item</spell>
+          <initiategrade>1</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>2</initiategrade>
         </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>53286bfd-2d55-4bfa-b7d4-6c55d1d2c7bf</id>
+      <name>Attuned Item: (IG 2)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>2</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>2</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>3</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>e7cc174b-76ae-47e6-a774-5a42e768e6ef</id>
+      <name>Attuned Item: (IG 3)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>3</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>3</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>4</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>9c129aa3-f313-4472-a651-3d04939828d3</id>
+      <name>Attuned Item: (IG 4)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>4</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>4</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>5</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>0f068b18-2c5c-44e8-a8e8-9559fe7449af</id>
+      <name>Attuned Item: (IG 5)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>5</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>5</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>6</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>477ee095-c7df-4d04-8093-294b9475c14d</id>
+      <name>Attuned Item: (IG 6)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>6</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>6</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>7</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>de48f624-6ec8-4310-974e-c45d72c2725b</id>
+      <name>Attuned Item: (IG 7)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>7</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>7</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>8</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>ec50dd41-a87c-4d0e-a718-47d703266205</id>
+      <name>Attuned Item: (IG 8)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>8</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>8</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>9</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>c9ffe057-3675-404d-a63c-dd0c690221f4</id>
+      <name>Attuned Item: (IG 9)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>9</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>9</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>10</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>2b6b6603-dab4-4bab-bc26-0b2f29dbcd2b</id>
+      <name>Attuned Item: (IG 10)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>10</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>10</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>11</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>f6ac9cbf-4d9d-46a7-b903-5c15941c719a</id>
+      <name>Attuned Item: (IG 11)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>11</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>11</initiategrade>
+        </allof>
+      </required>
+      <forbidden>
+        <oneof>
+          <initiategrade>12</initiategrade>
+        </oneof>
+      </forbidden>
+    </accessory>
+    <accessory>
+      <id>1976a19f-b3c4-41f9-9a6f-65dac05bfb77</id>
+      <name>Attuned Item: (IG 12+)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>12</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>12</initiategrade>
+        </allof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>3340b8b3-54ce-4c98-851d-561f97902e95</id>
+      <name>Attuned Item: (IG +1)</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <accuracy>1</accuracy>
+      <required>
+        <allof>
+          <spell>Attune Item</spell>
+          <initiategrade>13</initiategrade>
+        </allof>
       </required>
     </accessory>
     <!-- End Region -->
