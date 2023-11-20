@@ -48,6 +48,8 @@ namespace Chummer.UI.Attributes
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdImproveATT;
 
+        private bool _blnLoading = true;
+
         public AttributeControl(CharacterAttrib attribute)
         {
             if (attribute == null)
@@ -312,6 +314,7 @@ namespace Chummer.UI.Attributes
                 await this.DoThreadSafeAsync(x => x.ResumeLayout(true)).ConfigureAwait(false);
                 Interlocked.CompareExchange(ref _intChangingBase, 0, 1);
                 Interlocked.CompareExchange(ref _intChangingKarma, 0, 1);
+                _blnLoading = false;
             }
         }
 
@@ -432,6 +435,8 @@ namespace Chummer.UI.Attributes
 
         private async void nudBase_ValueChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
             int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
             if (Interlocked.Exchange(ref _oldBase, intValue) == intValue)
                 return;
@@ -483,6 +488,8 @@ namespace Chummer.UI.Attributes
 
         private async void nudKarma_ValueChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
             int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
             int intOldKarma = Interlocked.Exchange(ref _oldKarma, intValue);
             if (intOldKarma == intValue)
@@ -632,6 +639,8 @@ namespace Chummer.UI.Attributes
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
+            if (_blnLoading)
+                return;
             if (nudBase.Value + Math.Max(nudKarma.Value, 0) != AttributeObject.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
                 return;
             if (nudKarma.Value - nudBase.Increment >= 0)
@@ -646,6 +655,8 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
+            if (_blnLoading)
+                return;
             if (nudBase.Value + nudKarma.Value != AttributeObject.TotalMaximum || nudBase.Value == nudBase.Minimum)
                 return;
             if (nudBase.Value - nudKarma.Increment >= 0)
