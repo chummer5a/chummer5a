@@ -1299,15 +1299,9 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         private async Task<int> CalculatedTotalValueCore(bool blnSync, bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             // ReSharper disable once MethodHasAsyncOverload
-            IDisposable objLocker = null;
-            IAsyncDisposable objLockerAsync = null;
-            if (blnSync)
-                // ReSharper disable once MethodHasAsyncOverload
-                objLocker = LockObject.EnterHiPrioReadLock(token);
-            else
-                objLockerAsync = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token))
             {
                 token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
@@ -1476,16 +1470,11 @@ namespace Chummer.Backend.Attributes
 
                 return intReturn;
             }
-            finally
-            {
-                if (blnSync)
-                    objLocker.Dispose();
-                else
-                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private int _intCachedTotalValue = int.MinValue;
+
+        private readonly AsyncFriendlyReaderWriterLock _objCachedTotalValueLock = new AsyncFriendlyReaderWriterLock();
 
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
@@ -1496,12 +1485,19 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (LockObject.EnterReadLock())
+                using (_objCachedTotalValueLock.EnterUpgradeableReadLock())
                 {
                     // intReturn for thread safety
                     int intReturn = _intCachedTotalValue;
                     if (intReturn != int.MinValue)
                         return intReturn;
-                    return _intCachedTotalValue = CalculatedTotalValue();
+                    using (_objCachedTotalValueLock.EnterWriteLock())
+                    {
+                        intReturn = _intCachedTotalValue;
+                        if (intReturn != int.MinValue)
+                            return intReturn;
+                        return _intCachedTotalValue = CalculatedTotalValue();
+                    }
                 }
             }
         }
@@ -1514,12 +1510,28 @@ namespace Chummer.Backend.Attributes
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // intReturn for thread safety
-                int intReturn = _intCachedTotalValue;
-                if (intReturn != int.MinValue)
-                    return intReturn;
-                return _intCachedTotalValue = await Task.Run(() => CalculatedTotalValueAsync(token: token), token)
-                                                        .ConfigureAwait(false);
+                using (await _objCachedTotalValueLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    // intReturn for thread safety
+                    int intReturn = _intCachedTotalValue;
+                    if (intReturn != int.MinValue)
+                        return intReturn;
+                    IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterWriteLockAsync(token);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        intReturn = _intCachedTotalValue;
+                        if (intReturn != int.MinValue)
+                            return intReturn;
+                        return _intCachedTotalValue = await Task.Run(() => CalculatedTotalValueAsync(token: token), token)
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
         }
 
@@ -3663,6 +3675,7 @@ namespace Chummer.Backend.Attributes
                         //swallow this
                     }
                 }
+                _objCachedTotalValueLock.Dispose();
             }
             LockObject.Dispose();
         }
@@ -3711,6 +3724,8 @@ namespace Chummer.Backend.Attributes
                         //swallow this
                     }
                 }
+
+                await _objCachedTotalValueLock.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {

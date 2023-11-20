@@ -43,67 +43,72 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _lstStoryModules.CollectionChanged += StoryModulesOnCollectionChanged;
+            _lstStoryModules.CollectionChangedAsync += StoryModulesOnCollectionChanged;
         }
 
-        private void StoryModulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task StoryModulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e,
+            CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                {
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        using (LockObject.EnterUpgradeableReadLock())
-                        {
-                            _blnNeedToRegeneratePersistents = true;
-                            foreach (StoryModule objModule in e.NewItems)
-                                objModule.ParentStory = this;
-                        }
-
-                        break;
+                        token.ThrowIfCancellationRequested();
+                        _blnNeedToRegeneratePersistents = true;
+                        foreach (StoryModule objModule in e.NewItems)
+                            objModule.ParentStory = this;
                     }
+
+                    break;
+                }
                 case NotifyCollectionChangedAction.Remove:
+                {
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        using (LockObject.EnterUpgradeableReadLock())
+                        token.ThrowIfCancellationRequested();
+                        _blnNeedToRegeneratePersistents = true;
+                        foreach (StoryModule objModule in e.OldItems)
                         {
-                            _blnNeedToRegeneratePersistents = true;
-                            foreach (StoryModule objModule in e.OldItems)
+                            if (objModule.ParentStory == this)
                             {
-                                if (objModule.ParentStory == this)
-                                {
-                                    objModule.ParentStory = null;
-                                    objModule.Dispose();
-                                }
+                                objModule.ParentStory = null;
+                                await objModule.DisposeAsync().ConfigureAwait(false);
                             }
                         }
-
-                        break;
                     }
+
+                    break;
+                }
                 case NotifyCollectionChangedAction.Replace:
+                {
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        using (LockObject.EnterUpgradeableReadLock())
+                        token.ThrowIfCancellationRequested();
+                        _blnNeedToRegeneratePersistents = true;
+                        foreach (StoryModule objModule in e.OldItems)
                         {
-                            _blnNeedToRegeneratePersistents = true;
-                            foreach (StoryModule objModule in e.OldItems)
+                            if (objModule.ParentStory == this && !e.NewItems.Contains(objModule))
                             {
-                                if (objModule.ParentStory == this && !e.NewItems.Contains(objModule))
-                                {
-                                    objModule.ParentStory = null;
-                                    objModule.Dispose();
-                                }
+                                objModule.ParentStory = null;
+                                await objModule.DisposeAsync().ConfigureAwait(false);
                             }
-
-                            foreach (StoryModule objModule in e.NewItems)
-                                objModule.ParentStory = this;
                         }
 
-                        break;
+                        foreach (StoryModule objModule in e.NewItems)
+                            objModule.ParentStory = this;
                     }
+
+                    break;
+                }
                 case NotifyCollectionChangedAction.Reset:
-                    {
-                        using (LockObject.EnterUpgradeableReadLock())
-                            _blnNeedToRegeneratePersistents = true;
-                        break;
-                    }
+                {
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                        _blnNeedToRegeneratePersistents = true;
+                    break;
+                }
             }
         }
 

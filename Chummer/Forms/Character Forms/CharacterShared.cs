@@ -461,15 +461,15 @@ namespace Chummer
 
         #region Refresh Treeviews and Panels
 
-        protected async Task RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1, CancellationToken token = default)
+        protected async Task RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs e = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1, CancellationToken token = default)
         {
             if (pnlAttributes == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await pnlAttributes.DoThreadSafeAsync(x =>
                     {
@@ -511,19 +511,19 @@ namespace Chummer
                 }
                 else
                 {
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
                             int intNewNameWidth = -1;
-                            Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
+                            Control[] aobjControls = new Control[e.NewItems.Count];
                             await pnlAttributes.DoThreadSafeAsync(x =>
                             {
-                                for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
+                                for (int i = 0; i < e.NewItems.Count; ++i)
                                 {
                                     AttributeControl objControl =
                                         new AttributeControl(
-                                            notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
+                                            e.NewItems[i] as CharacterAttrib);
                                     objControl.MinimumSize = new Size(x.ClientSize.Width,
                                                                       objControl.MinimumSize.Height);
                                     objControl.MaximumSize = new Size(x.ClientSize.Width,
@@ -572,7 +572,7 @@ namespace Chummer
                         {
                             await pnlAttributes.DoThreadSafeAsync(x =>
                             {
-                                foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (CharacterAttrib objAttrib in e.OldItems)
                                 {
                                     foreach (AttributeControl objControl in x.Controls)
                                     {
@@ -598,7 +598,7 @@ namespace Chummer
                         {
                             await pnlAttributes.DoThreadSafeAsync(x =>
                             {
-                                foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (CharacterAttrib objAttrib in e.OldItems)
                                 {
                                     foreach (AttributeControl objControl in x.Controls)
                                     {
@@ -619,14 +619,14 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             int intNewNameWidth = -1;
-                            Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
+                            Control[] aobjControls = new Control[e.NewItems.Count];
                             await pnlAttributes.DoThreadSafeAsync(x =>
                             {
-                                for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
+                                for (int i = 0; i < e.NewItems.Count; ++i)
                                 {
                                     AttributeControl objControl =
                                         new AttributeControl(
-                                            notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
+                                            e.NewItems[i] as CharacterAttrib);
                                     objControl.MinimumSize = new Size(x.ClientSize.Width,
                                                                       objControl.MinimumSize.Height);
                                     objControl.MaximumSize = new Size(x.ClientSize.Width,
@@ -686,9 +686,9 @@ namespace Chummer
         /// <param name="treMetamagic">Initiations tree.</param>
         /// <param name="cmsSpell">ContextMenuStrip that will be added to spells in the spell tree.</param>
         /// <param name="cmsInitiationNotes">ContextMenuStrip that will be added to spells in the initiations tree.</param>
-        /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
+        /// <param name="e">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        protected async Task RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treSpells == null)
                 return;
@@ -702,8 +702,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId
                         = (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
@@ -746,11 +746,11 @@ namespace Chummer
                         objRitualsNode = x.FindNode("Node_SelectedGeomancyRituals", false);
                         objEnchantmentsNode = x.FindNode("Node_SelectedEnchantments", false);
                     }, token).ConfigureAwait(false);
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Spell objSpell in e.NewItems)
                             {
                                 await AddToTree(objSpell).ConfigureAwait(false);
                             }
@@ -759,7 +759,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Spell objSpell in e.OldItems)
                             {
                                 await treSpells.DoThreadSafeAsync(x =>
                                 {
@@ -785,8 +785,8 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParents =
-                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
+                                new List<TreeNode>(e.OldItems.Count);
+                            foreach (Spell objSpell in e.OldItems)
                             {
                                 await treSpells.DoThreadSafeAsync(x =>
                                 {
@@ -805,7 +805,7 @@ namespace Chummer
                                 }
                             }
 
-                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Spell objSpell in e.NewItems)
                             {
                                 await AddToTree(objSpell).ConfigureAwait(false);
                             }
@@ -829,7 +829,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Spell objSpell, bool blnSingleAdd = true)
+            async Task AddToTree(Spell objSpell, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
                 if (objNode == null)
@@ -1030,7 +1030,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treAIPrograms == null)
                 return;
@@ -1038,8 +1038,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId =
                         (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
@@ -1059,11 +1059,11 @@ namespace Chummer
                     objParentNode
                         = await treAIPrograms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAIPrograms", false),
                                                                     token).ConfigureAwait(false);
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (AIProgram objAIProgram in e.NewItems)
                             {
                                 await AddToTree(objAIProgram).ConfigureAwait(false);
                             }
@@ -1074,7 +1074,7 @@ namespace Chummer
                         {
                             await treAIPrograms.DoThreadSafeAsync(x =>
                             {
-                                foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (AIProgram objAIProgram in e.OldItems)
                                 {
                                     TreeNode objNode = x.FindNodeByTag(objAIProgram);
                                     if (objNode != null)
@@ -1092,10 +1092,10 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParents =
-                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                                new List<TreeNode>(e.OldItems.Count);
                             await treAIPrograms.DoThreadSafeAsync(x =>
                             {
-                                foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (AIProgram objAIProgram in e.OldItems)
                                 {
                                     TreeNode objNode = x.FindNodeByTag(objAIProgram);
                                     if (objNode != null)
@@ -1106,7 +1106,7 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (AIProgram objAIProgram in e.NewItems)
                             {
                                 await AddToTree(objAIProgram).ConfigureAwait(false);
                             }
@@ -1130,7 +1130,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
+            async Task AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objAIProgram.CreateTreeNode(cmsAdvancedProgram);
                 if (objNode == null)
@@ -1177,7 +1177,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshComplexForms(TreeView treComplexForms, TreeView treMetamagic, ContextMenuStrip cmsComplexForm, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshComplexForms(TreeView treComplexForms, TreeView treMetamagic, ContextMenuStrip cmsComplexForm, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treComplexForms == null)
                 return;
@@ -1185,8 +1185,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId =
                         (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
@@ -1222,11 +1222,11 @@ namespace Chummer
                     objParentNode
                         = await treComplexForms.DoThreadSafeFuncAsync(
                             x => x.FindNode("Node_SelectedAdvancedComplexForms", false), token).ConfigureAwait(false);
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (ComplexForm objComplexForm in e.NewItems)
                             {
                                 await AddToTree(objComplexForm).ConfigureAwait(false);
                             }
@@ -1235,7 +1235,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (ComplexForm objComplexForm in e.OldItems)
                             {
                                 await treComplexForms.DoThreadSafeAsync(x =>
                                 {
@@ -1261,8 +1261,8 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParents =
-                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
+                                new List<TreeNode>(e.OldItems.Count);
+                            foreach (ComplexForm objComplexForm in e.OldItems)
                             {
                                 await treComplexForms.DoThreadSafeAsync(x =>
                                 {
@@ -1281,7 +1281,7 @@ namespace Chummer
                                 }
                             }
 
-                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (ComplexForm objComplexForm in e.NewItems)
                             {
                                 await AddToTree(objComplexForm).ConfigureAwait(false);
                             }
@@ -1305,7 +1305,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
+            async Task AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
                 if (objNode == null)
@@ -1381,15 +1381,15 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshInitiationGrades(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshInitiationGrades(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treMetamagic == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     (string strSelectedId, TreeNodeCollection lstRootNodes) = await treMetamagic.DoThreadSafeFuncAsync(
                         x =>
@@ -1430,12 +1430,12 @@ namespace Chummer
                 }
                 else
                 {
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (InitiationGrade objGrade in e.NewItems)
                             {
                                 await AddToTree(objGrade, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -1447,7 +1447,7 @@ namespace Chummer
                         {
                             await treMetamagic.DoThreadSafeAsync(x =>
                             {
-                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (InitiationGrade objGrade in e.OldItems)
                                 {
                                     x.FindNodeByTag(objGrade)?.Remove();
                                 }
@@ -1459,14 +1459,14 @@ namespace Chummer
                         {
                             await treMetamagic.DoThreadSafeAsync(x =>
                             {
-                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (InitiationGrade objGrade in e.OldItems)
                                 {
                                     x.FindNodeByTag(objGrade)?.Remove();
                                 }
                             }, token).ConfigureAwait(false);
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (InitiationGrade objGrade in e.NewItems)
                             {
                                 await AddToTree(objGrade, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -1476,10 +1476,10 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Move:
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            int intNewIndex = e.NewStartingIndex;
                             await treMetamagic.DoThreadSafeAsync(x =>
                             {
-                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (InitiationGrade objGrade in e.OldItems)
                                 {
                                     TreeNode nodGrade = x.FindNodeByTag(objGrade);
                                     if (nodGrade != null)
@@ -1644,18 +1644,18 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
+            if (treMetamagic == null || e == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Art objArt in e.NewItems)
                         {
                             await AddToTree(objArt).ConfigureAwait(false);
                         }
@@ -1666,7 +1666,7 @@ namespace Chummer
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Art objArt in e.OldItems)
                             {
                                 x.FindNodeByTag(objArt)?.Remove();
                             }
@@ -1678,13 +1678,13 @@ namespace Chummer
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Art objArt in e.OldItems)
                             {
                                 x.FindNodeByTag(objArt)?.Remove();
                             }
                         }, token).ConfigureAwait(false);
 
-                        foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Art objArt in e.NewItems)
                         {
                             await AddToTree(objArt).ConfigureAwait(false);
                         }
@@ -1703,7 +1703,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Art objArt, bool blnSingleAdd = true)
+            async Task AddToTree(Art objArt, bool blnSingleAdd = true)
             {
                 InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objArt.Grade, token).ConfigureAwait(false);
 
@@ -1739,19 +1739,19 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
+            if (treMetamagic == null || e == null)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Enhancement objEnhancement in e.NewItems)
                         {
                             await AddToTree(objEnhancement).ConfigureAwait(false);
                         }
@@ -1762,7 +1762,7 @@ namespace Chummer
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Enhancement objEnhancement in e.OldItems)
                             {
                                 x.FindNodeByTag(objEnhancement)?.Remove();
                             }
@@ -1774,13 +1774,13 @@ namespace Chummer
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Enhancement objEnhancement in e.OldItems)
                             {
                                 x.FindNodeByTag(objEnhancement)?.Remove();
                             }
                         }, token).ConfigureAwait(false);
 
-                        foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Enhancement objEnhancement in e.NewItems)
                         {
                             await AddToTree(objEnhancement).ConfigureAwait(false);
                         }
@@ -1799,7 +1799,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
+            async Task AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
             {
                 InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objEnhancement.Grade, token).ConfigureAwait(false);
 
@@ -1913,18 +1913,18 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
+            if (treMetamagic == null || e == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Metamagic objMetamagic in e.NewItems)
                         {
                             await AddToTree(objMetamagic).ConfigureAwait(false);
                         }
@@ -1935,7 +1935,7 @@ namespace Chummer
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Metamagic objMetamagic in e.OldItems)
                             {
                                 x.FindNodeByTag(objMetamagic)?.Remove();
                             }
@@ -1947,13 +1947,13 @@ namespace Chummer
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Metamagic objMetamagic in e.OldItems)
                             {
                                 x.FindNodeByTag(objMetamagic)?.Remove();
                             }
                         }, token).ConfigureAwait(false);
 
-                        foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Metamagic objMetamagic in e.NewItems)
                         {
                             await AddToTree(objMetamagic).ConfigureAwait(false);
                         }
@@ -1972,7 +1972,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
+            async Task AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
             {
                 if (objMetamagic.Grade < 0)
                 {
@@ -2040,9 +2040,9 @@ namespace Chummer
         /// </summary>
         /// <param name="treCritterPowers">TreeNode that will be cleared and populated.</param>
         /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
-        /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
+        /// <param name="e">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        protected async Task RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treCritterPowers == null)
                 return;
@@ -2051,8 +2051,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null
-                    || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null
+                    || e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId
                         = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
@@ -2074,11 +2074,11 @@ namespace Chummer
                         objPowersNode = x.FindNode("Node_CritterPowers", false);
                         objWeaknessesNode = x.FindNode("Node_CritterWeaknesses", false);
                     }, token).ConfigureAwait(false);
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (CritterPower objPower in e.NewItems)
                             {
                                 await AddToTree(objPower).ConfigureAwait(false);
                             }
@@ -2089,7 +2089,7 @@ namespace Chummer
                         {
                             await treCritterPowers.DoThreadSafeAsync(x =>
                             {
-                                foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (CritterPower objPower in e.OldItems)
                                 {
                                     TreeNode objNode = x.FindNodeByTag(objPower);
                                     if (objNode != null)
@@ -2107,10 +2107,10 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParents =
-                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                                new List<TreeNode>(e.OldItems.Count);
                             await treCritterPowers.DoThreadSafeAsync(x =>
                             {
-                                foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (CritterPower objPower in e.OldItems)
                                 {
                                     TreeNode objNode = x.FindNode(objPower.InternalId);
                                     if (objNode != null)
@@ -2121,7 +2121,7 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (CritterPower objPower in e.NewItems)
                             {
                                 await AddToTree(objPower).ConfigureAwait(false);
                             }
@@ -2145,7 +2145,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(CritterPower objPower, bool blnSingleAdd = true)
+            async Task AddToTree(CritterPower objPower, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
                 if (objNode == null)
@@ -2223,9 +2223,9 @@ namespace Chummer
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
         /// <param name="fntNormal">Normal font to use for qualities.</param>
         /// <param name="fntStrikeout">Font to use for disabled qualities (e.g. cybereyes-disabled Low Light Vision).</param>
-        /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
+        /// <param name="e">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        protected async Task RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, Font fntNormal, Font fntStrikeout, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, Font fntNormal, Font fntStrikeout, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treQualities == null)
                 return;
@@ -2236,8 +2236,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedNode =
                         (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
@@ -2251,7 +2251,7 @@ namespace Chummer
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                            objQuality.PropertyChangedAsync -= AddedQualityOnPropertyChanged;
                         }
                         finally
                         {
@@ -2300,11 +2300,11 @@ namespace Chummer
                         objLifeModuleRoot = x.FindNodeByTag("String_LifeModules", false);
                     }, token).ConfigureAwait(false);
                     bool blnDoNameRefresh = false;
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Quality objQuality in e.NewItems)
                             {
                                 if (objQuality.Levels > 1)
                                     blnDoNameRefresh = true;
@@ -2316,7 +2316,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Quality objQuality in e.OldItems)
                             {
                                 if (objQuality.Levels > 0)
                                     blnDoNameRefresh = true;
@@ -2338,7 +2338,7 @@ namespace Chummer
                                     try
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                        objQuality.PropertyChangedAsync -= AddedQualityOnPropertyChanged;
                                     }
                                     finally
                                     {
@@ -2352,8 +2352,8 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParents =
-                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                                new List<TreeNode>(e.OldItems.Count);
+                            foreach (Quality objQuality in e.OldItems)
                             {
                                 if (objQuality.Levels > 0)
                                     blnDoNameRefresh = true;
@@ -2375,7 +2375,7 @@ namespace Chummer
                                         try
                                         {
                                             token.ThrowIfCancellationRequested();
-                                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                            objQuality.PropertyChangedAsync -= AddedQualityOnPropertyChanged;
                                         }
                                         finally
                                         {
@@ -2389,7 +2389,7 @@ namespace Chummer
                                 }
                             }
 
-                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Quality objQuality in e.NewItems)
                             {
                                 if (objQuality.Levels > 1)
                                     blnDoNameRefresh = true;
@@ -2419,7 +2419,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Quality objQuality, bool blnSingleAdd = true)
+            async Task AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objQuality.CreateTreeNode(cmsQuality, treQualities);
                 if (objNode == null)
@@ -2511,7 +2511,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
+                        objQuality.PropertyChangedAsync += AddedQualityOnPropertyChanged;
                     }
                     finally
                     {
@@ -2520,30 +2520,34 @@ namespace Chummer
                 }
             }
 
-            void AddedQualityOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+            async Task AddedQualityOnPropertyChanged(object sender, PropertyChangedEventArgs e2, CancellationToken innerToken = default)
             {
-                switch (e.PropertyName)
+                innerToken.ThrowIfCancellationRequested();
+                switch (e2.PropertyName)
                 {
                     case nameof(Quality.Suppressed):
-                        {
-                            if (!(sender is Quality objQuality))
-                                return;
-                            TreeNode objNode = treQualities.FindNodeByTag(objQuality);
-                            if (objNode == null)
-                                return;
-                            objNode.NodeFont = objQuality.Suppressed ? fntStrikeout : fntNormal;
-                            break;
-                        }
+                    {
+                        if (!(sender is Quality objQuality))
+                            return;
+                        TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                        if (objNode == null)
+                            return;
+                        objNode.NodeFont = await objQuality.GetSuppressedAsync(innerToken).ConfigureAwait(false)
+                            ? fntStrikeout
+                            : fntNormal;
+                        break;
+                    }
                     case nameof(Quality.Notes):
-                        {
-                            if (!(sender is Quality objQuality))
-                                return;
-                            TreeNode objNode = treQualities.FindNodeByTag(objQuality);
-                            if (objNode == null)
-                                return;
-                            objNode.ToolTipText = objQuality.Notes.WordWrap();
-                            break;
-                        }
+                    {
+                        if (!(sender is Quality objQuality))
+                            return;
+                        TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                        if (objNode == null)
+                            return;
+                        objNode.ToolTipText =
+                            (await objQuality.GetNotesAsync(innerToken).ConfigureAwait(false)).WordWrap();
+                        break;
+                    }
                 }
             }
         }
@@ -2629,9 +2633,9 @@ namespace Chummer
 
         #region Locations
 
-        protected async Task RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treArmor == null || notifyCollectionChangedEventArgs == null)
+            if (treArmor == null || e == null)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -2643,7 +2647,7 @@ namespace Chummer
 
                 TreeNode nodRoot
                     = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false), token).ConfigureAwait(false);
-                await RefreshLocation(treArmor, nodRoot, cmsArmorLocation, _objCharacter.ArmorLocations, notifyCollectionChangedEventArgs,
+                await RefreshLocation(treArmor, nodRoot, cmsArmorLocation, _objCharacter.ArmorLocations, e,
                                       strSelectedId,
                                       "Node_SelectedArmor", token).ConfigureAwait(false);
             }
@@ -2653,9 +2657,9 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treGear == null || notifyCollectionChangedEventArgs == null)
+            if (treGear == null || e == null)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -2667,7 +2671,7 @@ namespace Chummer
 
                 TreeNode nodRoot
                     = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), token).ConfigureAwait(false);
-                await RefreshLocation(treGear, nodRoot, cmsGearLocation, _objCharacter.GearLocations, notifyCollectionChangedEventArgs,
+                await RefreshLocation(treGear, nodRoot, cmsGearLocation, _objCharacter.GearLocations, e,
                                       strSelectedId,
                                       "Node_SelectedGear", token).ConfigureAwait(false);
             }
@@ -2677,9 +2681,9 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treVehicles == null || notifyCollectionChangedEventArgs == null)
+            if (treVehicles == null || e == null)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -2693,7 +2697,7 @@ namespace Chummer
                 TreeNode nodRoot
                     = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false),
                                                               token).ConfigureAwait(false);
-                await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, _objCharacter.VehicleLocations, notifyCollectionChangedEventArgs,
+                await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, _objCharacter.VehicleLocations, e,
                                       strSelectedId,
                                       "Node_SelectedVehicles", token).ConfigureAwait(false);
             }
@@ -2703,9 +2707,9 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treVehicles == null || objVehicle == null || notifyCollectionChangedEventArgs == null)
+            if (treVehicles == null || objVehicle == null || e == null)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -2719,7 +2723,7 @@ namespace Chummer
                 TreeNode nodRoot
                     = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objVehicle), token).ConfigureAwait(false);
                 await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, funcOffset, objVehicle.Locations,
-                                      notifyCollectionChangedEventArgs,
+                                      e,
                                       strSelectedId, "Node_SelectedVehicles", false, token).ConfigureAwait(false);
             }
             finally
@@ -2728,9 +2732,9 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treWeapons == null || notifyCollectionChangedEventArgs == null)
+            if (treWeapons == null || e == null)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -2743,7 +2747,7 @@ namespace Chummer
                 TreeNode nodRoot
                     = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
                                                              token).ConfigureAwait(false);
-                await RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, _objCharacter.WeaponLocations, notifyCollectionChangedEventArgs,
+                await RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, _objCharacter.WeaponLocations, e,
                                       strSelectedId,
                                       "Node_SelectedWeapons", token).ConfigureAwait(false);
             }
@@ -2753,9 +2757,9 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treImprovements == null || notifyCollectionChangedEventArgs == null)
+            if (treImprovements == null || e == null)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -2769,12 +2773,12 @@ namespace Chummer
                     = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedImprovements", false),
                                                                   token).ConfigureAwait(false);
 
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (string strLocation in e.NewItems)
                         {
                             TreeNode objLocation = new TreeNode
                             {
@@ -2790,7 +2794,7 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (string strLocation in e.OldItems)
                         {
                             TreeNode objNode
                                 = await treImprovements.DoThreadSafeFuncAsync(
@@ -2831,14 +2835,14 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Replace:
                     {
                         int intNewItemsIndex = 0;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (string strLocation in e.OldItems)
                         {
                             TreeNode objNode
                                 = await treImprovements.DoThreadSafeFuncAsync(
                                     x => x.FindNodeByTag(strLocation, false), token).ConfigureAwait(false);
                             if (objNode != null)
                             {
-                                if (notifyCollectionChangedEventArgs
+                                if (e
                                         .NewItems[intNewItemsIndex] is string objNewLocation)
                                 {
                                     await treImprovements.DoThreadSafeAsync(() =>
@@ -2857,8 +2861,8 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Move:
                     {
                         List<Tuple<string, TreeNode>> lstMoveNodes =
-                            new List<Tuple<string, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                            new List<Tuple<string, TreeNode>>(e.OldItems.Count);
+                        foreach (string strLocation in e.OldItems)
                         {
                             TreeNode objLocation
                                 = await treImprovements.DoThreadSafeFuncAsync(
@@ -2870,8 +2874,8 @@ namespace Chummer
                             }
                         }
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (string strLocation in e.NewItems)
                         {
                             Tuple<string, TreeNode> objLocationTuple =
                                 lstMoveNodes.Find(x => x.Item1 == strLocation);
@@ -2940,33 +2944,33 @@ namespace Chummer
 
         private async Task RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
                                                 ICollection<Location> lstLocations,
-                                                NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs,
+                                                NotifyCollectionChangedEventArgs e,
                                                 string strSelectedId, string strNodeName,
                                                 CancellationToken token = default)
         {
             await RefreshLocation(treSelected, nodRoot, cmsLocation, () => (nodRoot != null).ToInt32(), lstLocations,
-                                  notifyCollectionChangedEventArgs, strSelectedId, strNodeName, token: token)
+                                  e, strSelectedId, strNodeName, token: token)
                 .ConfigureAwait(false);
         }
 
         private async Task RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
                                                 Func<int> funcOffset, ICollection<Location> lstLocations,
-                                                NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
+                                                NotifyCollectionChangedEventArgs e, string strSelectedId, string strNodeName,
                                                 bool rootSibling = true, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             Interlocked.Add(ref intNewIndex, funcOffset.Invoke());
                         await treSelected.DoThreadSafeAsync(x =>
                         {
-                            foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Location objLocation in e.NewItems)
                             {
                                 int index = Interlocked.Increment(ref intNewIndex) - 1;
                                 if (rootSibling)
@@ -2984,7 +2988,7 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Location objLocation in e.OldItems)
                         {
                             TreeNode nodLocation
                                 = await treSelected.DoThreadSafeFuncAsync(
@@ -3024,14 +3028,14 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Replace:
                     {
                         int intNewItemsIndex = 0;
-                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Location objLocation in e.OldItems)
                         {
                             TreeNode objNode
                                 = await treSelected.DoThreadSafeFuncAsync(
                                     x => x.FindNodeByTag(objLocation, false), token).ConfigureAwait(false);
                             if (objNode != null)
                             {
-                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location
+                                if (e.NewItems[intNewItemsIndex] is Location
                                     objNewLocation)
                                 {
                                     string strText = await objNewLocation.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -3051,8 +3055,8 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Move:
                     {
                         List<Tuple<Location, TreeNode>> lstMoveNodes =
-                            new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
-                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
+                            new List<Tuple<Location, TreeNode>>(e.OldItems.Count);
+                        foreach (Location objLocation in e.OldItems)
                         {
                             TreeNode objNode
                                 = await treSelected.DoThreadSafeFuncAsync(
@@ -3064,10 +3068,10 @@ namespace Chummer
                             }
                         }
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             Interlocked.Add(ref intNewIndex, funcOffset.Invoke());
-                        foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Location objLocation in e.NewItems)
                         {
                             Tuple<Location, TreeNode> objLocationTuple =
                                 lstMoveNodes.Find(x => x.Item1 == objLocation);
@@ -3135,7 +3139,7 @@ namespace Chummer
 
         #endregion Locations
 
-        protected async Task RefreshWeapons(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshWeapons(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treWeapons == null)
                 return;
@@ -3148,8 +3152,8 @@ namespace Chummer
 
                 TreeNode nodRoot = null;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treWeapons.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -3185,12 +3189,12 @@ namespace Chummer
                     nodRoot = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
                                                                      token).ConfigureAwait(false);
 
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Weapon objWeapon in e.NewItems)
                             {
                                 await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -3202,7 +3206,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Weapon objWeapon in e.OldItems)
                             {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
                                 await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
@@ -3221,15 +3225,15 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Weapon objWeapon in e.OldItems)
                             {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
                                 await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
                                                                    token).ConfigureAwait(false);
                             }
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Weapon objWeapon in e.NewItems)
                             {
                                 await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -3253,14 +3257,14 @@ namespace Chummer
                         {
                             await treWeapons.DoThreadSafeAsync(x =>
                             {
-                                foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Weapon objWeapon in e.OldItems)
                                 {
                                     x.FindNode(objWeapon.InternalId)?.Remove();
                                 }
                             }, token).ConfigureAwait(false);
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Weapon objWeapon in e.NewItems)
                             {
                                 await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -3280,7 +3284,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                     if (objNode == null)
@@ -3328,7 +3332,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treArmor == null)
                 return;
@@ -3341,8 +3345,8 @@ namespace Chummer
 
                 TreeNode nodRoot = null;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treArmor.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -3418,12 +3422,12 @@ namespace Chummer
                     nodRoot = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false),
                                                                    token).ConfigureAwait(false);
 
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Armor objArmor in e.NewItems)
                             {
                                 await AddToTree(objArmor, intNewIndex).ConfigureAwait(false);
 
@@ -3476,7 +3480,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Armor objArmor in e.OldItems)
                             {
                                 await objArmor.ArmorMods.RemoveTaggedAsyncCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                                 await objArmor.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
@@ -3515,7 +3519,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Armor objArmor in e.OldItems)
                             {
                                 await objArmor.ArmorMods.RemoveTaggedAsyncCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                                 await objArmor.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
@@ -3542,8 +3546,8 @@ namespace Chummer
                                                                  token).ConfigureAwait(false);
                             }
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Armor objArmor in e.NewItems)
                             {
                                 await AddToTree(objArmor, intNewIndex).ConfigureAwait(false);
 
@@ -3607,14 +3611,14 @@ namespace Chummer
                         {
                             await treArmor.DoThreadSafeAsync(x =>
                             {
-                                foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Armor objArmor in e.OldItems)
                                 {
                                     x.FindNode(objArmor.InternalId)?.Remove();
                                 }
                             }, token).ConfigureAwait(false);
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Armor objArmor in e.NewItems)
                             {
                                 await AddToTree(objArmor, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -3634,7 +3638,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Armor objArmor, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Armor objArmor, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear);
                     if (objNode == null)
@@ -3682,9 +3686,9 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treArmor == null || objArmor == null || notifyCollectionChangedEventArgs == null)
+            if (treArmor == null || objArmor == null || e == null)
                 return;
             TreeNode nodArmor = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode(objArmor.InternalId), token).ConfigureAwait(false);
             if (nodArmor == null)
@@ -3692,12 +3696,12 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (ArmorMod objArmorMod in e.NewItems)
                         {
                             await AddToTree(objArmorMod, intNewIndex).ConfigureAwait(false);
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
@@ -3719,7 +3723,7 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (ArmorMod objArmorMod in e.OldItems)
                         {
                             await objArmorMod.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmorMod.GearChildren)
@@ -3736,7 +3740,7 @@ namespace Chummer
                             = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                                 IHasInternalId)
                             ?.InternalId ?? string.Empty;
-                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (ArmorMod objArmorMod in e.OldItems)
                         {
                             await objArmorMod.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmorMod.GearChildren)
@@ -3745,8 +3749,8 @@ namespace Chummer
                                                              token).ConfigureAwait(false);
                         }
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (ArmorMod objArmorMod in e.NewItems)
                         {
                             await AddToTree(objArmorMod, intNewIndex).ConfigureAwait(false);
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
@@ -3775,14 +3779,14 @@ namespace Chummer
                             ?.InternalId ?? string.Empty;
                         await treArmor.DoThreadSafeAsync(() =>
                         {
-                            foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (ArmorMod objArmorMod in e.OldItems)
                             {
                                 nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
                             }
                         }, token).ConfigureAwait(false);
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (ArmorMod objArmorMod in e.NewItems)
                         {
                             await AddToTree(objArmorMod, intNewIndex).ConfigureAwait(false);
                             ++intNewIndex;
@@ -3833,7 +3837,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, bool blnCommlinksOnly, bool blnHideLoadedAmmo, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, bool blnCommlinksOnly, bool blnHideLoadedAmmo, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treGear == null)
                 return;
@@ -3846,8 +3850,8 @@ namespace Chummer
 
                 TreeNode nodRoot = null;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treGear.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -3882,12 +3886,12 @@ namespace Chummer
                     nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false),
                                                                   token).ConfigureAwait(false);
 
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Gear objGear in e.NewItems)
                             {
                                 await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
                                 objGear.SetupChildrenGearsCollectionChanged(
@@ -3899,7 +3903,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Gear objGear in e.OldItems)
                             {
                                 objGear.SetupChildrenGearsCollectionChanged(false, treGear);
                                 await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), token).ConfigureAwait(false);
@@ -3909,14 +3913,14 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Gear objGear in e.OldItems)
                             {
                                 objGear.SetupChildrenGearsCollectionChanged(false, treGear);
                                 await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), token).ConfigureAwait(false);
                             }
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Gear objGear in e.NewItems)
                             {
                                 await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
 
@@ -3942,14 +3946,14 @@ namespace Chummer
                         {
                             await treGear.DoThreadSafeAsync(x =>
                             {
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Gear objGear in e.OldItems)
                                 {
                                     x.FindNodeByTag(objGear)?.Remove();
                                 }
                             }, token).ConfigureAwait(false);
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Gear objGear in e.NewItems)
                             {
                                 await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -3962,7 +3966,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     if (blnCommlinksOnly && !objGear.IsCommlink)
                         return;
@@ -4016,7 +4020,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treGear == null)
                 return;
@@ -4029,8 +4033,8 @@ namespace Chummer
 
                 TreeNode nodRoot = null;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treGear.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -4054,12 +4058,12 @@ namespace Chummer
                     nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedDrugs", false),
                                                                   token).ConfigureAwait(false);
 
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Drug d in e.NewItems)
                             {
                                 await AddToTree(d, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -4071,7 +4075,7 @@ namespace Chummer
                         {
                             await treGear.DoThreadSafeAsync(x =>
                             {
-                                foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Drug d in e.OldItems)
                                 {
                                     x.FindNodeByTag(d)?.Remove();
                                 }
@@ -4084,14 +4088,14 @@ namespace Chummer
                         {
                             await treGear.DoThreadSafeAsync(x =>
                             {
-                                foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Drug d in e.OldItems)
                                 {
                                     x.FindNodeByTag(d)?.Remove();
                                 }
                             }, token).ConfigureAwait(false);
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Drug d in e.NewItems)
                             {
                                 await AddToTree(d, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -4104,7 +4108,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Drug objGear, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Drug objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objGear.CreateTreeNode();
                     if (objNode == null)
@@ -4140,7 +4144,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treCyberware == null)
                 return;
@@ -4158,8 +4162,8 @@ namespace Chummer
                     = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                         IHasInternalId)?.InternalId ?? string.Empty;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treCyberware.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -4195,11 +4199,11 @@ namespace Chummer
                                 Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo),
                                 false);
                     }, token).ConfigureAwait(false);
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Cyberware objCyberware in e.NewItems)
                             {
                                 await AddToTree(objCyberware).ConfigureAwait(false);
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
@@ -4210,7 +4214,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Cyberware objCyberware in e.OldItems)
                             {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
                                 await treCyberware.DoThreadSafeAsync(x =>
@@ -4231,9 +4235,9 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParentNodes =
-                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                                new List<TreeNode>(e.OldItems.Count);
 
-                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Cyberware objCyberware in e.OldItems)
                             {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
                                 await treCyberware.DoThreadSafeAsync(x =>
@@ -4249,7 +4253,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Cyberware objCyberware in e.NewItems)
                             {
                                 await AddToTree(objCyberware).ConfigureAwait(false);
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
@@ -4271,7 +4275,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Cyberware objCyberware, bool blnSingleAdd = true)
+                async Task AddToTree(Cyberware objCyberware, bool blnSingleAdd = true)
                 {
                     if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
                     {
@@ -4417,7 +4421,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshVehicles(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshVehicles(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treVehicles == null)
                 return;
@@ -4431,8 +4435,8 @@ namespace Chummer
 
                 TreeNode nodRoot = null;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treVehicles.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -4653,12 +4657,12 @@ namespace Chummer
                     nodRoot = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false),
                                                                       token).ConfigureAwait(false);
 
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Vehicle objVehicle in e.NewItems)
                             {
                                 await AddToTree(objVehicle, intNewIndex).ConfigureAwait(false);
 
@@ -4869,7 +4873,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Vehicle objVehicle in e.OldItems)
                             {
                                 await objVehicle.Mods.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                 await objVehicle.WeaponMounts.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
@@ -4942,7 +4946,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Vehicle objVehicle in e.OldItems)
                             {
                                 await objVehicle.Mods.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token)
                                                 .ConfigureAwait(false);
@@ -5016,8 +5020,8 @@ namespace Chummer
                                                                     token).ConfigureAwait(false);
                             }
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Vehicle objVehicle in e.NewItems)
                             {
                                 await AddToTree(objVehicle, intNewIndex).ConfigureAwait(false);
 
@@ -5232,14 +5236,14 @@ namespace Chummer
                         {
                             await treVehicles.DoThreadSafeAsync(x =>
                             {
-                                foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Vehicle objVehicle in e.OldItems)
                                 {
                                     x.FindNodeByTag(objVehicle)?.Remove();
                                 }
                             }, token).ConfigureAwait(false);
 
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
+                            int intNewIndex = e.NewStartingIndex;
+                            foreach (Vehicle objVehicle in e.NewItems)
                             {
                                 await AddToTree(objVehicle, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
@@ -5252,7 +5256,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Vehicle objVehicle, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Vehicle objVehicle, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon,
                                                                  cmsVehicleWeaponAccessory,
@@ -5302,7 +5306,7 @@ namespace Chummer
             }
         }
 
-        public async Task RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        public async Task RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treFoci == null)
                 return;
@@ -5313,8 +5317,8 @@ namespace Chummer
                     = (await treFoci.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treFoci.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -5423,7 +5427,7 @@ namespace Chummer
                 }
                 else
                 {
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
@@ -5435,12 +5439,12 @@ namespace Chummer
                                     .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Gear objGear in e.NewItems)
                                 setNewGears.Add(objGear);
 
                             int intFociTotal = await CharacterObject.Foci.SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, token).ConfigureAwait(false);
 
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Gear objGear in e.NewItems)
                             {
                                 switch (objGear.Category)
                                 {
@@ -5539,7 +5543,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Gear objGear in e.OldItems)
                             {
                                 switch (objGear.Category)
                                 {
@@ -5592,7 +5596,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Gear objGear in e.OldItems)
                             {
                                 switch (objGear.Category)
                                 {
@@ -5648,12 +5652,12 @@ namespace Chummer
                                     .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Gear objGear in e.NewItems)
                                 setNewGears.Add(objGear);
 
                             int intFociTotal = await CharacterObject.Foci.SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, token).ConfigureAwait(false);
 
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Gear objGear in e.NewItems)
                             {
                                 switch (objGear.Category)
                                 {
@@ -5783,7 +5787,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treMartialArts == null)
                 return;
@@ -5797,8 +5801,8 @@ namespace Chummer
                 TreeNode objMartialArtsParentNode = null;
                 TreeNode objQualityNode = null;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treMartialArts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -5834,11 +5838,11 @@ namespace Chummer
                     objQualityNode
                         = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedQualities", false),
                                                                      token).ConfigureAwait(false);
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (MartialArt objMartialArt in e.NewItems)
                             {
                                 await AddToTree(objMartialArt).ConfigureAwait(false);
                                 await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
@@ -5854,7 +5858,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (MartialArt objMartialArt in e.OldItems)
                             {
                                 await objMartialArt.Techniques.RemoveTaggedAsyncCollectionChangedAsync(treMartialArts, token).ConfigureAwait(false);
                                 await treMartialArts.DoThreadSafeAsync(x =>
@@ -5875,8 +5879,8 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParents =
-                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                            foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
+                                new List<TreeNode>(e.OldItems.Count);
+                            foreach (MartialArt objMartialArt in e.OldItems)
                             {
                                 await objMartialArt.Techniques.RemoveTaggedAsyncCollectionChangedAsync(treMartialArts, token).ConfigureAwait(false);
                                 await treMartialArts.DoThreadSafeAsync(x =>
@@ -5890,7 +5894,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (MartialArt objMartialArt in e.NewItems)
                             {
                                 await AddToTree(objMartialArt).ConfigureAwait(false);
                                 await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
@@ -5915,7 +5919,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true)
+                async Task AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique);
                     if (objNode == null)
@@ -5994,9 +5998,9 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, CancellationToken token = default)
+        protected async Task RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (treMartialArts == null || objMartialArt == null || notifyCollectionChangedEventArgs == null)
+            if (treMartialArts == null || objMartialArt == null || e == null)
                 return;
             TreeNode nodMartialArt = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objMartialArt), token).ConfigureAwait(false);
             if (nodMartialArt == null)
@@ -6004,13 +6008,13 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
                         await treMartialArts.DoThreadSafeAsync(() =>
                         {
-                            foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (MartialArtTechnique objTechnique in e.NewItems)
                             {
                                 AddToTree(objTechnique);
                             }
@@ -6022,7 +6026,7 @@ namespace Chummer
                     {
                         await treMartialArts.DoThreadSafeAsync(() =>
                         {
-                            foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (MartialArtTechnique objTechnique in e.OldItems)
                             {
                                 nodMartialArt.FindNodeByTag(objTechnique)?.Remove();
                             }
@@ -6034,12 +6038,12 @@ namespace Chummer
                     {
                         await treMartialArts.DoThreadSafeAsync(() =>
                         {
-                            foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (MartialArtTechnique objTechnique in e.OldItems)
                             {
                                 nodMartialArt.FindNodeByTag(objTechnique)?.Remove();
                             }
 
-                            foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (MartialArtTechnique objTechnique in e.NewItems)
                             {
                                 AddToTree(objTechnique);
                             }
@@ -6103,7 +6107,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the list of Improvements.
         /// </summary>
-        protected async Task RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async Task RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (treImprovements == null)
                 return;
@@ -6116,8 +6120,8 @@ namespace Chummer
 
                 TreeNode objRoot;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await treImprovements.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -6176,11 +6180,11 @@ namespace Chummer
                             aobjLimitNodes[3] = x.FindNode("Node_Astral", false);
                         }, token).ConfigureAwait(false);
 
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Improvement objImprovement in e.NewItems)
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
@@ -6196,7 +6200,7 @@ namespace Chummer
                         {
                             await treImprovements.DoThreadSafeAsync(x =>
                             {
-                                foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Improvement objImprovement in e.OldItems)
                                 {
                                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
@@ -6231,10 +6235,10 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParents =
-                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                                new List<TreeNode>(e.OldItems.Count);
                             await treImprovements.DoThreadSafeAsync(x =>
                             {
-                                foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Improvement objImprovement in e.OldItems)
                                 {
                                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
@@ -6259,7 +6263,7 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Improvement objImprovement in e.NewItems)
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
@@ -6421,7 +6425,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Improvement objImprovement, bool blnSingleAdd = true)
+                async Task AddToTree(Improvement objImprovement, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objImprovement.CreateTreeNode(cmsImprovement);
 
@@ -6589,7 +6593,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
+                async Task AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle);
                     if (objNode == null)
@@ -6796,15 +6800,15 @@ namespace Chummer
             }
         }
 
-        public async Task RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        public async Task RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     if (panContacts != null)
                         await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
@@ -6889,11 +6893,11 @@ namespace Chummer
                 }
                 else
                 {
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (Contact objContact in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Contact objContact in e.NewItems)
                             {
                                 switch (objContact.EntityType)
                                 {
@@ -6954,7 +6958,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Contact objContact in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Contact objContact in e.OldItems)
                             {
                                 switch (objContact.EntityType)
                                 {
@@ -7031,7 +7035,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Contact objContact in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Contact objContact in e.OldItems)
                             {
                                 switch (objContact.EntityType)
                                 {
@@ -7104,7 +7108,7 @@ namespace Chummer
                                 }
                             }
 
-                            foreach (Contact objContact in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Contact objContact in e.NewItems)
                             {
                                 switch (objContact.EntityType)
                                 {
@@ -7179,9 +7183,9 @@ namespace Chummer
         /// <param name="pnlSustainedCritterPowers">Panel for sustained critter powers.</param>
         /// <param name="chkPsycheActiveMagician">Checkbox for Psyche in the tab for spells.</param>
         /// <param name="chkPsycheActiveTechnomancer">Checkbox for Psyche in the tab for complex forms.</param>
-        /// <param name="notifyCollectionChangedEventArgs"></param>
+        /// <param name="e"></param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task RefreshSustainedSpells(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CheckBox chkPsycheActiveMagician, CheckBox chkPsycheActiveTechnomancer, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        public async Task RefreshSustainedSpells(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CheckBox chkPsycheActiveMagician, CheckBox chkPsycheActiveTechnomancer, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (pnlSustainedSpells == null && pnlSustainedComplexForms == null && pnlSustainedCritterPowers == null)
                 return;
@@ -7209,8 +7213,8 @@ namespace Chummer
                     return null;
                 }
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     await chkPsycheActiveMagician.DoThreadSafeAsync(x =>
                     {
@@ -7292,11 +7296,11 @@ namespace Chummer
                 }
                 else
                 {
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (SustainedObject objSustained in e.NewItems)
                             {
                                 Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
                                     pnlSustainedComplexForms, pnlSustainedCritterPowers);
@@ -7346,7 +7350,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (SustainedObject objSustained in e.OldItems)
                             {
                                 Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
                                     pnlSustainedComplexForms, pnlSustainedCritterPowers);
@@ -7409,7 +7413,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (SustainedObject objSustained in e.OldItems)
                             {
                                 Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
                                     pnlSustainedComplexForms, pnlSustainedCritterPowers);
@@ -7468,7 +7472,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (SustainedObject objSustained in e.NewItems)
                             {
                                 Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
                                     pnlSustainedComplexForms, pnlSustainedCritterPowers);
@@ -8164,15 +8168,15 @@ namespace Chummer
 
         #endregion Additional Relationships Tab Control Events
 
-        public async Task RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        public async Task RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (panSpirits == null && panSprites == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     if (panSpirits != null)
                         await panSpirits.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
@@ -8236,7 +8240,7 @@ namespace Chummer
                 }
                 else
                 {
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
@@ -8248,7 +8252,7 @@ namespace Chummer
                                 ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
                                                   .ConfigureAwait(false)
                                 : 0;
-                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Spirit objSpirit in e.NewItems)
                             {
                                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
                                 if (blnIsSpirit)
@@ -8292,7 +8296,7 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Spirit objSpirit in e.OldItems)
                             {
                                 int intMoveUpAmount = 0;
                                 if (objSpirit.EntityType == SpiritType.Spirit)
@@ -8383,7 +8387,7 @@ namespace Chummer
                                 ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
                                                   .ConfigureAwait(false)
                                 : 0;
-                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Spirit objSpirit in e.OldItems)
                             {
                                 int intMoveUpAmount = 0;
                                 if (objSpirit.EntityType == SpiritType.Spirit)
@@ -8457,7 +8461,7 @@ namespace Chummer
                                 }
                             }
 
-                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Spirit objSpirit in e.NewItems)
                             {
                                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
                                 if (blnIsSpirit)
@@ -9083,7 +9087,7 @@ namespace Chummer
                         }
                     }
 
-                    await Utils.SafeSleepAsync(50, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
+                    await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
 
                     Task tskNew = Utils.RunInEmptyExecutionContext(() => Task.Run(() => DoUpdateCharacterInfo(objToken), objToken));
                     if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, null) != null)

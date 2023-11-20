@@ -63,10 +63,12 @@ namespace Chummer
             _lstTechniques.AddTaggedCollectionChanged(this, TechniquesOnCollectionChanged);
         }
 
-        private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            using (LockObject.EnterUpgradeableReadLock())
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 List<MartialArtTechnique> lstImprovementSourcesToProcess
                     = new List<MartialArtTechnique>(e.NewItems?.Count ?? 0);
                 switch (e.Action)
@@ -118,9 +120,9 @@ namespace Chummer
 
                 if (lstImprovementSourcesToProcess.Count <= 0 || _objCharacter?.IsLoading != false)
                     return;
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,
-                           out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                           out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
                 {
                     try
                     {
@@ -128,11 +130,11 @@ namespace Chummer
                         {
                             // Needed in order to properly process named sources where
                             // the tooltip was built before the object was added to the character
-                            _objCharacter.Improvements.ForEach(objImprovement =>
+                            await _objCharacter.Improvements.ForEachAsync(objImprovement =>
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
                                     return;
-                                foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
+                                foreach ((INotifyMultiplePropertyChangedAsync objToUpdate, string strPropertyName) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
                                     if (!dicChangedProperties.TryGetValue(objToUpdate,
@@ -144,13 +146,13 @@ namespace Chummer
 
                                     setChangedProperties.Add(strPropertyName);
                                 }
-                            });
+                            }, token: token).ConfigureAwait(false);
                         }
 
-                        foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                        foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
                                  dicChangedProperties)
                         {
-                            kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
+                            await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                         }
                     }
                     finally

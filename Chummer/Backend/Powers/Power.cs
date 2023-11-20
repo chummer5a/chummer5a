@@ -45,7 +45,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, IHasLockObject
+    public sealed class Power : INotifyMultiplePropertyChangedAsync, IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, IHasLockObject
     {
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
@@ -79,10 +79,8 @@ namespace Chummer
             CharacterObject = objCharacter;
             if (objCharacter != null)
             {
-                using (objCharacter.LockObject.EnterWriteLock())
-                    objCharacter.PropertyChanged += OnCharacterChanged;
-                using (objCharacter.Settings.LockObject.EnterWriteLock())
-                    objCharacter.Settings.PropertyChanged += OnCharacterSettingsChanged;
+                objCharacter.PropertyChangedAsync += OnCharacterChanged;
+                objCharacter.Settings.PropertyChangedAsync += OnCharacterSettingsChanged;
                 if (objCharacter.Settings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
                 {
                     MAGAttributeObject = objCharacter.MAGAdept;
@@ -558,8 +556,7 @@ namespace Chummer
                                         return;
                                     try
                                     {
-                                        using (objOldValue.LockObject.EnterWriteLock())
-                                            objOldValue.PropertyChanged -= OnLinkedAttributeChanged;
+                                        objOldValue.PropertyChangedAsync -= OnLinkedAttributeChanged;
                                     }
                                     catch (ObjectDisposedException)
                                     {
@@ -570,8 +567,7 @@ namespace Chummer
                                 {
                                     if (value == null)
                                         return;
-                                    using (value.LockObject.EnterWriteLock())
-                                        value.PropertyChanged += OnLinkedAttributeChanged;
+                                    value.PropertyChangedAsync += OnLinkedAttributeChanged;
                                 });
                         }
                         finally
@@ -586,6 +582,61 @@ namespace Chummer
 
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        private async Task SetMAGAttributeObjectAsync(CharacterAttrib value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IDisposable objReaderLock = value != null ? await value.LockObject.EnterUpgradeableReadLockAsync(token) : null;
+                try
+                {
+                    CharacterAttrib objOldValue = Interlocked.Exchange(ref _objMAGAttribute, value);
+                    IDisposable objReaderLock2 = objOldValue != null ? await objOldValue.LockObject.EnterUpgradeableReadLockAsync(token) : null;
+                    try
+                    {
+                        if (objOldValue == value)
+                            return;
+                        await Task.WhenAll(
+                            Task.Run(() =>
+                            {
+                                if (objOldValue == null)
+                                    return;
+                                try
+                                {
+                                    objOldValue.PropertyChangedAsync -= OnLinkedAttributeChanged;
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
+                            }, token),
+                            Task.Run(() =>
+                            {
+                                if (value == null)
+                                    return;
+                                value.PropertyChangedAsync += OnLinkedAttributeChanged;
+                            }, token));
+                    }
+                    finally
+                    {
+                        objReaderLock2?.Dispose();
+                    }
+                }
+                finally
+                {
+                    objReaderLock?.Dispose();
+                }
+
+                await OnPropertyChangedAsync(nameof(MAGAttributeObject), token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -618,8 +669,7 @@ namespace Chummer
                                         return;
                                     try
                                     {
-                                        using (objOldValue.LockObject.EnterWriteLock())
-                                            objOldValue.PropertyChanged -= OnBoostedSkillChanged;
+                                        objOldValue.PropertyChangedAsync -= OnBoostedSkillChanged;
                                     }
                                     catch (ObjectDisposedException)
                                     {
@@ -630,8 +680,7 @@ namespace Chummer
                                 {
                                     if (value == null)
                                         return;
-                                    using (value.LockObject.EnterWriteLock())
-                                        value.PropertyChanged += OnBoostedSkillChanged;
+                                    value.PropertyChangedAsync += OnBoostedSkillChanged;
                                 });
                         }
                         finally
@@ -924,6 +973,20 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Power Point discount for an Adept Way.
+        /// </summary>
+        public async Task<decimal> GetAdeptWayDiscountAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decReturn = Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
+                return decReturn;
             }
         }
 
@@ -1512,6 +1575,44 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not the Power Cost is discounted by 50% from Adept Way.
+        /// </summary>
+        public async Task<bool> GetDiscountedAdeptWayAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnDiscountedAdeptWay;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Power Cost is discounted by 50% from Adept Way.
+        /// </summary>
+        public async Task SetDiscountedAdeptWayAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnDiscountedAdeptWay == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnDiscountedAdeptWay = value;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+                await OnPropertyChangedAsync(nameof(DiscountedAdeptWay), token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether or not the Power Cost is discounted by 25% from Geas.
         /// </summary>
         public bool DiscountedGeas
@@ -1794,6 +1895,38 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Whether the power can be discounted due to presence of an Adept Way.
+        /// </summary>
+        public async Task<bool> GetAdeptWayDiscountEnabledAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetAdeptWayDiscountAsync(token).ConfigureAwait(false) == 0)
+                {
+                    return false;
+                }
+
+                bool blnReturn = false;
+                //If the Adept Way Requirements node is missing OR the Adept Way Requirements node doesn't have magicianswayforbids, check for the magician's way discount.
+                if (_nodAdeptWayRequirements?.SelectSingleNodeAndCacheExpression("magicianswayforbids", token) == null)
+                {
+                    blnReturn = (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            CharacterObject, Improvement.ImprovementType.MagiciansWayDiscount, token: token).ConfigureAwait(false)).Count > 0;
+                }
+
+                if (!blnReturn && _nodAdeptWayRequirements?.HasChildren == true)
+                {
+                    blnReturn = await _nodAdeptWayRequirements.RequirementsMetAsync(CharacterObject, token: token).ConfigureAwait(false);
+                }
+
+                return blnReturn;
+            }
+        }
+
         public void RefreshDiscountedAdeptWay(bool blnAdeptWayDiscountEnabled)
         {
             using (LockObject.EnterUpgradeableReadLock())
@@ -1802,6 +1935,28 @@ namespace Chummer
                 {
                     using (LockObject.EnterWriteLock())
                         DiscountedAdeptWay = false;
+                }
+            }
+        }
+
+        public async Task RefreshDiscountedAdeptWayAsync(bool blnAdeptWayDiscountEnabled, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetDiscountedAdeptWayAsync(token).ConfigureAwait(false) && !blnAdeptWayDiscountEnabled)
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await SetDiscountedAdeptWayAsync(false, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
         }
@@ -1856,10 +2011,32 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             this.OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
@@ -1921,7 +2098,34 @@ namespace Chummer
                         }
                     }
 
-                    if (PropertyChanged != null)
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                        }
+
+                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -1944,59 +2148,195 @@ namespace Chummer
             }
         }
 
-        private void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
+        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
-            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
-                OnPropertyChanged(nameof(TotalMaximumLevels));
-        }
-
-        private void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
-        {
-            using (LockObject.EnterUpgradeableReadLock())
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
-                if (e?.PropertyName == nameof(Skill.LearnedRating)
-                    && sender is Skill objSkill
-                    && BoostedSkill.LearnedRating != _intCachedLearnedRating
-                    && _intCachedLearnedRating != TotalMaximumLevels)
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
                 {
-                    using (LockObject.EnterWriteLock())
+                    foreach (string strPropertyName in lstPropertyNames)
                     {
-                        _intCachedLearnedRating = objSkill.LearnedRating;
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in s_PowerDependencyGraph
+                                         .GetWithAllDependentsEnumerable(
+                                             this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
                     }
 
-                    OnPropertyChanged(nameof(TotalMaximumLevels));
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
+                            _strCachedPowerPoints = string.Empty;
+                        if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+                            _intCachedFreeLevels = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(PowerPoints)))
+                            _decCachedPowerPoints = decimal.MinValue;
+
+                        // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+                        if (setNamesOfChangedProperties.Contains(nameof(TotalRating))
+                            && Bonus?.InnerXml.Contains("Rating") == true)
+                        {
+                            // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
+                            // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
+                            // TODO: Solve this bad code
+                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                Improvement.ImprovementSource.Power,
+                                InternalId, token).ConfigureAwait(false);
+                            int intTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
+                            if (intTotalRating > 0)
+                            {
+                                ImprovementManager.ForcedValue = Extra;
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                    Improvement.ImprovementSource.Power,
+                                    InternalId, Bonus, intTotalRating,
+                                    await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            }
+                        }
+
+                        if (setNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
+                        {
+                            await RefreshDiscountedAdeptWayAsync(await GetAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
         }
 
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
+        private Task OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            if (e.PropertyName == nameof(Character.IsMysticAdept))
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            return e?.PropertyName == nameof(CharacterAttrib.TotalValue)
+                ? OnPropertyChangedAsync(nameof(TotalMaximumLevels), token)
+                : Task.CompletedTask;
+        }
+
+        private async Task OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (e?.PropertyName == nameof(Skill.LearnedRating) && sender is Skill objSkill)
             {
-                MAGAttributeObject = CharacterObject.Settings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                    ? CharacterObject.MAGAdept
-                    : CharacterObject.MAG;
+                using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await BoostedSkill.GetLearnedRatingAsync(token).ConfigureAwait(false) != _intCachedLearnedRating
+                        && _intCachedLearnedRating != await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false))
+                    {
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _intCachedLearnedRating = objSkill.LearnedRating;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+
+                        await OnPropertyChangedAsync(nameof(TotalMaximumLevels), token).ConfigureAwait(false);
+                    }
+                }
             }
         }
 
-        private void OnCharacterSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnCharacterChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (e.PropertyName == nameof(Character.IsMysticAdept))
+            {
+                await SetMAGAttributeObjectAsync(
+                    await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token)
+                    && await CharacterObject.GetIsMysticAdeptAsync(token)
+                        ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
+                        : await CharacterObject.GetAttributeAsync("MAG", token: token), token);
+            }
+        }
+
+        private async Task OnCharacterSettingsChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             switch (e.PropertyName)
             {
                 case nameof(CharacterSettings.MysAdeptSecondMAGAttribute):
-                    {
-                        MAGAttributeObject = CharacterObject.Settings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                            ? CharacterObject.MAGAdept
-                            : CharacterObject.MAG;
-                        break;
-                    }
                 case nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier):
-                    {
-                        MAGAttributeObject = CharacterObject.Settings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                            ? CharacterObject.MAGAdept
-                            : CharacterObject.MAG;
-                        break;
-                    }
+                    await SetMAGAttributeObjectAsync(
+                        await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token)
+                        && await CharacterObject.GetIsMysticAdeptAsync(token)
+                            ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
+                            : await CharacterObject.GetAttributeAsync("MAG", token: token), token);
+                    break;
             }
         }
 
@@ -2159,10 +2499,8 @@ namespace Chummer
             {
                 if (CharacterObject != null)
                 {
-                    using (CharacterObject.LockObject.EnterWriteLock())
-                        CharacterObject.PropertyChanged -= OnCharacterChanged;
-                    using (CharacterObject.Settings.LockObject.EnterWriteLock())
-                        CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsChanged;
+                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
+                    CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsChanged;
                 }
 
                 MAGAttributeObject = null;
@@ -2184,7 +2522,7 @@ namespace Chummer
                     IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
-                        CharacterObject.PropertyChanged -= OnCharacterChanged;
+                        CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
                     }
                     finally
                     {
@@ -2193,7 +2531,7 @@ namespace Chummer
                     objLocker2 = await CharacterObject.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
-                        CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsChanged;
+                        CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsChanged;
                     }
                     finally
                     {

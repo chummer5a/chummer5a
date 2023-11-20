@@ -498,8 +498,8 @@ namespace Chummer
                         if (blnRestoreDefaultLanguage)
                             GlobalSettings.Language = GlobalSettings.DefaultLanguage;
 
-                        OpenCharacters.BeforeClearCollectionChanged += OpenCharactersOnBeforeClearCollectionChanged;
-                        OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
+                        OpenCharacters.BeforeClearCollectionChangedAsync += OpenCharactersOnBeforeClearCollectionChanged;
+                        OpenCharacters.CollectionChangedAsync += OpenCharactersOnCollectionChanged;
 
                         MainForm = new ChummerMainForm();
                         try
@@ -629,8 +629,8 @@ namespace Chummer
                         }
 
                         OpenCharacters.Clear();
-                        OpenCharacters.BeforeClearCollectionChanged -= OpenCharactersOnBeforeClearCollectionChanged;
-                        OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
+                        OpenCharacters.BeforeClearCollectionChangedAsync -= OpenCharactersOnBeforeClearCollectionChanged;
+                        OpenCharacters.CollectionChangedAsync -= OpenCharactersOnCollectionChanged;
 
                         PluginLoader?.Dispose();
                         Log.Info(ExceptionHeatMap.GenerateInfo());
@@ -1095,23 +1095,25 @@ namespace Chummer
         /// </summary>
         public static ThreadSafeObservableCollection<Character> OpenCharacters { get; } = new ThreadSafeObservableCollection<Character>();
 
-        private static void OpenCharactersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private static async Task OpenCharactersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             foreach (Character objCharacter in e.OldItems)
             {
-                objCharacter.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        private static void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private static async Task OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (Character objCharacter in e.OldItems)
                         {
-                            objCharacter.Dispose();
+                            await objCharacter.DisposeAsync().ConfigureAwait(false);
                         }
                         break;
                     }
@@ -1120,7 +1122,7 @@ namespace Chummer
                         foreach (Character objCharacter in e.OldItems)
                         {
                             if (!e.NewItems.Contains(objCharacter))
-                                objCharacter.Dispose();
+                                await objCharacter.DisposeAsync().ConfigureAwait(false);
                         }
                         break;
                     }

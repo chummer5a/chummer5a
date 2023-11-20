@@ -155,8 +155,8 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            LifestyleQualities.CollectionChanged += LifestyleQualitiesCollectionChanged;
-            LifestyleQualities.BeforeClearCollectionChanged += LifestyleQualitiesOnBeforeClearCollectionChanged;
+            LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesCollectionChanged;
+            LifestyleQualities.BeforeClearCollectionChangedAsync += LifestyleQualitiesOnBeforeClearCollectionChanged;
         }
 
         /// <summary>
@@ -1983,7 +1983,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strCity, value) != value)
-                    OnPropertyChanged(nameof(City));
+                    await OnPropertyChangedAsync(nameof(City), token).ConfigureAwait(false);
             }
         }
 
@@ -2019,7 +2019,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strDistrict, value) != value)
-                    OnPropertyChanged(nameof(District));
+                    await OnPropertyChangedAsync(nameof(District), token).ConfigureAwait(false);
             }
         }
 
@@ -2055,7 +2055,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strBorough, value) != value)
-                    OnPropertyChanged(nameof(Borough));
+                    await OnPropertyChangedAsync(nameof(Borough), token).ConfigureAwait(false);
             }
         }
 
@@ -2666,22 +2666,24 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private void LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             foreach (LifestyleQuality objQuality in e.OldItems)
             {
-                objQuality.Dispose();
+                await objQuality.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        private void LifestyleQualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task LifestyleQualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
                     foreach (LifestyleQuality objQuality in e.OldItems)
                     {
-                        objQuality.Dispose();
+                        await objQuality.DisposeAsync().ConfigureAwait(false);
                     }
                     break;
 
@@ -2690,14 +2692,14 @@ namespace Chummer.Backend.Equipment
                     foreach (LifestyleQuality objQuality in e.OldItems)
                     {
                         if (!setNewLifestyleQualities.Contains(objQuality))
-                            objQuality.Dispose();
+                            await objQuality.DisposeAsync().ConfigureAwait(false);
                     }
                     break;
 
                 case NotifyCollectionChangedAction.Move:
                     return;
             }
-            OnPropertyChanged(nameof(LifestyleQualities));
+            await OnPropertyChangedAsync(nameof(LifestyleQualities), token).ConfigureAwait(false);
         }
 
         #region UI Methods
@@ -3140,8 +3142,8 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (LifestyleQuality objQuality in LifestyleQualities)
                     objQuality.Dispose();
-                LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
-                LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+                LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
+                LifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 LifestyleQualities.Dispose();
             }
 
@@ -3156,8 +3158,8 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (LifestyleQuality objQuality in LifestyleQualities)
                     await objQuality.DisposeAsync().ConfigureAwait(false);
-                LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
-                LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+                LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
+                LifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 await LifestyleQualities.DisposeAsync().ConfigureAwait(false);
             }
             finally

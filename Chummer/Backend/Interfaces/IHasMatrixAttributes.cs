@@ -905,5 +905,148 @@ namespace Chummer
                 objThisLocker?.Dispose();
             }
         }
+
+        /// <summary>
+        /// If this item has an attribute array, refresh it.
+        /// </summary>
+        public static async Task RefreshMatrixAttributeArrayAsync(this IHasMatrixAttributes objThis,
+            Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null)
+                return;
+            IDisposable objThisLocker = null;
+            if (objThis is IHasLockObject objHasLock)
+                objThisLocker = objHasLock.LockObject.EnterUpgradeableReadLockAsync(token);
+            else
+                objHasLock = null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objThis.CanSwapAttributes)
+                {
+                    int intBaseAttack = await objThis.GetBaseMatrixAttributeAsync("Attack", token);
+                    int intBaseSleaze = await objThis.GetBaseMatrixAttributeAsync("Sleaze", token);
+                    int intBaseDataProcessing = await objThis.GetBaseMatrixAttributeAsync("Data Processing", token);
+                    int intBaseFirewall = await objThis.GetBaseMatrixAttributeAsync("Firewall", token);
+                    List<int> lstStatsArray = new List<int>(4)
+                    {
+                        intBaseAttack,
+                        intBaseSleaze,
+                        intBaseDataProcessing,
+                        intBaseFirewall
+                    };
+                    lstStatsArray.Sort();
+                    lstStatsArray.Reverse();
+
+                    string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray0))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray1))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray2))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray3))
+                    {
+                        sbdCyberdeckArray0.Append(strCyberdeckArray[0]);
+                        sbdCyberdeckArray1.Append(strCyberdeckArray[1]);
+                        sbdCyberdeckArray2.Append(strCyberdeckArray[2]);
+                        sbdCyberdeckArray3.Append(strCyberdeckArray[3]);
+                        StringBuilder[] asbdCyberdeckArray =
+                        {
+                            sbdCyberdeckArray0,
+                            sbdCyberdeckArray1,
+                            sbdCyberdeckArray2,
+                            sbdCyberdeckArray3
+                        };
+                        foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(
+                                     x => x.ModAttributeArray))
+                        {
+                            if (string.IsNullOrEmpty(strLoopArrayText))
+                                continue;
+                            string[] strLoopArray = strLoopArrayText.Split(',');
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                            }
+                        }
+
+                        IAsyncDisposable objLocker = null;
+                        if (objHasLock != null)
+                            objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                if (intBaseAttack == lstStatsArray[i])
+                                {
+                                    objThis.Attack = asbdCyberdeckArray[i].ToString();
+                                    lstStatsArray[i] = int.MinValue;
+                                    break;
+                                }
+                            }
+
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                if (intBaseSleaze == lstStatsArray[i])
+                                {
+                                    objThis.Sleaze = asbdCyberdeckArray[i].ToString();
+                                    lstStatsArray[i] = int.MinValue;
+                                    break;
+                                }
+                            }
+
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                if (intBaseDataProcessing == lstStatsArray[i])
+                                {
+                                    objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
+                                    lstStatsArray[i] = int.MinValue;
+                                    break;
+                                }
+                            }
+
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                if (intBaseFirewall == lstStatsArray[i])
+                                {
+                                    objThis.Firewall = asbdCyberdeckArray[i].ToString();
+                                    break;
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            if (objLocker != null)
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                if (objCharacter != null)
+                {
+                    if (await objThis.IsActiveCommlinkAsync(objCharacter, token))
+                    {
+                        if (await objThis.IsHomeNodeAsync(objCharacter, token))
+                            await objCharacter.OnMultiplePropertyChangedAsync(token,
+                                nameof(Character.MatrixInitiativeValue),
+                                nameof(Character.MatrixInitiativeColdValue),
+                                nameof(Character.MatrixInitiativeHotValue));
+                        else
+                            await objCharacter.OnMultiplePropertyChangedAsync(token,
+                                nameof(Character.MatrixInitiativeColdValue),
+                                nameof(Character.MatrixInitiativeHotValue));
+                    }
+                    else
+                        await objCharacter.OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), token);
+                }
+            }
+            finally
+            {
+                objThisLocker?.Dispose();
+            }
+        }
     }
 }

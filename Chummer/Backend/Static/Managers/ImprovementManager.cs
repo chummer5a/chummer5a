@@ -4782,13 +4782,25 @@ namespace Chummer
                                     await objImprovedPower.DeletePowerAsync(token).ConfigureAwait(false);
                                 }
 
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+                                    if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
+                                        objImprovedPower.OnMultiplePropertyChanged(
+                                            nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreeLevels));
+                                    else
+                                        objImprovedPower.OnMultiplePropertyChanged(
+                                            nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreePoints));
+                                }
                                 // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                                if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
-                                    objImprovedPower.OnMultiplePropertyChanged(
-                                        nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreeLevels));
+                                else if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
+                                    await objImprovedPower.OnMultiplePropertyChangedAsync(token,
+                                            nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreeLevels))
+                                        .ConfigureAwait(false);
                                 else
-                                    objImprovedPower.OnMultiplePropertyChanged(
-                                        nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreePoints));
+                                    await objImprovedPower.OnMultiplePropertyChangedAsync(token,
+                                            nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreePoints))
+                                        .ConfigureAwait(false);
                             }
 
                             break;
@@ -5118,13 +5130,13 @@ namespace Chummer
             if (objImprovement?.SetupComplete != true)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
-                    foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                    foreach ((INotifyMultiplePropertyChangedAsync objToNotify, string strProperty) in objImprovement
                                  .GetRelevantPropertyChangers(lstExtraImprovedName: lstExtraImprovedName,
                                                               lstExtraUniqueName: lstExtraUniqueName,
                                                               lstExtraTarget: lstExtraTarget))
@@ -5145,7 +5157,7 @@ namespace Chummer
                         foreach (Improvement.ImprovementType eOverrideType in lstExtraImprovementTypes)
                         {
                             token.ThrowIfCancellationRequested();
-                            foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                            foreach ((INotifyMultiplePropertyChangedAsync objToNotify, string strProperty) in objImprovement
                                          .GetRelevantPropertyChangers(lstExtraImprovedName: lstExtraImprovedName,
                                                                       eOverrideType: eOverrideType,
                                                                       lstExtraUniqueName: lstExtraUniqueName,
@@ -5167,7 +5179,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
 
                     // Fire each event once
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpChangedProperties in
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpChangedProperties in
                              dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
@@ -5197,9 +5209,9 @@ namespace Chummer
             if (lstImprovements == null)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -5207,7 +5219,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                        foreach ((INotifyMultiplePropertyChangedAsync objToNotify, string strProperty) in objImprovement
                                      .GetRelevantPropertyChangers())
                         {
                             token.ThrowIfCancellationRequested();
@@ -5223,7 +5235,7 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
                     // Fire each event once
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpChangedProperties in
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpChangedProperties in
                              dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();

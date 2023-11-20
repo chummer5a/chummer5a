@@ -453,16 +453,18 @@ namespace Chummer
             _objCharacter = objCharacter;
             if (_objCharacter != null)
             {
-                using (_objCharacter.LockObject.EnterWriteLock())
-                    _objCharacter.PropertyChanged += CharacterObjectOnPropertyChanged;
+                _objCharacter.PropertyChangedAsync += CharacterObjectOnPropertyChanged;
             }
             _blnReadOnly = blnIsReadOnly;
         }
 
-        private void CharacterObjectOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private Task CharacterObjectOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (e.PropertyName == nameof(Character.Created) || e.PropertyName == nameof(Character.FriendsInHighPlaces))
-                OnPropertyChanged(nameof(ConnectionMaximum));
+                return OnPropertyChangedAsync(nameof(ConnectionMaximum), token);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -2361,8 +2363,7 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    using (objOldLinkedCharacter.LockObject.EnterWriteLock(token))
-                                        objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                                    objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -2397,8 +2398,7 @@ namespace Chummer
                                 if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
                                     _strMetatype = Metatype;
 
-                                using (_objLinkedCharacter.LockObject.EnterWriteLock(token))
-                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
                             }
                         }
 
@@ -2472,7 +2472,7 @@ namespace Chummer
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                                objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
                             }
                             finally
                             {
@@ -2511,7 +2511,7 @@ namespace Chummer
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                    _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
                                 }
                                 finally
                                 {
@@ -2530,37 +2530,38 @@ namespace Chummer
             }
         }
 
-        private void LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.PropertyName)
             {
                 case nameof(Character.Name):
-                    OnPropertyChanged(nameof(Name));
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.Age):
-                    OnPropertyChanged(nameof(Age));
+                    await OnPropertyChangedAsync(nameof(Age), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.Gender):
-                    OnPropertyChanged(nameof(Gender));
+                    await OnPropertyChangedAsync(nameof(Gender), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.Metatype):
                 case nameof(Character.Metavariant):
-                    OnPropertyChanged(nameof(Metatype));
+                    await OnPropertyChangedAsync(nameof(Metatype), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.Mugshots):
-                    OnPropertyChanged(nameof(Mugshots));
+                    await OnPropertyChangedAsync(nameof(Mugshots), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.MainMugshot):
-                    OnPropertyChanged(nameof(MainMugshot));
+                    await OnPropertyChangedAsync(nameof(MainMugshot), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.MainMugshotIndex):
-                    OnPropertyChanged(nameof(MainMugshotIndex));
+                    await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
                     break;
             }
         }

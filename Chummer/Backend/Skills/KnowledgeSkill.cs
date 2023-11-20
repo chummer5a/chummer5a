@@ -780,7 +780,7 @@ namespace Chummer.Backend.Skills
                         await SetBuyWithKarmaAsync(false, token).ConfigureAwait(false);
                         await Specializations.ClearAsync(token).ConfigureAwait(false);
                     }
-                    OnPropertyChanged(nameof(IsNativeLanguage));
+                    await OnPropertyChangedAsync(nameof(IsNativeLanguage), token).ConfigureAwait(false);
                 }
                 finally
                 {
