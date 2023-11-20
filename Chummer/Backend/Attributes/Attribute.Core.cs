@@ -165,7 +165,7 @@ namespace Chummer.Backend.Attributes
                     _intBase = 0;
                 if (_intKarma < 0)
                     _intKarma = 0;
-                if (Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP" || Abbrev == "EDG")
+                if (!AttributeSection.PhysicalAttributes.Contains(Abbrev) && !AttributeSection.MentalAttributes.Contains(Abbrev))
                 {
                     _eMetatypeCategory = AttributeCategory.Special;
                 }
@@ -1770,6 +1770,12 @@ namespace Chummer.Backend.Attributes
         public bool BaseUnlocked => _objCharacter.EffectiveBuildMethodUsesPriorityTables;
 
         /// <summary>
+        /// Is it possible to place points in Base or is it prevented by their build method?
+        /// </summary>
+        public Task<bool> GetBaseUnlockedAsync(CancellationToken token = default) =>
+            _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token);
+
+        /// <summary>
         /// CharacterAttribute Limits
         /// </summary>
         public string AugmentedMetatypeLimits
@@ -2009,6 +2015,24 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        public async Task<string> GetUpgradeToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intUpgradeCost = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
+                return intUpgradeCost < 0
+                    ? await LanguageManager.GetStringAsync("Tip_ImproveItemAtMaximum", token: token)
+                        .ConfigureAwait(false)
+                    : string.Format(
+                        GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync("Tip_ImproveItem", token: token).ConfigureAwait(false),
+                        await GetValueAsync(token).ConfigureAwait(false) + 1,
+                        intUpgradeCost);
+            }
+        }
+
         private string _strCachedToolTip = string.Empty;
 
         /// <summary>
@@ -2241,6 +2265,246 @@ namespace Chummer.Backend.Attributes
                         .Append(objCyberware.GetAttributeTotalValue(Abbrev).ToString(GlobalSettings.CultureInfo))
                         .Append(')');
                 }
+            }
+        }
+
+        /// <summary>
+        /// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
+        /// </summary>
+        public async Task<string> GetToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                // strReturn for thread safety
+                string strReturn = _strCachedToolTip;
+                if (!string.IsNullOrEmpty(strReturn))
+                    return strReturn;
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setUniqueNames))
+                {
+                    decimal decBaseValue = 0;
+
+                    List<Improvement> lstUsedImprovements
+                        = await ImprovementManager.GetCachedImprovementListForAugmentedValueOfAsync(
+                            _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token).ConfigureAwait(false);
+
+                    List<Tuple<string, decimal, string>> lstUniquePair =
+                        new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
+
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdModifier))
+                    {
+                        foreach (Improvement objImprovement in lstUsedImprovements.Where(
+                                     objImprovement => !objImprovement.Custom))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strUniqueName = objImprovement.UniqueName;
+                            if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
+                                                                     && objImprovement.ImproveType
+                                                                     == Improvement.ImprovementType.Attribute
+                                                                     && objImprovement.ImprovedName == Abbrev)
+                            {
+                                // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                                setUniqueNames.Add(strUniqueName);
+
+                                // Add the values to the UniquePair List so we can check them later.
+                                lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                                      strUniqueName,
+                                                      objImprovement.Augmented * objImprovement.Rating,
+                                                      await _objCharacter.GetObjectNameAsync(
+                                                          objImprovement, GlobalSettings.Language, token).ConfigureAwait(false)));
+                            }
+                            else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                            {
+                                decimal decValue = objImprovement.Augmented * objImprovement.Rating;
+                                sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                           .Append(
+                                               await _objCharacter.GetObjectNameAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false))
+                                           .Append(strSpace).Append('(')
+                                           .Append(decValue.ToString(GlobalSettings.CultureInfo))
+                                           .Append(')');
+                                decBaseValue += decValue;
+                            }
+                        }
+
+                        if (setUniqueNames.Contains("precedence0"))
+                        {
+                            // Retrieve only the highest precedence0 value.
+                            // Run through the list of UniqueNames and pick out the highest value for each one.
+                            decimal decHighest = decimal.MinValue;
+
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdNewModifier))
+                            {
+                                foreach ((string strGroupName, decimal decValue, string strSourceName) in
+                                         lstUniquePair)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (strGroupName != "precedence0" || decValue <= decHighest)
+                                        continue;
+                                    decHighest = decValue;
+                                    sbdNewModifier.Clear();
+                                    sbdNewModifier
+                                        .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                        .Append(strSpace).Append('(')
+                                        .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                }
+
+                                if (setUniqueNames.Contains("precedence-1"))
+                                {
+                                    foreach ((string strGroupName, decimal decValue, string strSourceName) in
+                                             lstUniquePair)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (strGroupName != "precedence-1")
+                                            continue;
+                                        decHighest += decValue;
+                                        sbdNewModifier
+                                            .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                            .Append(strSpace).Append('(')
+                                            .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                    }
+                                }
+
+                                if (decHighest >= decBaseValue)
+                                {
+                                    sbdModifier.Clear();
+                                    sbdModifier.Append(sbdNewModifier);
+                                }
+                            }
+                        }
+                        else if (setUniqueNames.Contains("precedence1"))
+                        {
+                            // Retrieve all of the items that are precedence1 and nothing else.
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdNewModifier))
+                            {
+                                foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair
+                                             .Where(
+                                                 s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    sbdNewModifier.AppendFormat(GlobalSettings.CultureInfo,
+                                                                "{0}+{0}{1}{0}({2})",
+                                                                strSpace,
+                                                                strSourceName, decValue);
+                                }
+
+                                sbdModifier.Clear();
+                                sbdModifier.Append(sbdNewModifier);
+                            }
+                        }
+                        else
+                        {
+                            // Run through the list of UniqueNames and pick out the highest value for each one.
+                            foreach (string strName in setUniqueNames)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                decimal decHighest = decimal.MinValue;
+                                foreach ((string strGroupName, decimal decValue, string strSourceName) in
+                                         lstUniquePair)
+                                {
+                                    if (strGroupName == strName && decValue > decHighest)
+                                    {
+                                        decHighest = decValue;
+                                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                                   .Append(strSourceName)
+                                                   .Append(strSpace).Append('(')
+                                                   .Append(decValue.ToString(GlobalSettings.CultureInfo))
+                                                   .Append(')');
+                                    }
+                                }
+                            }
+                        }
+
+                        // Factor in Custom Improvements.
+                        setUniqueNames.Clear();
+                        lstUniquePair.Clear();
+                        foreach (Improvement objImprovement in lstUsedImprovements.Where(
+                                     objImprovement => objImprovement.Custom))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strUniqueName = objImprovement.UniqueName;
+                            if (!string.IsNullOrEmpty(strUniqueName))
+                            {
+                                // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                                setUniqueNames.Add(strUniqueName);
+
+                                // Add the values to the UniquePair List so we can check them later.
+                                lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                                      strUniqueName,
+                                                      objImprovement.Augmented * objImprovement.Rating,
+                                                      await _objCharacter.GetObjectNameAsync(
+                                                          objImprovement, GlobalSettings.Language, token).ConfigureAwait(false)));
+                            }
+                            else
+                            {
+                                sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                           .Append(
+                                               await _objCharacter.GetObjectNameAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false))
+                                           .Append(strSpace).Append('(')
+                                           .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
+                                                       GlobalSettings.CultureInfo)).Append(')');
+                            }
+                        }
+
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        foreach (string strName in setUniqueNames)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            decimal decHighest = decimal.MinValue;
+                            foreach ((string strGroupName, decimal decValue, string strSourceName) in
+                                     lstUniquePair)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (strGroupName != strName || decValue <= decHighest)
+                                    continue;
+                                decHighest = decValue;
+                                sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                           .Append(strSpace).Append('(')
+                                           .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                            }
+                        }
+
+                        //// If this is AGI or STR, factor in any Cyberlimbs.
+                        if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                            Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
+                        {
+                            await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
+                        }
+
+                        return _strCachedToolTip = await GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '('
+                                                   + (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')' +
+                                                   sbdModifier;
+                    }
+                }
+            }
+
+            async Task BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace)
+            {
+                if (!await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) || !await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                {
+                    return;
+                }
+
+                if (await objCyberware.GetInheritAttributesAsync(token).ConfigureAwait(false))
+                {
+                    await objCyberware.Children.ForEachAsync(objChild => BuildTooltip(sbdModifier, objChild, strSpace), token: token).ConfigureAwait(false);
+
+                    return;
+                }
+
+                sbdModifier.AppendLine()
+                    .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                    .Append(strSpace)
+                    .Append('(')
+                    .Append((await objCyberware.GetAttributeTotalValueAsync(Abbrev, token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
+                    .Append(')');
             }
         }
 

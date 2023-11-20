@@ -13677,8 +13677,7 @@ namespace Chummer
                         int intMetatypeExtraAttributesValue = -2 * objSettings.KarmaAttribute;
                         intExtraKarmaToRemoveForPointBuyComparison -= 2 * objSettings.KarmaAttribute;
                         // Value from attribute points and raised attribute minimums
-                        foreach (CharacterAttrib objLoopAttrib in AttributeSection.AttributeList.Concat(AttributeSection
-                                     .SpecialAttributeList))
+                        foreach (CharacterAttrib objLoopAttrib in AttributeSection.AllAttributes)
                         {
                             string strAttributeName = objLoopAttrib.Abbrev;
                             if (strAttributeName != "ESS" &&
@@ -18305,12 +18304,7 @@ namespace Chummer
             using (LockObject.EnterHiPrioReadLock(token))
             using (AttributeSection.LockObject.EnterHiPrioReadLock(token))
             {
-                foreach (CharacterAttrib objAttribute in AttributeSection.AttributeList)
-                {
-                    token.ThrowIfCancellationRequested();
-                    yield return objAttribute;
-                }
-                foreach (CharacterAttrib objAttribute in AttributeSection.SpecialAttributeList)
+                foreach (CharacterAttrib objAttribute in AttributeSection.AllAttributes)
                 {
                     token.ThrowIfCancellationRequested();
                     yield return objAttribute;
@@ -18333,18 +18327,11 @@ namespace Chummer
                 if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute)
                                                && !blnExplicit)
                     strAttribute = "MAG";
-                foreach (CharacterAttrib objLoop in AttributeSection.AttributeList)
+                foreach (CharacterAttrib objAttribute in AttributeSection.AllAttributes)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (objLoop.Abbrev == strAttribute)
-                        yield return objLoop;
-                }
-
-                foreach (CharacterAttrib objLoop in AttributeSection.SpecialAttributeList)
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (objLoop.Abbrev == strAttribute)
-                        yield return objLoop;
+                    if (objAttribute.Abbrev == strAttribute)
+                        yield return objAttribute;
                 }
             }
         }
