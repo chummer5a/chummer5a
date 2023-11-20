@@ -9288,6 +9288,16 @@ namespace Chummer
                             {
                                 try
                                 {
+                                    HashSet<string> setAlwaysChangedProperties = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(this, setAlwaysChangedProperties);
+                                    setAlwaysChangedProperties.Add(nameof(BlackMarketDiscount));
+                                    setAlwaysChangedProperties.Add(nameof(DealerConnectionDiscount));
+                                    setAlwaysChangedProperties.Add(nameof(Essence));
+                                    setAlwaysChangedProperties.Add(nameof(WoundModifier));
+                                    setAlwaysChangedProperties.Add(nameof(SustainingPenalty));
+                                    setAlwaysChangedProperties.Add(nameof(Encumbrance));
+                                    setAlwaysChangedProperties.Add(nameof(ArmorEncumbrance));
+
                                     foreach (Improvement objImprovement in Improvements)
                                     {
                                         if (!objImprovement.Enabled)
@@ -9328,41 +9338,6 @@ namespace Chummer
                                         Utils.StringHashSetPool.Return(ref setLoop);
                                     }
                                 }
-                            }
-
-                            if (blnSync)
-                            {
-                                // ReSharper disable MethodHasAsyncOverload
-                                // Refresh Black Market Discounts
-                                RefreshBlackMarketDiscounts(token);
-                                // Refresh Dealer Connection discounts
-                                RefreshDealerConnectionDiscounts(token);
-                                // Refresh permanent attribute changes due to essence loss
-                                RefreshEssenceLossImprovements(token);
-                                // Refresh dicepool modifiers due to filled condition monitor boxes
-                                RefreshWoundPenalties(token);
-                                // Refresh dicepool modifiers due to sustained spells
-                                RefreshSustainingPenalties(token);
-                                // Refresh encumbrance penalties
-                                RefreshEncumbrance(token);
-                                RefreshArmorEncumbrance(token);
-                                // ReSharper restore MethodHasAsyncOverload
-                            }
-                            else
-                            {
-                                // Refresh Black Market Discounts
-                                await RefreshBlackMarketDiscountsAsync(token).ConfigureAwait(false);
-                                // Refresh Dealer Connection discounts
-                                await RefreshDealerConnectionDiscountsAsync(token).ConfigureAwait(false);
-                                // Refresh permanent attribute changes due to essence loss
-                                await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
-                                // Refresh dicepool modifiers due to filled condition monitor boxes
-                                await RefreshWoundPenaltiesAsync(token).ConfigureAwait(false);
-                                // Refresh dicepool modifiers due to sustained spells
-                                await RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
-                                // Refresh encumbrance penalties
-                                await RefreshEncumbranceAsync(token).ConfigureAwait(false);
-                                await RefreshArmorEncumbranceAsync(token).ConfigureAwait(false);
                             }
 
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
@@ -38775,7 +38750,8 @@ namespace Chummer
                         ResetCachedEssence();
                         RefreshEssenceLossImprovements();
                     }
-
+                    if (setNamesOfChangedProperties.Contains(nameof(Encumbrance)))
+                        RefreshEncumbrance();
                     if (setNamesOfChangedProperties.Contains(nameof(ArmorEncumbrance)))
                         RefreshArmorEncumbrance();
                     if (setNamesOfChangedProperties.Contains(nameof(WoundModifier)))
@@ -39029,10 +39005,11 @@ namespace Chummer
                         lstTasks.Add(RefreshRedlinerImprovementsAsync(token));
                     if (setNamesOfChangedProperties.Contains(nameof(Essence)))
                     {
-                        lstTasks.Add(ResetCachedEssenceAsync(token));
+                        await ResetCachedEssenceAsync(token).ConfigureAwait(false);
                         lstTasks.Add(RefreshEssenceLossImprovementsAsync(token));
                     }
-
+                    if (setNamesOfChangedProperties.Contains(nameof(Encumbrance)))
+                        lstTasks.Add(RefreshEncumbranceAsync(token));
                     if (setNamesOfChangedProperties.Contains(nameof(ArmorEncumbrance)))
                         lstTasks.Add(RefreshArmorEncumbranceAsync(token));
                     if (setNamesOfChangedProperties.Contains(nameof(WoundModifier)))
@@ -42270,36 +42247,67 @@ namespace Chummer
                         // Refresh certain improvements
                         using (Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
                         {
-                            if (blnSync)
+                            // Process all events related to improvements
+                            using (new FetchSafelyFromPool<
+                                       Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                                       Utils.DictionaryForMultiplePropertyChangedPool,
+                                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>
+                                           dicChangedProperties))
                             {
-                                // ReSharper disable MethodHasAsyncOverload
-                                // Refresh Black Market discounts
-                                RefreshBlackMarketDiscounts(token);
-                                // Refresh Dealer Connection discounts
-                                RefreshDealerConnectionDiscounts(token);
-                                // Refresh permanent attribute changes due to essence loss
-                                RefreshEssenceLossImprovements(token);
-                                // Refresh dicepool modifiers due to filled condition monitor boxes
-                                RefreshWoundPenalties(token);
-                                // Refresh encumbrance penalties
-                                RefreshEncumbrance(token);
-                                RefreshArmorEncumbrance(token);
-                                // ReSharper restore MethodHasAsyncOverload
+                                try
+                                {
+                                    HashSet<string> setAlwaysChangedProperties = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(this, setAlwaysChangedProperties);
+                                    setAlwaysChangedProperties.Add(nameof(BlackMarketDiscount));
+                                    setAlwaysChangedProperties.Add(nameof(DealerConnectionDiscount));
+                                    setAlwaysChangedProperties.Add(nameof(Essence));
+                                    setAlwaysChangedProperties.Add(nameof(WoundModifier));
+                                    setAlwaysChangedProperties.Add(nameof(SustainingPenalty));
+                                    setAlwaysChangedProperties.Add(nameof(Encumbrance));
+                                    setAlwaysChangedProperties.Add(nameof(ArmorEncumbrance));
+
+                                    foreach (Improvement objImprovement in Improvements)
+                                    {
+                                        if (!objImprovement.Enabled)
+                                            continue;
+                                        foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                                  string strPropertyToUpdate) in objImprovement
+                                                     .GetRelevantPropertyChangers())
+                                        {
+                                            if (!dicChangedProperties.TryGetValue(
+                                                    objItemToUpdate, out HashSet<string> setChangedProperties))
+                                            {
+                                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                            }
+
+                                            setChangedProperties.Add(strPropertyToUpdate);
+                                        }
+                                    }
+
+                                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>>
+                                                 kvpToProcess in
+                                             dicChangedProperties)
+                                    {
+                                        if (blnSync)
+                                            kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                                        else
+                                            await kvpToProcess.Key
+                                                .OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token)
+                                                .ConfigureAwait(false);
+                                    }
+                                }
+                                finally
+                                {
+                                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                                    {
+                                        HashSet<string> setLoop = lstToReturn[i];
+                                        Utils.StringHashSetPool.Return(ref setLoop);
+                                    }
+                                }
                             }
-                            else
-                            {
-                                // Refresh Black Market discounts
-                                await RefreshBlackMarketDiscountsAsync(token).ConfigureAwait(false);
-                                // Refresh Dealer Connection discounts
-                                await RefreshDealerConnectionDiscountsAsync(token).ConfigureAwait(false);
-                                // Refresh permanent attribute changes due to essence loss
-                                await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
-                                // Refresh dicepool modifiers due to filled condition monitor boxes
-                                await RefreshWoundPenaltiesAsync(token).ConfigureAwait(false);
-                                // Refresh encumbrance penalties
-                                await RefreshEncumbranceAsync(token).ConfigureAwait(false);
-                                await RefreshArmorEncumbranceAsync(token).ConfigureAwait(false);
-                            }
+
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
                             if (MysticAdeptPowerPoints > 0)
                             {
