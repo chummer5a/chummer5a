@@ -26749,27 +26749,29 @@ namespace Chummer
 
         private async void cboGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
+            if (IsLoading || IsRefreshing)
                 return;
             try
             {
+                if (!await CharacterObject.GetOverclockerAsync(GenericToken).ConfigureAwait(false))
+                    return;
                 if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false)
                         is Gear objCommlink))
                     return;
-                string strOldOverClocked = objCommlink.Overclocked;
+                string strOldOverClocked = await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false);
                 objCommlink.Overclocked
                     = await cboGearOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
                                               .ConfigureAwait(false);
                 await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze,
                                                                         cboGearDataProcessing, cboGearFirewall,
                                                                         GenericToken).ConfigureAwait(false);
-                if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+                if (await objCommlink.IsActiveCommlinkAsync(CharacterObject, GenericToken).ConfigureAwait(false) || await objCommlink.IsHomeNodeAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                 {
-                    if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                    if (strOldOverClocked == "Data Processing" || await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false) == "Data Processing")
                     {
-                        if (objCommlink.IsActiveCommlink(CharacterObject))
+                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject).ConfigureAwait(false))
                         {
-                            if (objCommlink.IsHomeNode(CharacterObject))
+                            if (await objCommlink.IsHomeNodeAsync(CharacterObject).ConfigureAwait(false))
                                 await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
                                     nameof(Character.MatrixInitiativeValue),
                                     nameof(Character.MatrixInitiativeColdValue),
@@ -26797,37 +26799,43 @@ namespace Chummer
 
         private async void cboArmorOverclocker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
+            if (IsLoading || IsRefreshing)
                 return;
             try
             {
+                if (!await CharacterObject.GetOverclockerAsync(GenericToken).ConfigureAwait(false))
+                    return;
                 if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                     .ConfigureAwait(false) is
                         IHasMatrixAttributes objCommlink))
                     return;
-                string strOldOverClocked = objCommlink.Overclocked;
+                string strOldOverClocked = await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false);
                 objCommlink.Overclocked
                     = await cboArmorOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
                                                .ConfigureAwait(false);
                 await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboArmorAttack, cboArmorSleaze,
                                                                         cboArmorDataProcessing, cboArmorFirewall,
                                                                         GenericToken).ConfigureAwait(false);
-                if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+                if (await objCommlink.IsActiveCommlinkAsync(CharacterObject, GenericToken).ConfigureAwait(false) || await objCommlink.IsHomeNodeAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                 {
-                    if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                    if (strOldOverClocked == "Data Processing" || await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false) == "Data Processing")
                     {
-                        if (objCommlink.IsActiveCommlink(CharacterObject))
+                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject).ConfigureAwait(false))
                         {
-                            if (objCommlink.IsHomeNode(CharacterObject))
-                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                          nameof(Character.MatrixInitiativeColdValue),
-                                                                          nameof(Character.MatrixInitiativeHotValue));
+                            if (await objCommlink.IsHomeNodeAsync(CharacterObject).ConfigureAwait(false))
+                                await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
+                                    nameof(Character.MatrixInitiativeValue),
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                             else
-                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                          nameof(Character.MatrixInitiativeHotValue));
+                                await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                         }
                         else
-                            CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                            await CharacterObject
+                                .OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), GenericToken)
+                                .ConfigureAwait(false);
                     }
 
                     await RequestCharacterUpdate().ConfigureAwait(false);
@@ -26842,15 +26850,17 @@ namespace Chummer
 
         private async void cboWeaponOverclocker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
+            if (IsLoading || IsRefreshing)
                 return;
             try
             {
+                if (!await CharacterObject.GetOverclockerAsync(GenericToken).ConfigureAwait(false))
+                    return;
                 if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                       .ConfigureAwait(false) is
                         IHasMatrixAttributes objCommlink))
                     return;
-                string strOldOverClocked = objCommlink.Overclocked;
+                string strOldOverClocked = await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false);
                 objCommlink.Overclocked
                     = await cboWeaponOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
                                                 .ConfigureAwait(false);
@@ -26858,22 +26868,26 @@ namespace Chummer
                                                                         cboWeaponGearDataProcessing,
                                                                         cboWeaponGearFirewall, GenericToken)
                                  .ConfigureAwait(false);
-                if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+                if (await objCommlink.IsActiveCommlinkAsync(CharacterObject, GenericToken).ConfigureAwait(false) || await objCommlink.IsHomeNodeAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                 {
-                    if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                    if (strOldOverClocked == "Data Processing" || await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false) == "Data Processing")
                     {
-                        if (objCommlink.IsActiveCommlink(CharacterObject))
+                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject).ConfigureAwait(false))
                         {
-                            if (objCommlink.IsHomeNode(CharacterObject))
-                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                          nameof(Character.MatrixInitiativeColdValue),
-                                                                          nameof(Character.MatrixInitiativeHotValue));
+                            if (await objCommlink.IsHomeNodeAsync(CharacterObject).ConfigureAwait(false))
+                                await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
+                                    nameof(Character.MatrixInitiativeValue),
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                             else
-                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                          nameof(Character.MatrixInitiativeHotValue));
+                                await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                         }
                         else
-                            CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                            await CharacterObject
+                                .OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), GenericToken)
+                                .ConfigureAwait(false);
                     }
 
                     await RequestCharacterUpdate().ConfigureAwait(false);
@@ -26888,15 +26902,17 @@ namespace Chummer
 
         private async void cboCyberwareOverclocker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
+            if (IsLoading || IsRefreshing)
                 return;
             try
             {
+                if (!await CharacterObject.GetOverclockerAsync(GenericToken).ConfigureAwait(false))
+                    return;
                 if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                         .ConfigureAwait(false) is
                         IHasMatrixAttributes objCommlink))
                     return;
-                string strOldOverClocked = objCommlink.Overclocked;
+                string strOldOverClocked = await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false);
                 objCommlink.Overclocked
                     = await cboCyberwareOverclocker.DoThreadSafeFuncAsync(
                         x => x.SelectedValue.ToString(), GenericToken).ConfigureAwait(false);
@@ -26904,22 +26920,26 @@ namespace Chummer
                                                                         cboCyberwareDataProcessing,
                                                                         cboCyberwareFirewall, GenericToken)
                                  .ConfigureAwait(false);
-                if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+                if (await objCommlink.IsActiveCommlinkAsync(CharacterObject, GenericToken).ConfigureAwait(false) || await objCommlink.IsHomeNodeAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                 {
-                    if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                    if (strOldOverClocked == "Data Processing" || await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false) == "Data Processing")
                     {
-                        if (objCommlink.IsActiveCommlink(CharacterObject))
+                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject).ConfigureAwait(false))
                         {
-                            if (objCommlink.IsHomeNode(CharacterObject))
-                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                          nameof(Character.MatrixInitiativeColdValue),
-                                                                          nameof(Character.MatrixInitiativeHotValue));
+                            if (await objCommlink.IsHomeNodeAsync(CharacterObject).ConfigureAwait(false))
+                                await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
+                                    nameof(Character.MatrixInitiativeValue),
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                             else
-                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                          nameof(Character.MatrixInitiativeHotValue));
+                                await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
+                                    nameof(Character.MatrixInitiativeColdValue),
+                                    nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                         }
                         else
-                            CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                            await CharacterObject
+                                .OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), GenericToken)
+                                .ConfigureAwait(false);
                     }
 
                     await RequestCharacterUpdate().ConfigureAwait(false);

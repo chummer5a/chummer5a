@@ -103,8 +103,7 @@ namespace Chummer.Backend.Skills
                                     return;
                                 try
                                 {
-                                    using (objOldAttribute.LockObject.EnterWriteLock())
-                                        objOldAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                                    objOldAttribute.PropertyChangedAsync -= OnLinkedAttributeChanged;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -115,8 +114,7 @@ namespace Chummer.Backend.Skills
                             {
                                 if (objNewAttribute == null)
                                     return;
-                                using (objNewAttribute.LockObject.EnterWriteLock())
-                                    objNewAttribute.PropertyChanged += OnLinkedAttributeChanged;
+                                objNewAttribute.PropertyChangedAsync += OnLinkedAttributeChanged;
                             });
                     }
                     finally
@@ -179,7 +177,7 @@ namespace Chummer.Backend.Skills
                                     try
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        objOldAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                                        objOldAttribute.PropertyChangedAsync -= OnLinkedAttributeChanged;
                                     }
                                     finally
                                     {
@@ -196,7 +194,7 @@ namespace Chummer.Backend.Skills
                                     try
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        objNewAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                                        objNewAttribute.PropertyChangedAsync -= OnLinkedAttributeChanged;
                                     }
                                     finally
                                     {
@@ -215,7 +213,7 @@ namespace Chummer.Backend.Skills
                     objReadLocker?.Dispose();
                 }
                 if (CharacterObject.SkillsSection?.IsLoading != true)
-                    this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(AttributeModifiers), nameof(Enabled));
             }
         }
 
@@ -773,11 +771,10 @@ namespace Chummer.Backend.Skills
         protected Skill(Character character)
         {
             CharacterObject = character ?? throw new ArgumentNullException(nameof(character));
-            using (character.Settings.LockObject.EnterWriteLock())
-                character.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
+            character.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
             using (character.LockObject.EnterWriteLock())
             {
-                character.PropertyChanged += OnCharacterChanged;
+                character.PropertyChangedAsync += OnCharacterChanged;
                 using (character.AttributeSection.LockObject.EnterWriteLock())
                 {
                     character.AttributeSection.PropertyChangedAsync += OnAttributeSectionChanged;
@@ -787,8 +784,8 @@ namespace Chummer.Backend.Skills
 
             using (Specializations.LockObject.EnterWriteLock())
             {
-                Specializations.CollectionChanged += SpecializationsOnCollectionChanged;
-                Specializations.BeforeClearCollectionChanged += SpecializationsOnBeforeClearCollectionChanged;
+                Specializations.CollectionChangedAsync += SpecializationsOnCollectionChanged;
+                Specializations.BeforeClearCollectionChangedAsync += SpecializationsOnBeforeClearCollectionChanged;
             }
         }
 
@@ -884,8 +881,7 @@ namespace Chummer.Backend.Skills
                 SkillGroupObject = Skills.SkillGroup.Get(this);
                 if (SkillGroupObject != null)
                 {
-                    using (SkillGroupObject.LockObject.EnterWriteLock())
-                        SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
+                    SkillGroupObject.PropertyChangedAsync += OnSkillGroupChanged;
                 }
             }
 
@@ -5731,242 +5727,269 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnSkillGroupChanged(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
                 return;
             switch (e.PropertyName)
             {
                 case nameof(Skills.SkillGroup.Base) when CharacterObject.EffectiveBuildMethodUsesPriorityTables:
-                    this.OnMultiplePropertyChanged(nameof(Base),
-                                                   nameof(BaseUnlocked),
-                                                   nameof(ForcedBuyWithKarma));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
+                        nameof(BaseUnlocked),
+                        nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
                     break;
 
                 case nameof(Skills.SkillGroup.Base):
-                    this.OnMultiplePropertyChanged(nameof(Base),
-                                                   nameof(ForcedBuyWithKarma));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
+                        nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
                     break;
 
                 case nameof(Skills.SkillGroup.Karma):
-                    this.OnMultiplePropertyChanged(nameof(Karma),
-                                                   nameof(CurrentKarmaCost),
-                                                   nameof(ForcedBuyWithKarma),
-                                                   nameof(ForcedNotBuyWithKarma));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(Karma),
+                        nameof(CurrentKarmaCost),
+                        nameof(ForcedBuyWithKarma),
+                        nameof(ForcedNotBuyWithKarma)).ConfigureAwait(false);
                     break;
 
                 case nameof(Skills.SkillGroup.Rating):
+                    if (CharacterObject.Settings.StrictSkillGroupsInCreateMode &&
+                        !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
+                        !CharacterObject.IgnoreRules)
                     {
-                        if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created && !CharacterObject.IgnoreRules)
-                        {
-                            OnPropertyChanged(nameof(KarmaUnlocked));
-                        }
-
-                        break;
+                        await OnPropertyChangedAsync(nameof(KarmaUnlocked), token).ConfigureAwait(false);
                     }
-                case nameof(Skills.SkillGroup.SkillList) when CharacterObject.Settings.CompensateSkillGroupKarmaDifference:
+
+                    break;
+                case nameof(Skills.SkillGroup.SkillList)
+                    when CharacterObject.Settings.CompensateSkillGroupKarmaDifference:
+                    if (await GetEnabledAsync(token).ConfigureAwait(false))
                     {
-                        if (Enabled)
-                        {
-                            this.OnMultiplePropertyChanged(nameof(RangeCost), nameof(UpgradeKarmaCost));
-                        }
-
-                        break;
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(RangeCost), nameof(UpgradeKarmaCost))
+                            .ConfigureAwait(false);
                     }
+
+                    break;
             }
         }
 
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnCharacterChanged(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
                 return;
             switch (e.PropertyName)
             {
                 case nameof(Character.Karma):
-                    this.OnMultiplePropertyChanged(nameof(CanUpgradeCareer), nameof(CanAffordSpecialization));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(CanUpgradeCareer),
+                        nameof(CanAffordSpecialization)).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.WoundModifier):
-                    OnPropertyChanged(nameof(PoolOtherAttribute));
-                    break;
-
                 case nameof(Character.SustainingPenalty):
-                    OnPropertyChanged(nameof(PoolOtherAttribute));
+                    await OnPropertyChangedAsync(nameof(PoolOtherAttribute), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.PrimaryArm):
-                    OnPropertyChanged(nameof(PoolToolTip));
+                    await OnPropertyChangedAsync(nameof(PoolToolTip), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.GetMovement):
                     if (RequiresGroundMovement)
-                        OnPropertyChanged(nameof(Enabled));
+                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.GetSwim):
                     if (RequiresSwimMovement)
-                        OnPropertyChanged(nameof(Enabled));
+                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.GetFly):
                     if (RequiresFlyMovement)
-                        OnPropertyChanged(nameof(Enabled));
+                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.MAGEnabled):
                     if (Attribute == "MAG" || Attribute == "MAGAdept")
-                        OnPropertyChanged(nameof(Enabled));
+                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.RESEnabled):
                     if (Attribute == "RES")
-                        OnPropertyChanged(nameof(Enabled));
+                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.DEPEnabled):
                     if (Attribute == "DEP")
-                        OnPropertyChanged(nameof(Enabled));
+                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
-                    this.OnMultiplePropertyChanged(nameof(Base),
-                                                   nameof(BaseUnlocked),
-                                                   nameof(ForcedBuyWithKarma));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
+                        nameof(BaseUnlocked),
+                        nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.IsCritter):
-                    OnPropertyChanged(nameof(Default));
+                    await OnPropertyChangedAsync(nameof(Default), token).ConfigureAwait(false);
                     break;
             }
         }
 
-        private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
                 return;
             switch (e.PropertyName)
             {
                 case nameof(CharacterSettings.StrictSkillGroupsInCreateMode):
+                {
+                    if (SkillGroupObject != null)
                     {
-                        if (SkillGroupObject != null)
+                        if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                         {
-                            if (!CharacterObject.Created)
-                            {
-                                OnPropertyChanged(nameof(KarmaUnlocked));
-                            }
+                            await OnPropertyChangedAsync(nameof(KarmaUnlocked), token).ConfigureAwait(false);
+                        }
 
-                            this.OnMultiplePropertyChanged(nameof(BaseUnlocked), nameof(ForcedNotBuyWithKarma));
-                        }
-                        break;
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(BaseUnlocked),
+                            nameof(ForcedNotBuyWithKarma)).ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.UsePointsOnBrokenGroups):
+                {
+                    if (SkillGroupObject != null)
                     {
-                        if (SkillGroupObject != null)
-                        {
-                            OnPropertyChanged(nameof(BaseUnlocked));
-                        }
-                        break;
+                        await OnPropertyChangedAsync(nameof(BaseUnlocked), token).ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.KarmaNewKnowledgeSkill):
                 case nameof(CharacterSettings.KarmaImproveKnowledgeSkill):
+                {
+                    if (IsKnowledgeSkill)
                     {
-                        if (IsKnowledgeSkill)
-                        {
-                            OnPropertyChanged(nameof(CurrentKarmaCost));
-                        }
-                        break;
+                        await OnPropertyChangedAsync(nameof(CurrentKarmaCost), token).ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.KarmaKnowledgeSpecialization):
+                {
+                    if (IsKnowledgeSkill)
                     {
-                        if (IsKnowledgeSkill)
-                        {
-                            this.OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
-                        }
-                        break;
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(CurrentKarmaCost),
+                            nameof(CanAffordSpecialization), nameof(AddSpecToolTip)).ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.KarmaNewActiveSkill):
                 case nameof(CharacterSettings.KarmaImproveActiveSkill):
+                {
+                    if (!IsKnowledgeSkill)
                     {
-                        if (!IsKnowledgeSkill)
-                        {
-                            OnPropertyChanged(nameof(CurrentKarmaCost));
-                        }
-                        break;
+                        await OnPropertyChangedAsync(nameof(CurrentKarmaCost), token).ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.KarmaSpecialization):
+                {
+                    if (!IsKnowledgeSkill)
                     {
-                        if (!IsKnowledgeSkill)
-                        {
-                            this.OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
-                        }
-                        break;
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(CurrentKarmaCost),
+                            nameof(CanAffordSpecialization), nameof(AddSpecToolTip)).ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.CompensateSkillGroupKarmaDifference):
+                {
+                    if (SkillGroupObject != null && await GetEnabledAsync(token).ConfigureAwait(false))
                     {
-                        if (SkillGroupObject != null && Enabled)
-                        {
-                            this.OnMultiplePropertyChanged(nameof(RangeCost), nameof(UpgradeKarmaCost));
-                        }
-                        break;
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(RangeCost), nameof(UpgradeKarmaCost))
+                            .ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.KarmaNewSkillGroup):
                 case nameof(CharacterSettings.KarmaImproveSkillGroup):
+                {
+                    if (SkillGroupObject != null && CharacterObject.Settings.CompensateSkillGroupKarmaDifference &&
+                        await GetEnabledAsync(token).ConfigureAwait(false))
                     {
-                        if (SkillGroupObject != null && CharacterObject.Settings.CompensateSkillGroupKarmaDifference && Enabled)
-                        {
-                            this.OnMultiplePropertyChanged(nameof(RangeCost), nameof(UpgradeKarmaCost));
-                        }
-                        break;
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(RangeCost), nameof(UpgradeKarmaCost))
+                            .ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.SpecializationBonus):
+                {
+                    if (await Specializations.GetCountAsync(token).ConfigureAwait(false) > 0)
                     {
-                        if (Specializations.Count > 0)
-                        {
-                            OnPropertyChanged(nameof(PoolOtherAttribute));
-                        }
-                        break;
+                        await OnPropertyChangedAsync(nameof(PoolOtherAttribute), token).ConfigureAwait(false);
                     }
+
+                    break;
+                }
                 case nameof(CharacterSettings.ExpertiseBonus):
+                {
+                    if (await Specializations.AnyAsync(x => x.Expertise, token: token).ConfigureAwait(false))
                     {
-                        if (Specializations.Any(x => x.Expertise))
-                        {
-                            OnPropertyChanged(nameof(PoolOtherAttribute));
-                        }
-                        break;
+                        await OnPropertyChangedAsync(nameof(PoolOtherAttribute), token).ConfigureAwait(false);
                     }
+
+                    break;
+                }
             }
         }
 
-        protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
+        protected async Task OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
                 return;
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
-                    OnPropertyChanged(nameof(AttributeModifiers));
+                    await OnPropertyChangedAsync(nameof(AttributeModifiers), token).ConfigureAwait(false);
                     break;
 
                 case nameof(CharacterAttrib.Abbrev):
-                    OnPropertyChanged(nameof(Enabled));
+                    await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
                     break;
             }
         }
 
         private int _intSkipSpecializationRefresh;
 
-        private void SpecializationsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SpecializationsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e,
+            CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intSkipSpecializationRefresh > 0)
                 return;
-            using (LockObject.EnterWriteLock())
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 // Needed to make sure we don't call this method another time when we set the specialization's Parent
                 if (Interlocked.Increment(ref _intSkipSpecializationRefresh) != 1)
                 {
                     Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                     return;
                 }
+
                 try
                 {
                     _dicCachedStringSpec.Clear();
@@ -5984,7 +6007,7 @@ namespace Chummer.Backend.Skills
                             {
                                 if (objSkillSpecialization.Parent == this)
                                     objSkillSpecialization.Parent = null;
-                                objSkillSpecialization.Dispose();
+                                await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
                             }
 
                             break;
@@ -5994,7 +6017,7 @@ namespace Chummer.Backend.Skills
                             {
                                 if (objSkillSpecialization.Parent == this)
                                     objSkillSpecialization.Parent = null;
-                                objSkillSpecialization.Dispose();
+                                await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
                             }
 
                             foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
@@ -6002,7 +6025,9 @@ namespace Chummer.Backend.Skills
                             break;
 
                         case NotifyCollectionChangedAction.Reset:
-                            Specializations.ForEach(objSkillSpecialization => objSkillSpecialization.Parent = this);
+                            await Specializations
+                                .ForEachAsync(objSkillSpecialization => objSkillSpecialization.Parent = this,
+                                    token: token).ConfigureAwait(false);
                             break;
                     }
                 }
@@ -6012,35 +6037,48 @@ namespace Chummer.Backend.Skills
                 }
 
                 if (CharacterObject?.IsLoading == false)
-                    OnPropertyChanged(nameof(Specializations));
+                    await OnPropertyChangedAsync(nameof(Specializations), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        private void SpecializationsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SpecializationsOnBeforeClearCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intSkipSpecializationRefresh > 0)
                 return;
-            using (LockObject.EnterWriteLock())
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 // Needed to make sure we don't call this method another time when we set the specialization's Parent
                 if (Interlocked.Increment(ref _intSkipSpecializationRefresh) != 1)
                 {
                     Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                     return;
                 }
+
                 try
                 {
                     foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
                     {
                         if (objSkillSpecialization.Parent == this)
                             objSkillSpecialization.Parent = null;
-                        objSkillSpecialization.Dispose();
+                        await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7111,11 +7149,10 @@ namespace Chummer.Backend.Skills
         {
             if (disposing)
             {
-                using (CharacterObject.Settings.LockObject.EnterWriteLock())
-                    CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
                 using (CharacterObject.LockObject.EnterWriteLock())
                 {
-                    CharacterObject.PropertyChanged -= OnCharacterChanged;
+                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
                     using (CharacterObject.AttributeSection.LockObject.EnterWriteLock())
                     {
                         CharacterObject.AttributeSection.PropertyChangedAsync -= OnAttributeSectionChanged;
@@ -7127,8 +7164,7 @@ namespace Chummer.Backend.Skills
                 {
                     try
                     {
-                        using (AttributeObject.LockObject.EnterWriteLock())
-                            AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
+                        AttributeObject.PropertyChangedAsync -= OnLinkedAttributeChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -7140,8 +7176,7 @@ namespace Chummer.Backend.Skills
                 {
                     try
                     {
-                        using (SkillGroupObject.LockObject.EnterWriteLock())
-                            SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
+                        SkillGroupObject.PropertyChangedAsync -= OnSkillGroupChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -7151,8 +7186,8 @@ namespace Chummer.Backend.Skills
 
                 using (_lstSpecializations.LockObject.EnterWriteLock())
                 {
-                    _lstSpecializations.CollectionChanged -= SpecializationsOnCollectionChanged;
-                    _lstSpecializations.BeforeClearCollectionChanged -= SpecializationsOnBeforeClearCollectionChanged;
+                    _lstSpecializations.CollectionChangedAsync -= SpecializationsOnCollectionChanged;
+                    _lstSpecializations.BeforeClearCollectionChangedAsync -= SpecializationsOnBeforeClearCollectionChanged;
                     _lstSpecializations.ForEach(x => x.Dispose());
                 }
 
@@ -7183,7 +7218,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await CharacterObject.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
                 }
                 finally
                 {
@@ -7192,7 +7227,7 @@ namespace Chummer.Backend.Skills
                 objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    CharacterObject.PropertyChanged -= OnCharacterChanged;
+                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
                     IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
@@ -7218,7 +7253,7 @@ namespace Chummer.Backend.Skills
                         objLocker = await AttributeObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
-                            AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
+                            AttributeObject.PropertyChangedAsync -= OnLinkedAttributeChanged;
                         }
                         finally
                         {
@@ -7238,7 +7273,7 @@ namespace Chummer.Backend.Skills
                         objLocker = await SkillGroupObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
-                            SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
+                            SkillGroupObject.PropertyChangedAsync -= OnSkillGroupChanged;
                         }
                         finally
                         {
@@ -7254,8 +7289,8 @@ namespace Chummer.Backend.Skills
                 objLocker = await _lstSpecializations.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    _lstSpecializations.CollectionChanged -= SpecializationsOnCollectionChanged;
-                    _lstSpecializations.BeforeClearCollectionChanged -= SpecializationsOnBeforeClearCollectionChanged;
+                    _lstSpecializations.CollectionChangedAsync -= SpecializationsOnCollectionChanged;
+                    _lstSpecializations.BeforeClearCollectionChangedAsync -= SpecializationsOnBeforeClearCollectionChanged;
                     await _lstSpecializations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 }
                 finally

@@ -829,7 +829,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Spell objSpell, bool blnSingleAdd = true)
+            async Task AddToTree(Spell objSpell, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
                 if (objNode == null)
@@ -1130,7 +1130,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
+            async Task AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objAIProgram.CreateTreeNode(cmsAdvancedProgram);
                 if (objNode == null)
@@ -1305,7 +1305,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
+            async Task AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
                 if (objNode == null)
@@ -1703,7 +1703,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Art objArt, bool blnSingleAdd = true)
+            async Task AddToTree(Art objArt, bool blnSingleAdd = true)
             {
                 InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objArt.Grade, token).ConfigureAwait(false);
 
@@ -1799,7 +1799,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
+            async Task AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
             {
                 InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objEnhancement.Grade, token).ConfigureAwait(false);
 
@@ -1972,7 +1972,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
+            async Task AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
             {
                 if (objMetamagic.Grade < 0)
                 {
@@ -2145,7 +2145,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(CritterPower objPower, bool blnSingleAdd = true)
+            async Task AddToTree(CritterPower objPower, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
                 if (objNode == null)
@@ -2419,7 +2419,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async ValueTask AddToTree(Quality objQuality, bool blnSingleAdd = true)
+            async Task AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objQuality.CreateTreeNode(cmsQuality, treQualities);
                 if (objNode == null)
@@ -3280,7 +3280,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                     if (objNode == null)
@@ -3634,7 +3634,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Armor objArmor, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Armor objArmor, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear);
                     if (objNode == null)
@@ -3962,7 +3962,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     if (blnCommlinksOnly && !objGear.IsCommlink)
                         return;
@@ -4104,7 +4104,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Drug objGear, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Drug objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objGear.CreateTreeNode();
                     if (objNode == null)
@@ -4271,7 +4271,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Cyberware objCyberware, bool blnSingleAdd = true)
+                async Task AddToTree(Cyberware objCyberware, bool blnSingleAdd = true)
                 {
                     if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
                     {
@@ -5252,7 +5252,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Vehicle objVehicle, int intIndex = -1, bool blnSingleAdd = true)
+                async Task AddToTree(Vehicle objVehicle, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon,
                                                                  cmsVehicleWeaponAccessory,
@@ -5915,7 +5915,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true)
+                async Task AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique);
                     if (objNode == null)
@@ -6421,7 +6421,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Improvement objImprovement, bool blnSingleAdd = true)
+                async Task AddToTree(Improvement objImprovement, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objImprovement.CreateTreeNode(cmsImprovement);
 
@@ -6589,7 +6589,7 @@ namespace Chummer
                     }
                 }
 
-                async ValueTask AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
+                async Task AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle);
                     if (objNode == null)
@@ -9083,7 +9083,7 @@ namespace Chummer
                         }
                     }
 
-                    await Utils.SafeSleepAsync(50, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
+                    await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
 
                     Task tskNew = Utils.RunInEmptyExecutionContext(() => Task.Run(() => DoUpdateCharacterInfo(objToken), objToken));
                     if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, null) != null)

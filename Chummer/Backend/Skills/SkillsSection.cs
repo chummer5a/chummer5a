@@ -2358,7 +2358,7 @@ namespace Chummer.Backend.Skills
 
                         await objSkill.RemoveAsync(token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
-                    await SkillGroups.ForEachAsync(x => x.DisposeAsync(), token).ConfigureAwait(false);
+                    await SkillGroups.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
                     _dicSkillBackups.Clear();
                     _dicSkills.Clear();
                     await _lstSkills.ClearAsync(token).ConfigureAwait(false);

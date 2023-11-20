@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ using NLog;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, INotifyMultiplePropertyChanged, IHasLockObject
+    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, INotifyMultiplePropertyChangedAsync, IHasLockObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -1105,7 +1106,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CanBeFreeByLifestyle && _blnUseLPCost;
+                    return _blnUseLPCost && CanBeFreeByLifestyle;
             }
             set
             {
@@ -1121,6 +1122,19 @@ namespace Chummer.Backend.Equipment
                     }
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not this Quality costs LP.
+        /// </summary>
+        public async Task<bool> GetUseLPCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnUseLPCost && await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -1145,6 +1159,29 @@ namespace Chummer.Backend.Equipment
                     string strEquivalentLifestyle = Lifestyle.GetEquivalentLifestyle(strBaseLifestyle);
                     return _setAllowedFreeLifestyles.Contains(strEquivalentLifestyle);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Can this Quality have no nuyen costs based on the base lifestyle?
+        /// </summary>
+        public async Task<bool> GetCanBeFreeByLifestyleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (Type != QualityType.Entertainment && Type != QualityType.Contracts)
+                    return false;
+                if (_setAllowedFreeLifestyles.Count == 0)
+                    return false;
+                string strBaseLifestyle = ParentLifestyle?.BaseLifestyle;
+                if (string.IsNullOrEmpty(strBaseLifestyle))
+                    return false;
+                if (_setAllowedFreeLifestyles.Contains(strBaseLifestyle))
+                    return true;
+                string strEquivalentLifestyle = Lifestyle.GetEquivalentLifestyle(strBaseLifestyle);
+                return _setAllowedFreeLifestyles.Contains(strEquivalentLifestyle);
             }
         }
 
@@ -1556,10 +1593,32 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstPropertyChangedAsync.Remove(value);
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             this.OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
         /// <inheritdoc />
@@ -1685,7 +1744,34 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    if (PropertyChanged != null)
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                        }
+
+                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -1698,6 +1784,200 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         });
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+            }
+        }
+
+        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_LifestyleQualityDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in s_LifestyleQualityDependencyGraph
+                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (ParentLifestyle != null)
+                    {
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                   out HashSet<string>
+                                       setParentLifestyleNamesOfChangedProperties))
+                        {
+                            if (setNamesOfChangedProperties.Contains(nameof(LP))
+                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                                && (await GetUseLPCostAsync(token).ConfigureAwait(false) ||
+                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(Free)))
+                            {
+                                if (await GetUseLPCostAsync(token).ConfigureAwait(false) ||
+                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost)))
+                                {
+                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
+                                    if (!await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false)
+                                        || setNamesOfChangedProperties.Contains(nameof(CanBeFreeByLifestyle)))
+                                    {
+                                        setParentLifestyleNamesOfChangedProperties.Add(
+                                            nameof(Lifestyle.TotalMonthlyCost));
+                                        setParentLifestyleNamesOfChangedProperties.Add(
+                                            nameof(Lifestyle.CostMultiplier));
+                                        setParentLifestyleNamesOfChangedProperties.Add(
+                                            nameof(Lifestyle.BaseCostMultiplier));
+                                    }
+                                }
+                                else
+                                {
+                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
+                                    setParentLifestyleNamesOfChangedProperties.Add(
+                                        nameof(Lifestyle.BaseCostMultiplier));
+                                }
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(Cost))
+                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                                && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
+                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(UseLPCost))
+                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free))))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(IsFreeGrid)))
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.LifestyleQualities));
+                            if (setNamesOfChangedProperties.Contains(nameof(Multiplier))
+                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                                && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
+                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier))
+                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                                && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
+                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(ComfortsMaximum)))
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalComfortsMaximum));
+                            if (setNamesOfChangedProperties.Contains(nameof(Comforts)))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalComforts));
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.ComfortsDelta));
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(SecurityMaximum)))
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalSecurityMaximum));
+                            if (setNamesOfChangedProperties.Contains(nameof(Security)))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalSecurity));
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.SecurityDelta));
+                            }
+
+                            if (setNamesOfChangedProperties.Contains(nameof(AreaMaximum)))
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalAreaMaximum));
+                            if (setNamesOfChangedProperties.Contains(nameof(Area)))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalArea));
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.AreaDelta));
+                            }
+
+                            if (setParentLifestyleNamesOfChangedProperties.Count > 0)
+                                await ParentLifestyle
+                                    .OnMultiplePropertyChangedAsync(setParentLifestyleNamesOfChangedProperties, token)
+                                    .ConfigureAwait(false);
+                        }
+                    }
+
+                    if (_lstPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks =
+                            new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count,
+                                Utils.MaxParallelBatchSize));
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in lstPropertyNames)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 finally

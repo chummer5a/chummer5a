@@ -44,7 +44,7 @@ namespace Chummer.Backend.Equipment
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
     public sealed class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasMatrixAttributes,
-        IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort,
+        IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChangedAsync, ICanSort,
         IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -2379,7 +2379,7 @@ namespace Chummer.Backend.Equipment
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
                 strAttributeName = "Mod " + strAttributeName;
 
-            intReturn += await Children.SumAsync(x => x.Equipped, x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token);
+            intReturn += await Children.SumAsync(x => x.Equipped, x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token).ConfigureAwait(false);
 
             return intReturn;
         }
@@ -2602,6 +2602,15 @@ namespace Chummer.Backend.Equipment
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
+            new List<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add => _lstPropertyChangedAsync.Add(value);
+            remove => _lstPropertyChangedAsync.Remove(value);
+        }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -5508,6 +5517,11 @@ namespace Chummer.Backend.Equipment
             this.OnMultiplePropertyChanged(strPropertyName);
         }
 
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
+        }
+
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
@@ -5529,7 +5543,34 @@ namespace Chummer.Backend.Equipment
                 if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                     return;
 
-                if (PropertyChanged != null)
+                if (_lstPropertyChangedAsync.Count > 0)
+                {
+                    List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                    Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
+                    int i = 0;
+                    foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                    {
+                        foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                    }
+
+                    Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                    if (PropertyChanged != null)
+                    {
+                        Utils.RunOnMainThread(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                {
+                                    PropertyChanged.Invoke(this, objArgs);
+                                }
+                            }
+                        });
+                    }
+                }
+                else if (PropertyChanged != null)
                 {
                     Utils.RunOnMainThread(() =>
                     {
@@ -5551,6 +5592,102 @@ namespace Chummer.Backend.Equipment
                                      && Children.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))))
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                }
+            }
+            finally
+            {
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+            }
+        }
+
+        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
+            {
+                foreach (string strPropertyName in lstPropertyNames)
+                {
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties =
+                            s_GearDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_GearDependencyGraph.GetWithAllDependentsEnumerable(
+                                     this,
+                                     strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (_lstPropertyChangedAsync.Count > 0)
+                {
+                    List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                        .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                    List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count,
+                        Utils.MaxParallelBatchSize));
+                    int i = 0;
+                    foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                    {
+                        foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+                    }
+
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                    if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    PropertyChanged.Invoke(this, objArgs);
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                else if (PropertyChanged != null)
+                {
+                    await Utils.RunOnMainThreadAsync(() =>
+                    {
+                        if (PropertyChanged != null)
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                            }
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+
+                if (Equipped && ((setNamesOfChangedProperties.Contains(nameof(TotalWeight))
+                                  && (!string.IsNullOrEmpty(Weight)
+                                      || Children.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                          x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
+                                 || (setNamesOfChangedProperties.Contains(nameof(Rating))
+                                     && await Children.AnyAsync(x => x.Equipped && x.Weight.Contains("Parent Rating"),
+                                         token: token).ConfigureAwait(false))))
+                {
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
                 }
             }
             finally

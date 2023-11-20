@@ -73,8 +73,7 @@ namespace Chummer.Backend.Skills
                 {
                     try
                     {
-                        using (objSkill.LockObject.EnterWriteLock())
-                            objSkill.PropertyChanged -= SkillOnPropertyChanged;
+                        objSkill.PropertyChangedAsync -= SkillOnPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -143,7 +142,7 @@ namespace Chummer.Backend.Skills
                             = await objSkill.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
-                            objSkill.PropertyChanged -= SkillOnPropertyChanged;
+                            objSkill.PropertyChangedAsync -= SkillOnPropertyChanged;
                         }
                         finally
                         {
@@ -1275,8 +1274,7 @@ namespace Chummer.Backend.Skills
                     using (LockObject.EnterWriteLock())
                     {
                         _lstAffectedSkills.Add(skill);
-                        using (skill.LockObject.EnterWriteLock())
-                            skill.PropertyChanged += SkillOnPropertyChanged;
+                        skill.PropertyChangedAsync += SkillOnPropertyChanged;
                         if (_objCharacter?.SkillsSection?.IsLoading != true)
                             OnPropertyChanged(nameof(SkillList));
                     }
@@ -1310,7 +1308,7 @@ namespace Chummer.Backend.Skills
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            skill.PropertyChanged += SkillOnPropertyChanged;
+                            skill.PropertyChangedAsync += SkillOnPropertyChanged;
                         }
                         finally
                         {
@@ -1336,8 +1334,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (!_lstAffectedSkills.Remove(skill))
                         return;
-                    using (skill.LockObject.EnterWriteLock())
-                        skill.PropertyChanged -= SkillOnPropertyChanged;
+                    skill.PropertyChangedAsync -= SkillOnPropertyChanged;
                     if (_objCharacter?.SkillsSection?.IsLoading != true)
                         OnPropertyChanged(nameof(SkillList));
                 }
@@ -1363,7 +1360,7 @@ namespace Chummer.Backend.Skills
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            skill.PropertyChanged -= SkillOnPropertyChanged;
+                            skill.PropertyChangedAsync -= SkillOnPropertyChanged;
                         }
                         finally
                         {
@@ -1543,32 +1540,35 @@ namespace Chummer.Backend.Skills
                 )
             );
 
-        private void SkillOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task SkillOnPropertyChanged(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.PropertyName)
             {
                 case nameof(Skill.BasePoints):
                 case nameof(Skill.FreeBase):
-                    this.OnMultiplePropertyChanged(nameof(BaseUnbroken), nameof(KarmaUnbroken));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(BaseUnbroken), nameof(KarmaUnbroken))
+                        .ConfigureAwait(false);
                     break;
 
                 case nameof(Skill.KarmaPoints):
                 case nameof(Skill.FreeKarma):
-                    OnPropertyChanged(nameof(KarmaUnbroken));
+                    await OnPropertyChangedAsync(nameof(KarmaUnbroken), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Skill.Specializations):
                     if (CharacterObject.Settings.SpecializationsBreakSkillGroups)
-                        OnPropertyChanged(nameof(HasAnyBreakingSkills));
+                        await OnPropertyChangedAsync(nameof(HasAnyBreakingSkills), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Skill.TotalBaseRating):
                 case nameof(Skill.Enabled):
-                    this.OnMultiplePropertyChanged(nameof(HasAnyBreakingSkills),
-                                                   nameof(DisplayRating),
-                                                   nameof(UpgradeToolTip),
-                                                   nameof(CurrentKarmaCost),
-                                                   nameof(UpgradeKarmaCost));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(HasAnyBreakingSkills),
+                        nameof(DisplayRating),
+                        nameof(UpgradeToolTip),
+                        nameof(CurrentKarmaCost),
+                        nameof(UpgradeKarmaCost)).ConfigureAwait(false);
                     break;
             }
         }

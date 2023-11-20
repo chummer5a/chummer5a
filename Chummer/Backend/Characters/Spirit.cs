@@ -383,9 +383,9 @@ namespace Chummer
                                 if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
                                 {
                                     (bool blnIsSuccess, object objProcess)
-                                        = CommonFunctions.EvaluateInvariantXPath(
+                                        = await CommonFunctions.EvaluateInvariantXPathAsync(
                                             strInner.Replace(
-                                                "F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                                                "F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                                     int intValue
                                         = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
                                     await objWriter
@@ -1803,8 +1803,7 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    using (objOldLinkedCharacter.LockObject.EnterWriteLock(token))
-                                        objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                                    objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -1835,8 +1834,7 @@ namespace Chummer
                                         _strCritterName = strCritterName;
                                 }
 
-                                using (_objLinkedCharacter.LockObject.EnterWriteLock(token))
-                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
                             }
                         }
 
@@ -1910,7 +1908,7 @@ namespace Chummer
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                                objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
                             }
                             finally
                             {
@@ -1947,7 +1945,7 @@ namespace Chummer
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                    _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
                                 }
                                 finally
                                 {
@@ -1956,7 +1954,7 @@ namespace Chummer
                             }
                         }
 
-                        OnPropertyChanged(nameof(LinkedCharacter));
+                        await OnPropertyChangedAsync(nameof(LinkedCharacter), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1966,29 +1964,30 @@ namespace Chummer
             }
         }
 
-        private void LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.PropertyName)
             {
                 case nameof(Character.Name):
-                    OnPropertyChanged(nameof(CritterName));
+                    await OnPropertyChangedAsync(nameof(CritterName), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.Mugshots):
-                    OnPropertyChanged(nameof(Mugshots));
+                    await OnPropertyChangedAsync(nameof(Mugshots), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.MainMugshot):
-                    OnPropertyChanged(nameof(MainMugshot));
+                    await OnPropertyChangedAsync(nameof(MainMugshot), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.MainMugshotIndex):
-                    OnPropertyChanged(nameof(MainMugshotIndex));
+                    await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
                     break;
 
                 case nameof(Character.AllowSpriteFettering):
                     _intCachedAllowFettering = int.MinValue;
-                    this.OnMultiplePropertyChanged(nameof(AllowFettering), nameof(Fettered));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(AllowFettering), nameof(Fettered)).ConfigureAwait(false);
                     break;
             }
         }

@@ -321,7 +321,7 @@ namespace Chummer
             using (_objAttributeSection.LockObject.EnterWriteLock())
             {
                 _objAttributeSection.Reset(true);
-                _objAttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
+                _objAttributeSection.PropertyChangedAsync += AttributeSectionOnPropertyChanged;
             }
 
             _objSkillsSection = new SkillsSection(this);
@@ -332,8 +332,8 @@ namespace Chummer
             _lstArmor.CollectionChangedAsync += ArmorOnCollectionChanged;
             _lstWeapons.CollectionChangedAsync += WeaponsOnCollectionChanged;
             _lstGear.CollectionChangedAsync += GearOnCollectionChanged;
-            _lstContacts.CollectionChanged += ContactsOnCollectionChanged;
-            _lstExpenseLog.CollectionChanged += ExpenseLogOnCollectionChanged;
+            _lstContacts.CollectionChangedAsync += ContactsOnCollectionChanged;
+            _lstExpenseLog.CollectionChangedAsync += ExpenseLogOnCollectionChanged;
             _lstMentorSpirits.CollectionChangedAsync += MentorSpiritsOnCollectionChanged;
             _lstPowers.ListChangedAsync += PowersOnListChanged;
             _lstPowers.BeforeRemoveAsync += PowersOnBeforeRemove;
@@ -630,59 +630,59 @@ namespace Chummer
                         switch (objAttribute.Abbrev)
                         {
                             case "BOD":
-                                objAttribute.PropertyChanged -= RefreshBODDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshBODDependentProperties;
                                 break;
 
                             case "AGI":
-                                objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshAGIDependentProperties;
                                 break;
 
                             case "REA":
-                                objAttribute.PropertyChanged -= RefreshREADependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshREADependentProperties;
                                 break;
 
                             case "STR":
-                                objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshSTRDependentProperties;
                                 break;
 
                             case "CHA":
-                                objAttribute.PropertyChanged -= RefreshCHADependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshCHADependentProperties;
                                 break;
 
                             case "INT":
-                                objAttribute.PropertyChanged -= RefreshINTDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshINTDependentProperties;
                                 break;
 
                             case "LOG":
-                                objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshLOGDependentProperties;
                                 break;
 
                             case "WIL":
-                                objAttribute.PropertyChanged -= RefreshWILDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshWILDependentProperties;
                                 break;
 
                             case "EDG":
-                                objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshEDGDependentProperties;
                                 break;
 
                             case "MAG":
-                                objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshMAGDependentProperties;
                                 break;
 
                             case "MAGAdept":
-                                objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshMAGAdeptDependentProperties;
                                 break;
 
                             case "RES":
-                                objAttribute.PropertyChanged -= RefreshRESDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshRESDependentProperties;
                                 break;
 
                             case "DEP":
-                                objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshDEPDependentProperties;
                                 break;
 
                             case "ESS":
-                                objAttribute.PropertyChanged -= RefreshESSDependentProperties;
+                                objAttribute.PropertyChangedAsync -= RefreshESSDependentProperties;
                                 break;
                         }
                     }
@@ -695,59 +695,59 @@ namespace Chummer
                         switch (strAbbrev)
                         {
                             case "BOD":
-                                objAttribute.PropertyChanged += RefreshBODDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshBODDependentProperties;
                                 break;
 
                             case "AGI":
-                                objAttribute.PropertyChanged += RefreshAGIDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshAGIDependentProperties;
                                 break;
 
                             case "REA":
-                                objAttribute.PropertyChanged += RefreshREADependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshREADependentProperties;
                                 break;
 
                             case "STR":
-                                objAttribute.PropertyChanged += RefreshSTRDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshSTRDependentProperties;
                                 break;
 
                             case "CHA":
-                                objAttribute.PropertyChanged += RefreshCHADependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshCHADependentProperties;
                                 break;
 
                             case "INT":
-                                objAttribute.PropertyChanged += RefreshINTDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshINTDependentProperties;
                                 break;
 
                             case "LOG":
-                                objAttribute.PropertyChanged += RefreshLOGDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshLOGDependentProperties;
                                 break;
 
                             case "WIL":
-                                objAttribute.PropertyChanged += RefreshWILDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshWILDependentProperties;
                                 break;
 
                             case "EDG":
-                                objAttribute.PropertyChanged += RefreshEDGDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshEDGDependentProperties;
                                 break;
 
                             case "MAG":
-                                objAttribute.PropertyChanged += RefreshMAGDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshMAGDependentProperties;
                                 break;
 
                             case "MAGAdept":
-                                objAttribute.PropertyChanged += RefreshMAGAdeptDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshMAGAdeptDependentProperties;
                                 break;
 
                             case "RES":
-                                objAttribute.PropertyChanged += RefreshRESDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshRESDependentProperties;
                                 break;
 
                             case "DEP":
-                                objAttribute.PropertyChanged += RefreshDEPDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshDEPDependentProperties;
                                 break;
 
                             case "ESS":
-                                objAttribute.PropertyChanged += RefreshESSDependentProperties;
+                                objAttribute.PropertyChangedAsync += RefreshESSDependentProperties;
                                 break;
                         }
                     }
@@ -783,46 +783,46 @@ namespace Chummer
                             switch (objAttribute.Abbrev)
                             {
                                 case "BOD":
-                                    objAttribute.PropertyChanged -= RefreshBODDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshBODDependentProperties;
                                     break;
                                 case "AGI":
-                                    objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshAGIDependentProperties;
                                     break;
                                 case "REA":
-                                    objAttribute.PropertyChanged -= RefreshREADependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshREADependentProperties;
                                     break;
                                 case "STR":
-                                    objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshSTRDependentProperties;
                                     break;
                                 case "CHA":
-                                    objAttribute.PropertyChanged -= RefreshCHADependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshCHADependentProperties;
                                     break;
                                 case "INT":
-                                    objAttribute.PropertyChanged -= RefreshINTDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshINTDependentProperties;
                                     break;
                                 case "LOG":
-                                    objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshLOGDependentProperties;
                                     break;
                                 case "WIL":
-                                    objAttribute.PropertyChanged -= RefreshWILDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshWILDependentProperties;
                                     break;
                                 case "EDG":
-                                    objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshEDGDependentProperties;
                                     break;
                                 case "MAG":
-                                    objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshMAGDependentProperties;
                                     break;
                                 case "MAGAdept":
-                                    objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshMAGAdeptDependentProperties;
                                     break;
                                 case "RES":
-                                    objAttribute.PropertyChanged -= RefreshRESDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshRESDependentProperties;
                                     break;
                                 case "DEP":
-                                    objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshDEPDependentProperties;
                                     break;
                                 case "ESS":
-                                    objAttribute.PropertyChanged -= RefreshESSDependentProperties;
+                                    objAttribute.PropertyChangedAsync -= RefreshESSDependentProperties;
                                     break;
                             }
                         }
@@ -836,59 +836,59 @@ namespace Chummer
                             switch (strAbbrev)
                             {
                                 case "BOD":
-                                    objAttribute.PropertyChanged += RefreshBODDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshBODDependentProperties;
                                     break;
 
                                 case "AGI":
-                                    objAttribute.PropertyChanged += RefreshAGIDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshAGIDependentProperties;
                                     break;
 
                                 case "REA":
-                                    objAttribute.PropertyChanged += RefreshREADependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshREADependentProperties;
                                     break;
 
                                 case "STR":
-                                    objAttribute.PropertyChanged += RefreshSTRDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshSTRDependentProperties;
                                     break;
 
                                 case "CHA":
-                                    objAttribute.PropertyChanged += RefreshCHADependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshCHADependentProperties;
                                     break;
 
                                 case "INT":
-                                    objAttribute.PropertyChanged += RefreshINTDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshINTDependentProperties;
                                     break;
 
                                 case "LOG":
-                                    objAttribute.PropertyChanged += RefreshLOGDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshLOGDependentProperties;
                                     break;
 
                                 case "WIL":
-                                    objAttribute.PropertyChanged += RefreshWILDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshWILDependentProperties;
                                     break;
 
                                 case "EDG":
-                                    objAttribute.PropertyChanged += RefreshEDGDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshEDGDependentProperties;
                                     break;
 
                                 case "MAG":
-                                    objAttribute.PropertyChanged += RefreshMAGDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshMAGDependentProperties;
                                     break;
 
                                 case "MAGAdept":
-                                    objAttribute.PropertyChanged += RefreshMAGAdeptDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshMAGAdeptDependentProperties;
                                     break;
 
                                 case "RES":
-                                    objAttribute.PropertyChanged += RefreshRESDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshRESDependentProperties;
                                     break;
 
                                 case "DEP":
-                                    objAttribute.PropertyChanged += RefreshDEPDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshDEPDependentProperties;
                                     break;
 
                                 case "ESS":
-                                    objAttribute.PropertyChanged += RefreshESSDependentProperties;
+                                    objAttribute.PropertyChangedAsync += RefreshESSDependentProperties;
                                     break;
                             }
                         }
@@ -1224,25 +1224,27 @@ namespace Chummer
             }
         }
 
-        private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.PropertyName == nameof(AttributeSection.AttributeCategory) || IsLoading)
             {
-                this.OnMultiplePropertyChanged(nameof(CurrentWalkingRateString),
-                                               nameof(CurrentRunningRateString),
-                                               nameof(CurrentSprintingRateString));
+                await this.OnMultiplePropertyChangedAsync(token, nameof(CurrentWalkingRateString),
+                    nameof(CurrentRunningRateString),
+                    nameof(CurrentSprintingRateString)).ConfigureAwait(false);
             }
         }
 
-        private void ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action != NotifyCollectionChangedAction.Move || IsLoading)
             {
-                this.OnMultiplePropertyChanged(nameof(NegativeQualityKarma),
-                                               nameof(NegativeQualityLimitKarma),
-                                               nameof(PositiveQualityLimitKarma),
-                                               nameof(PositiveQualityKarma),
-                                               nameof(EnemyKarma));
+                await this.OnMultiplePropertyChangedAsync(token, nameof(NegativeQualityKarma),
+                    nameof(NegativeQualityLimitKarma),
+                    nameof(PositiveQualityLimitKarma),
+                    nameof(PositiveQualityKarma),
+                    nameof(EnemyKarma)).ConfigureAwait(false);
             }
         }
 
@@ -1261,9 +1263,9 @@ namespace Chummer
 
         private async Task PowersOnListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1296,7 +1298,7 @@ namespace Chummer
                                         if (objImprovement.SourceName != objNewPower.InternalId
                                             || !objImprovement.Enabled)
                                             continue;
-                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                        foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                   string strPropertyToUpdate) in
                                                  objImprovement.GetRelevantPropertyChangers())
                                         {
@@ -1383,10 +1385,10 @@ namespace Chummer
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
                              dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1424,13 +1426,13 @@ namespace Chummer
 
             if (lstImprovementSourcesToProcess.Count == 0)
             {
-                OnPropertyChanged(nameof(MentorSpirits));
+                await OnPropertyChangedAsync(nameof(MentorSpirits), token).ConfigureAwait(false);
                 return;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1448,7 +1450,7 @@ namespace Chummer
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
                                     continue;
-                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                           string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
@@ -1465,10 +1467,10 @@ namespace Chummer
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
+                        await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1504,9 +1506,9 @@ namespace Chummer
                     break;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1534,7 +1536,7 @@ namespace Chummer
                                     if (objImprovement.SourceName != objNewItem.InternalId
                                         || !objImprovement.Enabled)
                                         continue;
-                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                    foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                               string strPropertyToUpdate) in
                                              objImprovement.GetRelevantPropertyChangers())
                                     {
@@ -1552,10 +1554,10 @@ namespace Chummer
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
+                        await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1597,9 +1599,9 @@ namespace Chummer
                 return;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1617,7 +1619,7 @@ namespace Chummer
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
                                     continue;
-                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                           string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
@@ -1634,10 +1636,10 @@ namespace Chummer
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
+                        await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1679,9 +1681,9 @@ namespace Chummer
                 return;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1699,7 +1701,7 @@ namespace Chummer
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
                                     continue;
-                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                           string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
@@ -1716,10 +1718,10 @@ namespace Chummer
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
+                        await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1734,8 +1736,9 @@ namespace Chummer
             }
         }
 
-        private void ExpenseLogOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ExpenseLogOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -1799,7 +1802,7 @@ namespace Chummer
                 }
 
                 if (setPropertiesToRefresh.Count > 0)
-                    OnMultiplePropertyChanged(setPropertiesToRefresh.ToList());
+                    await OnMultiplePropertyChangedAsync(setPropertiesToRefresh.ToList(), token).ConfigureAwait(false);
             }
         }
 
@@ -1808,9 +1811,9 @@ namespace Chummer
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1838,7 +1841,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -1901,7 +1904,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -1936,9 +1939,9 @@ namespace Chummer
                         setChangedProperties.Add(nameof(TotalCarriedWeight));
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1959,9 +1962,9 @@ namespace Chummer
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1991,7 +1994,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2059,7 +2062,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2095,10 +2098,10 @@ namespace Chummer
                         setChangedProperties.Add(nameof(TotalCarriedWeight));
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2120,9 +2123,9 @@ namespace Chummer
                 return;
             bool blnDoEquippedArmorRefresh = false;
             bool blnDoArmorEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -2154,7 +2157,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2232,7 +2235,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2280,10 +2283,10 @@ namespace Chummer
                         setChangedProperties.Add(nameof(ArmorEncumbrance));
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2305,9 +2308,9 @@ namespace Chummer
                 return;
             bool blnDoEncumbranceRefresh = false;
             bool blnDoCyberlimbAttributesRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -2337,7 +2340,7 @@ namespace Chummer
                                             if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
                                                 objNewItem.InternalId && objImprovement.Enabled)
                                             {
-                                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                           string strPropertyToUpdate) in
                                                          objImprovement.GetRelevantPropertyChangers())
                                                 {
@@ -2498,10 +2501,10 @@ namespace Chummer
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -9278,9 +9281,9 @@ namespace Chummer
                         {
                             // Process all events related to improvements
                             using (new FetchSafelyFromPool<
-                                       Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                                       Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                                        Utils.DictionaryForMultiplePropertyChangedPool,
-                                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
+                                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>
                                            dicChangedProperties))
                             {
                                 try
@@ -9289,7 +9292,7 @@ namespace Chummer
                                     {
                                         if (!objImprovement.Enabled)
                                             continue;
-                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                        foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                   string strPropertyToUpdate) in objImprovement
                                                      .GetRelevantPropertyChangers())
                                         {
@@ -9304,11 +9307,12 @@ namespace Chummer
                                         }
                                     }
 
-                                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>>
+                                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>>
                                                  kvpToProcess in
                                              dicChangedProperties)
                                     {
-                                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(
+                                            kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                                     }
                                 }
                                 finally
@@ -17721,6 +17725,18 @@ namespace Chummer
             }
         }
 
+        public async Task SetEdgeUsedAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intEdgeUsed, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(EdgeUsed), token).ConfigureAwait(false);
+            }
+        }
+
         public int EdgeRemaining
         {
             get
@@ -19276,6 +19292,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Amount of Power Points for Mystic Adepts.
+        /// </summary>
+        public async Task SetMysticAdeptPowerPointsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                value = Math.Min(value,
+                    await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token)
+                        .ConfigureAwait(false));
+                if (Interlocked.Exchange(ref _intMAGAdept, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(MysticAdeptPowerPoints), token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Total Amount of Power Points this character has.
         /// </summary>
         public decimal PowerPointsTotal
@@ -19398,13 +19432,12 @@ namespace Chummer
             }
         }
 
-        public bool AnyPowerAdeptWayDiscountEnabled
+        public bool AnyPowerAdeptWayDiscountEnabled => Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
+
+        public async Task<bool> GetAnyPowerAdeptWayDiscountEnabledAsync(CancellationToken token = default)
         {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
-            }
+            return await (await GetPowersAsync(token).ConfigureAwait(false))
+                .AnyAsync(x => x.GetAdeptWayDiscountEnabledAsync(token), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -24838,11 +24871,11 @@ namespace Chummer
                             {
                                 XPathNavigator xmlErasedQuality =
                                     (await LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
-                                    .SelectSingleNodeAndCacheExpression("chummer/qualities/quality[name = \"Erased\"]");
+                                    .SelectSingleNodeAndCacheExpression("chummer/qualities/quality[name = \"Erased\"]", token);
                                 if (xmlErasedQuality != null)
                                 {
                                     strErasedString =
-                                        xmlErasedQuality.SelectSingleNodeAndCacheExpression("translate")?.Value ??
+                                        xmlErasedQuality.SelectSingleNodeAndCacheExpression("translate", token)?.Value ??
                                         "Erased";
                                 }
                             }
@@ -31134,10 +31167,10 @@ namespace Chummer
 
                 //Swimming uses all limbs
                 bool blnIsSwimming = strMovementType == "Swim";
-                int intAGI = AGI.CalculatedTotalValue(!blnIsSwimming);
+                int intAGI = blnIsSwimming ? AGI.TotalValue : AGI.CalculatedTotalValue(false);
                 if (blnIsSwimming)
                 {
-                    int intSTR = STR.CalculatedTotalValue();
+                    int intSTR = STR.TotalValue;
                     decWalk *= (intAGI + intSTR) * 0.5m;
                     decRun *= (intAGI + intSTR) * 0.5m;
                 }
@@ -31224,10 +31257,11 @@ namespace Chummer
 
                 //Swimming uses all limbs
                 bool blnIsSwimming = strMovementType == "Swim";
-                int intAGI = await (await GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).CalculatedTotalValueAsync(!blnIsSwimming, token).ConfigureAwait(false);
+                CharacterAttrib objAgi = await GetAttributeAsync("AGI", token: token).ConfigureAwait(false);
+                int intAGI = blnIsSwimming ? await objAgi.GetTotalValueAsync(token).ConfigureAwait(false) : await objAgi.CalculatedTotalValueAsync(false, token).ConfigureAwait(false);
                 if (blnIsSwimming)
                 {
-                    int intSTR = await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).CalculatedTotalValueAsync(true, token).ConfigureAwait(false);
+                    int intSTR = await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
                     decWalk *= (intAGI + intSTR) * 0.5m;
                     decRun *= (intAGI + intSTR) * 0.5m;
                 }
@@ -36237,30 +36271,32 @@ namespace Chummer
             }
         }
 
-        private void ProcessSettingsExpressionsForDependentProperties(ICollection<string> lstPropertyChangedHolder,
-                                                                      string strExpressionToFind)
+        private async Task ProcessSettingsExpressionsForDependentProperties(ICollection<string> lstPropertyChangedHolder, string strExpressionToFind, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                if (!Created)
+                token.ThrowIfCancellationRequested();
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                if (!await GetCreatedAsync(token).ConfigureAwait(false))
                 {
-                    if (Settings.ContactPointsExpression.Contains(strExpressionToFind))
+                    if (objSettings.ContactPointsExpression.Contains(strExpressionToFind))
                         lstPropertyChangedHolder.Add(nameof(ContactPoints));
-                    if (Settings.ChargenKarmaToNuyenExpression.Contains(strExpressionToFind))
+                    if (objSettings.ChargenKarmaToNuyenExpression.Contains(strExpressionToFind))
                         lstPropertyChangedHolder.Add(nameof(TotalStartingNuyen));
                 }
 
-                if (Settings.CarryLimitExpression.Contains(strExpressionToFind))
+                if (objSettings.CarryLimitExpression.Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BaseCarryLimit));
-                if (Settings.LiftLimitExpression.Contains(strExpressionToFind))
+                if (objSettings.LiftLimitExpression.Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BaseLiftLimit));
-                if (Settings.BoundSpiritExpression.Contains(strExpressionToFind))
+                if (objSettings.BoundSpiritExpression.Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BoundSpiritLimit));
-                if (Settings.RegisteredSpriteExpression.Contains(strExpressionToFind))
+                if (objSettings.RegisteredSpriteExpression.Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(RegisteredSpriteLimit));
-                if (Settings.EncumbranceIntervalExpression.Contains(strExpressionToFind))
+                if (objSettings.EncumbranceIntervalExpression.Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(EncumbranceInterval));
-                if (Settings.EssenceModifierPostExpression.Contains(strExpressionToFind))
+                if (objSettings.EssenceModifierPostExpression.Contains(strExpressionToFind))
                 {
                     lstPropertyChangedHolder.Add(nameof(PrototypeTranshumanEssenceUsed));
                     lstPropertyChangedHolder.Add(nameof(BiowareEssence));
@@ -36270,8 +36306,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshBODDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshBODDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36294,12 +36331,13 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseBOD),
                         nameof(SpellDefenseManipulationPhysical)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{BOD}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{BOD}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36307,22 +36345,24 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
                 }
                 case nameof(CharacterAttrib.MetatypeMaximum):
                 {
-                    using (LockObject.EnterUpgradeableReadLock())
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (DEPEnabled)
-                            OnPropertyChanged(nameof(IsAI));
+                        token.ThrowIfCancellationRequested();
+                        if (await GetDEPEnabledAsync(token).ConfigureAwait(false))
+                            await OnPropertyChangedAsync(nameof(IsAI), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36330,8 +36370,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshAGIDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshAGIDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36341,12 +36382,13 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseAGI),
                         nameof(CalculatedMovement)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{AGI}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{AGI}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36354,12 +36396,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36367,8 +36410,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshREADependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshREADependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36381,12 +36425,13 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseREA),
                         nameof(Surprise)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{REA}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{REA}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36394,12 +36439,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36407,8 +36453,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshSTRDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshSTRDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36422,12 +36469,13 @@ namespace Chummer
                         nameof(CalculatedMovement),
                         nameof(ArmorEncumbrance)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{STR}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{STR}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36435,12 +36483,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36448,8 +36497,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshCHADependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshCHADependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36462,12 +36512,13 @@ namespace Chummer
                         nameof(JudgeIntentionsResist),
                         nameof(SpellDefenseDecreaseCHA)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{CHA}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{CHA}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36475,12 +36526,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36488,8 +36540,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshINTDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshINTDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36508,12 +36561,13 @@ namespace Chummer
                         nameof(SpellDefenseIllusionPhysical),
                         nameof(Surprise)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{INT}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{INT}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36521,12 +36575,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36534,8 +36589,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshLOGDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshLOGDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36552,12 +36608,13 @@ namespace Chummer
                         nameof(SpellDefenseIllusionPhysical),
                         nameof(SpellDefenseManipulationMental)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{LOG}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{LOG}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36565,12 +36622,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36578,8 +36636,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshWILDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshWILDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36613,12 +36672,13 @@ namespace Chummer
                         nameof(SpellDefenseIllusionMana),
                         nameof(SpellDefenseManipulationMental)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{WIL}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{WIL}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36626,12 +36686,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36639,26 +36700,30 @@ namespace Chummer
             }
         }
 
-        public void RefreshEDGDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshEDGDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(3);
-                    using (LockObject.EnterReadLock())
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (EdgeUsed > EDG.TotalValue)
-                            EdgeUsed = EDG.TotalValue;
+                        token.ThrowIfCancellationRequested();
+                        int intEdgeValue = await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
+                        if (await GetEdgeUsedAsync(token).ConfigureAwait(false) > intEdgeValue)
+                            await SetEdgeUsedAsync(intEdgeValue, token).ConfigureAwait(false);
                         else
                             lstProperties.Add(nameof(EdgeRemaining));
                     }
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{EDG}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{EDG}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36666,12 +36731,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36679,37 +36745,45 @@ namespace Chummer
             }
         }
 
-        public void RefreshMAGDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshMAGDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(5);
-                    using (LockObject.EnterReadLock())
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!IsLoading && MysticAdeptPowerPoints > 0)
+                        token.ThrowIfCancellationRequested();
+                        CharacterAttrib objMag = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
+                        if (!IsLoading)
                         {
-                            int intMAGTotalValue = MAG.TotalValue;
-                            if (MysticAdeptPowerPoints > intMAGTotalValue)
-                                MysticAdeptPowerPoints = intMAGTotalValue;
+                            int intMysticAdeptPowerPoints = await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
+                            if (intMysticAdeptPowerPoints > 0)
+                            {
+                                int intMAGTotalValue = await objMag.GetTotalValueAsync(token).ConfigureAwait(false);
+                                if (intMysticAdeptPowerPoints > intMAGTotalValue)
+                                    await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token).ConfigureAwait(false);
+                            }
                         }
 
-                        if (Settings.SpiritForceBasedOnTotalMAG)
+                        if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetSpiritForceBasedOnTotalMAGAsync(token).ConfigureAwait(false))
                             lstProperties.Add(nameof(MaxSpiritForce));
-                        if (MysAdeptAllowPPCareer)
+                        if (await GetMysAdeptAllowPPCareerAsync(token).ConfigureAwait(false))
                             lstProperties.Add(nameof(CanAffordCareerPP));
-                        if (!UseMysticAdeptPPs && MAG == MAGAdept)
+                        if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false) && objMag == await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
                             lstProperties.Add(nameof(PowerPointsTotal));
-                        if (AnyPowerAdeptWayDiscountEnabled)
+                        if (await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
                             lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
                     }
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{MAG}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{MAG}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36717,12 +36791,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36730,9 +36805,10 @@ namespace Chummer
             }
         }
 
-        public void RefreshMAGAdeptDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshMAGAdeptDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            if (MAG == MAGAdept)
+            token.ThrowIfCancellationRequested();
+            if (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false) == await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
                 return;
 
             switch (e?.PropertyName)
@@ -36740,14 +36816,15 @@ namespace Chummer
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(2);
-                    if (!UseMysticAdeptPPs)
+                    if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
                         lstProperties.Add(nameof(MaxSpiritForce));
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36755,12 +36832,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36768,8 +36846,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshRESDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshRESDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -36778,12 +36857,13 @@ namespace Chummer
                     {
                         nameof(MaxSpriteLevel)
                     };
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{RES}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{RES}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36791,12 +36871,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36804,21 +36885,23 @@ namespace Chummer
             }
         }
 
-        public void RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
                 {
-                    if (IsAI)
-                        EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
+                    if (await GetIsAIAsync(token).ConfigureAwait(false))
+                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token).ConfigureAwait(false);
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{DEP}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{DEP}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36826,12 +36909,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36839,23 +36923,25 @@ namespace Chummer
             }
         }
 
-        public void RefreshESSDependentProperties(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshESSDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e?.PropertyName)
             {
                 // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
                 case nameof(CharacterAttrib.MetatypeMaximum):
-                    this.OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole)).ConfigureAwait(false);
                     break;
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{ESS}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{ESS}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;
@@ -36863,12 +36949,13 @@ namespace Chummer
                 case nameof(CharacterAttrib.Value):
                 {
                     List<string> lstProperties = new List<string>(4);
-                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}");
-                    OnMultiplePropertyChanged(lstProperties);
-                    using (LockObject.EnterUpgradeableReadLock())
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}", token).ConfigureAwait(false);
+                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
-                        if (!Created && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                        token.ThrowIfCancellationRequested();
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false) && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
+                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token).ConfigureAwait(false);
                     }
 
                     break;

@@ -236,12 +236,14 @@ namespace Chummer.Backend.Equipment
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
 
-        private void CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
-            using (LockObject.EnterUpgradeableReadLock())
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // If we are loading (or we are not attached to a character), only manage parent setting, don't do property updating
                 if (!_blnDoPropertyChangedInCollectionChanged || _objCharacter == null)
                 {
@@ -257,8 +259,9 @@ namespace Chummer.Backend.Equipment
                             {
                                 try
                                 {
-                                    using (objOldItem.LockObject.EnterUpgradeableReadLock())
+                                    using (await objOldItem.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (objOldItem.Parent == this)
                                             objOldItem.Parent = null;
                                     }
@@ -279,8 +282,9 @@ namespace Chummer.Backend.Equipment
                                 {
                                     try
                                     {
-                                        using (objOldItem.LockObject.EnterUpgradeableReadLock())
+                                        using (await objOldItem.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             if (objOldItem.Parent == this)
                                                 objOldItem.Parent = null;
                                         }
@@ -312,7 +316,7 @@ namespace Chummer.Backend.Equipment
                 {
                     bool blnDoEssenceImprovementsRefresh = false;
                     bool blnDoRedlinerRefresh = false;
-                    bool blnEverDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
+                    bool blnEverDoEncumbranceRefresh = await GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false) && ParentVehicle == null;
                     bool blnDoEncumbranceRefresh = false;
                     List<Cyberware> lstImprovementSourcesToProcess = new List<Cyberware>(e.NewItems?.Count ?? 0);
                     switch (e.Action)
@@ -322,7 +326,7 @@ namespace Chummer.Backend.Equipment
                             foreach (Cyberware objNewItem in e.NewItems)
                             {
                                 objNewItem.Parent = this;
-                                if (objNewItem.IsModularCurrentlyEquipped)
+                                if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                 {
                                     if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
                                                                     && (!string.IsNullOrEmpty(Weight)
@@ -375,7 +379,7 @@ namespace Chummer.Backend.Equipment
                             foreach (Cyberware objOldItem in e.OldItems)
                             {
                                 if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
-                                                                && objOldItem.IsModularCurrentlyEquipped
+                                                                && await objOldItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                                                                 && (!string.IsNullOrEmpty(Weight)
                                                                     || !string.IsNullOrEmpty(objOldItem.Weight)
                                                                     || objOldItem.GearChildren.DeepAny(
@@ -433,7 +437,7 @@ namespace Chummer.Backend.Equipment
                                 if (setNewItems.Contains(objOldItem))
                                     continue;
                                 if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
-                                                                && objOldItem.IsModularCurrentlyEquipped
+                                                                && await objOldItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                                                                 && (!string.IsNullOrEmpty(Weight)
                                                                     || !string.IsNullOrEmpty(objOldItem.Weight)
                                                                     || objOldItem.GearChildren.DeepAny(
@@ -482,7 +486,7 @@ namespace Chummer.Backend.Equipment
                             foreach (Cyberware objNewItem in setNewItems)
                             {
                                 objNewItem.Parent = this;
-                                if (objNewItem.IsModularCurrentlyEquipped)
+                                if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                 {
                                     if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
                                                                     && (!string.IsNullOrEmpty(Weight)
@@ -546,9 +550,9 @@ namespace Chummer.Backend.Equipment
                             break;
                     }
 
-                    using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                    using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                                Utils.DictionaryForMultiplePropertyChangedPool,
-                               out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                               out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
                     {
                         try
                         {
@@ -556,7 +560,7 @@ namespace Chummer.Backend.Equipment
                             foreach (string strAbbrev in setAttributesToRefresh)
                             {
                                 foreach (CharacterAttrib objCharacterAttrib in
-                                         _objCharacter.GetAllAttributes(strAbbrev))
+                                         _objCharacter.GetAllAttributes(strAbbrev, token: token))
                                 {
                                     if (objCharacterAttrib == null)
                                         continue;
@@ -615,12 +619,12 @@ namespace Chummer.Backend.Equipment
                                     {
                                         // Needed in order to properly process named sources where
                                         // the tooltip was built before the object was added to the character
-                                        _objCharacter.Improvements.ForEach(objImprovement =>
+                                        await _objCharacter.Improvements.ForEachAsync(objImprovement =>
                                         {
                                             if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless")
                                                 != objItem.InternalId || !objImprovement.Enabled)
                                                 return;
-                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in objImprovement
                                                          .GetRelevantPropertyChangers())
                                             {
@@ -633,15 +637,15 @@ namespace Chummer.Backend.Equipment
 
                                                 setChangedProperties.Add(strPropertyToUpdate);
                                             }
-                                        });
+                                        }, token: token).ConfigureAwait(false);
                                     }
                                 }
                             }
 
-                            foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
+                            foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
                                      dicChangedProperties)
                             {
-                                kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                                await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                             }
                         }
                         finally
@@ -658,14 +662,16 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             bool blnDoEquipped = _objCharacter?.IsLoading == false;
-            using (LockObject.EnterUpgradeableReadLock())
+            using (await LockObject.EnterUpgradeableReadLockAsync(token))
             {
-                blnDoEquipped = blnDoEquipped && IsModularCurrentlyEquipped &&
+                token.ThrowIfCancellationRequested();
+                blnDoEquipped = blnDoEquipped && await GetIsModularCurrentlyEquippedAsync(token) &&
                                 ParentVehicle == null;
                 switch (e.Action)
                 {
@@ -674,7 +680,7 @@ namespace Chummer.Backend.Equipment
                         {
                             objNewItem.Parent = this;
                             if (blnDoEquipped)
-                                objNewItem.ChangeEquippedStatus(true);
+                                await objNewItem.ChangeEquippedStatusAsync(true, token: token);
                         }
 
                         break;
@@ -684,7 +690,7 @@ namespace Chummer.Backend.Equipment
                         {
                             objOldItem.Parent = null;
                             if (blnDoEquipped)
-                                objOldItem.ChangeEquippedStatus(false);
+                                await objOldItem.ChangeEquippedStatusAsync(false, token: token);
                         }
 
                         break;
@@ -694,21 +700,21 @@ namespace Chummer.Backend.Equipment
                         {
                             objOldItem.Parent = null;
                             if (blnDoEquipped)
-                                objOldItem.ChangeEquippedStatus(false);
+                                await objOldItem.ChangeEquippedStatusAsync(false, token: token);
                         }
 
                         foreach (Gear objNewItem in e.NewItems)
                         {
                             objNewItem.Parent = this;
                             if (blnDoEquipped)
-                                objNewItem.ChangeEquippedStatus(true);
+                                await objNewItem.ChangeEquippedStatusAsync(true, token: token);
                         }
 
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                         if (blnDoEquipped)
-                            _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                            await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token);
                         break;
                 }
 
@@ -1165,8 +1171,8 @@ namespace Chummer.Backend.Equipment
                 {
                     _blnDoPropertyChangedInCollectionChanged = true;
                     if (Children.Count > 0)
-                        CyberwareChildrenOnCollectionChanged(
-                            this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children));
+                        Utils.SafelyRunSynchronously(() => CyberwareChildrenOnCollectionChanged(
+                            this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children)));
                 }
             }
         }
@@ -2076,8 +2082,8 @@ namespace Chummer.Backend.Equipment
                 {
                     _blnDoPropertyChangedInCollectionChanged = true;
                     if (Children.Count > 0)
-                        CyberwareChildrenOnCollectionChanged(
-                            this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children));
+                        Utils.SafelyRunSynchronously(() => CyberwareChildrenOnCollectionChanged(
+                            this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children)));
                 }
             }
         }
@@ -4284,9 +4290,9 @@ namespace Chummer.Backend.Equipment
                 if (_intProcessPropertyChanges == 0
                     || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
                     return;
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,
-                           out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                           out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
                 {
                     try
                     {
@@ -4422,7 +4428,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
+                        foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
                                  dicChangedProperties)
                         {
                             kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());

@@ -41,6 +41,12 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertyChangedAsync objSubject, params string[] lstPropertyNames)
+        {
+            return objSubject.OnMultiplePropertyChangedAsync(Array.AsReadOnly(lstPropertyNames));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertyChangedAsync objSubject, CancellationToken token,
             params string[] lstPropertyNames)
         {

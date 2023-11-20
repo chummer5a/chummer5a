@@ -108,8 +108,9 @@ namespace Chummer.Backend.Equipment
             _lstGear.AddTaggedCollectionChanged(this, GearOnCollectionChanged);
         }
 
-        private void ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             bool blnDoEquippedArmorRefresh = false;
@@ -179,12 +180,12 @@ namespace Chummer.Backend.Equipment
             }
 
             // Short-circuits this in case we are adding mods to an armor that is not on the character (happens when browsing for new armor to add)
-            if (_objCharacter?.IsLoading != false || !_objCharacter.Armor.Contains(this))
+            if (_objCharacter?.IsLoading != false || !await _objCharacter.Armor.ContainsAsync(this, token).ConfigureAwait(false))
                 return;
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -219,14 +220,14 @@ namespace Chummer.Backend.Equipment
                         {
                             // Needed in order to properly process named sources where
                             // the tooltip was built before the object was added to the character
-                            _objCharacter.Improvements.ForEach(objImprovement =>
+                            await _objCharacter.Improvements.ForEachAsync(objImprovement =>
                             {
                                 if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                     == objItem.InternalId
                                     && objImprovement.Enabled)
                                 {
-                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                              string strPropertyToUpdate) in objImprovement
+                                    foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                                 string strPropertyToUpdate) in objImprovement
                                                  .GetRelevantPropertyChangers())
                                     {
                                         if (dicChangedProperties.TryGetValue(
@@ -240,14 +241,14 @@ namespace Chummer.Backend.Equipment
                                         }
                                     }
                                 }
-                            });
+                            }, token: token);
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
                              dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -262,7 +263,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             switch (e.Action)
             {
@@ -271,7 +272,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objNewItem.Parent = this;
                         if (Equipped)
-                            objNewItem.ChangeEquippedStatus(true);
+                            await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
                     break;
 
@@ -280,7 +281,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (Equipped)
-                            objOldItem.ChangeEquippedStatus(false);
+                            await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
                     break;
 
@@ -289,13 +290,13 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (Equipped)
-                            objOldItem.ChangeEquippedStatus(false);
+                            await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
                         if (Equipped)
-                            objNewItem.ChangeEquippedStatus(true);
+                            await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
                     break;
             }
@@ -2744,7 +2745,7 @@ namespace Chummer.Backend.Equipment
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
                 strAttributeName = "Mod " + strAttributeName;
 
-            intReturn += await Children.SumAsync(x => x.Equipped, x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token);
+            intReturn += await Children.SumAsync(x => x.Equipped, x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token).ConfigureAwait(false);
 
             return intReturn;
         }
