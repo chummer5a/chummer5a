@@ -19065,5 +19065,23 @@
       </forbidden>
     </accessory>
     <!-- End Region -->
+    <!-- Region Attune Item -->
+    <accessory>
+      <id>0fcf55fa-afb4-487c-93f2-f41d6fc4e769</id>
+      <name>Attuned Item</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>124</page>
+      <rating>0</rating>
+      <accuracy>1</accuracy>
+      <required>
+        <oneof>
+          <spell>Attune Item</spell>
+        </oneof>
+      </required>
+    </accessory>
+    <!-- End Region -->
   </accessories>
 </chummer>
