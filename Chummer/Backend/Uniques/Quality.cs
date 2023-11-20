@@ -611,7 +611,9 @@ namespace Chummer
                             "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false),
+                                token: token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1636,6 +1638,44 @@ namespace Chummer
                     _strCachedNotes = string.Empty;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Notes.
+        /// </summary>
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(_strCachedNotes))
+                    return _strCachedNotes;
+                string strCachedNotes = string.Empty;
+                if (Suppressed)
+                {
+                    Improvement objDisablingImprovement
+                        = (await ImprovementManager
+                              .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                  Improvement.ImprovementType.DisableQuality,
+                                  SourceIDString, token: token).ConfigureAwait(false)).FirstOrDefault()
+                          ?? (await ImprovementManager
+                              .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                  Improvement.ImprovementType.DisableQuality, Name, token: token).ConfigureAwait(false))
+                          .FirstOrDefault();
+                    strCachedNotes += string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("String_SuppressedBy", token: token)
+                                              .ConfigureAwait(false),
+                                          await _objCharacter.GetObjectNameAsync(objDisablingImprovement, token: token)
+                                              .ConfigureAwait(false)
+                                          ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
+                                              .ConfigureAwait(false))
+                                      + Environment.NewLine;
+                }
+
+                strCachedNotes += _strNotes;
+                return _strCachedNotes = strCachedNotes;
             }
         }
 

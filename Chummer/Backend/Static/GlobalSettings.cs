@@ -841,7 +841,7 @@ namespace Chummer
                         s_LstFavoriteCharacters.Add(strFileName);
                 }
             }
-            s_LstFavoriteCharacters.CollectionChanged += LstFavoritedCharactersOnCollectionChanged;
+            s_LstFavoriteCharacters.CollectionChangedAsync += LstFavoritedCharactersOnCollectionChanged;
             s_LstFavoriteCharacters.Sort();
 
             for (int i = 1; i <= MaxMruSize; i++)
@@ -854,7 +854,7 @@ namespace Chummer
                         s_LstMostRecentlyUsedCharacters.Add(strFileName);
                 }
             }
-            s_LstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
+            s_LstMostRecentlyUsedCharacters.CollectionChangedAsync += LstMostRecentlyUsedCharactersOnCollectionChanged;
 
             if (blnFirstEverLaunch)
                 ShowCharacterCustomDataWarning = false;
@@ -1882,100 +1882,103 @@ namespace Chummer
 
         #region MRU Methods
 
-        private static void LstFavoritedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private static async Task LstFavoritedCharactersOnCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             try
             {
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
-                            {
-                                if (i <= s_LstFavoriteCharacters.Count)
-                                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstFavoriteCharacters[i - 1]);
-                                else
-                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                    false);
-                            }
-
-                            break;
+                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                    false);
                         }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                        }
+
+                        break;
+                    }
+                    case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                        if (!string.IsNullOrEmpty(strNewFile))
+                            s_ObjBaseChummerKey.SetValue(
+                                "stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
+                        else
                         {
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= s_LstFavoriteCharacters.Count)
+                                if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
                                     s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstFavoriteCharacters[i - 1]);
+                                        await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token)
+                                            .ConfigureAwait(false));
                                 else
-                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                        false);
                             }
-
-                            break;
                         }
-                    case NotifyCollectionChangedAction.Replace:
-                        {
-                            string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
-                            if (!string.IsNullOrEmpty(strNewFile))
-                                s_ObjBaseChummerKey.SetValue(
-                                    "stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
-                            else
-                            {
-                                for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
-                                {
-                                    if (i <= s_LstFavoriteCharacters.Count)
-                                        s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                     s_LstFavoriteCharacters[i - 1]);
-                                    else
-                                        s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                        false);
-                                }
-                            }
 
-                            break;
-                        }
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Move:
-                        {
-                            int intOldStartingIndex = e.OldStartingIndex;
-                            int intNewStartingIndex = e.NewStartingIndex;
-                            if (intOldStartingIndex == intNewStartingIndex)
-                                break;
-                            int intUpdateFrom;
-                            int intUpdateTo;
-                            if (intOldStartingIndex > intNewStartingIndex)
-                            {
-                                intUpdateFrom = intNewStartingIndex;
-                                intUpdateTo = intOldStartingIndex;
-                            }
-                            else
-                            {
-                                intUpdateFrom = intOldStartingIndex;
-                                intUpdateTo = intNewStartingIndex;
-                            }
-
-                            for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
-                            {
-                                s_ObjBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo),
-                                                             s_LstFavoriteCharacters[i]);
-                            }
-
+                    {
+                        int intOldStartingIndex = e.OldStartingIndex;
+                        int intNewStartingIndex = e.NewStartingIndex;
+                        if (intOldStartingIndex == intNewStartingIndex)
                             break;
+                        int intUpdateFrom;
+                        int intUpdateTo;
+                        if (intOldStartingIndex > intNewStartingIndex)
+                        {
+                            intUpdateFrom = intNewStartingIndex;
+                            intUpdateTo = intOldStartingIndex;
                         }
+                        else
+                        {
+                            intUpdateFrom = intOldStartingIndex;
+                            intUpdateTo = intNewStartingIndex;
+                        }
+
+                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        {
+                            s_ObjBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo),
+                                await s_LstFavoriteCharacters.GetValueAtAsync(i, token).ConfigureAwait(false));
+                        }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Reset:
+                    {
+                        for (int i = 1; i <= MaxMruSize; ++i)
                         {
-                            for (int i = 1; i <= MaxMruSize; ++i)
-                            {
-                                if (i <= s_LstFavoriteCharacters.Count)
-                                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstFavoriteCharacters[i - 1]);
-                                else
-                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
-                            }
-
-                            break;
+                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
+
+                        break;
+                    }
                 }
 
                 MruChanged?.Invoke(null, new TextEventArgs("stickymru"));
@@ -1983,114 +1986,127 @@ namespace Chummer
             catch (System.Security.SecurityException)
             {
                 Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false));
             }
             catch (UnauthorizedAccessException)
             {
                 Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false));
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
                 Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false));
             }
         }
 
-        private static void LstMostRecentlyUsedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private static async Task LstMostRecentlyUsedCharactersOnCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             try
             {
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
-                            {
-                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                    s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstMostRecentlyUsedCharacters[i - 1]);
-                                else
-                                    s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                            }
-
-                            break;
+                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
+                                        .ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
+                                        .ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                        }
+
+                        break;
+                    }
+                    case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                        if (!string.IsNullOrEmpty(strNewFile))
+                        {
+                            s_ObjBaseChummerKey.SetValue(
+                                "mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
+                        }
+                        else
                         {
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token)
+                                        .ConfigureAwait(false))
                                     s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstMostRecentlyUsedCharacters[i - 1]);
+                                        await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
+                                            .ConfigureAwait(false));
                                 else
                                     s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                             }
-
-                            break;
                         }
-                    case NotifyCollectionChangedAction.Replace:
-                        {
-                            string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
-                            if (!string.IsNullOrEmpty(strNewFile))
-                            {
-                                s_ObjBaseChummerKey.SetValue(
-                                    "mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
-                            }
-                            else
-                            {
-                                for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
-                                {
-                                    if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                        s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                                     s_LstMostRecentlyUsedCharacters[i - 1]);
-                                    else
-                                        s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                                }
-                            }
 
-                            break;
-                        }
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Move:
-                        {
-                            int intOldStartingIndex = e.OldStartingIndex;
-                            int intNewStartingIndex = e.NewStartingIndex;
-                            if (intOldStartingIndex == intNewStartingIndex)
-                                break;
-                            int intUpdateFrom;
-                            int intUpdateTo;
-                            if (intOldStartingIndex > intNewStartingIndex)
-                            {
-                                intUpdateFrom = intNewStartingIndex;
-                                intUpdateTo = intOldStartingIndex;
-                            }
-                            else
-                            {
-                                intUpdateFrom = intOldStartingIndex;
-                                intUpdateTo = intNewStartingIndex;
-                            }
-
-                            for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
-                            {
-                                s_ObjBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo),
-                                                             s_LstMostRecentlyUsedCharacters[i]);
-                            }
-
+                    {
+                        int intOldStartingIndex = e.OldStartingIndex;
+                        int intNewStartingIndex = e.NewStartingIndex;
+                        if (intOldStartingIndex == intNewStartingIndex)
                             break;
+                        int intUpdateFrom;
+                        int intUpdateTo;
+                        if (intOldStartingIndex > intNewStartingIndex)
+                        {
+                            intUpdateFrom = intNewStartingIndex;
+                            intUpdateTo = intOldStartingIndex;
                         }
+                        else
+                        {
+                            intUpdateFrom = intOldStartingIndex;
+                            intUpdateTo = intNewStartingIndex;
+                        }
+
+                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        {
+                            s_ObjBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo),
+                                await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i, token).ConfigureAwait(false));
+                        }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Reset:
+                    {
+                        for (int i = 1; i <= MaxMruSize; ++i)
                         {
-                            for (int i = 1; i <= MaxMruSize; ++i)
-                            {
-                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                    s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstMostRecentlyUsedCharacters[i - 1]);
-                                else
-                                    s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                            }
-
-                            break;
+                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
+                                        .ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
+
+                        break;
+                    }
                 }
 
                 MruChanged?.Invoke(null, new TextEventArgs("mru"));
@@ -2098,17 +2114,23 @@ namespace Chummer
             catch (System.Security.SecurityException)
             {
                 Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false));
             }
             catch (UnauthorizedAccessException)
             {
                 Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false));
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
                 Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false));
             }
         }
 

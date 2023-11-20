@@ -125,16 +125,22 @@ namespace Chummer.Backend.Equipment
             _lstVehicleMods.AddTaggedCollectionChanged(this, LstVehicleModsOnCollectionChanged);
         }
 
-        private void LstVehicleModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task LstVehicleModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (_objCharacter.IsAI && this == _objCharacter.HomeNode && e.Action != NotifyCollectionChangedAction.Move)
-                _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+            token.ThrowIfCancellationRequested();
+            if (await _objCharacter.GetIsAIAsync(token).ConfigureAwait(false)
+                && this == await _objCharacter.GetHomeNodeAsync(token).ConfigureAwait(false)
+                && e.Action != NotifyCollectionChangedAction.Move)
+                await _objCharacter.OnPropertyChangedAsync(nameof(Character.PhysicalCM), token).ConfigureAwait(false);
         }
 
-        private void MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private Task MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            if (e.Action != NotifyCollectionChangedAction.Move)
-                this.RefreshMatrixAttributeArray(_objCharacter);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            return e.Action != NotifyCollectionChangedAction.Move
+                ? this.RefreshMatrixAttributeArrayAsync(_objCharacter, token)
+                : Task.CompletedTask;
         }
 
         /// <summary>
@@ -3999,11 +4005,11 @@ namespace Chummer.Backend.Equipment
                                     if (objChild is Gear objGear && objGear.Equipped ||
                                         objChild is Weapon objWeapon && objWeapon.Equipped)
                                     {
-                                        return await objChild.GetBaseMatrixAttributeAsync(strMatrixAttribute, token);
+                                        return await objChild.GetBaseMatrixAttributeAsync(strMatrixAttribute, token).ConfigureAwait(false);
                                     }
 
                                     return 0;
-                                }, token);
+                                }, token).ConfigureAwait(false);
 
                                 sbdValue.Replace("{Children " + strMatrixAttribute + '}',
                                                  intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
@@ -4011,10 +4017,10 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token);
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token);
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
                     return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }

@@ -165,8 +165,9 @@ namespace Chummer.Backend.Equipment
             _lstAccessories.AddTaggedCollectionChanged(this, AccessoriesOnCollectionChanged);
         }
 
-        private void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             bool blnEverDoEncumbranceRefresh = _objCharacter?.IsLoading == false && Equipped && ParentVehicle == null;
@@ -211,7 +212,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objOldItem.AmmoSlots > 0)
                         {
-                            RemoveAmmoSlots(objOldItem);
+                            await RemoveAmmoSlotsAsync(objOldItem, token).ConfigureAwait(false);
                         }
                     }
                     break;
@@ -232,7 +233,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objOldItem.AmmoSlots > 0)
                         {
-                            RemoveAmmoSlots(objOldItem);
+                            await RemoveAmmoSlotsAsync(objOldItem, token).ConfigureAwait(false);
                         }
                     }
                     foreach (WeaponAccessory objNewItem in e.NewItems)
@@ -262,13 +263,14 @@ namespace Chummer.Backend.Equipment
             }
 
             if (blnRecreateInternalClip)
-                RecreateInternalClip();
+                await RecreateInternalClipAsync(token).ConfigureAwait(false);
             if (blnDoEncumbranceRefresh)
-                _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
         }
 
-        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             bool blnEverDoEncumbranceRefresh = _objCharacter?.IsLoading == false && Equipped && ParentVehicle == null;
@@ -282,11 +284,11 @@ namespace Chummer.Backend.Equipment
                         if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh && objNewItem.Equipped
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objNewItem.Weight)
-                                || objNewItem.WeaponAccessories.Any(
+                                || await objNewItem.WeaponAccessories.AnyAsync(
                                     x => x.Equipped && (!string.IsNullOrEmpty(x.Weight)
                                                         || x.GearChildren.DeepAny(
                                                             y => y.Children.Where(z => z.Equipped),
-                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))))
+                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))), token: token).ConfigureAwait(false)
                                 || objNewItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
                                                                z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
                                                                    || WeaponAccessories.Any(
@@ -309,11 +311,11 @@ namespace Chummer.Backend.Equipment
                         if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh && objOldItem.Equipped
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objOldItem.Weight)
-                                || objOldItem.WeaponAccessories.Any(
+                                || await objOldItem.WeaponAccessories.AnyAsync(
                                     x => x.Equipped && (!string.IsNullOrEmpty(x.Weight)
                                                         || x.GearChildren.DeepAny(
                                                             y => y.Children.Where(z => z.Equipped),
-                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))))
+                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))), token: token).ConfigureAwait(false)
                                 || objOldItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
                                                                z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
                                                                    || WeaponAccessories.Any(
@@ -336,11 +338,11 @@ namespace Chummer.Backend.Equipment
                         if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh && objOldItem.Equipped
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objOldItem.Weight)
-                                || objOldItem.WeaponAccessories.Any(
+                                || await objOldItem.WeaponAccessories.AnyAsync(
                                     x => x.Equipped && (!string.IsNullOrEmpty(x.Weight)
                                                         || x.GearChildren.DeepAny(
                                                             y => y.Children.Where(z => z.Equipped),
-                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))))
+                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))), token: token).ConfigureAwait(false)
                                 || objOldItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
                                                                z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
                                                                    || WeaponAccessories.Any(
@@ -360,11 +362,11 @@ namespace Chummer.Backend.Equipment
                         if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh && objNewItem.Equipped
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objNewItem.Weight)
-                                || objNewItem.WeaponAccessories.Any(
+                                || await objNewItem.WeaponAccessories.AnyAsync(
                                     x => x.Equipped && (!string.IsNullOrEmpty(x.Weight)
                                                         || x.GearChildren.DeepAny(
                                                             y => y.Children.Where(z => z.Equipped),
-                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))))
+                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))), token: token).ConfigureAwait(false)
                                 || objNewItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
                                                                z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
                                                                    || WeaponAccessories.Any(
@@ -385,9 +387,9 @@ namespace Chummer.Backend.Equipment
                     break;
             }
 
-            this.RefreshMatrixAttributeArray(_objCharacter);
+            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
             if (blnDoEncumbranceRefresh)
-                _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -9858,16 +9860,16 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strAttributeName))
                 return 0;
-            IHasMatrixAttributes objThis = await GetMatrixAttributesOverrideAsync(token);
+            IHasMatrixAttributes objThis = await GetMatrixAttributesOverrideAsync(token).ConfigureAwait(false);
             if (objThis != null)
-                return await objThis.GetBonusMatrixAttributeAsync(strAttributeName, token);
+                return await objThis.GetBonusMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false);
             int intReturn = await GetOverclockedAsync(token).ConfigureAwait(false) == strAttributeName ? 1 : 0;
 
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
                 strAttributeName = "Mod " + strAttributeName;
 
             intReturn += await Children.SumAsync(x => x.Equipped && x.ParentID != InternalId,
-                x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token);
+                x => x.GetTotalMatrixAttributeAsync(strAttributeName, token), token).ConfigureAwait(false);
 
             return intReturn;
         }

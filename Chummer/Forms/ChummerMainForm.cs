@@ -1102,15 +1102,15 @@ namespace Chummer
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
-        private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Character objCharacter in e.NewItems)
                         {
                             objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
                         }
@@ -1119,7 +1119,7 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Character objCharacter in e.OldItems)
                         {
                             if (objCharacter?.IsDisposed == false)
                             {
@@ -1138,7 +1138,7 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Replace:
                     {
-                        foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Character objCharacter in e.OldItems)
                         {
                             if (objCharacter?.IsDisposed == false)
                             {
@@ -1153,7 +1153,7 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Character objCharacter in e.NewItems)
                         {
                             objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
                         }

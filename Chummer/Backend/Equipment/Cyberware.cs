@@ -307,7 +307,7 @@ namespace Chummer.Backend.Equipment
                             break;
                     }
 
-                    this.RefreshMatrixAttributeArray(_objCharacter);
+                    await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
                     return;
                 }
 
@@ -371,7 +371,7 @@ namespace Chummer.Backend.Equipment
                                     blnDoEssenceImprovementsRefresh = true;
                             }
 
-                            this.RefreshMatrixAttributeArray(_objCharacter);
+                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
                             blnDoRedlinerRefresh = true;
                             break;
 
@@ -425,7 +425,7 @@ namespace Chummer.Backend.Equipment
                                     blnDoEssenceImprovementsRefresh = true;
                             }
 
-                            this.RefreshMatrixAttributeArray(_objCharacter);
+                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
                             blnDoRedlinerRefresh = true;
                             break;
 
@@ -531,7 +531,7 @@ namespace Chummer.Backend.Equipment
                                     blnDoEssenceImprovementsRefresh = true;
                             }
 
-                            this.RefreshMatrixAttributeArray(_objCharacter);
+                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
                             blnDoRedlinerRefresh = true;
                             break;
 
@@ -545,7 +545,7 @@ namespace Chummer.Backend.Equipment
                                 setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
                             }
 
-                            this.RefreshMatrixAttributeArray(_objCharacter);
+                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
                             blnDoRedlinerRefresh = true;
                             break;
                     }
@@ -718,7 +718,7 @@ namespace Chummer.Backend.Equipment
                         break;
                 }
 
-                this.RefreshMatrixAttributeArray(_objCharacter);
+                await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
             }
         }
 

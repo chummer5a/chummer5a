@@ -213,7 +213,7 @@ namespace Chummer.Backend.Skills
                     objReadLocker?.Dispose();
                 }
                 if (CharacterObject.SkillsSection?.IsLoading != true)
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(AttributeModifiers), nameof(Enabled));
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(AttributeModifiers), nameof(Enabled)).ConfigureAwait(false);
             }
         }
 
@@ -1474,7 +1474,7 @@ namespace Chummer.Backend.Skills
                 {
                     token.ThrowIfCancellationRequested();
                     _blnBuyWithKarma = value;
-                    OnPropertyChanged(nameof(BuyWithKarma));
+                    await OnPropertyChangedAsync(nameof(BuyWithKarma), token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -2629,7 +2629,7 @@ namespace Chummer.Backend.Skills
                 if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
                     return;
                 if (CharacterObject?.SkillsSection?.IsLoading != true)
-                    OnPropertyChanged(nameof(DefaultAttribute));
+                    await OnPropertyChangedAsync(nameof(DefaultAttribute), token).ConfigureAwait(false);
                 else
                     await RecacheAttributeAsync(token).ConfigureAwait(false);
             }
@@ -3226,7 +3226,7 @@ namespace Chummer.Backend.Skills
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                OnPropertyChanged(nameof(Name));
+                await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
             }
         }
 
@@ -3357,7 +3357,7 @@ namespace Chummer.Backend.Skills
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                OnPropertyChanged(nameof(SkillId));
+                await OnPropertyChangedAsync(nameof(SkillId), token).ConfigureAwait(false);
             }
         }
 

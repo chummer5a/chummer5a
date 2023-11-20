@@ -110,8 +110,9 @@ namespace Chummer.Backend.Equipment
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
 
-        private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnDoEquipped = _objCharacter?.IsLoading == false && Equipped && Parent?.ParentVehicle == null;
             switch (e.Action)
             {
@@ -120,7 +121,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objNewItem.Parent = this;
                         if (blnDoEquipped)
-                            objNewItem.ChangeEquippedStatus(true);
+                            await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
 
                     break;
@@ -130,7 +131,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (blnDoEquipped)
-                            objOldItem.ChangeEquippedStatus(false);
+                            await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
 
                     break;
@@ -140,21 +141,21 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (blnDoEquipped)
-                            objOldItem.ChangeEquippedStatus(false);
+                            await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
 
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
                         if (blnDoEquipped)
-                            objNewItem.ChangeEquippedStatus(true);
+                            await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
 
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
                     if (blnDoEquipped)
-                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                        await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
                     break;
             }
         }

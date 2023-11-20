@@ -121,8 +121,9 @@ namespace Chummer.Backend.Equipment
             _lstChildren.AddTaggedCollectionChanged(this, ChildrenOnCollectionChanged);
         }
 
-        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             switch (e.Action)
@@ -132,7 +133,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objNewItem.Parent = this;
                         if (Equipped)
-                            objNewItem.ChangeEquippedStatus(true);
+                            await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
                     break;
 
@@ -141,7 +142,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (Equipped)
-                            objOldItem.ChangeEquippedStatus(false);
+                            await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
                     break;
 
@@ -150,17 +151,17 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (Equipped)
-                            objOldItem.ChangeEquippedStatus(false);
+                            await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
                         if (Equipped)
-                            objNewItem.ChangeEquippedStatus(true);
+                            await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
                     break;
             }
-            this.RefreshMatrixAttributeArray(_objCharacter);
+            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -5398,7 +5399,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            this.RefreshMatrixAttributeArray(_objCharacter);
+            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
         }
 
         #endregion Hero Lab Importing Methods

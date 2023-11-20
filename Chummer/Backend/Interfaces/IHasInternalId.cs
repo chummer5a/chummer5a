@@ -33,23 +33,23 @@ namespace Chummer
 
     public static class InternalId
     {
-        public static async Task RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
-            if (notifyCollectionChangedEventArgs == null || objParent == null || treGear == null)
+            if (e == null || objParent == null || treGear == null)
                 return;
 
             TreeNode nodParent = await treGear.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objParent), token: token).ConfigureAwait(false);
             if (nodParent == null)
                 return;
 
-            switch (notifyCollectionChangedEventArgs.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Gear objGear in e.NewItems)
                         {
                             await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
                             objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, cmsCustomGear, funcMakeDirty);
@@ -61,7 +61,7 @@ namespace Chummer
 
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Gear objGear in e.OldItems)
                         {
                             objGear.SetupChildrenGearsCollectionChanged(false, treGear);
                             await treGear.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objGear)?.Remove(), token: token).ConfigureAwait(false);
@@ -75,16 +75,16 @@ namespace Chummer
                         string strSelectedId
                             = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId
                               ?? string.Empty;
-                        foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Gear objGear in e.OldItems)
                         {
                             objGear.SetupChildrenGearsCollectionChanged(false, treGear);
                             await treGear.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objGear)?.Remove(), token: token).ConfigureAwait(false);
                         }
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Gear objGear in e.NewItems)
                         {
                             await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
                             objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, cmsCustomGear, funcMakeDirty);
@@ -102,15 +102,15 @@ namespace Chummer
                               ?? string.Empty;
                         await treGear.DoThreadSafeAsync(() =>
                         {
-                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Gear objGear in e.OldItems)
                             {
                                 nodParent.FindNodeByTag(objGear)?.Remove();
                             }
                         }, token: token).ConfigureAwait(false);
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Gear objGear in e.NewItems)
                         {
                             await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
                             ++intNewIndex;
@@ -182,23 +182,23 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
-            if (notifyCollectionChangedEventArgs == null || objParent == null || treCyberware == null)
+            if (e == null || objParent == null || treCyberware == null)
                 return;
 
             TreeNode nodParent = await treCyberware.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objParent), token: token).ConfigureAwait(false);
             if (nodParent == null)
                 return;
 
-            switch (notifyCollectionChangedEventArgs.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Cyberware objCyberware in e.NewItems)
                         {
                             await AddToTree(objCyberware, intNewIndex).ConfigureAwait(false);
                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware, cmsCyberwareGear, funcMakeDirty);
@@ -209,7 +209,7 @@ namespace Chummer
 
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Cyberware objCyberware in e.OldItems)
                         {
                             objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
                             await treCyberware.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objCyberware)?.Remove(), token: token).ConfigureAwait(false);
@@ -220,15 +220,15 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-                        foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Cyberware objCyberware in e.OldItems)
                         {
                             objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
                             await treCyberware.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objCyberware)?.Remove(), token: token).ConfigureAwait(false);
                         }
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Cyberware objCyberware in e.NewItems)
                         {
                             await AddToTree(objCyberware, intNewIndex).ConfigureAwait(false);
                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware, cmsCyberwareGear, funcMakeDirty);
@@ -244,15 +244,15 @@ namespace Chummer
                         string strSelectedId = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId ?? string.Empty;
                         await treCyberware.DoThreadSafeAsync(() =>
                         {
-                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (Cyberware objCyberware in e.OldItems)
                             {
                                 nodParent.FindNodeByTag(objCyberware)?.Remove();
                             }
                         }, token: token).ConfigureAwait(false);
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Cyberware objCyberware in e.NewItems)
                         {
                             await AddToTree(objCyberware, intNewIndex).ConfigureAwait(false);
                             ++intNewIndex;
@@ -302,23 +302,23 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
-            if (notifyCollectionChangedEventArgs == null || objParent == null || treWeapons == null)
+            if (e == null || objParent == null || treWeapons == null)
                 return;
 
             TreeNode nodParent = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode(objParent.InternalId), token: token).ConfigureAwait(false);
             if (nodParent == null)
                 return;
 
-            switch (notifyCollectionChangedEventArgs.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Weapon objWeapon in e.NewItems)
                         {
                             await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory,
@@ -330,7 +330,7 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Weapon objWeapon in e.OldItems)
                         {
                             objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
                             await treWeapons.DoThreadSafeAsync(() => nodParent.FindNode(objWeapon.InternalId)?.Remove(), token: token).ConfigureAwait(false);
@@ -343,16 +343,16 @@ namespace Chummer
                         string strSelectedId
                             = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)
                             ?.InternalId ?? string.Empty;
-                        foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Weapon objWeapon in e.OldItems)
                         {
                             objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
                             await treWeapons.DoThreadSafeAsync(() => nodParent.FindNode(objWeapon.InternalId)?.Remove(), token: token).ConfigureAwait(false);
                         }
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Weapon objWeapon in e.NewItems)
                         {
                             await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory,
@@ -368,13 +368,13 @@ namespace Chummer
                         string strSelectedId
                             = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)
                             ?.InternalId ?? string.Empty;
-                        foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Weapon objWeapon in e.OldItems)
                         {
                             await treWeapons.DoThreadSafeAsync(() => nodParent.FindNode(objWeapon.InternalId)?.Remove(), token: token).ConfigureAwait(false);
                         }
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (Weapon objWeapon in e.NewItems)
                         {
                             await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                             ++intNewIndex;
@@ -424,23 +424,23 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
-            if (notifyCollectionChangedEventArgs == null || objParent == null || treWeapons == null)
+            if (e == null || objParent == null || treWeapons == null)
                 return;
 
             TreeNode nodParent = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode(objParent.InternalId), token: token).ConfigureAwait(false);
             if (nodParent == null)
                 return;
 
-            switch (notifyCollectionChangedEventArgs.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (WeaponAccessory objWeaponAccessory in e.NewItems)
                         {
                             await AddToTree(objWeaponAccessory, intNewIndex).ConfigureAwait(false);
 
@@ -461,7 +461,7 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (WeaponAccessory objWeaponAccessory in e.OldItems)
                         {
                             await objWeaponAccessory.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
                             foreach (Gear objGear in objWeaponAccessory.GearChildren)
@@ -477,7 +477,7 @@ namespace Chummer
                         string strSelectedId
                             = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)
                             ?.InternalId ?? string.Empty;
-                        foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (WeaponAccessory objWeaponAccessory in e.OldItems)
                         {
                             await objWeaponAccessory.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
                             foreach (Gear objGear in objWeaponAccessory.GearChildren)
@@ -486,10 +486,10 @@ namespace Chummer
                                 () => nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove(), token: token).ConfigureAwait(false);
                         }
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (WeaponAccessory objWeaponAccessory in e.NewItems)
                         {
                             await AddToTree(objWeaponAccessory, intNewIndex).ConfigureAwait(false);
 
@@ -514,15 +514,15 @@ namespace Chummer
                         string strSelectedId
                             = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)
                             ?.InternalId ?? string.Empty;
-                        foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (WeaponAccessory objWeaponAccessory in e.OldItems)
                         {
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
 
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (WeaponAccessory objWeaponAccessory in e.NewItems)
                         {
                             await AddToTree(objWeaponAccessory, intNewIndex).ConfigureAwait(false);
                             ++intNewIndex;
@@ -568,23 +568,23 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
-            if (treVehicles == null || notifyCollectionChangedEventArgs == null)
+            if (treVehicles == null || e == null)
                 return;
 
             TreeNode nodParent = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objParent), token: token).ConfigureAwait(false);
             if (nodParent == null)
                 return;
 
-            switch (notifyCollectionChangedEventArgs.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (VehicleMod objVehicleMod in e.NewItems)
                         {
                             await AddToTree(objVehicleMod, intNewIndex).ConfigureAwait(false);
 
@@ -615,7 +615,7 @@ namespace Chummer
 
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (VehicleMod objVehicleMod in e.OldItems)
                         {
                             await objVehicleMod.Cyberware.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
@@ -631,7 +631,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId ?? string.Empty;
-                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (VehicleMod objVehicleMod in e.OldItems)
                         {
                             await objVehicleMod.Cyberware.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
@@ -641,10 +641,10 @@ namespace Chummer
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
                             await treVehicles.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objVehicleMod)?.Remove(), token: token).ConfigureAwait(false);
                         }
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (VehicleMod objVehicleMod in e.NewItems)
                         {
                             await AddToTree(objVehicleMod, intNewIndex).ConfigureAwait(false);
 
@@ -681,15 +681,15 @@ namespace Chummer
                             = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId ?? string.Empty;
                         await treVehicles.DoThreadSafeAsync(() =>
                         {
-                            foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (VehicleMod objVehicleMod in e.OldItems)
                             {
                                 nodParent.FindNodeByTag(objVehicleMod)?.Remove();
                             }
                         }, token: token).ConfigureAwait(false);
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (VehicleMod objVehicleMod in e.NewItems)
                         {
                             await AddToTree(objVehicleMod, intNewIndex).ConfigureAwait(false);
                             ++intNewIndex;
@@ -736,9 +736,9 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
-            if (treVehicles == null || notifyCollectionChangedEventArgs == null)
+            if (treVehicles == null || e == null)
                 return;
 
             TreeNode nodVehicleParent = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objParent), token: token).ConfigureAwait(false);
@@ -746,12 +746,12 @@ namespace Chummer
                 return;
             TreeNode nodParent = await treVehicles.DoThreadSafeFuncAsync(() => nodVehicleParent.FindNode("String_WeaponMounts", false), token: token).ConfigureAwait(false);
 
-            switch (notifyCollectionChangedEventArgs.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (WeaponMount objWeaponMount in e.NewItems)
                         {
                             await AddToTree(objWeaponMount, intNewIndex).ConfigureAwait(false);
 
@@ -815,7 +815,7 @@ namespace Chummer
 
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (WeaponMount objWeaponMount in e.OldItems)
                         {
                             await objWeaponMount.Mods.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                             await objWeaponMount.Weapons.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
@@ -846,7 +846,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId ?? string.Empty;
-                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (WeaponMount objWeaponMount in e.OldItems)
                         {
                             await objWeaponMount.Mods.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                             await objWeaponMount.Weapons.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
@@ -864,8 +864,8 @@ namespace Chummer
 
                             await treVehicles.DoThreadSafeAsync(() => nodParent?.FindNodeByTag(objWeaponMount)?.Remove(), token: token).ConfigureAwait(false);
                         }
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (WeaponMount objWeaponMount in e.NewItems)
                         {
                             await AddToTree(objWeaponMount, intNewIndex).ConfigureAwait(false);
 
@@ -933,13 +933,13 @@ namespace Chummer
                         string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                         await treVehicles.DoThreadSafeAsync(() =>
                         {
-                            foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (WeaponMount objWeaponMount in e.OldItems)
                             {
                                 nodParent?.FindNodeByTag(objWeaponMount)?.Remove();
                             }
                         }, token: token).ConfigureAwait(false);
-                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (WeaponMount objWeaponMount in e.NewItems)
                         {
                             await AddToTree(objWeaponMount, intNewIndex).ConfigureAwait(false);
                             ++intNewIndex;
