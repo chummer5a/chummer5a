@@ -1378,10 +1378,6 @@ namespace Chummer
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                         _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
-                // Wait for all other readers to exit before exiting ourselves
-                while (_objReaderWriterLock._intCountActiveReaders > _intOldCountLocalReaders + 1
-                       && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
-                    Utils.SafeSleep();
                 _objNextLinkedSemaphore.Dispose();
                 _objReaderWriterLock.ChangeNumActiveReaders(-1);
             }
@@ -1428,10 +1424,6 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync()
             {
-                // Wait for all other readers to exit before exiting ourselves
-                while (_objReaderWriterLock._intCountActiveReaders > _intOldCountLocalReaders + 1
-                       && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
-                    await Utils.SafeSleepAsync().ConfigureAwait(false);
                 await _objNextLinkedSemaphore.DisposeAsync().ConfigureAwait(false);
                 _objReaderWriterLock.ChangeNumActiveReaders(-1);
             }
