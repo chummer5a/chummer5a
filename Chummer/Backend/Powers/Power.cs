@@ -588,15 +588,15 @@ namespace Chummer
         private async Task SetMAGAttributeObjectAsync(CharacterAttrib value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                IDisposable objReaderLock = value != null ? await value.LockObject.EnterUpgradeableReadLockAsync(token) : null;
+                IDisposable objReaderLock = value != null ? await value.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false) : null;
                 try
                 {
                     CharacterAttrib objOldValue = Interlocked.Exchange(ref _objMAGAttribute, value);
-                    IDisposable objReaderLock2 = objOldValue != null ? await objOldValue.LockObject.EnterUpgradeableReadLockAsync(token) : null;
+                    IDisposable objReaderLock2 = objOldValue != null ? await objOldValue.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false) : null;
                     try
                     {
                         if (objOldValue == value)
@@ -620,7 +620,7 @@ namespace Chummer
                                 if (value == null)
                                     return;
                                 value.PropertyChangedAsync += OnLinkedAttributeChanged;
-                            }, token));
+                            }, token)).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -632,7 +632,7 @@ namespace Chummer
                     objReaderLock?.Dispose();
                 }
 
-                await OnPropertyChangedAsync(nameof(MAGAttributeObject), token);
+                await OnPropertyChangedAsync(nameof(MAGAttributeObject), token).ConfigureAwait(false);
             }
             finally
             {
@@ -693,7 +693,11 @@ namespace Chummer
                         objReaderLock?.Dispose();
                     }
 
-                    OnPropertyChanged();
+                    int intNewSkillRating = value?.LearnedRating ?? int.MinValue;
+                    if (Interlocked.Exchange(ref _intCachedLearnedRating, intNewSkillRating) != intNewSkillRating && LevelsEnabled)
+                        this.OnMultiplePropertyChanged(nameof(TotalMaximumLevels), nameof(BoostedSkill));
+                    else
+                        OnPropertyChanged();
                 }
             }
         }
@@ -1529,6 +1533,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not Levels enabled for the Power.
+        /// </summary>
+        public async Task<bool> GetLevelsEnabledAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnLevelsEnabled;
+            }
+        }
+
+        /// <summary>
         /// Maximum Level for the Power.
         /// </summary>
         public int MaxLevels
@@ -1803,10 +1820,10 @@ namespace Chummer
                     if (BoostedSkill != null)
                     {
                         // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                        intReturn = Math.Min(intReturn, (BoostedSkill.LearnedRating + 1) / 2);
+                        intReturn = Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
                         if (CharacterObject.Settings.IncreasedImprovedAbilityMultiplier)
                         {
-                            intReturn += BoostedSkill.LearnedRating;
+                            intReturn += _intCachedLearnedRating;
                         }
                     }
 
@@ -1838,14 +1855,12 @@ namespace Chummer
 
                 if (BoostedSkill != null)
                 {
-                    int intBoostedSkillLearnedRating
-                        = await BoostedSkill.GetLearnedRatingAsync(token).ConfigureAwait(false);
                     // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                    intReturn = Math.Min(intReturn, (intBoostedSkillLearnedRating + 1) / 2);
+                    intReturn = Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
                     if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
                               .GetIncreasedImprovedAbilityMultiplierAsync(token).ConfigureAwait(false))
                     {
-                        intReturn += intBoostedSkillLearnedRating;
+                        intReturn += _intCachedLearnedRating;
                     }
                 }
 
@@ -1974,7 +1989,7 @@ namespace Chummer
                             ),
                             new DependencyGraphNode<string, Power>(nameof(TotalMaximumLevels),
                                 new DependencyGraphNode<string, Power>(nameof(LevelsEnabled)),
-                                new DependencyGraphNode<string, Power>(nameof(MaxLevels))
+                                new DependencyGraphNode<string, Power>(nameof(MaxLevels), x => x.LevelsEnabled)
                             )
                         ),
                         new DependencyGraphNode<string, Power>(nameof(Rating)),
@@ -2274,38 +2289,36 @@ namespace Chummer
             }
         }
 
-        private Task OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            return e?.PropertyName == nameof(CharacterAttrib.TotalValue)
-                ? OnPropertyChangedAsync(nameof(TotalMaximumLevels), token)
-                : Task.CompletedTask;
+            token.ThrowIfCancellationRequested();
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await GetLevelsEnabledAsync(token).ConfigureAwait(false))
+                        await OnPropertyChangedAsync(nameof(TotalMaximumLevels), token).ConfigureAwait(false);
+                }
+            }
         }
 
         private async Task OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (e?.PropertyName == nameof(Skill.LearnedRating) && sender is Skill objSkill)
+            if (e?.PropertyName == nameof(Skill.LearnedRating))
             {
                 using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
-                    if (await BoostedSkill.GetLearnedRatingAsync(token).ConfigureAwait(false) != _intCachedLearnedRating
+                    if (await GetLevelsEnabledAsync(token).ConfigureAwait(false)
                         && _intCachedLearnedRating != await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false))
                     {
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
+                        int intNewSkillRating = await BoostedSkill.GetLearnedRatingAsync(token).ConfigureAwait(false);
+                        if (Interlocked.Exchange(ref _intCachedLearnedRating, intNewSkillRating) != intNewSkillRating)
                         {
-                            token.ThrowIfCancellationRequested();
-                            _intCachedLearnedRating = objSkill.LearnedRating;
+                            await OnPropertyChangedAsync(nameof(TotalMaximumLevels), token).ConfigureAwait(false);
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
-
-                        await OnPropertyChangedAsync(nameof(TotalMaximumLevels), token).ConfigureAwait(false);
                     }
                 }
             }
@@ -2317,10 +2330,10 @@ namespace Chummer
             if (e.PropertyName == nameof(Character.IsMysticAdept))
             {
                 await SetMAGAttributeObjectAsync(
-                    await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token)
-                    && await CharacterObject.GetIsMysticAdeptAsync(token)
-                        ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
-                        : await CharacterObject.GetAttributeAsync("MAG", token: token), token);
+                    await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
+                    && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
+                        ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false)
+                        : await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
         }
 
@@ -2332,10 +2345,10 @@ namespace Chummer
                 case nameof(CharacterSettings.MysAdeptSecondMAGAttribute):
                 case nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier):
                     await SetMAGAttributeObjectAsync(
-                        await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token)
-                        && await CharacterObject.GetIsMysticAdeptAsync(token)
-                            ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
-                            : await CharacterObject.GetAttributeAsync("MAG", token: token), token);
+                        await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
+                        && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
+                            ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false)
+                            : await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     break;
             }
         }
