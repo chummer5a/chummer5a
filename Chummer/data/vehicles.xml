@@ -3778,11 +3778,9 @@
       </gears>
       <mods>
         <name>Drone Arm</name>
-      </mods>
-      <modslots>1</modslots>
-      <mods>
         <name>Rigger Interface</name>
       </mods>
+      <modslots>1</modslots>
     </vehicle>
     <vehicle>
       <id>6b0c07b2-6e3d-4174-a748-859fd46c090c</id>
