@@ -376,7 +376,7 @@ namespace Chummer
         {
             PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
             if (_lstPropertyChangedAsync.Count > 0)
-                Utils.RunWithoutThreadLock(_lstPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))), CancellationToken.None);
+                Utils.RunWithoutThreadLock(_lstPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))));
             if (PropertyChanged != null)
                 Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
             if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))

@@ -1987,7 +1987,7 @@ namespace Chummer
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<T>> afuncToRun, CancellationToken token)
+        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<T>> afuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intLength = afuncToRun.Count;
@@ -2248,7 +2248,43 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(params Func<Task>[] afuncToRun)
         {
-            RunWithoutThreadLock(Array.AsReadOnly(afuncToRun), default);
+            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            {
+                Parallel.ForEach(afuncToRun, (funcToRun, y) => JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning));
+                return;
+            }
+            if (!EverDoEvents)
+            {
+                Parallel.ForEach(afuncToRun, (funcToRun, y) =>
+                {
+                    Task objSyncTask = funcToRun.Invoke();
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
+                });
+                return;
+            }
+            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
+            int intCounter = 0;
+            foreach (Func<Task> funcToRun in afuncToRun)
+            {
+                lstTasks.Add(Task.Run(funcToRun));
+                if (++intCounter != MaxParallelBatchSize)
+                    continue;
+                Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks));
+                while (!tskLoop.IsCompleted)
+                    SafeSleep();
+                if (tskLoop.Exception != null)
+                    throw tskLoop.Exception;
+                lstTasks.Clear();
+                intCounter = 0;
+            }
+            Task objTask = Task.Run(() => Task.WhenAll(lstTasks));
+            while (!objTask.IsCompleted)
+                SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -2258,7 +2294,7 @@ namespace Chummer
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(IEnumerable<Func<Task>> afuncToRun, CancellationToken token)
+        public static void RunWithoutThreadLock(IEnumerable<Func<Task>> afuncToRun, CancellationToken token = default)
         {
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {

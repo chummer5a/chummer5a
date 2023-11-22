@@ -104,7 +104,7 @@ namespace Chummer.Backend.Attributes
                                 aFuncs[i++] = () => objEvent.Invoke(this, objArg);
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        Utils.RunWithoutThreadLock(aFuncs);
                         if (PropertyChanged != null)
                         {
                             Utils.RunOnMainThread(() =>
@@ -1657,7 +1657,7 @@ namespace Chummer.Backend.Attributes
                         aFuncs[i] = () => objEvents.AsyncPropertyChangedList[i1].Invoke(this, e);
                     }
 
-                    Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                    Utils.RunWithoutThreadLock(aFuncs);
                     if (objEvents.PropertyChangedList.Count != 0)
                     {
                         Utils.RunOnMainThread(() =>
@@ -2560,7 +2560,7 @@ namespace Chummer.Backend.Attributes
                                     aFuncs[i] = () => objEvents.AsyncPropertyChangedList[i1].Invoke(this, e, token);
                                 }
 
-                                Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                                Utils.RunWithoutThreadLock(aFuncs);
                                 if (objEvents.PropertyChangedList.Count != 0)
                                 {
                                     Utils.RunOnMainThread(() =>

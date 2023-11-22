@@ -928,7 +928,7 @@ namespace Chummer
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_lstPropertyChangedAsync.Count > 0)
-                    Utils.RunWithoutThreadLock(_lstPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))), CancellationToken.None);
+                    Utils.RunWithoutThreadLock(_lstPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))));
                 if (PropertyChanged != null)
                     Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
             }

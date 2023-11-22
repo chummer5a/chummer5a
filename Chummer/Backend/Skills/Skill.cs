@@ -5524,7 +5524,7 @@ namespace Chummer.Backend.Skills
                                 aFuncs[i++] = () => objEvent.Invoke(this, objArg);
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs, CancellationToken.None);
+                        Utils.RunWithoutThreadLock(aFuncs);
                         if (PropertyChanged != null)
                         {
                             Utils.RunOnMainThread(() =>
