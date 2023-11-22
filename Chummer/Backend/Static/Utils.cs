@@ -2115,15 +2115,30 @@ namespace Chummer
             T[] aobjReturn = new T[intLength];
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                Parallel.For(0, intLength, (i, y) =>
+                JoinableTaskFactory.Run(async () =>
                 {
-                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                    List<Task<T>> lstMainThreadTasks = new List<Task<T>>(MaxParallelBatchSize);
+                    int intMainThreadOffset = 0;
+                    for (int i = 0; i < intLength; ++i)
                     {
-                        y.Stop();
-                        return;
+                        if (i != 0 && i % MaxParallelBatchSize == 0)
+                        {
+                            await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                            for (int j = 0; j < MaxParallelBatchSize; ++j)
+                                aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(false);
+                            intMainThreadOffset += MaxParallelBatchSize;
+                            lstMainThreadTasks.Clear();
+                        }
+                        lstMainThreadTasks.Add(Task.Run(afuncToRun[i], token));
                     }
-                    aobjReturn[i] = JoinableTaskFactory.Run(afuncToRun[i], JoinableTaskCreationOptions.LongRunning);
-                });
+                    int intMainThreadFinalBatchSize = lstMainThreadTasks.Count;
+                    if (intMainThreadFinalBatchSize != 0)
+                    {
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                        for (int j = 0; j < intMainThreadFinalBatchSize; ++j)
+                            aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(false);
+                    }
+                }, JoinableTaskCreationOptions.LongRunning);
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
@@ -2250,7 +2265,22 @@ namespace Chummer
         {
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                Parallel.ForEach(afuncToRun, (funcToRun, y) => JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning));
+                JoinableTaskFactory.Run(async () =>
+                {
+                    List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
+                    int intMainThreadCounter = 0;
+                    foreach (Func<Task> funcToRun in afuncToRun)
+                    {
+                        lstMainThreadTasks.Add(Task.Run(funcToRun));
+                        if (++intMainThreadCounter != MaxParallelBatchSize)
+                            continue;
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                        lstMainThreadTasks.Clear();
+                        intMainThreadCounter = 0;
+                    }
+
+                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                }, JoinableTaskCreationOptions.LongRunning);
                 return;
             }
             if (!EverDoEvents)
@@ -2298,15 +2328,22 @@ namespace Chummer
         {
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                Parallel.ForEach(afuncToRun, (funcToRun, y) =>
+                JoinableTaskFactory.Run(async () =>
                 {
-                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                    List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
+                    int intMainThreadCounter = 0;
+                    foreach (Func<Task> funcToRun in afuncToRun)
                     {
-                        y.Stop();
-                        return;
+                        lstMainThreadTasks.Add(Task.Run(funcToRun, token));
+                        if (++intMainThreadCounter != MaxParallelBatchSize)
+                            continue;
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                        lstMainThreadTasks.Clear();
+                        intMainThreadCounter = 0;
                     }
-                    JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
-                });
+
+                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                }, JoinableTaskCreationOptions.LongRunning);
                 token.ThrowIfCancellationRequested();
                 return;
             }
