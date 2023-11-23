@@ -20,15 +20,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class CachedBindingList<T> : BindingList<T>
+    public class CachedBindingList<T> : BindingList<T>, IAsyncList<T>, IAsyncReadOnlyList<T>
     {
         public AsyncFriendlyReaderWriterLock BindingListLock { get; set; }
+
+        private bool _blnDoAsyncEventHandlers;
 
 #pragma warning disable CA1070
         /// <summary>
@@ -87,37 +88,33 @@ namespace Chummer
         {
             if (RaiseListChangedEvents)
             {
-                if (_lstBeforeRemoveAsync.Count > 0)
+                IDisposable objLocker = BindingListLock?.EnterReadLock();
+                try
                 {
-                    Utils.SafelyRunSynchronously(async () =>
+                    if (_blnDoAsyncEventHandlers && _lstBeforeRemoveAsync.Count > 0)
                     {
-                        IDisposable objLocker = null;
-                        if (BindingListLock != null)
-                            objLocker = await BindingListLock.EnterReadLockAsync().ConfigureAwait(false);
-                        try
+                        RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
+                        Func<Task>[] aFuncs = new Func<Task>[_lstBeforeRemoveAsync.Count];
+                        int i = 0;
+                        foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
                         {
-                            RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
-                            await Task.WhenAll(
-                                _lstBeforeRemoveAsync.Select(x => x.Invoke(this, objArgs)));
-                            BeforeRemove?.Invoke(this, objArgs);
+                            aFuncs[i++] = () => objEvent.Invoke(this, objArgs);
                         }
-                        finally
+
+                        Utils.RunWithoutThreadLock(aFuncs);
+                        if (BeforeRemove != null)
                         {
-                            objLocker?.Dispose();
+                            Utils.RunOnMainThread(() => BeforeRemove?.Invoke(this, objArgs));
                         }
-                    });
+                    }
+                    else if (BeforeRemove != null)
+                    {
+                        Utils.RunOnMainThread(() => BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[index], index)));
+                    }
                 }
-                else if (BeforeRemove != null)
+                finally
                 {
-                    IDisposable objLocker = BindingListLock?.EnterReadLock();
-                    try
-                    {
-                        BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[index], index));
-                    }
-                    finally
-                    {
-                        objLocker?.Dispose();
-                    }
+                    objLocker?.Dispose();
                 }
             }
 
@@ -129,36 +126,54 @@ namespace Chummer
         {
             if (RaiseListChangedEvents)
             {
-                if (_lstBeforeRemoveAsync.Count > 0)
+                IDisposable objLocker = BindingListLock?.EnterReadLock();
+                try
                 {
-                    Utils.SafelyRunSynchronously(async () =>
+                    if (_blnDoAsyncEventHandlers && _lstBeforeRemoveAsync.Count > 0)
                     {
-                        IDisposable objLocker = null;
-                        if (BindingListLock != null)
-                            objLocker = await BindingListLock.EnterReadLockAsync().ConfigureAwait(false);
-                        try
+                        List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>();
+                        for (int i = 0; i < Items.Count; ++i)
+                            lstArgsList.Add(new RemovingOldEventArgs(Items[i], i));
+                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstBeforeRemoveAsync.Count];
+                        int j = 0;
+                        foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
                         {
-                            for (int i = 0; i < Items.Count; ++i)
+                            foreach (RemovingOldEventArgs objArgs in lstArgsList)
+                                aFuncs[j++] = () => objEvent.Invoke(this, objArgs);
+                        }
+
+                        Utils.RunWithoutThreadLock(aFuncs);
+                        if (BeforeRemove != null)
+                        {
+                            Utils.RunOnMainThread(() =>
                             {
-                                RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[i], i);
-                                await Task.WhenAll(
-                                    _lstBeforeRemoveAsync.Select(x => x.Invoke(this, objArgs)));
-                                BeforeRemove?.Invoke(this, objArgs);
-                            }
-                            
+                                if (BeforeRemove != null)
+                                {
+                                    foreach (RemovingOldEventArgs objArgs in lstArgsList)
+                                    {
+                                        BeforeRemove.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
                         }
-                        finally
-                        {
-                            objLocker?.Dispose();
-                        }
-                    });
-                }
-                else if (BeforeRemove != null)
-                {
-                    for (int i = 0; i < Items.Count; ++i)
-                    {
-                        BeforeRemove.Invoke(this, new RemovingOldEventArgs(Items[i], i));
                     }
+                    else if (BeforeRemove != null)
+                    {
+                        Utils.RunOnMainThread(() =>
+                        {
+                            if (BeforeRemove != null)
+                            {
+                                for (int i = 0; i < Items.Count; ++i)
+                                {
+                                    BeforeRemove.Invoke(this, new RemovingOldEventArgs(Items[i], i));
+                                }
+                            }
+                        });
+                    }
+                }
+                finally
+                {
+                    objLocker?.Dispose();
                 }
             }
 
@@ -170,10 +185,38 @@ namespace Chummer
         {
             if (RaiseListChangedEvents)
             {
-                T objOldItem = Items[index];
-                if (!ReferenceEquals(objOldItem, item))
+                IDisposable objLocker = BindingListLock?.EnterReadLock();
+                try
                 {
-                    BeforeRemove?.Invoke(this, new RemovingOldEventArgs(objOldItem, index));
+                    T objOldItem = Items[index];
+                    if (!ReferenceEquals(objOldItem, item))
+                    {
+                        if (_blnDoAsyncEventHandlers && _lstBeforeRemoveAsync.Count > 0)
+                        {
+                            RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
+                            Func<Task>[] aFuncs = new Func<Task>[_lstBeforeRemoveAsync.Count];
+                            int i = 0;
+                            foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
+                            {
+                                aFuncs[i++] = () => objEvent.Invoke(this, objArgs);
+                            }
+
+                            Utils.RunWithoutThreadLock(aFuncs);
+                            if (BeforeRemove != null)
+                            {
+                                Utils.RunOnMainThread(() => BeforeRemove?.Invoke(this, objArgs));
+                            }
+                        }
+                        else if (BeforeRemove != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                                BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[index], index)));
+                        }
+                    }
+                }
+                finally
+                {
+                    objLocker?.Dispose();
                 }
             }
 
@@ -183,70 +226,507 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnAddingNew(AddingNewEventArgs e)
         {
-            if (_lstAddingNewAsync.Count > 0)
+            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            try
             {
-                Utils.SafelyRunSynchronously(async () =>
+                if (_blnDoAsyncEventHandlers && _lstAddingNewAsync.Count > 0)
                 {
-                    IDisposable objLocker = null;
-                    if (BindingListLock != null)
-                        objLocker = await BindingListLock.EnterReadLockAsync().ConfigureAwait(false);
-                    try
-                    {
-                        await Task.WhenAll(_lstAddingNewAsync.Select(x => x.Invoke(this, e)));
-                        base.OnAddingNew(e);
-                    }
-                    finally
-                    {
-                        objLocker?.Dispose();
-                    }
-                });
+                    Func<Task>[] aFuncs = new Func<Task>[_lstAddingNewAsync.Count];
+                    int i = 0;
+                    foreach (AsyncAddingNewEventHandler objEvent in _lstAddingNewAsync)
+                        aFuncs[i++] = () => objEvent.Invoke(this, e);
+
+                    Utils.RunWithoutThreadLock(aFuncs);
+                }
+
+                base.OnAddingNew(e);
             }
-            else
+            finally
             {
-                IDisposable objLocker = BindingListLock?.EnterReadLock();
-                try
-                {
-                    base.OnAddingNew(e);
-                }
-                finally
-                {
-                    objLocker?.Dispose();
-                }
+                objLocker?.Dispose();
             }
         }
 
         /// <inheritdoc />
         protected override void OnListChanged(ListChangedEventArgs e)
         {
-            if (_lstListChangedAsync.Count > 0)
+            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            try
             {
-                Utils.SafelyRunSynchronously(async () =>
+                if (_blnDoAsyncEventHandlers && _lstListChangedAsync.Count > 0)
                 {
+                    Func<Task>[] aFuncs = new Func<Task>[_lstListChangedAsync.Count];
+                    int i = 0;
+                    foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                        aFuncs[i++] = () => objEvent.Invoke(this, e);
+
+                    Utils.RunWithoutThreadLock(aFuncs);
+                }
+
+                base.OnListChanged(e);
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+        }
+
+        public Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
+        {
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<IEnumerator<T>>(token)
+                : Task.FromResult(GetEnumerator());
+        }
+
+        public Task<int> GetCountAsync(CancellationToken token)
+        {
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<int>(token)
+                : Task.FromResult(Count);
+        }
+
+        public async Task AddAsync(T item, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!RaiseListChangedEvents)
+            {
+                Add(item);
+                return;
+            }
+
+            bool blnOldDoAsyncEventHandlers = _blnDoAsyncEventHandlers;
+            try
+            {
+                _blnDoAsyncEventHandlers = false;
+                Add(item);
+                if (_lstListChangedAsync.Count != 0)
+                {
+                    ListChangedEventArgs objArg = new ListChangedEventArgs(ListChangedType.ItemAdded, Count - 1);
                     IDisposable objLocker = null;
                     if (BindingListLock != null)
-                        objLocker = await BindingListLock.EnterReadLockAsync().ConfigureAwait(false);
+                        objLocker = await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        await Task.WhenAll(_lstListChangedAsync.Select(x => x.Invoke(this, e)));
-                        base.OnListChanged(e);
+                        token.ThrowIfCancellationRequested();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
                     }
                     finally
                     {
                         objLocker?.Dispose();
                     }
-                });
+                }
             }
-            else
+            finally
             {
-                IDisposable objLocker = BindingListLock?.EnterReadLock();
-                try
+                _blnDoAsyncEventHandlers = blnOldDoAsyncEventHandlers;
+            }
+        }
+
+        public async Task ClearAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!RaiseListChangedEvents)
+            {
+                Clear();
+                return;
+            }
+
+            if (_blnDoAsyncEventHandlers && _lstBeforeRemoveAsync.Count > 0)
+            {
+                List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>();
+                for (int j = 0; j < Items.Count; ++j)
+                    lstArgsList.Add(new RemovingOldEventArgs(Items[j], j));
+                List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                int i = 0;
+                foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
                 {
-                    base.OnListChanged(e);
+                    foreach (RemovingOldEventArgs objArgs in lstArgsList)
+                    {
+                        lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                        if (++i < Utils.MaxParallelBatchSize)
+                            continue;
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        lstTasks.Clear();
+                        i = 0;
+                    }
                 }
-                finally
+
+                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            }
+
+            bool blnOldDoAsyncEventHandlers = _blnDoAsyncEventHandlers;
+            try
+            {
+                _blnDoAsyncEventHandlers = false;
+                Clear();
+                if (_lstListChangedAsync.Count != 0)
                 {
-                    objLocker?.Dispose();
+                    ListChangedEventArgs objArgs = new ListChangedEventArgs(ListChangedType.Reset, -1);
+                    IDisposable objLocker = null;
+                    if (BindingListLock != null)
+                        objLocker = await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        objLocker?.Dispose();
+                    }
                 }
+            }
+            finally
+            {
+                _blnDoAsyncEventHandlers = blnOldDoAsyncEventHandlers;
+            }
+        }
+
+        public Task<bool> ContainsAsync(T item, CancellationToken token = default)
+        {
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(Contains(item));
+        }
+
+        public Task CopyToAsync(T[] array, int index, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            CopyTo(array, index);
+            return Task.CompletedTask;
+        }
+
+        public async Task<bool> RemoveAsync(T item, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intIndex = IndexOf(item);
+            if (intIndex < 0)
+                return false;
+            await RemoveAtAsync(intIndex, token).ConfigureAwait(false);
+            return true;
+        }
+
+        public Task<T> GetValueAtAsync(int index, CancellationToken token)
+        {
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<T>(token)
+                : Task.FromResult(this[index]);
+        }
+
+        public async Task SetValueAtAsync(int index, T value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!RaiseListChangedEvents)
+            {
+                this[index] = value;
+                return;
+            }
+
+            T objOldItem = this[index];
+            if (!ReferenceEquals(objOldItem, value))
+            {
+                if (_blnDoAsyncEventHandlers && _lstBeforeRemoveAsync.Count > 0)
+                {
+                    RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
+                    List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                    int i = 0;
+                    foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
+                    {
+                        lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                        if (++i < Utils.MaxParallelBatchSize)
+                            continue;
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        lstTasks.Clear();
+                        i = 0;
+                    }
+
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                }
+            }
+
+            bool blnOldDoAsyncEventHandlers = _blnDoAsyncEventHandlers;
+            try
+            {
+                _blnDoAsyncEventHandlers = false;
+                this[index] = value;
+                if (_lstListChangedAsync.Count != 0)
+                {
+                    ListChangedEventArgs objArg = new ListChangedEventArgs(ListChangedType.ItemChanged, index);
+                    IDisposable objLocker = null;
+                    if (BindingListLock != null)
+                        objLocker = await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        objLocker?.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                _blnDoAsyncEventHandlers = blnOldDoAsyncEventHandlers;
+            }
+        }
+
+        public Task<int> IndexOfAsync(T item, CancellationToken token = default)
+        {
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<int>(token)
+                : Task.FromResult(IndexOf(item));
+        }
+
+        public async Task InsertAsync(int index, T item, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!RaiseListChangedEvents)
+            {
+                Insert(index, item);
+                return;
+            }
+
+            bool blnOldDoAsyncEventHandlers = _blnDoAsyncEventHandlers;
+            try
+            {
+                _blnDoAsyncEventHandlers = false;
+                Insert(index, item);
+                if (_lstListChangedAsync.Count != 0)
+                {
+                    ListChangedEventArgs objArg = new ListChangedEventArgs(ListChangedType.ItemAdded, index);
+                    IDisposable objLocker = null;
+                    if (BindingListLock != null)
+                        objLocker = await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        objLocker?.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                _blnDoAsyncEventHandlers = blnOldDoAsyncEventHandlers;
+            }
+        }
+
+        public async Task RemoveAtAsync(int index, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!RaiseListChangedEvents)
+            {
+                RemoveAt(index);
+                return;
+            }
+
+            if (_blnDoAsyncEventHandlers && _lstBeforeRemoveAsync.Count > 0)
+            {
+                RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
+                List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                int i = 0;
+                foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
+                {
+                    lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                    if (++i < Utils.MaxParallelBatchSize)
+                        continue;
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    lstTasks.Clear();
+                    i = 0;
+                }
+
+                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            }
+
+            bool blnOldDoAsyncEventHandlers = _blnDoAsyncEventHandlers;
+            try
+            {
+                _blnDoAsyncEventHandlers = false;
+                RemoveAt(index);
+                if (_lstListChangedAsync.Count != 0)
+                {
+                    ListChangedEventArgs objArgs = new ListChangedEventArgs(ListChangedType.ItemDeleted, index);
+                    IDisposable objLocker = null;
+                    if (BindingListLock != null)
+                        objLocker = await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        objLocker?.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                _blnDoAsyncEventHandlers = blnOldDoAsyncEventHandlers;
+            }
+        }
+
+        public async Task ResetBindingsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!RaiseListChangedEvents)
+            {
+                ResetBindings();
+                return;
+            }
+
+            bool blnOldDoAsyncEventHandlers = _blnDoAsyncEventHandlers;
+            try
+            {
+                _blnDoAsyncEventHandlers = false;
+                ResetBindings();
+                if (_lstListChangedAsync.Count != 0)
+                {
+                    ListChangedEventArgs objArgs = new ListChangedEventArgs(ListChangedType.Reset, -1);
+                    IDisposable objLocker = null;
+                    if (BindingListLock != null)
+                        objLocker = await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        objLocker?.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                _blnDoAsyncEventHandlers = blnOldDoAsyncEventHandlers;
+            }
+        }
+
+        public async Task ResetItemAsync(int position, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!RaiseListChangedEvents)
+            {
+                ResetItem(position);
+                return;
+            }
+
+            bool blnOldDoAsyncEventHandlers = _blnDoAsyncEventHandlers;
+            try
+            {
+                _blnDoAsyncEventHandlers = false;
+                ResetItem(position);
+                if (_lstListChangedAsync.Count != 0)
+                {
+                    ListChangedEventArgs objArgs = new ListChangedEventArgs(ListChangedType.ItemChanged, position);
+                    IDisposable objLocker = null;
+                    if (BindingListLock != null)
+                        objLocker = await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        objLocker?.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                _blnDoAsyncEventHandlers = blnOldDoAsyncEventHandlers;
             }
         }
     }

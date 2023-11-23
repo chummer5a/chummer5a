@@ -70,7 +70,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.Count;
+                return await _lstData.GetCountAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -113,7 +113,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData[index];
+                return await _lstData.GetValueAtAsync(index, token).ConfigureAwait(false);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    _lstData[index] = value;
+                    await _lstData.SetValueAtAsync(index, value, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -180,7 +180,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.Add(item);
+                await _lstData.AddAsync(item, token).ConfigureAwait(false);
             }
             finally
             {
@@ -257,7 +257,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.Clear();
+                await _lstData.ClearAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -285,7 +285,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.Contains(item);
+                return await _lstData.ContainsAsync(item, token).ConfigureAwait(false);
             }
         }
 
@@ -327,7 +327,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.CopyTo(array, index);
+                await _lstData.CopyToAsync(array, index, token).ConfigureAwait(false);
             }
         }
 
@@ -477,7 +477,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.FindIndex(match);
+                return await _lstData.FindIndexAsync(match, token).ConfigureAwait(false);
             }
         }
 
@@ -487,7 +487,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.FindIndex(startIndex, match);
+                return await _lstData.FindIndexAsync(startIndex, match, token).ConfigureAwait(false);
             }
         }
 
@@ -497,7 +497,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.FindIndex(startIndex, count, match);
+                return await _lstData.FindIndexAsync(startIndex, count, match, token).ConfigureAwait(false);
             }
         }
 
@@ -545,7 +545,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.FindIndex(match);
+                return await _lstData.FindLastIndexAsync(match, token).ConfigureAwait(false);
             }
         }
 
@@ -555,7 +555,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.FindIndex(startIndex, match);
+                return await _lstData.FindLastIndexAsync(startIndex, match, token).ConfigureAwait(false);
             }
         }
 
@@ -565,7 +565,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.FindLastIndex(startIndex, count, match);
+                return await _lstData.FindLastIndexAsync(startIndex, count, match, token).ConfigureAwait(false);
             }
         }
 
@@ -580,7 +580,7 @@ namespace Chummer
         public async Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
         {
             LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this, token).ConfigureAwait(false);
-            objReturn.SetEnumerator(_lstData.GetEnumerator());
+            objReturn.SetEnumerator(await _lstData.GetEnumeratorAsync(token).ConfigureAwait(false));
             return objReturn;
         }
 
@@ -604,7 +604,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.IndexOf(item);
+                return await _lstData.IndexOfAsync(item, token).ConfigureAwait(false);
             }
         }
 
@@ -629,7 +629,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.Insert(index, item);
+                await _lstData.InsertAsync(index, item, token).ConfigureAwait(false);
             }
             finally
             {
@@ -650,7 +650,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.LastIndexOf(item);
+                return await _lstData.LastIndexOfAsync(item, token).ConfigureAwait(false);
             }
         }
 
@@ -674,7 +674,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.Remove(item);
+                return await _lstData.RemoveAsync(item, token).ConfigureAwait(false);
             }
             finally
             {
@@ -696,7 +696,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.RemoveAt(index);
+                await _lstData.RemoveAtAsync(index, token).ConfigureAwait(false);
             }
             finally
             {
@@ -985,7 +985,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="BindingList{T}.AddNew()" />
-        public async Task<object> AddNewAsync(CancellationToken token = default)
+        public async Task<T> AddNewAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -1027,7 +1027,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.ResetBindings();
+                await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -1049,7 +1049,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.ResetItem(position);
+                await _lstData.ResetItemAsync(position, token).ConfigureAwait(false);
             }
             finally
             {
@@ -1425,14 +1425,14 @@ namespace Chummer
 
                     if (intCountChanges >= intResetThreshold)
                     {
-                        _lstData.ResetBindings();
+                        await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
                     }
                     else
                     {
                         for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
                             if (ablnItemChanged[i])
-                                _lstData.ResetItem(index + i);
+                                await _lstData.ResetItemAsync(index + i, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -1533,14 +1533,14 @@ namespace Chummer
 
                     if (intCountChanges >= intResetThreshold)
                     {
-                        _lstData.ResetBindings();
+                        await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
                     }
                     else
                     {
                         for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
                             if (ablnItemChanged[i])
-                                _lstData.ResetItem(i);
+                                await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -1642,14 +1642,14 @@ namespace Chummer
 
                     if (intCountChanges >= intResetThreshold)
                     {
-                        _lstData.ResetBindings();
+                        await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
                     }
                     else
                     {
                         for (int i = 0; i < ablnItemChanged.Length; ++i)
                         {
                             if (ablnItemChanged[i])
-                                _lstData.ResetItem(i);
+                                await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -1662,53 +1662,84 @@ namespace Chummer
 
         public void Move(int intOldIndex, int intNewIndex, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock(token))
+            int intParity = intOldIndex < intNewIndex ? 1 : -1;
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
-                try
+                using (LockObject.EnterWriteLock(token))
                 {
-                    _lstData.RaiseListChangedEvents = false;
-                    int intParity = intOldIndex < intNewIndex ? 1 : -1;
-                    for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                    bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                    try
                     {
-                        token.ThrowIfCancellationRequested();
-                        (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
-                            _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
+                        _lstData.RaiseListChangedEvents = false;
+                        for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
+                                _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
+                        }
+                    }
+                    finally
+                    {
+                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
                     }
                 }
-                finally
+
+                if (Math.Abs(intOldIndex - intNewIndex) >= _lstData.Count)
                 {
-                    _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                    _lstData.ResetBindings();
+                }
+                else
+                {
+                    for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                    {
+                        _lstData.ResetItem(i);
+                    }
                 }
             }
         }
 
         public async Task MoveAsync(int intOldIndex, int intNewIndex, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            int intParity = intOldIndex < intNewIndex ? 1 : -1;
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _lstData.RaiseListChangedEvents = false;
-                    int intParity = intOldIndex < intNewIndex ? 1 : -1;
-                    for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                    token.ThrowIfCancellationRequested();
+                    bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                    try
                     {
-                        token.ThrowIfCancellationRequested();
-                        (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
-                            _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
+                        _lstData.RaiseListChangedEvents = false;
+                        for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
+                                _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
+                        }
+                    }
+                    finally
+                    {
+                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
                     }
                 }
                 finally
                 {
-                    _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+
+                if (Math.Abs(intOldIndex - intNewIndex) >= await _lstData.GetCountAsync(token).ConfigureAwait(false))
+                {
+                    await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
+                }
+                else
+                {
+                    for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                    {
+                        await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
+                    }
+                }
             }
         }
     }
