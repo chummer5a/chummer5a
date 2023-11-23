@@ -1621,7 +1621,7 @@ namespace Chummer
         public static void SafelyRunSynchronously(Func<Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI))
+            if (Program.IsMainThread)
                 JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
             else
                 funcToRun.Invoke().GetAwaiter().GetResult();
@@ -1637,7 +1637,7 @@ namespace Chummer
         public static T SafelyRunSynchronously<T>(Func<Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI)
+            return Program.IsMainThread
                 ? JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning)
                 : funcToRun.Invoke().GetAwaiter().GetResult();
         }
@@ -1652,7 +1652,7 @@ namespace Chummer
         public static void SafelyRunSynchronously(IEnumerable<Func<Task>> afuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI))
+            if (Program.IsMainThread)
             {
                 foreach (Func<Task> funcToRun in afuncToRun)
                 {
@@ -1683,7 +1683,7 @@ namespace Chummer
             int intCount = afuncToRun.Count;
             T[] aobjReturn = new T[intCount];
             int i = 0;
-            if (Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI))
+            if (Program.IsMainThread)
             {
                 foreach (Func<Task<T>> funcToRun in afuncToRun)
                 {
@@ -1713,7 +1713,7 @@ namespace Chummer
         public static void SafelyRunSynchronously(Func<Task> funcToRun, JoinableTaskCreationOptions eOptions, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI))
+            if (Program.IsMainThread)
                 JoinableTaskFactory.Run(funcToRun, eOptions);
             else
                 funcToRun.Invoke().GetAwaiter().GetResult();
@@ -1730,7 +1730,7 @@ namespace Chummer
         public static T SafelyRunSynchronously<T>(Func<Task<T>> funcToRun, JoinableTaskCreationOptions eOptions, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI)
+            return Program.IsMainThread
                 ? JoinableTaskFactory.Run(funcToRun, eOptions)
                 : funcToRun.Invoke().GetAwaiter().GetResult();
         }
@@ -1746,7 +1746,7 @@ namespace Chummer
         public static void SafelyRunSynchronously(IEnumerable<Func<Task>> afuncToRun, JoinableTaskCreationOptions eOptions, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI))
+            if (Program.IsMainThread)
             {
                 foreach (Func<Task> funcToRun in afuncToRun)
                 {
@@ -1778,7 +1778,7 @@ namespace Chummer
             int intCount = afuncToRun.Count;
             T[] aobjReturn = new T[intCount];
             int i = 0;
-            if (Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI))
+            if (Program.IsMainThread)
             {
                 foreach (Func<Task<T>> funcToRun in afuncToRun)
                 {
