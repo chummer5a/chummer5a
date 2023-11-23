@@ -412,7 +412,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     objMyToken.ThrowIfCancellationRequested();
-                    _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
+                    _objCharacter.SkillsSection.Skills.ListChangedAsync += SkillsOnListChanged;
                     _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
                     _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
                     _objCharacter.SkillsSection.PropertyChangedAsync += SkillsSectionOnPropertyChanged;
@@ -532,33 +532,46 @@ namespace Chummer.UI.Skills
                 RefreshSkillGroupLabels();
         }
 
-        private void SkillsOnListChanged(object sender, ListChangedEventArgs e)
+        private async Task SkillsOnListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
-            if (e.ListChangedType == ListChangedType.Reset
-                || e.ListChangedType == ListChangedType.ItemAdded
-                || e.ListChangedType == ListChangedType.ItemDeleted)
+            token.ThrowIfCancellationRequested();
+            if (e.ListChangedType != ListChangedType.Reset
+                && e.ListChangedType != ListChangedType.ItemAdded
+                && e.ListChangedType != ListChangedType.ItemDeleted)
+                return;
+
+            await this.DoThreadSafeAsync(RefreshSkillLabels, token).ConfigureAwait(false);
+            // Special, hacky fix to force skill group displays to refresh when skill lists could change (e.g, because skill groups can end up getting
+            // added before their skills do through said skills' constructors and how they are used, making them not show up in the UI initially)
+            if (e.ListChangedType == ListChangedType.ItemAdded)
             {
-                RefreshSkillLabels();
-                // Special, hacky fix to force skill group displays to refresh when skill lists could change (e.g, because skill groups can end up getting
-                // added before their skills do through said skills' constructors and how they are used, making them not show up in the UI initially)
-                if (e.ListChangedType == ListChangedType.Reset || e.ListChangedType == ListChangedType.ItemDeleted)
+                Skill objNewSkill =
+                    await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                            .GetSkillsAsync(token).ConfigureAwait(false)).GetValueAtAsync(e.NewIndex, token)
+                        .ConfigureAwait(false);
+                SkillGroup objNewSkillGroup = objNewSkill?.SkillGroupObject;
+                if (objNewSkillGroup != null &&
+                    await objNewSkillGroup.SkillList.CountAsync(async y =>
+                        await _objCharacter.SkillsSection
+                            .HasActiveSkillAsync(await y.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                token)
+                            .ConfigureAwait(false), token).ConfigureAwait(false) == 1)
                 {
-                    _lstSkillGroups.Filter(
-                        z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
-                        true);
+                    await _lstSkillGroups
+                        .DoThreadSafeAsync(
+                            x => x.Filter(
+                                z => z.SkillList.Any(y =>
+                                    _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)), true), token)
+                        .ConfigureAwait(false);
                 }
-                else if (e.ListChangedType == ListChangedType.ItemAdded)
-                {
-                    SkillGroup objNewSkillGroup = _objCharacter.SkillsSection.Skills[e.NewIndex]?.SkillGroupObject;
-                    if (objNewSkillGroup != null &&
-                        objNewSkillGroup.SkillList.Count(y =>
-                            _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)) == 1)
-                    {
-                        _lstSkillGroups.Filter(
+            }
+            else
+            {
+                await _lstSkillGroups
+                    .DoThreadSafeAsync(
+                        x => x.Filter(
                             z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
-                            true);
-                    }
-                }
+                            true), token).ConfigureAwait(false);
             }
         }
 
@@ -578,7 +591,7 @@ namespace Chummer.UI.Skills
                 {
                     using (_objCharacter.SkillsSection.LockObject.EnterWriteLock(token))
                     {
-                        _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
+                        _objCharacter.SkillsSection.Skills.ListChangedAsync -= SkillsOnListChanged;
                         _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
                         _objCharacter.SkillsSection.KnowledgeSkills.ListChanged -= KnowledgeSkillsOnListChanged;
                         _objCharacter.SkillsSection.PropertyChangedAsync -= SkillsSectionOnPropertyChanged;

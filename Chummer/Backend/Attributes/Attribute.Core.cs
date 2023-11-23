@@ -1297,15 +1297,21 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
-        private async Task<int> CalculatedTotalValueCore(bool blnSync, bool blnIncludeCyberlimbs = true, CancellationToken token = default)
+        private async Task<int> CalculatedTotalValueCore(bool blnSync, bool blnIncludeCyberlimbs = true,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token))
+            using (blnSync
+                       ? LockObject.EnterReadLock(token)
+                       : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                string strMetatypeCategory = blnSync
+                    ? _objCharacter.MetatypeCategory
+                    : await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false);
+                if (strMetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
                 int intMeat = blnSync
@@ -1317,7 +1323,11 @@ namespace Chummer.Backend.Attributes
                 int intPureCyberValue = 0;
                 int intLimbCount = 0;
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (blnIncludeCyberlimbs && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                if (blnIncludeCyberlimbs &&
+                    !(blnSync
+                            ? _objCharacter.Settings
+                            : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                        .DontUseCyberlimbCalculation &&
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     int intLimbTotal;
@@ -1325,7 +1335,8 @@ namespace Chummer.Backend.Attributes
                         (intLimbCount, intLimbTotal) = ProcessCyberlimbs(_objCharacter.Cyberware);
                     else
                         (intLimbCount, intLimbTotal) =
-                            await ProcessCyberlimbsAsync(_objCharacter.Cyberware).ConfigureAwait(false);
+                            await ProcessCyberlimbsAsync(await _objCharacter.GetCyberwareAsync(token)
+                                .ConfigureAwait(false)).ConfigureAwait(false);
 
                     Tuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
                     {
@@ -1356,18 +1367,19 @@ namespace Chummer.Backend.Attributes
                         return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
-                    async Task<Tuple<int, int>> ProcessCyberlimbsAsync(IEnumerable<Cyberware> lstToCheck)
+                    async Task<Tuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
-                        foreach (Cyberware objCyberware in lstToCheck)
+                        await lstToCheck.ForEachAsync(async objCyberware =>
                         {
                             if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                continue;
+                                return;
                             if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
-                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
-                                    continue;
+                                if ((await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).ExcludeLimbSlot
+                                    .Contains(objCyberware.LimbSlot))
+                                    return;
 
                                 int intLoop = await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
                                 intLimbCountReturn += intLoop;
@@ -1381,7 +1393,7 @@ namespace Chummer.Backend.Attributes
                                 intLimbCountReturn += intLoop1;
                                 intLimbTotalReturn += intLoop2;
                             }
-                        }
+                        }, token).ConfigureAwait(false);
 
                         return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
@@ -1408,10 +1420,12 @@ namespace Chummer.Backend.Attributes
                 // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, the Metatype Maximum is 0, or it is caused by encumbrance (or a custom improvement).
                 if (intReturn < 1)
                 {
-                    if (_objCharacter.CritterEnabled ||
+                    if ((blnSync
+                            ? _objCharacter.CritterEnabled
+                            : await _objCharacter.GetCritterEnabledAsync(token).ConfigureAwait(false)) ||
                         (blnSync ? MetatypeMaximum : await GetMetatypeMaximumAsync(token).ConfigureAwait(false)) == 0 ||
                         Abbrev == "EDG" || Abbrev == "RES" || Abbrev == "MAG" || Abbrev == "MAGAdept" ||
-                        (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP"))
+                        (Abbrev == "DEP" && strMetatypeCategory != "A.I."))
                         return 0;
                     List<Improvement> lstUsedImprovements;
                     decimal decImprovementValue;
@@ -1517,7 +1531,7 @@ namespace Chummer.Backend.Attributes
                     int intReturn = _intCachedTotalValue;
                     if (intReturn != int.MinValue)
                         return intReturn;
-                    IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterWriteLockAsync(token);
+                    IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();

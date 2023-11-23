@@ -31821,6 +31821,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not Critter options are enabled.
+        /// </summary>
+        public async Task<bool> GetCritterEnabledAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnCritterEnabled;
+            }
+        }
+
+        /// <summary>
         /// Whether or not Black Market Discount is enabled.
         /// </summary>
         public bool DealerConnectionDiscount => ImprovementManager
@@ -41678,7 +41691,11 @@ namespace Chummer
 
                                         if (xmlPowerData != null)
                                         {
-                                            Power objPower = new Power(this) { Extra = strForcedValue };
+                                            Power objPower = new Power(this);
+                                            if (blnSync)
+                                                objPower.Extra = strForcedValue;
+                                            else
+                                                await objPower.SetExtraAsync(strForcedValue, token).ConfigureAwait(false);
                                             objPower.Create(xmlPowerData, intRating);
                                             objPower.Notes = (blnSync
                                                 // ReSharper disable once MethodHasAsyncOverload

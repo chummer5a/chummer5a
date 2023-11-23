@@ -34,6 +34,7 @@ using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
+using Codaxy.WkHtmlToPdf;
 
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
@@ -585,6 +586,22 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// MAG Attribute this skill primarily depends on
+        /// </summary>
+        public async Task<CharacterAttrib> GetMAGAttributeObjectAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _objMAGAttribute;
+            }
+        }
+
+        /// <summary>
+        /// MAG Attribute this skill primarily depends on
+        /// </summary>
         private async Task SetMAGAttributeObjectAsync(CharacterAttrib value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -602,24 +619,42 @@ namespace Chummer
                         if (objOldValue == value)
                             return;
                         await Task.WhenAll(
-                            Task.Run(() =>
+                            Task.Run(async () =>
                             {
                                 if (objOldValue == null)
                                     return;
                                 try
                                 {
-                                    objOldValue.PropertyChangedAsync -= OnLinkedAttributeChanged;
+                                    IAsyncDisposable objLocker2 =
+                                        await objOldValue.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        objOldValue.PropertyChangedAsync -= OnLinkedAttributeChanged;
+                                    }
+                                    finally
+                                    {
+                                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                    }
                                 }
                                 catch (ObjectDisposedException)
                                 {
                                     //swallow this
                                 }
                             }, token),
-                            Task.Run(() =>
+                            Task.Run(async () =>
                             {
                                 if (value == null)
                                     return;
-                                value.PropertyChangedAsync += OnLinkedAttributeChanged;
+                                IAsyncDisposable objLocker2 =
+                                    await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    value.PropertyChangedAsync += OnLinkedAttributeChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                }
                             }, token)).ConfigureAwait(false);
                     }
                     finally
@@ -702,6 +737,98 @@ namespace Chummer
             }
         }
 
+        public async Task<Skill> GetBoostedSkillAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _objBoostedSkill;
+            }
+        }
+
+        private async Task SetBoostedSkillAsync(Skill value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IDisposable objReaderLock = null;
+                if (value != null)
+                    objReaderLock = await value.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    Skill objOldValue = Interlocked.Exchange(ref _objBoostedSkill, value);
+                    IDisposable objReaderLock2 = null;
+                    if (objOldValue != null)
+                        objReaderLock2 = await objOldValue.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (objOldValue == value)
+                            return;
+                        await Task.WhenAll(
+                            Task.Run(async () =>
+                            {
+                                if (objOldValue == null)
+                                    return;
+                                try
+                                {
+                                    IAsyncDisposable objLocker2 =
+                                        await objOldValue.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        objOldValue.PropertyChangedAsync -= OnBoostedSkillChanged;
+                                    }
+                                    finally
+                                    {
+                                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                    }
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
+                            }, token),
+                            Task.Run(async () =>
+                            {
+                                if (value == null)
+                                    return;
+                                IAsyncDisposable objLocker2 =
+                                    await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    value.PropertyChangedAsync += OnBoostedSkillChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }, token)).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        objReaderLock2?.Dispose();
+                    }
+                }
+                finally
+                {
+                    objReaderLock?.Dispose();
+                }
+
+                int intNewSkillRating = value != null ? await value.GetLearnedRatingAsync(token).ConfigureAwait(false) : int.MinValue;
+                if (Interlocked.Exchange(ref _intCachedLearnedRating, intNewSkillRating) != intNewSkillRating &&
+                    await GetLevelsEnabledAsync(token).ConfigureAwait(false))
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(TotalMaximumLevels), nameof(BoostedSkill)).ConfigureAwait(false);
+                else
+                    await OnPropertyChangedAsync(nameof(BoostedSkill), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Internal identifier which will be used to identify this Power in the Improvement system.
         /// </summary>
@@ -772,6 +899,56 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Power's name.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strName;
+            }
+        }
+
+        /// <summary>
+        /// Power's name.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldValue = Interlocked.Exchange(ref _strName, value);
+                if (strOldValue == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    if (strOldValue == "Improved Ability (skill)")
+                    {
+                        await SetBoostedSkillAsync(null, token).ConfigureAwait(false);
+                    }
+                    else if (value == "Improved Ability (skill)")
+                    {
+                        await SetBoostedSkillAsync(
+                            await (await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                .GetActiveSkillAsync(await GetExtraAsync(token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false),
+                            token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
         public string Extra
@@ -794,6 +971,47 @@ namespace Chummer
                     }
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Extra information that should be applied to the name, like a linked CharacterAttribute.
+        /// </summary>
+        public async Task<string> GetExtraAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strExtra;
+            }
+        }
+
+        /// <summary>
+        /// Extra information that should be applied to the name, like a linked CharacterAttribute.
+        /// </summary>
+        public async Task SetExtraAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strExtra, value) == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    if (await GetNameAsync(token).ConfigureAwait(false) == "Improved Ability (skill)")
+                        await SetBoostedSkillAsync(
+                            await CharacterObject.SkillsSection.GetActiveSkillAsync(value, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(Extra), token).ConfigureAwait(false);
             }
         }
 
@@ -837,16 +1055,21 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                string strReturn = Name;
+                string strReturn = await GetNameAsync(token).ConfigureAwait(false);
 
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     XPathNavigator objNode
                         = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                    strReturn = objNode != null
-                        ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                        .ConfigureAwait(false))?.Value ?? Name
-                        : Name;
+                    if (objNode != null)
+                    {
+                        XPathNavigator objDataNode = await objNode
+                            .SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false);
+                        if (objDataNode != null)
+                        {
+                            strReturn = objDataNode.Value;
+                        }
+                    }
                 }
 
                 return strReturn;
@@ -890,14 +1113,14 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
-
-                if (!string.IsNullOrEmpty(Extra))
+                string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strExtra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
                     strReturn
                         += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                 .ConfigureAwait(false) + '(' + await CharacterObject
-                            .TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+                            .TranslateExtraAsync(strExtra, strLanguage, token: token).ConfigureAwait(false) + ')';
                 }
 
                 return strReturn;
@@ -913,8 +1136,7 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    decimal decReturn = Convert.ToDecimal(_strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
-                    return decReturn;
+                    return Convert.ToDecimal(_strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
                 }
             }
             set
@@ -926,6 +1148,19 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Power Point cost per level of the Power.
+        /// </summary>
+        public async Task<decimal> GetPointsPerLevelAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return Convert.ToDecimal(_strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
             }
         }
 
@@ -956,6 +1191,20 @@ namespace Chummer
         }
 
         /// <summary>
+        /// An additional cost on top of the power's PointsPerLevel.
+        /// Example: Improved Reflexes is properly speaking Rating + 0.5, but the math for that gets weird.
+        /// </summary>
+        public async Task<decimal> GetExtraPointCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _decExtraPointCost;
+            }
+        }
+
+        /// <summary>
         /// Power Point discount for an Adept Way.
         /// </summary>
         public decimal AdeptWayDiscount
@@ -964,8 +1213,7 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    decimal decReturn = Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
-                    return decReturn;
+                    return Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
                 }
             }
             set
@@ -989,8 +1237,7 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                decimal decReturn = Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
-                return decReturn;
+                return Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
             }
         }
 
@@ -1008,6 +1255,21 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return DiscountedAdeptWay ? AdeptWayDiscount : 0;
+            }
+        }
+
+        /// <summary>
+        /// Calculate the discount that is applied to the Power.
+        /// </summary>
+        private async Task<decimal> GetDiscountAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetDiscountedAdeptWayAsync(token).ConfigureAwait(false)
+                    ? await GetAdeptWayDiscountAsync(token).ConfigureAwait(false)
+                    : 0;
             }
         }
 
@@ -1169,47 +1431,63 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (_intCachedFreeLevels != int.MinValue)
                             return _intCachedFreeLevels;
-                        decimal decExtraCost = FreePoints;
+                        decimal decExtraCost = await GetFreePointsAsync(token).ConfigureAwait(false);
+                        string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
                         // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
                         int intReturn = (await ImprovementManager
                                 .GetCachedImprovementListForValueOfAsync(CharacterObject,
                                     Improvement.ImprovementType.AdeptPowerFreeLevels,
-                                    Name, token: token).ConfigureAwait(false))
-                            .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                    await GetNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                            .Sum(objImprovement => objImprovement.UniqueName == strExtra,
                                 objImprovement => objImprovement.Rating, token);
+                        decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
                         // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
-                        if (Rating + intReturn == 0 && ExtraPointCost > 0)
+                        if (await GetRatingAsync(token).ConfigureAwait(false) + intReturn == 0)
                         {
-                            decExtraCost -= PointsPerLevel + ExtraPointCost;
-                            if (decExtraCost >= 0)
+                            decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
+                            if (decExtraPointCost > 0)
                             {
-                                ++intReturn;
-                            }
+                                decExtraCost -= decPointsPerLevel + decExtraPointCost;
+                                if (decExtraCost >= 0)
+                                {
+                                    ++intReturn;
+                                }
 
-                            for (decimal i = decExtraCost; i >= 1; --i)
+                                for (decimal i = decExtraCost; i >= 1; --i)
+                                {
+                                    ++intReturn;
+                                }
+                            }
+                            else if (decPointsPerLevel != 0)
+                            {
+                                for (decimal i = decExtraCost; i >= decPointsPerLevel; i -= decPointsPerLevel)
+                                {
+                                    ++intReturn;
+                                }
+                            }
+                            else
+                            {
+                                Utils.BreakIfDebug();
+                                // power costs no PP, just return free levels
+                            }
+                        }
+                        //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
+                        else if (decPointsPerLevel != 0)
+                        {
+                            for (decimal i = decExtraCost; i >= decPointsPerLevel; i -= decPointsPerLevel)
                             {
                                 ++intReturn;
                             }
                         }
-                        else if (PointsPerLevel == 0)
+                        else
                         {
                             Utils.BreakIfDebug();
                             // power costs no PP, just return free levels
                         }
-                        //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
-                        else
-                        {
-                            for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
-                            {
-                                ++intReturn;
-                            }
-                        }
 
-                        return _intCachedFreeLevels
-                            = Math.Min(intReturn,
-                                MAGAttributeObject != null
-                                    ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false)
-                                    : 0);
+                        CharacterAttrib objMag = await GetMAGAttributeObjectAsync(token).ConfigureAwait(false);
+                        return _intCachedFreeLevels = Math.Min(intReturn,
+                            objMag != null ? await objMag.GetTotalValueAsync(token).ConfigureAwait(false) : 0);
                     }
                     finally
                     {
@@ -1287,26 +1565,28 @@ namespace Chummer
                             return _decCachedPowerPoints;
                         int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
                         int intRating = await GetRatingAsync(token).ConfigureAwait(false);
-                        if (intRating == 0 || !LevelsEnabled && intFreeLevels > 0)
+                        if (intRating == 0 || !await GetLevelsEnabledAsync(token).ConfigureAwait(false) && intFreeLevels > 0)
                         {
                             return _decCachedPowerPoints = 0;
                         }
 
                         decimal decReturn;
                         decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
-                        if (intFreeLevels * PointsPerLevel >= decFreePoints)
+                        decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
+                        decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
+                        if (intFreeLevels * decPointsPerLevel >= decFreePoints)
                         {
-                            decReturn = intRating * PointsPerLevel;
-                            decReturn += ExtraPointCost;
+                            decReturn = intRating * decPointsPerLevel;
+                            decReturn += decExtraPointCost;
                         }
                         else
                         {
-                            decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * PointsPerLevel
-                                        + ExtraPointCost;
+                            decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * decPointsPerLevel
+                                        + decExtraPointCost;
                             decReturn -= decFreePoints;
                         }
 
-                        decReturn -= Discount;
+                        decReturn -= await GetDiscountAsync(token).ConfigureAwait(false);
                         return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
                     }
                     finally
@@ -1394,11 +1674,12 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
+                string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
                 int intRating = (await ImprovementManager
                                        .GetCachedImprovementListForValueOfAsync(CharacterObject,
                                            Improvement.ImprovementType.AdeptPowerFreePoints,
-                                           Name, token: token).ConfigureAwait(false))
-                    .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                           await GetNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    .Sum(objImprovement => objImprovement.UniqueName == strExtra,
                          objImprovement => objImprovement.Rating, token);
                 return intRating * 0.25m;
             }
@@ -1508,6 +1789,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Bonus node from the XML file.
+        /// </summary>
+        public async Task<XmlNode> GetBonusAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _xmlBonus;
+            }
+        }
+
+        /// <summary>
         /// Whether or not Levels enabled for the Power.
         /// </summary>
         public bool LevelsEnabled
@@ -1563,6 +1857,19 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum Level for the Power.
+        /// </summary>
+        public async Task<int> GetMaxLevelsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMaxLevels;
             }
         }
 
@@ -1842,23 +2149,24 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                if (!LevelsEnabled)
+                if (!await GetLevelsEnabledAsync(token).ConfigureAwait(false))
                     return 1;
-                int intReturn = MaxLevels;
+                int intReturn = await GetMaxLevelsAsync(token).ConfigureAwait(false);
                 if (intReturn == 0)
                 {
                     // if unspecified, max rating = MAG
-                    intReturn = MAGAttributeObject != null
-                        ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false)
+                    CharacterAttrib objMag = await GetMAGAttributeObjectAsync(token).ConfigureAwait(false);
+                    intReturn = objMag != null
+                        ? await objMag.GetTotalValueAsync(token).ConfigureAwait(false)
                         : 0;
                 }
 
-                if (BoostedSkill != null)
+                if (await GetBoostedSkillAsync(token).ConfigureAwait(false) != null)
                 {
                     // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
                     intReturn = Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
                     if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
-                              .GetIncreasedImprovedAbilityMultiplierAsync(token).ConfigureAwait(false))
+                        .GetIncreasedImprovedAbilityMultiplierAsync(token).ConfigureAwait(false))
                     {
                         intReturn += _intCachedLearnedRating;
                     }
@@ -1866,11 +2174,9 @@ namespace Chummer
 
                 if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 {
-                    intReturn = Math.Min(
-                        intReturn,
-                        MAGAttributeObject != null
-                            ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false)
-                            : 0);
+                    CharacterAttrib objMag = await GetMAGAttributeObjectAsync(token).ConfigureAwait(false);
+                    intReturn = Math.Min(intReturn,
+                        objMag != null ? await objMag.GetTotalValueAsync(token).ConfigureAwait(false) : 0);
                 }
 
                 return intReturn;
@@ -2091,19 +2397,23 @@ namespace Chummer
                         if (setNamesOfChangedProperties.Contains(nameof(TotalRating))
                             && Bonus?.InnerXml.Contains("Rating") == true)
                         {
-                            // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
-                            // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
-                            // TODO: Solve this bad code
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power,
-                                                                  InternalId);
-                            int intTotalRating = TotalRating;
-                            if (intTotalRating > 0)
+                            using (CharacterObject.LockObject.EnterWriteLock())
                             {
-                                ImprovementManager.ForcedValue = Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject,
-                                                                      Improvement.ImprovementSource.Power,
-                                                                      InternalId, Bonus, intTotalRating,
-                                                                      CurrentDisplayNameShort);
+                                // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
+                                // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
+                                // TODO: Solve this bad code
+                                ImprovementManager.RemoveImprovements(CharacterObject,
+                                    Improvement.ImprovementSource.Power,
+                                    InternalId);
+                                int intTotalRating = TotalRating;
+                                if (intTotalRating > 0)
+                                {
+                                    ImprovementManager.ForcedValue = Extra;
+                                    ImprovementManager.CreateImprovements(CharacterObject,
+                                        Improvement.ImprovementSource.Power,
+                                        InternalId, Bonus, intTotalRating,
+                                        CurrentDisplayNameShort);
+                                }
                             }
                         }
 
@@ -2201,23 +2511,36 @@ namespace Chummer
                             _decCachedPowerPoints = decimal.MinValue;
 
                         // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                        if (setNamesOfChangedProperties.Contains(nameof(TotalRating))
-                            && Bonus?.InnerXml.Contains("Rating") == true)
+                        if (setNamesOfChangedProperties.Contains(nameof(TotalRating)))
                         {
-                            // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
-                            // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
-                            // TODO: Solve this bad code
-                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                Improvement.ImprovementSource.Power,
-                                InternalId, token).ConfigureAwait(false);
-                            int intTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
-                            if (intTotalRating > 0)
+                            XmlNode xmlBonus = await GetBonusAsync(token).ConfigureAwait(false);
+                            if (xmlBonus?.InnerXml.Contains("Rating") == true)
                             {
-                                ImprovementManager.ForcedValue = Extra;
-                                await ImprovementManager.CreateImprovementsAsync(CharacterObject,
-                                    Improvement.ImprovementSource.Power,
-                                    InternalId, Bonus, intTotalRating,
-                                    await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
+                                    // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
+                                    // TODO: Solve this bad code
+                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.Power,
+                                        InternalId, token).ConfigureAwait(false);
+                                    int intTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
+                                    if (intTotalRating > 0)
+                                    {
+                                        ImprovementManager.ForcedValue = await GetExtraAsync(token).ConfigureAwait(false);
+                                        await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                            Improvement.ImprovementSource.Power,
+                                            InternalId, xmlBonus, intTotalRating,
+                                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                            token: token).ConfigureAwait(false);
+                                    }
+                                }
+                                finally
+                                {
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                         }
 
@@ -2461,15 +2784,19 @@ namespace Chummer
                         .Append((await GetRatingAsync(token).ConfigureAwait(false)).ToString(
                             GlobalSettings.CultureInfo)).Append(strSpace)
                         .Append('×')
-                        .Append(strSpace).Append(PointsPerLevel.ToString(GlobalSettings.CultureInfo))
+                        .Append(strSpace)
+                        .Append((await GetPointsPerLevelAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                            .CultureInfo))
                         .Append(')');
+                    string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
                     foreach (Improvement objImprovement in (await ImprovementManager
                                  .GetCachedImprovementListForValueOfAsync(
                                      CharacterObject,
                                      Improvement.ImprovementType.AdeptPower,
-                                     Name, token: token).ConfigureAwait(false)).Where(
+                                     await GetNameAsync(token).ConfigureAwait(false), token: token)
+                                 .ConfigureAwait(false)).Where(
                                  objImprovement =>
-                                     objImprovement.UniqueName == Extra))
+                                     objImprovement.UniqueName == strExtra))
                     {
                         sbdModifier.Append(strSpace).Append('+').Append(strSpace)
                             .Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
@@ -2552,8 +2879,8 @@ namespace Chummer
                     }
                 }
 
-                MAGAttributeObject = null;
-                BoostedSkill = null;
+                await SetMAGAttributeObjectAsync(null).ConfigureAwait(false);
+                await SetBoostedSkillAsync(null).ConfigureAwait(false);
                 await Enhancements.DisposeAsync().ConfigureAwait(false);
             }
             finally
