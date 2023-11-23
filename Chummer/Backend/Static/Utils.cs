@@ -1376,9 +1376,10 @@ namespace Chummer
         /// </summary>
         /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task SafeSleepAsync(int intDurationMilliseconds)
+        public static async Task SafeSleepAsync(int intDurationMilliseconds)
         {
-            return Task.Delay(Math.Min(intDurationMilliseconds, 1));
+            await Task.Delay(Math.Min(intDurationMilliseconds, 1));
+            await Task.Yield();
         }
 
         /// <summary>
@@ -1389,9 +1390,10 @@ namespace Chummer
         /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task SafeSleepAsync(int intDurationMilliseconds, CancellationToken token)
+        public static async Task SafeSleepAsync(int intDurationMilliseconds, CancellationToken token)
         {
-            return Task.Delay(Math.Min(intDurationMilliseconds, 1), token);
+            await Task.Delay(Math.Min(intDurationMilliseconds, 1), token);
+            await Task.Yield();
         }
 
         /// <summary>
@@ -1654,11 +1656,15 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread)
             {
-                foreach (Func<Task> funcToRun in afuncToRun)
+                JoinableTaskFactory.Run(async () =>
                 {
-                    token.ThrowIfCancellationRequested();
-                    JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
-                }
+                    foreach (Func<Task> funcToRun in afuncToRun)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await funcToRun.Invoke();
+                        await Task.Yield();
+                    }
+                }, JoinableTaskCreationOptions.LongRunning);
             }
             else
             {
@@ -1682,17 +1688,22 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             int intCount = afuncToRun.Count;
             T[] aobjReturn = new T[intCount];
-            int i = 0;
             if (Program.IsMainThread)
             {
-                foreach (Func<Task<T>> funcToRun in afuncToRun)
+                JoinableTaskFactory.Run(async () =>
                 {
-                    token.ThrowIfCancellationRequested();
-                    aobjReturn[i++] = JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
-                }
+                    int i = 0;
+                    foreach (Func<Task<T>> funcToRun in afuncToRun)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        aobjReturn[i++] = await funcToRun.Invoke();
+                        await Task.Yield();
+                    }
+                }, JoinableTaskCreationOptions.LongRunning);
             }
             else
             {
+                int i = 0;
                 foreach (Func<Task<T>> funcToRun in afuncToRun)
                 {
                     token.ThrowIfCancellationRequested();
@@ -1748,11 +1759,15 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread)
             {
-                foreach (Func<Task> funcToRun in afuncToRun)
+                JoinableTaskFactory.Run(async () =>
                 {
-                    token.ThrowIfCancellationRequested();
-                    JoinableTaskFactory.Run(funcToRun, eOptions);
-                }
+                    foreach (Func<Task> funcToRun in afuncToRun)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await funcToRun.Invoke();
+                        await Task.Yield();
+                    }
+                }, eOptions);
             }
             else
             {
@@ -1777,17 +1792,22 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             int intCount = afuncToRun.Count;
             T[] aobjReturn = new T[intCount];
-            int i = 0;
             if (Program.IsMainThread)
             {
-                foreach (Func<Task<T>> funcToRun in afuncToRun)
+                JoinableTaskFactory.Run(async () =>
                 {
-                    token.ThrowIfCancellationRequested();
-                    aobjReturn[i++] = JoinableTaskFactory.Run(funcToRun, eOptions);
-                }
+                    int i = 0;
+                    foreach (Func<Task<T>> funcToRun in afuncToRun)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        aobjReturn[i++] = await funcToRun.Invoke();
+                        await Task.Yield();
+                    }
+                }, eOptions);
             }
             else
             {
+                int i = 0;
                 foreach (Func<Task<T>> funcToRun in afuncToRun)
                 {
                     token.ThrowIfCancellationRequested();
@@ -2121,6 +2141,7 @@ namespace Chummer
                     int intMainThreadOffset = 0;
                     for (int i = 0; i < intLength; ++i)
                     {
+                        await Task.Yield();
                         if (i != 0 && i % MaxParallelBatchSize == 0)
                         {
                             await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
@@ -2129,8 +2150,10 @@ namespace Chummer
                             intMainThreadOffset += MaxParallelBatchSize;
                             lstMainThreadTasks.Clear();
                         }
+
                         lstMainThreadTasks.Add(Task.Run(afuncToRun[i], token));
                     }
+                    await Task.Yield();
                     int intMainThreadFinalBatchSize = lstMainThreadTasks.Count;
                     if (intMainThreadFinalBatchSize != 0)
                     {
@@ -2271,6 +2294,7 @@ namespace Chummer
                     int intMainThreadCounter = 0;
                     foreach (Func<Task> funcToRun in afuncToRun)
                     {
+                        await Task.Yield();
                         lstMainThreadTasks.Add(Task.Run(funcToRun));
                         if (++intMainThreadCounter != MaxParallelBatchSize)
                             continue;
@@ -2279,6 +2303,7 @@ namespace Chummer
                         intMainThreadCounter = 0;
                     }
 
+                    await Task.Yield();
                     await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
                 }, JoinableTaskCreationOptions.LongRunning);
                 return;
@@ -2334,6 +2359,7 @@ namespace Chummer
                     int intMainThreadCounter = 0;
                     foreach (Func<Task> funcToRun in afuncToRun)
                     {
+                        await Task.Yield();
                         lstMainThreadTasks.Add(Task.Run(funcToRun, token));
                         if (++intMainThreadCounter != MaxParallelBatchSize)
                             continue;
@@ -2342,6 +2368,7 @@ namespace Chummer
                         intMainThreadCounter = 0;
                     }
 
+                    await Task.Yield();
                     await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
                 }, JoinableTaskCreationOptions.LongRunning);
                 token.ThrowIfCancellationRequested();
