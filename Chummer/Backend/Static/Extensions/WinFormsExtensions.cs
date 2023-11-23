@@ -55,7 +55,7 @@ namespace Chummer
             if (frmForm.IsDisposed)
                 throw new ObjectDisposedException(nameof(frmForm));
             if (!Utils.IsUnitTest)
-                return Utils.RunOnMainThread(() => frmForm.ShowDialog(owner), token);
+                return Utils.RunOnMainThread(() => frmForm.ShowDialog(owner), token: token);
 
             // Unit tests cannot use ShowDialog because that will stall them out
             bool blnDoClose = false;
@@ -169,7 +169,7 @@ namespace Chummer
                     {
                         IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
                     }
-                }, token);
+                }, token: token);
             }
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
@@ -208,7 +208,7 @@ namespace Chummer
                     {
                         IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
                     }
-                }, token);
+                }, token: token);
             }
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
@@ -358,7 +358,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke(token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(token), token);
+                    Utils.RunOnMainThread(() => funcToRun(token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -406,7 +406,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke(null, token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
+                    Utils.RunOnMainThread(() => funcToRun(objControl, token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -737,7 +737,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? funcToRun.Invoke(token)
-                    : Utils.RunOnMainThread(() => funcToRun(token), token);
+                    : Utils.RunOnMainThread(() => funcToRun(token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -786,7 +786,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? funcToRun.Invoke(null, token)
-                    : Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
+                    : Utils.RunOnMainThread(() => funcToRun(objControl, token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1095,13 +1095,13 @@ namespace Chummer
                     {
                         IntPtr _ = objControl.Handle; // accessing Handle forces its creation
                     }
-                }, token);
+                }, token: token);
             }
 
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync, token);
+            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync, token: token);
             async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -1187,7 +1187,7 @@ namespace Chummer
 
                 objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false,
                                             DataSourceUpdateMode.OnPropertyChanged);
-            }, token);
+            }, token: token);
         }
 
         /// <summary>

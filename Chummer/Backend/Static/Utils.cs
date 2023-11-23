@@ -1139,38 +1139,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
-        public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None)
-        {
-            if (Program.IsMainThread)
-                func.Invoke();
-            else
-            {
-                JoinableTaskFactory.Run(async () =>
-                {
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
-                    func.Invoke();
-                }, eOptions);
-            }
-        }
-
-        /// <summary>
-        /// Run code on the main (UI) thread in a synchronous fashion.
-        /// </summary>
-        public static T RunOnMainThread<T>(Func<T> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None)
-        {
-            return Program.IsMainThread
-                ? func.Invoke()
-                : JoinableTaskFactory.Run(async () =>
-                {
-                    await JoinableTaskFactory.SwitchToMainThreadAsync();
-                    return func.Invoke();
-                }, eOptions);
-        }
-
-        /// <summary>
-        /// Run code on the main (UI) thread in a synchronous fashion.
-        /// </summary>
-        public static void RunOnMainThread(Action func, CancellationToken token)
+        public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread)
@@ -1181,59 +1150,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                    func.Invoke();
-                });
-            }
-        }
-
-        /// <summary>
-        /// Run code on the main (UI) thread in a synchronous fashion.
-        /// </summary>
-        public static T RunOnMainThread<T>(Func<T> func, CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-            return Program.IsMainThread
-                ? func.Invoke()
-                : JoinableTaskFactory.Run(async () =>
-                {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                    return func.Invoke();
-                });
-        }
-
-        /// <summary>
-        /// Run code on the main (UI) thread in a synchronous fashion.
-        /// </summary>
-        public static void RunOnMainThread(Func<Task> func, CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-            JoinableTaskFactory.Run(func, JoinableTaskCreationOptions.LongRunning);
-        }
-
-        /// <summary>
-        /// Run code on the main (UI) thread in a synchronous fashion.
-        /// </summary>
-        public static T RunOnMainThread<T>(Func<Task<T>> func, CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-            return JoinableTaskFactory.Run(func, JoinableTaskCreationOptions.LongRunning);
-        }
-
-        /// <summary>
-        /// Run code on the main (UI) thread in a synchronous fashion.
-        /// </summary>
-        public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions, CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread)
-                func.Invoke();
-            else
-            {
-                JoinableTaskFactory.Run(async () =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                     func.Invoke();
                 }, eOptions);
             }
@@ -1242,7 +1159,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
-        public static T RunOnMainThread<T>(Func<T> func, JoinableTaskCreationOptions eOptions, CancellationToken token)
+        public static T RunOnMainThread<T>(Func<T> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return Program.IsMainThread
@@ -1251,6 +1168,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                    token.ThrowIfCancellationRequested();
                     return func.Invoke();
                 }, eOptions);
         }
@@ -1261,7 +1179,13 @@ namespace Chummer
         public static void RunOnMainThread(Func<Task> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            JoinableTaskFactory.Run(func, eOptions);
+            JoinableTaskFactory.Run(async () =>
+            {
+                token.ThrowIfCancellationRequested();
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                token.ThrowIfCancellationRequested();
+                await func.Invoke().ConfigureAwait(true);
+            }, eOptions);
         }
 
         /// <summary>
@@ -1270,79 +1194,57 @@ namespace Chummer
         public static T RunOnMainThread<T>(Func<Task<T>> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return JoinableTaskFactory.Run(func, eOptions);
-        }
-
-        /// <summary>
-        /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
-        /// </summary>
-        public static Task RunOnMainThreadAsync(Action func)
-        {
-            return JoinableTaskFactory.RunAsync(async () =>
+            return JoinableTaskFactory.Run(async () =>
             {
-                await JoinableTaskFactory.SwitchToMainThreadAsync();
-                func.Invoke();
-            }).Task;
+                token.ThrowIfCancellationRequested();
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                token.ThrowIfCancellationRequested();
+                return await func.Invoke().ConfigureAwait(true);
+            }, eOptions);
         }
 
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
         /// </summary>
-        public static Task<T> RunOnMainThreadAsync<T>(Func<T> func)
+        public static async Task RunOnMainThreadAsync(Action func, CancellationToken token = default)
         {
-            return JoinableTaskFactory.RunAsync(async () =>
-            {
-                await JoinableTaskFactory.SwitchToMainThreadAsync();
-                return func.Invoke();
-            }).Task;
+            token.ThrowIfCancellationRequested();
+            await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+            token.ThrowIfCancellationRequested();
+            func.Invoke();
         }
 
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
         /// </summary>
-        public static Task RunOnMainThreadAsync(Action func, CancellationToken token)
+        public static async Task<T> RunOnMainThreadAsync<T>(Func<T> func, CancellationToken token = default)
         {
-            return token.IsCancellationRequested
-                ? Task.FromCanceled(token)
-                : JoinableTaskFactory.RunAsync(async () =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                    func.Invoke();
-                }).Task;
-        }
-
-        /// <summary>
-        /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
-        /// </summary>
-        public static Task<T> RunOnMainThreadAsync<T>(Func<T> func, CancellationToken token)
-        {
-            return token.IsCancellationRequested
-                ? Task.FromCanceled<T>(token)
-                : JoinableTaskFactory.RunAsync(async () =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                    return func.Invoke();
-                }).Task;
+            token.ThrowIfCancellationRequested();
+            await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+            token.ThrowIfCancellationRequested();
+            return func.Invoke();
         }
 
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
-        public static Task RunOnMainThreadAsync(Func<Task> func, CancellationToken token = default)
+        public static async Task RunOnMainThreadAsync(Func<Task> func, CancellationToken token = default)
         {
-            return token.IsCancellationRequested ? Task.FromCanceled(token) : JoinableTaskFactory.RunAsync(func).Task;
+            token.ThrowIfCancellationRequested();
+            await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+            token.ThrowIfCancellationRequested();
+            await func.Invoke().ConfigureAwait(true);
         }
 
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
-        public static Task<T> RunOnMainThreadAsync<T>(Func<Task<T>> func, CancellationToken token = default)
+        public static async Task<T> RunOnMainThreadAsync<T>(Func<Task<T>> func, CancellationToken token = default)
         {
-            return token.IsCancellationRequested
-                ? Task.FromCanceled<T>(token)
-                : JoinableTaskFactory.RunAsync(func).Task;
+            token.ThrowIfCancellationRequested();
+            await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+            token.ThrowIfCancellationRequested();
+            return await func.Invoke().ConfigureAwait(true);
         }
 
         /// <summary>

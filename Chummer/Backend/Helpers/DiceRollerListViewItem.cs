@@ -131,7 +131,7 @@ namespace Chummer
                   + LanguageManager.GetString("String_Space", token: token) + '('
                   + Result.ToString(GlobalSettings.CultureInfo) + ')'
                 : Result.ToString(GlobalSettings.CultureInfo);
-            Utils.RunOnMainThread(() => Text = strText, token);
+            Utils.RunOnMainThread(() => Text = strText, token: token);
         }
 
         private async Task UpdateTextAsync(CancellationToken token = default)
@@ -177,7 +177,7 @@ namespace Chummer
             {
                 ForeColor = objForeColor;
                 BackColor = objBackColor;
-            }, token);
+            }, token: token);
         }
 
         private Task UpdateColorAsync(CancellationToken token = default)

@@ -1661,7 +1661,7 @@ namespace Chummer
             {
                 if (!s_RtbRtfManipulator.Value.IsHandleCreated)
                 {
-                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.Value.CreateControl(), token);
+                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.Value.CreateControl(), token: token);
                 }
 
                 return s_RtbRtfManipulator.Value.DoThreadSafeFunc(x =>

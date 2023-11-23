@@ -2569,7 +2569,7 @@ namespace Chummer.Backend.Attributes
                                         {
                                             funcToRun?.Invoke(this, e);
                                         }
-                                    }, token);
+                                    }, token: token);
                                 }
                             }
                             else if (objEvents.PropertyChangedList.Count != 0)
@@ -2581,7 +2581,7 @@ namespace Chummer.Backend.Attributes
                                     {
                                         funcToRun?.Invoke(this, e);
                                     }
-                                }, token);
+                                }, token: token);
                             }
                         }
                     }
