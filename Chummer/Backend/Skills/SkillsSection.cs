@@ -3060,10 +3060,13 @@ namespace Chummer.Backend.Skills
                 return rhs == null ? 0 : 1;
             if (rhs == null)
                 return -1;
-            if (lhs.Parent != rhs.Parent)
-                return CompareSkills(rhs.Parent, lhs.Parent);
-            if (lhs.Free != rhs.Free)
-                return lhs.Free ? 1 : -1;
+            Skill objLhsParent = lhs.Parent;
+            Skill objRhsParent = rhs.Parent;
+            if (objLhsParent != objRhsParent)
+                return CompareSkills(objRhsParent, objLhsParent);
+            bool blnLhsFree = lhs.Free;
+            if (blnLhsFree != rhs.Free)
+                return blnLhsFree ? 1 : -1;
             return string.Compare(lhs.CurrentDisplayName, rhs.CurrentDisplayName, false,
                 GlobalSettings.CultureInfo);
         }
@@ -3106,8 +3109,9 @@ namespace Chummer.Backend.Skills
             Skill objRhsParent = await lhs.GetParentAsync(token).ConfigureAwait(false);
             if (objLhsParent != objRhsParent)
                 return await CompareSkillsAsync(objRhsParent, objLhsParent, token).ConfigureAwait(false);
-            if (lhs.Free != rhs.Free)
-                return lhs.Free ? 1 : -1;
+            bool blnLhsFree = await lhs.GetFreeAsync(token).ConfigureAwait(false);
+            if (blnLhsFree != await rhs.GetFreeAsync(token).ConfigureAwait(false))
+                return blnLhsFree ? 1 : -1;
             return string.Compare(await lhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                   await rhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), false,
                                   GlobalSettings.CultureInfo);

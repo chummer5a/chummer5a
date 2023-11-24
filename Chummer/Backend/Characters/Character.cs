@@ -13815,8 +13815,8 @@ namespace Chummer
                                                                               .ConfigureAwait(false);
                                     if (await GetEffectiveBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
                                         intSkillPointsKarma
-                                            += await objLoopActiveSkill.Specializations
-                                                                       .CountAsync(x => x.Free, token: token)
+                                            += await (await objLoopActiveSkill.GetSpecializationsAsync(token).ConfigureAwait(false))
+                                                                       .CountAsync(x => x.GetFreeAsync(token), token: token)
                                                                        .ConfigureAwait(false) *
                                                await objSettings.GetKarmaSpecializationAsync(token)
                                                                 .ConfigureAwait(false);
@@ -13919,7 +13919,7 @@ namespace Chummer
                                                                             .ConfigureAwait(false);
                                 if (await GetEffectiveBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
                                     intKnowledgePointsValue
-                                        += await objLoopKnowledgeSkill.Specializations.CountAsync(x => x.Free, token)
+                                        += await (await objLoopKnowledgeSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(x => x.GetFreeAsync(token), token)
                                                                       .ConfigureAwait(false) *
                                            await objSettings.GetKarmaKnowledgeSpecializationAsync(token)
                                                             .ConfigureAwait(false);

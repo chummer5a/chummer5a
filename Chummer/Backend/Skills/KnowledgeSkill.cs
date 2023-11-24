@@ -912,7 +912,7 @@ namespace Chummer.Backend.Skills
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
                 int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
-                    ? await Specializations.CountAsync(objSpec => !objSpec.Free, token: token).ConfigureAwait(false)
+                    ? await Specializations.CountAsync(async objSpec => !await objSpec.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                     : 0;
                 decimal decSpecCost = intSpecCount *
                                       await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
@@ -1252,7 +1252,7 @@ namespace Chummer.Backend.Skills
                 int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
                 int cost = intBasePoints;
                 if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
-                    cost += await Specializations.CountAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                    cost += await Specializations.CountAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;

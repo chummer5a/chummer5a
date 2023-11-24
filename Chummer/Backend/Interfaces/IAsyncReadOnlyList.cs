@@ -31,14 +31,16 @@ namespace Chummer
 
     public static class AsyncReadOnlyListExtensions
     {
-        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem, CancellationToken token = default) where T : IComparable
+        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem,
+            CancellationToken token = default) where T : IComparable
         {
             int intLastIntervalBounds = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
             int intBase = 0;
             for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
             {
                 int intLoopIndex = intBase + i;
-                int intCompareResult = objItem.CompareTo(await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false));
+                int intCompareResult =
+                    objItem.CompareTo(await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false));
                 if (intCompareResult == 0)
                     return intLoopIndex;
                 if (intCompareResult > 0)
@@ -55,14 +57,16 @@ namespace Chummer
             return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
         }
 
-        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem, IComparer<T> comparer, CancellationToken token = default)
+        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem,
+            IComparer<T> comparer, CancellationToken token = default)
         {
             int intLastIntervalBounds = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
             int intBase = 0;
             for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
             {
                 int intLoopIndex = intBase + i;
-                int intCompareResult = comparer.Compare(objItem, await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false));
+                int intCompareResult = comparer.Compare(objItem,
+                    await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false));
                 if (intCompareResult == 0)
                     return intLoopIndex;
                 if (intCompareResult > 0)
@@ -79,14 +83,16 @@ namespace Chummer
             return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
         }
 
-        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int index, int count, T objItem, IComparer<T> comparer, CancellationToken token = default)
+        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int index,
+            int count, T objItem, IComparer<T> comparer, CancellationToken token = default)
         {
             int intLastIntervalBounds = count - 1;
             int intBase = index;
             for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
             {
                 int intLoopIndex = intBase + i;
-                int intCompareResult = comparer.Compare(objItem, await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false));
+                int intCompareResult = comparer.Compare(objItem,
+                    await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false));
                 if (intCompareResult == 0)
                     return intLoopIndex;
                 if (intCompareResult > 0)
@@ -103,53 +109,206 @@ namespace Chummer
             return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
         }
 
-        public static Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, Predicate<T> predicate, CancellationToken token = default)
+        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem,
+            Comparison<T> comparison, CancellationToken token = default)
+        {
+            int intLastIntervalBounds = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
+            int intBase = 0;
+            for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
+            {
+                int intLoopIndex = intBase + i;
+                int intCompareResult = comparison(objItem,
+                    await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false));
+                if (intCompareResult == 0)
+                    return intLoopIndex;
+                if (intCompareResult > 0)
+                {
+                    intBase += intLastIntervalBounds - i;
+                    intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                }
+                else
+                {
+                    intLastIntervalBounds = i;
+                }
+            }
+
+            return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
+        }
+
+        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int index,
+            int count, T objItem, Comparison<T> comparison, CancellationToken token = default)
+        {
+            int intLastIntervalBounds = count - 1;
+            int intBase = index;
+            for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
+            {
+                int intLoopIndex = intBase + i;
+                int intCompareResult = comparison(objItem,
+                    await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false));
+                if (intCompareResult == 0)
+                    return intLoopIndex;
+                if (intCompareResult > 0)
+                {
+                    intBase += intLastIntervalBounds - i;
+                    intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                }
+                else
+                {
+                    intLastIntervalBounds = i;
+                }
+            }
+
+            return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
+        }
+
+        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem,
+            Func<T, T, Task<int>> comparison, CancellationToken token = default)
+        {
+            int intLastIntervalBounds = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
+            int intBase = 0;
+            for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
+            {
+                int intLoopIndex = intBase + i;
+                int intCompareResult = await comparison(objItem,
+                        await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false))
+                    .ConfigureAwait(false);
+                if (intCompareResult == 0)
+                    return intLoopIndex;
+                if (intCompareResult > 0)
+                {
+                    intBase += intLastIntervalBounds - i;
+                    intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                }
+                else
+                {
+                    intLastIntervalBounds = i;
+                }
+            }
+
+            return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
+        }
+
+        public static async Task<int> BinarySearchAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int index,
+            int count, T objItem, Func<T, T, Task<int>> comparison, CancellationToken token = default)
+        {
+            int intLastIntervalBounds = count - 1;
+            int intBase = index;
+            for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
+            {
+                int intLoopIndex = intBase + i;
+                int intCompareResult = await comparison(objItem,
+                        await lstCollection.GetValueAtAsync(intLoopIndex, token).ConfigureAwait(false))
+                    .ConfigureAwait(false);
+                if (intCompareResult == 0)
+                    return intLoopIndex;
+                if (intCompareResult > 0)
+                {
+                    intBase += intLastIntervalBounds - i;
+                    intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                }
+                else
+                {
+                    intLastIntervalBounds = i;
+                }
+            }
+
+            return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
+        }
+
+        public static Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, Predicate<T> predicate,
+            CancellationToken token = default)
         {
             return FindIndexAsync(lstCollection, 0, predicate, token);
         }
 
-        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex, Predicate<T> predicate, CancellationToken token = default)
+        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            Predicate<T> predicate, CancellationToken token = default)
         {
             for (int i = startIndex; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
             {
                 if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
                     return i;
             }
+
             return -1;
         }
 
-        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex, int count, Predicate<T> predicate, CancellationToken token = default)
+        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            int count, Predicate<T> predicate, CancellationToken token = default)
         {
             int intUpperBounds = count - startIndex;
-            for (int i = startIndex; i < Math.Min(await lstCollection.GetCountAsync(token).ConfigureAwait(false), intUpperBounds); ++i)
+            for (int i = startIndex;
+                 i < Math.Min(await lstCollection.GetCountAsync(token).ConfigureAwait(false), intUpperBounds);
+                 ++i)
             {
                 if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
                     return i;
             }
+
             return -1;
         }
 
-        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, Predicate<T> predicate, CancellationToken token = default)
+        public static Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection,
+            Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            return FindIndexAsync(lstCollection, 0, predicate, token);
+        }
+
+        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            for (int i = startIndex; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false))
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            int count, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            int intUpperBounds = count - startIndex;
+            for (int i = startIndex;
+                 i < Math.Min(await lstCollection.GetCountAsync(token).ConfigureAwait(false), intUpperBounds);
+                 ++i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false))
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection,
+            Predicate<T> predicate, CancellationToken token = default)
         {
             for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
             {
                 if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
                     return i;
             }
+
             return -1;
         }
 
-        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex, Predicate<T> predicate, CancellationToken token = default)
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            Predicate<T> predicate, CancellationToken token = default)
         {
             for (int i = startIndex; i >= 0; --i)
             {
                 if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
                     return i;
             }
+
             return -1;
         }
 
-        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex, int count, Predicate<T> predicate, CancellationToken token = default)
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            int count, Predicate<T> predicate, CancellationToken token = default)
         {
             int intLowerBounds = startIndex - count;
             for (int i = startIndex; i >= Math.Max(0, intLowerBounds); --i)
@@ -157,10 +316,52 @@ namespace Chummer
                 if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
                     return i;
             }
+
             return -1;
         }
 
-        public static async Task<int> LastIndexOfAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem, CancellationToken token = default)
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection,
+            Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false))
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            for (int i = startIndex; i >= 0; --i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false))
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            int count, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            int intLowerBounds = startIndex - count;
+            for (int i = startIndex; i >= Math.Max(0, intLowerBounds); --i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false))
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> LastIndexOfAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem,
+            CancellationToken token = default)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
@@ -177,7 +378,8 @@ namespace Chummer
             return -1;
         }
 
-        public static async Task<int> IndexOfAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem, CancellationToken token = default)
+        public static async Task<int> IndexOfAsync<T>(this IAsyncReadOnlyList<T> lstCollection, T objItem,
+            CancellationToken token = default)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));

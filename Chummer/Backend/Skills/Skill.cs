@@ -1455,7 +1455,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 return (_blnBuyWithKarma || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                        && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
-                       && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                       && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
@@ -1466,7 +1466,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 value = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                         && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
-                        && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                        && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 if (_blnBuyWithKarma == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -2157,7 +2157,7 @@ namespace Chummer.Backend.Skills
                 int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
                 int cost = intBasePoints;
                 if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
-                    cost += await (await GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                    cost += await (await GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
@@ -2387,7 +2387,7 @@ namespace Chummer.Backend.Skills
 
                 int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
                                    || !await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
-                    ? await (await GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(objSpec => !objSpec.Free, token: token).ConfigureAwait(false)
+                    ? await (await GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(async objSpec => !await objSpec.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                     : 0;
                 int intSpecCost = intSpecCount *
                                   await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
@@ -3583,10 +3583,12 @@ namespace Chummer.Backend.Skills
                     {
                         Specializations.AddWithSort(new SkillSpecialization(CharacterObject, value), (x, y) =>
                         {
-                            if (x.Free != y.Free)
-                                return x.Free ? 1 : -1;
-                            if (x.Expertise != y.Expertise)
-                                return x.Expertise ? 1 : -1;
+                            bool blnLhsFree = x.Free;
+                            if (blnLhsFree != y.Free)
+                                return blnLhsFree ? 1 : -1;
+                            bool blnLhsExpertise = x.Expertise;
+                            if (blnLhsExpertise != y.Expertise)
+                                return blnLhsExpertise ? 1 : -1;
                             return 0;
                         });
                         return;
@@ -3616,7 +3618,7 @@ namespace Chummer.Backend.Skills
                     return await ((ExoticSkill) this).GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false);
                 }
 
-                SkillSpecialization objSpec = await (await GetSpecializationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                SkillSpecialization objSpec = await (await GetSpecializationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return objSpec != null ? await objSpec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty;
             }
         }
@@ -3625,7 +3627,7 @@ namespace Chummer.Backend.Skills
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                await (await GetSpecializationsAsync(token).ConfigureAwait(false)).RemoveAllAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                await (await GetSpecializationsAsync(token).ConfigureAwait(false)).RemoveAllAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return;
             }
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -3638,16 +3640,19 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    int intIndexToReplace = await lstSpecs.FindIndexAsync(x => !x.Free, token).ConfigureAwait(false);
+                    int intIndexToReplace = await lstSpecs.FindIndexAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     if (intIndexToReplace < 0)
                     {
                         await lstSpecs.AddWithSortAsync(new SkillSpecialization(CharacterObject, value),
-                                                               (x, y) =>
+                                                               async (x, y) =>
                                                                {
-                                                                   if (x.Free != y.Free)
-                                                                       return x.Free ? 1 : -1;
-                                                                   if (x.Expertise != y.Expertise)
-                                                                       return x.Expertise ? 1 : -1;
+                                                                   bool blnLhsFree = await x.GetFreeAsync(token).ConfigureAwait(false);
+                                                                   if (blnLhsFree != await y.GetFreeAsync(token).ConfigureAwait(false))
+                                                                       return blnLhsFree ? 1 : -1;
+                                                                   bool blnLhsExpertise =
+                                                                       await x.GetExpertiseAsync(token).ConfigureAwait(false);
+                                                                   if (blnLhsExpertise != await y.GetExpertiseAsync(token).ConfigureAwait(false))
+                                                                       return blnLhsExpertise ? 1 : -1;
                                                                    return 0;
                                                                }, token: token).ConfigureAwait(false);
                         return;
@@ -3657,14 +3662,14 @@ namespace Chummer.Backend.Skills
                                                           new SkillSpecialization(CharacterObject, value), token).ConfigureAwait(false);
                     // For safety's, remove all non-free specializations after the one we are replacing.
                     intIndexToReplace
-                        = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, x => !x.Free, token: token).ConfigureAwait(false);
+                        = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     if (intIndexToReplace > 0)
                         Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
                     while (intIndexToReplace > 0)
                     {
                         await lstSpecs.RemoveAtAsync(intIndexToReplace, token).ConfigureAwait(false);
                         intIndexToReplace
-                            = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, x => !x.Free, token).ConfigureAwait(false);
+                            = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -5733,38 +5738,90 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
                 return;
+            CharacterSettings objSettings =
+                await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
             switch (e.PropertyName)
             {
-                case nameof(Skills.SkillGroup.Base) when CharacterObject.EffectiveBuildMethodUsesPriorityTables:
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
-                        nameof(BaseUnlocked),
-                        nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
-                    break;
-
                 case nameof(Skills.SkillGroup.Base):
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
-                        nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
+                    if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
+                        && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
+                            .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                        && !(await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
+                             && await GetBasePointsAsync(token).ConfigureAwait(false)
+                             + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
+                             && !await objSettings.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token)
+                                 .ConfigureAwait(false))
+                        && await objSettings.GetSpecializationsBreakSkillGroupsAsync(token)
+                            .ConfigureAwait(false))
+                    {
+                        if (await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
+                            await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
+                                nameof(BaseUnlocked),
+                                nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
+                        else
+                            await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
+                                nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
+                    }
+                    else if (await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
+                            nameof(BaseUnlocked)).ConfigureAwait(false);
+                    else
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(Base)).ConfigureAwait(false);
+
                     break;
 
                 case nameof(Skills.SkillGroup.Karma):
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(Karma),
-                        nameof(CurrentKarmaCost),
-                        nameof(ForcedBuyWithKarma),
-                        nameof(ForcedNotBuyWithKarma)).ConfigureAwait(false);
+                    if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                    {
+                        if (await (await GetSpecializationsAsync(token).ConfigureAwait(false))
+                                .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                            && !(await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
+                                 && await GetBasePointsAsync(token).ConfigureAwait(false)
+                                 + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
+                                 && !await objSettings.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token)
+                                     .ConfigureAwait(false))
+                            && await objSettings.GetSpecializationsBreakSkillGroupsAsync(token)
+                                .ConfigureAwait(false))
+                        {
+                            if (await GetTotalBaseRatingAsync(token).ConfigureAwait(false) != 0
+                                && await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                                && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                                await this.OnMultiplePropertyChangedAsync(token, nameof(Karma),
+                                    nameof(CurrentKarmaCost),
+                                    nameof(ForcedBuyWithKarma),
+                                    nameof(ForcedNotBuyWithKarma)).ConfigureAwait(false);
+                            else
+                                await this.OnMultiplePropertyChangedAsync(token, nameof(Karma),
+                                    nameof(CurrentKarmaCost),
+                                    nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
+                        }
+                        else if (await GetTotalBaseRatingAsync(token).ConfigureAwait(false) != 0
+                                 && await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                                 && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                            await this.OnMultiplePropertyChangedAsync(token, nameof(Karma),
+                                nameof(CurrentKarmaCost),
+                                nameof(ForcedNotBuyWithKarma)).ConfigureAwait(false);
+                        else
+                            await this.OnMultiplePropertyChangedAsync(token, nameof(Karma),
+                                nameof(CurrentKarmaCost)).ConfigureAwait(false);
+                    }
+                    else
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(Karma),
+                            nameof(CurrentKarmaCost)).ConfigureAwait(false);
                     break;
 
                 case nameof(Skills.SkillGroup.Rating):
-                    if (CharacterObject.Settings.StrictSkillGroupsInCreateMode &&
+                    if (await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false) &&
                         !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
-                        !CharacterObject.IgnoreRules)
+                        !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     {
                         await OnPropertyChangedAsync(nameof(KarmaUnlocked), token).ConfigureAwait(false);
                     }
 
                     break;
-                case nameof(Skills.SkillGroup.SkillList)
-                    when CharacterObject.Settings.CompensateSkillGroupKarmaDifference:
-                    if (await GetEnabledAsync(token).ConfigureAwait(false))
+                case nameof(Skills.SkillGroup.SkillList):
+                    if (await objSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false) &&
+                        await GetEnabledAsync(token).ConfigureAwait(false))
                     {
                         await this.OnMultiplePropertyChangedAsync(token, nameof(RangeCost), nameof(UpgradeKarmaCost))
                             .ConfigureAwait(false);
@@ -5943,7 +6000,7 @@ namespace Chummer.Backend.Skills
                 }
                 case nameof(CharacterSettings.ExpertiseBonus):
                 {
-                    if (await Specializations.AnyAsync(x => x.Expertise, token: token).ConfigureAwait(false))
+                    if (await Specializations.AnyAsync(x => x.GetExpertiseAsync(token), token: token).ConfigureAwait(false))
                     {
                         await OnPropertyChangedAsync(nameof(PoolOtherAttribute), token).ConfigureAwait(false);
                     }
@@ -6982,7 +7039,7 @@ namespace Chummer.Backend.Skills
                     intReturn =
                         (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
                          && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
-                                  .AnyAsync(x => !x.Free, token: token).ConfigureAwait(false)
+                                  .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                          && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
                               && await GetBasePointsAsync(token).ConfigureAwait(false)
                               + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0

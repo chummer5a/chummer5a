@@ -117,10 +117,10 @@ namespace Chummer.Backend.Skills
                             "name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("free", (await GetFreeAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("expertise", (await GetExpertiseAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("specbonus",
@@ -380,6 +380,19 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// Is this a forced specialization (true) or player entered (false)
+        /// </summary>
+        public async Task<bool> GetFreeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnFree;
+            }
+        }
+
+        /// <summary>
         /// Does this specialization give an extra bonus on top of the normal bonus that specializations give (used by SASS' Inspired and by 6e)
         /// </summary>
         public bool Expertise
@@ -388,6 +401,19 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterReadLock())
                     return _blnExpertise;
+            }
+        }
+
+        /// <summary>
+        /// Does this specialization give an extra bonus on top of the normal bonus that specializations give (used by SASS' Inspired and by 6e)
+        /// </summary>
+        public async Task<bool> GetExpertiseAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnExpertise;
             }
         }
 
@@ -407,10 +433,9 @@ namespace Chummer.Backend.Skills
                                                             Parent.DictionaryKey)
                         .Count == 0)
                     {
-                        if (Expertise)
-                            intReturn += _objCharacter.Settings.ExpertiseBonus;
-                        else
-                            intReturn += _objCharacter.Settings.SpecializationBonus;
+                        intReturn += Expertise
+                            ? _objCharacter.Settings.ExpertiseBonus
+                            : _objCharacter.Settings.SpecializationBonus;
                     }
 
                     decimal decBonus = 0;
@@ -452,10 +477,10 @@ namespace Chummer.Backend.Skills
                            .ConfigureAwait(false))
                     .Count == 0)
                 {
-                    if (Expertise)
-                        intReturn += _objCharacter.Settings.ExpertiseBonus;
-                    else
-                        intReturn += _objCharacter.Settings.SpecializationBonus;
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                    intReturn += await GetExpertiseAsync(token).ConfigureAwait(false)
+                        ? objSettings.ExpertiseBonus
+                        : objSettings.SpecializationBonus;
                 }
 
                 decimal decBonus = 0;
