@@ -980,7 +980,7 @@ namespace Chummer
             {
                 try
                 {
-                    await func.ConfigureAwait(false);
+                    await func.ConfigureAwait(true);
                     // This is needed because SetResult always needs a return type
                     tcs.TrySetResult(true);
                 }
@@ -1006,7 +1006,7 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.TrySetResult(await func.ConfigureAwait(false));
+                    tcs.TrySetResult(await func.ConfigureAwait(true));
                 }
                 catch (Exception e)
                 {
@@ -1089,7 +1089,7 @@ namespace Chummer
             {
                 try
                 {
-                    await func.ConfigureAwait(false);
+                    await func.ConfigureAwait(true);
                     // This is needed because SetResult always needs a return type
                     tcs.TrySetResult(true);
                 }
@@ -1120,7 +1120,7 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.TrySetResult(await func.ConfigureAwait(false));
+                    tcs.TrySetResult(await func.ConfigureAwait(true));
                 }
                 catch (Exception e)
                 {
@@ -1280,8 +1280,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task SafeSleepAsync(int intDurationMilliseconds)
         {
-            await Task.Delay(Math.Min(intDurationMilliseconds, 1));
-            await Task.Yield();
+            Task tskDelay = Task.Delay(Math.Min(intDurationMilliseconds, 1));
+            await Task.Yield().ConfigureAwait(false);
+            await tskDelay.ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1294,8 +1295,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task SafeSleepAsync(int intDurationMilliseconds, CancellationToken token)
         {
-            await Task.Delay(Math.Min(intDurationMilliseconds, 1), token);
-            await Task.Yield();
+            token.ThrowIfCancellationRequested();
+            Task tskDelay = Task.Delay(Math.Min(intDurationMilliseconds, 1), token);
+            await Task.Yield().ConfigureAwait(false);
+            await tskDelay.ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1563,8 +1566,9 @@ namespace Chummer
                     foreach (Func<Task> funcToRun in afuncToRun)
                     {
                         token.ThrowIfCancellationRequested();
-                        await funcToRun.Invoke();
-                        await Task.Yield();
+                        Task tskToRun = funcToRun.Invoke();
+                        await Task.Yield().ConfigureAwait(true);
+                        await tskToRun.ConfigureAwait(true);
                     }
                 }, JoinableTaskCreationOptions.LongRunning);
             }
@@ -1598,8 +1602,9 @@ namespace Chummer
                     foreach (Func<Task<T>> funcToRun in afuncToRun)
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjReturn[i++] = await funcToRun.Invoke();
-                        await Task.Yield();
+                        Task<T> tskToRun = funcToRun.Invoke();
+                        await Task.Yield().ConfigureAwait(true);
+                        aobjReturn[i++] = await tskToRun.ConfigureAwait(true);
                     }
                 }, JoinableTaskCreationOptions.LongRunning);
             }
@@ -1666,8 +1671,9 @@ namespace Chummer
                     foreach (Func<Task> funcToRun in afuncToRun)
                     {
                         token.ThrowIfCancellationRequested();
-                        await funcToRun.Invoke();
-                        await Task.Yield();
+                        Task tskToRun = funcToRun.Invoke();
+                        await Task.Yield().ConfigureAwait(true);
+                        await tskToRun.ConfigureAwait(true);
                     }
                 }, eOptions);
             }
@@ -1702,8 +1708,9 @@ namespace Chummer
                     foreach (Func<Task<T>> funcToRun in afuncToRun)
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjReturn[i++] = await funcToRun.Invoke();
-                        await Task.Yield();
+                        Task<T> tskToRun = funcToRun.Invoke();
+                        await Task.Yield().ConfigureAwait(true);
+                        aobjReturn[i++] = await tskToRun.ConfigureAwait(true);
                     }
                 }, eOptions);
             }
@@ -2043,25 +2050,25 @@ namespace Chummer
                     int intMainThreadOffset = 0;
                     for (int i = 0; i < intLength; ++i)
                     {
-                        await Task.Yield();
+                        await Task.Yield().ConfigureAwait(true);
                         if (i != 0 && i % MaxParallelBatchSize == 0)
                         {
-                            await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                            await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
                             for (int j = 0; j < MaxParallelBatchSize; ++j)
-                                aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(false);
+                                aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(true);
                             intMainThreadOffset += MaxParallelBatchSize;
                             lstMainThreadTasks.Clear();
                         }
 
                         lstMainThreadTasks.Add(Task.Run(afuncToRun[i], token));
                     }
-                    await Task.Yield();
+                    await Task.Yield().ConfigureAwait(true);
                     int intMainThreadFinalBatchSize = lstMainThreadTasks.Count;
                     if (intMainThreadFinalBatchSize != 0)
                     {
-                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
                         for (int j = 0; j < intMainThreadFinalBatchSize; ++j)
-                            aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(false);
+                            aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(true);
                     }
                 }, JoinableTaskCreationOptions.LongRunning);
                 token.ThrowIfCancellationRequested();
@@ -2196,17 +2203,17 @@ namespace Chummer
                     int intMainThreadCounter = 0;
                     foreach (Func<Task> funcToRun in afuncToRun)
                     {
-                        await Task.Yield();
+                        await Task.Yield().ConfigureAwait(true);
                         lstMainThreadTasks.Add(Task.Run(funcToRun));
                         if (++intMainThreadCounter != MaxParallelBatchSize)
                             continue;
-                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
                         lstMainThreadTasks.Clear();
                         intMainThreadCounter = 0;
                     }
 
-                    await Task.Yield();
-                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                    await Task.Yield().ConfigureAwait(true);
+                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
                 }, JoinableTaskCreationOptions.LongRunning);
                 return;
             }
@@ -2261,17 +2268,17 @@ namespace Chummer
                     int intMainThreadCounter = 0;
                     foreach (Func<Task> funcToRun in afuncToRun)
                     {
-                        await Task.Yield();
+                        await Task.Yield().ConfigureAwait(true);
                         lstMainThreadTasks.Add(Task.Run(funcToRun, token));
                         if (++intMainThreadCounter != MaxParallelBatchSize)
                             continue;
-                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
                         lstMainThreadTasks.Clear();
                         intMainThreadCounter = 0;
                     }
 
-                    await Task.Yield();
-                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(false);
+                    await Task.Yield().ConfigureAwait(true);
+                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
                 }, JoinableTaskCreationOptions.LongRunning);
                 token.ThrowIfCancellationRequested();
                 return;
