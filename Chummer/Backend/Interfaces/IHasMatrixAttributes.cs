@@ -925,10 +925,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (objThis.CanSwapAttributes)
                 {
-                    int intBaseAttack = await objThis.GetBaseMatrixAttributeAsync("Attack", token);
-                    int intBaseSleaze = await objThis.GetBaseMatrixAttributeAsync("Sleaze", token);
-                    int intBaseDataProcessing = await objThis.GetBaseMatrixAttributeAsync("Data Processing", token);
-                    int intBaseFirewall = await objThis.GetBaseMatrixAttributeAsync("Firewall", token);
+                    int intBaseAttack = await objThis.GetBaseMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+                    int intBaseSleaze = await objThis.GetBaseMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+                    int intBaseDataProcessing = await objThis.GetBaseMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                    int intBaseFirewall = await objThis.GetBaseMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
                     List<int> lstStatsArray = new List<int>(4)
                     {
                         intBaseAttack,
@@ -974,7 +974,7 @@ namespace Chummer
 
                         IAsyncDisposable objLocker = null;
                         if (objHasLock != null)
-                            objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token);
+                            objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -1027,20 +1027,20 @@ namespace Chummer
 
                 if (objCharacter != null)
                 {
-                    if (await objThis.IsActiveCommlinkAsync(objCharacter, token))
+                    if (await objThis.IsActiveCommlinkAsync(objCharacter, token).ConfigureAwait(false))
                     {
-                        if (await objThis.IsHomeNodeAsync(objCharacter, token))
+                        if (await objThis.IsHomeNodeAsync(objCharacter, token).ConfigureAwait(false))
                             await objCharacter.OnMultiplePropertyChangedAsync(token,
                                 nameof(Character.MatrixInitiativeValue),
                                 nameof(Character.MatrixInitiativeColdValue),
-                                nameof(Character.MatrixInitiativeHotValue));
+                                nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                         else
                             await objCharacter.OnMultiplePropertyChangedAsync(token,
                                 nameof(Character.MatrixInitiativeColdValue),
-                                nameof(Character.MatrixInitiativeHotValue));
+                                nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
                     }
                     else
-                        await objCharacter.OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), token);
+                        await objCharacter.OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), token).ConfigureAwait(false);
                 }
             }
             finally

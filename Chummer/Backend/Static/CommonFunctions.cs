@@ -608,7 +608,7 @@ namespace Chummer
             {
                 await lstVehicles.ForEachWithBreakAsync(async objVehicle =>
                 {
-                    objReturn = await objVehicle.Weapons.DeepFindByIdAsync(strGuid, token: token);
+                    objReturn = await objVehicle.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
                     if (objReturn != null)
                         return false;
 
@@ -620,22 +620,22 @@ namespace Chummer
 
                         await objWeaponMount.Mods.ForEachWithBreakAsync(async objMod =>
                         {
-                            objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token);
+                            objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
                             return objReturn == null;
-                        }, token);
+                        }, token).ConfigureAwait(false);
                         return objReturn == null;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     if (objReturn != null)
                         return false;
 
                     await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
                     {
-                        objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token);
+                        objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
                         return objReturn == null;
-                    }, token);
+                    }, token).ConfigureAwait(false);
 
                     return objReturn != null;
-                }, token);
+                }, token).ConfigureAwait(false);
             }
 
             return objReturn;
@@ -892,17 +892,17 @@ namespace Chummer
             {
                 await lstArmors.ForEachWithBreakAsync(async objArmor =>
                 {
-                    objReturn = await objArmor.GearChildren.DeepFindByIdAsync(strGuid, token: token);
+                    objReturn = await objArmor.GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
                     if (objReturn != null)
                         return false;
 
                     await objArmor.ArmorMods.ForEachWithBreakAsync(async objMod =>
                     {
-                        objReturn = await objMod.GearChildren.DeepFindByIdAsync(strGuid, token: token);
+                        objReturn = await objMod.GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
                         return objReturn == null;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     return objReturn == null;
-                }, token);
+                }, token).ConfigureAwait(false);
             }
 
             return objReturn;

@@ -89,7 +89,7 @@ namespace Chummer
                                 new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                                     (IList)Items);
                             await Task.WhenAll(
-                                _lstBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs)));
+                                _lstBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs))).ConfigureAwait(false);
                             BeforeClearCollectionChanged?.Invoke(this, objArgs);
                         }
                     }
@@ -131,7 +131,7 @@ namespace Chummer
                     try
                     {
                         await Task.WhenAll(
-                            _lstCollectionChangedAsync.Select(x => x.Invoke(this, e)));
+                            _lstCollectionChangedAsync.Select(x => x.Invoke(this, e))).ConfigureAwait(false);
                         base.OnCollectionChanged(e);
                     }
                     finally

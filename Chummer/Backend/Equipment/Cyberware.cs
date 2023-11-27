@@ -307,7 +307,7 @@ namespace Chummer.Backend.Equipment
                             break;
                     }
 
-                    await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
+                    await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
                     return;
                 }
 
@@ -371,7 +371,7 @@ namespace Chummer.Backend.Equipment
                                     blnDoEssenceImprovementsRefresh = true;
                             }
 
-                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
+                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
                             blnDoRedlinerRefresh = true;
                             break;
 
@@ -425,7 +425,7 @@ namespace Chummer.Backend.Equipment
                                     blnDoEssenceImprovementsRefresh = true;
                             }
 
-                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
+                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
                             blnDoRedlinerRefresh = true;
                             break;
 
@@ -531,7 +531,7 @@ namespace Chummer.Backend.Equipment
                                     blnDoEssenceImprovementsRefresh = true;
                             }
 
-                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
+                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
                             blnDoRedlinerRefresh = true;
                             break;
 
@@ -545,7 +545,7 @@ namespace Chummer.Backend.Equipment
                                 setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
                             }
 
-                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
+                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
                             blnDoRedlinerRefresh = true;
                             break;
                     }
@@ -668,10 +668,10 @@ namespace Chummer.Backend.Equipment
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             bool blnDoEquipped = _objCharacter?.IsLoading == false;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token))
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                blnDoEquipped = blnDoEquipped && await GetIsModularCurrentlyEquippedAsync(token) &&
+                blnDoEquipped = blnDoEquipped && await GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false) &&
                                 ParentVehicle == null;
                 switch (e.Action)
                 {
@@ -680,7 +680,7 @@ namespace Chummer.Backend.Equipment
                         {
                             objNewItem.Parent = this;
                             if (blnDoEquipped)
-                                await objNewItem.ChangeEquippedStatusAsync(true, token: token);
+                                await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                         }
 
                         break;
@@ -690,7 +690,7 @@ namespace Chummer.Backend.Equipment
                         {
                             objOldItem.Parent = null;
                             if (blnDoEquipped)
-                                await objOldItem.ChangeEquippedStatusAsync(false, token: token);
+                                await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                         }
 
                         break;
@@ -700,25 +700,25 @@ namespace Chummer.Backend.Equipment
                         {
                             objOldItem.Parent = null;
                             if (blnDoEquipped)
-                                await objOldItem.ChangeEquippedStatusAsync(false, token: token);
+                                await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                         }
 
                         foreach (Gear objNewItem in e.NewItems)
                         {
                             objNewItem.Parent = this;
                             if (blnDoEquipped)
-                                await objNewItem.ChangeEquippedStatusAsync(true, token: token);
+                                await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                         }
 
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                         if (blnDoEquipped)
-                            await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token);
+                            await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
                         break;
                 }
 
-                await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token);
+                await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
             }
         }
 

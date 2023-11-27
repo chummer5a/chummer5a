@@ -7694,7 +7694,7 @@ namespace Chummer
         public async Task<bool> GetEnemyKarmaQualityLimitAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _blnEnemyKarmaQualityLimit;

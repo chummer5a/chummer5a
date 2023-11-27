@@ -468,7 +468,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 foreach (CharacterAttrib objAttribute in e.OldItems)
                 {
-                    if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                    if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                     {
                         objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                         objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -478,7 +478,7 @@ namespace Chummer.Backend.Attributes
                         new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
                             objAttribute.MetatypeCategory);
                     _dicAttributes.TryRemove(tupKey, out _);
-                    await objAttribute.DisposeAsync();
+                    await objAttribute.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -491,7 +491,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 foreach (CharacterAttrib objAttribute in e.OldItems)
                 {
-                    if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                    if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                     {
                         objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                         objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -501,7 +501,7 @@ namespace Chummer.Backend.Attributes
                         new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
                             objAttribute.MetatypeCategory);
                     _dicAttributes.TryRemove(tupKey, out _);
-                    await objAttribute.DisposeAsync();
+                    await objAttribute.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -525,7 +525,7 @@ namespace Chummer.Backend.Attributes
                                 y.Dispose();
                                 return objAttribute;
                             });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
                                 objAttribute.PropertyChanged += RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -537,7 +537,7 @@ namespace Chummer.Backend.Attributes
                     case NotifyCollectionChangedAction.Remove:
                         foreach (CharacterAttrib objAttribute in e.OldItems)
                         {
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
                                 objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -546,7 +546,7 @@ namespace Chummer.Backend.Attributes
                                 new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
                                     objAttribute.MetatypeCategory);
                             _dicAttributes.TryRemove(tupKey, out _);
-                            await objAttribute.DisposeAsync();
+                            await objAttribute.DisposeAsync().ConfigureAwait(false);
                         }
 
                         break;
@@ -557,7 +557,7 @@ namespace Chummer.Backend.Attributes
                         {
                             if (setNewAttribs.Contains(objAttribute))
                                 continue;
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
                                 objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -566,7 +566,7 @@ namespace Chummer.Backend.Attributes
                                 new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
                                     objAttribute.MetatypeCategory);
                             _dicAttributes.TryRemove(tupKey, out _);
-                            await objAttribute.DisposeAsync();
+                            await objAttribute.DisposeAsync().ConfigureAwait(false);
                         }
 
                         foreach (CharacterAttrib objAttribute in setNewAttribs)
@@ -579,7 +579,7 @@ namespace Chummer.Backend.Attributes
                                 y.Dispose();
                                 return objAttribute;
                             });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
                                 objAttribute.PropertyChanged += RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -610,7 +610,7 @@ namespace Chummer.Backend.Attributes
                                 y.Dispose();
                                 return objAttribute;
                             });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
                                 objAttribute.PropertyChanged += RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -622,7 +622,7 @@ namespace Chummer.Backend.Attributes
                     case NotifyCollectionChangedAction.Remove:
                         foreach (CharacterAttrib objAttribute in e.OldItems)
                         {
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
                                 objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -631,7 +631,7 @@ namespace Chummer.Backend.Attributes
                                 new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
                                     objAttribute.MetatypeCategory);
                             _dicAttributes.TryRemove(tupKey, out _);
-                            await objAttribute.DisposeAsync();
+                            await objAttribute.DisposeAsync().ConfigureAwait(false);
                         }
 
                         break;
@@ -642,7 +642,7 @@ namespace Chummer.Backend.Attributes
                         {
                             if (setNewAttribs.Contains(objAttribute))
                                 continue;
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
                                 objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -651,7 +651,7 @@ namespace Chummer.Backend.Attributes
                                 new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
                                     objAttribute.MetatypeCategory);
                             _dicAttributes.TryRemove(tupKey, out _);
-                            await objAttribute.DisposeAsync();
+                            await objAttribute.DisposeAsync().ConfigureAwait(false);
                         }
 
                         foreach (CharacterAttrib objAttribute in setNewAttribs)
@@ -664,7 +664,7 @@ namespace Chummer.Backend.Attributes
                                 y.Dispose();
                                 return objAttribute;
                             });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token))
+                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
                                 objAttribute.PropertyChanged += RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
@@ -1814,7 +1814,7 @@ namespace Chummer.Backend.Attributes
                             {
                                 funcToRun?.Invoke(this, e);
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 else if (objEvents.PropertyChangedList.Count != 0)
@@ -1825,7 +1825,7 @@ namespace Chummer.Backend.Attributes
                         {
                             funcToRun?.Invoke(this, e);
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
 
@@ -2637,7 +2637,7 @@ namespace Chummer.Backend.Attributes
                                             {
                                                 funcToRun?.Invoke(this, e);
                                             }
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                 }
                                 else if (objEvents.PropertyChangedList.Count != 0)
@@ -2649,7 +2649,7 @@ namespace Chummer.Backend.Attributes
                                         {
                                             funcToRun?.Invoke(this, e);
                                         }
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
                             }
                         }

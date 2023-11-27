@@ -241,7 +241,7 @@ namespace Chummer.Backend.Equipment
                                         }
                                     }
                                 }
-                            }, token: token);
+                            }, token: token).ConfigureAwait(false);
                         }
                     }
 

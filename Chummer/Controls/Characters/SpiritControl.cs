@@ -305,7 +305,7 @@ namespace Chummer
                     _objSpirit.FileName = string.Empty;
                     _objSpirit.RelativeFileName = string.Empty;
                     string strText = await LanguageManager.GetStringAsync(
-                            await _objSpirit.GetEntityTypeAsync(_objMyToken) == SpiritType.Spirit
+                            await _objSpirit.GetEntityTypeAsync(_objMyToken).ConfigureAwait(false) == SpiritType.Spirit
                                 ? "Tip_Spirit_LinkSpirit"
                                 : "Tip_Sprite_LinkSprite", token: _objMyToken)
                         .ConfigureAwait(false);
@@ -362,7 +362,7 @@ namespace Chummer
                     return;
                 _objSpirit.FileName = strFileName;
                 string strText = await LanguageManager.GetStringAsync(
-                        await _objSpirit.GetEntityTypeAsync(_objMyToken) == SpiritType.Spirit
+                        await _objSpirit.GetEntityTypeAsync(_objMyToken).ConfigureAwait(false) == SpiritType.Spirit
                             ? "Tip_Spirit_OpenFile"
                             : "Tip_Sprite_OpenFile", token: _objMyToken)
                     .ConfigureAwait(false);
@@ -433,7 +433,7 @@ namespace Chummer
                 }
 
                 string strTooltip = await LanguageManager
-                    .GetStringAsync(await _objSpirit.GetEntityTypeAsync(_objMyToken) == SpiritType.Spirit
+                    .GetStringAsync(await _objSpirit.GetEntityTypeAsync(_objMyToken).ConfigureAwait(false) == SpiritType.Spirit
                         ? "Tip_Spirit_EditNotes"
                         : "Tip_Sprite_EditNotes", token: _objMyToken).ConfigureAwait(false);
 

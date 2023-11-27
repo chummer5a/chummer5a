@@ -1496,11 +1496,11 @@ namespace Chummer
                 if (_objContact != null)
                 {
                     await cboMetatype.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                        nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token: token);
+                        nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token: token).ConfigureAwait(false);
                     await cboGender.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                        nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token: token);
+                        nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token: token).ConfigureAwait(false);
                     await cboAge.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                        nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token: token);
+                        nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token: token).ConfigureAwait(false);
                 }
 
                 await this.DoThreadSafeAsync(x =>
