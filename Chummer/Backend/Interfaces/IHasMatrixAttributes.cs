@@ -917,7 +917,7 @@ namespace Chummer
                 return;
             IDisposable objThisLocker = null;
             if (objThis is IHasLockObject objHasLock)
-                objThisLocker = objHasLock.LockObject.EnterUpgradeableReadLockAsync(token);
+                objThisLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
                 objHasLock = null;
             try
