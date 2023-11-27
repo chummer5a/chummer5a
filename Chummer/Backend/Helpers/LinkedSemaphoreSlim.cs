@@ -19,7 +19,7 @@
 
 // Uncomment this define to control whether or not stacktraces should be saved every time a linked semaphore is successfully disposed.
 #if DEBUG
-//#define LINKEDSEMAPHOREDISPOSEDEBUG
+//#define LINKEDSEMAPHOREDEBUG
 #endif
 
 using System;
@@ -56,6 +56,13 @@ namespace Chummer
             else
                 _objMySemaphore = new DebuggableSemaphoreSlim();
 
+#if LINKEDSEMAPHOREDEBUG
+            objParent?._setChildren.TryAdd(this);
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
+#else
+            if (objParent != null)
+                Interlocked.Increment(ref objParent._intNumChildren);
+#endif
             _objParentLinkedSemaphore = objParent;
         }
 
@@ -63,12 +70,25 @@ namespace Chummer
         {
             _objMySemaphore = objMySemaphore ?? throw new ArgumentNullException(nameof(objMySemaphore));
             _blnSemaphoreIsPooled = blnSemaphoreIsPooled;
+
+#if LINKEDSEMAPHOREDEBUG
+            objParent?._setChildren.TryAdd(this);
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
+#else
+            if (objParent != null)
+                Interlocked.Increment(ref objParent._intNumChildren);
+#endif
+
             _objParentLinkedSemaphore = objParent;
         }
 
-#if LINKEDSEMAPHOREDISPOSEDEBUG
+#if LINKEDSEMAPHOREDEBUG
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
-        private string DisposeStackTrace { get; set; }
+        private string RecordedStackTrace { get; set; }
+
+        private readonly ConcurrentHashSet<LinkedSemaphoreSlim> _setChildren = new ConcurrentHashSet<LinkedSemaphoreSlim>();
+#else
+        private int _intNumChildren;
 #endif
 
         public void Dispose()
@@ -78,13 +98,22 @@ namespace Chummer
             DebuggableSemaphoreSlim objMySemaphore = _objMySemaphore;
             if (objMySemaphore == null)
                 return;
-#if LINKEDSEMAPHOREDISPOSEDEBUG
-            DisposeStackTrace = EnhancedStackTrace.Current().ToString();
+#if LINKEDSEMAPHOREDEBUG
+            while (!_setChildren.IsEmpty)
+#else
+            while (_intNumChildren > 0)
 #endif
+                Utils.SafeSleep();
             objMySemaphore.SafeWait();
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
-            _objParentLinkedSemaphore = null;
+            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
+#if LINKEDSEMAPHOREDEBUG
+            objParent?._setChildren.Remove(this);
+#else
+            if (objParent != null)
+                Interlocked.Decrement(ref objParent._intNumChildren);
+#endif
             objMySemaphore.Release();
             if (_blnSemaphoreIsPooled)
                 Utils.SemaphorePool.Return(ref objMySemaphore);
@@ -99,13 +128,22 @@ namespace Chummer
             DebuggableSemaphoreSlim objMySemaphore = _objMySemaphore;
             if (objMySemaphore == null)
                 return;
-#if LINKEDSEMAPHOREDISPOSEDEBUG
-            DisposeStackTrace = EnhancedStackTrace.Current().ToString();
+#if LINKEDSEMAPHOREDEBUG
+            while (!_setChildren.IsEmpty)
+#else
+            while (_intNumChildren > 0)
 #endif
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
             await objMySemaphore.WaitAsync().ConfigureAwait(false);
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
-            _objParentLinkedSemaphore = null;
+            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
+#if LINKEDSEMAPHOREDEBUG
+            objParent?._setChildren.Remove(this);
+#else
+            if (objParent != null)
+                Interlocked.Decrement(ref objParent._intNumChildren);
+#endif
             objMySemaphore.Release();
             if (_blnSemaphoreIsPooled)
                 Utils.SemaphorePool.Return(ref objMySemaphore);
