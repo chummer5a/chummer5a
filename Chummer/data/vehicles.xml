@@ -1357,7 +1357,7 @@
     </vehicle>
     <vehicle>
       <id>4b64e3b8-bc1f-4dea-8d53-d90cf35f4315</id>
-      <name>Airstream Traveller Chinook</name>
+      <name>Airstream Traveler Chinook</name>
       <page>59</page>
       <source>R5</source>
       <accel>1</accel>
@@ -1387,7 +1387,7 @@
     </vehicle>
     <vehicle>
       <id>cb970581-0a0d-47a3-b334-9d3feea05b7d</id>
-      <name>Airstream Traveller Preserve</name>
+      <name>Airstream Traveler Preserve</name>
       <page>59</page>
       <source>R5</source>
       <accel>1</accel>
@@ -1417,7 +1417,7 @@
     </vehicle>
     <vehicle>
       <id>732a042d-631c-485a-b8c4-ce010de0b8af</id>
-      <name>Airstream Traveller Outback</name>
+      <name>Airstream Traveler Outback</name>
       <page>59</page>
       <source>R5</source>
       <accel>1</accel>
