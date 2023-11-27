@@ -342,7 +342,7 @@ namespace Chummer.Backend.Attributes
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
                     return RawMetatypeMinimum;
                 int intReturn = RawMetatypeMinimum;
-                Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(
+                Improvement objImprovement = await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).LastOrDefaultAsync(
                     x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev
                         && x.Enabled && x.Minimum != 0, token: token).ConfigureAwait(false);
                 if (objImprovement != null)
@@ -423,7 +423,7 @@ namespace Chummer.Backend.Attributes
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
                     return RawMetatypeMaximum;
                 int intReturn = RawMetatypeMaximum;
-                Improvement objImprovement = await _objCharacter.Improvements
+                Improvement objImprovement = await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
                     .LastOrDefaultAsync(
                         x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute &&
                              x.ImprovedName == Abbrev && x.Enabled && x.Maximum != 0, token: token).ConfigureAwait(false);
@@ -503,7 +503,7 @@ namespace Chummer.Backend.Attributes
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
                     return RawMetatypeAugmentedMaximum;
                 int intReturn = RawMetatypeAugmentedMaximum;
-                Improvement objImprovement = await _objCharacter.Improvements
+                Improvement objImprovement = await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
                     .LastOrDefaultAsync(
                         x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute &&
                              x.ImprovedName == Abbrev && x.Enabled && x.AugmentedMaximum != 0, token: token).ConfigureAwait(false);
@@ -2593,7 +2593,7 @@ namespace Chummer.Backend.Attributes
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
                 bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
-                await _objCharacter.Improvements.ForEachAsync(objLoopImprovement =>
+                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
                 {
                     if ((objLoopImprovement.ImprovedName == Abbrev
                          || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
@@ -2961,7 +2961,7 @@ namespace Chummer.Backend.Attributes
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
                 bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
-                await _objCharacter.Improvements.ForEachAsync(objLoopImprovement =>
+                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
                 {
                     if ((objLoopImprovement.ImprovedName == Abbrev ||
                          string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
