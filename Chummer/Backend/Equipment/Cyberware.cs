@@ -2953,6 +2953,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The type of body "slot" a Cyberlimb occupies.
+        /// </summary>
+        public async Task<string> GetLimbSlotAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strLimbSlot;
+            }
+        }
+
+        /// <summary>
         /// The amount of body "slots" a Cyberlimb occupies.
         /// </summary>
         public int LimbSlotCount
@@ -3001,12 +3014,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<int> GetLimbSlotCountAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (string.Equals(_strLimbSlotCount, "all", StringComparison.OrdinalIgnoreCase))
                 {
-                    return await _objCharacter.LimbCountAsync(LimbSlot, token).ConfigureAwait(false);
+                    return await _objCharacter.LimbCountAsync(await GetLimbSlotAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
 
                 int.TryParse(_strLimbSlotCount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,

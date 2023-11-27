@@ -2636,8 +2636,8 @@ namespace Chummer
                     try
                     {
                         IAsyncDisposable objLocker = await objCharacter.LockObject
-                                                                       .EnterWriteLockAsync(CancellationToken.None)
-                                                                       .ConfigureAwait(false);
+                            // ReSharper disable once MethodSupportsCancellation
+                            .EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
                             objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;

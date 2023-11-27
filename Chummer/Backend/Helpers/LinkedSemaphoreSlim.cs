@@ -105,6 +105,9 @@ namespace Chummer
 #endif
                 Utils.SafeSleep();
             objMySemaphore.SafeWait();
+#if LINKEDSEMAPHOREDEBUG
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
+#endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
             LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
@@ -135,6 +138,9 @@ namespace Chummer
 #endif
                 await Utils.SafeSleepAsync().ConfigureAwait(false);
             await objMySemaphore.WaitAsync().ConfigureAwait(false);
+#if LINKEDSEMAPHOREDEBUG
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
+#endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
             LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);

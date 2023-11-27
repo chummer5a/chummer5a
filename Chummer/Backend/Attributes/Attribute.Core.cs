@@ -835,7 +835,8 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                if (await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Cyberzombie"
+                    && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 {
                     return 1;
                 }
@@ -883,15 +884,16 @@ namespace Chummer.Backend.Attributes
                 }
 
                 int intMaxLossFromEssence = blnUseEssenceAtSpecialStart
-                    ? CharacterObject.EssenceAtSpecialStart.StandardRound() -
-                      await CharacterObject.ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false)
+                    ? (await CharacterObject.GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false)).StandardRound() -
+                      await (await CharacterObject.GetAttributeAsync("ESS", token: token).ConfigureAwait(false)).GetMetatypeMaximumAsync(token).ConfigureAwait(false)
                     : 0;
                 int intTotalMinimum = intRawMinimum + Math.Max(intMinimumLossFromEssence, intMaxLossFromEssence);
                 int intTotalMaximum = intRawMaximum + Math.Max(intMaximumLossFromEssence, intMaxLossFromEssence);
 
                 if (intTotalMinimum < 1)
                 {
-                    if (_objCharacter.IsCritter || intRawMaximumBase == 0 || Abbrev == "EDG" || Abbrev == "MAG" ||
+                    if (await _objCharacter.GetIsCritterAsync(token).ConfigureAwait(false)
+                        || intRawMaximumBase == 0 || Abbrev == "EDG" || Abbrev == "MAG" ||
                         Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                         intTotalMinimum = 0;
                     else
@@ -1616,13 +1618,14 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                if (await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Cyberzombie"
+                    && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
                 int intReturn = await GetRawMinimumAsync(token).ConfigureAwait(false);
                 if (intReturn < 1)
                 {
-                    if (_objCharacter.IsCritter || await GetTotalMaximumAsync(token).ConfigureAwait(false) == 0 ||
+                    if (await _objCharacter.GetIsCritterAsync(token).ConfigureAwait(false) || await GetTotalMaximumAsync(token).ConfigureAwait(false) == 0 ||
                         Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" ||
                         Abbrev == "DEP")
                         intReturn = 0;
@@ -1661,7 +1664,7 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                if (await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
                 return Math.Max(0,
@@ -1700,7 +1703,8 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                if (await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Cyberzombie"
+                    && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
                 return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
@@ -2926,24 +2930,26 @@ namespace Chummer.Backend.Attributes
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                if (Karma == 0)
+                int intKarma = await GetKarmaAsync(token).ConfigureAwait(false);
+                if (intKarma == 0)
                     return 0;
 
                 int intValue = await GetValueAsync(token).ConfigureAwait(false);
                 int intFreeBase = await GetFreeBaseAsync(token).ConfigureAwait(false);
-                int intRawTotalBase = _objCharacter.Settings.ReverseAttributePriorityOrder
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                int intRawTotalBase = objSettings.ReverseAttributePriorityOrder
                     ? Math.Max(intFreeBase + await GetRawMinimumAsync(token).ConfigureAwait(false),
                         await GetTotalMinimumAsync(token).ConfigureAwait(false))
                     : await GetTotalBaseAsync(token).ConfigureAwait(false);
                 int intTotalBase = intRawTotalBase;
-                if (_objCharacter.Settings.AlternateMetatypeAttributeKarma)
+                if (objSettings.AlternateMetatypeAttributeKarma)
                 {
                     int intHumanMinimum = intFreeBase + 1 + await GetMinimumModifiersAsync(token).ConfigureAwait(false);
-                    if (!_objCharacter.Settings.ReverseAttributePriorityOrder)
-                        intHumanMinimum += Base;
+                    if (!objSettings.ReverseAttributePriorityOrder)
+                        intHumanMinimum += await GetBaseAsync(token).ConfigureAwait(false);
                     if (intHumanMinimum < 1)
                     {
-                        if (_objCharacter.IsCritter ||
+                        if (await _objCharacter.GetIsCritterAsync(token).ConfigureAwait(false) ||
                             await GetMetatypeMaximumAsync(token).ConfigureAwait(false) == 0 || Abbrev == "EDG" ||
                             Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                             intHumanMinimum = 0;
@@ -2956,7 +2962,7 @@ namespace Chummer.Backend.Attributes
 
                 // The expression below is a shortened version of n*(n+1)/2 when applied to karma costs. n*(n+1)/2 is the sum of all numbers from 1 to n.
                 // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
-                int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Settings.KarmaAttribute;
+                int intCost = (2 * intTotalBase + intKarma + 1) * intKarma / 2 * await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
@@ -3055,14 +3061,15 @@ namespace Chummer.Backend.Attributes
                     break;
 
                 case nameof(Character.LimbCount):
-                    if (!CharacterObject.Settings.DontUseCyberlimbCalculation
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (!objSettings.DontUseCyberlimbCalculation
                         && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
-                        && await CharacterObject.Cyberware.AnyAsync(
+                        && await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
                             async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
                                                   await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
                                                       .ConfigureAwait(false) &&
-                                                  !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware
-                                                      .LimbSlot), token: token).ConfigureAwait(false))
+                                                  !objSettings.ExcludeLimbSlot.Contains(await objCyberware
+                                                      .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false))
                     {
                         await OnPropertyChangedAsync(nameof(TotalValue), token).ConfigureAwait(false);
                     }
@@ -3077,15 +3084,18 @@ namespace Chummer.Backend.Attributes
             {
                 case nameof(CharacterSettings.DontUseCyberlimbCalculation):
                     {
-                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
-                            && await CharacterObject.Cyberware.AnyAsync(
-                                async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
-                                                          .ConfigureAwait(false) &&
-                                                      !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware
-                                                          .LimbSlot), token: token).ConfigureAwait(false))
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
-                            await this.OnMultiplePropertyChangedAsync(token, nameof(TotalValue), nameof(HasModifiers)).ConfigureAwait(false);
+                            CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                            if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
+                                    async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                          await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                              .ConfigureAwait(false) &&
+                                                          !objSettings.ExcludeLimbSlot.Contains(await objCyberware
+                                                              .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false))
+                            {
+                                await this.OnMultiplePropertyChangedAsync(token, nameof(TotalValue), nameof(HasModifiers)).ConfigureAwait(false);
+                            }
                         }
 
                         break;
@@ -3093,15 +3103,18 @@ namespace Chummer.Backend.Attributes
                 case nameof(CharacterSettings.CyberlimbAttributeBonusCap):
                 case nameof(CharacterSettings.ExcludeLimbSlot):
                     {
-                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
-                            && await CharacterObject.Cyberware.AnyAsync(
-                                async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
-                                                          .ConfigureAwait(false) &&
-                                                      !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware
-                                                          .LimbSlot), token: token).ConfigureAwait(false))
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
-                            await this.OnMultiplePropertyChangedAsync(token, nameof(TotalValue)).ConfigureAwait(false);
+                            CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                            if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
+                                    async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                          await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                              .ConfigureAwait(false) &&
+                                                          !objSettings.ExcludeLimbSlot.Contains(await objCyberware
+                                                              .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false))
+                            {
+                                await OnPropertyChangedAsync(nameof(TotalValue), token).ConfigureAwait(false);
+                            }
                         }
 
                         break;
