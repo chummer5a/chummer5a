@@ -37,6 +37,8 @@ namespace Chummer.Tests
         static CommonTestData()
         {
             TestFilesBasePathInfo = new DirectoryInfo(TestFilesBasePath);//Assuming Test is your Folder
+            foreach (DirectoryInfo objOldDir in TestFilesBasePathInfo.GetDirectories("TestRun-*"))
+                Directory.Delete(objOldDir.FullName, true);
             TestPathInfo = Directory.CreateDirectory(Path.Combine(TestFilesBasePath,
                 "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalSettings.InvariantCultureInfo)));
             TestFileInfos = TestFilesBasePathInfo.GetFiles("*.chum5"); //Getting Text files
