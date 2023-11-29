@@ -262,27 +262,27 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return await objSpell.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objSpell.DisplayNameShortAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return await objComplexForm.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objComplexForm.DisplayNameShortAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return await objCritterPower.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objCritterPower.DisplayNameShortAsync(strLanguage, token);
                     break;
             }
-            return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token).ConfigureAwait(false);
+            return LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
         }
 
         /// <summary>
@@ -308,27 +308,27 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return await objSpell.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objSpell.DisplayNameAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return await objComplexForm.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objComplexForm.DisplayNameAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return await objCritterPower.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objCritterPower.DisplayNameAsync(strLanguage, token);
                     break;
             }
-            return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token).ConfigureAwait(false);
+            return LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);

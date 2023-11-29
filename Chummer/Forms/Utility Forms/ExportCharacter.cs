@@ -830,7 +830,7 @@ namespace Chummer
             }
         }
 
-        private async Task SetTextToWorkerResult(string strText, CancellationToken token = default)
+        private Task SetTextToWorkerResult(string strText, CancellationToken token = default)
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
@@ -840,7 +840,7 @@ namespace Chummer
             _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
                 new Tuple<string, string>(strText, strDisplayText),
                 (a, b) => new Tuple<string, string>(strText, strDisplayText));
-            await txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token).ConfigureAwait(false);
+            return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
         }
 
         private static readonly Lazy<Regex> s_RgxMainMugshotReplaceExpression = new Lazy<Regex>(() => new Regex(

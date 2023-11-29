@@ -86,7 +86,7 @@ namespace Chummer.Tests
 #if DEBUG
                     objLoopCharacter = LoadCharacter(objFileInfo);
 #else
-                    objLoopCharacter = LoadCharacter(_aobjTestFileInfos[i]);
+                    objLoopCharacter = LoadCharacter(CommonTestData.TestFileInfos[i]);
 #endif
                     CommonTestData.Characters[i] = objLoopCharacter;
                 }
