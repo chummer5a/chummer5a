@@ -233,7 +233,7 @@ namespace Chummer
                     int intLoopCount = 0;
                     while (!Wait(Utils.DefaultSleepDuration))
                     {
-                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                        if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
                             throw new TimeoutException();
                         Utils.DoEventsSafe(blnForceDoEvents);
                     }
@@ -262,7 +262,7 @@ namespace Chummer
                     int intLoopCount = 0;
                     while (!Wait(Utils.DefaultSleepDuration, token))
                     {
-                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration)
+                        if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration)
                             throw new TimeoutException();
                         Utils.DoEventsSafe(blnForceDoEvents);
                     }

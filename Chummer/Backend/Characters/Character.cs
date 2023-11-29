@@ -9217,6 +9217,24 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_mentorspiritfix");
                             }
 
+                            using (Timekeeper.StartSyncron("load_char_startingnuyenfix", loadActivity))
+                            {
+                                if (blnSync)
+                                {
+                                    if (!Created)
+                                    {
+                                        _decNuyenBP = Math.Max(Math.Min(_decNuyenBP, TotalNuyenMaximumBP), 0);
+                                    }
+                                }
+                                else if (!await GetCreatedAsync(token).ConfigureAwait(false))
+                                {
+                                    _decNuyenBP =
+                                        Math.Max(
+                                            Math.Min(_decNuyenBP,
+                                                await GetTotalNuyenMaximumBPAsync(token).ConfigureAwait(false)), 0);
+                                }
+                            }
+
                             if (frmLoadingForm != null)
                             {
                                 if (blnSync)

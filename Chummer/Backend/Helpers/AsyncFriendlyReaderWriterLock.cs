@@ -72,8 +72,11 @@ namespace Chummer
             DebuggableSemaphoreSlim objNextSemaphore = null;
             LinkedSemaphoreSlim objNextLinkedSemaphore;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    throw new TimeoutException();
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -150,8 +153,11 @@ namespace Chummer
             LinkedSemaphoreSlim objNextLinkedSemaphore;
             SafeWriterSemaphoreRelease objRelease;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    return Task.FromException<IAsyncDisposable>(new TimeoutException());
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -207,8 +213,11 @@ namespace Chummer
             LinkedSemaphoreSlim objNextLinkedSemaphore;
             SafeWriterSemaphoreRelease objRelease;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    return Task.FromException<IAsyncDisposable>(new TimeoutException());
                 if (token.IsCancellationRequested)
                     return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
@@ -308,8 +317,11 @@ namespace Chummer
             DebuggableSemaphoreSlim objNextSemaphore = null;
             LinkedSemaphoreSlim objNextLinkedSemaphore;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    throw new TimeoutException();
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -385,8 +397,11 @@ namespace Chummer
             LinkedSemaphoreSlim objNextLinkedSemaphore;
             SafeUpgradeableReaderSemaphoreRelease objRelease;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    return Task.FromException<IDisposable>(new TimeoutException());
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -460,8 +475,11 @@ namespace Chummer
             LinkedSemaphoreSlim objNextLinkedSemaphore;
             SafeUpgradeableReaderSemaphoreRelease objRelease;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    return Task.FromException<IDisposable>(new TimeoutException());
                 if (token.IsCancellationRequested)
                     return Task.FromException<IDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
@@ -571,8 +589,11 @@ namespace Chummer
             LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    throw new TimeoutException();
                 token.ThrowIfCancellationRequested();
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
@@ -658,8 +679,11 @@ namespace Chummer
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
             SafeReaderSemaphoreRelease objRelease;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    return Task.FromException<IDisposable>(new TimeoutException());
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals = _objAsyncLocalCurrentsContainer.Value;
                 if (objAsyncLocals != null)
@@ -734,8 +758,11 @@ namespace Chummer
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
             SafeReaderSemaphoreRelease objRelease;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    return Task.FromException<IDisposable>(new TimeoutException());
                 if (token.IsCancellationRequested)
                     return Task.FromException<IDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
@@ -866,8 +893,11 @@ namespace Chummer
             LinkedSemaphoreSlim objCurrentLinkedSemaphore;
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    throw new TimeoutException();
                 token.ThrowIfCancellationRequested();
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
@@ -915,8 +945,11 @@ namespace Chummer
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
             SafeHiPrioReaderSemaphoreRelease objRelease;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    return Task.FromException<IAsyncDisposable>(new TimeoutException());
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -960,8 +993,11 @@ namespace Chummer
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
             SafeHiPrioReaderSemaphoreRelease objRelease;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
             do
             {
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    return Task.FromException<IAsyncDisposable>(new TimeoutException());
                 if (token.IsCancellationRequested)
                     return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
