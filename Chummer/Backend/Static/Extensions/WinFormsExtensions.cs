@@ -1101,7 +1101,17 @@ namespace Chummer
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync, token: token);
+            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            {
+                try
+                {
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }, token: token);
             async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -1149,7 +1159,17 @@ namespace Chummer
                 .ConfigureAwait(false);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
             await Utils.RunOnMainThreadAsync(
-                () => objControl.Disposed += (o, args) => objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync,
+                () => objControl.Disposed += (o, args) =>
+                {
+                    try
+                    {
+                        objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                },
                 token).ConfigureAwait(false);
 
             async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
