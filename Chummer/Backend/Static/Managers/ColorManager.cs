@@ -34,7 +34,7 @@ using ListView = System.Windows.Forms.ListView;
 using SystemColors = System.Drawing.SystemColors;
 using TableCell = Chummer.UI.Table.TableCell;
 using TextBox = System.Windows.Forms.TextBox;
-using Timer = System.Windows.Forms.Timer;
+using Timer = System.Timers.Timer;
 using TreeNode = System.Windows.Forms.TreeNode;
 using TreeView = System.Windows.Forms.TreeView;
 
@@ -69,7 +69,7 @@ namespace Chummer
             }
 
             s_TmrDarkModeCheckerTimer = new Timer { Interval = 5000 }; // Poll registry every 5 seconds
-            s_TmrDarkModeCheckerTimer.Tick += TmrDarkModeCheckerTimerOnTick;
+            s_TmrDarkModeCheckerTimer.Elapsed += TmrDarkModeCheckerTimerOnTick;
             switch (GlobalSettings.ColorModeSetting)
             {
                 case ColorMode.Automatic:

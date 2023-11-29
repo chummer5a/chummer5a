@@ -113,13 +113,13 @@ namespace Chummer
         [STAThread]
         private static void Main()
         {
-            // Set DPI Stuff before anything else, even the mutex
-            SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
-            if (IsMainThread)
-                SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+            // Set DPI Stuff before anything else
+            SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
+            if (IsMainThread)
+                SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
             Utils.CreateSynchronizationContext();
 
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + ChummerGuid, out bool blnIsNewInstance))
