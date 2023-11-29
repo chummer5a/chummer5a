@@ -9074,7 +9074,8 @@ namespace Chummer
                         objOldSource.Dispose();
                     }
                     token.ThrowIfCancellationRequested();
-                    Task tskOld = Interlocked.Exchange(ref _tskUpdateCharacterInfo, null);
+                    Task tskTemp = Task.CompletedTask;
+                    Task tskOld = Interlocked.Exchange(ref _tskUpdateCharacterInfo, tskTemp);
                     if (tskOld?.IsCompleted == false)
                     {
                         try
@@ -9090,7 +9091,7 @@ namespace Chummer
                     await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
 
                     Task tskNew = Utils.RunInEmptyExecutionContext(() => Task.Run(() => DoUpdateCharacterInfo(objToken), objToken));
-                    if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, null) != null)
+                    if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
                     {
                         Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
                         try
