@@ -648,18 +648,28 @@ namespace Chummer.UI.Skills
                                                             , token).ConfigureAwait(false);
         }
 
+        private int _intLoaded;
+
+        public async Task DoLoad(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
+                return;
+            await DoDataBindingsAsync(token).ConfigureAwait(false);
+            Interlocked.Decrement(ref _intUpdatingSpec);
+        }
+
         private async void SkillControl_Load(object sender, EventArgs e)
         {
             try
             {
-                await DoDataBindingsAsync(_objMyToken).ConfigureAwait(false);
+                await DoLoad(_objMyToken);
                 await this.DoThreadSafeAsync(x => x.AdjustForDpi(), token: _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
             }
-            Interlocked.Decrement(ref _intUpdatingSpec);
         }
 
         private async Task Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs, CancellationToken token = default)

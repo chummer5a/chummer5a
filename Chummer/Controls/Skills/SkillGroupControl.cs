@@ -193,6 +193,7 @@ namespace Chummer.UI.Skills
 
         private async Task DoDataBindingsAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _skillGroup,
                 nameof(SkillGroup.CurrentDisplayName),
                 x => x.GetCurrentDisplayNameAsync(_objMyToken)
@@ -248,11 +249,21 @@ namespace Chummer.UI.Skills
             }
         }
 
+        private int _intLoaded;
+
+        public async Task DoLoad(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
+                return;
+            await DoDataBindingsAsync(token).ConfigureAwait(false);
+        }
+
         private async void SkillGroupControl_Load(object sender, EventArgs e)
         {
             try
             {
-                await DoDataBindingsAsync(_objMyToken).ConfigureAwait(false);
+                await DoLoad(_objMyToken);
                 await this.DoThreadSafeAsync(x => x.AdjustForDpi(), token: _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

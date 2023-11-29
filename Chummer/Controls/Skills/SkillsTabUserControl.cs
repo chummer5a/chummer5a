@@ -368,6 +368,14 @@ namespace Chummer.UI.Skills
                         Utils.StopwatchPool.Return(ref parts);
                     }
                 }, token: token).ConfigureAwait(false);
+
+                await Task.WhenAll(_lstActiveSkills.ContentControls.OfType<SkillControl>()
+                    .Select(x => x.DoLoad(token)));
+                await Task.WhenAll(_lstActiveSkills.ContentControls.OfType<KnowledgeSkillControl>()
+                    .Select(x => x.DoLoad(token)));
+                await Task.WhenAll(_lstSkillGroups.ContentControls.OfType<SkillGroupControl>()
+                    .Select(x => x.DoLoad(token)));
+
                 if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {
                     await lblGroupsSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
@@ -375,14 +383,14 @@ namespace Chummer.UI.Skills
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken), objMyToken)
+                                    objMyToken), token)
                         .ConfigureAwait(false);
                     await lblActiveSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                             nameof(Character
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken), objMyToken)
+                                    objMyToken), token)
                         .ConfigureAwait(false);
                     await lblBuyWithKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
                             _objCharacter,
@@ -390,7 +398,7 @@ namespace Chummer.UI.Skills
                                 .EffectiveBuildMethodUsesPriorityTables),
                             x => x
                                 .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken), objMyToken)
+                                    objMyToken), token)
                         .ConfigureAwait(false);
 
                     await lblKnoSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
@@ -398,20 +406,20 @@ namespace Chummer.UI.Skills
                         nameof(SkillsSection.HasKnowledgePoints),
                         x => x.GetHasKnowledgePointsAsync(objMyToken)
                             ,
-                        objMyToken).ConfigureAwait(false);
+                        token).ConfigureAwait(false);
                     await lblKnoBwk.RegisterOneWayAsyncDataBindingAsync(
                         (x, y) => x.Visible = y, _objCharacter.SkillsSection,
                         nameof(SkillsSection.HasKnowledgePoints),
                         x => x.GetHasKnowledgePointsAsync(objMyToken),
-                        objMyToken).ConfigureAwait(false);
-                    await UpdateKnoSkillRemainingAsync(objMyToken).ConfigureAwait(false);
+                        token).ConfigureAwait(false);
+                    await UpdateKnoSkillRemainingAsync(token).ConfigureAwait(false);
                 }
 
                 IAsyncDisposable objLocker = await _objCharacter.SkillsSection.LockObject
-                    .EnterWriteLockAsync(objMyToken).ConfigureAwait(false);
+                    .EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    objMyToken.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
                     _objCharacter.SkillsSection.Skills.ListChangedAsync += SkillsOnListChanged;
                     _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
                     _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;

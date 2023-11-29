@@ -593,20 +593,29 @@ namespace Chummer.UI.Skills
             }
         }
 
+        private int _intLoaded;
+
+        public async Task DoLoad(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
+                return;
+            await DoDataBindingsAsync(token).ConfigureAwait(false);
+            Interlocked.Decrement(ref _intUpdatingName);
+            Interlocked.Decrement(ref _intUpdatingSpec);
+        }
+
         private async void KnowledgeSkillControl_Load(object sender, EventArgs e)
         {
             try
             {
-                await DoDataBindingsAsync(_objMyToken).ConfigureAwait(false);
+                await DoLoad(_objMyToken);
                 await this.DoThreadSafeAsync(x => x.AdjustForDpi(), token: _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
             }
-
-            Interlocked.Decrement(ref _intUpdatingName);
-            Interlocked.Decrement(ref _intUpdatingSpec);
         }
 
         private async Task OnSkillsSectionPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)

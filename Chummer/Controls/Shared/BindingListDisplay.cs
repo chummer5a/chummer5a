@@ -106,6 +106,8 @@ namespace Chummer.Controls.Shared
         /// </summary>
         public ThreadSafeBindingList<TType> Contents { get; }
 
+        public IEnumerable<Control> ContentControls => _lstContentList.Select(x => x.Control);
+
         public Panel DisplayPanel => pnlDisplay;
 
         private int ListItemControlHeight
