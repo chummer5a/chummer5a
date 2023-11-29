@@ -32,8 +32,31 @@ using Org.XmlUnit.Diff;
 
 namespace Chummer.Tests
 {
+    public static class CommonTestData
+    {
+        static CommonTestData()
+        {
+            TestFilesBasePathInfo = new DirectoryInfo(TestFilesBasePath);//Assuming Test is your Folder
+            TestPathInfo = Directory.CreateDirectory(Path.Combine(TestFilesBasePath,
+                "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalSettings.InvariantCultureInfo)));
+            TestFileInfos = TestFilesBasePathInfo.GetFiles("*.chum5"); //Getting Text files
+            Characters = new Character[TestFileInfos.Length];
+        }
+
+        public static string TestFilesBasePath { get; } =
+            Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase ?? string.Empty, "TestFiles");
+
+        public static DirectoryInfo TestFilesBasePathInfo { get; }
+
+        public static DirectoryInfo TestPathInfo { get; }
+
+        public static FileInfo[] TestFileInfos { get; }
+
+        public static Character[] Characters { get; }
+    }
+
     [TestClass]
-    public static class AssemblyInitializer
+    public class ChummerTest
     {
         [AssemblyInitialize]
         public static void Initialize(TestContext context)
@@ -41,49 +64,29 @@ namespace Chummer.Tests
             Utils.IsUnitTest = true;
             Utils.IsUnitTestForUI = false;
         }
-    }
 
-    [TestClass]
-    public class ChummerTest
-    {
         public ChummerTest()
         {
             Utils.CreateSynchronizationContext();
-            string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase ?? string.Empty, "TestFiles");
-            DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
-            foreach (DirectoryInfo objOldDir in objPathInfo.GetDirectories("TestRun-*"))
-            {
-                Utils.SafeDeleteDirectory(objOldDir.FullName);
-            }
-            TestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalSettings.InvariantCultureInfo));
-            TestPathInfo = Directory.CreateDirectory(TestPath);
-            TestFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
-            _aobjCharacters = new Character[TestFiles.Length];
         }
 
-        private string TestPath { get; }
-        private DirectoryInfo TestPathInfo { get; }
-
-        private FileInfo[] TestFiles { get; }
-
-        private readonly Character[] _aobjCharacters;
-
-        private IEnumerable<Character> GetTestCharacters()
+        private static IEnumerable<Character> GetTestCharacters()
         {
-            for (int i = 0; i < TestFiles.Length; ++i)
+            for (int i = 0; i < CommonTestData.TestFileInfos.Length; ++i)
             {
 #if DEBUG
-                FileInfo objFileInfo = TestFiles[i];
+                FileInfo objFileInfo = CommonTestData.TestFileInfos[i];
                 Debug.WriteLine("Loading " + objFileInfo.Name);
 #endif
-                Character objLoopCharacter = _aobjCharacters[i];
+                Character objLoopCharacter = CommonTestData.Characters[i];
                 if (objLoopCharacter == null)
                 {
 #if DEBUG
-                    _aobjCharacters[i] = objLoopCharacter = LoadCharacter(objFileInfo);
+                    objLoopCharacter = LoadCharacter(objFileInfo);
 #else
-                    _aobjCharacters[i] = objLoopCharacter = LoadCharacter(TestFiles[i]);
+                    objLoopCharacter = LoadCharacter(_aobjTestFileInfos[i]);
 #endif
+                    CommonTestData.Characters[i] = objLoopCharacter;
                 }
 
                 yield return objLoopCharacter;
@@ -231,7 +234,7 @@ namespace Chummer.Tests
                     string strFileName = Path.GetFileName(objCharacter.FileName)
                                          ?? LanguageManager.GetString("String_Unknown");
                     Debug.WriteLine("Checking " + strFileName);
-                    string strDestination = Path.Combine(TestPathInfo.FullName, "(Compressed) " + strFileName);
+                    string strDestination = Path.Combine(CommonTestData.TestPathInfo.FullName, "(Compressed) " + strFileName);
                     if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                     {
                         if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
@@ -265,11 +268,11 @@ namespace Chummer.Tests
                                      LanguageManager.GetString("String_Unknown");
                 Debug.WriteLine("Saving Control for " + strFileName);
                 // First Load-Save cycle
-                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
+                string strDestinationControl = Path.Combine(CommonTestData.TestPathInfo.FullName, "(Control) " + strFileName);
                 SaveCharacter(objCharacterControl, strDestinationControl);
                 Debug.WriteLine("Checking " + strFileName);
                 // Second Load-Save cycle
-                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + strFileName);
+                string strDestinationTest = Path.Combine(CommonTestData.TestPathInfo.FullName, "(Test) " + strFileName);
                 Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)); // No using here because we value execution time much more than memory usage
                 SaveCharacter(objCharacterTest, strDestinationTest);
 
@@ -375,7 +378,7 @@ namespace Chummer.Tests
                 {
                     string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
                     Debug.WriteLine("Checking " + strFileName);
-                    string strDummyFileName = Path.Combine(TestPathInfo.FullName,
+                    string strDummyFileName = Path.Combine(CommonTestData.TestPathInfo.FullName,
                                                            "(UnitTest07Dummy) "
                                                            + Path.GetFileNameWithoutExtension(objCharacter.FileName)
                                                            + ".txt");
@@ -569,10 +572,10 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests exporting a given character.
         /// </summary>
-        private void DoAndSaveExport(Character objCharacter, string strExportLanguage)
+        private static void DoAndSaveExport(Character objCharacter, string strExportLanguage)
         {
             Assert.IsNotNull(objCharacter);
-            string strPath = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + Path.GetFileNameWithoutExtension(objCharacter.FileName) + ".xml");
+            string strPath = Path.Combine(CommonTestData.TestPathInfo.FullName, strExportLanguage + ' ' + Path.GetFileNameWithoutExtension(objCharacter.FileName) + ".xml");
             try
             {
                 Debug.WriteLine("Exporting: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
