@@ -224,6 +224,7 @@ namespace Chummer.UI.Table
         private readonly Func<T, Task<bool>> _funcDefaultFilter;
         private TableColumn<T> _sortColumn;
         private ThreadSafeBindingList<T> _lstItems;
+        private readonly AsyncFriendlyReaderWriterLock _objItemsLocker = new AsyncFriendlyReaderWriterLock();
         private Func<T, Task<bool>> _funcFilter;
         private readonly TableColumnCollection<T> _columns;
         private TableLayoutEngine _layoutEngine;
@@ -298,6 +299,16 @@ namespace Chummer.UI.Table
             }
         }
 
+        public async Task ResumeSortAsync(object objSender, CancellationToken token = default)
+        {
+            if (Interlocked.CompareExchange(ref _objSortPausedSender, null, objSender) == objSender
+                // prevent sort for focus loss when disposing
+                && Items != null && _lstPermutation.Count == await Items.GetCountAsync(token).ConfigureAwait(false))
+            {
+                await SortAsync(token: token).ConfigureAwait(false);
+            }
+        }
+
         private void Sort(bool blnPerformLayout = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -325,6 +336,35 @@ namespace Chummer.UI.Table
             if (blnPerformLayout)
             {
                 this.DoThreadSafe((x, y) => x.PerformLayout(), token);
+            }
+        }
+
+        private async Task SortAsync(bool blnPerformLayout = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_objSortPausedSender != null)
+                return;
+            if (_eSortType == SortOrder.None || _sortColumn == null)
+            {
+                // sort by index
+                _lstPermutation.Sort();
+            }
+            else
+            {
+                Func<T, T, Task<int>> comparison = _sortColumn.CreateSorter();
+
+                await _lstPermutation.SortAsync(async (i1, i2) => await comparison(
+                        await Items.GetValueAtAsync(i1, token).ConfigureAwait(false),
+                        await Items.GetValueAtAsync(i2, token).ConfigureAwait(false))
+                    .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                if (_eSortType == SortOrder.Descending)
+                {
+                    _lstPermutation.Reverse();
+                }
+            }
+            if (blnPerformLayout)
+            {
+                await this.DoThreadSafeAsync((x, y) => x.PerformLayout(), token).ConfigureAwait(false);
             }
         }
 
@@ -409,7 +449,10 @@ namespace Chummer.UI.Table
                     }, token: token).ConfigureAwait(false);
                     if (column.Sorter != null)
                     {
-                        header.HeaderClick += (sender, evt) =>
+                        header.HeaderClick += SortOnClick;
+                        header.Sortable = true;
+
+                        async void SortOnClick(object sender, EventArgs evt)
                         {
                             if (_sortColumn == column)
                             {
@@ -450,9 +493,8 @@ namespace Chummer.UI.Table
 
                             header.SortType = _eSortType;
                             // ReSharper disable once MethodSupportsCancellation
-                            Sort(token: CancellationToken.None);
-                        };
-                        header.Sortable = true;
+                            await SortAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        }
                     }
 
                     await this.DoThreadSafeAsync(x => x.Controls.Add(header), token).ConfigureAwait(false);
@@ -483,6 +525,7 @@ namespace Chummer.UI.Table
 
         private void DisposeAll()
         {
+            _objItemsLocker.Dispose();
             _lstPermutation.Clear();
             foreach (TableCell cell in _lstCells.SelectMany(col => col.cells))
                 cell.Dispose();
@@ -587,7 +630,7 @@ namespace Chummer.UI.Table
                                 }
 
                                 await UpdateRow(e.NewIndex, item, token).ConfigureAwait(false);
-                                Sort(false, token);
+                                await SortAsync(false, token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -647,7 +690,7 @@ namespace Chummer.UI.Table
                             }, token: token).ConfigureAwait(false);
 
                             _lstPermutation.Add(_lstPermutation.Count);
-                            Sort(false, token);
+                            await SortAsync(false, token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -688,7 +731,7 @@ namespace Chummer.UI.Table
 
                             _lstRowCells.RemoveAt(e.NewIndex);
                             _lstPermutation.Remove(_lstPermutation.Count - 1);
-                            Sort(false, token);
+                            await SortAsync(false, token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -743,7 +786,7 @@ namespace Chummer.UI.Table
                         }
                     }
 
-                    Sort(token: token);
+                    await SortAsync(token: token).ConfigureAwait(false);
                     break;
                 }
             }
@@ -868,6 +911,13 @@ namespace Chummer.UI.Table
                 if (InterlockedExtensions.Exchange(ref _eSortType, value) != value)
                     Sort();
             }
+        }
+
+        public async Task SetSortOrderAsync(SortOrder value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (InterlockedExtensions.Exchange(ref _eSortType, value) != value)
+                await SortAsync(token: token).ConfigureAwait(false);
         }
     }
 }

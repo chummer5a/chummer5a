@@ -218,5 +218,16 @@ namespace Chummer
             long result = a - (div * b);
             return new Tuple<long, long>(div, result);
         }
+
+        /// <summary>
+        /// Quick way to get the floor of the base-2 logarithm of an integer
+        /// </summary>
+        public static int FloorLog2(this int n)
+        {
+            int num = 0;
+            for (; n >= 1; n /= 2)
+                ++num;
+            return num;
+        }
     }
 }

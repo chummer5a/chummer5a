@@ -18,6 +18,8 @@
  */
 
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -43,13 +45,25 @@ namespace Chummer.UI.Table
         public object Value { get; private set; }
 
         /// <summary>
-        /// called when a item is updated
+        /// Called when a item is updated
         /// </summary>
-        /// <param name="newValue">the extracted value, if there is a extractor in the column,
-        /// the associated item otherwise</param>
+        /// <param name="newValue">the extracted value, if there is a extractor in the column, the associated item otherwise</param>
         protected internal virtual void UpdateValue(object newValue)
         {
             Value = newValue;
+        }
+
+        /// <summary>
+        /// Called when a item is updated
+        /// </summary>
+        /// <param name="newValue">the extracted value, if there is a extractor in the column, the associated item otherwise</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        protected internal virtual Task UpdateValueAsync(object newValue, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            Value = newValue;
+            return Task.CompletedTask;
         }
 
         /// <summary>

@@ -43232,6 +43232,39 @@ namespace Chummer
             }
         }
 
+        public async Task<bool> GetAllowAdeptWayPowerDiscountAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decMAG;
+                if (await GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
+                    await (await GetSettingsAsync(token).ConfigureAwait(false))
+                        .GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                {
+                    // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
+                    decMAG = await (await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+                }
+                else
+                {
+                    // The character is just an Adept, so use the full value.
+                    decMAG = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+                }
+
+                // Add any Power Point Improvements to MAG.
+                decMAG += await ImprovementManager
+                    .ValueOfAsync(this, Improvement.ImprovementType.AdeptPowerPoints, token: token)
+                    .ConfigureAwait(false);
+
+                return await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false) &&
+                       await Powers.CountAsync(p => p.GetDiscountedAdeptWayAsync(token), token: token)
+                           .ConfigureAwait(false) < (decMAG / 2).ToInt32();
+            }
+        }
+
         /// <summary>
         /// Sourcebook Page Number using a given language file.
         /// Returns Page if not found or the string is empty.

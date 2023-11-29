@@ -1314,6 +1314,20 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The current 'paid' Rating of the Power.
+        /// </summary>
+        public async Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intRating, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Rating), token);
+            }
+        }
+
+        /// <summary>
         /// The current Rating of the Power, including any Free Levels.
         /// </summary>
         public int TotalRating
