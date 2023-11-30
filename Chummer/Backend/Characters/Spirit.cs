@@ -162,7 +162,7 @@ namespace Chummer
             }
             else
             {
-                IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -216,7 +216,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker.Dispose();
                 }
             }
         }
@@ -327,7 +327,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -585,7 +585,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker.Dispose();
             }
         }
 

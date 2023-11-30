@@ -1395,11 +1395,11 @@ namespace Chummer.Backend.Skills
                                 {
                                     List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
                                     Stack<IDisposable> stkSyncLockers = null;
-                                    Stack<IAsyncDisposable> stkAsyncLockers = null;
+                                    Stack<IDisposable> stkAsyncLockers = null;
                                     if (blnSync)
                                         stkSyncLockers = new Stack<IDisposable>(lstTempSkillList.Count);
                                     else
-                                        stkAsyncLockers = new Stack<IAsyncDisposable>(lstTempSkillList.Count);
+                                        stkAsyncLockers = new Stack<IDisposable>(lstTempSkillList.Count);
 
                                     //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
                                     bool OldSkillFilter(Skill skill)
@@ -1459,9 +1459,7 @@ namespace Chummer.Backend.Skills
                                                 }
                                                 else
                                                 {
-                                                    IAsyncDisposable objTemp = stkAsyncLockers.Pop();
-                                                    if (objTemp != null)
-                                                        await objTemp.DisposeAsync().ConfigureAwait(false);
+                                                    stkAsyncLockers.Pop()?.Dispose();
                                                 }
                                             }
                                         }
@@ -1481,9 +1479,7 @@ namespace Chummer.Backend.Skills
                                         {
                                             while (stkAsyncLockers.Count > 0)
                                             {
-                                                IAsyncDisposable objTemp = stkAsyncLockers.Pop();
-                                                if (objTemp != null)
-                                                    await objTemp.DisposeAsync().ConfigureAwait(false);
+                                                stkAsyncLockers.Pop()?.Dispose();
                                             }
                                         }
                                     }
@@ -3212,7 +3208,7 @@ namespace Chummer.Backend.Skills
 
         private static async Task MergeSkillsAsync(Skill objExistingSkill, Skill objNewSkill, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await objNewSkill.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await objNewSkill.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -3244,7 +3240,7 @@ namespace Chummer.Backend.Skills
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker.Dispose();
             }
 
             await objNewSkill.RemoveAsync(token).ConfigureAwait(false);
@@ -3398,7 +3394,7 @@ namespace Chummer.Backend.Skills
 
         public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -3426,7 +3422,7 @@ namespace Chummer.Backend.Skills
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker.Dispose();
             }
         }
 

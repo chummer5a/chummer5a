@@ -929,7 +929,7 @@ namespace Chummer
         /// Try to asynchronously obtain a high-priority lock for reading and only reading and return a disposable that exits the read lock when disposed.
         /// Useful if we know we are going to try to acquire a read lock a whole bunch of times and don't want to deal with AsyncLocal's overhead each time.
         /// </summary>
-        public Task<IAsyncDisposable> EnterHiPrioReadLockAsync()
+        public Task<IDisposable> EnterHiPrioReadLockAsync()
         {
             if (_intDisposedStatus != 0)
             {
@@ -938,7 +938,7 @@ namespace Chummer
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
                 Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
-                return Task.FromResult<IAsyncDisposable>(null);
+                return Task.FromResult<IDisposable>(null);
             }
 
             int intCountLocalReaders = 0;
@@ -950,7 +950,7 @@ namespace Chummer
             do
             {
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
-                    return Task.FromException<IAsyncDisposable>(new TimeoutException());
+                    return Task.FromException<IDisposable>(new TimeoutException());
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -974,7 +974,7 @@ namespace Chummer
         /// Useful if we know we are going to try to acquire a read lock a whole bunch of times and don't want to deal with AsyncLocal's overhead each time.
         /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
         /// </summary>
-        public Task<IAsyncDisposable> EnterHiPrioReadLockAsync(CancellationToken token)
+        public Task<IDisposable> EnterHiPrioReadLockAsync(CancellationToken token)
         {
             if (_intDisposedStatus != 0)
             {
@@ -983,11 +983,11 @@ namespace Chummer
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
                 Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
-                return Task.FromResult<IAsyncDisposable>(null);
+                return Task.FromResult<IDisposable>(null);
             }
 
             if (token.IsCancellationRequested)
-                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+                return Task.FromException<IDisposable>(new OperationCanceledException(token));
 
             int intCountLocalReaders = 0;
             LinkedSemaphoreSlim objCurrentLinkedSemaphore;
@@ -998,9 +998,9 @@ namespace Chummer
             do
             {
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
-                    return Task.FromException<IAsyncDisposable>(new TimeoutException());
+                    return Task.FromException<IDisposable>(new TimeoutException());
                 if (token.IsCancellationRequested)
-                    return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+                    return Task.FromException<IDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -1022,7 +1022,7 @@ namespace Chummer
         /// <summary>
         /// Heavier read lock entrant, used if a write lock is already being held somewhere
         /// </summary>
-        private async Task<IAsyncDisposable> TakeHiPrioReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
+        private async Task<IDisposable> TakeHiPrioReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeHiPrioReaderSemaphoreRelease objRelease)
         {
             if (_intDisposedStatus != 0)
@@ -1050,7 +1050,7 @@ namespace Chummer
         /// <summary>
         /// Heavier read lock entrant, used if a write lock is already being held somewhere
         /// </summary>
-        private async Task<IAsyncDisposable> TakeHiPrioReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
+        private async Task<IDisposable> TakeHiPrioReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
             LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeHiPrioReaderSemaphoreRelease objRelease,
             CancellationToken token)
         {
@@ -1221,7 +1221,7 @@ namespace Chummer
             }
         }
 
-        private readonly struct SafeHiPrioReaderSemaphoreRelease : IDisposable, IAsyncDisposable
+        private readonly struct SafeHiPrioReaderSemaphoreRelease : IDisposable
         {
             private readonly int _intOldCountLocalReaders;
             private readonly LinkedSemaphoreSlim _objNextLinkedSemaphore;
@@ -1260,10 +1260,6 @@ namespace Chummer
 
             public void Dispose()
             {
-                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(_intOldCountLocalReaders,
-                        _objNextLinkedSemaphore, _objPreviousTopMostHeldWriterSemaphore);
-
                 if (_intOldCountLocalReaders != int.MinValue)
                 {
                     // Wait for all other readers to exit before exiting ourselves
@@ -1271,29 +1267,9 @@ namespace Chummer
                         Utils.SafeSleep();
                 }
 
-                _objReaderWriterLock.ChangeNumActiveHiPrioReaders(-1);
-            }
-
-            public ValueTask DisposeAsync()
-            {
-                // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
-                // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
-                // copy of the ExecutionContext and the caller won't see the changes.
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(_intOldCountLocalReaders,
                         _objNextLinkedSemaphore, _objPreviousTopMostHeldWriterSemaphore);
-
-                return DisposeCoreAsync();
-            }
-
-            private async ValueTask DisposeCoreAsync()
-            {
-                if (_intOldCountLocalReaders != int.MinValue)
-                {
-                    // Wait for all other readers to exit before exiting ourselves
-                    while (_intOldCountLocalReaders < _objReaderWriterLock._intCountActiveReaders)
-                        await Utils.SafeSleepAsync().ConfigureAwait(false);
-                }
 
                 _objReaderWriterLock.ChangeNumActiveHiPrioReaders(-1);
             }
@@ -1536,6 +1512,11 @@ namespace Chummer
                 }
 #endif
 
+                // Wait for all other readers to exit before exiting ourselves
+                while (_objReaderWriterLock._intCountActiveReaders > 0 &&
+                       _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
+                    Utils.SafeSleep(); // Synchronous because we have to make sure AsyncLocal assignment happens in the same ExecutionContext
+
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
                 // copy of the ExecutionContext and the caller won't see the changes.
@@ -1549,10 +1530,6 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync(int intCountLocalReaders)
             {
-                // Wait for all other readers to exit before exiting ourselves
-                while (_objReaderWriterLock._intCountActiveReaders > 0 &&
-                       _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
-                    await Utils.SafeSleepAsync().ConfigureAwait(false);
                 LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentLinkedSemaphore;
                 if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
                 {
@@ -1611,15 +1588,16 @@ namespace Chummer
                 }
 #endif
 
+                // Wait for all other readers to exit before exiting ourselves
+                while (_objReaderWriterLock._intCountActiveReaders > 0 &&
+                       _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
+                    Utils.SafeSleep();
+
                 LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentLinkedSemaphore;
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
                     new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
                         _intOldCountLocalReaders, objCurrentLinkedSemaphore,
                         _objPreviousTopMostHeldWriterSemaphore);
-                // Wait for all other readers to exit before exiting ourselves
-                while (_objReaderWriterLock._intCountActiveReaders > 0 &&
-                       _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
-                    Utils.SafeSleep();
 
                 if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
                 {

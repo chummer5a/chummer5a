@@ -3289,7 +3289,7 @@ namespace Chummer
             bool blnErrorFree = true;
 
             IDisposable objLocker = null;
-            IAsyncDisposable objLockerAsync = null;
+            IDisposable objLockerAsync = null;
             if (blnSync)
                 // ReSharper disable once MethodHasAsyncOverload
                 objLocker = LockObject.EnterHiPrioReadLock(token);
@@ -4811,7 +4811,7 @@ namespace Chummer
                 if (blnSync)
                     objLocker.Dispose();
                 else
-                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                    objLockerAsync.Dispose();
             }
 
             if (callOnSaveCallBack)
@@ -9475,7 +9475,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguageToPrint))
                 strLanguageToPrint = GlobalSettings.Language;
 
-            IAsyncDisposable objLockerAsync = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLockerAsync = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -11112,7 +11112,7 @@ namespace Chummer
             }
             finally
             {
-                await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                objLockerAsync.Dispose();
             }
         }
 

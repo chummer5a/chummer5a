@@ -435,7 +435,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 =
+                IDisposable objLocker2 =
                     await objExistingCache.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -460,7 +460,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    objLocker2.Dispose();
                 }
             }
             finally

@@ -880,7 +880,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
                 {
-                    Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstOrderedData.Count);
+                    Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstOrderedData.Count);
                     try
                     {
                         foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
@@ -920,9 +920,8 @@ namespace Chummer
                     {
                         while (stkLockers.Count > 0)
                         {
-                            IAsyncDisposable objTemp = stkLockers.Pop();
-                            if (objTemp != null)
-                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                            IDisposable objTemp = stkLockers.Pop();
+                            objTemp?.Dispose();
                         }
                     }
                 }
@@ -960,7 +959,7 @@ namespace Chummer
         {
             if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
             {
-                Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstOrderedData.Count);
+                Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstOrderedData.Count);
                 try
                 {
                     foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
@@ -984,9 +983,8 @@ namespace Chummer
                 {
                     while (stkLockers.Count > 0)
                     {
-                        IAsyncDisposable objTemp = stkLockers.Pop();
-                        if (objTemp != null)
-                            await objTemp.DisposeAsync().ConfigureAwait(false);
+                        IDisposable objTemp = stkLockers.Pop();
+                        objTemp?.Dispose();
                     }
                 }
             }
@@ -1010,7 +1008,7 @@ namespace Chummer
         {
             if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
             {
-                Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstOrderedData.Count);
+                Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstOrderedData.Count);
                 try
                 {
                     foreach (IHasLockObject objTemp in _lstOrderedData.Select(v => (IHasLockObject)v))
@@ -1034,9 +1032,8 @@ namespace Chummer
                 {
                     while (stkLockers.Count > 0)
                     {
-                        IAsyncDisposable objTemp = stkLockers.Pop();
-                        if (objTemp != null)
-                            await objTemp.DisposeAsync().ConfigureAwait(false);
+                        IDisposable objTemp = stkLockers.Pop();
+                        objTemp?.Dispose();
                     }
                 }
             }
@@ -1060,7 +1057,7 @@ namespace Chummer
         {
             if (_lstOrderedData.Count > 0 && _lstOrderedData[0] is IHasLockObject)
             {
-                Stack<IAsyncDisposable> stkLockers = new Stack<IAsyncDisposable>(_lstOrderedData.Count);
+                Stack<IDisposable> stkLockers = new Stack<IDisposable>(_lstOrderedData.Count);
                 try
                 {
                     for (int i = 0; i < count; ++i)
@@ -1084,9 +1081,8 @@ namespace Chummer
                 {
                     while (stkLockers.Count > 0)
                     {
-                        IAsyncDisposable objTemp = stkLockers.Pop();
-                        if (objTemp != null)
-                            await objTemp.DisposeAsync().ConfigureAwait(false);
+                        IDisposable objTemp = stkLockers.Pop();
+                        objTemp?.Dispose();
                     }
                 }
             }

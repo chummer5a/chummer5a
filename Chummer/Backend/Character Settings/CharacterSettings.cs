@@ -728,7 +728,7 @@ namespace Chummer
                 {
                     PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                     lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
-                    IAsyncDisposable objLocker2 =
+                    IDisposable objLocker2 =
                         await objOther.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
@@ -764,7 +764,7 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        IAsyncDisposable objLocker3 = await objOther._dicCustomDataDirectoryKeys.LockObject
+                        IDisposable objLocker3 = await objOther._dicCustomDataDirectoryKeys.LockObject
                             .EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
                         try
                         {
@@ -818,7 +818,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            objLocker3.Dispose();
                         }
 
                         if (!_setBooks.SetEquals(objOther._setBooks))
@@ -843,7 +843,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        objLocker2.Dispose();
                     }
 
                     // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
@@ -949,12 +949,12 @@ namespace Chummer
             if (objOther == this)
                 return lstReturn;
 
-            IAsyncDisposable objLocker =
+            IDisposable objLocker =
                 await objOther.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 =
+                IDisposable objLocker2 =
                     await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1005,12 +1005,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    objLocker2.Dispose();
                 }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker.Dispose();
             }
 
             return lstReturn;
@@ -1069,12 +1069,12 @@ namespace Chummer
         {
             if (objOther == null)
                 return false;
-            IAsyncDisposable objLocker =
+            IDisposable objLocker =
                 await objOther.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 =
+                IDisposable objLocker2 =
                     await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1098,12 +1098,12 @@ namespace Chummer
                             return false;
                     }
 
-                    IAsyncDisposable objLocker3 =
+                    IDisposable objLocker3 =
                         await objOther._dicCustomDataDirectoryKeys.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker4 =
+                        IDisposable objLocker4 =
                             await _dicCustomDataDirectoryKeys.LockObject.EnterHiPrioReadLockAsync(token)
                                 .ConfigureAwait(false);
                         try
@@ -1131,12 +1131,12 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker4.DisposeAsync().ConfigureAwait(false);
+                            objLocker4.Dispose();
                         }
                     }
                     finally
                     {
-                        await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        objLocker3.Dispose();
                     }
 
                     // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
@@ -1146,12 +1146,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    objLocker2.Dispose();
                 }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker.Dispose();
             }
         }
 
@@ -2117,7 +2117,7 @@ namespace Chummer
                 }
             }
 
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -3015,7 +3015,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker.Dispose();
             }
         }
 

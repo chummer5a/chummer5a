@@ -439,7 +439,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
 
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -512,7 +512,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker.Dispose();
             }
         }
 
@@ -1290,8 +1290,14 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _intRating, value) == value)
+                    if (_intRating == value)
                         return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _intRating, value) == value)
+                            return;
+                    }
+
                     OnPropertyChanged();
                 }
             }
@@ -1321,8 +1327,20 @@ namespace Chummer
             using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                if (Interlocked.Exchange(ref _intRating, value) == value)
+                if (_intRating == value)
                     return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _intRating, value) == value)
+                        return;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+
                 await OnPropertyChangedAsync(nameof(Rating), token);
             }
         }
