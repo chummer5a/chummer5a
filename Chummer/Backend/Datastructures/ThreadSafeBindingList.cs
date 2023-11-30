@@ -730,6 +730,8 @@ namespace Chummer
             {
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                     return;
+                using (LockObject.EnterWriteLock())
+                    _lstData.Dispose();
                 LockObject.Dispose();
             }
         }
@@ -747,6 +749,15 @@ namespace Chummer
             {
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                     return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    await _lstData.DisposeAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
                 await LockObject.DisposeAsync().ConfigureAwait(false);
             }
         }

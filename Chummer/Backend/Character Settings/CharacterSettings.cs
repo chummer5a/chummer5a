@@ -6079,7 +6079,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
                     return;
-                OnPropertyChanged(nameof(ChargenKarmaToNuyenExpression));
+                await OnPropertyChangedAsync(nameof(ChargenKarmaToNuyenExpression), token).ConfigureAwait(false);
             }
         }
 

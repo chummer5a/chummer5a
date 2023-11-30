@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -63,12 +64,23 @@ namespace Chummer.UI.Table
 
             if (EnabledExtractor != null)
             {
-                _button.Enabled = EnabledExtractor(Value as T);
+                _button.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(Value as T, CancellationToken.None));
+            }
+        }
+
+        protected internal override async Task UpdateValueAsync(object newValue, CancellationToken token = default)
+        {
+            await base.UpdateValueAsync(newValue, token).ConfigureAwait(false);
+
+            if (EnabledExtractor != null)
+            {
+                bool blnEnabled = await EnabledExtractor(Value as T, token).ConfigureAwait(false);
+                await _button.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token: token).ConfigureAwait(false);
             }
         }
 
         public Func<T, Task> ClickHandler { get; set; }
 
-        public Func<T, bool> EnabledExtractor { get; set; }
+        public Func<T, CancellationToken, Task<bool>> EnabledExtractor { get; set; }
     }
 }

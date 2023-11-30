@@ -372,7 +372,7 @@ namespace Chummer.UI.Table
         {
             Func<T, Task<object>> funcExtractor = column.Extractor;
             object objNewValue = funcExtractor == null ? item : await funcExtractor(item).ConfigureAwait(false);
-            await cell.DoThreadSafeAsync(x => x.UpdateValue(objNewValue), token).ConfigureAwait(false);
+            await cell.UpdateValueAsync(objNewValue, token).ConfigureAwait(false);
             Func<T, Task<string>> funcTooltipExtractor = column.ToolTipExtractor;
             if (funcTooltipExtractor != null)
             {
@@ -797,97 +797,235 @@ namespace Chummer.UI.Table
         /// </summary>
         public ThreadSafeBindingList<T> Items
         {
-            get => _lstItems;
+            get
+            {
+                using (_objItemsLocker.EnterReadLock())
+                    return _lstItems;
+            }
             set
             {
+                using (_objItemsLocker.EnterUpgradeableReadLock())
+                {
+                    int intOldCount = 0;
+                    ThreadSafeBindingList<T> lstOldItems = Interlocked.Exchange(ref _lstItems, value);
+                    if (lstOldItems != null)
+                    {
+                        // remove listener from old items
+                        lstOldItems.ListChangedAsync -= ItemsChanged;
+                        intOldCount = lstOldItems.Count;
+                    }
+
+                    using (_objItemsLocker.EnterWriteLock())
+                    {
+                        if (lstOldItems != null)
+                            _lstPermutation.Clear();
+                        int intNewCount = value?.Count ?? 0;
+                        using (CursorWait.New(this))
+                        {
+                            SuspendLayout();
+                            try
+                            {
+                                int intLimit;
+                                if (intNewCount > intOldCount && value != null)
+                                {
+                                    intLimit = intOldCount;
+                                    for (int j = intOldCount; j < intNewCount; j++)
+                                    {
+                                        TableRow row = CreateRow();
+                                        _lstRowCells.Add(row);
+                                    }
+
+                                    for (int i = 0; i < _columns.Count; i++)
+                                    {
+                                        TableColumn<T> column = _columns[i];
+                                        IList<TableCell> cells = _lstCells[i].cells;
+                                        for (int j = intOldCount; j < intNewCount; j++)
+                                        {
+                                            int j1 = j;
+                                            TableCell cell
+                                                = Utils.SafelyRunSynchronously(() => CreateCell(value[j1], column));
+                                            cells.Add(cell);
+                                            _lstRowCells[j1].Controls.Add(cell);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    intLimit = intNewCount;
+                                    foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
+                                    {
+                                        cells.RemoveRange(intNewCount, intOldCount - intNewCount);
+                                    }
+
+                                    for (int i = intNewCount; i < intOldCount; i++)
+                                    {
+                                        TableRow row = _lstRowCells[i];
+                                        if (row.Parent != null)
+                                        {
+                                            Controls.Remove(row);
+                                        }
+
+                                        row.Dispose();
+                                    }
+
+                                    _lstRowCells.RemoveRange(intNewCount, intOldCount - intNewCount);
+                                }
+
+                                for (int i = 0; i < intNewCount; i++)
+                                {
+                                    _lstPermutation.Add(i);
+                                }
+
+                                if (value != null)
+                                {
+                                    for (int i = 0; i < intLimit; i++)
+                                    {
+                                        int i1 = i;
+                                        Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]));
+                                    }
+                                }
+
+                                Sort(false);
+                                Utils.SafelyRunSynchronously(() => DoFilter());
+                            }
+                            finally
+                            {
+                                RestartLayout(true);
+                            }
+                        }
+
+                        if (value != null)
+                        {
+                            value.ListChangedAsync += ItemsChanged;
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task SetItemsAsync(ThreadSafeBindingList<T> value, CancellationToken token = default)
+        {
+            using (await _objItemsLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
                 int intOldCount = 0;
                 ThreadSafeBindingList<T> lstOldItems = Interlocked.Exchange(ref _lstItems, value);
                 if (lstOldItems != null)
                 {
                     // remove listener from old items
-                    lstOldItems.ListChangedAsync -= ItemsChanged;
-                    intOldCount = lstOldItems.Count;
-                    _lstPermutation.Clear();
-                }
-
-                int intNewCount = value?.Count ?? 0;
-                using (CursorWait.New(this))
-                {
-                    SuspendLayout();
+                    IAsyncDisposable objLocker2 = await lstOldItems.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        int intLimit;
-                        if (intNewCount > intOldCount && value != null)
-                        {
-                            intLimit = intOldCount;
-                            for (int j = intOldCount; j < intNewCount; j++)
-                            {
-                                TableRow row = CreateRow();
-                                _lstRowCells.Add(row);
-                            }
-
-                            for (int i = 0; i < _columns.Count; i++)
-                            {
-                                TableColumn<T> column = _columns[i];
-                                IList<TableCell> cells = _lstCells[i].cells;
-                                for (int j = intOldCount; j < intNewCount; j++)
-                                {
-                                    int j1 = j;
-                                    TableCell cell
-                                        = Utils.SafelyRunSynchronously(() => CreateCell(value[j1], column));
-                                    cells.Add(cell);
-                                    _lstRowCells[j1].Controls.Add(cell);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            intLimit = intNewCount;
-                            foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
-                            {
-                                cells.RemoveRange(intNewCount, intOldCount - intNewCount);
-                            }
-
-                            for (int i = intNewCount; i < intOldCount; i++)
-                            {
-                                TableRow row = _lstRowCells[i];
-                                if (row.Parent != null)
-                                {
-                                    Controls.Remove(row);
-                                }
-
-                                row.Dispose();
-                            }
-
-                            _lstRowCells.RemoveRange(intNewCount, intOldCount - intNewCount);
-                        }
-
-                        for (int i = 0; i < intNewCount; i++)
-                        {
-                            _lstPermutation.Add(i);
-                        }
-
-                        if (value != null)
-                        {
-                            for (int i = 0; i < intLimit; i++)
-                            {
-                                int i1 = i;
-                                Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]));
-                            }
-                        }
-
-                        Sort(false);
-                        Utils.SafelyRunSynchronously(() => DoFilter());
+                        lstOldItems.ListChangedAsync -= ItemsChanged;
                     }
                     finally
                     {
-                        RestartLayout(true);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+
+                    intOldCount = lstOldItems.Count;
                 }
 
-                if (value != null)
+                IAsyncDisposable objLocker = await _objItemsLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    value.ListChangedAsync += ItemsChanged;
+                    token.ThrowIfCancellationRequested();
+                    if (lstOldItems != null)
+                        _lstPermutation.Clear();
+                    int intNewCount = value != null ? await value.GetCountAsync(token).ConfigureAwait(false) : 0;
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                    try
+                    {
+                        await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        try
+                        {
+                            int intLimit;
+                            if (intNewCount > intOldCount && value != null)
+                            {
+                                intLimit = intOldCount;
+                                for (int j = intOldCount; j < intNewCount; j++)
+                                {
+                                    TableRow row = await this.DoThreadSafeFuncAsync(x => x.CreateRow(), token).ConfigureAwait(false);
+                                    _lstRowCells.Add(row);
+                                }
+
+                                for (int i = 0; i < _columns.Count; i++)
+                                {
+                                    TableColumn<T> column = _columns[i];
+                                    IList<TableCell> cells = _lstCells[i].cells;
+                                    for (int j = intOldCount; j < intNewCount; j++)
+                                    {
+                                        TableCell cell = await CreateCell(value[j], column, token).ConfigureAwait(false);
+                                        cells.Add(cell);
+                                        await _lstRowCells[j].DoThreadSafeAsync(x => x.Controls.Add(cell), token: token).ConfigureAwait(false);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                intLimit = intNewCount;
+                                foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
+                                {
+                                    cells.RemoveRange(intNewCount, intOldCount - intNewCount, token: token);
+                                }
+
+                                for (int i = intNewCount; i < intOldCount; i++)
+                                {
+                                    TableRow row = _lstRowCells[i];
+                                    if (row.Parent != null)
+                                    {
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        await this.DoThreadSafeAsync(x => x.Controls.Remove(row), token: token).ConfigureAwait(false);
+                                    }
+
+                                    await row.DoThreadSafeAsync(x => x.Dispose(), token).ConfigureAwait(false);
+                                }
+
+                                _lstRowCells.RemoveRange(intNewCount, intOldCount - intNewCount);
+                            }
+
+                            for (int i = 0; i < intNewCount; i++)
+                            {
+                                _lstPermutation.Add(i);
+                            }
+
+                            if (value != null)
+                            {
+                                for (int i = 0; i < intLimit; i++)
+                                {
+                                    await UpdateRow(i, value[i], token).ConfigureAwait(false);
+                                }
+                            }
+
+                            await SortAsync(false, token).ConfigureAwait(false);
+                            await DoFilter(token: token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if (value != null)
+                    {
+                        IAsyncDisposable objLocker2 = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            value.ListChangedAsync += ItemsChanged;
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }

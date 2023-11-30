@@ -772,10 +772,6 @@ namespace Chummer
                     (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
                 }
 
-                _objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                        objCurrentLinkedSemaphore,
-                        objTopMostHeldWriterSemaphore);
                 objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
                     objCurrentLinkedSemaphore,
                     objTopMostHeldWriterSemaphore, this);

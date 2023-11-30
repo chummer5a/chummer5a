@@ -121,14 +121,18 @@ namespace Chummer.UI.Powers
                     await objCharacter.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
-                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);
+
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token)
+                    .ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
+
             MyToken = objMyToken;
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
+            ThreadSafeBindingList<Power> lstPowers = await _objCharacter.GetPowersAsync(token).ConfigureAwait(false);
             Stopwatch sw = Utils.StopwatchPool.Get();
             try
             {
@@ -142,57 +146,58 @@ namespace Chummer.UI.Powers
                 //Might also be useless horseshit, 2 lines
 
                 //Visible = false;
-                await this.DoThreadSafeAsync(x =>
+                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+                try
                 {
-                    x.SuspendLayout();
+                    Stopwatch parts = Utils.StopwatchPool.Get();
                     try
                     {
-                        Stopwatch parts = Utils.StopwatchPool.Get();
-                        try
-                        {
-                            parts.Start();
-                            parts.TaskEnd("MakePowerDisplay()");
+                        parts.Start();
+                        parts.TaskEnd("MakePowerDisplay()");
 
-                            cboDisplayFilter.BeginUpdate();
+                        await cboDisplayFilter.DoThreadSafeAsync(x =>
+                        {
+                            x.BeginUpdate();
                             try
                             {
-                                cboDisplayFilter.DataSource = null;
-                                cboDisplayFilter.ValueMember = "Item2";
-                                cboDisplayFilter.DisplayMember = "Item1";
-                                cboDisplayFilter.DataSource = _dropDownList;
-                                cboDisplayFilter.SelectedIndex = 1;
-                                cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+                                x.DataSource = null;
+                                x.ValueMember = "Item2";
+                                x.DisplayMember = "Item1";
+                                x.DataSource = _dropDownList;
+                                x.SelectedIndex = 1;
+                                x.MaxDropDownItems = _dropDownList.Count;
                             }
                             finally
                             {
-                                cboDisplayFilter.EndUpdate();
+                                x.EndUpdate();
                             }
+                        }, token: token).ConfigureAwait(false);
 
-                            parts.TaskEnd("_ddl databind");
+                        parts.TaskEnd("_ddl databind");
 
-                            //Visible = true;
-                            //this.ResumeLayout(false);
-                            //this.PerformLayout();
-                            parts.TaskEnd("visible");
+                        //Visible = true;
+                        //this.ResumeLayout(false);
+                        //this.PerformLayout();
+                        parts.TaskEnd("visible");
 
-                            _table.Items = _objCharacter.Powers;
+                        await _table.SetItemsAsync(lstPowers, token).ConfigureAwait(false);
 
-                            parts.TaskEnd("resize");
-                        }
-                        finally
-                        {
-                            Utils.StopwatchPool.Return(ref parts);
-                        }
+                        parts.TaskEnd("resize");
                     }
                     finally
                     {
-                        x.ResumeLayout(true);
+                        Utils.StopwatchPool.Return(ref parts);
                     }
-                }, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout(true), token: token).ConfigureAwait(false);
+                }
+
                 await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
                     nameof(Character.DisplayPowerPointsRemaining),
                     x => x.GetDisplayPowerPointsRemainingAsync(MyToken),
-                    MyToken).ConfigureAwait(false);
+                    token).ConfigureAwait(false);
             }
             finally
             {
@@ -203,12 +208,22 @@ namespace Chummer.UI.Powers
                 Utils.StopwatchPool.Return(ref sw);
             }
 
-            _objCharacter.Powers.ListChangedAsync += OnPowersListChanged;
             IAsyncDisposable objLocker
-                = await _objCharacter.LockObject.EnterWriteLockAsync(MyToken).ConfigureAwait(false);
+                = await lstPowers.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                MyToken.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
+                lstPowers.ListChangedAsync += OnPowersListChanged;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 _objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
             }
             finally
@@ -226,7 +241,8 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private async Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
         {
             try
             {
@@ -280,38 +296,43 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private static List<Tuple<string, Func<Power, Task<bool>>>> GenerateDropdownFilter(CancellationToken objMyToken = default)
+        private static List<Tuple<string, Func<Power, Task<bool>>>> GenerateDropdownFilter(
+            CancellationToken objMyToken = default)
         {
             List<Tuple<string, Func<Power, Task<bool>>>> ret = new List<Tuple<string, Func<Power, Task<bool>>>>(4)
             {
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_Search", token: objMyToken),
-                                                           null),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
-                                                           power => Task.FromResult(true)),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
-                                                           async power =>
-                                                           {
-                                                               try
-                                                               {
-                                                                   return await power.GetRatingAsync(objMyToken).ConfigureAwait(false) > 0;
-                                                               }
-                                                               catch (OperationCanceledException)
-                                                               {
-                                                                   return true;
-                                                               }
-                                                           }),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingZero", token: objMyToken),
-                                                           async power =>
-                                                           {
-                                                               try
-                                                               {
-                                                                   return await power.GetRatingAsync(objMyToken).ConfigureAwait(false) == 0;
-                                                               }
-                                                               catch (OperationCanceledException)
-                                                               {
-                                                                   return true;
-                                                               }
-                                                           })
+                new Tuple<string, Func<Power, Task<bool>>>(
+                    LanguageManager.GetString("String_Search", token: objMyToken),
+                    null),
+                new Tuple<string, Func<Power, Task<bool>>>(
+                    LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
+                    power => Task.FromResult(true)),
+                new Tuple<string, Func<Power, Task<bool>>>(
+                    LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
+                    async power =>
+                    {
+                        try
+                        {
+                            return await power.GetRatingAsync(objMyToken).ConfigureAwait(false) > 0;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return true;
+                        }
+                    }),
+                new Tuple<string, Func<Power, Task<bool>>>(
+                    LanguageManager.GetString("String_PowerFilterRatingZero", token: objMyToken),
+                    async power =>
+                    {
+                        try
+                        {
+                            return await power.GetRatingAsync(objMyToken).ConfigureAwait(false) == 0;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return true;
+                        }
+                    })
             };
 
             /*
@@ -479,30 +500,17 @@ namespace Chummer.UI.Powers
             Disposed += (sender, args) => _table.Dispose();
             // create columns
             TableColumn<Power> nameColumn = this.DoThreadSafeFunc(
-                () => new TableColumn<Power>(() => new TextTableCell())
+                () =>
                 {
-                    Text = "Power",
-                    Extractor = (async power =>
+                    return new TableColumn<Power>(() => new TextTableCell())
                     {
-                        try
-                        {
-                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
-                            try
-                            {
-                                return await power.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                            }
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            return default;
-                        }
-                    }),
-                    Tag = "String_Power",
-                    Sorter = async (name1, name2) =>
+                        Text = "Power",
+                        Extractor = SpecifyName,
+                        Tag = "String_Power",
+                        Sorter = Sorter
+                    };
+
+                    async Task<int> Sorter(Task<object> name1, Task<object> name2)
                     {
                         try
                         {
@@ -524,21 +532,16 @@ namespace Chummer.UI.Powers
                             return default;
                         }
                     }
-                });
-            nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
 
-            TableColumn<Power> actionColumn = this.DoThreadSafeFunc(
-                () => new TableColumn<Power>(() => new TextTableCell())
-                {
-                    Text = "Action",
-                    Extractor = (async power =>
+                    async Task<object> SpecifyName(Power power)
                     {
                         try
                         {
-                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                             try
                             {
-                                return await power.GetDisplayActionAsync(MyToken).ConfigureAwait(false);
+                                return await power.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -549,13 +552,27 @@ namespace Chummer.UI.Powers
                         {
                             return default;
                         }
-                    }),
-                    Tag = "ColumnHeader_Action",
-                    Sorter = async (action1, action2) =>
+                    }
+                });
+            nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
+
+            TableColumn<Power> actionColumn = this.DoThreadSafeFunc(
+                () =>
+                {
+                    return new TableColumn<Power>(() => new TextTableCell())
+                    {
+                        Text = "Action",
+                        Extractor = Extractor,
+                        Tag = "ColumnHeader_Action",
+                        Sorter = Sorter
+                    };
+
+                    async Task<int> Sorter(Task<object> action1, Task<object> action2)
                     {
                         try
                         {
-                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                             try
                             {
                                 return string.Compare((await action1.ConfigureAwait(false)).ToString(),
@@ -572,46 +589,91 @@ namespace Chummer.UI.Powers
                             return default;
                         }
                     }
+
+                    async Task<object> Extractor(Power power)
+                    {
+                        try
+                        {
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return await power.GetDisplayActionAsync(MyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }
                 });
             actionColumn.AddDependency(nameof(Power.DisplayAction));
 
-            TableColumn<Power> ratingColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                                                                        () => new SpinnerTableCell<Power>(_table)
-                                                                        {
-                                                                            EnabledExtractor = (p => p.LevelsEnabled),
-                                                                            MaxExtractor = (p =>
-                                                                                Math.Max(
-                                                                                    p.TotalMaximumLevels - p.FreeLevels,
-                                                                                    0)),
-                                                                            ValueUpdater = (p, newRating) =>
-                                                                            {
-                                                                                using (CursorWait.New(this))
-                                                                                {
-                                                                                    int delta = (int)newRating
-                                                                                        - p.Rating;
-                                                                                    if (delta != 0)
-                                                                                    {
-                                                                                        p.Rating += delta;
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            MinExtractor = (p => 0),
-                                                                            ValueGetter = (p => p.Rating)
-                                                                        })
+            TableColumn<Power> ratingColumn = this.DoThreadSafeFunc(() =>
             {
-                Text = "Rating",
-                Tag = "String_Rating",
-                Sorter = async (o1, o2) =>
+                return new TableColumn<Power>(
+                    () =>
+                    {
+                        return new SpinnerTableCell<Power>(_table)
+                        {
+                            EnabledExtractor = (p, t) =>
+                                p.GetLevelsEnabledAsync(t),
+                            MaxExtractor = MaxExtractor,
+                            ValueUpdater = ValueUpdater,
+                            MinExtractor = MinExtractor,
+                            ValueGetter = ValueGetter
+                        };
+
+                        async Task ValueUpdater(Power p, decimal newRating)
+                        {
+                            IAsyncDisposable objCursorWait =
+                                await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
+                            try
+                            {
+                                await p.SetRatingAsync(newRating.StandardRound(), _objMyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync()
+                                    .ConfigureAwait(false);
+                            }
+                        }
+
+                        Task<decimal> MinExtractor(Power p, CancellationToken t) =>
+                            t.IsCancellationRequested
+                                ? Task.FromCanceled<decimal>(t)
+                                : Task.FromResult<decimal>(0);
+
+                        async Task<decimal> ValueGetter(Power p, CancellationToken t) =>
+                            await p.GetRatingAsync(t).ConfigureAwait(false);
+
+                        async Task<decimal> MaxExtractor(Power p, CancellationToken t) =>
+                            Math.Max(await p.GetTotalMaximumLevelsAsync(t).ConfigureAwait(false) - await p
+                                .GetFreeLevelsAsync(t)
+                                .ConfigureAwait(false), 0);
+                    })
+                {
+                    Text = "Rating",
+                    Tag = "String_Rating",
+                    Sorter = Sorter
+                };
+
+                async Task<int> Sorter(Task<object> o1, Task<object> o2)
                 {
                     try
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                        CursorWait objCursorWait =
+                            await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                         try
                         {
                             if (await o1.ConfigureAwait(false) is Power objPower1 &&
                                 await o2.ConfigureAwait(false) is Power objPower2)
-                                return await objPower1.GetRatingAsync(MyToken).ConfigureAwait(false)
-                                       - await objPower2.GetRatingAsync(MyToken).ConfigureAwait(false);
+                                return await objPower1.GetRatingAsync(MyToken).ConfigureAwait(false) -
+                                       await objPower2.GetRatingAsync(MyToken).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -623,16 +685,10 @@ namespace Chummer.UI.Powers
                         return 0;
                     }
 
-                    string strMessage
-                        = "Can't sort an Object of Type "
-                        + o1.GetType() +
-                        " against another one of Type "
-                        + o2.GetType() + " in the ratingColumn."
-                        +
-                        Environment.NewLine
-                        + "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(
-                        strMessage, nameof(o1));
+                    string strMessage = "Can't sort an Object of Type " + o1.GetType() +
+                                        " against another one of Type " + o2.GetType() + " in the ratingColumn." +
+                                        Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
+                    throw new ArgumentException(strMessage, nameof(o1));
                 }
             });
 
@@ -641,14 +697,22 @@ namespace Chummer.UI.Powers
             ratingColumn.AddDependency(nameof(Power.TotalMaximumLevels));
             ratingColumn.AddDependency(nameof(Power.TotalRating));
             TableColumn<Power> totalRatingColumn = this.DoThreadSafeFunc(
-                () => new TableColumn<Power>(() => new TextTableCell())
+                () =>
                 {
-                    Text = "Total Rating",
-                    Extractor = (async power =>
+                    return new TableColumn<Power>(() => new TextTableCell())
+                    {
+                        Text = "Total Rating",
+                        Extractor = Extractor,
+                        Tag = "String_TotalRating",
+                        Sorter = Sorter
+                    };
+
+                    async Task<object> Extractor(Power power)
                     {
                         try
                         {
-                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                             try
                             {
                                 return await power.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
@@ -662,19 +726,20 @@ namespace Chummer.UI.Powers
                         {
                             return default;
                         }
-                    }),
-                    Tag = "String_TotalRating",
-                    Sorter = async (o1, o2) =>
+                    }
+
+                    async Task<int> Sorter(Task<object> o1, Task<object> o2)
                     {
                         try
                         {
-                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                             try
                             {
                                 if (await o1.ConfigureAwait(false) is Power objPower1 &&
                                     await o2.ConfigureAwait(false) is Power objPower2)
-                                    return await objPower1.GetTotalRatingAsync(MyToken).ConfigureAwait(false)
-                                           - await objPower2.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                                    return await objPower1.GetTotalRatingAsync(MyToken).ConfigureAwait(false) -
+                                           await objPower2.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -687,23 +752,31 @@ namespace Chummer.UI.Powers
                         }
 
                         string strMessage = "Can't sort an Object of Type " + o1.GetType() +
-                                            " against another one of Type " + o2.GetType()
-                                            + " in the totalRatingColumn." +
-                                            Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
+                                            " against another one of Type " + o2.GetType() +
+                                            " in the totalRatingColumn." + Environment.NewLine +
+                                            "Both objects SHOULD be of the type \"Power\".";
                         throw new ArgumentException(strMessage, nameof(o1));
                     }
                 });
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
             TableColumn<Power> powerPointsColumn = this.DoThreadSafeFunc(
-                () => new TableColumn<Power>(() => new TextTableCell())
+                () =>
                 {
-                    Text = "Power Points",
-                    Extractor = (async power =>
+                    return new TableColumn<Power>(() => new TextTableCell())
+                    {
+                        Text = "Power Points",
+                        Extractor = Extractor,
+                        Tag = "ColumnHeader_Power_Points",
+                        ToolTipExtractor = ToolTipExtractor
+                    };
+
+                    async Task<object> Extractor(Power power)
                     {
                         try
                         {
-                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                             try
                             {
                                 return await power.GetDisplayPointsAsync(MyToken).ConfigureAwait(false);
@@ -717,13 +790,14 @@ namespace Chummer.UI.Powers
                         {
                             return default;
                         }
-                    }),
-                    Tag = "ColumnHeader_Power_Points",
-                    ToolTipExtractor = async item =>
+                    }
+
+                    async Task<string> ToolTipExtractor(Power item)
                     {
                         try
                         {
-                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                             try
                             {
                                 return await item.GetToolTipAsync(MyToken).ConfigureAwait(false);
@@ -742,17 +816,25 @@ namespace Chummer.UI.Powers
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
 
-            TableColumn<Power> sourceColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(() => new TextTableCell
+            TableColumn<Power> sourceColumn = this.DoThreadSafeFunc(() =>
             {
-                Cursor = Cursors.Hand
-            })
-            {
-                Text = "Source",
-                Extractor = (async power =>
+                return new TableColumn<Power>(() => new TextTableCell
+                {
+                    Cursor = Cursors.Hand
+                })
+                {
+                    Text = "Source",
+                    Extractor = Extractor,
+                    Tag = "Label_Source",
+                    ToolTipExtractor = ToolTipExtractor
+                };
+
+                async Task<object> Extractor(Power power)
                 {
                     try
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                        CursorWait objCursorWait =
+                            await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                         try
                         {
                             return await power.GetSourceDetailAsync(MyToken).ConfigureAwait(false);
@@ -766,13 +848,14 @@ namespace Chummer.UI.Powers
                     {
                         return default;
                     }
-                }),
-                Tag = "Label_Source",
-                ToolTipExtractor = async item =>
+                }
+
+                async Task<string> ToolTipExtractor(Power item)
                 {
                     try
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                        CursorWait objCursorWait =
+                            await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                         try
                         {
                             return (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).LanguageBookTooltip;
@@ -791,19 +874,28 @@ namespace Chummer.UI.Powers
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
             TableColumn<Power> adeptWayColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                                                                          () => new CheckBoxTableCell<Power>
-                                                                          {
-                                                                              ValueGetter = p => p.DiscountedAdeptWay,
-                                                                              ValueUpdater = (p, check) =>
-                                                                                  p.DiscountedAdeptWay = check,
-                                                                              VisibleExtractor = p =>
-                                                                                  p.AdeptWayDiscountEnabled,
-                                                                              EnabledExtractor = p =>
-                                                                                  p.CharacterObject
-                                                                                      .AllowAdeptWayPowerDiscount
-                                                                                  || p.DiscountedAdeptWay,
-                                                                              Alignment = Alignment.Center
-                                                                          })
+                () =>
+                {
+                    return new CheckBoxTableCell<Power>
+                    {
+                        ValueGetter = (p, t) =>
+                            p.GetDiscountedAdeptWayAsync(t),
+                        ValueUpdater = ValueUpdater,
+                        VisibleExtractor = (p, t) =>
+                            p.GetAdeptWayDiscountEnabledAsync(
+                                t),
+                        EnabledExtractor = EnabledExtractor,
+                        Alignment = Alignment.Center
+                    };
+
+                    async Task ValueUpdater(Power p, bool check) =>
+                        await p.SetDiscountedAdeptWayAsync(check, _objMyToken).ConfigureAwait(false);
+
+                    async Task<bool> EnabledExtractor(Power p, CancellationToken t) =>
+                        await p.CharacterObject.GetAllowAdeptWayPowerDiscountAsync(t).ConfigureAwait(false) || await p
+                            .GetDiscountedAdeptWayAsync(t)
+                            .ConfigureAwait(false);
+                })
             {
                 Text = "Adept Way",
                 Tag = "Checkbox_Power_AdeptWay"
@@ -827,27 +919,35 @@ namespace Chummer.UI.Powers
             geasColumn.AddDependency(nameof(Power.DiscountedGeas));
             */
 
-            TableColumn<Power> noteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                () =>
-                {
-                    DpiFriendlyImagedButton cmdReturn
-                        = new DpiFriendlyImagedButton
-                        {
-                            Dock = DockStyle.Fill,
-                            AutoSize = true,
-                            FlatStyle = FlatStyle.Flat
-                        };
-                    cmdReturn.BatchSetImages(Resources.note_edit_16, Resources.note_edit_20, Resources.note_edit_24,
-                        Resources.note_edit_32,
-                        Resources.note_edit_48, Resources.note_edit_64);
-                    cmdReturn.FlatAppearance.BorderSize = 0;
-                    return new ButtonTableCell<Power>(cmdReturn)
+            TableColumn<Power> noteColumn = this.DoThreadSafeFunc(() =>
+            {
+                return new TableColumn<Power>(
+                    () =>
                     {
-                        ClickHandler = async p =>
+                        DpiFriendlyImagedButton cmdReturn
+                            = new DpiFriendlyImagedButton
+                            {
+                                Dock = DockStyle.Fill,
+                                AutoSize = true,
+                                FlatStyle = FlatStyle.Flat
+                            };
+                        cmdReturn.BatchSetImages(Resources.note_edit_16, Resources.note_edit_20, Resources.note_edit_24,
+                            Resources.note_edit_32,
+                            Resources.note_edit_48, Resources.note_edit_64);
+                        cmdReturn.FlatAppearance.BorderSize = 0;
+
+                        return new ButtonTableCell<Power>(cmdReturn)
+                        {
+                            ClickHandler = ClickHandler,
+                            Alignment = Alignment.Center
+                        };
+
+                        async Task ClickHandler(Power p)
                         {
                             try
                             {
-                                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                                CursorWait objCursorWait =
+                                    await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                                 try
                                 {
                                     using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>
@@ -868,27 +968,27 @@ namespace Chummer.UI.Powers
                             {
                                 //swallow this
                             }
-                        },
-                        Alignment = Alignment.Center
-                    };
-                })
-            {
-                Text = "Notes",
-                Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = async p =>
+                        }
+                    })
+                {
+                    Text = "Notes",
+                    Tag = "ColumnHeader_Notes",
+                    ToolTipExtractor = ToolTipExtractor
+                };
+
+                async Task<string> ToolTipExtractor(Power p)
                 {
                     try
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                        CursorWait objCursorWait =
+                            await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                         try
                         {
-                            string strTooltip
-                                = await LanguageManager.GetStringAsync(
-                                    "Tip_Power_EditNotes", token: MyToken).ConfigureAwait(false);
+                            string strTooltip = await LanguageManager
+                                .GetStringAsync("Tip_Power_EditNotes", token: MyToken).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(p.Notes))
-                                strTooltip += Environment.NewLine
-                                              + Environment.NewLine
-                                              + await p.Notes.RtfToPlainTextAsync(token: MyToken).ConfigureAwait(false);
+                                strTooltip += Environment.NewLine + Environment.NewLine +
+                                              await p.Notes.RtfToPlainTextAsync(token: MyToken).ConfigureAwait(false);
                             return strTooltip.WordWrap();
                         }
                         finally
@@ -904,27 +1004,35 @@ namespace Chummer.UI.Powers
             });
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                () =>
-                {
-                    DpiFriendlyImagedButton cmdReturn
-                        = new DpiFriendlyImagedButton
-                        {
-                            Dock = DockStyle.Fill,
-                            AutoSize = true,
-                            FlatStyle = FlatStyle.Flat
-                        };
-                    cmdReturn.BatchSetImages(Resources.delete_16, Resources.delete_20, Resources.delete_24,
-                        Resources.delete_32,
-                        Resources.delete_48, Resources.delete_64);
-                    cmdReturn.FlatAppearance.BorderSize = 0;
-                    return new ButtonTableCell<Power>(cmdReturn)
+            TableColumn<Power> deleteColumn = this.DoThreadSafeFunc(() =>
+            {
+                return new TableColumn<Power>(
+                    () =>
                     {
-                        ClickHandler = async p =>
+                        DpiFriendlyImagedButton cmdReturn
+                            = new DpiFriendlyImagedButton
+                            {
+                                Dock = DockStyle.Fill,
+                                AutoSize = true,
+                                FlatStyle = FlatStyle.Flat
+                            };
+                        cmdReturn.BatchSetImages(Resources.delete_16, Resources.delete_20, Resources.delete_24,
+                            Resources.delete_32,
+                            Resources.delete_48, Resources.delete_64);
+                        cmdReturn.FlatAppearance.BorderSize = 0;
+
+                        return new ButtonTableCell<Power>(cmdReturn)
+                        {
+                            ClickHandler = ClickHandler,
+                            EnabledExtractor = EnabledExtractor
+                        };
+
+                        async Task ClickHandler(Power p)
                         {
                             try
                             {
-                                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                                CursorWait objCursorWait =
+                                    await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                                 try
                                 {
                                     //Cache the parentform prior to deletion, otherwise the relationship is broken.
@@ -933,10 +1041,9 @@ namespace Chummer.UI.Powers
                                     if (p.FreeLevels > 0)
                                     {
                                         string strExtra = p.Extra;
-                                        string strImprovementSourceName
-                                            = (await ImprovementManager
-                                                .GetCachedImprovementListForValueOfAsync(
-                                                    p.CharacterObject,
+                                        string strImprovementSourceName =
+                                            (await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(p.CharacterObject,
                                                     Improvement.ImprovementType.AdeptPowerFreePoints, p.Name,
                                                     token: MyToken).ConfigureAwait(false))
                                             .Find(x => x.UniqueName == strExtra)?.SourceName;
@@ -965,19 +1072,22 @@ namespace Chummer.UI.Powers
                             {
                                 //swallow this
                             }
-                        },
-                        EnabledExtractor = (p => p.FreeLevels == 0)
-                    };
-                })
-            {
-                Text = string.Empty,
-                ToolTipExtractor = async p =>
+                        }
+
+                        async Task<bool> EnabledExtractor(Power p, CancellationToken t) =>
+                            await p.GetFreeLevelsAsync(t).ConfigureAwait(false) == 0;
+                    })
+                {
+                    Text = string.Empty,
+                    ToolTipExtractor = ToolTipExtractor
+                };
+
+                async Task<string> ToolTipExtractor(Power p)
                 {
                     try
                     {
                         return (await LanguageManager.GetStringAsync("String_Delete", token: MyToken)
-                                .ConfigureAwait(false))
-                            .WordWrap();
+                            .ConfigureAwait(false)).WordWrap();
                     }
                     catch (OperationCanceledException)
                     {
@@ -987,46 +1097,48 @@ namespace Chummer.UI.Powers
             });
             deleteColumn.AddDependency(nameof(Power.FreeLevels));
 
-            TableColumn<Power> reapplyImprovementsColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                () =>
-                {
-                    DpiFriendlyImagedButton cmdReturn
-                        = new DpiFriendlyImagedButton
-                        {
-                            Dock = DockStyle.Fill,
-                            AutoSize = true,
-                            FlatStyle = FlatStyle.Flat
-                        };
-                    cmdReturn.BatchSetImages(Resources.page_refresh_16, Resources.page_refresh_20,
-                        Resources.page_refresh_24,
-                        Resources.page_refresh_32,
-                        Resources.page_refresh_48, Resources.page_refresh_64);
-                    cmdReturn.FlatAppearance.BorderSize = 0;
-                    return new ButtonTableCell<Power>(cmdReturn)
+            TableColumn<Power> reapplyImprovementsColumn = this.DoThreadSafeFunc(() =>
+            {
+                return new TableColumn<Power>(
+                    () =>
                     {
-                        ClickHandler = async p =>
+                        DpiFriendlyImagedButton cmdReturn
+                            = new DpiFriendlyImagedButton
+                            {
+                                Dock = DockStyle.Fill,
+                                AutoSize = true,
+                                FlatStyle = FlatStyle.Flat
+                            };
+                        cmdReturn.BatchSetImages(Resources.page_refresh_16, Resources.page_refresh_20,
+                            Resources.page_refresh_24,
+                            Resources.page_refresh_32,
+                            Resources.page_refresh_48, Resources.page_refresh_64);
+                        cmdReturn.FlatAppearance.BorderSize = 0;
+
+                        return new ButtonTableCell<Power>(cmdReturn)
+                        {
+                            ClickHandler = ClickHandler,
+                            Alignment = Alignment.Center
+                        };
+
+                        async Task ClickHandler(Power p)
                         {
                             try
                             {
-                                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                                CursorWait objCursorWait =
+                                    await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                                 try
                                 {
                                     switch (ParentForm)
                                     {
-                                        case CharacterCreate
-                                            frmCreate:
-                                            await frmCreate
-                                                .ReapplySpecificImprovements(
-                                                    p.InternalId,
+                                        case CharacterCreate frmCreate:
+                                            await frmCreate.ReapplySpecificImprovements(p.InternalId,
                                                     await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
                                                     MyToken)
                                                 .ConfigureAwait(false);
                                             break;
-                                        case CharacterCareer
-                                            frmCareer:
-                                            await frmCareer
-                                                .ReapplySpecificImprovements(
-                                                    p.InternalId,
+                                        case CharacterCareer frmCareer:
+                                            await frmCareer.ReapplySpecificImprovements(p.InternalId,
                                                     await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
                                                     MyToken)
                                                 .ConfigureAwait(false);
@@ -1042,20 +1154,19 @@ namespace Chummer.UI.Powers
                             {
                                 //swallow this
                             }
-                        },
-                        Alignment = Alignment.Center
-                    };
-                })
-            {
-                Text = string.Empty,
-                ToolTipExtractor = async p =>
+                        }
+                    })
+                {
+                    Text = string.Empty,
+                    ToolTipExtractor = ToolTipExtractor
+                };
+
+                async Task<string> ToolTipExtractor(Power p)
                 {
                     try
                     {
-                        return (await LanguageManager
-                                .GetStringAsync("Menu_SpecialReapplyImprovements", token: MyToken)
-                                .ConfigureAwait(false))
-                            .WordWrap();
+                        return (await LanguageManager.GetStringAsync("Menu_SpecialReapplyImprovements", token: MyToken)
+                            .ConfigureAwait(false)).WordWrap();
                     }
                     catch (OperationCanceledException)
                     {
@@ -1084,6 +1195,7 @@ namespace Chummer.UI.Powers
             {
                 return;
             }
+
             pnlPowers.Controls.Add(_table);
         }
     }

@@ -20,6 +20,7 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer.UI.Table
 {
@@ -32,7 +33,9 @@ namespace Chummer.UI.Table
             InitializeComponent();
             ContentField = _spinner;
             Enter += (a, b) => table.PauseSort(this);
-            Leave += (a, b) => table.ResumeSort(this);
+            Leave += DoResumeSort;
+
+            async void DoResumeSort(object a, EventArgs b) => await table.ResumeSortAsync(this).ConfigureAwait(false);
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)
@@ -46,15 +49,15 @@ namespace Chummer.UI.Table
             T tValue = newValue as T;
             if (MinExtractor != null)
             {
-                _spinner.Minimum = MinExtractor(tValue);
+                _spinner.Minimum = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, CancellationToken.None));
             }
             if (MaxExtractor != null)
             {
-                _spinner.Maximum = MaxExtractor(tValue);
+                _spinner.Maximum = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, CancellationToken.None));
             }
             if (EnabledExtractor != null)
             {
-                _spinner.Enabled = EnabledExtractor(tValue);
+                _spinner.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(tValue, CancellationToken.None));
             }
 
             if (ValueUpdater == null)
@@ -63,7 +66,7 @@ namespace Chummer.UI.Table
                 return;
             try
             {
-                _spinner.Value = ValueGetter(tValue);
+                _spinner.Value = Utils.SafelyRunSynchronously(() => ValueGetter(tValue, CancellationToken.None));
             }
             finally
             {
@@ -71,36 +74,144 @@ namespace Chummer.UI.Table
             }
         }
 
-        public Func<T, bool> EnabledExtractor { get; set; }
+        protected internal override async Task UpdateValueAsync(object newValue, CancellationToken token = default)
+        {
+            await base.UpdateValueAsync(newValue, token).ConfigureAwait(false);
+
+            T tValue = newValue as T;
+            bool blnDoMin = MinExtractor != null;
+            bool blnDoMax = MaxExtractor != null;
+            bool blnDoEnabled = EnabledExtractor != null;
+            if (ValueUpdater != null)
+            {
+                decimal decMin = blnDoMin ? await MinExtractor(tValue, token).ConfigureAwait(false) : decimal.MinValue;
+                decimal decMax = blnDoMax ? await MaxExtractor(tValue, token).ConfigureAwait(false) : decimal.MaxValue;
+                bool blnEnabled = blnDoEnabled && await EnabledExtractor(tValue, token).ConfigureAwait(false);
+                if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                {
+                    if (blnDoMin || blnDoMax || blnDoEnabled)
+                    {
+                        await _spinner.DoThreadSafeAsync(x =>
+                        {
+                            if (blnDoMin)
+                                x.Minimum = decMin;
+                            if (blnDoMax)
+                                x.Maximum = decMax;
+                            if (blnDoEnabled)
+                                x.Enabled = blnEnabled;
+                        }, token: token).ConfigureAwait(false);
+                    }
+                    return;
+                }
+
+                try
+                {
+                    decimal decValue = await ValueGetter(tValue, token).ConfigureAwait(false);
+                    await _spinner.DoThreadSafeAsync(x =>
+                    {
+                        if (blnDoMin)
+                            x.Minimum = decMin;
+                        if (blnDoMax)
+                            x.Maximum = decMax;
+                        if (blnDoEnabled)
+                            x.Enabled = blnEnabled;
+                        x.Value = decValue;
+                    }, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                }
+            }
+            else if (blnDoEnabled)
+            {
+                bool blnEnabled = await EnabledExtractor(tValue, token).ConfigureAwait(false);
+                if (blnDoMax)
+                {
+                    decimal decMax = await MaxExtractor(tValue, token).ConfigureAwait(false);
+                    if (blnDoMin)
+                    {
+                        decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
+                        await _spinner.DoThreadSafeAsync(x =>
+                        {
+                            x.Minimum = decMin;
+                            x.Maximum = decMax;
+                            x.Enabled = blnEnabled;
+                        }, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await _spinner.DoThreadSafeAsync(x =>
+                        {
+                            x.Maximum = decMax;
+                            x.Enabled = blnEnabled;
+                        }, token: token).ConfigureAwait(false);
+                    }
+                }
+                else if (blnDoMin)
+                {
+                    decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
+                    await _spinner.DoThreadSafeAsync(x =>
+                    {
+                        x.Minimum = decMin;
+                        x.Enabled = blnEnabled;
+                    }, token: token).ConfigureAwait(false);
+                }
+                else
+                    await _spinner.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token: token).ConfigureAwait(false);
+            }
+            else if (blnDoMax)
+            {
+                decimal decMax = await MaxExtractor(tValue, token).ConfigureAwait(false);
+                if (blnDoMin)
+                {
+                    decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
+                    await _spinner.DoThreadSafeAsync(x =>
+                    {
+                        x.Minimum = decMin;
+                        x.Maximum = decMax;
+                    }, token: token).ConfigureAwait(false);
+                }
+                else
+                    await _spinner.DoThreadSafeAsync(x => x.Maximum = decMax, token: token).ConfigureAwait(false);
+            }
+            else if (blnDoMin)
+            {
+                decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
+                await _spinner.DoThreadSafeAsync(x => x.Minimum = decMin, token: token).ConfigureAwait(false);
+            }
+        }
+
+        public Func<T, CancellationToken, Task<bool>> EnabledExtractor { get; set; }
 
         /// <summary>
         /// The extractor extracting the minimum value for the spinner
         /// form the value.
         /// </summary>
-        public Func<T, decimal> MinExtractor { get; set; }
+        public Func<T, CancellationToken, Task<decimal>> MinExtractor { get; set; }
 
         /// <summary>
         /// The extractor to extract the maximum value for the spinner
         /// from the value.
         /// </summary>
-        public Func<T, decimal> MaxExtractor { get; set; }
+        public Func<T, CancellationToken, Task<decimal>> MaxExtractor { get; set; }
 
         /// <summary>
         /// The extractor for the property displayed in the spinner.
         /// </summary>
-        public Func<T, decimal> ValueGetter { get; set; }
+        public Func<T, CancellationToken, Task<decimal>> ValueGetter { get; set; }
 
         /// <summary>
         /// The extractor for the property displayed in the spinner.
         /// </summary>
-        public Action<T, decimal> ValueUpdater { get; set; }
+        public Func<T, decimal, Task> ValueUpdater { get; set; }
 
         /// <summary>
         /// spinner value change handler
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void value_changed(object sender, EventArgs e)
+        private async void value_changed(object sender, EventArgs e)
         {
             if (ValueUpdater == null)
                 return;
@@ -108,7 +219,7 @@ namespace Chummer.UI.Table
                 return;
             try
             {
-                ValueUpdater(Value as T, _spinner.Value);
+                await ValueUpdater(Value as T, await _spinner.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false)).ConfigureAwait(false);
             }
             finally
             {

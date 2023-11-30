@@ -98,22 +98,23 @@ namespace Chummer
             DebuggableSemaphoreSlim objMySemaphore = _objMySemaphore;
             if (objMySemaphore == null)
                 return;
+            objMySemaphore.SafeWait();
 #if LINKEDSEMAPHOREDEBUG
             while (!_setChildren.IsEmpty)
 #else
             while (_intNumChildren > 0)
 #endif
                 Utils.SafeSleep();
-            objMySemaphore.SafeWait();
 #if LINKEDSEMAPHOREDEBUG
             RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
-            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
 #if LINKEDSEMAPHOREDEBUG
+            LinkedSemaphoreSlim objParent = _objParentLinkedSemaphore;
             objParent?._setChildren.Remove(this);
 #else
+            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
             if (objParent != null)
                 Interlocked.Decrement(ref objParent._intNumChildren);
 #endif
@@ -131,22 +132,23 @@ namespace Chummer
             DebuggableSemaphoreSlim objMySemaphore = _objMySemaphore;
             if (objMySemaphore == null)
                 return;
+            await objMySemaphore.WaitAsync().ConfigureAwait(false);
 #if LINKEDSEMAPHOREDEBUG
             while (!_setChildren.IsEmpty)
 #else
             while (_intNumChildren > 0)
 #endif
                 await Utils.SafeSleepAsync().ConfigureAwait(false);
-            await objMySemaphore.WaitAsync().ConfigureAwait(false);
 #if LINKEDSEMAPHOREDEBUG
             RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
-            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
 #if LINKEDSEMAPHOREDEBUG
+            LinkedSemaphoreSlim objParent = _objParentLinkedSemaphore;
             objParent?._setChildren.Remove(this);
 #else
+            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
             if (objParent != null)
                 Interlocked.Decrement(ref objParent._intNumChildren);
 #endif

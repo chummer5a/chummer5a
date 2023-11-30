@@ -1584,7 +1584,8 @@ namespace Chummer.Backend.Skills
         /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. int.MinValue is equivalent to not overriding.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async Task<int> PoolOtherAttributeAsync(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue, CancellationToken token = default)
+        public async Task<int> PoolOtherAttributeAsync(string strAttribute, bool blnIncludeConditionals = false,
+            int intAttributeOverrideValue = int.MinValue, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1605,12 +1606,14 @@ namespace Chummer.Backend.Skills
                     return Math.Max(0,
                         intRating + intValue +
                         await PoolModifiersAsync(strAttribute, blnIncludeConditionals, token).ConfigureAwait(false) +
-                        CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
-                return Default
+                        await CharacterObject.GetWoundModifierAsync(token).ConfigureAwait(false) +
+                        await CharacterObject.GetSustainingPenaltyAsync(token).ConfigureAwait(false));
+                return await GetDefaultAsync(token).ConfigureAwait(false)
                     ? Math.Max(0,
                         intValue + await PoolModifiersAsync(strAttribute, blnIncludeConditionals, token)
-                            .ConfigureAwait(false) + DefaultModifier +
-                        CharacterObject.WoundModifier + CharacterObject.SustainingPenalty)
+                            .ConfigureAwait(false) + await GetDefaultModifierAsync(token).ConfigureAwait(false) +
+                        await CharacterObject.GetWoundModifierAsync(token).ConfigureAwait(false) +
+                        await CharacterObject.GetSustainingPenaltyAsync(token).ConfigureAwait(false))
                     : 0;
             }
         }
