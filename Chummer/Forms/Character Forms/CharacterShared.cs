@@ -69,7 +69,7 @@ namespace Chummer
             GenericToken = GenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
             CancellationTokenRegistration objCancellationRegistration
-                = GenericToken.Register(() => _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false));
+                = GenericToken.Register(() => Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null)?.Cancel(false));
             Disposed += (sender, args) =>
             {
                 objCancellationRegistration.Dispose();
@@ -9049,12 +9049,11 @@ namespace Chummer
 
             try
             {
-                if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, token).ConfigureAwait(false))
-                    return _tskUpdateCharacterInfo;
+                await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
                 try
                 {
                     CancellationTokenSource objNewSource = new CancellationTokenSource();
-                    CancellationToken objToken = objNewSource.Token;
+                    CancellationToken objNewToken = objNewSource.Token;
                     CancellationTokenSource objOldSource
                         = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, objNewSource);
                     if (objOldSource != null)
@@ -9090,7 +9089,7 @@ namespace Chummer
 
                     await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
 
-                    Task tskNew = Utils.RunInEmptyExecutionContext(() => Task.Run(() => DoUpdateCharacterInfo(objToken), objToken));
+                    Task tskNew = Utils.RunInEmptyExecutionContext(() => Task.Run(() => DoUpdateCharacterInfo(objNewToken), token));
                     if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
                     {
                         Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
