@@ -110,11 +110,10 @@ namespace Chummer
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
+            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
 #if LINKEDSEMAPHOREDEBUG
-            LinkedSemaphoreSlim objParent = _objParentLinkedSemaphore;
             objParent?._setChildren.Remove(this);
 #else
-            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
             if (objParent != null)
                 Interlocked.Decrement(ref objParent._intNumChildren);
 #endif
@@ -144,11 +143,10 @@ namespace Chummer
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
+            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
 #if LINKEDSEMAPHOREDEBUG
-            LinkedSemaphoreSlim objParent = _objParentLinkedSemaphore;
             objParent?._setChildren.Remove(this);
 #else
-            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
             if (objParent != null)
                 Interlocked.Decrement(ref objParent._intNumChildren);
 #endif

@@ -181,10 +181,11 @@ namespace Chummer
                     objNextSemaphore = Utils.SemaphorePool.Get();
                 objNextLinkedSemaphore =
                     new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-                objRelease =
-                    new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                        objTopMostHeldWriterSemaphore, this);
             } while (objCurrentLinkedSemaphore.IsDisposed);
+
+            objRelease =
+                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                    objTopMostHeldWriterSemaphore, this);
 
             _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
@@ -243,10 +244,11 @@ namespace Chummer
                     objNextSemaphore = Utils.SemaphorePool.Get();
                 objNextLinkedSemaphore =
                     new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-                objRelease =
-                    new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                        objTopMostHeldWriterSemaphore, this);
             } while (objCurrentLinkedSemaphore.IsDisposed);
+
+            objRelease =
+                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                    objTopMostHeldWriterSemaphore, this);
 
             _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
@@ -343,7 +345,8 @@ namespace Chummer
                 while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
                        objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
                     objNextSemaphore = Utils.SemaphorePool.Get();
-                objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+                objNextLinkedSemaphore =
+                    new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
             } while (objCurrentLinkedSemaphore.IsDisposed);
 
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
@@ -416,7 +419,6 @@ namespace Chummer
 
                 if (objNextSemaphore == null)
                     objNextSemaphore = Utils.SemaphorePool.Get();
-
                 // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
                 // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
                 // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
@@ -426,10 +428,11 @@ namespace Chummer
                     objNextSemaphore = Utils.SemaphorePool.Get();
                 objNextLinkedSemaphore =
                     new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-                objRelease =
-                    new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                        objTopMostHeldWriterSemaphore, this);
             } while (objCurrentLinkedSemaphore.IsDisposed);
+
+            objRelease =
+                new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                    objTopMostHeldWriterSemaphore, this);
 
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
@@ -503,10 +506,12 @@ namespace Chummer
                 while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
                        objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
                     objNextSemaphore = Utils.SemaphorePool.Get();
-                objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-                objRelease = new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
+                objNextLinkedSemaphore =
+                    new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
             } while (objCurrentLinkedSemaphore.IsDisposed);
+
+            objRelease = new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
+                objTopMostHeldWriterSemaphore, this);
 
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount != 0)
