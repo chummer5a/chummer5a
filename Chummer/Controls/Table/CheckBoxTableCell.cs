@@ -26,42 +26,56 @@ namespace Chummer.UI.Table
     public partial class CheckBoxTableCell<T> : TableCell where T : class
     {
         private int _intUpdating;
+        private readonly CancellationToken _objMyToken;
 
-        public CheckBoxTableCell(string text = "", string tag = null)
+        public CheckBoxTableCell(string text = "", string tag = null, CancellationToken objMyToken = default)
         {
+            _objMyToken = objMyToken;
             InitializeComponent();
+            Disposed += (sender, args) => _objUpdateSemaphore.Dispose();
             ContentField = _checkBox;
             _checkBox.Text = text;
             _checkBox.Tag = tag;
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            this.UpdateLightDarkMode(objMyToken);
+            this.TranslateWinForm(token: objMyToken);
             Size = _checkBox.Size;
         }
 
         protected internal override void UpdateValue(object newValue)
         {
-            base.UpdateValue(newValue);
-            T tValue = newValue as T;
-            if (VisibleExtractor != null)
-            {
-                _checkBox.Visible = Utils.SafelyRunSynchronously(() => VisibleExtractor(tValue, CancellationToken.None));
-            }
-
-            if (EnabledExtractor != null)
-            {
-                _checkBox.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(Value as T, CancellationToken.None));
-            }
-            if (ValueUpdater == null)
-                return;
-            if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
-                return;
             try
             {
-                _checkBox.Checked = Utils.SafelyRunSynchronously(() => ValueGetter(tValue, CancellationToken.None));
+                base.UpdateValue(newValue);
+                T tValue = newValue as T;
+                if (VisibleExtractor != null)
+                {
+                    _checkBox.Visible =
+                        Utils.SafelyRunSynchronously(() => VisibleExtractor(tValue, _objMyToken), _objMyToken);
+                }
+
+                if (EnabledExtractor != null)
+                {
+                    _checkBox.Enabled =
+                        Utils.SafelyRunSynchronously(() => EnabledExtractor(Value as T, _objMyToken), _objMyToken);
+                }
+
+                if (ValueUpdater == null)
+                    return;
+                if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                    return;
+                try
+                {
+                    _checkBox.Checked =
+                        Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken);
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                //swallow this
             }
         }
 
@@ -155,19 +169,39 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, bool, Task> ValueUpdater { get; set; }
 
+        private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
+
         private async void checked_changed(object sender, EventArgs e)
         {
             if (ValueUpdater == null)
                 return;
-            if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
-                return;
             try
             {
-                await ValueUpdater(Value as T, await _checkBox.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)).ConfigureAwait(false);
+                await _objUpdateSemaphore.WaitAsync(_objMyToken).ConfigureAwait(false);
+                try
+                {
+                    if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                        return;
+                    try
+                    {
+                        await ValueUpdater(Value as T,
+                                await _checkBox.DoThreadSafeFuncAsync(x => x.Checked, _objMyToken)
+                                    .ConfigureAwait(false))
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                    }
+                }
+                finally
+                {
+                    _objUpdateSemaphore.Release();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                //swallow this
             }
         }
     }

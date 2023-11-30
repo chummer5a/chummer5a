@@ -27,18 +27,21 @@ namespace Chummer.UI.Table
     public partial class ButtonTableCell<T> : TableCell where T : class
     {
         private readonly Control _button;
+        private readonly CancellationToken _objMyToken;
 
-        public ButtonTableCell(Control button) : base(button)
+        public ButtonTableCell(Control button, CancellationToken objMyToken = default) : base(button)
         {
+            _objMyToken = objMyToken;
             InitializeComponent();
             _button = button ?? throw new ArgumentNullException(nameof(button));
             button.Click += OnButtonClick;
+            Disposed += (sender, args) => _objUpdateSemaphore.Dispose();
             SuspendLayout();
             try
             {
                 Controls.Add(button);
-                this.UpdateLightDarkMode();
-                this.TranslateWinForm();
+                this.UpdateLightDarkMode(objMyToken);
+                this.TranslateWinForm(token: objMyToken);
                 button.PerformLayout();
             }
             finally
@@ -47,10 +50,29 @@ namespace Chummer.UI.Table
             }
         }
 
+        private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
+
         private async void OnButtonClick(object sender, EventArgs e)
         {
             if (ClickHandler != null)
-                await ClickHandler.Invoke(Value as T).ConfigureAwait(false);
+            {
+                try
+                {
+                    await _objUpdateSemaphore.WaitAsync(_objMyToken);
+                    try
+                    {
+                        await ClickHandler.Invoke(Value as T).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        _objUpdateSemaphore.Release();
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)
@@ -60,11 +82,18 @@ namespace Chummer.UI.Table
 
         protected internal override void UpdateValue(object newValue)
         {
-            base.UpdateValue(newValue);
-
-            if (EnabledExtractor != null)
+            try
             {
-                _button.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(Value as T, CancellationToken.None));
+                base.UpdateValue(newValue);
+
+                if (EnabledExtractor != null)
+                {
+                    _button.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(Value as T, _objMyToken), _objMyToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 

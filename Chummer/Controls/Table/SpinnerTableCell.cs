@@ -27,15 +27,28 @@ namespace Chummer.UI.Table
     public partial class SpinnerTableCell<T> : TableCell where T : class, INotifyPropertyChanged
     {
         private int _intUpdating;
+        private readonly CancellationToken _objMyToken;
 
-        public SpinnerTableCell(TableView<T> table)
+        public SpinnerTableCell(TableView<T> table, CancellationToken objMyToken = default)
         {
+            _objMyToken = objMyToken;
             InitializeComponent();
             ContentField = _spinner;
+            Disposed += (sender, args) => _objUpdateSemaphore.Dispose();
             Enter += (a, b) => table.PauseSort(this);
             Leave += DoResumeSort;
 
-            async void DoResumeSort(object a, EventArgs b) => await table.ResumeSortAsync(this).ConfigureAwait(false);
+            async void DoResumeSort(object a, EventArgs b)
+            {
+                try
+                {
+                    await table.ResumeSortAsync(this, _objMyToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)
@@ -45,32 +58,39 @@ namespace Chummer.UI.Table
 
         protected internal override void UpdateValue(object newValue)
         {
-            base.UpdateValue(newValue);
-            T tValue = newValue as T;
-            if (MinExtractor != null)
-            {
-                _spinner.Minimum = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, CancellationToken.None));
-            }
-            if (MaxExtractor != null)
-            {
-                _spinner.Maximum = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, CancellationToken.None));
-            }
-            if (EnabledExtractor != null)
-            {
-                _spinner.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(tValue, CancellationToken.None));
-            }
-
-            if (ValueUpdater == null)
-                return;
-            if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
-                return;
             try
             {
-                _spinner.Value = Utils.SafelyRunSynchronously(() => ValueGetter(tValue, CancellationToken.None));
+                base.UpdateValue(newValue);
+                T tValue = newValue as T;
+                if (MinExtractor != null)
+                {
+                    _spinner.Minimum = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
+                }
+                if (MaxExtractor != null)
+                {
+                    _spinner.Maximum = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, _objMyToken), _objMyToken);
+                }
+                if (EnabledExtractor != null)
+                {
+                    _spinner.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(tValue, _objMyToken), _objMyToken);
+                }
+
+                if (ValueUpdater == null)
+                    return;
+                if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                    return;
+                try
+                {
+                    _spinner.Value = Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken));
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                //swallow this
             }
         }
 
@@ -206,6 +226,8 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, decimal, Task> ValueUpdater { get; set; }
 
+        private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
+
         /// <summary>
         /// spinner value change handler
         /// </summary>
@@ -215,15 +237,32 @@ namespace Chummer.UI.Table
         {
             if (ValueUpdater == null)
                 return;
-            if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
-                return;
             try
             {
-                await ValueUpdater(Value as T, await _spinner.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false)).ConfigureAwait(false);
+                await _objUpdateSemaphore.WaitAsync(_objMyToken).ConfigureAwait(false);
+                try
+                {
+                    if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                        return;
+                    try
+                    {
+                        await ValueUpdater(Value as T,
+                                await _spinner.DoThreadSafeFuncAsync(x => x.Value, _objMyToken).ConfigureAwait(false))
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                    }
+                }
+                finally
+                {
+                    _objUpdateSemaphore.Release();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                Interlocked.CompareExchange(ref _intUpdating, 0, 1);
+                //swallow this
             }
         }
     }

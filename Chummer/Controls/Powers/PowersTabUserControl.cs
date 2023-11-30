@@ -618,7 +618,7 @@ namespace Chummer.UI.Powers
                 return new TableColumn<Power>(
                     () =>
                     {
-                        return new SpinnerTableCell<Power>(_table)
+                        return new SpinnerTableCell<Power>(_table, _objMyToken)
                         {
                             EnabledExtractor = (p, t) =>
                                 p.GetLevelsEnabledAsync(t),
@@ -876,7 +876,7 @@ namespace Chummer.UI.Powers
             TableColumn<Power> adeptWayColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
                 () =>
                 {
-                    return new CheckBoxTableCell<Power>
+                    return new CheckBoxTableCell<Power>(objMyToken: _objMyToken)
                     {
                         ValueGetter = (p, t) =>
                             p.GetDiscountedAdeptWayAsync(t),
@@ -936,7 +936,7 @@ namespace Chummer.UI.Powers
                             Resources.note_edit_48, Resources.note_edit_64);
                         cmdReturn.FlatAppearance.BorderSize = 0;
 
-                        return new ButtonTableCell<Power>(cmdReturn)
+                        return new ButtonTableCell<Power>(cmdReturn, MyToken)
                         {
                             ClickHandler = ClickHandler,
                             Alignment = Alignment.Center
@@ -1021,7 +1021,7 @@ namespace Chummer.UI.Powers
                             Resources.delete_48, Resources.delete_64);
                         cmdReturn.FlatAppearance.BorderSize = 0;
 
-                        return new ButtonTableCell<Power>(cmdReturn)
+                        return new ButtonTableCell<Power>(cmdReturn, MyToken)
                         {
                             ClickHandler = ClickHandler,
                             EnabledExtractor = EnabledExtractor
@@ -1115,7 +1115,7 @@ namespace Chummer.UI.Powers
                             Resources.page_refresh_48, Resources.page_refresh_64);
                         cmdReturn.FlatAppearance.BorderSize = 0;
 
-                        return new ButtonTableCell<Power>(cmdReturn)
+                        return new ButtonTableCell<Power>(cmdReturn, MyToken)
                         {
                             ClickHandler = ClickHandler,
                             Alignment = Alignment.Center
