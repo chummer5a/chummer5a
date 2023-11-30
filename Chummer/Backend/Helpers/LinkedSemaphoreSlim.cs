@@ -87,6 +87,8 @@ namespace Chummer
         private string RecordedStackTrace { get; set; }
 
         private readonly ConcurrentHashSet<LinkedSemaphoreSlim> _setChildren = new ConcurrentHashSet<LinkedSemaphoreSlim>();
+
+        private LinkedSemaphoreSlim _objOldParentLinkedSemaphore;
 #else
         private int _intNumChildren;
 #endif
@@ -110,10 +112,11 @@ namespace Chummer
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
-            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
 #if LINKEDSEMAPHOREDEBUG
-            objParent?._setChildren.Remove(this);
+            _objOldParentLinkedSemaphore = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
+            _objOldParentLinkedSemaphore?._setChildren.Remove(this);
 #else
+            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
             if (objParent != null)
                 Interlocked.Decrement(ref objParent._intNumChildren);
 #endif
@@ -143,10 +146,11 @@ namespace Chummer
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objMySemaphore = null;
-            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
 #if LINKEDSEMAPHOREDEBUG
-            objParent?._setChildren.Remove(this);
+            _objOldParentLinkedSemaphore = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
+            _objOldParentLinkedSemaphore?._setChildren.Remove(this);
 #else
+            LinkedSemaphoreSlim objParent = Interlocked.Exchange(ref _objParentLinkedSemaphore, null);
             if (objParent != null)
                 Interlocked.Decrement(ref objParent._intNumChildren);
 #endif

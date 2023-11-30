@@ -404,7 +404,11 @@ namespace Chummer
             do
             {
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                {
+                    Utils.BreakIfDebug();
                     return Task.FromException<IDisposable>(new TimeoutException());
+                }
+
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -482,7 +486,11 @@ namespace Chummer
             do
             {
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                {
+                    Utils.BreakIfDebug();
                     return Task.FromException<IDisposable>(new TimeoutException());
+                }
+
                 if (token.IsCancellationRequested)
                     return Task.FromException<IDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
@@ -688,7 +696,11 @@ namespace Chummer
             do
             {
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                {
+                    Utils.BreakIfDebug();
                     return Task.FromException<IDisposable>(new TimeoutException());
+                }
+
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals = _objAsyncLocalCurrentsContainer.Value;
                 if (objAsyncLocals != null)
@@ -767,7 +779,11 @@ namespace Chummer
             do
             {
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                {
+                    Utils.BreakIfDebug();
                     return Task.FromException<IDisposable>(new TimeoutException());
+                }
+
                 if (token.IsCancellationRequested)
                     return Task.FromException<IDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
@@ -950,7 +966,11 @@ namespace Chummer
             do
             {
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                {
+                    Utils.BreakIfDebug();
                     return Task.FromException<IDisposable>(new TimeoutException());
+                }
+
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
                 Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
                     _objAsyncLocalCurrentsContainer.Value;
@@ -998,7 +1018,11 @@ namespace Chummer
             do
             {
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                {
+                    Utils.BreakIfDebug();
                     return Task.FromException<IDisposable>(new TimeoutException());
+                }
+
                 if (token.IsCancellationRequested)
                     return Task.FromException<IDisposable>(new OperationCanceledException(token));
                 objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
