@@ -439,8 +439,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
 
-            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // <power>
@@ -509,10 +508,6 @@ namespace Chummer
                     // </power>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
         }
 
@@ -1617,8 +1612,9 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedFreeLevelsLock.EnterReadLockAsync(token).ConfigureAwait(false))
+                using (await _objCachedPowerPointsLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_decCachedPowerPoints != decimal.MinValue)
                         return _decCachedPowerPoints;
                 }

@@ -306,6 +306,7 @@ namespace Chummer
                 objLocker = await CollectionChangedLock.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (_lstBeforeClearCollectionChangedAsync.Count != 0)
                 {
 
@@ -424,6 +425,7 @@ namespace Chummer
                     objLocker = await CollectionChangedLock.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await Task.WhenAll(_lstCollectionChangedAsync.Select(x => x.Invoke(this, e, token))).ConfigureAwait(false);
                     base.OnCollectionChanged(e);
                 }
@@ -437,6 +439,7 @@ namespace Chummer
                 IDisposable objLocker = CollectionChangedLock != null ? await CollectionChangedLock.EnterReadLockAsync(token).ConfigureAwait(false) : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     base.OnCollectionChanged(e);
                 }
                 finally

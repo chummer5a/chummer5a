@@ -162,8 +162,7 @@ namespace Chummer
             }
             else
             {
-                IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     // <spirit>
@@ -213,10 +212,6 @@ namespace Chummer
                         // </spirit>
                         await objBaseElement.DisposeAsync().ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    objLocker.Dispose();
                 }
             }
         }
@@ -327,8 +322,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Translate the Critter name if applicable.
@@ -582,10 +576,6 @@ namespace Chummer
                     // </spirit>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
         }
 

@@ -1105,25 +1105,21 @@ namespace Chummer.Backend.Skills
                                     // This is faster than doing the initialize first and then loading of all our skills afterwards
                                     using (_ = Timekeeper.StartSyncron("load_char_skills_initialize", opLoadCharSkills))
                                     {
-                                        bool blnDoInitialize = false;
-                                        IDisposable objLocker2;
-                                        if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            objLocker2 = _objSkillsInitializerLock.EnterReadLock(token);
-                                        else
-                                            objLocker2 = await _objSkillsInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false);
-                                        try
+                                        bool blnDoInitialize;
+                                        using (blnSync
+                                                   // ReSharper disable once MethodHasAsyncOverload
+                                                   ? _objSkillsInitializerLock.EnterReadLock(token)
+                                                   : await _objSkillsInitializerLock.EnterReadLockAsync(token)
+                                                       .ConfigureAwait(false))
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             blnDoInitialize = !_blnSkillsInitialized &&
                                                               _objCharacter.SkillsSection == this;
-                                        }
-                                        finally
-                                        {
-                                            objLocker2.Dispose();
                                         }
 
                                         if (blnDoInitialize)
                                         {
+                                            IDisposable objLocker2 = null;
                                             IAsyncDisposable objLockerAsync2 = null;
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverload
@@ -2918,6 +2914,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedKnowledgePointsLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_intCachedKnowledgePoints != int.MinValue)
                         return _intCachedKnowledgePoints;
                 }
@@ -3354,11 +3351,10 @@ namespace Chummer.Backend.Skills
         private static async Task MergeSkillsAsync(Skill objExistingSkill, Skill objNewSkill,
             CancellationToken token = default)
         {
-            IDisposable objLocker = await objNewSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await objNewSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await objExistingSkill.LockObject.EnterUpgradeableReadLockAsync(token)
+                IAsyncDisposable objLocker = await objExistingSkill.LockObject.EnterUpgradeableReadLockAsync(token)
                     .ConfigureAwait(false);
                 try
                 {
@@ -3388,12 +3384,8 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
 
             await objNewSkill.RemoveAsync(token).ConfigureAwait(false);
@@ -3531,8 +3523,7 @@ namespace Chummer.Backend.Skills
 
         public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 foreach (Skill objSkill in Skills)
@@ -3556,10 +3547,6 @@ namespace Chummer.Backend.Skills
                 {
                     await objSkill.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
         }
 

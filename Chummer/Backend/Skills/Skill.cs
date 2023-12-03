@@ -290,8 +290,7 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
 
-            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // <skill>
@@ -437,10 +436,6 @@ namespace Chummer.Backend.Skills
                     // </skill>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
         }
 
@@ -3593,6 +3588,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedSuggestedSpecializationsLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!_blnRecalculateCachedSuggestedSpecializations)
                         return _lstCachedSuggestedSpecializations;
                 }
@@ -5312,6 +5308,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedCyberwareRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_intCachedCyberwareRating != int.MinValue)
                         return _intCachedCyberwareRating;
                 }

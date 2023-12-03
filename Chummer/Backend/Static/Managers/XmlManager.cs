@@ -454,8 +454,9 @@ namespace Chummer
                 using (blnSync
                            // ReSharper disable once MethodHasAsyncOverload
                            ? s_objDataDirectoriesLock.EnterReadLock(token)
-                           : await s_objDataDirectoriesLock.EnterReadLockAsync(token))
+                           : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
                         astrRelevantCustomDataPaths = lstEnabledCustomDataPaths
                             .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
@@ -539,8 +540,9 @@ namespace Chummer
             using (blnSync
                        // ReSharper disable once MethodHasAsyncOverload
                        ? s_objDataDirectoriesLock.EnterReadLock(token)
-                       : await s_objDataDirectoriesLock.EnterReadLockAsync(token))
+                       : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 // Look to see if this XmlDocument is already loaded.
                 if (blnLoadFile
                     || (blnHasCustomData && (strFileName == "packs.xml" ||

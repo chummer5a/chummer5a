@@ -1552,6 +1552,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedTotalValueLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_intCachedTotalValue != int.MinValue)
                         return _intCachedTotalValue;
                 }

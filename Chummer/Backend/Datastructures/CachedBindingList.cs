@@ -383,7 +383,7 @@ namespace Chummer
                 RaiseListChangedEvents = true;
             }
 
-            await FireListChangedAsync(ListChangedType.Reset, -1, token);
+            await FireListChangedAsync(ListChangedType.Reset, -1, token).ConfigureAwait(false);
         }
 
         public Task<bool> ContainsAsync(T item, CancellationToken token = default)
@@ -463,7 +463,7 @@ namespace Chummer
                 RaiseListChangedEvents = true;
             }
 
-            await FireListChangedAsync(ListChangedType.ItemChanged, index, token);
+            await FireListChangedAsync(ListChangedType.ItemChanged, index, token).ConfigureAwait(false);
         }
 
         public Task<int> IndexOfAsync(T item, CancellationToken token = default)
@@ -503,7 +503,7 @@ namespace Chummer
                 RaiseListChangedEvents = true;
             }
 
-            await FireListChangedAsync(ListChangedType.ItemAdded, index, token);
+            await FireListChangedAsync(ListChangedType.ItemAdded, index, token).ConfigureAwait(false);
         }
 
         public async Task RemoveAtAsync(int index, CancellationToken token = default)
@@ -545,7 +545,7 @@ namespace Chummer
                 RaiseListChangedEvents = true;
             }
 
-            await FireListChangedAsync(ListChangedType.ItemDeleted, index, token);
+            await FireListChangedAsync(ListChangedType.ItemDeleted, index, token).ConfigureAwait(false);
         }
 
         public Task ResetBindingsAsync(CancellationToken token = default)
@@ -612,8 +612,9 @@ namespace Chummer
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
 
-            using (await BindingListLock.EnterReadLockAsync(token))
+            using (await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (propertyChangedAsyncEventHandler != null)
                 {
                     notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;

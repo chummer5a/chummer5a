@@ -19452,6 +19452,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedPowerPointsUsedLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_decCachedPowerPointsUsed != decimal.MinValue)
                         return _decCachedPowerPointsUsed;
                 }
@@ -21613,6 +21614,7 @@ namespace Chummer
 
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
                         return _decCachedEssence;
                 }
@@ -33370,8 +33372,9 @@ namespace Chummer
                 else
                 {
                     bool blnDoCache = false;
-                    using (await _objAvailabilityMapLock.EnterReadLockAsync(token))
+                    using (await _objAvailabilityMapLock.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         if (_dicAvailabilityMap != null)
                             item = _dicAvailabilityMap.FirstOrDefault(
                                 x => decCost

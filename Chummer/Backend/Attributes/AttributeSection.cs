@@ -275,6 +275,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 using (await _objAttributesInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_blnAttributesInitialized)
                         return _lstAttributes;
                 }

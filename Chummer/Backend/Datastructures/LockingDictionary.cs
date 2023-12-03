@@ -1530,6 +1530,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objValue))
                 {
                     if (objValue == null)

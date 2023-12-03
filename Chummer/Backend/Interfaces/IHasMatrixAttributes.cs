@@ -445,6 +445,7 @@ namespace Chummer
                 objThisLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 int intBaseAttack = await objThis.GetBaseMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
                 int intBaseSleaze = await objThis.GetBaseMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
                 int intBaseDataProcessing =

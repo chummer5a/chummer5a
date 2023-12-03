@@ -227,8 +227,9 @@ namespace Chummer.Backend.Skills
         public async Task SetBaseAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!await GetBaseUnbrokenAsync(token).ConfigureAwait(false))
                     return;
             }
@@ -355,6 +356,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (!await GetKarmaUnbrokenAsync(token).ConfigureAwait(false))
                     return;
             }
@@ -620,6 +622,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedBaseUnbrokenLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_intCachedBaseUnbroken >= 0)
                         return _intCachedBaseUnbroken > 0;
                 }
@@ -743,6 +746,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedKarmaUnbrokenLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_intCachedKarmaUnbroken >= 0)
                         return _intCachedKarmaUnbroken > 0;
                 }
@@ -858,6 +862,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedIsDisabledLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_intCachedIsDisabled >= 0)
                         return _intCachedIsDisabled > 0;
                 }
@@ -1000,6 +1005,7 @@ namespace Chummer.Backend.Skills
             {
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (await GetIsBrokenAsync(token).ConfigureAwait(false))
                         return;
                 }
@@ -1091,6 +1097,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedHasAnyBreakingSkillsLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_intCachedHasAnyBreakingSkills >= 0)
                         return _intCachedHasAnyBreakingSkills > 0;
                 }
@@ -1393,6 +1400,7 @@ namespace Chummer.Backend.Skills
                 return null;
             using (await objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (objSkill.SkillGroupObject != null)
                     return objSkill.SkillGroupObject;
 
@@ -1631,8 +1639,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // <skillgroup>
@@ -1662,10 +1669,6 @@ namespace Chummer.Backend.Skills
                     // </skillgroup>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
         }
 
@@ -1991,6 +1994,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (await _objCachedToolTipLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!string.IsNullOrEmpty(_strCachedToolTip))
                         return _strCachedToolTip;
                 }

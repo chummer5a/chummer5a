@@ -124,6 +124,7 @@ namespace Chummer.Backend.Skills
 
                 using (await _objCategoriesSkillMapLock.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_dicCategoriesSkillMap != null)
                         return _dicCategoriesSkillMap;
                 }

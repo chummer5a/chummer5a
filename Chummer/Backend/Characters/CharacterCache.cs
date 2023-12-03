@@ -435,9 +435,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                IDisposable objLocker2 =
-                    await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                using (await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _strBackground = objExistingCache.Background;
@@ -457,10 +455,6 @@ namespace Chummer
                     _strPlayerName = objExistingCache.PlayerName;
                     _strSettingsFile = objExistingCache.SettingsFile;
                     Interlocked.Exchange(ref _imgMugshot, objExistingCache.Mugshot.Clone() as Image)?.Dispose();
-                }
-                finally
-                {
-                    objLocker2.Dispose();
                 }
             }
             finally
