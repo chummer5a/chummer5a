@@ -102,7 +102,7 @@ namespace Chummer.Backend.Skills
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();

@@ -710,7 +710,7 @@ namespace Chummer
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
-            IDisposable objThisLocker = null;
+            IAsyncDisposable objThisLocker = null;
             if (objThis is IHasLockObject objHasLock)
                 objThisLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
@@ -818,7 +818,8 @@ namespace Chummer
             }
             finally
             {
-                objThisLocker?.Dispose();
+                if (objThisLocker != null)
+                    await objThisLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -967,7 +968,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objThis == null)
                 return;
-            IDisposable objThisLocker = null;
+            IAsyncDisposable objThisLocker = null;
             if (objThis is IHasLockObject objHasLock)
                 objThisLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -1097,7 +1098,8 @@ namespace Chummer
             }
             finally
             {
-                objThisLocker?.Dispose();
+                if (objThisLocker != null)
+                    await objThisLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

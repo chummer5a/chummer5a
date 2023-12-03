@@ -293,7 +293,7 @@ namespace Chummer
 
         public async Task<string> PrintModule(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();

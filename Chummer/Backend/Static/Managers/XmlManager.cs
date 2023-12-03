@@ -162,23 +162,26 @@ namespace Chummer
             /// </summary>
             public async Task SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
-                using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
                         if (objContent != null)
                         {
                             Interlocked.Increment(ref _intInitialLoadComplete);
-                            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                            using (RecyclableMemoryStream objStream =
+                                   new RecyclableMemoryStream(Utils.MemoryStreamManager))
                             {
                                 objContent.Save(objStream);
                                 objStream.Position = 0;
-                                using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                                using (XmlReader objXmlReader =
+                                       XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                     Interlocked.Exchange(ref _objXPathContent, new XPathDocument(objXmlReader));
                             }
                         }
@@ -187,8 +190,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -424,95 +431,137 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             strFileName = Path.GetFileName(strFileName);
-            // Wait to make sure our data directories are loaded before proceeding
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                if (string.IsNullOrEmpty(strLanguage))
-                    strLanguage = GlobalSettings.Language;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
 
-                string strPath;
-                if (Utils.BasicDataFileNames.Contains(strFileName))
-                    strPath = Path.Combine(Utils.GetDataFolderPath, strFileName);
-                else
+            string strPath;
+            if (Utils.BasicDataFileNames.Contains(strFileName))
+                strPath = Path.Combine(Utils.GetDataFolderPath, strFileName);
+            else
+            {
+                strPath = FetchBaseFileFromCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token);
+                if (string.IsNullOrEmpty(strPath))
                 {
-                    strPath = FetchBaseFileFromCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token);
-                    if (string.IsNullOrEmpty(strPath))
-                    {
-                        // We don't actually have such a file
-                        Utils.BreakIfDebug();
-                        return new XmlDocument { XmlResolver = null }.CreateNavigator();
-                    }
+                    // We don't actually have such a file
+                    Utils.BreakIfDebug();
+                    return new XmlDocument { XmlResolver = null }.CreateNavigator();
+                }
+            }
+            string[] astrRelevantCustomDataPaths = Array.Empty<string>();
+            if (lstEnabledCustomDataPaths != null)
+            {
+                bool blnDoComplex = false;
+                using (blnSync
+                           // ReSharper disable once MethodHasAsyncOverload
+                           ? s_objDataDirectoriesLock.EnterReadLock(token)
+                           : await s_objDataDirectoriesLock.EnterReadLockAsync(token))
+                {
+                    if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
+                        astrRelevantCustomDataPaths = lstEnabledCustomDataPaths
+                            .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
+                    else
+                        blnDoComplex = true;
                 }
 
-                string[] astrRelevantCustomDataPaths;
-                if (lstEnabledCustomDataPaths == null)
-                    astrRelevantCustomDataPaths = Array.Empty<string>();
-                else if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
-                    astrRelevantCustomDataPaths = lstEnabledCustomDataPaths
-                                                  .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
-                else
+                if (blnDoComplex)
                 {
-                    astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
-                        .ToArray();
-                    if (astrRelevantCustomDataPaths.Length > 0 && !Utils.IsDesignerMode
-                                                               && !Utils.IsRunningInVisualStudio)
+                    // Wait to make sure our data directories are loaded before proceeding
+                    IDisposable objLocker = null;
+                    IAsyncDisposable objLockerAsync = null;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objLocker = s_objDataDirectoriesLock.EnterUpgradeableReadLock(token);
+                    else
+                        objLockerAsync = await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token)
+                            .ConfigureAwait(false);
+                    try
                     {
-                        IDisposable objLocker = null;
-                        IAsyncDisposable objLockerAsync = null;
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverload
-                            objLocker = s_objDataDirectoriesLock.EnterWriteLock(token);
+                        token.ThrowIfCancellationRequested();
+                        if (s_DicPathsWithCustomFiles.TryGetValue(strFileName,
+                                out HashSet<string> setDirectoriesPossible))
+                            astrRelevantCustomDataPaths = lstEnabledCustomDataPaths
+                                .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
                         else
-                            objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
+                            astrRelevantCustomDataPaths =
+                                CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
+                                    .ToArray();
+                        if (astrRelevantCustomDataPaths.Length > 0 && !Utils.IsDesignerMode
+                                                                   && !Utils.IsRunningInVisualStudio)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
-                            {
-                                setLoop = new HashSet<string>();
-                                s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
-                            }
-
-                            setLoop.AddRange(astrRelevantCustomDataPaths);
-                        }
-                        finally
-                        {
+                            IDisposable objLocker2 = null;
+                            IAsyncDisposable objLockerAsync2 = null;
                             if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverload
-                                objLocker.Dispose();
+                                objLocker2 = s_objDataDirectoriesLock.EnterWriteLock(token);
                             else
-                                await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                                objLockerAsync2 = await s_objDataDirectoriesLock.EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName,
+                                        out HashSet<string> setLoop))
+                                {
+                                    setLoop = new HashSet<string>();
+                                    s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                                }
+
+                                setLoop.AddRange(astrRelevantCustomDataPaths);
+                            }
+                            finally
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objLocker2.Dispose();
+                                else
+                                    await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                     }
+                    finally
+                    {
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            objLocker.Dispose();
+                        else
+                            await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
+            }
 
-                bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
-                List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
-                lstKey.AddRange(astrRelevantCustomDataPaths);
-                KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
+            bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
+            List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
+            lstKey.AddRange(astrRelevantCustomDataPaths);
+            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
+            XmlDocument xmlDocumentOfReturn = null;
+            XmlReference xmlReferenceOfReturn;
 
+            using (blnSync
+                       // ReSharper disable once MethodHasAsyncOverload
+                       ? s_objDataDirectoriesLock.EnterReadLock(token)
+                       : await s_objDataDirectoriesLock.EnterReadLockAsync(token))
+            {
                 // Look to see if this XmlDocument is already loaded.
-                XmlDocument xmlDocumentOfReturn = null;
                 if (blnLoadFile
                     || (blnHasCustomData && (strFileName == "packs.xml" ||
                                              (GlobalSettings.LiveCustomData &&
                                               strFileName != "improvements.xml")))
-                    || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
+                    || !s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     bool blnLoadSuccess;
                     if (blnSync)
                     {
                         // ReSharper disable once MethodHasAsyncOverload
-                        xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token);
+                        xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile,
+                            token);
                         blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                     }
                     else
                     {
                         xmlDocumentOfReturn
-                            = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+                            = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token)
+                                .ConfigureAwait(false);
                         // Need this conditional so that we actually await the line above before we check to see if the load was successful or not
                         // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                         if (xmlDocumentOfReturn != null)
@@ -532,28 +581,28 @@ namespace Chummer
                         return null;
                     }
                 }
-
-                // Live custom data will cause the reference's document to not be the same as the actual one we need, so we'll need to remake the document returned by the Load
-                if (blnHasCustomData && (strFileName == "packs.xml" || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml")) && xmlDocumentOfReturn != null)
-                {
-                    token.ThrowIfCancellationRequested();
-                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                    {
-                        xmlDocumentOfReturn.Save(objStream);
-                        objStream.Position = 0;
-                        using (XmlReader objXmlReader
-                               = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                            return new XPathDocument(objXmlReader).CreateNavigator();
-                    }
-                }
-
-                XPathDocument objTemp = blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? xmlReferenceOfReturn.GetXPathContent(token)
-                    : await xmlReferenceOfReturn.GetXPathContentAsync(token).ConfigureAwait(false);
-
-                return objTemp.CreateNavigator();
             }
+
+            // Live custom data will cause the reference's document to not be the same as the actual one we need, so we'll need to remake the document returned by the Load
+            if (blnHasCustomData && (strFileName == "packs.xml" || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml")) && xmlDocumentOfReturn != null)
+            {
+                token.ThrowIfCancellationRequested();
+                using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                {
+                    xmlDocumentOfReturn.Save(objStream);
+                    objStream.Position = 0;
+                    using (XmlReader objXmlReader
+                           = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                        return new XPathDocument(objXmlReader).CreateNavigator();
+                }
+            }
+
+            XPathDocument objTemp = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? xmlReferenceOfReturn.GetXPathContent(token)
+                : await xmlReferenceOfReturn.GetXPathContentAsync(token).ConfigureAwait(false);
+
+            return objTemp.CreateNavigator();
         }
 
         /// <summary>
@@ -602,7 +651,7 @@ namespace Chummer
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            using (blnSync ? s_objDataDirectoriesLock.EnterReadLock(token) : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 foreach (string strDirectory in s_SetDataDirectories)
@@ -670,13 +719,13 @@ namespace Chummer
 
                 if (blnLoadFile)
                 {
-                    IDisposable objLocker = null;
-                    IAsyncDisposable objLockerAsync = null;
+                    IDisposable objLocker2 = null;
+                    IAsyncDisposable objLockerAsync2 = null;
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
-                        objLocker = xmlReferenceOfReturn.LockObject.EnterWriteLock(token);
+                        objLocker2 = xmlReferenceOfReturn.LockObject.EnterWriteLock(token);
                     else
-                        objLockerAsync = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        objLockerAsync2 = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -789,9 +838,9 @@ namespace Chummer
                     {
                         if (blnSync)
                             // ReSharper disable once MethodHasAsyncOverload
-                            objLocker.Dispose();
+                            objLocker2.Dispose();
                         else
-                            await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                            await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
                     }
 
                     // Make sure we do not override the cached document with our live data

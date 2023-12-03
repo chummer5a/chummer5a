@@ -661,7 +661,7 @@ namespace Chummer.Backend.Equipment
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1979,11 +1979,16 @@ namespace Chummer.Backend.Equipment
 
         public async Task SetCityAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strCity, value) != value)
                     await OnPropertyChangedAsync(nameof(City), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2015,11 +2020,16 @@ namespace Chummer.Backend.Equipment
 
         public async Task SetDistrictAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strDistrict, value) != value)
                     await OnPropertyChangedAsync(nameof(District), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2051,11 +2061,16 @@ namespace Chummer.Backend.Equipment
 
         public async Task SetBoroughAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strBorough, value) != value)
                     await OnPropertyChangedAsync(nameof(Borough), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2986,7 +3001,8 @@ namespace Chummer.Backend.Equipment
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -3072,6 +3088,10 @@ namespace Chummer.Backend.Equipment
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public bool Remove(bool blnConfirmDelete = true)
@@ -3094,20 +3114,30 @@ namespace Chummer.Backend.Equipment
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
                         await LanguageManager.GetStringAsync("Message_DeleteLifestyle", token: token)
-                                             .ConfigureAwait(false), token).ConfigureAwait(false))
+                            .ConfigureAwait(false), token).ConfigureAwait(false))
                     return false;
-                using (await _objCharacter.Lifestyles.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker2 = await _objCharacter.Lifestyles.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     if (await _objCharacter.Lifestyles.ContainsAsync(this, token).ConfigureAwait(false)
                         && !await _objCharacter.Lifestyles.RemoveAsync(this, token).ConfigureAwait(false))
                         return false;
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await DisposeAsync().ConfigureAwait(false);

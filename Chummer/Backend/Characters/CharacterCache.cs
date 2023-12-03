@@ -407,7 +407,7 @@ namespace Chummer
         public void CopyFrom(CharacterCache objExistingCache)
         {
             using (LockObject.EnterWriteLock())
-            using (objExistingCache.LockObject.EnterHiPrioReadLock())
+            using (objExistingCache.LockObject.EnterReadLock())
             {
                 _strBackground = objExistingCache.Background;
                 _strBuildMethod = objExistingCache.BuildMethod;
@@ -436,7 +436,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 IDisposable objLocker2 =
-                    await objExistingCache.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                    await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();

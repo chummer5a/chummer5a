@@ -247,7 +247,8 @@ namespace Chummer.UI.Attributes
             try
             {
                 CharacterAttrib objAttrib = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await objAttrib.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                IAsyncDisposable objLocker = await objAttrib.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+                try
                 {
                     string strName = await objAttrib.GetDisplayNameFormattedAsync().ConfigureAwait(false);
                     await lblName.DoThreadSafeAsync(x => x.Text = strName).ConfigureAwait(false);
@@ -307,6 +308,10 @@ namespace Chummer.UI.Attributes
 
                     _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(AttributeName,
                         OnAttributePropertyChanged);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -394,7 +399,8 @@ namespace Chummer.UI.Attributes
             try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                IAsyncDisposable objLocker = await objAttribute.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+                try
                 {
                     int intUpgradeKarmaCost = await objAttribute.GetUpgradeKarmaCostAsync().ConfigureAwait(false);
 
@@ -409,17 +415,21 @@ namespace Chummer.UI.Attributes
                     }
 
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
-                                                         await LanguageManager
-                                                               .GetStringAsync("Message_ConfirmKarmaExpense")
-                                                               .ConfigureAwait(false),
-                                                         await objAttribute.GetDisplayNameFormattedAsync()
-                                                                           .ConfigureAwait(false),
-                                                         await objAttribute.GetValueAsync().ConfigureAwait(false) + 1,
-                                                         intUpgradeKarmaCost);
+                        await LanguageManager
+                            .GetStringAsync("Message_ConfirmKarmaExpense")
+                            .ConfigureAwait(false),
+                        await objAttribute.GetDisplayNameFormattedAsync()
+                            .ConfigureAwait(false),
+                        await objAttribute.GetValueAsync().ConfigureAwait(false) + 1,
+                        intUpgradeKarmaCost);
                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm).ConfigureAwait(false))
                         return;
 
                     await objAttribute.Upgrade().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
@@ -445,7 +455,8 @@ namespace Chummer.UI.Attributes
             try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                IAsyncDisposable objLocker = await objAttribute.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+                try
                 {
                     if (!await CanBeMetatypeMax(
                                 Math.Max(
@@ -476,6 +487,10 @@ namespace Chummer.UI.Attributes
 
                     await objAttribute.SetBaseAsync(intValue).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
 
                 await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
@@ -499,7 +514,8 @@ namespace Chummer.UI.Attributes
             try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                IAsyncDisposable objLocker = await objAttribute.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+                try
                 {
                     if (!await CanBeMetatypeMax(
                                 Math.Max(
@@ -547,6 +563,10 @@ namespace Chummer.UI.Attributes
 
                     await objAttribute.SetKarmaAsync(intValue).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
 
                 await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
@@ -566,23 +586,31 @@ namespace Chummer.UI.Attributes
         private async Task<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
         {
             CharacterAttrib objAttribute = await GetAttributeObjectAsync(token).ConfigureAwait(false);
-            using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await objAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 int intTotalMaximum = await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false);
                 if (intValue < intTotalMaximum || intTotalMaximum == 0)
                     return true;
 
-                if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(objAttribute, token).ConfigureAwait(false))
+                if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(objAttribute, token)
+                        .ConfigureAwait(false))
                     return true;
 
                 Program.ShowScrollableMessageBox(
                     string.Format(GlobalSettings.CultureInfo,
-                        await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token)
+                            .ConfigureAwait(false),
                         _objCharacter.Settings.MaxNumberMaxAttributesCreate),
-                    await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                    await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return false;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -606,7 +634,8 @@ namespace Chummer.UI.Attributes
             {
                 // Edge cannot go below 1.
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
+                IAsyncDisposable objLocker = await objAttribute.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+                try
                 {
                     if (await objAttribute.GetValueAsync().ConfigureAwait(false) <= 0)
                     {
@@ -627,6 +656,10 @@ namespace Chummer.UI.Attributes
                         return;
 
                     await objAttribute.Degrade(1).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);

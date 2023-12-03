@@ -224,7 +224,8 @@ namespace Chummer
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -246,7 +247,7 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -259,7 +260,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
                     if (_lstPropertyChangedAsync.Count > 0)
@@ -341,6 +342,10 @@ namespace Chummer
                     if (setNamesOfChangedProperties != null)
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -500,7 +505,7 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable MethodHasAsyncOverload
-                using (LockObject.EnterHiPrioReadLock(token))
+                using (LockObject.EnterReadLock(token))
                 {
                     objWriter.WriteStartElement("contact");
                     objWriter.WriteElementString("name", _strName);
@@ -547,7 +552,7 @@ namespace Chummer
             else
             {
                 // <contact>
-                IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -779,7 +784,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -2410,11 +2415,12 @@ namespace Chummer
 
         public async Task RefreshLinkedCharacterAsync(bool blnShowError = false, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -2437,9 +2443,11 @@ namespace Chummer
                         {
                             Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
-                                              await LanguageManager.GetStringAsync("Message_FileNotFound", token: token).ConfigureAwait(false),
-                                              FileName),
-                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                                    await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
+                                        .ConfigureAwait(false),
+                                    FileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
+                                    .ConfigureAwait(false), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     }
@@ -2450,13 +2458,17 @@ namespace Chummer
                         if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                             || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                         {
-                            if ((_objLinkedCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, token: token).ConfigureAwait(false)) == null)
+                            if ((_objLinkedCharacter = await Program.OpenCharacters
+                                    .FirstOrDefaultAsync(x => x.FileName == strFile, token: token)
+                                    .ConfigureAwait(false)) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                       = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections, token).ConfigureAwait(false))
+                                       = await Program
+                                           .CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections, token)
+                                           .ConfigureAwait(false))
                                     _objLinkedCharacter
                                         = await Program.LoadCharacterAsync(strFile, string.Empty, false, false,
-                                                                           frmLoadingBar.MyForm, token).ConfigureAwait(false);
+                                            frmLoadingBar.MyForm, token).ConfigureAwait(false);
                             }
 
                             if (_objLinkedCharacter != null)
@@ -2468,7 +2480,8 @@ namespace Chummer
                     {
                         if (objOldLinkedCharacter != null)
                         {
-                            IAsyncDisposable objLocker2 = await objOldLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            IAsyncDisposable objLocker3 = await objOldLinkedCharacter.LockObject
+                                .EnterWriteLockAsync(token).ConfigureAwait(false);
                             try
                             {
                                 token.ThrowIfCancellationRequested();
@@ -2476,17 +2489,20 @@ namespace Chummer
                             }
                             finally
                             {
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
                             }
 
-                            if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token).ConfigureAwait(false))
+                            if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
+                                    .ConfigureAwait(false))
                             {
                                 if (await Program.OpenCharacters.AllAsync(x => x == _objLinkedCharacter
-                                                                              || !x.LinkedCharacters.Contains(
-                                                                                  objOldLinkedCharacter), token: token).ConfigureAwait(false)
+                                                                               || !x.LinkedCharacters.Contains(
+                                                                                   objOldLinkedCharacter), token: token)
+                                        .ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
                                         x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token).ConfigureAwait(false);
+                                    await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token)
+                                        .ConfigureAwait(false);
                             }
                             else
                                 await objOldLinkedCharacter.DisposeAsync().ConfigureAwait(false);
@@ -2494,20 +2510,41 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            IAsyncDisposable objLocker3 = await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                            try
                             {
                                 token.ThrowIfCancellationRequested();
-                                if (string.IsNullOrEmpty(_strName)
-                                    && Name != await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
-                                    _strName = Name;
-                                if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
-                                    _strAge = Age;
-                                if (string.IsNullOrEmpty(_strGender) && !string.IsNullOrEmpty(Gender))
-                                    _strGender = Gender;
-                                if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
-                                    _strMetatype = Metatype;
+                                if (string.IsNullOrEmpty(_strName))
+                                {
+                                    string strName = await GetNameAsync(token).ConfigureAwait(false);
+                                    if (strName != await LanguageManager
+                                            .GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
+                                        _strName = strName;
+                                }
 
-                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                if (string.IsNullOrEmpty(_strAge))
+                                {
+                                    string strAge = await GetAgeAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strAge))
+                                        _strAge = strAge;
+                                }
+
+                                if (string.IsNullOrEmpty(_strGender))
+                                {
+                                    string strGender = await GetGenderAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strGender))
+                                        _strGender = strGender;
+                                }
+
+                                if (string.IsNullOrEmpty(_strMetatype))
+                                {
+                                    string strMetatype = await GetMetatypeAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strMetatype))
+                                        _strMetatype = strMetatype;
+                                }
+
+                                IAsyncDisposable objLocker4 = await _objLinkedCharacter.LockObject
+                                    .EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -2515,8 +2552,12 @@ namespace Chummer
                                 }
                                 finally
                                 {
-                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                    await objLocker4.DisposeAsync().ConfigureAwait(false);
                                 }
+                            }
+                            finally
+                            {
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
                             }
                         }
 
@@ -2525,8 +2566,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

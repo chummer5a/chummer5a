@@ -409,7 +409,8 @@ namespace Chummer
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_blnDoingCopy)
@@ -433,7 +434,7 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -458,7 +459,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
                     if (_lstPropertyChangedAsync.Count > 0)
@@ -517,6 +518,10 @@ namespace Chummer
                     if (setNamesOfChangedProperties != null)
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -609,7 +614,7 @@ namespace Chummer
                 {
                     PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                     lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
-                    using (objOther.LockObject.EnterHiPrioReadLock(token))
+                    using (objOther.LockObject.EnterReadLock(token))
                     {
                         if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                         {
@@ -645,7 +650,7 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterHiPrioReadLock(token))
+                        using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
                         using (_dicCustomDataDirectoryKeys.LockObject.EnterUpgradeableReadLock(token))
                         {
                             int intMyCount = _dicCustomDataDirectoryKeys.Count;
@@ -729,7 +734,7 @@ namespace Chummer
                     PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                     lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
                     IDisposable objLocker2 =
-                        await objOther.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                        await objOther.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -764,13 +769,11 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        IDisposable objLocker3 = await objOther._dicCustomDataDirectoryKeys.LockObject
-                            .EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-                        try
+                        using (await objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
-                            using (await _dicCustomDataDirectoryKeys.LockObject.EnterUpgradeableReadLockAsync(token)
-                                       .ConfigureAwait(false))
+                            IAsyncDisposable objLocker3 = await _dicCustomDataDirectoryKeys.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                            try
                             {
                                 token.ThrowIfCancellationRequested();
                                 int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token)
@@ -807,7 +810,9 @@ namespace Chummer
                                         token.ThrowIfCancellationRequested();
                                         await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
                                         await objOther._dicCustomDataDirectoryKeys
-                                            .ForEachAsync(kvpOther => _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value, token), token).ConfigureAwait(false);
+                                            .ForEachAsync(
+                                                kvpOther => _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key,
+                                                    kvpOther.Value, token), token).ConfigureAwait(false);
                                     }
                                     finally
                                     {
@@ -815,10 +820,10 @@ namespace Chummer
                                     }
                                 }
                             }
-                        }
-                        finally
-                        {
-                            objLocker3.Dispose();
+                            finally
+                            {
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
 
                         if (!_setBooks.SetEquals(objOther._setBooks))
@@ -880,8 +885,8 @@ namespace Chummer
             if (objOther == this)
                 yield break;
 
-            using (objOther.LockObject.EnterHiPrioReadLock(token))
-            using (LockObject.EnterHiPrioReadLock(token))
+            using (objOther.LockObject.EnterReadLock(token))
+            using (LockObject.EnterReadLock(token))
             {
                 if (!_guiSourceId.Equals(objOther._guiSourceId))
                 {
@@ -950,12 +955,12 @@ namespace Chummer
                 return lstReturn;
 
             IDisposable objLocker =
-                await objOther.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                await objOther.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 IDisposable objLocker2 =
-                    await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                    await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1021,8 +1026,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objOther == null)
                 return false;
-            using (objOther.LockObject.EnterHiPrioReadLock(token))
-            using (LockObject.EnterHiPrioReadLock(token))
+            using (objOther.LockObject.EnterReadLock(token))
+            using (LockObject.EnterReadLock(token))
             {
                 if (_guiSourceId != objOther._guiSourceId)
                     return false;
@@ -1041,8 +1046,8 @@ namespace Chummer
                         return false;
                 }
 
-                using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterHiPrioReadLock(token))
-                using (_dicCustomDataDirectoryKeys.LockObject.EnterHiPrioReadLock(token))
+                using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
+                using (_dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
                 {
                     int intMyCount = _dicCustomDataDirectoryKeys.Count;
                     if (intMyCount != objOther._dicCustomDataDirectoryKeys.Count)
@@ -1070,12 +1075,12 @@ namespace Chummer
             if (objOther == null)
                 return false;
             IDisposable objLocker =
-                await objOther.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                await objOther.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 IDisposable objLocker2 =
-                    await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                    await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1099,12 +1104,12 @@ namespace Chummer
                     }
 
                     IDisposable objLocker3 =
-                        await objOther._dicCustomDataDirectoryKeys.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                        await objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
                         IDisposable objLocker4 =
-                            await _dicCustomDataDirectoryKeys.LockObject.EnterHiPrioReadLockAsync(token)
+                            await _dicCustomDataDirectoryKeys.LockObject.EnterReadLockAsync(token)
                                 .ConfigureAwait(false);
                         try
                         {
@@ -1388,7 +1393,7 @@ namespace Chummer
                 }
             }
 
-            using (LockObject.EnterHiPrioReadLock(token))
+            using (LockObject.EnterReadLock(token))
             {
                 if (!string.IsNullOrEmpty(strNewFileName))
                     _strFileName = strNewFileName;
@@ -2117,7 +2122,7 @@ namespace Chummer
                 }
             }
 
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -6074,12 +6079,17 @@ namespace Chummer
                     = '(' + value + ") + {PriorityNuyen}";
             }
 
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
                     return;
                 await OnPropertyChangedAsync(nameof(ChargenKarmaToNuyenExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

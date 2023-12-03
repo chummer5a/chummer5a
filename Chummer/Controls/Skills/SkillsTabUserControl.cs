@@ -370,11 +370,11 @@ namespace Chummer.UI.Skills
                 }, token: token).ConfigureAwait(false);
 
                 await Task.WhenAll(_lstActiveSkills.ContentControls.OfType<SkillControl>()
-                    .Select(x => x.DoLoad(token)));
+                    .Select(x => x.DoLoad(token))).ConfigureAwait(false);
                 await Task.WhenAll(_lstActiveSkills.ContentControls.OfType<KnowledgeSkillControl>()
-                    .Select(x => x.DoLoad(token)));
+                    .Select(x => x.DoLoad(token))).ConfigureAwait(false);
                 await Task.WhenAll(_lstSkillGroups.ContentControls.OfType<SkillGroupControl>()
-                    .Select(x => x.DoLoad(token)));
+                    .Select(x => x.DoLoad(token))).ConfigureAwait(false);
 
                 if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {
@@ -1006,7 +1006,8 @@ namespace Chummer.UI.Skills
                         frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation, MyToken).ConfigureAwait(false);
                 }
 
-                using (await objSkill.LockObject.EnterUpgradeableReadLockAsync(MyToken).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await objSkill.LockObject.EnterUpgradeableReadLockAsync(MyToken).ConfigureAwait(false);
+                try
                 {
                     MyToken.ThrowIfCancellationRequested();
                     // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
@@ -1015,14 +1016,18 @@ namespace Chummer.UI.Skills
                         > await _objCharacter.GetKarmaAsync(MyToken).ConfigureAwait(false))
                     {
                         Program.ShowScrollableMessageBox(await LanguageManager
-                                                               .GetStringAsync("Message_NotEnoughKarma", token: MyToken)
-                                                               .ConfigureAwait(false));
+                            .GetStringAsync("Message_NotEnoughKarma", token: MyToken)
+                            .ConfigureAwait(false));
                         await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill, MyToken)
-                                           .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         return;
                     }
 
                     await objSkill.Upgrade(MyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

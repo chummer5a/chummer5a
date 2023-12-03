@@ -349,7 +349,8 @@ namespace Chummer
         /// <inheritdoc />
         public async Task<bool> RemoveAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (ReferenceEquals(await PeekAsync(token).ConfigureAwait(false), item))
@@ -357,6 +358,10 @@ namespace Chummer
                     await PopAsync(token).ConfigureAwait(false);
                     return true;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return false;

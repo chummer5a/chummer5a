@@ -99,7 +99,7 @@ namespace Chummer.Backend.Attributes
         {
             if (objWriter == null)
                 return;
-            using (LockObject.EnterHiPrioReadLock())
+            using (LockObject.EnterReadLock())
             {
                 objWriter.WriteStartElement("attribute");
                 objWriter.WriteElementString("name", _strAbbrev);
@@ -555,13 +555,18 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public async Task SetBaseAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intBase, value) == value)
                     return;
                 await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -572,12 +577,17 @@ namespace Chummer.Backend.Attributes
         {
             if (value == 0)
                 return;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
                 await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -675,13 +685,18 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public async Task SetKarmaAsync(int value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intKarma, value) == value)
                     return;
                 await OnPropertyChangedAsync(nameof(Karma), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -692,12 +707,17 @@ namespace Chummer.Backend.Attributes
         {
             if (value == 0)
                 return;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
                 await OnPropertyChangedAsync(nameof(Karma), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1501,18 +1521,22 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (LockObject.EnterReadLock())
-                using (_objCachedTotalValueLock.EnterUpgradeableReadLock())
                 {
-                    // intReturn for thread safety
-                    int intReturn = _intCachedTotalValue;
-                    if (intReturn != int.MinValue)
-                        return intReturn;
-                    using (_objCachedTotalValueLock.EnterWriteLock())
+                    using (_objCachedTotalValueLock.EnterReadLock())
                     {
-                        intReturn = _intCachedTotalValue;
-                        if (intReturn != int.MinValue)
-                            return intReturn;
-                        return _intCachedTotalValue = CalculatedTotalValue();
+                        // intReturn for thread safety
+                        if (_intCachedTotalValue != int.MinValue)
+                            return _intCachedTotalValue;
+                    }
+                    using (_objCachedTotalValueLock.EnterUpgradeableReadLock())
+                    {
+                        // intReturn for thread safety
+                        if (_intCachedTotalValue != int.MinValue)
+                            return _intCachedTotalValue;
+                        using (_objCachedTotalValueLock.EnterWriteLock())
+                        {
+                            return _intCachedTotalValue = CalculatedTotalValue();
+                        }
                     }
                 }
             }
@@ -1526,27 +1550,34 @@ namespace Chummer.Backend.Attributes
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedTotalValueLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                using (await _objCachedTotalValueLock.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    if (_intCachedTotalValue != int.MinValue)
+                        return _intCachedTotalValue;
+                }
+                IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
-                    // intReturn for thread safety
-                    int intReturn = _intCachedTotalValue;
-                    if (intReturn != int.MinValue)
-                        return intReturn;
-                    IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    if (_intCachedTotalValue != int.MinValue)
+                        return _intCachedTotalValue;
+                    IAsyncDisposable objLocker2 =
+                        await _objCachedTotalValueLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        intReturn = _intCachedTotalValue;
-                        if (intReturn != int.MinValue)
-                            return intReturn;
-                        return _intCachedTotalValue = await Task.Run(() => CalculatedTotalValueAsync(token: token), token)
+                        return _intCachedTotalValue = await Task
+                            .Run(() => CalculatedTotalValueAsync(token: token), token)
                             .ConfigureAwait(false);
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -1868,8 +1899,7 @@ namespace Chummer.Backend.Attributes
                 if (blnAugMaxChanged)
                     lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
 
-                using (_objCharacter.LockObject.EnterWriteLock())
-                    OnMultiplePropertyChanged(lstProperties);
+                OnMultiplePropertyChanged(lstProperties);
             }
         }
 
@@ -1882,7 +1912,8 @@ namespace Chummer.Backend.Attributes
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task AssignLimitsAsync(int intMin, int intMax, int intAug, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 bool blnMinChanged = _intMetatypeMin != intMin;
@@ -1890,7 +1921,7 @@ namespace Chummer.Backend.Attributes
                 bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
                 if (!blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1900,7 +1931,7 @@ namespace Chummer.Backend.Attributes
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
                 List<string> lstProperties = new List<string>(3);
@@ -1911,16 +1942,11 @@ namespace Chummer.Backend.Attributes
                 if (blnAugMaxChanged)
                     lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
 
-                objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1964,8 +1990,7 @@ namespace Chummer.Backend.Attributes
                 if (blnAugMaxChanged)
                     lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
 
-                using (_objCharacter.LockObject.EnterWriteLock())
-                    OnMultiplePropertyChanged(lstProperties);
+                OnMultiplePropertyChanged(lstProperties);
             }
         }
 
@@ -1980,7 +2005,8 @@ namespace Chummer.Backend.Attributes
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task AssignBaseKarmaLimitsAsync(int intBase, int intKarma, int intMin, int intMax, int intAug, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 bool blnBaseChanged = _intBase != intBase;
@@ -1990,7 +2016,7 @@ namespace Chummer.Backend.Attributes
                 bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
                 if (!blnBaseChanged && !blnKarmaChanged && !blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -2002,7 +2028,7 @@ namespace Chummer.Backend.Attributes
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
                 List<string> lstProperties = new List<string>(5);
@@ -2017,16 +2043,11 @@ namespace Chummer.Backend.Attributes
                 if (blnAugMaxChanged)
                     lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
 
-                objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3251,7 +3272,8 @@ namespace Chummer.Backend.Attributes
         public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -3275,7 +3297,7 @@ namespace Chummer.Backend.Attributes
 
                     if (setNamesOfChangedProperties.Overlaps(s_SetPropertyNamesWithCachedValues))
                     {
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -3292,14 +3314,17 @@ namespace Chummer.Backend.Attributes
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
 
                     if (_lstPropertyChangedAsync.Count > 0)
                     {
-                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks =
+                            new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count,
+                                Utils.MaxParallelBatchSize));
                         int i = 0;
                         foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
                         {
@@ -3313,6 +3338,7 @@ namespace Chummer.Backend.Attributes
                                 i = 0;
                             }
                         }
+
                         await Task.WhenAll(lstTasks).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
@@ -3352,6 +3378,10 @@ namespace Chummer.Backend.Attributes
                     if (setNamesOfChangedProperties != null)
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

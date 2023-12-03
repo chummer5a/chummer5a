@@ -451,14 +451,19 @@ namespace Chummer
                 }, Utils.JoinableTaskFactory);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    using (await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                    System.IAsyncDisposable objLocker2 = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                             await objCharacter
-                                  .SetSettingsKeyAsync(
-                                      await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
-                                      token).ConfigureAwait(false);
+                                .SetSettingsKeyAsync(
+                                    await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
+                                    token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }, token: token).ConfigureAwait(false);
             }

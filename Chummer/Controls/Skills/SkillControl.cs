@@ -663,7 +663,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                await DoLoad(_objMyToken);
+                await DoLoad(_objMyToken).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x => x.AdjustForDpi(), token: _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -823,25 +823,30 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                try
                 {
                     _objMyToken.ThrowIfCancellationRequested();
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
-                                                      await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpense",
-                                                                               token: _objMyToken)
-                                                                           .ConfigureAwait(false),
-                                                      await _objSkill.GetCurrentDisplayNameAsync(_objMyToken)
-                                                                     .ConfigureAwait(false),
-                                                      await _objSkill.GetRatingAsync(_objMyToken).ConfigureAwait(false)
-                                                      + 1,
-                                                      await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken)
-                                                                     .ConfigureAwait(false));
+                        await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpense",
+                                token: _objMyToken)
+                            .ConfigureAwait(false),
+                        await _objSkill.GetCurrentDisplayNameAsync(_objMyToken)
+                            .ConfigureAwait(false),
+                        await _objSkill.GetRatingAsync(_objMyToken).ConfigureAwait(false)
+                        + 1,
+                        await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken)
+                            .ConfigureAwait(false));
 
                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
                         return;
 
                     await _objSkill.Upgrade(_objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -854,7 +859,8 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                try
                 {
                     _objMyToken.ThrowIfCancellationRequested();
                     int price = _objSkill.CharacterObject.Settings.KarmaSpecialization;
@@ -892,25 +898,29 @@ namespace Chummer.UI.Skills
                         price += decExtraSpecCost.StandardRound(); //Spec
 
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
-                                                      await LanguageManager
-                                                            .GetStringAsync(
-                                                                "Message_ConfirmKarmaExpenseSkillSpecialization",
-                                                                token: _objMyToken).ConfigureAwait(false), price);
+                        await LanguageManager
+                            .GetStringAsync(
+                                "Message_ConfirmKarmaExpenseSkillSpecialization",
+                                token: _objMyToken).ConfigureAwait(false), price);
 
                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken)
-                                              .ConfigureAwait(false))
+                            .ConfigureAwait(false))
                         return;
 
                     using (ThreadSafeForm<SelectSpec> selectForm =
                            await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill), _objMyToken)
-                                                           .ConfigureAwait(false))
+                               .ConfigureAwait(false))
                     {
                         if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject, _objMyToken)
-                                            .ConfigureAwait(false) != DialogResult.OK)
+                                .ConfigureAwait(false) != DialogResult.OK)
                             return;
                         await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem, _objMyToken)
-                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

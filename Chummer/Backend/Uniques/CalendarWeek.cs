@@ -121,13 +121,16 @@ namespace Chummer
         public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstPropertyChangedAsync.Count > 0)
                 {
-                    List<PropertyChangedEventArgs> lstArgsList = lstPropertyNames.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                    List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                    List<PropertyChangedEventArgs> lstArgsList =
+                        lstPropertyNames.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                    List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count,
+                        Utils.MaxParallelBatchSize));
                     int i = 0;
                     foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
                     {
@@ -141,6 +144,7 @@ namespace Chummer
                             i = 0;
                         }
                     }
+
                     await Task.WhenAll(lstTasks).ConfigureAwait(false);
                     if (PropertyChanged != null)
                     {
@@ -173,6 +177,10 @@ namespace Chummer
                         }
                     }, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -241,7 +249,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();

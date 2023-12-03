@@ -66,7 +66,8 @@ namespace Chummer
         private async Task TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 List<MartialArtTechnique> lstImprovementSourcesToProcess
@@ -152,7 +153,8 @@ namespace Chummer
                         foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
                                  dicChangedProperties)
                         {
-                            await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
+                            await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token)
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -165,6 +167,10 @@ namespace Chummer
                         }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -338,7 +344,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();

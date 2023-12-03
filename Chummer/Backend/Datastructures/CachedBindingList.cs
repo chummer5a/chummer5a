@@ -562,7 +562,22 @@ namespace Chummer
         {
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
-            IDisposable objLocker = BindingListLock?.EnterUpgradeableReadLock();
+
+            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            try
+            {
+                if (propertyChangedAsyncEventHandler != null)
+                {
+                    notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
+                    return;
+                }
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+
+            objLocker = BindingListLock?.EnterUpgradeableReadLock();
             try
             {
                 if (propertyChangedAsyncEventHandler == null)
@@ -596,22 +611,40 @@ namespace Chummer
             }
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
-            using (await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+
+            using (await BindingListLock.EnterReadLockAsync(token))
             {
+                if (propertyChangedAsyncEventHandler != null)
+                {
+                    notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
+                    return;
+                }
+            }
+
+            IAsyncDisposable objLocker = await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 if (propertyChangedAsyncEventHandler == null)
                 {
-                    IAsyncDisposable objLocker = await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 =
+                        await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         propertyChangedAsyncEventHandler = Child_PropertyChangedAsync;
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 
                 notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -644,6 +677,7 @@ namespace Chummer
                 return;
             using (await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 if (propertyChangedAsyncEventHandler == null)
                     return;
                 notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
@@ -658,6 +692,7 @@ namespace Chummer
                 : null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (!RaiseListChangedEvents)
                     return;
             }
@@ -680,31 +715,50 @@ namespace Chummer
                 }
 
                 IDisposable objLocker = BindingListLock != null
+                    ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    int num = _intLastAsyncChangeIndex;
+                    if (num >= 0 && num < await GetCountAsync(token).ConfigureAwait(false) &&
+                        (await GetValueAtAsync(num, token).ConfigureAwait(false)).Equals(obj))
+                    {
+                        if (itemTypeProperties == null)
+                            itemTypeProperties = TypeDescriptor.GetProperties(typeof(T));
+                        PropertyDescriptor propDesc = itemTypeProperties.Find(e.PropertyName, true);
+                        await OnListChangedAsync(new ListChangedEventArgs(ListChangedType.ItemChanged, num, propDesc),
+                            token).ConfigureAwait(false);
+                        return;
+                    }
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
+
+                IAsyncDisposable objLocker2 = BindingListLock != null
                     ? await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     int num = _intLastAsyncChangeIndex;
                     if (num < 0 || num >= await GetCountAsync(token).ConfigureAwait(false) ||
                         !(await GetValueAtAsync(num, token).ConfigureAwait(false)).Equals(obj))
                     {
-                        IAsyncDisposable objLocker2 = BindingListLock != null
+                        num = await IndexOfAsync(obj, token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker3 = BindingListLock != null
                             ? await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false)
                             : null;
                         try
                         {
-                            num = _intLastAsyncChangeIndex;
-                            if (num < 0 || num >= await GetCountAsync(token).ConfigureAwait(false) ||
-                                !(await GetValueAtAsync(num, token).ConfigureAwait(false)).Equals(obj))
-                            {
-                                num = await IndexOfAsync(obj, token).ConfigureAwait(false);
-                                _intLastAsyncChangeIndex = num;
-                            }
+                            _intLastAsyncChangeIndex = num;
                         }
                         finally
                         {
-                            if (objLocker2 != null)
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                            if (objLocker3 != null)
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
                         }
                     }
 
@@ -723,7 +777,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    objLocker?.Dispose();
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
                 return;
