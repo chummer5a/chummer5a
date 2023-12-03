@@ -98,6 +98,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData[index].Equals(value))
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
@@ -119,6 +125,13 @@ namespace Chummer
 
         public async Task SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (_lstData[index].Equals(value))
+                    return;
+            }
+
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -151,6 +164,11 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData[index].Equals(value))
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
@@ -878,6 +896,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData.RaiseListChangedEvents.Equals(value))
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.RaiseListChangedEvents.Equals(value))
@@ -928,6 +952,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData.AllowNew.Equals(value))
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowNew.Equals(value))
@@ -948,6 +978,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData.AllowEdit.Equals(value))
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowEdit.Equals(value))
@@ -968,6 +1004,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData.AllowRemove.Equals(value))
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowRemove.Equals(value))
@@ -1091,12 +1133,14 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
+            if (length == 0)
+                return;
+            if (index + length > Count)
+                throw new InvalidOperationException(nameof(length));
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (index + length > _lstData.Count)
                     throw new InvalidOperationException(nameof(length));
-                if (length == 0)
-                    return;
                 IDisposable[] aobjLockers = _lstData[index] is IHasLockObject ? new IDisposable[length] : null;
                 T[] aobjSorted = new T[length];
                 for (int i = 0; i < length; ++i)
@@ -1178,6 +1222,8 @@ namespace Chummer
         {
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
+            if (Count == 0)
+                return;
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_lstData.Count == 0)
@@ -1264,6 +1310,8 @@ namespace Chummer
         /// interface implementation of each element.</param>
         public void Sort(IComparer<T> objComparer = null)
         {
+            if (Count == 0)
+                return;
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_lstData.Count == 0)
@@ -1357,14 +1405,14 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
+            if (index + length > await GetCountAsync(token).ConfigureAwait(false))
+                throw new InvalidOperationException(nameof(length));
+            if (length == 0)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (index + length > _lstData.Count)
-                    throw new InvalidOperationException(nameof(length));
-                if (length == 0)
-                    return;
                 Stack<IDisposable> stkLockers = _lstData[0] is IHasLockObject ? new Stack<IDisposable>(length) : null;
                 T[] aobjSorted = new T[length];
                 try
@@ -1591,6 +1639,9 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task SortAsync(IComparer<T> objComparer = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (await GetCountAsync(token).ConfigureAwait(false) == 0)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -1700,6 +1751,9 @@ namespace Chummer
 
         public void Move(int intOldIndex, int intNewIndex, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (intOldIndex == intNewIndex)
+                return;
             int intParity = intOldIndex < intNewIndex ? 1 : -1;
             using (LockObject.EnterUpgradeableReadLock(token))
             {
@@ -1738,6 +1792,9 @@ namespace Chummer
 
         public async Task MoveAsync(int intOldIndex, int intNewIndex, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (intOldIndex == intNewIndex)
+                return;
             int intParity = intOldIndex < intNewIndex ? 1 : -1;
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try

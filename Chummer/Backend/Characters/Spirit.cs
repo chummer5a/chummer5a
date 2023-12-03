@@ -867,8 +867,12 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+
                     OnPropertyChanged();
                 }
             }
@@ -965,6 +969,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_intServicesOwed == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_intServicesOwed == value)
@@ -1108,6 +1118,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnBound == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnBound == value)
@@ -1131,10 +1147,9 @@ namespace Chummer
                     }
 
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnBound = value;
-                        OnPropertyChanged();
-                    }
+
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1155,8 +1170,12 @@ namespace Chummer
                 {
                     if (InterlockedExtensions.Exchange(ref _eEntityType, value) == value)
                         return;
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+
                     OnPropertyChanged();
                 }
             }
@@ -1251,15 +1270,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _colNotes = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1319,9 +1342,41 @@ namespace Chummer
                     return _blnFettered && _intCachedAllowFettering > 0;
                 }
             }
-
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnFettered == value)
+                        return;
+                    if (value)
+                    {
+                        //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                        if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite)
+                            return;
+
+                        //Only one Fettered spirit is permitted.
+                        if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                            return;
+                    }
+                    else if (CharacterObject.Created && !Bound && ServicesOwed > 0 && CharacterObject.Spirits.Any(
+                                 x =>
+                                     !ReferenceEquals(x, this) && x.EntityType == EntityType && x.ServicesOwed > 0
+                                     && !x.Bound &&
+                                     !x.Fettered))
+                    {
+                        // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                        Program.ShowScrollableMessageBox(
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "Message_UnregisteredSpriteLimit"
+                                : "Message_UnboundSpiritLimit"),
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "MessageTitle_UnregisteredSpriteLimit"
+                                : "MessageTitle_UnboundSpiritLimit"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFettered == value)
@@ -1416,10 +1471,164 @@ namespace Chummer
                             ImprovementManager.RemoveImprovements(CharacterObject,
                                 Improvement.ImprovementSource.SpiritFettering);
                         }
+                    }
 
-                        OnPropertyChanged();
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public async Task SetFetteredAsync(bool value, CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (_blnFettered == value)
+                    return;
+                SpiritType eEntityType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (value)
+                {
+                    //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                    if (!await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false) && eEntityType == SpiritType.Sprite)
+                        return;
+
+                    //Only one Fettered spirit is permitted.
+                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.Fettered, token: token).ConfigureAwait(false))
+                        return;
+                }
+                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !Bound && ServicesOwed > 0 && await CharacterObject.Spirits.AnyAsync(
+                             async x =>
+                                 !ReferenceEquals(x, this) && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType && x.ServicesOwed > 0
+                                 && !x.Bound && !x.Fettered, token: token).ConfigureAwait(false))
+                {
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnFettered == value)
+                    return;
+                int intFetteringCost = 0;
+                SpiritType eEntityType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (value)
+                {
+                    //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                    if (!await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false) &&
+                        eEntityType == SpiritType.Sprite)
+                        return;
+
+                    //Only one Fettered spirit is permitted.
+                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.Fettered, token: token)
+                            .ConfigureAwait(false))
+                        return;
+                    if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                    {
+                        // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
+                        intFetteringCost = eEntityType == SpiritType.Spirit
+                            ? await GetForceAsync(token).ConfigureAwait(false) *
+                              await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                                  .GetKarmaSpiritFetteringAsync(token).ConfigureAwait(false)
+                            : await GetForceAsync(token).ConfigureAwait(false);
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend", token: token).ConfigureAwait(false),
+                                Name,
+                                intFetteringCost.ToString(GlobalSettings.CultureInfo)), token).ConfigureAwait(false))
+                        {
+                            return;
+                        }
                     }
                 }
+                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !Bound &&
+                         ServicesOwed > 0 && await CharacterObject.Spirits.AnyAsync(
+                             async x =>
+                                 !ReferenceEquals(x, this) &&
+                                 await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType &&
+                                 x.ServicesOwed > 0
+                                 && !x.Bound && !x.Fettered, token: token).ConfigureAwait(false))
+                {
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnFettered = value;
+                    if (value)
+                    {
+                        if (await GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit)
+                        {
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(CharacterObject, "MAG",
+                                    Improvement.ImprovementSource.SpiritFettering,
+                                    string.Empty,
+                                    Improvement.ImprovementType.Attribute,
+                                    string.Empty, 0,
+                                    1, 0, 0, -1, token: token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(CharacterObject, CancellationToken.None)
+                                    .ConfigureAwait(false);
+                                throw;
+                            }
+
+                            ImprovementManager.Commit(CharacterObject);
+                        }
+
+                        if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(intFetteringCost * -1,
+                                await LanguageManager.GetStringAsync("String_ExpenseFetteredSpirit", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + Name,
+                                ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                .ConfigureAwait(false);
+                            await CharacterObject.ModifyKarmaAsync(-intFetteringCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                    }
+                    else
+                    {
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                            Improvement.ImprovementSource.SpiritFettering, token: token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(Fettered), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1436,15 +1645,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_objColor == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_objColor == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _objColor = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1757,6 +1970,7 @@ namespace Chummer
             using (LockObject.EnterUpgradeableReadLock(token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
+                bool blnDoPropertyChanged = false;
                 using (LockObject.EnterWriteLock(token))
                 {
                     CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
@@ -1807,6 +2021,7 @@ namespace Chummer
 
                     if (_objLinkedCharacter != objOldLinkedCharacter)
                     {
+                        blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
                             if (!objOldLinkedCharacter.IsDisposed)
@@ -1847,10 +2062,11 @@ namespace Chummer
                                 _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
                             }
                         }
-
-                        OnPropertyChanged(nameof(LinkedCharacter));
                     }
                 }
+
+                if (blnDoPropertyChanged)
+                    OnPropertyChanged(nameof(LinkedCharacter));
             }
         }
 
@@ -1861,6 +2077,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 Character objOldLinkedCharacter = _objLinkedCharacter;
+                bool blnDoPropertyChanged = false;
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1919,6 +2136,7 @@ namespace Chummer
 
                     if (_objLinkedCharacter != objOldLinkedCharacter)
                     {
+                        blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
                             IAsyncDisposable objLocker3 = await objOldLinkedCharacter.LockObject
@@ -1982,14 +2200,15 @@ namespace Chummer
                                 await objLocker3.DisposeAsync().ConfigureAwait(false);
                             }
                         }
-
-                        await OnPropertyChangedAsync(nameof(LinkedCharacter), token).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+
+                if (blnDoPropertyChanged)
+                    await OnPropertyChangedAsync(nameof(LinkedCharacter), token).ConfigureAwait(false);
             }
             finally
             {

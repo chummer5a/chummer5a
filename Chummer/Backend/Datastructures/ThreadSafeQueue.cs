@@ -275,16 +275,18 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(T item)
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (!ReferenceEquals(Peek(), item))
+                    return false;
+            }
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (ReferenceEquals(Peek(), item))
-                {
-                    Dequeue();
-                    return true;
-                }
+                if (!ReferenceEquals(Peek(), item))
+                    return false;
+                Dequeue();
+                return true;
             }
-
-            return false;
         }
 
         /// <inheritdoc cref="Queue{T}.CopyTo" />

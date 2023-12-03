@@ -886,17 +886,16 @@ namespace Chummer
                     string strOldValue = Interlocked.Exchange(ref _strName, value);
                     if (strOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+
+                    if (strOldValue == "Improved Ability (skill)")
                     {
-                        if (strOldValue == "Improved Ability (skill)")
-                        {
-                            BoostedSkill = null;
-                        }
-                        else if (value == "Improved Ability (skill)")
-                        {
-                            BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
-                        }
+                        BoostedSkill = null;
                     }
+                    else if (value == "Improved Ability (skill)")
+                    {
+                        BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
+                    }
+
                     OnPropertyChanged();
                 }
             }
@@ -928,27 +927,19 @@ namespace Chummer
                 string strOldValue = Interlocked.Exchange(ref _strName, value);
                 if (strOldValue == value)
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                if (strOldValue == "Improved Ability (skill)")
                 {
-                    if (strOldValue == "Improved Ability (skill)")
-                    {
-                        await SetBoostedSkillAsync(null, token).ConfigureAwait(false);
-                    }
-                    else if (value == "Improved Ability (skill)")
-                    {
-                        await SetBoostedSkillAsync(
-                            await (await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .GetActiveSkillAsync(await GetExtraAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false),
-                            token).ConfigureAwait(false);
-                    }
+                    await SetBoostedSkillAsync(null, token).ConfigureAwait(false);
                 }
-                finally
+                else if (value == "Improved Ability (skill)")
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    await SetBoostedSkillAsync(
+                        await (await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                            .GetActiveSkillAsync(await GetExtraAsync(token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false),
+                        token).ConfigureAwait(false);
                 }
-
+                
                 await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
             }
             finally
@@ -973,11 +964,15 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _strExtra, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (Name == "Improved Ability (skill)")
                     {
-                        if (Name == "Improved Ability (skill)")
-                            BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(value);
+                        Skill objBoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(value);
+                        using (LockObject.EnterWriteLock())
+                        {
+                            BoostedSkill = objBoostedSkill;
+                        }
                     }
+
                     OnPropertyChanged();
                 }
             }
@@ -1008,17 +1003,19 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strExtra, value) == value)
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                if (await GetNameAsync(token).ConfigureAwait(false) == "Improved Ability (skill)")
                 {
-                    if (await GetNameAsync(token).ConfigureAwait(false) == "Improved Ability (skill)")
-                        await SetBoostedSkillAsync(
-                            await CharacterObject.SkillsSection.GetActiveSkillAsync(value, token).ConfigureAwait(false),
-                            token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    Skill objBoostedSkill = await CharacterObject.SkillsSection.GetActiveSkillAsync(value, token)
+                        .ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        await SetBoostedSkillAsync(objBoostedSkill, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
 
                 await OnPropertyChangedAsync(nameof(Extra), token).ConfigureAwait(false);
@@ -1191,14 +1188,18 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decExtraPointCost == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decExtraPointCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decExtraPointCost = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -1304,14 +1305,8 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (_intRating == value)
+                    if (Interlocked.Exchange(ref _intRating, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intRating, value) == value)
-                            return;
-                    }
-
                     OnPropertyChanged();
                 }
             }
@@ -1894,14 +1889,18 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnLevelsEnabled == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnLevelsEnabled == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnLevelsEnabled = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -1966,14 +1965,18 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnDiscountedAdeptWay == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDiscountedAdeptWay == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDiscountedAdeptWay = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -2034,14 +2037,18 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnDiscountedGeas == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDiscountedGeas == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDiscountedGeas = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -2080,14 +2087,18 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _colNotes = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -2336,35 +2347,48 @@ namespace Chummer
 
         public void RefreshDiscountedAdeptWay(bool blnAdeptWayDiscountEnabled)
         {
+            if (blnAdeptWayDiscountEnabled)
+                return;
+            using (LockObject.EnterReadLock())
+            {
+                if (!DiscountedAdeptWay)
+                    return;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (DiscountedAdeptWay && !blnAdeptWayDiscountEnabled)
-                {
-                    using (LockObject.EnterWriteLock())
-                        DiscountedAdeptWay = false;
-                }
+                if (!DiscountedAdeptWay)
+                    return;
+                using (LockObject.EnterWriteLock())
+                    DiscountedAdeptWay = false;
             }
         }
 
         public async Task RefreshDiscountedAdeptWayAsync(bool blnAdeptWayDiscountEnabled, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (blnAdeptWayDiscountEnabled)
+                return;
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (!await GetDiscountedAdeptWayAsync(token).ConfigureAwait(false))
+                    return;
+            }
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await GetDiscountedAdeptWayAsync(token).ConfigureAwait(false) && !blnAdeptWayDiscountEnabled)
+                if (!await GetDiscountedAdeptWayAsync(token).ConfigureAwait(false))
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        await SetDiscountedAdeptWayAsync(false, token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    token.ThrowIfCancellationRequested();
+                    await SetDiscountedAdeptWayAsync(false, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally

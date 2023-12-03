@@ -3510,22 +3510,6 @@ namespace Chummer.Backend.Skills
 
         internal bool IsLoading => _intLoading > 0;
 
-        internal void ForcePropertyChangedNotificationAll(string strName)
-        {
-            using (LockObject.EnterUpgradeableReadLock())
-            {
-                foreach (Skill objSkill in Skills)
-                {
-                    objSkill.OnPropertyChanged(strName);
-                }
-
-                foreach (KnowledgeSkill objSkill in KnowledgeSkills)
-                {
-                    objSkill.OnPropertyChanged(strName);
-                }
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =

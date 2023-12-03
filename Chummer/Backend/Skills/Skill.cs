@@ -71,7 +71,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private void RecacheAttribute()
+        protected void RecacheAttribute()
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -131,7 +131,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async Task RecacheAttributeAsync(CancellationToken token = default)
+        protected async Task RecacheAttributeAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
@@ -1161,6 +1161,15 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (SkillGroupObject?.Base > 0
+                        && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
+                             !CharacterObject.IgnoreRules)
+                            || !CharacterObject.Settings.UsePointsOnBrokenGroups))
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (SkillGroupObject?.Base > 0
@@ -1229,6 +1238,23 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task SetBaseAsync(int value, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                int intSkillGroupBase = SkillGroupObject != null
+                    ? await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false)
+                    : 0;
+                if (intSkillGroupBase > 0)
+                {
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if ((await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false) &&
+                         !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
+                         !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                        || !await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false))
+                        return;
+                }
+            }
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -1236,12 +1262,15 @@ namespace Chummer.Backend.Skills
                 int intSkillGroupBase = SkillGroupObject != null
                     ? await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false)
                     : 0;
-                if (intSkillGroupBase > 0
-                    && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode &&
+                if (intSkillGroupBase > 0)
+                {
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if ((await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false) &&
                          !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
-                         !CharacterObject.IgnoreRules)
-                        || !CharacterObject.Settings.UsePointsOnBrokenGroups))
-                    return;
+                         !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                        || !await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false))
+                        return;
+                }
 
                 //Calculate how far above maximum we are.
                 int intOverMax = value + await GetKarmaAsync(token).ConfigureAwait(false) -
@@ -1496,10 +1525,8 @@ namespace Chummer.Backend.Skills
                     if (_blnBuyWithKarma == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnBuyWithKarma = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -2706,6 +2733,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        protected string InterlockExchangeDefaultAttribute(string value)
+        {
+            return Interlocked.Exchange(ref _strDefaultAttribute, value);
+        }
+
         /// <summary>
         /// The translated abbreviation of the linked attribute.
         /// </summary>
@@ -2954,15 +2986,19 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnForceDisabled == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnForceDisabled == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnForceDisabled = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -2976,15 +3012,19 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnRequiresGroundMovement == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnRequiresGroundMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnRequiresGroundMovement = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -2998,15 +3038,19 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnRequiresSwimMovement == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnRequiresSwimMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnRequiresSwimMovement = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -3020,15 +3064,19 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnRequiresFlyMovement == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnRequiresFlyMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnRequiresFlyMovement = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -3114,14 +3162,18 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnDefault == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDefault == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDefault = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -3322,14 +3374,18 @@ namespace Chummer.Backend.Skills
             }
             private set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_guidInternalId == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guidInternalId == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _guidInternalId = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -3379,6 +3435,12 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_guidSkillId == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guidSkillId == value)
@@ -3416,6 +3478,14 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task SetSkillIdAsync(Guid value, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_guidSkillId == value)
+                    return;
+            }
+
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -4754,15 +4824,19 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _colNotes = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }

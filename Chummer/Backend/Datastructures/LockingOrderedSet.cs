@@ -679,6 +679,13 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    T objOldItem = _lstOrderedData[index];
+                    if (objOldItem.Equals(value))
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     T objOldItem = _lstOrderedData[index];
@@ -705,6 +712,14 @@ namespace Chummer
 
         public async Task SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                T objOldItem = _lstOrderedData[index];
+                if (objOldItem.Equals(value))
+                    return;
+            }
+
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {

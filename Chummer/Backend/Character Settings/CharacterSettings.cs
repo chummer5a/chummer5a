@@ -650,34 +650,53 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
-                        using (_dicCustomDataDirectoryKeys.LockObject.EnterUpgradeableReadLock(token))
+                        bool blnDoRebuildDirectoryKeys = _dicCustomDataDirectoryKeys.Count != objOther._dicCustomDataDirectoryKeys.Count;
+
+                        if (blnDoRebuildDirectoryKeys)
                         {
-                            int intMyCount = _dicCustomDataDirectoryKeys.Count;
-                            bool blnDoRebuildDirectoryKeys = intMyCount != objOther._dicCustomDataDirectoryKeys.Count;
-                            if (!blnDoRebuildDirectoryKeys)
+                            lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
+                            using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock(token))
                             {
-                                for (int i = 0; i < intMyCount; ++i)
+                                _dicCustomDataDirectoryKeys.Clear();
+                                objOther.CustomDataDirectoryKeys.ForEach(
+                                    kvpOther => _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value),
+                                    token);
+                            }
+                        }
+                        else
+                        {
+                            using (objOther._dicCustomDataDirectoryKeys.LockObject.EnterReadLock(token))
+                            using (_dicCustomDataDirectoryKeys.LockObject.EnterUpgradeableReadLock(token))
+                            {
+                                int intMyCount = _dicCustomDataDirectoryKeys.Count;
+                                blnDoRebuildDirectoryKeys = intMyCount != objOther._dicCustomDataDirectoryKeys.Count;
+                                if (!blnDoRebuildDirectoryKeys)
                                 {
-                                    token.ThrowIfCancellationRequested();
-                                    KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
-                                    KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
-                                    if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
-                                        || kvpMine.Value != kvpOther.Value)
+                                    for (int i = 0; i < intMyCount; ++i)
                                     {
-                                        blnDoRebuildDirectoryKeys = true;
-                                        break;
+                                        token.ThrowIfCancellationRequested();
+                                        KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
+                                        KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
+                                        if (!string.Equals(kvpMine.Key, kvpOther.Key,
+                                                StringComparison.OrdinalIgnoreCase)
+                                            || kvpMine.Value != kvpOther.Value)
+                                        {
+                                            blnDoRebuildDirectoryKeys = true;
+                                            break;
+                                        }
                                     }
                                 }
-                            }
 
-                            if (blnDoRebuildDirectoryKeys)
-                            {
-                                lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                                using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock(token))
+                                if (blnDoRebuildDirectoryKeys)
                                 {
-                                    _dicCustomDataDirectoryKeys.Clear();
-                                    objOther.CustomDataDirectoryKeys.ForEach(kvpOther => _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value), token);
+                                    lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
+                                    using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock(token))
+                                    {
+                                        _dicCustomDataDirectoryKeys.Clear();
+                                        objOther.CustomDataDirectoryKeys.ForEach(
+                                            kvpOther => _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value),
+                                            token);
+                                    }
                                 }
                             }
                         }
@@ -4842,10 +4861,8 @@ namespace Chummer
                     if (_decNuyenMaximumBP == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decNuyenMaximumBP = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -4902,21 +4919,16 @@ namespace Chummer
                         if (_setRedlinerExcludes.Contains("skull"))
                             return;
                         using (LockObject.EnterWriteLock())
-                        {
                             _setRedlinerExcludes.Add("skull");
-                            OnPropertyChanged(nameof(RedlinerExcludes));
-                        }
                     }
                     else
                     {
                         if (!_setRedlinerExcludes.Contains("skull"))
                             return;
                         using (LockObject.EnterWriteLock())
-                        {
                             _setRedlinerExcludes.Remove("skull");
-                            OnPropertyChanged(nameof(RedlinerExcludes));
-                        }
                     }
+                    this.OnMultiplePropertyChanged(nameof(RedlinerExcludesSkull), nameof(RedlinerExcludes));
                 }
             }
         }
@@ -4937,21 +4949,16 @@ namespace Chummer
                         if (_setRedlinerExcludes.Contains("torso"))
                             return;
                         using (LockObject.EnterWriteLock())
-                        {
                             _setRedlinerExcludes.Add("torso");
-                            OnPropertyChanged(nameof(RedlinerExcludes));
-                        }
                     }
                     else
                     {
                         if (!_setRedlinerExcludes.Contains("torso"))
                             return;
                         using (LockObject.EnterWriteLock())
-                        {
                             _setRedlinerExcludes.Remove("torso");
-                            OnPropertyChanged(nameof(RedlinerExcludes));
-                        }
                     }
+                    this.OnMultiplePropertyChanged(nameof(RedlinerExcludesTorso), nameof(RedlinerExcludes));
                 }
             }
         }
@@ -4972,21 +4979,16 @@ namespace Chummer
                         if (_setRedlinerExcludes.Contains("arm"))
                             return;
                         using (LockObject.EnterWriteLock())
-                        {
                             _setRedlinerExcludes.Add("arm");
-                            OnPropertyChanged(nameof(RedlinerExcludes));
-                        }
                     }
                     else
                     {
                         if (!_setRedlinerExcludes.Contains("arm"))
                             return;
                         using (LockObject.EnterWriteLock())
-                        {
                             _setRedlinerExcludes.Remove("arm");
-                            OnPropertyChanged(nameof(RedlinerExcludes));
-                        }
                     }
+                    this.OnMultiplePropertyChanged(nameof(RedlinerExcludesArms), nameof(RedlinerExcludes));
                 }
             }
         }
@@ -5007,21 +5009,16 @@ namespace Chummer
                         if (_setRedlinerExcludes.Contains("leg"))
                             return;
                         using (LockObject.EnterWriteLock())
-                        {
                             _setRedlinerExcludes.Add("leg");
-                            OnPropertyChanged(nameof(RedlinerExcludes));
-                        }
                     }
                     else
                     {
                         if (!_setRedlinerExcludes.Contains("leg"))
                             return;
                         using (LockObject.EnterWriteLock())
-                        {
                             _setRedlinerExcludes.Remove("leg");
-                            OnPropertyChanged(nameof(RedlinerExcludes));
-                        }
                     }
+                    this.OnMultiplePropertyChanged(nameof(RedlinerExcludesLegs), nameof(RedlinerExcludes));
                 }
             }
         }
@@ -5504,10 +5501,8 @@ namespace Chummer
                     if (_blnMoreLethalGameplay == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnMoreLethalGameplay = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5529,10 +5524,8 @@ namespace Chummer
                     if (_blnLicenseRestrictedItems == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnLicenseRestrictedItems = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5554,10 +5547,8 @@ namespace Chummer
                     if (_blnSpiritForceBasedOnTotalMAG == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnSpiritForceBasedOnTotalMAG = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5592,10 +5583,8 @@ namespace Chummer
                     if (_decNuyenPerBPWftM == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decNuyenPerBPWftM = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5617,10 +5606,8 @@ namespace Chummer
                     if (_decNuyenPerBPWftP == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decNuyenPerBPWftP = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5642,10 +5629,8 @@ namespace Chummer
                     if (_blnUnarmedImprovementsApplyToWeapons == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnUnarmedImprovementsApplyToWeapons = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5667,10 +5652,8 @@ namespace Chummer
                     if (_blnAllowInitiationInCreateMode == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowInitiationInCreateMode = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5705,10 +5688,8 @@ namespace Chummer
                     if (_blnUsePointsOnBrokenGroups == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnUsePointsOnBrokenGroups = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5742,10 +5723,8 @@ namespace Chummer
                     if (_blnDontDoubleQualityPurchaseCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDontDoubleQualityPurchaseCost = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5767,10 +5746,8 @@ namespace Chummer
                     if (_blnDontDoubleQualityRefundCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDontDoubleQualityRefundCost = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5792,10 +5769,8 @@ namespace Chummer
                     if (_blnIgnoreArt == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnIgnoreArt = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5817,10 +5792,8 @@ namespace Chummer
                     if (_blnIgnoreComplexFormLimit == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnIgnoreComplexFormLimit = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5842,10 +5815,8 @@ namespace Chummer
                     if (_blnCyberlegMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnCyberlegMovement = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5878,11 +5849,28 @@ namespace Chummer
                 {
                     if (_blnMysAdeptAllowPpCareer == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (value)
                     {
-                        _blnMysAdeptAllowPpCareer = value;
-                        if (value)
-                            MysAdeptSecondMAGAttribute = false;
+                        bool blnTemp = false;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _blnMysAdeptAllowPpCareer = true;
+                            if (MysAdeptSecondMAGAttribute)
+                            {
+                                _blnMysAdeptSecondMAGAttribute = false;
+                                blnTemp = true;
+                            }
+                        }
+
+                        if (blnTemp)
+                            this.OnMultiplePropertyChanged(nameof(MysAdeptAllowPpCareer), nameof(MysAdeptSecondMAGAttribute));
+                        else
+                            OnPropertyChanged();
+                    }
+                    else
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnMysAdeptAllowPpCareer = false;
                         OnPropertyChanged();
                     }
                 }
@@ -5914,15 +5902,33 @@ namespace Chummer
                 {
                     if (_blnMysAdeptSecondMAGAttribute == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (value)
                     {
-                        _blnMysAdeptSecondMAGAttribute = value;
-                        if (value)
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                   out HashSet<string> setProperties))
                         {
-                            PrioritySpellsAsAdeptPowers = false;
-                            MysAdeptAllowPpCareer = false;
+                            setProperties.Add(nameof(MysAdeptSecondMAGAttribute));
+                            using (LockObject.EnterWriteLock())
+                            {
+                                _blnMysAdeptSecondMAGAttribute = true;
+                                if (PrioritySpellsAsAdeptPowers)
+                                {
+                                    _blnPrioritySpellsAsAdeptPowers = false;
+                                    setProperties.Add(nameof(PrioritySpellsAsAdeptPowers));
+                                }
+                                if (MysAdeptAllowPpCareer)
+                                {
+                                    _blnMysAdeptAllowPpCareer = false;
+                                    setProperties.Add(nameof(MysAdeptAllowPpCareer));
+                                }
+                            }
+                            OnMultiplePropertyChanged(setProperties);
                         }
-
+                    }
+                    else
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnMysAdeptSecondMAGAttribute = false;
                         OnPropertyChanged();
                     }
                 }
@@ -6195,11 +6201,24 @@ namespace Chummer
                 {
                     if (_blnDroneArmorMultiplierEnabled == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (!value)
                     {
-                        _blnDroneArmorMultiplierEnabled = value;
-                        if (!value)
-                            DroneArmorMultiplier = 2;
+                        bool blnTemp;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _blnDroneArmorMultiplierEnabled = false;
+                            blnTemp = Interlocked.Exchange(ref _intDroneArmorMultiplier, 2) != 2;
+                        }
+
+                        if (blnTemp)
+                            this.OnMultiplePropertyChanged(nameof(DroneArmorMultiplierEnabled), nameof(DroneArmorMultiplier));
+                        else
+                            OnPropertyChanged();
+                    }
+                    else
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnDroneArmorMultiplierEnabled = true;
                         OnPropertyChanged();
                     }
                 }
@@ -6235,10 +6254,8 @@ namespace Chummer
                     if (_blnNoArmorEncumbrance == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnNoArmorEncumbrance = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6260,10 +6277,8 @@ namespace Chummer
                     if (_blnUncappedArmorAccessoryBonuses == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnUncappedArmorAccessoryBonuses = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6285,10 +6300,8 @@ namespace Chummer
                     if (_blnESSLossReducesMaximumOnly == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnESSLossReducesMaximumOnly = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6310,10 +6323,8 @@ namespace Chummer
                     if (_blnAllowSkillRegrouping == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowSkillRegrouping = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6335,10 +6346,8 @@ namespace Chummer
                     if (_blnSpecializationsBreakSkillGroups == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnSpecializationsBreakSkillGroups = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6534,10 +6543,8 @@ namespace Chummer
                     if (_blnMetatypeCostsKarma == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnMetatypeCostsKarma = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6628,10 +6635,8 @@ namespace Chummer
                     if (_blnAllowCyberwareESSDiscounts == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowCyberwareESSDiscounts = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6653,10 +6658,8 @@ namespace Chummer
                     if (_blnArmorDegradation == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnArmorDegradation = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6678,10 +6681,8 @@ namespace Chummer
                     if (_blnSpecialKarmaCostBasedOnShownValue == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnSpecialKarmaCostBasedOnShownValue = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6702,11 +6703,29 @@ namespace Chummer
                 {
                     if (_blnExceedPositiveQualities == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (!value)
                     {
-                        _blnExceedPositiveQualities = value;
-                        if (!value)
-                            ExceedPositiveQualitiesCostDoubled = false;
+                        bool blnTemp = false;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _blnExceedPositiveQualities = false;
+                            if (ExceedPositiveQualitiesCostDoubled)
+                            {
+                                _blnExceedPositiveQualitiesCostDoubled = false;
+                                blnTemp = true;
+                            }
+                        }
+
+                        if (blnTemp)
+                            this.OnMultiplePropertyChanged(nameof(ExceedPositiveQualities), nameof(ExceedPositiveQualitiesCostDoubled));
+                        else
+                            OnPropertyChanged();
+                    }
+                    else
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnExceedPositiveQualities = true;
+
                         OnPropertyChanged();
                     }
                 }
@@ -6742,10 +6761,8 @@ namespace Chummer
                     if (_blnExceedPositiveQualitiesCostDoubled == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnExceedPositiveQualitiesCostDoubled = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6778,11 +6795,29 @@ namespace Chummer
                 {
                     if (_blnExceedNegativeQualities == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (!value)
                     {
-                        _blnExceedNegativeQualities = value;
-                        if (!value)
-                            ExceedNegativeQualitiesNoBonus = false;
+                        bool blnTemp = false;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _blnExceedNegativeQualities = false;
+                            if (ExceedNegativeQualitiesNoBonus)
+                            {
+                                _blnExceedNegativeQualitiesNoBonus = false;
+                                blnTemp = true;
+                            }
+                        }
+
+                        if (blnTemp)
+                            this.OnMultiplePropertyChanged(nameof(ExceedNegativeQualities), nameof(ExceedNegativeQualitiesNoBonus));
+                        else
+                            OnPropertyChanged();
+                    }
+                    else
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnExceedNegativeQualities = true;
+
                         OnPropertyChanged();
                     }
                 }
@@ -6818,10 +6853,8 @@ namespace Chummer
                     if (_blnExceedNegativeQualitiesNoBonus == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnExceedNegativeQualitiesNoBonus = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6855,10 +6888,8 @@ namespace Chummer
                     if (_blnMultiplyRestrictedCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnMultiplyRestrictedCost = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6880,10 +6911,8 @@ namespace Chummer
                     if (_blnMultiplyForbiddenCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnMultiplyForbiddenCost = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7139,6 +7168,8 @@ namespace Chummer
             set
             {
                 int intNewWeightDecimals = Math.Max(value, 0);
+                if (intNewWeightDecimals == WeightDecimals)
+                    return;
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     int intCurrentWeightDecimals = WeightDecimals;
@@ -7295,10 +7326,8 @@ namespace Chummer
                     if (_blnDoEncumbrancePenaltyPhysicalLimit == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDoEncumbrancePenaltyPhysicalLimit = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7340,10 +7369,8 @@ namespace Chummer
                     if (_blnDoEncumbrancePenaltyMovementSpeed == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDoEncumbrancePenaltyMovementSpeed = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7385,10 +7412,8 @@ namespace Chummer
                     if (_blnDoEncumbrancePenaltyAgility == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDoEncumbrancePenaltyAgility = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7430,10 +7455,8 @@ namespace Chummer
                     if (_blnDoEncumbrancePenaltyReaction == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDoEncumbrancePenaltyReaction = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7475,10 +7498,8 @@ namespace Chummer
                     if (_blnDoEncumbrancePenaltyWoundModifier == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDoEncumbrancePenaltyWoundModifier = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7526,6 +7547,8 @@ namespace Chummer
             set
             {
                 int intNewEssenceDecimals = Math.Max(value, 2);
+                if (intNewEssenceDecimals == EssenceDecimals)
+                    return;
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     int intCurrentEssenceDecimals = EssenceDecimals;
@@ -7628,10 +7651,8 @@ namespace Chummer
                     if (_blnDoNotRoundEssenceInternally == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDoNotRoundEssenceInternally = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7653,10 +7674,8 @@ namespace Chummer
                     if (_blnEnableEnemyTracking == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnEnableEnemyTracking = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7690,10 +7709,8 @@ namespace Chummer
                     if (_blnEnemyKarmaQualityLimit == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnEnemyKarmaQualityLimit = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7728,10 +7745,8 @@ namespace Chummer
                     if (_blnEnforceCapacity == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnEnforceCapacity = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7753,10 +7768,8 @@ namespace Chummer
                     if (_blnRestrictRecoil == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnRestrictRecoil = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7778,10 +7791,8 @@ namespace Chummer
                     if (_blnUnrestrictedNuyen == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnUnrestrictedNuyen = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7815,10 +7826,8 @@ namespace Chummer
                     if (_blnAllowHigherStackedFoci == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowHigherStackedFoci = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7840,10 +7849,8 @@ namespace Chummer
                     if (_blnAllowEditPartOfBaseWeapon == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowEditPartOfBaseWeapon = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7865,10 +7872,8 @@ namespace Chummer
                     if (_blnStrictSkillGroupsInCreateMode == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnStrictSkillGroupsInCreateMode = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7902,10 +7907,8 @@ namespace Chummer
                     if (_blnAllowPointBuySpecializationsOnKarmaSkills == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowPointBuySpecializationsOnKarmaSkills = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7940,10 +7943,8 @@ namespace Chummer
                     if (_blnExtendAnyDetectionSpell == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnExtendAnyDetectionSpell = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7965,10 +7966,8 @@ namespace Chummer
                     if (_blnDontUseCyberlimbCalculation == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDontUseCyberlimbCalculation = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -7990,10 +7989,8 @@ namespace Chummer
                     if (_blnAlternateMetatypeAttributeKarma == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAlternateMetatypeAttributeKarma = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8015,10 +8012,8 @@ namespace Chummer
                     if (_blnCompensateSkillGroupKarmaDifference == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnCompensateSkillGroupKarmaDifference = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8052,10 +8047,8 @@ namespace Chummer
                     if (_blnAllowObsolescentUpgrade == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowObsolescentUpgrade = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8077,10 +8070,8 @@ namespace Chummer
                     if (_blnAllowBiowareSuites == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowBiowareSuites = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8102,10 +8093,8 @@ namespace Chummer
                     if (_blnFreeSpiritPowerPointsMAG == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnFreeSpiritPowerPointsMAG = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8139,10 +8128,8 @@ namespace Chummer
                     if (_blnUnclampAttributeMinimum == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnUnclampAttributeMinimum = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8164,10 +8151,8 @@ namespace Chummer
                     if (_blnDroneMods == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDroneMods = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8201,10 +8186,8 @@ namespace Chummer
                     if (_blnDroneModsMaximumPilot == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDroneModsMaximumPilot = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8307,15 +8290,17 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (_intMaxSkillRating == value)
+                    if (Interlocked.Exchange(ref _intMaxSkillRating, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (MaxSkillRatingCreate > value)
                     {
-                        if (MaxSkillRatingCreate > value)
-                            MaxSkillRatingCreate = value;
-                        if (Interlocked.Exchange(ref _intMaxSkillRating, value) != value)
+                        if (Interlocked.Exchange(ref _intMaxSkillRatingCreate, value) != value)
+                            this.OnMultiplePropertyChanged(nameof(MaxSkillRating), nameof(MaxSkillRatingCreate));
+                        else
                             OnPropertyChanged();
                     }
+                    else
+                        OnPropertyChanged();
                 }
             }
         }
@@ -8346,15 +8331,17 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (_intMaxKnowledgeSkillRating == value)
+                    if (Interlocked.Exchange(ref _intMaxKnowledgeSkillRating, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (MaxKnowledgeSkillRatingCreate > value)
                     {
-                        if (MaxKnowledgeSkillRatingCreate > value)
-                            MaxKnowledgeSkillRatingCreate = value;
-                        if (Interlocked.Exchange(ref _intMaxKnowledgeSkillRating, value) != value)
+                        if (Interlocked.Exchange(ref _intMaxKnowledgeSkillRatingCreate, value) != value)
+                            this.OnMultiplePropertyChanged(nameof(MaxKnowledgeSkillRating), nameof(MaxKnowledgeSkillRatingCreate));
+                        else
                             OnPropertyChanged();
                     }
+                    else
+                        OnPropertyChanged();
                 }
             }
         }
@@ -8389,10 +8376,8 @@ namespace Chummer
                     if (_blnAutomaticBackstory == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAutomaticBackstory = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8427,10 +8412,8 @@ namespace Chummer
                     if (_blnUseCalculatedPublicAwareness == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnUseCalculatedPublicAwareness = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8465,10 +8448,8 @@ namespace Chummer
                     if (_blnFreeMartialArtSpecialization == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnFreeMartialArtSpecialization = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8489,11 +8470,28 @@ namespace Chummer
                 {
                     if (_blnPrioritySpellsAsAdeptPowers == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (value)
                     {
-                        _blnPrioritySpellsAsAdeptPowers = value;
-                        if (value)
-                            MysAdeptSecondMAGAttribute = false;
+                        bool blnTemp = false;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _blnPrioritySpellsAsAdeptPowers = true;
+                            if (MysAdeptSecondMAGAttribute)
+                            {
+                                _blnMysAdeptSecondMAGAttribute = false;
+                                blnTemp = true;
+                            }
+                        }
+
+                        if (blnTemp)
+                            this.OnMultiplePropertyChanged(nameof(PrioritySpellsAsAdeptPowers), nameof(MysAdeptSecondMAGAttribute));
+                        else
+                            OnPropertyChanged();
+                    }
+                    else
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnPrioritySpellsAsAdeptPowers = false;
                         OnPropertyChanged();
                     }
                 }
@@ -8526,10 +8524,8 @@ namespace Chummer
                     if (_blnReverseAttributePriorityOrder == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnReverseAttributePriorityOrder = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8551,10 +8547,8 @@ namespace Chummer
                     if (_blnIncreasedImprovedAbilityMultiplier == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnIncreasedImprovedAbilityMultiplier = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8588,10 +8582,8 @@ namespace Chummer
                     if (_blnAllowFreeGrids == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowFreeGrids = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8613,10 +8605,8 @@ namespace Chummer
                     if (_blnAllowTechnomancerSchooling == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAllowTechnomancerSchooling = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -8638,12 +8628,17 @@ namespace Chummer
                     if (_blnCyberlimbAttributeBonusCapOverride == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnCyberlimbAttributeBonusCapOverride = value;
-                        if (!value)
-                            CyberlimbAttributeBonusCap = 4;
-                        OnPropertyChanged();
+
+                    if (!value)
+                    {
+                        if (Interlocked.Exchange(ref _intCyberlimbAttributeBonusCap, 4) != 4)
+                            this.OnMultiplePropertyChanged(nameof(CyberlimbAttributeBonusCapOverride), nameof(CyberlimbAttributeBonusCap));
+                        else
+                            OnPropertyChanged();
                     }
+                    else
+                        OnPropertyChanged();
                 }
             }
         }
@@ -10351,10 +10346,8 @@ namespace Chummer
                     if (_decKarmaMAGInitiationGroupPercent == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decKarmaMAGInitiationGroupPercent = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -10376,10 +10369,8 @@ namespace Chummer
                     if (_decKarmaRESInitiationGroupPercent == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decKarmaRESInitiationGroupPercent = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -10401,10 +10392,8 @@ namespace Chummer
                     if (_decKarmaMAGInitiationOrdealPercent == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decKarmaMAGInitiationOrdealPercent = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -10426,10 +10415,8 @@ namespace Chummer
                     if (_decKarmaRESInitiationOrdealPercent == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decKarmaRESInitiationOrdealPercent = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -10451,10 +10438,8 @@ namespace Chummer
                     if (_decKarmaMAGInitiationSchoolingPercent == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decKarmaMAGInitiationSchoolingPercent = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -10476,10 +10461,8 @@ namespace Chummer
                     if (_decKarmaRESInitiationSchoolingPercent == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _decKarmaRESInitiationSchoolingPercent = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }

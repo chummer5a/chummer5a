@@ -8516,13 +8516,20 @@ namespace Chummer
         protected async Task AddSpirit(CancellationToken token = default)
         {
             // The number of bound Spirits cannot exceed the character's CHA.
-            if (!CharacterObject.IgnoreRules && await CharacterObject.Spirits.CountAsync(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered, token).ConfigureAwait(false) >= CharacterObject.BoundSpiritLimit)
+            if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false) && await CharacterObject.Spirits
+                    .CountAsync(
+                        async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit &&
+                                   x.Bound && !x.Fettered, token).ConfigureAwait(false) >=
+                CharacterObject.BoundSpiritLimit)
             {
                 Program.ShowScrollableMessageBox(
                     this,
-                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token).ConfigureAwait(false),
-                                  CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
-                    await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token).ConfigureAwait(false),
+                    string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token)
+                            .ConfigureAwait(false),
+                        CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
+                    await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token)
+                        .ConfigureAwait(false),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -8530,7 +8537,7 @@ namespace Chummer
             Spirit objSpirit = new Spirit(CharacterObject)
             {
                 EntityType = SpiritType.Spirit,
-                Force = CharacterObject.MaxSpiritForce
+                Force = await CharacterObject.GetMaxSpiritForceAsync(token).ConfigureAwait(false)
             };
             await CharacterObject.Spirits.AddAsync(objSpirit, token: token).ConfigureAwait(false);
             await RequestCharacterUpdate(token).ConfigureAwait(false);
@@ -8540,17 +8547,22 @@ namespace Chummer
         protected async Task AddSprite(CancellationToken token = default)
         {
             // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
-            if (!CharacterObject.IgnoreRules &&
-                await CharacterObject.Spirits.CountAsync(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered, token).ConfigureAwait(false) >=
+            if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
+                await CharacterObject.Spirits
+                    .CountAsync(
+                        async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite &&
+                                   x.Bound && !x.Fettered, token).ConfigureAwait(false) >=
                 CharacterObject.RegisteredSpriteLimit)
             {
                 Program.ShowScrollableMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token).ConfigureAwait(false),
-                                  CharacterObject.Settings.RegisteredSpriteExpression,
-                                  CharacterObject.RegisteredSpriteLimit),
-                    await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token)
+                            .ConfigureAwait(false),
+                        CharacterObject.Settings.RegisteredSpriteExpression,
+                        CharacterObject.RegisteredSpriteLimit),
+                    await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token)
+                        .ConfigureAwait(false),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -8558,7 +8570,7 @@ namespace Chummer
             Spirit objSprite = new Spirit(CharacterObject)
             {
                 EntityType = SpiritType.Sprite,
-                Force = CharacterObject.MaxSpriteLevel
+                Force = await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false)
             };
             await CharacterObject.Spirits.AddAsync(objSprite, token: token).ConfigureAwait(false);
             await RequestCharacterUpdate(token).ConfigureAwait(false);
@@ -8572,10 +8584,16 @@ namespace Chummer
                 if (!(sender is SpiritControl objSender))
                     return;
                 Spirit objSpirit = objSender.SpiritObject;
-                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(GenericToken).ConfigureAwait(false) ==
+                                   SpiritType.Spirit;
+                if (!await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager
+                                .GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite",
+                                    token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                     return;
-                objSpirit.Fettered = false; // Fettered spirits consume MAG.
+                await objSpirit.SetFetteredAsync(false, GenericToken)
+                    .ConfigureAwait(false); // Fettered spirits consume MAG.
                 await CharacterObject.Spirits.RemoveAsync(objSpirit, token: GenericToken).ConfigureAwait(false);
                 await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
                 await SetDirty(true, GenericToken).ConfigureAwait(false);

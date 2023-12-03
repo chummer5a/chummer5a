@@ -2627,23 +2627,23 @@ namespace Chummer.Backend.Equipment
                         _lstIncludeInPairBonus.Add(value);
                         _lstIncludeInWirelessPairBonus.Remove(strOldValue);
                         _lstIncludeInWirelessPairBonus.Add(value);
+                    }
 
-                        if (_objParent?.IsLimb != true
-                            || _objParent.Parent?.InheritAttributes == false || _objParent.ParentVehicle != null
-                            || _objCharacter.Settings.DontUseCyberlimbCalculation
-                            || _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
-                            return;
-                        // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether or not we use cyberleg movement
-                        foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
-                                 s_AttributeAffectingCyberwares)
+                    if (_objParent?.IsLimb != true
+                        || _objParent.Parent?.InheritAttributes == false || _objParent.ParentVehicle != null
+                        || _objCharacter.Settings.DontUseCyberlimbCalculation
+                        || _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                        return;
+                    // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether or not we use cyberleg movement
+                    foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                             s_AttributeAffectingCyberwares)
+                    {
+                        if (kvpToCheck.Value.Contains(value) || kvpToCheck.Value.Contains(strOldValue))
                         {
-                            if (kvpToCheck.Value.Contains(value) || kvpToCheck.Value.Contains(strOldValue))
+                            foreach (CharacterAttrib objCharacterAttrib in
+                                     _objCharacter.GetAllAttributes(kvpToCheck.Key))
                             {
-                                foreach (CharacterAttrib objCharacterAttrib in
-                                         _objCharacter.GetAllAttributes(kvpToCheck.Key))
-                                {
-                                    objCharacterAttrib?.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
+                                objCharacterAttrib?.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                             }
                         }
                     }
@@ -4346,6 +4346,14 @@ namespace Chummer.Backend.Equipment
 
         private void DoPropertyChanges(bool blnDoRating, bool blnDoGrade)
         {
+            using (LockObject.EnterReadLock())
+            {
+                // Do not do property changes if we're not directly equipped to a character
+                if (_intProcessPropertyChanges == 0
+                    || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
+                    return;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 // Do not do property changes if we're not directly equipped to a character
@@ -4905,18 +4913,21 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decExtraESSAdditiveMultiplier == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (_decExtraESSAdditiveMultiplier != value)
-                    {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            _decExtraESSAdditiveMultiplier = value;
-                            if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
-                                ParentVehicle == null)
-                                _objCharacter.OnPropertyChanged(EssencePropertyName);
-                        }
-                    }
+                    if (_decExtraESSAdditiveMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _decExtraESSAdditiveMultiplier = value;
+                    if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
+                        ParentVehicle == null)
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }
         }
@@ -4933,94 +4944,102 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decExtraESSMultiplicativeMultiplier == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (_decExtraESSMultiplicativeMultiplier != value)
-                    {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            _decExtraESSMultiplicativeMultiplier = value;
-                            if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
-                                ParentVehicle == null)
-                                _objCharacter.OnPropertyChanged(EssencePropertyName);
-                        }
-                    }
+                    if (_decExtraESSMultiplicativeMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _decExtraESSMultiplicativeMultiplier = value;
+                    if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
+                        ParentVehicle == null)
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }
         }
 
         public void SaveNonRetroactiveEssenceModifiers()
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("forcegrade")?.Value == "None")
+                    return;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("forcegrade")?.Value != "None")
+                if (this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("forcegrade")?.Value == "None")
+                    return;
+                using (LockObject.EnterWriteLock())
                 {
-                    using (LockObject.EnterWriteLock())
+                    _decExtraESSAdditiveMultiplier = 0;
+                    _decExtraESSMultiplicativeMultiplier = 1;
+                    switch (_eImprovementSource)
                     {
-                        _decExtraESSAdditiveMultiplier = 0;
-                        _decExtraESSMultiplicativeMultiplier = 1;
-                        switch (_eImprovementSource)
+                        // Apply the character's Cyberware Essence cost multiplier if applicable.
+                        case Improvement.ImprovementSource.Cyberware:
                         {
-                            // Apply the character's Cyberware Essence cost multiplier if applicable.
-                            case Improvement.ImprovementSource.Cyberware:
+                            List<Improvement> lstUsedImprovements =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
-                                List<Improvement> lstUsedImprovements =
-                                    ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                        Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
-                                if (lstUsedImprovements.Count != 0)
-                                {
-                                    decimal decMultiplier = 1;
-                                    decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                        (current, objImprovement) =>
-                                            current - (1m - objImprovement.Value
-                                                / 100m));
-                                    _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
-                                }
-
-                                List<Improvement> lstUsedImprovements2 =
-                                    ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                        Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
-                                if (lstUsedImprovements2.Count != 0)
-                                {
-                                    foreach (Improvement objImprovement in lstUsedImprovements2)
-                                    {
-                                        _decExtraESSMultiplicativeMultiplier *=
-                                            objImprovement.Value / 100m;
-                                    }
-                                }
-
-                                break;
+                                decimal decMultiplier = 1;
+                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value
+                                            / 100m));
+                                _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                             }
-                            // Apply the character's Bioware Essence cost multiplier if applicable.
-                            case Improvement.ImprovementSource.Bioware:
+
+                            List<Improvement> lstUsedImprovements2 =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
+                            if (lstUsedImprovements2.Count != 0)
                             {
-                                List<Improvement> lstUsedImprovements =
-                                    ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                        Improvement.ImprovementType.BiowareEssCostNonRetroactive);
-                                if (lstUsedImprovements.Count != 0)
+                                foreach (Improvement objImprovement in lstUsedImprovements2)
                                 {
-                                    decimal decMultiplier = 1;
-                                    decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                        (current, objImprovement) =>
-                                            current - (1m - objImprovement.Value
-                                                / 100m));
-                                    _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
+                                    _decExtraESSMultiplicativeMultiplier *=
+                                        objImprovement.Value / 100m;
                                 }
-
-                                List<Improvement> lstUsedImprovements2 =
-                                    ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                        Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
-                                if (lstUsedImprovements2.Count != 0)
-                                {
-                                    foreach (Improvement objImprovement in lstUsedImprovements2)
-                                    {
-                                        _decExtraESSMultiplicativeMultiplier *=
-                                            objImprovement.Value / 100m;
-                                    }
-                                }
-
-                                break;
                             }
+
+                            break;
+                        }
+                        // Apply the character's Bioware Essence cost multiplier if applicable.
+                        case Improvement.ImprovementSource.Bioware:
+                        {
+                            List<Improvement> lstUsedImprovements =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.BiowareEssCostNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
+                            {
+                                decimal decMultiplier = 1;
+                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value
+                                            / 100m));
+                                _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
+                            }
+
+                            List<Improvement> lstUsedImprovements2 =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
+                            if (lstUsedImprovements2.Count != 0)
+                            {
+                                foreach (Improvement objImprovement in lstUsedImprovements2)
+                                {
+                                    _decExtraESSMultiplicativeMultiplier *=
+                                        objImprovement.Value / 100m;
+                                }
+                            }
+
+                            break;
                         }
                     }
                 }
@@ -5029,101 +5048,116 @@ namespace Chummer.Backend.Equipment
 
         public async Task SaveNonRetroactiveEssenceModifiersAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                XPathNavigator objNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                if (objNode != null
+                    && (await objNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token)
+                        .ConfigureAwait(false))?.Value == "None")
+                {
+                    return;
+                }
+            }
+
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                if (objNode == null
-                    || (await objNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token)
-                        .ConfigureAwait(false))?.Value != "None")
+                if (objNode != null
+                    && (await objNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token)
+                        .ConfigureAwait(false))?.Value == "None")
                 {
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    return;
+                }
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decExtraESSAdditiveMultiplier = 0;
+                    _decExtraESSMultiplicativeMultiplier = 1;
+                    switch (_eImprovementSource)
                     {
-                        token.ThrowIfCancellationRequested();
-                        _decExtraESSAdditiveMultiplier = 0;
-                        _decExtraESSMultiplicativeMultiplier = 1;
-                        switch (_eImprovementSource)
+                        // Apply the character's Cyberware Essence cost multiplier if applicable.
+                        case Improvement.ImprovementSource.Cyberware:
                         {
-                            // Apply the character's Cyberware Essence cost multiplier if applicable.
-                            case Improvement.ImprovementSource.Cyberware:
+                            List<Improvement> lstUsedImprovements =
+                                await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                        Improvement.ImprovementType
+                                            .CyberwareEssCostNonRetroactive,
+                                        token: token)
+                                    .ConfigureAwait(false);
+                            if (lstUsedImprovements.Count != 0)
                             {
-                                List<Improvement> lstUsedImprovements =
-                                    await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                            Improvement.ImprovementType
-                                                .CyberwareEssCostNonRetroactive,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstUsedImprovements.Count != 0)
-                                {
-                                    decimal decMultiplier = 1;
-                                    decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                        (current, objImprovement) =>
-                                            current - (1m - objImprovement.Value
-                                                / 100m));
-                                    _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
-                                }
-
-                                List<Improvement> lstUsedImprovements2 =
-                                    await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                            Improvement.ImprovementType
-                                                .CyberwareTotalEssMultiplierNonRetroactive,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstUsedImprovements2.Count != 0)
-                                {
-                                    foreach (Improvement objImprovement in lstUsedImprovements2)
-                                    {
-                                        _decExtraESSMultiplicativeMultiplier *=
-                                            objImprovement.Value / 100m;
-                                    }
-                                }
-
-                                break;
+                                decimal decMultiplier = 1;
+                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value
+                                            / 100m));
+                                _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                             }
-                            // Apply the character's Bioware Essence cost multiplier if applicable.
-                            case Improvement.ImprovementSource.Bioware:
+
+                            List<Improvement> lstUsedImprovements2 =
+                                await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                        Improvement.ImprovementType
+                                            .CyberwareTotalEssMultiplierNonRetroactive,
+                                        token: token)
+                                    .ConfigureAwait(false);
+                            if (lstUsedImprovements2.Count != 0)
                             {
-                                List<Improvement> lstUsedImprovements =
-                                    await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                            Improvement.ImprovementType
-                                                .BiowareEssCostNonRetroactive,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstUsedImprovements.Count != 0)
+                                foreach (Improvement objImprovement in lstUsedImprovements2)
                                 {
-                                    decimal decMultiplier = 1;
-                                    decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                        (current, objImprovement) =>
-                                            current - (1m - objImprovement.Value
-                                                / 100m));
-                                    _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
+                                    _decExtraESSMultiplicativeMultiplier *=
+                                        objImprovement.Value / 100m;
                                 }
-
-                                List<Improvement> lstUsedImprovements2 =
-                                    await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                            Improvement.ImprovementType
-                                                .BiowareTotalEssMultiplierNonRetroactive,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstUsedImprovements2.Count != 0)
-                                {
-                                    foreach (Improvement objImprovement in lstUsedImprovements2)
-                                    {
-                                        _decExtraESSMultiplicativeMultiplier *=
-                                            objImprovement.Value / 100m;
-                                    }
-                                }
-
-                                break;
                             }
+
+                            break;
+                        }
+                        // Apply the character's Bioware Essence cost multiplier if applicable.
+                        case Improvement.ImprovementSource.Bioware:
+                        {
+                            List<Improvement> lstUsedImprovements =
+                                await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                        Improvement.ImprovementType
+                                            .BiowareEssCostNonRetroactive,
+                                        token: token)
+                                    .ConfigureAwait(false);
+                            if (lstUsedImprovements.Count != 0)
+                            {
+                                decimal decMultiplier = 1;
+                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value
+                                            / 100m));
+                                _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
+                            }
+
+                            List<Improvement> lstUsedImprovements2 =
+                                await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                        Improvement.ImprovementType
+                                            .BiowareTotalEssMultiplierNonRetroactive,
+                                        token: token)
+                                    .ConfigureAwait(false);
+                            if (lstUsedImprovements2.Count != 0)
+                            {
+                                foreach (Improvement objImprovement in lstUsedImprovements2)
+                                {
+                                    _decExtraESSMultiplicativeMultiplier *=
+                                        objImprovement.Value / 100m;
+                                }
+                            }
+
+                            break;
                         }
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -5286,12 +5320,10 @@ namespace Chummer.Backend.Equipment
                     if (blnOldValue == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAddToParentESS = value;
-                        if ((Parent == null || AddToParentESS || blnOldValue) &&
-                            string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                            _objCharacter.OnPropertyChanged(EssencePropertyName);
-                    }
+                    if ((Parent == null || AddToParentESS || blnOldValue) &&
+                        string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }
         }
@@ -5314,12 +5346,10 @@ namespace Chummer.Backend.Equipment
                     if (blnOldValue == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnAddToParentCapacity = value;
-                        if ((Parent == null || AddToParentCapacity || blnOldValue) &&
-                            string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                            _objCharacter.OnPropertyChanged(Capacity);
-                    }
+                    if ((Parent == null || AddToParentCapacity || blnOldValue) &&
+                        string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.OnPropertyChanged(Capacity);
                 }
             }
         }
@@ -5339,19 +5369,17 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     bool blnOldEquipped = IsModularCurrentlyEquipped;
-                    if (Interlocked.Exchange(ref _objParent, value) != value)
+                    if (Interlocked.Exchange(ref _objParent, value) == value)
+                        return;
+                    ParentVehicle = value?.ParentVehicle;
+                    if (IsModularCurrentlyEquipped == blnOldEquipped)
+                        return;
+                    foreach (Gear objGear in GearChildren)
                     {
-                        ParentVehicle = value?.ParentVehicle;
-                        if (IsModularCurrentlyEquipped != blnOldEquipped)
-                        {
-                            foreach (Gear objGear in GearChildren)
-                            {
-                                if (blnOldEquipped)
-                                    objGear.ChangeEquippedStatus(false);
-                                else if (objGear.Equipped)
-                                    objGear.ChangeEquippedStatus(true);
-                            }
-                        }
+                        if (blnOldEquipped)
+                            objGear.ChangeEquippedStatus(false);
+                        else if (objGear.Equipped)
+                            objGear.ChangeEquippedStatus(true);
                     }
                 }
             }
@@ -5455,7 +5483,9 @@ namespace Chummer.Backend.Equipment
                     if (_blnPrototypeTranshuman != value)
                     {
                         string strOldEssencePropertyName = EssencePropertyName;
-                        _blnPrototypeTranshuman = value;
+                        using (LockObject.EnterWriteLock())
+                            _blnPrototypeTranshuman = value;
+
                         if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
                             ParentVehicle == null)
                             _objCharacter.OnMultiplePropertyChanged(strOldEssencePropertyName, EssencePropertyName);

@@ -691,8 +691,8 @@ namespace Chummer.Backend.Uniques
                     {
                         _xmlCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -994,9 +994,9 @@ namespace Chummer.Backend.Uniques
                                 objAttrib.PropertyChangedAsync += RefreshDrainValue;
                             }
                         }
-
-                        OnPropertyChanged();
                     }
+
+                    OnPropertyChanged();
                 }
             }
         }

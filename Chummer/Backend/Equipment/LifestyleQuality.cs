@@ -937,14 +937,18 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnPrint == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnPrint == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnPrint = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -982,14 +986,18 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _colNotes = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -1053,14 +1061,18 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnFree == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFree == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnFree = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -1075,6 +1087,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnIsFreeGrid == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnIsFreeGrid == value)
@@ -1110,6 +1128,14 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (!value && !CanBeFreeByLifestyle)
+                        return;
+                    if (_blnUseLPCost == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (!value && !CanBeFreeByLifestyle)
@@ -1117,9 +1143,7 @@ namespace Chummer.Backend.Equipment
                     if (_blnUseLPCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnUseLPCost = value;
-                    }
                     OnPropertyChanged();
                 }
             }

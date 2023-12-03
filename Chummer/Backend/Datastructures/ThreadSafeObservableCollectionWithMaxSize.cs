@@ -89,6 +89,12 @@ namespace Chummer
 
         public override int Add(object value)
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (Count >= _intMaxSize)
+                    return -1;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
@@ -100,6 +106,12 @@ namespace Chummer
         /// <inheritdoc />
         public override void Add(T item)
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (Count >= _intMaxSize)
+                    return;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
@@ -127,6 +139,12 @@ namespace Chummer
         /// <inheritdoc />
         public override bool TryAdd(T item)
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (Count >= _intMaxSize)
+                    return false;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
