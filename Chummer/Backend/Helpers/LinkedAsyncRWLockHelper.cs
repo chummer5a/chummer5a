@@ -228,7 +228,7 @@ namespace Chummer
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
 #if LINKEDSEMAPHOREDEBUG
-            _objParentLinkedHelper.RemoveChild(this);
+            _objParentLinkedHelper?.RemoveChild(this);
 #else
             Interlocked.Exchange(ref _objParentLinkedHelper, null)?.RemoveChild();
 #endif
@@ -299,7 +299,7 @@ namespace Chummer
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
 #if LINKEDSEMAPHOREDEBUG
-            _objParentLinkedHelper.RemoveChild(this);
+            _objParentLinkedHelper?.RemoveChild(this);
 #else
             Interlocked.Exchange(ref _objParentLinkedHelper, null)?.RemoveChild();
 #endif
@@ -339,47 +339,64 @@ namespace Chummer
             }
         }
 
-        public void TakeReadLock(CancellationToken token = default)
+        public void TakeReadLock(bool blnSkipSemaphore, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long lngNumReaders = Interlocked.Increment(ref _lngNumReaders);
             // Negative = there's a writer lock that's waiting or active
             if (lngNumReaders < 0)
             {
-                // Use local for thread safety
-                DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
-                try
+                if (blnSkipSemaphore)
                 {
-                    objReaderSemaphore.SafeWait(token);
+                    // We aren't blocked because we are a re-entrant reader lock, so we should make sure we up the pending count as well
+                    Interlocked.Increment(ref _lngPendingCountForWriter);
                 }
-                catch
+                else
                 {
-                    Interlocked.Decrement(ref _lngNumReaders);
-                    throw;
+                    // Use local for thread safety
+                    DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
+                    try
+                    {
+                        objReaderSemaphore.SafeWait(token);
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _lngNumReaders);
+                        throw;
+                    }
+
+                    objReaderSemaphore.Release();
                 }
-                objReaderSemaphore.Release();
             }
         }
 
-        public async Task TakeReadLockAsync(CancellationToken token = default)
+        public async Task TakeReadLockAsync(bool blnSkipSemaphore, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long lngNumReaders = Interlocked.Increment(ref _lngNumReaders);
             // Negative = there's a writer lock that's waiting or active
             if (lngNumReaders < 0)
             {
-                // Use local for thread safety
-                DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
-                try
+                if (blnSkipSemaphore)
                 {
-                    await objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    // We aren't blocked because we are a re-entrant reader lock, so we should make sure we up the pending count as well
+                    Interlocked.Increment(ref _lngPendingCountForWriter);
                 }
-                catch
+                else
                 {
-                    Interlocked.Decrement(ref _lngNumReaders);
-                    throw;
+                    // Use local for thread safety
+                    DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
+                    try
+                    {
+                        await objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _lngNumReaders);
+                        throw;
+                    }
+                    objReaderSemaphore.Release();
                 }
-                objReaderSemaphore.Release();
             }
         }
 
@@ -434,240 +451,175 @@ namespace Chummer
             }
         }
 
-        public void TakeWriteLock(LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
+        public void TakeWriteLock(LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Stack<DebuggableSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+            Stack<Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>> stkUndo = s_objWriterLockHelperStackPool.Get();
             try
             {
                 // Use locals for thread safety
-                DebuggableSemaphoreSlim objLoopSemaphore;
-                LinkedAsyncRWLockHelper objLoopHelper = this;
+                DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
                 // First lock to prevent any more upgradeable read locks (also makes sure only one writer lock is queued at a time)
-                while (objLoopHelper != null && objLoopHelper != objTopMostHeldUReader &&
-                       objLoopHelper != objTopMostHeldWriter)
-                {
-                    token.ThrowIfCancellationRequested();
-                    objLoopSemaphore = objLoopHelper.UpgradeableReaderSemaphore;
-                    objLoopSemaphore.SafeWait(token);
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopHelper = objLoopHelper.ParentLinkedHelper;
-                }
+                objLoopSemaphore.SafeWait(token);
+                stkUndo.Push(new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(null, 0, objLoopSemaphore));
+                // Since we can only be re-entrant to an upgradeable reader or a writer, both of these will have the semaphore already set, so we don't need to go up the chain
 
                 token.ThrowIfCancellationRequested();
 
-                // Acquire the reader lock to lock out readers
-                objLoopHelper = this;
+                LinkedAsyncRWLockHelper objLoopHelper = this;
                 while (objLoopHelper != null && objLoopHelper != objTopMostHeldWriter)
                 {
+                    // Acquire the reader lock to lock out readers
                     token.ThrowIfCancellationRequested();
                     objLoopSemaphore = objLoopHelper.ReaderSemaphore;
                     objLoopSemaphore.SafeWait(token);
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopHelper = objLoopHelper.ParentLinkedHelper;
-                }
-
-                token.ThrowIfCancellationRequested();
-
-                // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
-                objLoopHelper = this;
-                Stack<Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>> stkUndo =
-                    s_objWriterLockHelperStackPool.Get();
-                try
-                {
-                    while (objLoopHelper != null && objLoopHelper != objTopMostHeldWriter)
+                    stkUndo.Push(
+                        new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(null, 0, objLoopSemaphore));
+                    token.ThrowIfCancellationRequested();
+                    // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
+                    long lngNumReaders = Interlocked.Add(ref objLoopHelper._lngNumReaders, -MaxReaderCount) +
+                                         MaxReaderCount;
+                    if (lngNumReaders != 0 &&
+                        Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter, lngNumReaders) != 0)
                     {
-                        token.ThrowIfCancellationRequested();
-                        long lngNumReaders = Interlocked.Add(ref objLoopHelper._lngNumReaders, -MaxReaderCount) +
-                                             MaxReaderCount;
-                        if (lngNumReaders != 0 &&
-                            Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter, lngNumReaders) != 0)
+                        // Wait for existing readers to exit
+                        objLoopSemaphore = objLoopHelper.PendingWriterSemaphore;
+                        try
                         {
-                            // Wait for existing readers to exit
-                            objLoopSemaphore = objLoopHelper.PendingWriterSemaphore;
-                            try
-                            {
-                                objLoopSemaphore.SafeWait(token);
-                            }
-                            catch
-                            {
-                                stkUndo.Push(new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper, lngNumReaders, null));
-                                throw;
-                            }
-                            stkUndo.Push(
-                                new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper,
-                                    lngNumReaders, objLoopSemaphore));
+                            objLoopSemaphore.SafeWait(token);
                         }
-                        else
+                        catch
+                        {
                             stkUndo.Push(
                                 new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper,
                                     lngNumReaders, null));
-
-                        objLoopHelper = objLoopHelper.ParentLinkedHelper;
-                    }
-                }
-                catch
-                {
-                    while (stkUndo.Count > 0)
-                    {
-                        long lngNumReaders;
-                        (objLoopHelper, lngNumReaders, objLoopSemaphore) = stkUndo.Pop();
-                        try
-                        {
-                            objLoopSemaphore?.Release();
-                            Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter, -lngNumReaders);
-                        }
-                        catch (SemaphoreFullException)
-                        {
-                            // swallow this
-                            objLoopHelper._lngPendingCountForWriter = 0;
+                            throw;
                         }
 
-                        Interlocked.Add(ref objLoopHelper._lngNumReaders, MaxReaderCount);
+                        stkUndo.Push(new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper,
+                            lngNumReaders, objLoopSemaphore));
                     }
+                    else
+                        stkUndo.Push(
+                            new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper,
+                                lngNumReaders, null));
 
-                    throw;
-                }
-                finally
-                {
-                    s_objWriterLockHelperStackPool.Return(ref stkUndo);
+                    objLoopHelper = objLoopHelper.ParentLinkedHelper;
                 }
             }
             catch
             {
-                while (stkLockedSemaphores.Count > 0)
+                while (stkUndo.Count > 0)
                 {
+                    (LinkedAsyncRWLockHelper objLoopHelper, long lngNumReaders, DebuggableSemaphoreSlim objLoopSemaphore) = stkUndo.Pop();
                     try
                     {
-                        stkLockedSemaphores.Pop().Release();
+                        objLoopSemaphore?.Release();
+                        if (objLoopHelper != null)
+                            Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter, -lngNumReaders);
                     }
                     catch (SemaphoreFullException)
                     {
                         // swallow this
+                        if (objLoopHelper != null)
+                            objLoopHelper._lngPendingCountForWriter = 0;
                     }
+
+                    if (objLoopHelper != null)
+                        Interlocked.Add(ref objLoopHelper._lngNumReaders, MaxReaderCount);
                 }
 
                 throw;
             }
             finally
             {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                s_objWriterLockHelperStackPool.Return(ref stkUndo);
             }
         }
 
-        public async Task TakeWriteLockAsync(LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
+        public async Task TakeWriteLockAsync(LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Stack<DebuggableSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
+            Stack<Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>> stkUndo = s_objWriterLockHelperStackPool.Get();
             try
             {
                 // Use locals for thread safety
-                DebuggableSemaphoreSlim objLoopSemaphore;
-                LinkedAsyncRWLockHelper objLoopHelper = this;
+                DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
                 // First lock to prevent any more upgradeable read locks (also makes sure only one writer lock is queued at a time)
-                while (objLoopHelper != null && objLoopHelper != objTopMostHeldUReader &&
-                       objLoopHelper != objTopMostHeldWriter)
-                {
-                    token.ThrowIfCancellationRequested();
-                    objLoopSemaphore = objLoopHelper.UpgradeableReaderSemaphore;
-                    await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopHelper = objLoopHelper.ParentLinkedHelper;
-                }
+                await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
+                stkUndo.Push(new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(null, 0, objLoopSemaphore));
+                // Since we can only be re-entrant to an upgradeable reader or a writer, both of these will have the semaphore already set, so we don't need to go up the chain
 
                 token.ThrowIfCancellationRequested();
 
-                // Acquire the reader lock to lock out readers
-                objLoopHelper = this;
+                LinkedAsyncRWLockHelper objLoopHelper = this;
                 while (objLoopHelper != null && objLoopHelper != objTopMostHeldWriter)
                 {
+                    // Acquire the reader lock to lock out readers
                     token.ThrowIfCancellationRequested();
                     objLoopSemaphore = objLoopHelper.ReaderSemaphore;
                     await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
-                    stkLockedSemaphores.Push(objLoopSemaphore);
-                    objLoopHelper = objLoopHelper.ParentLinkedHelper;
-                }
-
-                token.ThrowIfCancellationRequested();
-
-                // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
-                objLoopHelper = this;
-                Stack<Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>> stkUndo = s_objWriterLockHelperStackPool.Get();
-                try
-                {
-                    while (objLoopHelper != null && objLoopHelper != objTopMostHeldWriter)
+                    stkUndo.Push(
+                        new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(null, 0, objLoopSemaphore));
+                    token.ThrowIfCancellationRequested();
+                    // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
+                    long lngNumReaders = Interlocked.Add(ref objLoopHelper._lngNumReaders, -MaxReaderCount) +
+                                         MaxReaderCount;
+                    if (lngNumReaders != 0 &&
+                        Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter, lngNumReaders) != 0)
                     {
-                        token.ThrowIfCancellationRequested();
-                        long lngNumReaders = Interlocked.Add(ref objLoopHelper._lngNumReaders, -MaxReaderCount) +
-                                             MaxReaderCount;
-                        if (lngNumReaders != 0 &&
-                            Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter, lngNumReaders) != 0)
-                        {
-                            // Wait for existing readers to exit
-                            objLoopSemaphore = objLoopHelper.PendingWriterSemaphore;
-                            try
-                            {
-                                await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
-                            }
-                            catch
-                            {
-                                stkUndo.Push(new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper, lngNumReaders, null));
-                                throw;
-                            }
-                            stkUndo.Push(new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper, lngNumReaders, objLoopSemaphore));
-                        }
-                        else
-                            stkUndo.Push(new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper, lngNumReaders, null));
-
-                        objLoopHelper = objLoopHelper.ParentLinkedHelper;
-                    }
-                }
-                catch
-                {
-                    while (stkUndo.Count > 0)
-                    {
-                        long lngNumReaders;
-                        (objLoopHelper, lngNumReaders, objLoopSemaphore) = stkUndo.Pop();
+                        // Wait for existing readers to exit
+                        objLoopSemaphore = objLoopHelper.PendingWriterSemaphore;
                         try
                         {
-                            objLoopSemaphore?.Release();
-                            Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter, -lngNumReaders);
+                            await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                         }
-                        catch (SemaphoreFullException)
+                        catch
                         {
-                            // swallow this
-                            objLoopHelper._lngPendingCountForWriter = 0;
+                            stkUndo.Push(
+                                new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper,
+                                    lngNumReaders, null));
+                            throw;
                         }
 
-                        Interlocked.Add(ref objLoopHelper._lngNumReaders, MaxReaderCount);
+                        stkUndo.Push(new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper,
+                            lngNumReaders, objLoopSemaphore));
                     }
+                    else
+                        stkUndo.Push(
+                            new Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>(objLoopHelper,
+                                lngNumReaders, null));
 
-                    throw;
-                }
-                finally
-                {
-                    s_objWriterLockHelperStackPool.Return(ref stkUndo);
+                    objLoopHelper = objLoopHelper.ParentLinkedHelper;
                 }
             }
             catch
             {
-                while (stkLockedSemaphores.Count > 0)
+                while (stkUndo.Count > 0)
                 {
+                    (LinkedAsyncRWLockHelper objLoopHelper, long lngNumReaders, DebuggableSemaphoreSlim objLoopSemaphore) = stkUndo.Pop();
                     try
                     {
-                        stkLockedSemaphores.Pop().Release();
+                        objLoopSemaphore?.Release();
+                        if (objLoopHelper != null)
+                            Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter, -lngNumReaders);
                     }
                     catch (SemaphoreFullException)
                     {
                         // swallow this
+                        if (objLoopHelper != null)
+                            objLoopHelper._lngPendingCountForWriter = 0;
                     }
+
+                    if (objLoopHelper != null)
+                        Interlocked.Add(ref objLoopHelper._lngNumReaders, MaxReaderCount);
                 }
 
                 throw;
             }
             finally
             {
-                s_objSemaphoreStackPool.Return(ref stkLockedSemaphores);
+                s_objWriterLockHelperStackPool.Return(ref stkUndo);
             }
         }
 
@@ -804,7 +756,7 @@ namespace Chummer
 
         public void ReleaseWriteLock(LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter)
         {
-            // There are no upgradeable readers into which we have re-entered, so don't go up the chain
+            // There are upgradeable readers into which we have re-entered, so go up the chain
             if (objTopMostHeldUReader != null)
             {
                 Stack<LinkedAsyncRWLockHelper> stkLockedUReaderHelpers = s_objHelperStackPool.Get();

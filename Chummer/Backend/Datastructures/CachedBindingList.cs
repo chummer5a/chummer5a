@@ -30,11 +30,9 @@ namespace Chummer
         public AsyncFriendlyReaderWriterLock BindingListLock { get; set; }
 
         [NonSerialized]
-        private PropertyDescriptorCollection itemTypeProperties;
+        private readonly PropertyDescriptorCollection itemTypeProperties = TypeDescriptor.GetProperties(typeof(T));
         [NonSerialized]
         private PropertyChangedAsyncEventHandler propertyChangedAsyncEventHandler;
-        [NonSerialized]
-        private int _intLastAsyncChangeIndex = -1;
 
 #pragma warning disable CA1070
         /// <summary>
@@ -688,7 +686,7 @@ namespace Chummer
         private async Task Child_PropertyChangedAsync(object sender, PropertyChangedEventArgs e,
             CancellationToken token = default)
         {
-            IDisposable objReadLocker = BindingListLock != null
+            IDisposable objLocker = BindingListLock != null
                 ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
                 : null;
             try
@@ -699,93 +697,60 @@ namespace Chummer
             }
             finally
             {
-                objReadLocker?.Dispose();
+                objLocker?.Dispose();
             }
 
-            if (sender != null && e != null && !string.IsNullOrEmpty(e.PropertyName))
+            string strPropertyName = e?.PropertyName;
+            if (string.IsNullOrEmpty(strPropertyName) || !(sender is T obj))
             {
-                T obj;
-                try
-                {
-                    obj = (T)sender;
-                }
-                catch (InvalidCastException)
-                {
-                    await ResetBindingsAsync(token).ConfigureAwait(false);
-                    return;
-                }
-
-                IDisposable objLocker = BindingListLock != null
-                    ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    int num = _intLastAsyncChangeIndex;
-                    if (num >= 0 && num < await GetCountAsync(token).ConfigureAwait(false) &&
-                        (await GetValueAtAsync(num, token).ConfigureAwait(false)).Equals(obj))
-                    {
-                        if (itemTypeProperties == null)
-                            itemTypeProperties = TypeDescriptor.GetProperties(typeof(T));
-                        PropertyDescriptor propDesc = itemTypeProperties.Find(e.PropertyName, true);
-                        await OnListChangedAsync(new ListChangedEventArgs(ListChangedType.ItemChanged, num, propDesc),
-                            token).ConfigureAwait(false);
-                        return;
-                    }
-                }
-                finally
-                {
-                    objLocker?.Dispose();
-                }
-
-                IAsyncDisposable objLocker2 = BindingListLock != null
-                    ? await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    int num = _intLastAsyncChangeIndex;
-                    if (num < 0 || num >= await GetCountAsync(token).ConfigureAwait(false) ||
-                        !(await GetValueAtAsync(num, token).ConfigureAwait(false)).Equals(obj))
-                    {
-                        num = await IndexOfAsync(obj, token).ConfigureAwait(false);
-                        IAsyncDisposable objLocker3 = BindingListLock != null
-                            ? await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false)
-                            : null;
-                        try
-                        {
-                            _intLastAsyncChangeIndex = num;
-                        }
-                        finally
-                        {
-                            if (objLocker3 != null)
-                                await objLocker3.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-
-                    if (num == -1)
-                    {
-                        await UnhookAsyncPropertyChangedAsync(obj, token).ConfigureAwait(false);
-                        await ResetBindingsAsync(token).ConfigureAwait(false);
-                        return;
-                    }
-
-                    if (itemTypeProperties == null)
-                        itemTypeProperties = TypeDescriptor.GetProperties(typeof(T));
-                    PropertyDescriptor propDesc = itemTypeProperties.Find(e.PropertyName, true);
-                    await OnListChangedAsync(new ListChangedEventArgs(ListChangedType.ItemChanged, num, propDesc),
-                        token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-
+                await ResetBindingsAsync(token).ConfigureAwait(false);
                 return;
             }
 
-            await ResetBindingsAsync(token).ConfigureAwait(false);
+            PropertyDescriptor propDesc = itemTypeProperties.Find(strPropertyName, true);
+
+            objLocker = BindingListLock != null
+                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
+                : null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int num = await IndexOfAsync(obj, token).ConfigureAwait(false);
+                if (num != -1)
+                {
+                    await OnListChangedAsync(new ListChangedEventArgs(ListChangedType.ItemChanged, num, propDesc),
+                        token).ConfigureAwait(false);
+                    return;
+                }
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+
+            IAsyncDisposable objLocker2 = BindingListLock != null
+                ? await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
+                : null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int num = await IndexOfAsync(obj, token).ConfigureAwait(false);
+                if (num != -1)
+                {
+                    await OnListChangedAsync(new ListChangedEventArgs(ListChangedType.ItemChanged, num, propDesc),
+                        token).ConfigureAwait(false);
+                }
+                else
+                {
+                    await UnhookAsyncPropertyChangedAsync(obj, token).ConfigureAwait(false);
+                    await ResetBindingsAsync(token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objLocker2 != null)
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private Task FireListChangedAsync(ListChangedType type, int index, CancellationToken token = default)
