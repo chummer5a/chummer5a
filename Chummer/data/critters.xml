@@ -27742,5 +27742,82 @@
          <page>134</page>
       </metatype>
       <!-- End Region Hard Targets -->
+      <!-- Region Better Than Bad -->
+     <metatype>
+         <id>1e417ac7-9a31-43f9-baee-4352ece89450</id>
+         <name>Gun Bunny</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>5</bodmin>
+         <bodmax>5</bodmax>
+         <bodaug>5</bodaug>
+         <agimin>7</agimin>
+         <agimax>7</agimax>
+         <agiaug>7</agiaug>
+         <reamin>6</reamin>
+         <reamax>6</reamax>
+         <reaaug>6</reaaug>
+         <strmin>6</strmin>
+         <strmax>6</strmax>
+         <straug>6</straug>
+         <chamin>5</chamin>
+         <chamax>5</chamax>
+         <chaaug>5</chaaug>
+         <intmin>7</intmin>
+         <intmax>7</intmax>
+         <intaug>7</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>12</inimin>
+         <inimax>12</inimax>
+         <iniaug>12</iniaug>
+         <edgmin>9</edgmin>
+         <edgmax>9</edgmax>
+         <edgaug>9</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>14/0/0</walk>
+         <run>56/0/0</run>
+         <sprint>5/0/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power rating="6">Armor</power>
+             <power select="Low-Light Vision, Hearing">Enhanced Senses</power>
+             <power select="Horns: DV 9P, AP –4">Natural Weapon</power>
+             <power rating="4">Toughness</power>
+         </powers>
+       <qualities>
+            <positive>
+               <quality>Agile Defender</quality>
+            </positive>
+         </qualities>
+         <skills>
+            <skill rating="6">Gymnastics</skill>
+            <skill rating="8">Perception</skill>
+            <skill rating="7">Running</skill>
+            <skill rating="6">Sneaking</skill>
+            <skill rating="8">Unarmed Combat</skill>
+         </skills>
+         <source>BTB</source>
+         <page>100</page>
+      </metatype>
    </metatypes>
 </chummer>
