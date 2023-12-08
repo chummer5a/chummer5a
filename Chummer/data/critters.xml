@@ -27797,6 +27797,7 @@
             <enabletab>
                <name>critter</name>
             </enabletab>
+           <initiativepass>1</initiativepass>
          </bonus>
          <powers>
             <power rating="6">Armor</power>
@@ -27815,6 +27816,83 @@
             <skill rating="7">Running</skill>
             <skill rating="6">Sneaking</skill>
             <skill rating="8">Unarmed Combat</skill>
+         </skills>
+         <source>BTB</source>
+         <page>100</page>
+      </metatype>
+     <metatype>
+         <id>740df5ba-2472-4782-82ef-7343253ef745</id>
+         <name>African Zipper</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>9</agimin>
+         <agimax>9</agimax>
+         <agiaug>9</agiaug>
+         <reamin>7</reamin>
+         <reamax>7</reamax>
+         <reaaug>7</reaaug>
+         <strmin>3</strmin>
+         <strmax>3</strmax>
+         <straug>3</straug>
+         <chamin>5</chamin>
+         <chamax>5</chamax>
+         <chaaug>5</chaaug>
+         <intmin>7</intmin>
+         <intmax>7</intmax>
+         <intaug>7</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>14</inimin>
+         <inimax>14</inimax>
+         <iniaug>14</iniaug>
+         <edgmin>9</edgmin>
+         <edgmax>9</edgmax>
+         <edgaug>9</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>18/0/0</walk>
+         <run>72/0/0</run>
+         <sprint>10/0/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+           <initiativepass>2</initiativepass>
+         </bonus>
+         <powers>
+             <power select="Low-Light Vision, Hearing">Enhanced Senses</power>
+             <power>Movement</power>
+             <power select="Bite: DV 3P, AP –1">Natural Weapon</power>
+             <power rating="4">Fragile</power>
+         </powers>
+       <qualities>
+            <positive>
+               <quality>Agile Defender</quality>
+            </positive>
+         </qualities>
+         <skills>
+            <skill rating="8">Gymnastics</skill>
+            <skill rating="9">Perception</skill>
+            <skill rating="10">Running</skill>
+            <skill rating="4">Sneaking</skill>
+            <skill rating="4">Unarmed Combat</skill>
          </skills>
          <source>BTB</source>
          <page>100</page>
