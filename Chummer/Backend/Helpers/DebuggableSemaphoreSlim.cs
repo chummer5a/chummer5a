@@ -384,19 +384,19 @@ namespace Chummer
         /// <inheritdoc cref="SemaphoreSlim.Release()"/>
         public void Release()
         {
+            _objSemaphoreSlim.Release();
 #if SEMAPHOREDEBUG
             LastHolderStackTrace = string.Empty;
 #endif
-            _objSemaphoreSlim.Release();
         }
 
         /// <inheritdoc cref="SemaphoreSlim.Release(int)"/>
         public void Release(int releaseCount)
         {
+            _objSemaphoreSlim.Release(releaseCount);
 #if SEMAPHOREDEBUG
             LastHolderStackTrace = string.Empty;
 #endif
-            _objSemaphoreSlim.Release(releaseCount);
         }
 
         /// <inheritdoc />

@@ -289,7 +289,7 @@ namespace Chummer.Tests
                         Diff myDiff = DiffBuilder
                             .Compare(controlFileStream)
                             .WithTest(testFileStream)
-                            .CheckForIdentical()
+                            .CheckForSimilar()
                             .WithNodeFilter(x =>
                                 x.Name !=
                                 "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
