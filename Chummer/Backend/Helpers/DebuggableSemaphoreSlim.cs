@@ -17,7 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-// Uncomment this define to control whether or not stacktraces should be saved every time a semaphore is successfully acquired or disposed.
+// Uncomment this define to control whether stacktraces should be saved every time a semaphore is successfully acquired or disposed.
 #if DEBUG
 //#define SEMAPHOREDEBUG
 #endif
@@ -386,7 +386,7 @@ namespace Chummer
         {
             _objSemaphoreSlim.Release();
 #if SEMAPHOREDEBUG
-            LastHolderStackTrace = string.Empty;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 
@@ -395,7 +395,7 @@ namespace Chummer
         {
             _objSemaphoreSlim.Release(releaseCount);
 #if SEMAPHOREDEBUG
-            LastHolderStackTrace = string.Empty;
+            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 

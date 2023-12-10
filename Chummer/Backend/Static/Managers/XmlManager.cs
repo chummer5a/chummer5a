@@ -89,15 +89,8 @@ namespace Chummer
             public XmlDocument GetXmlContent(CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
-                while (true)
-                {
-                    int intLoadComplete;
-                    using (LockObject.EnterReadLock(token))
-                        intLoadComplete = _intInitialLoadComplete;
-                    if (intLoadComplete > 0)
-                        break;
+                while (_intInitialLoadComplete == 0)
                     Utils.SafeSleep(token);
-                }
                 using (LockObject.EnterReadLock(token))
                     return _xmlContent;
             }
@@ -108,19 +101,8 @@ namespace Chummer
             public async Task<XmlDocument> GetXmlContentAsync(CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
-                while (true)
-                {
-                    int intLoadComplete;
-                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        intLoadComplete = _intInitialLoadComplete;
-                    }
-
-                    if (intLoadComplete > 0)
-                        break;
+                while (_intInitialLoadComplete == 0)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                }
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
@@ -133,15 +115,17 @@ namespace Chummer
             /// </summary>
             public void SetXmlContent(XmlDocument objContent, CancellationToken token = default)
             {
+                token.ThrowIfCancellationRequested();
                 using (LockObject.EnterUpgradeableReadLock(token))
                 {
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
+                    _intInitialLoadComplete = 0;
                     using (LockObject.EnterWriteLock(token))
                     {
+                        Interlocked.Increment(ref _intInitialLoadComplete);
                         if (objContent != null)
                         {
-                            Interlocked.Increment(ref _intInitialLoadComplete);
                             using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                             {
                                 objContent.Save(objStream);
@@ -162,19 +146,21 @@ namespace Chummer
             /// </summary>
             public async Task SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
+                token.ThrowIfCancellationRequested();
                 IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
+                    _intInitialLoadComplete = 0;
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
+                        Interlocked.Increment(ref _intInitialLoadComplete);
                         if (objContent != null)
                         {
-                            Interlocked.Increment(ref _intInitialLoadComplete);
                             using (RecyclableMemoryStream objStream =
                                    new RecyclableMemoryStream(Utils.MemoryStreamManager))
                             {
@@ -205,15 +191,9 @@ namespace Chummer
             /// </summary>
             public XPathDocument GetXPathContent(CancellationToken token = default)
             {
-                while (true)
-                {
-                    int intLoadComplete;
-                    using (LockObject.EnterReadLock(token))
-                        intLoadComplete = _intInitialLoadComplete;
-                    if (intLoadComplete > 0)
-                        break;
+                token.ThrowIfCancellationRequested();
+                while (_intInitialLoadComplete == 0)
                     Utils.SafeSleep(token);
-                }
                 using (LockObject.EnterReadLock(token))
                     return _objXPathContent;
             }
@@ -224,19 +204,9 @@ namespace Chummer
             /// </summary>
             public async Task<XPathDocument> GetXPathContentAsync(CancellationToken token = default)
             {
-                while (true)
-                {
-                    int intLoadComplete;
-                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        intLoadComplete = _intInitialLoadComplete;
-                    }
-
-                    if (intLoadComplete > 0)
-                        break;
+                token.ThrowIfCancellationRequested();
+                while (_intInitialLoadComplete == 0)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                }
                 using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();

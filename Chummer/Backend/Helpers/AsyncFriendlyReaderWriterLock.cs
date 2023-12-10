@@ -88,10 +88,9 @@ namespace Chummer
         /// </summary>
         public IDisposable EnterWriteLock(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
-
-            token.ThrowIfCancellationRequested();
             (LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper objNextHelper,
                     LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, bool blnIsInReadLock) =
                 GetHelpers(token: token);
@@ -124,11 +123,11 @@ namespace Chummer
         public Task<IAsyncDisposable> EnterWriteLockAsync(CancellationToken token = default)
         {
             // This method is set up to return a Task because we need to make sure to manipulate AsyncLocals before the async engine is initialized
+            if (token.IsCancellationRequested)
+                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
             if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(
                     new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
-            if (token.IsCancellationRequested)
-                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
 
             LinkedAsyncRWLockHelper objCurrentHelper;
             LinkedAsyncRWLockHelper objNextHelper;
@@ -183,17 +182,9 @@ namespace Chummer
         /// </summary>
         public IDisposable EnterUpgradeableReadLock(CancellationToken token = default)
         {
-            if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
-#endif
-                return null;
-            }
-
             token.ThrowIfCancellationRequested();
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
             (LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper objNextHelper,
                     LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, bool blnIsInReadLock) =
                 GetHelpers(token: token);
@@ -226,18 +217,10 @@ namespace Chummer
         /// </summary>
         public Task<IAsyncDisposable> EnterUpgradeableReadLockAsync(CancellationToken token = default)
         {
-            if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
-#endif
-                return Task.FromResult<IAsyncDisposable>(null);
-            }
-
             if (token.IsCancellationRequested)
                 return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+            if (_intDisposedStatus != 0)
+                return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
 
             LinkedAsyncRWLockHelper objCurrentHelper;
             LinkedAsyncRWLockHelper objNextHelper;
@@ -454,6 +437,8 @@ namespace Chummer
 
             public void Dispose()
             {
+                if (_objReaderWriterLock._intDisposedStatus > 1)
+                    return;
                 if (!_blnOldIsInReadLock)
                 {
                     _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =

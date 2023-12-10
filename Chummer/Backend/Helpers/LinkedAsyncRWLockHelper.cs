@@ -17,14 +17,14 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-// Uncomment this define to control whether or not stacktraces should be saved every time a linked semaphore is successfully disposed.
+// Uncomment this define to control whether stacktraces should be saved every time a linked semaphore is successfully disposed.
 #if DEBUG
 //#define LINKEDSEMAPHOREDEBUG
 #endif
 
 using System;
 using System.Collections.Generic;
-#if LINKEDSEMAPHOREDEBUG
+#if DEBUG
 using System.Diagnostics;
 #endif
 using System.Threading;
@@ -342,6 +342,15 @@ namespace Chummer
         public void TakeReadLock(bool blnSkipSemaphore, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (_intDisposedStatus > 0)
+            {
+#if DEBUG
+                Debug.WriteLine(
+                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
+#endif
+                return;
+            }
             long lngNumReaders = Interlocked.Increment(ref _lngNumReaders);
             // Negative = there's a writer lock that's waiting or active
             if (lngNumReaders < 0)
@@ -373,6 +382,15 @@ namespace Chummer
         public async Task TakeReadLockAsync(bool blnSkipSemaphore, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (_intDisposedStatus > 0)
+            {
+#if DEBUG
+                Debug.WriteLine(
+                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
+#endif
+                return;
+            }
             long lngNumReaders = Interlocked.Increment(ref _lngNumReaders);
             // Negative = there's a writer lock that's waiting or active
             if (lngNumReaders < 0)
@@ -402,6 +420,8 @@ namespace Chummer
 
         public void ReleaseReadLock()
         {
+            if (_intDisposedStatus > 1)
+                return;
             long lngNumReaders = Interlocked.Decrement(ref _lngNumReaders);
             // A writer is pending, signal them that a reader lock has exited
             if (lngNumReaders < 0 && Interlocked.Decrement(ref _lngPendingCountForWriter) == 0)
@@ -438,6 +458,8 @@ namespace Chummer
 
         public void ReleaseUpgradeableReadLock()
         {
+            if (_intDisposedStatus > 1)
+                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             // Use locals for thread safety
             DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
             try
@@ -454,6 +476,8 @@ namespace Chummer
         public void TakeWriteLock(LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             Stack<Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>> stkUndo = s_objWriterLockHelperStackPool.Get();
             try
             {
@@ -540,6 +564,8 @@ namespace Chummer
         public async Task TakeWriteLockAsync(LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             Stack<Tuple<LinkedAsyncRWLockHelper, long, DebuggableSemaphoreSlim>> stkUndo = s_objWriterLockHelperStackPool.Get();
             try
             {
@@ -626,6 +652,8 @@ namespace Chummer
         public void TakeSingleWriteLock(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             Stack<DebuggableSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
             try
             {
@@ -689,6 +717,8 @@ namespace Chummer
         public async Task TakeSingleWriteLockAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (_intDisposedStatus != 0)
+                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             Stack<DebuggableSemaphoreSlim> stkLockedSemaphores = s_objSemaphoreStackPool.Get();
             try
             {
@@ -756,6 +786,9 @@ namespace Chummer
 
         public void ReleaseWriteLock(LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter)
         {
+            if (_intDisposedStatus > 1)
+                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+
             // There are upgradeable readers into which we have re-entered, so go up the chain
             if (objTopMostHeldUReader != null)
             {
