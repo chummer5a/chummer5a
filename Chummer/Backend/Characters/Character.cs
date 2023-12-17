@@ -784,46 +784,46 @@ namespace Chummer
                             switch (objAttribute.Abbrev)
                             {
                                 case "BOD":
-                                    objAttribute.PropertyChangedAsync -= RefreshBODDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshBODDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "AGI":
-                                    objAttribute.PropertyChangedAsync -= RefreshAGIDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshAGIDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "REA":
-                                    objAttribute.PropertyChangedAsync -= RefreshREADependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshREADependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "STR":
-                                    objAttribute.PropertyChangedAsync -= RefreshSTRDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshSTRDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "CHA":
-                                    objAttribute.PropertyChangedAsync -= RefreshCHADependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshCHADependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "INT":
-                                    objAttribute.PropertyChangedAsync -= RefreshINTDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshINTDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "LOG":
-                                    objAttribute.PropertyChangedAsync -= RefreshLOGDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshLOGDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "WIL":
-                                    objAttribute.PropertyChangedAsync -= RefreshWILDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshWILDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "EDG":
-                                    objAttribute.PropertyChangedAsync -= RefreshEDGDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshEDGDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "MAG":
-                                    objAttribute.PropertyChangedAsync -= RefreshMAGDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshMAGDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "MAGAdept":
-                                    objAttribute.PropertyChangedAsync -= RefreshMAGAdeptDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshMAGAdeptDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "RES":
-                                    objAttribute.PropertyChangedAsync -= RefreshRESDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshRESDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "DEP":
-                                    objAttribute.PropertyChangedAsync -= RefreshDEPDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshDEPDependentProperties, token).ConfigureAwait(false);
                                     break;
                                 case "ESS":
-                                    objAttribute.PropertyChangedAsync -= RefreshESSDependentProperties;
+                                    await objAttribute.RemovePropertyChangedAsync(RefreshESSDependentProperties, token).ConfigureAwait(false);
                                     break;
                             }
                         }
@@ -837,59 +837,59 @@ namespace Chummer
                             switch (strAbbrev)
                             {
                                 case "BOD":
-                                    objAttribute.PropertyChangedAsync += RefreshBODDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshBODDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "AGI":
-                                    objAttribute.PropertyChangedAsync += RefreshAGIDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshAGIDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "REA":
-                                    objAttribute.PropertyChangedAsync += RefreshREADependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshREADependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "STR":
-                                    objAttribute.PropertyChangedAsync += RefreshSTRDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshSTRDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "CHA":
-                                    objAttribute.PropertyChangedAsync += RefreshCHADependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshCHADependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "INT":
-                                    objAttribute.PropertyChangedAsync += RefreshINTDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshINTDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "LOG":
-                                    objAttribute.PropertyChangedAsync += RefreshLOGDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshLOGDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "WIL":
-                                    objAttribute.PropertyChangedAsync += RefreshWILDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshWILDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "EDG":
-                                    objAttribute.PropertyChangedAsync += RefreshEDGDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshEDGDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "MAG":
-                                    objAttribute.PropertyChangedAsync += RefreshMAGDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshMAGDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "MAGAdept":
-                                    objAttribute.PropertyChangedAsync += RefreshMAGAdeptDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshMAGAdeptDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "RES":
-                                    objAttribute.PropertyChangedAsync += RefreshRESDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshRESDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "DEP":
-                                    objAttribute.PropertyChangedAsync += RefreshDEPDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshDEPDependentProperties, token).ConfigureAwait(false);
                                     break;
 
                                 case "ESS":
-                                    objAttribute.PropertyChangedAsync += RefreshESSDependentProperties;
+                                    await objAttribute.AddPropertyChangedAsync(RefreshESSDependentProperties, token).ConfigureAwait(false);
                                     break;
                             }
                         }
@@ -15061,33 +15061,11 @@ namespace Chummer
                         {
                             blnActuallyDifferentSettings = !await objOldSettings.HasIdenticalSettingsAsync(value, token)
                                 .ConfigureAwait(false);
-                            IAsyncDisposable objLocker4 = await objOldSettings.LockObject.EnterWriteLockAsync(token)
-                                .ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker4.DisposeAsync().ConfigureAwait(false);
-                            }
+                            await objOldSettings.RemovePropertyChangedAsync(OptionsOnPropertyChanged, token).ConfigureAwait(false);
                         }
 
                         if (value != null)
-                        {
-                            IAsyncDisposable objLocker4
-                                = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                value.PropertyChangedAsync += OptionsOnPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker4.DisposeAsync().ConfigureAwait(false);
-                            }
-                        }
+                            await value.AddPropertyChangedAsync(OptionsOnPropertyChanged, token).ConfigureAwait(false);
 
                         if (!blnActuallyDifferentSettings || IsLoading)
                             return;
@@ -38454,6 +38432,34 @@ namespace Chummer
             }
         }
 
+        public async Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _lstPropertyChangedAsync.Add(value);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _lstPropertyChangedAsync.Remove(value);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         // Kept separate for events that are meant to work off of changes to whatever settings the character even if they change
         public event PropertyChangedEventHandler SettingsPropertyChanged;
 
@@ -38471,6 +38477,34 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                     _lstSettingsPropertyChangedAsync.Remove(value);
+            }
+        }
+
+        public async Task AddSettingsPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _lstSettingsPropertyChangedAsync.Add(value);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task RemoveSettingsPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _lstSettingsPropertyChangedAsync.Remove(value);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

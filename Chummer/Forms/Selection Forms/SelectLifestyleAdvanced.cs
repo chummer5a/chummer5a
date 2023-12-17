@@ -70,9 +70,9 @@ namespace Chummer
             _tmrBoroughChangeTimer.Tick += BoroughChangeTimer_Tick;
         }
 
-        private void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
+        private async void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objLifestyle.LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesOnCollectionChanged;
+            await _objLifestyle.LifestyleQualities.RemoveCollectionChangedAsync(LifestyleQualitiesOnCollectionChanged).ConfigureAwait(false);
         }
 
         private async Task LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -521,7 +521,7 @@ namespace Chummer
                     x.SelectedIndex = 0;
             }).ConfigureAwait(false);
 
-            _objLifestyle.LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesOnCollectionChanged;
+            await _objLifestyle.LifestyleQualities.AddCollectionChangedAsync(LifestyleQualitiesOnCollectionChanged).ConfigureAwait(false);
 
             // Populate the City ComboBox
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCity))

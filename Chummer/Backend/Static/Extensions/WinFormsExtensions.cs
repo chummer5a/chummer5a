@@ -1157,7 +1157,7 @@ namespace Chummer
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
             await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
                 .ConfigureAwait(false);
-            objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
+            await objDataSource.AddPropertyChangedAsync(OnPropertyChangedAsync, token).ConfigureAwait(false);
             await Utils.RunOnMainThreadAsync(
                 () => objControl.Disposed += (o, args) =>
                 {

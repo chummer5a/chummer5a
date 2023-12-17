@@ -1129,6 +1129,34 @@ namespace Chummer
             }
         }
 
+        public virtual async Task AddBeforeClearCollectionChangedAsync(AsyncNotifyCollectionChangedEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.AddBeforeClearCollectionChangedAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public virtual async Task RemoveBeforeClearCollectionChangedAsync(AsyncNotifyCollectionChangedEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.RemoveBeforeClearCollectionChangedAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <inheritdoc cref="EnhancedObservableCollection{T}.CollectionChangedAsync" />
         public virtual event AsyncNotifyCollectionChangedEventHandler CollectionChangedAsync
         {
@@ -1141,6 +1169,34 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                     _lstData.CollectionChangedAsync -= value;
+            }
+        }
+
+        public virtual async Task AddCollectionChangedAsync(AsyncNotifyCollectionChangedEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.AddCollectionChangedAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public virtual async Task RemoveCollectionChangedAsync(AsyncNotifyCollectionChangedEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.RemoveCollectionChangedAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1172,6 +1228,34 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                     _lstData.PropertyChangedAsync -= value;
+            }
+        }
+
+        public async Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.AddPropertyChangedAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.RemovePropertyChangedAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

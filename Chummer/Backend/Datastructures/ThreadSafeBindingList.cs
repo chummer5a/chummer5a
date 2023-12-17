@@ -826,6 +826,34 @@ namespace Chummer
             }
         }
 
+        public async Task AddBeforeRemoveAsync(AsyncBeforeRemoveEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.AddBeforeRemoveAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task RemoveBeforeRemoveAsync(AsyncBeforeRemoveEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.RemoveBeforeRemoveAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <inheritdoc cref="BindingList{T}.AddingNew" />
         public event AddingNewEventHandler AddingNew
         {
@@ -884,6 +912,34 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                     _lstData.ListChangedAsync -= value;
+            }
+        }
+
+        public async Task AddListChangedAsync(AsyncListChangedEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.AddListChangedAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task RemoveListChangedAsync(AsyncListChangedEventHandler value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _lstData.RemoveListChangedAsync(value, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
