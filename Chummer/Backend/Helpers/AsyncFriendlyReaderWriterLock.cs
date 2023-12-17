@@ -355,7 +355,6 @@ namespace Chummer
                     return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader, objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true);
                 }
 
-                // No manipulation of AsyncLocals happens here, so we don't have to try-catch this call and swallow an OperationCanceledException
                 try
                 {
                     await objInnerCurrentHelper.TakeReadLockAsync(blnInnerIsInReadLock, innerToken).ConfigureAwait(false);
@@ -407,7 +406,7 @@ namespace Chummer
             }
         }
 
-        private readonly struct SafeReaderSemaphoreRelease : IDisposable
+        private readonly struct SafeReaderSemaphoreRelease : IDisposable, IAsyncDisposable
         {
             private readonly LinkedAsyncRWLockHelper _objCurrentHelper;
             private readonly LinkedAsyncRWLockHelper _objTopMostHeldUReader;
@@ -447,6 +446,25 @@ namespace Chummer
                 }
                 if (!_blnSkipUnlockOnDispose)
                     _objCurrentHelper.ReleaseReadLock();
+            }
+
+            public ValueTask DisposeAsync()
+            {
+                if (_objReaderWriterLock._intDisposedStatus > 1)
+                    return default;
+                if (!_blnOldIsInReadLock)
+                {
+                    _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
+                            _objCurrentHelper, _objTopMostHeldUReader, _objTopMostHeldWriter, false);
+                }
+
+                return _blnSkipUnlockOnDispose ? default : DisposeCoreAsync();
+            }
+
+            private async ValueTask DisposeCoreAsync()
+            {
+                await _objCurrentHelper.ReleaseReadLockAsync().ConfigureAwait(false);
             }
         }
 
@@ -510,7 +528,17 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync(LinkedAsyncRWLockHelper objCurrentHelper)
             {
-                if (objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0)
+                bool blnDoUnlock;
+                try
+                {
+                    blnDoUnlock = objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0;
+                }
+                catch
+                {
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                    return;
+                }
+                if (blnDoUnlock)
                 {
                     try
                     {
@@ -519,6 +547,7 @@ namespace Chummer
                     catch
                     {
                         objCurrentHelper.ReleaseUpgradeableReadLock();
+                        await _objNextHelper.DisposeAsync().ConfigureAwait(false);
                         throw;
                     }
 
@@ -528,11 +557,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        _objNextHelper.ReleaseUpgradeableReadLock();
+                        bool blnGotWriteLock = true;
+                        try
+                        {
+                            await _objNextHelper.SingleUpgradeToWriteLockAsync().ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            blnGotWriteLock = false;
+                        }
+                        await _objNextHelper.DisposeAsync(blnGotWriteLock).ConfigureAwait(false);
                     }
                 }
-
-                await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                else
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -547,7 +585,18 @@ namespace Chummer
                         objCurrentHelper, _objPreviousTopMostHeldUReader,
                         _objPreviousTopMostHeldWriter, false);
 
-                if (!_blnSkipUnlockOnDispose && objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0)
+                bool blnDoUnlock;
+                try
+                {
+                    blnDoUnlock = !_blnSkipUnlockOnDispose &&
+                                  objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0;
+                }
+                catch
+                {
+                    _objNextHelper.Dispose();
+                    return;
+                }
+                if (blnDoUnlock)
                 {
                     try
                     {
@@ -556,6 +605,7 @@ namespace Chummer
                     catch
                     {
                         objCurrentHelper.ReleaseUpgradeableReadLock();
+                        _objNextHelper.Dispose();
                         throw;
                     }
 
@@ -565,11 +615,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        _objNextHelper.ReleaseUpgradeableReadLock();
+                        bool blnGotWriteLock = true;
+                        try
+                        {
+                            _objNextHelper.SingleUpgradeToWriteLock();
+                        }
+                        catch
+                        {
+                            blnGotWriteLock = false;
+                        }
+                        _objNextHelper.Dispose(blnGotWriteLock);
                     }
                 }
-
-                _objNextHelper.Dispose();
+                else
+                    _objNextHelper.Dispose();
             }
         }
 
@@ -633,7 +692,18 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync(LinkedAsyncRWLockHelper objCurrentHelper)
             {
-                if (objCurrentHelper.ReaderSemaphore.CurrentCount == 0 && objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0)
+                bool blnDoUnlock;
+                try
+                {
+                    blnDoUnlock = objCurrentHelper.ReaderSemaphore.CurrentCount == 0 &&
+                                  objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0;
+                }
+                catch
+                {
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                    return;
+                }
+                if (blnDoUnlock)
                 {
                     try
                     {
@@ -641,21 +711,24 @@ namespace Chummer
                     }
                     catch
                     {
-                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter);
+                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                            _objPreviousTopMostHeldWriter);
+                        await _objNextHelper.DisposeAsync().ConfigureAwait(false);
                         throw;
                     }
 
                     try
                     {
-                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter);
+                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                            _objPreviousTopMostHeldWriter);
                     }
                     finally
                     {
-                        _objNextHelper.ReleaseSingleWriteLock();
+                        await _objNextHelper.DisposeAsync(true).ConfigureAwait(false);
                     }
                 }
-
-                await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                else
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -670,7 +743,18 @@ namespace Chummer
                         objCurrentHelper, _objPreviousTopMostHeldUReader,
                         _objPreviousTopMostHeldWriter, false);
 
-                if (!_blnSkipUnlockOnDispose && objCurrentHelper.ReaderSemaphore.CurrentCount == 0 && objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0)
+                bool blnDoUnlock;
+                try
+                {
+                    blnDoUnlock = !_blnSkipUnlockOnDispose && objCurrentHelper.ReaderSemaphore.CurrentCount == 0 &&
+                                  objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0;
+                }
+                catch
+                {
+                    _objNextHelper.Dispose();
+                    return;
+                }
+                if (blnDoUnlock)
                 {
                     try
                     {
@@ -678,21 +762,24 @@ namespace Chummer
                     }
                     catch
                     {
-                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter);
+                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                            _objPreviousTopMostHeldWriter);
+                        _objNextHelper.Dispose();
                         throw;
                     }
 
                     try
                     {
-                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter);
+                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                            _objPreviousTopMostHeldWriter);
                     }
                     finally
                     {
-                        _objNextHelper.ReleaseSingleWriteLock();
+                        _objNextHelper.Dispose(true);
                     }
                 }
-
-                _objNextHelper.Dispose();
+                else
+                    _objNextHelper.Dispose();
             }
         }
     }

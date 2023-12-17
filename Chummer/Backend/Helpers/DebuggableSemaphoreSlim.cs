@@ -69,6 +69,7 @@ namespace Chummer
         /// <inheritdoc cref="SemaphoreSlim.Wait(CancellationToken)"/>
         public void Wait(CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             _objSemaphoreSlim.Wait(token);
 #if SEMAPHOREDEBUG
             LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
@@ -92,6 +93,7 @@ namespace Chummer
         /// <inheritdoc cref="SemaphoreSlim.Wait(TimeSpan, CancellationToken)"/>
         public bool Wait(TimeSpan timeout, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
 #if SEMAPHOREDEBUG
             if (!_objSemaphoreSlim.Wait(timeout, token))
                 return false;
@@ -120,6 +122,7 @@ namespace Chummer
         /// <inheritdoc cref="SemaphoreSlim.Wait(int, CancellationToken)"/>
         public bool Wait(int millisecondsTimeout, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
 #if SEMAPHOREDEBUG
             if (!_objSemaphoreSlim.Wait(millisecondsTimeout, token))
                 return false;
@@ -149,6 +152,7 @@ namespace Chummer
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync(CancellationToken)"/>
         public async Task WaitAsync(CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest)
             {
                 if (!await _objSemaphoreSlim.WaitAsync(Utils.WaitEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration, token)
@@ -172,6 +176,7 @@ namespace Chummer
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync(TimeSpan, CancellationToken)"/>
         public async Task<bool> WaitAsync(TimeSpan timeout, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             if (!await _objSemaphoreSlim.WaitAsync(timeout, token).ConfigureAwait(false))
                 return false;
             LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
@@ -190,6 +195,7 @@ namespace Chummer
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync(int, CancellationToken)"/>
         public async Task<bool> WaitAsync(int millisecondsTimeout, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             if (!await _objSemaphoreSlim.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false))
                 return false;
             LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
@@ -213,6 +219,7 @@ namespace Chummer
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync(CancellationToken)"/>
         public async Task WaitAsync(CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest)
             {
                 if (!await _objSemaphoreSlim
@@ -284,6 +291,7 @@ namespace Chummer
         /// </summary>
         public void SafeWait(CancellationToken token, bool blnForceDoEvents = false)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest)
             {
                 if (Utils.EverDoEvents)
@@ -332,6 +340,7 @@ namespace Chummer
         /// </summary>
         public bool SafeWait(TimeSpan timeout, CancellationToken token, bool blnForceDoEvents = false)
         {
+            token.ThrowIfCancellationRequested();
             if (!Utils.EverDoEvents)
                 return Wait(timeout, token);
 
@@ -368,6 +377,7 @@ namespace Chummer
         /// </summary>
         public bool SafeWait(int millisecondsTimeout, CancellationToken token, bool blnForceDoEvents = false)
         {
+            token.ThrowIfCancellationRequested();
             if (!Utils.EverDoEvents)
                 return Wait(millisecondsTimeout, token);
 
