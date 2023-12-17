@@ -326,10 +326,11 @@ namespace Chummer.Tests
                 XmlNode xmlParentTest = objComparison.TestDetails.Target;
                 if (!string.Equals(xmlParentControl.Name, xmlParentTest.Name, StringComparison.OrdinalIgnoreCase))
                     return ComparisonResult.DIFFERENT;
-                if (xmlParentControl.ChildNodes.Count != xmlParentTest.ChildNodes.Count)
+                int intTestChildCount = xmlParentTest.ChildNodes.Count;
+                if (xmlParentControl.ChildNodes.Count != intTestChildCount)
                     return ComparisonResult.DIFFERENT;
                 List<XmlNode> lstXmlChildrenTest =
-                    new List<XmlNode>(xmlParentTest.ChildNodes.Count);
+                    new List<XmlNode>(intTestChildCount);
                 foreach (XmlNode xmlChildTest in xmlParentTest.ChildNodes)
                     lstXmlChildrenTest.Add(xmlChildTest);
                 foreach (XmlNode xmlLoopChildControl in xmlParentControl.ChildNodes)
@@ -342,6 +343,7 @@ namespace Chummer.Tests
                             .Compare(xmlLoopChildControl)
                             .WithTest(xmlLoopChildTest)
                             .CheckForSimilar()
+                            .WithNodeMatcher(objDiffNodeMatcher)
                             .IgnoreWhitespace()
                             .Build();
                         if (!objLoopDiff.HasDifferences())
