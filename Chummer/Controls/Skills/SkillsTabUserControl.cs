@@ -420,11 +420,10 @@ namespace Chummer.UI.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    await _objCharacter.SkillsSection.Skills.AddListChangedAsync(SkillsOnListChanged, token).ConfigureAwait(false);
+                    _objCharacter.SkillsSection.Skills.ListChangedAsync += SkillsOnListChanged;
                     _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
                     _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
-                    await _objCharacter.SkillsSection.AddPropertyChangedAsync(SkillsSectionOnPropertyChanged, token)
-                        .ConfigureAwait(false);
+                    _objCharacter.SkillsSection.PropertyChangedAsync += SkillsSectionOnPropertyChanged;
                 }
                 finally
                 {

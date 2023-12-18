@@ -5645,34 +5645,6 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                _lstPropertyChangedAsync.Add(value);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        public async Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                _lstPropertyChangedAsync.Remove(value);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -7519,18 +7491,26 @@ namespace Chummer.Backend.Skills
         {
             if (disposing)
             {
-                await CharacterObject.Settings.RemovePropertyChangedAsync(OnCharacterSettingsPropertyChanged).ConfigureAwait(false);
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await CharacterObject.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    await CharacterObject.RemovePropertyChangedAsync(OnCharacterChanged).ConfigureAwait(false);
-                    AttributeSection objSection = await CharacterObject.GetAttributeSectionAsync().ConfigureAwait(false);
-                    IAsyncDisposable objLocker2 = await objSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+                objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
+                    IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
-                        await objSection.RemovePropertyChangedAsync(OnAttributeSectionChanged);
+                        AttributeSection objSection = await CharacterObject.GetAttributeSectionAsync().ConfigureAwait(false);
+                        objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
                         ThreadSafeObservableCollection<CharacterAttrib> objAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
-                        await objAttributes.RemoveCollectionChangedAsync(OnAttributesCollectionChanged);
+                        objAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
                     }
                     finally
                     {
@@ -7546,8 +7526,15 @@ namespace Chummer.Backend.Skills
                 {
                     try
                     {
-                        await AttributeObject.RemovePropertyChangedAsync(OnLinkedAttributeChanged)
-                            .ConfigureAwait(false);
+                        objLocker = await AttributeObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                        try
+                        {
+                            AttributeObject.PropertyChangedAsync -= OnLinkedAttributeChanged;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     catch (ObjectDisposedException)
                     {
@@ -7559,8 +7546,15 @@ namespace Chummer.Backend.Skills
                 {
                     try
                     {
-                        await SkillGroupObject.RemovePropertyChangedAsync(OnSkillGroupChanged)
-                            .ConfigureAwait(false);
+                        objLocker = await SkillGroupObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                        try
+                        {
+                            SkillGroupObject.PropertyChangedAsync -= OnSkillGroupChanged;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     catch (ObjectDisposedException)
                     {
@@ -7571,10 +7565,8 @@ namespace Chummer.Backend.Skills
                 objLocker = await _lstSpecializations.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    await _lstSpecializations.RemoveCollectionChangedAsync(SpecializationsOnCollectionChanged)
-                        .ConfigureAwait(false);
-                    await _lstSpecializations.RemoveBeforeClearCollectionChangedAsync(SpecializationsOnBeforeClearCollectionChanged)
-                        .ConfigureAwait(false);
+                    _lstSpecializations.CollectionChangedAsync -= SpecializationsOnCollectionChanged;
+                    _lstSpecializations.BeforeClearCollectionChangedAsync -= SpecializationsOnBeforeClearCollectionChanged;
                     await _lstSpecializations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 }
                 finally

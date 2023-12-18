@@ -90,43 +90,25 @@ namespace Chummer
                 try
                 {
                     _objGenericToken.ThrowIfCancellationRequested();
-                    await _objCharacter.AddPropertyChangedAsync(ObjCharacterOnPropertyChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.AddSettingsPropertyChangedAsync(ObjCharacterOnSettingsPropertyChanged, _objGenericToken)
-                        .ConfigureAwait(false);
+                    _objCharacter.PropertyChangedAsync += ObjCharacterOnPropertyChanged;
+                    _objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
                     // TODO: Make these also work for any children collection changes
-                    await _objCharacter.Cyberware.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                            .ConfigureAwait(false);
-                    await _objCharacter.Armor.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.Weapons.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.Gear.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.Contacts.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.ExpenseEntries.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.MentorSpirits.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.Powers.AddListChangedAsync(OnCharacterListChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.Qualities.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.MartialArts.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.Metamagics.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.Spells.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.ComplexForms.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.CritterPowers.AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                        .ConfigureAwait(false);
-                    await _objCharacter.SustainedCollection
-                        .AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken).ConfigureAwait(false);
-                    await _objCharacter.InitiationGrades
-                        .AddCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken).ConfigureAwait(false);
+                    _objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
+                    _objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
                 }
                 finally
                 {
@@ -263,42 +245,24 @@ namespace Chummer
                                                                  .ConfigureAwait(false);
             try
             {
-                await _objCharacter.RemovePropertyChangedAsync(ObjCharacterOnPropertyChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.RemoveSettingsPropertyChangedAsync(ObjCharacterOnSettingsPropertyChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.Cyberware.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.Armor.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.Weapons.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.Gear.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.Contacts.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.ExpenseEntries
-                    .RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken).ConfigureAwait(false);
-                await _objCharacter.MentorSpirits
-                    .RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken).ConfigureAwait(false);
-                await _objCharacter.Powers.RemoveListChangedAsync(OnCharacterListChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.Qualities.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.MartialArts.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.Metamagics.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.Spells.RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken)
-                    .ConfigureAwait(false);
-                await _objCharacter.ComplexForms
-                    .RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken).ConfigureAwait(false);
-                await _objCharacter.CritterPowers
-                    .RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken).ConfigureAwait(false);
-                await _objCharacter.SustainedCollection
-                    .RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken).ConfigureAwait(false);
-                await _objCharacter.InitiationGrades
-                    .RemoveCollectionChangedAsync(OnCharacterCollectionChanged, _objGenericToken).ConfigureAwait(false);
+                _objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
+                _objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
+                _objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Weapons.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Gear.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Contacts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.ExpenseEntries.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.MentorSpirits.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Powers.ListChangedAsync -= OnCharacterListChanged;
+                _objCharacter.Qualities.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.MartialArts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Metamagics.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Spells.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.ComplexForms.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.CritterPowers.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
             }
             finally
             {

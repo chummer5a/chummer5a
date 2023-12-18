@@ -1325,9 +1325,8 @@ namespace Chummer
                                                                 .ConfigureAwait(false), GenericToken)
                                         .ConfigureAwait(false);
 
-                                    await CharacterObject.AttributeSection.Attributes
-                                        .AddCollectionChangedAsync(AttributeCollectionChanged, GenericToken)
-                                        .ConfigureAwait(false);
+                                    CharacterObject.AttributeSection.Attributes.CollectionChangedAsync
+                                        += AttributeCollectionChanged;
 
                                     // Condition Monitor.
                                     await ProcessCharacterConditionMonitorBoxDisplays(
@@ -1476,38 +1475,43 @@ namespace Chummer
                                                          .ConfigureAwait(false);
 
                                     // Set up events that would change various lists
-                                    await CharacterObject.Spells.AddCollectionChangedAsync(SpellCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.ComplexForms.AddCollectionChangedAsync(ComplexFormCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Arts.AddCollectionChangedAsync(ArtCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Enhancements.AddCollectionChangedAsync(EnhancementCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Metamagics.AddCollectionChangedAsync(MetamagicCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.InitiationGrades.AddCollectionChangedAsync(InitiationGradeCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Powers.AddListChangedAsync(PowersListChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Powers.AddBeforeRemoveAsync(PowersBeforeRemove, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.AIPrograms.AddCollectionChangedAsync(AIProgramCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.CritterPowers.AddCollectionChangedAsync(CritterPowerCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Qualities.AddCollectionChangedAsync(QualityCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.MartialArts.AddCollectionChangedAsync(MartialArtCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Lifestyles.AddCollectionChangedAsync(LifestylesCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Contacts.AddCollectionChangedAsync(ContactCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Armor.AddCollectionChangedAsync(ArmorCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.ArmorLocations.AddCollectionChangedAsync(ArmorLocationCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Weapons.AddCollectionChangedAsync(WeaponCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.WeaponLocations.AddCollectionChangedAsync(WeaponLocationCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Gear.AddCollectionChangedAsync(GearCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.GearLocations.AddCollectionChangedAsync(GearLocationCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Cyberware.AddCollectionChangedAsync(CyberwareCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Vehicles.AddCollectionChangedAsync(VehicleCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.VehicleLocations.AddCollectionChangedAsync(VehicleLocationCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Spirits.AddCollectionChangedAsync(SpiritCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Improvements.AddCollectionChangedAsync(ImprovementCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.ImprovementGroups.AddCollectionChangedAsync(ImprovementGroupCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Calendar.AddListChangedAsync(CalendarWeekListChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Drugs.AddCollectionChangedAsync(DrugCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.SustainedCollection.AddCollectionChangedAsync(SustainedSpellCollectionChanged, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.ExpenseEntries.AddCollectionChangedAsync(ExpenseEntriesCollectionChanged, GenericToken).ConfigureAwait(false);
+                                    CharacterObject.Spells.CollectionChangedAsync += SpellCollectionChanged;
+                                    CharacterObject.ComplexForms.CollectionChangedAsync += ComplexFormCollectionChanged;
+                                    CharacterObject.Arts.CollectionChangedAsync += ArtCollectionChanged;
+                                    CharacterObject.Enhancements.CollectionChangedAsync += EnhancementCollectionChanged;
+                                    CharacterObject.Metamagics.CollectionChangedAsync += MetamagicCollectionChanged;
+                                    CharacterObject.InitiationGrades.CollectionChangedAsync
+                                        += InitiationGradeCollectionChanged;
+                                    CharacterObject.Powers.ListChangedAsync += PowersListChanged;
+                                    CharacterObject.Powers.BeforeRemoveAsync += PowersBeforeRemove;
+                                    CharacterObject.AIPrograms.CollectionChangedAsync += AIProgramCollectionChanged;
+                                    CharacterObject.CritterPowers.CollectionChangedAsync += CritterPowerCollectionChanged;
+                                    CharacterObject.Qualities.CollectionChangedAsync += QualityCollectionChanged;
+                                    CharacterObject.MartialArts.CollectionChangedAsync += MartialArtCollectionChanged;
+                                    CharacterObject.Lifestyles.CollectionChangedAsync += LifestylesCollectionChanged;
+                                    CharacterObject.Contacts.CollectionChangedAsync += ContactCollectionChanged;
+                                    CharacterObject.Armor.CollectionChangedAsync += ArmorCollectionChanged;
+                                    CharacterObject.ArmorLocations.CollectionChangedAsync += ArmorLocationCollectionChanged;
+                                    CharacterObject.Weapons.CollectionChangedAsync += WeaponCollectionChanged;
+                                    CharacterObject.WeaponLocations.CollectionChangedAsync
+                                        += WeaponLocationCollectionChanged;
+                                    CharacterObject.Gear.CollectionChangedAsync += GearCollectionChanged;
+                                    CharacterObject.GearLocations.CollectionChangedAsync += GearLocationCollectionChanged;
+                                    CharacterObject.Cyberware.CollectionChangedAsync += CyberwareCollectionChanged;
+                                    CharacterObject.Vehicles.CollectionChangedAsync += VehicleCollectionChanged;
+                                    CharacterObject.VehicleLocations.CollectionChangedAsync
+                                        += VehicleLocationCollectionChanged;
+                                    CharacterObject.Spirits.CollectionChangedAsync += SpiritCollectionChanged;
+                                    CharacterObject.Improvements.CollectionChangedAsync += ImprovementCollectionChanged;
+                                    CharacterObject.ImprovementGroups.CollectionChangedAsync
+                                        += ImprovementGroupCollectionChanged;
+                                    CharacterObject.Calendar.ListChangedAsync += CalendarWeekListChanged;
+                                    CharacterObject.Drugs.CollectionChangedAsync += DrugCollectionChanged;
+                                    CharacterObject.SustainedCollection.CollectionChangedAsync
+                                        += SustainedSpellCollectionChanged;
+                                    CharacterObject.ExpenseEntries.CollectionChangedAsync += ExpenseEntriesCollectionChanged;
 
-                                    await SetupCommonCollectionDatabindings(true, GenericToken).ConfigureAwait(false);
+                                    SetupCommonCollectionDatabindings(true);
                                 }
                             }
                             finally
@@ -2031,54 +2035,58 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
-                        await CharacterObject.AttributeSection.Attributes.RemoveCollectionChangedAsync(AttributeCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Spells.RemoveCollectionChangedAsync(SpellCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.ComplexForms.RemoveCollectionChangedAsync(ComplexFormCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Arts.RemoveCollectionChangedAsync(ArtCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Enhancements.RemoveCollectionChangedAsync(EnhancementCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Metamagics.RemoveCollectionChangedAsync(MetamagicCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.InitiationGrades.RemoveCollectionChangedAsync(InitiationGradeCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Powers.RemoveListChangedAsync(PowersListChanged).ConfigureAwait(false);
-                        await CharacterObject.Powers.RemoveBeforeRemoveAsync(PowersBeforeRemove).ConfigureAwait(false);
-                        await CharacterObject.AIPrograms.RemoveCollectionChangedAsync(AIProgramCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.CritterPowers.RemoveCollectionChangedAsync(CritterPowerCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Qualities.RemoveCollectionChangedAsync(QualityCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.MartialArts.RemoveCollectionChangedAsync(MartialArtCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Lifestyles.RemoveCollectionChangedAsync(LifestylesCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Contacts.RemoveCollectionChangedAsync(ContactCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Armor.RemoveCollectionChangedAsync(ArmorCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.ArmorLocations.RemoveCollectionChangedAsync(ArmorLocationCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Weapons.RemoveCollectionChangedAsync(WeaponCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.WeaponLocations.RemoveCollectionChangedAsync(WeaponLocationCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Gear.RemoveCollectionChangedAsync(GearCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.GearLocations.RemoveCollectionChangedAsync(GearLocationCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Cyberware.RemoveCollectionChangedAsync(CyberwareCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Vehicles.RemoveCollectionChangedAsync(VehicleCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.VehicleLocations.RemoveCollectionChangedAsync(VehicleLocationCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Spirits.RemoveCollectionChangedAsync(SpiritCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Improvements.RemoveCollectionChangedAsync(ImprovementCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.ImprovementGroups.RemoveCollectionChangedAsync(ImprovementGroupCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.Calendar.RemoveListChangedAsync(CalendarWeekListChanged, GenericToken).ConfigureAwait(false);
-                        await CharacterObject.Drugs.RemoveCollectionChangedAsync(DrugCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.SustainedCollection.RemoveCollectionChangedAsync(SustainedSpellCollectionChanged).ConfigureAwait(false);
-                        await CharacterObject.ExpenseEntries.RemoveCollectionChangedAsync(ExpenseEntriesCollectionChanged).ConfigureAwait(false);
+                        CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
+                        CharacterObject.Spells.CollectionChangedAsync -= SpellCollectionChanged;
+                        CharacterObject.ComplexForms.CollectionChangedAsync -= ComplexFormCollectionChanged;
+                        CharacterObject.Arts.CollectionChangedAsync -= ArtCollectionChanged;
+                        CharacterObject.Enhancements.CollectionChangedAsync -= EnhancementCollectionChanged;
+                        CharacterObject.Metamagics.CollectionChangedAsync -= MetamagicCollectionChanged;
+                        CharacterObject.InitiationGrades.CollectionChangedAsync -= InitiationGradeCollectionChanged;
+                        CharacterObject.Powers.ListChangedAsync -= PowersListChanged;
+                        CharacterObject.Powers.BeforeRemoveAsync -= PowersBeforeRemove;
+                        CharacterObject.AIPrograms.CollectionChangedAsync -= AIProgramCollectionChanged;
+                        CharacterObject.CritterPowers.CollectionChangedAsync -= CritterPowerCollectionChanged;
+                        CharacterObject.Qualities.CollectionChangedAsync -= QualityCollectionChanged;
+                        CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
+                        CharacterObject.Lifestyles.CollectionChangedAsync -= LifestylesCollectionChanged;
+                        CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
+                        CharacterObject.Armor.CollectionChangedAsync -= ArmorCollectionChanged;
+                        CharacterObject.ArmorLocations.CollectionChangedAsync -= ArmorLocationCollectionChanged;
+                        CharacterObject.Weapons.CollectionChangedAsync -= WeaponCollectionChanged;
+                        CharacterObject.WeaponLocations.CollectionChangedAsync -= WeaponLocationCollectionChanged;
+                        CharacterObject.Gear.CollectionChangedAsync -= GearCollectionChanged;
+                        CharacterObject.GearLocations.CollectionChangedAsync -= GearLocationCollectionChanged;
+                        CharacterObject.Cyberware.CollectionChangedAsync -= CyberwareCollectionChanged;
+                        CharacterObject.Vehicles.CollectionChangedAsync -= VehicleCollectionChanged;
+                        CharacterObject.VehicleLocations.CollectionChangedAsync -= VehicleLocationCollectionChanged;
+                        CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
+                        CharacterObject.Improvements.CollectionChangedAsync -= ImprovementCollectionChanged;
+                        CharacterObject.ImprovementGroups.CollectionChangedAsync -= ImprovementGroupCollectionChanged;
+                        CharacterObject.Calendar.ListChangedAsync -= CalendarWeekListChanged;
+                        CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
+                        CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
+                        CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
                         IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
-                            // ReSharper disable once MethodSupportsCancellation
-                            await CharacterObject.AttributeSection
-                                .RemovePropertyChangedAsync(MakeDirtyWithCharacterUpdate).ConfigureAwait(false);
-                            // ReSharper disable once MethodSupportsCancellation
-                            await CharacterObject.RemovePropertyChangedAsync(OnCharacterPropertyChanged).ConfigureAwait(false);
-                            // ReSharper disable once MethodSupportsCancellation
-                            await CharacterObject.RemoveSettingsPropertyChangedAsync(OnCharacterSettingsPropertyChanged).ConfigureAwait(false);
+                            IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                            try
+                            {
+                                CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
+                            }
+                            finally
+                            {
+                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                            }
+                            CharacterObject.PropertyChangedAsync -= OnCharacterPropertyChanged;
+                            CharacterObject.SettingsPropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
                         }
                         finally
                         {
                             await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
 
-                        await SetupCommonCollectionDatabindings(false, CancellationToken.None).ConfigureAwait(false);
+                        SetupCommonCollectionDatabindings(false);
 
                         treGear.ItemDrag -= treGear_ItemDrag;
                         treGear.DragEnter -= treGear_DragEnter;

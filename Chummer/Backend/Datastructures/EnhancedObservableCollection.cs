@@ -60,22 +60,6 @@ namespace Chummer
             remove => _lstBeforeClearCollectionChangedAsync.Remove(value);
         }
 
-        public virtual Task AddBeforeClearCollectionChangedAsync(AsyncNotifyCollectionChangedEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstBeforeClearCollectionChangedAsync.Add(value);
-            return Task.CompletedTask;
-        }
-
-        public virtual Task RemoveBeforeClearCollectionChangedAsync(AsyncNotifyCollectionChangedEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstBeforeClearCollectionChangedAsync.Remove(value);
-            return Task.CompletedTask;
-        }
-
         /// <inheritdoc />
         public EnhancedObservableCollection()
         {
@@ -100,22 +84,6 @@ namespace Chummer
         {
             add => _lstPropertyChangedAsync.Add(value);
             remove => _lstPropertyChangedAsync.Remove(value);
-        }
-
-        public virtual Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstPropertyChangedAsync.Add(value);
-            return Task.CompletedTask;
-        }
-
-        public virtual Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstPropertyChangedAsync.Remove(value);
-            return Task.CompletedTask;
         }
 
         [NotifyPropertyChangedInvocator]
@@ -495,22 +463,6 @@ namespace Chummer
         {
             add => _lstCollectionChangedAsync.Add(value);
             remove => _lstCollectionChangedAsync.Remove(value);
-        }
-
-        public virtual Task AddCollectionChangedAsync(AsyncNotifyCollectionChangedEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstCollectionChangedAsync.Add(value);
-            return Task.CompletedTask;
-        }
-
-        public virtual Task RemoveCollectionChangedAsync(AsyncNotifyCollectionChangedEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstCollectionChangedAsync.Remove(value);
-            return Task.CompletedTask;
         }
 
         public Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)

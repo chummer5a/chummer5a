@@ -371,22 +371,6 @@ namespace Chummer
             remove => _lstPropertyChangedAsync.Remove(value);
         }
 
-        public Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstPropertyChangedAsync.Add(value);
-            return Task.CompletedTask;
-        }
-
-        public Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstPropertyChangedAsync.Remove(value);
-            return Task.CompletedTask;
-        }
-
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {

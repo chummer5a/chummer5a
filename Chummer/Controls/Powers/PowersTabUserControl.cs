@@ -208,9 +208,28 @@ namespace Chummer.UI.Powers
                 Utils.StopwatchPool.Return(ref sw);
             }
 
-            await lstPowers.AddListChangedAsync(OnPowersListChanged, token).ConfigureAwait(false);
+            IAsyncDisposable objLocker
+                = await lstPowers.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                lstPowers.ListChangedAsync += OnPowersListChanged;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
-            await _objCharacter.AddPropertyChangedAsync(OnCharacterPropertyChanged, token).ConfigureAwait(false);
+            objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private void UnbindPowersTabUserControl()

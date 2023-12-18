@@ -78,38 +78,6 @@ namespace Chummer
         }
 #pragma warning restore CA1070
 
-        public virtual Task AddBeforeRemoveAsync(AsyncBeforeRemoveEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstBeforeRemoveAsync.Add(value);
-            return Task.CompletedTask;
-        }
-
-        public virtual Task RemoveBeforeRemoveAsync(AsyncBeforeRemoveEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstBeforeRemoveAsync.Remove(value);
-            return Task.CompletedTask;
-        }
-
-        public virtual Task AddListChangedAsync(AsyncListChangedEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstListChangedAsync.Add(value);
-            return Task.CompletedTask;
-        }
-
-        public virtual Task RemoveListChangedAsync(AsyncListChangedEventHandler value, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            _lstListChangedAsync.Remove(value);
-            return Task.CompletedTask;
-        }
-
         public CachedBindingList()
         {
         }
@@ -647,7 +615,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (propertyChangedAsyncEventHandler != null)
                 {
-                    await notifyPropertyChanged.AddPropertyChangedAsync(propertyChangedAsyncEventHandler, token).ConfigureAwait(false);
+                    notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
                     return;
                 }
             }
@@ -671,7 +639,7 @@ namespace Chummer
                     }
                 }
 
-                await notifyPropertyChanged.AddPropertyChangedAsync(propertyChangedAsyncEventHandler, token).ConfigureAwait(false);
+                notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
             }
             finally
             {
@@ -699,22 +667,19 @@ namespace Chummer
         private async Task UnhookAsyncPropertyChangedAsync(T item, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (propertyChangedAsyncEventHandler == null)
-                return;
-            if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
-                return;
             if (BindingListLock == null)
             {
-                await notifyPropertyChanged.RemovePropertyChangedAsync(propertyChangedAsyncEventHandler, token).ConfigureAwait(false);
+                UnhookAsyncPropertyChanged(item);
+                return;
             }
-            else
+            if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
+                return;
+            using (await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                using (await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-                    await notifyPropertyChanged.RemovePropertyChangedAsync(propertyChangedAsyncEventHandler, token)
-                        .ConfigureAwait(false);
-                }
+                token.ThrowIfCancellationRequested();
+                if (propertyChangedAsyncEventHandler == null)
+                    return;
+                notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
             }
         }
 

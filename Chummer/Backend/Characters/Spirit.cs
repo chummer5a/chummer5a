@@ -1673,34 +1673,6 @@ namespace Chummer
             }
         }
 
-        public async Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                _lstPropertyChangedAsync.Add(value);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        public async Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                _lstPropertyChangedAsync.Remove(value);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -2157,7 +2129,17 @@ namespace Chummer
                         blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
-                            await objOldLinkedCharacter.RemovePropertyChangedAsync(LinkedCharacterOnPropertyChanged, token).ConfigureAwait(false);
+                            IAsyncDisposable objLocker3 = await objOldLinkedCharacter.LockObject
+                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
+                            }
+                            finally
+                            {
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            }
 
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
@@ -2191,7 +2173,17 @@ namespace Chummer
                                         _strCritterName = strCritterName;
                                 }
 
-                                await _objLinkedCharacter.AddPropertyChangedAsync(LinkedCharacterOnPropertyChanged, token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker4 = await _objLinkedCharacter.LockObject
+                                    .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker4.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                             finally
                             {

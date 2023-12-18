@@ -914,15 +914,18 @@ namespace Chummer.UI.Table
                 if (lstOldItems != null)
                 {
                     // remove listener from old items
+                    IAsyncDisposable objLocker3 =
+                        await lstOldItems.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        await lstOldItems.RemoveListChangedAsync(ItemsChanged, token).ConfigureAwait(false);
-                        intOldCount = lstOldItems.Count;
+                        lstOldItems.ListChangedAsync -= ItemsChanged;
                     }
-                    catch (ObjectDisposedException)
+                    finally
                     {
-                        // swallow this
+                        await objLocker3.DisposeAsync().ConfigureAwait(false);
                     }
+
+                    intOldCount = lstOldItems.Count;
                 }
 
                 IAsyncDisposable objLocker2 = await _objItemsLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -1016,7 +1019,16 @@ namespace Chummer.UI.Table
 
                     if (value != null)
                     {
-                        await value.AddListChangedAsync(ItemsChanged, token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker3 =
+                            await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            value.ListChangedAsync += ItemsChanged;
+                        }
+                        finally
+                        {
+                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
                 finally

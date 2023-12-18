@@ -122,7 +122,7 @@ namespace Chummer.UI.Shared
                     nameof(Character.LimitAstralToolTip), x => x.GetLimitAstralToolTipAsync(_objMyToken), token)
                 .ConfigureAwait(false);
 
-            await _objCharacter.LimitModifiers.AddCollectionChangedAsync(LimitModifierCollectionChanged, token).ConfigureAwait(false);
+            _objCharacter.LimitModifiers.CollectionChangedAsync += LimitModifierCollectionChanged;
             await LimitModifierCollectionChanged(null, default, token).ConfigureAwait(false);
         }
 

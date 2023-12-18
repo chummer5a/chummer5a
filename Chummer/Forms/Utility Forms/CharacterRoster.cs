@@ -130,31 +130,22 @@ namespace Chummer
             {
                 if (lstToProcess1 != null)
                 {
-                    await lstToProcess1
-                        .AddBeforeClearCollectionChangedAsync(OpenCharacterEditorFormsOnBeforeClearCollectionChanged,
-                            token).ConfigureAwait(false);
-                    await lstToProcess1.AddCollectionChangedAsync(OpenCharacterEditorFormsOnCollectionChanged, token)
-                        .ConfigureAwait(false);
+                    lstToProcess1.BeforeClearCollectionChangedAsync
+                        += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
+                    lstToProcess1.CollectionChangedAsync += OpenCharacterEditorFormsOnCollectionChanged;
                 }
-
                 if (lstToProcess2 != null)
                 {
-                    await lstToProcess2
-                        .AddBeforeClearCollectionChangedAsync(OpenCharacterSheetViewersOnBeforeClearCollectionChanged,
-                            token).ConfigureAwait(false);
-                    await lstToProcess2.AddCollectionChangedAsync(OpenCharacterSheetViewersOnCollectionChanged, token)
-                        .ConfigureAwait(false);
+                    lstToProcess2.BeforeClearCollectionChangedAsync
+                        += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
+                    lstToProcess2.CollectionChangedAsync += OpenCharacterSheetViewersOnCollectionChanged;
                 }
-
                 if (lstToProcess3 != null)
                 {
-                    await lstToProcess3
-                        .AddBeforeClearCollectionChangedAsync(OpenCharacterExportFormsOnBeforeClearCollectionChanged,
-                            token).ConfigureAwait(false);
-                    await lstToProcess3.AddCollectionChangedAsync(OpenCharacterExportFormsOnCollectionChanged, token)
-                        .ConfigureAwait(false);
+                    lstToProcess3.BeforeClearCollectionChangedAsync
+                        += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+                    lstToProcess3.CollectionChangedAsync += OpenCharacterExportFormsOnCollectionChanged;
                 }
-
                 GlobalSettings.MruChanged += RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
                 {
@@ -181,32 +172,22 @@ namespace Chummer
             {
                 if (lstToProcess1 != null)
                 {
-                    await lstToProcess1
-                        .RemoveBeforeClearCollectionChangedAsync(OpenCharacterEditorFormsOnBeforeClearCollectionChanged,
-                            token).ConfigureAwait(false);
-                    await lstToProcess1.RemoveCollectionChangedAsync(OpenCharacterEditorFormsOnCollectionChanged, token)
-                        .ConfigureAwait(false);
+                    lstToProcess1.BeforeClearCollectionChangedAsync
+                        -= OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
+                    lstToProcess1.CollectionChangedAsync -= OpenCharacterEditorFormsOnCollectionChanged;
                 }
-
                 if (lstToProcess2 != null)
                 {
-                    await lstToProcess2
-                        .RemoveBeforeClearCollectionChangedAsync(
-                            OpenCharacterSheetViewersOnBeforeClearCollectionChanged, token).ConfigureAwait(false);
-                    await lstToProcess2
-                        .RemoveCollectionChangedAsync(OpenCharacterSheetViewersOnCollectionChanged, token)
-                        .ConfigureAwait(false);
+                    lstToProcess2.BeforeClearCollectionChangedAsync
+                        -= OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
+                    lstToProcess2.CollectionChangedAsync -= OpenCharacterSheetViewersOnCollectionChanged;
                 }
-
                 if (lstToProcess3 != null)
                 {
-                    await lstToProcess3
-                        .RemoveBeforeClearCollectionChangedAsync(OpenCharacterExportFormsOnBeforeClearCollectionChanged,
-                            token).ConfigureAwait(false);
-                    await lstToProcess3.RemoveCollectionChangedAsync(OpenCharacterExportFormsOnCollectionChanged, token)
-                        .ConfigureAwait(false);
+                    lstToProcess3.BeforeClearCollectionChangedAsync
+                        -= OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+                    lstToProcess3.CollectionChangedAsync -= OpenCharacterExportFormsOnCollectionChanged;
                 }
-
                 GlobalSettings.MruChanged -= RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
                 {

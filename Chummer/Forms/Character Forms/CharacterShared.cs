@@ -173,76 +173,75 @@ namespace Chummer
         /// Set up data bindings to set Dirty flag and/or the flag to request a character update when specific collections change
         /// </summary>
         /// <param name="blnAddBindings"></param>
-        protected async Task SetupCommonCollectionDatabindings(bool blnAddBindings, CancellationToken token = default)
+        protected void SetupCommonCollectionDatabindings(bool blnAddBindings)
         {
-            token.ThrowIfCancellationRequested();
             if (blnAddBindings)
             {
-                await CharacterObject.Spells.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.ComplexForms.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Arts.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Enhancements.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Metamagics.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.InitiationGrades.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Powers.AddListChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.AIPrograms.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.CritterPowers.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Qualities.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.MartialArts.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Lifestyles.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Contacts.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Spirits.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Armor.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.ArmorLocations.AddCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.Weapons.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.WeaponLocations.AddCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.Gear.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.GearLocations.AddCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.Drugs.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Cyberware.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Vehicles.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.VehicleLocations.AddCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
+                CharacterObject.Spells.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.ComplexForms.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Arts.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Enhancements.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Metamagics.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.InitiationGrades.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Powers.ListChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.AIPrograms.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.CritterPowers.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Qualities.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.MartialArts.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Lifestyles.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Contacts.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Spirits.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Armor.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.ArmorLocations.CollectionChangedAsync += MakeDirty;
+                CharacterObject.Weapons.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.WeaponLocations.CollectionChangedAsync += MakeDirty;
+                CharacterObject.Gear.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.GearLocations.CollectionChangedAsync += MakeDirty;
+                CharacterObject.Drugs.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Cyberware.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Vehicles.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.VehicleLocations.CollectionChangedAsync += MakeDirty;
 
-                await CharacterObject.Improvements.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.ImprovementGroups.AddCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.Calendar.AddListChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.SustainedCollection.AddCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.ExpenseEntries.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.LimitModifiers.AddCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
+                CharacterObject.Improvements.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.ImprovementGroups.CollectionChangedAsync += MakeDirty;
+                CharacterObject.Calendar.ListChangedAsync += MakeDirty;
+                CharacterObject.SustainedCollection.CollectionChangedAsync += MakeDirty;
+                CharacterObject.ExpenseEntries.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
+                CharacterObject.LimitModifiers.CollectionChangedAsync += MakeDirtyWithCharacterUpdate;
             }
             else
             {
-                await CharacterObject.Spells.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.ComplexForms.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Arts.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Enhancements.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Metamagics.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.InitiationGrades.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Powers.RemoveListChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.AIPrograms.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.CritterPowers.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Qualities.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.MartialArts.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Lifestyles.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Contacts.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Spirits.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Armor.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.ArmorLocations.RemoveCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.Weapons.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.WeaponLocations.RemoveCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.Gear.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.GearLocations.RemoveCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.Drugs.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Cyberware.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.Vehicles.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.VehicleLocations.RemoveCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
+                CharacterObject.Spells.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.ComplexForms.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Arts.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Enhancements.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Metamagics.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.InitiationGrades.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Powers.ListChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.AIPrograms.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.CritterPowers.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Qualities.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.MartialArts.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Lifestyles.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Contacts.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Spirits.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Armor.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.ArmorLocations.CollectionChangedAsync -= MakeDirty;
+                CharacterObject.Weapons.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.WeaponLocations.CollectionChangedAsync -= MakeDirty;
+                CharacterObject.Gear.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.GearLocations.CollectionChangedAsync -= MakeDirty;
+                CharacterObject.Drugs.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Cyberware.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Vehicles.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.VehicleLocations.CollectionChangedAsync -= MakeDirty;
 
-                await CharacterObject.Improvements.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.ImprovementGroups.RemoveCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.Calendar.RemoveListChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.SustainedCollection.RemoveCollectionChangedAsync(MakeDirty, token).ConfigureAwait(false);
-                await CharacterObject.ExpenseEntries.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                await CharacterObject.LimitModifiers.RemoveCollectionChangedAsync(MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
+                CharacterObject.Improvements.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.ImprovementGroups.CollectionChangedAsync -= MakeDirty;
+                CharacterObject.Calendar.ListChangedAsync -= MakeDirty;
+                CharacterObject.SustainedCollection.CollectionChangedAsync -= MakeDirty;
+                CharacterObject.ExpenseEntries.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.LimitModifiers.CollectionChangedAsync -= MakeDirtyWithCharacterUpdate;
             }
         }
 
@@ -2245,10 +2244,20 @@ namespace Chummer
                             IHasInternalId)?.InternalId ?? string.Empty;
 
                     // Create the root nodes.
-                    await CharacterObject.Qualities
-                        .ForEachAsync(
-                            objQuality => objQuality.RemovePropertyChangedAsync(AddedQualityOnPropertyChanged, token),
-                            token).ConfigureAwait(false);
+                    await CharacterObject.Qualities.ForEachAsync(async objQuality =>
+                    {
+                        IAsyncDisposable objLocker
+                            = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objQuality.PropertyChangedAsync -= AddedQualityOnPropertyChanged;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }, token).ConfigureAwait(false);
 
                     await treQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
@@ -2324,8 +2333,17 @@ namespace Chummer
                                                 objParent.Remove();
                                         }
                                     }, token).ConfigureAwait(false);
-                                    await objQuality.RemovePropertyChangedAsync(AddedQualityOnPropertyChanged, token)
-                                        .ConfigureAwait(false);
+                                    IAsyncDisposable objLocker
+                                        = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        objQuality.PropertyChangedAsync -= AddedQualityOnPropertyChanged;
+                                    }
+                                    finally
+                                    {
+                                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                                    }
                                 }
                             }
 
@@ -2352,8 +2370,17 @@ namespace Chummer
                                                 lstOldParents.Add(objNode.Parent);
                                             objNode.Remove();
                                         }, token).ConfigureAwait(false);
-                                        await objQuality.RemovePropertyChangedAsync(AddedQualityOnPropertyChanged, token)
-                                            .ConfigureAwait(false);
+                                        IAsyncDisposable objLocker
+                                            = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            objQuality.PropertyChangedAsync -= AddedQualityOnPropertyChanged;
+                                        }
+                                        finally
+                                        {
+                                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                                        }
                                     }
                                     else
                                     {
@@ -2479,8 +2506,17 @@ namespace Chummer
                         else
                             objParentNode.Nodes.Add(objNode);
                     }, token).ConfigureAwait(false);
-                    await objQuality.AddPropertyChangedAsync(AddedQualityOnPropertyChanged, token)
-                        .ConfigureAwait(false);
+                    IAsyncDisposable objLocker
+                        = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objQuality.PropertyChangedAsync += AddedQualityOnPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
 

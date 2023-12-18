@@ -1006,24 +1006,33 @@ namespace Chummer.UI.Skills
             CharacterAttrib objOldAttrib = Interlocked.Exchange(ref _objAttributeActive, value);
             if (objOldAttrib == value)
                 return;
-            await Task.WhenAll(Task.Run(async () =>
+            if (objOldAttrib != null)
+            {
+                IAsyncDisposable objLocker = await objOldAttrib.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    if (objOldAttrib == null)
-                        return;
-                    try
-                    {
-                        await objOldAttrib.RemovePropertyChangedAsync(Attribute_PropertyChanged, token)
-                            .ConfigureAwait(false);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // swallow this
-                    }
-                }, token),
-                Task.Run(
-                    () => value != null
-                        ? value.AddPropertyChangedAsync(Attribute_PropertyChanged, token)
-                        : Task.CompletedTask, token));
+                    token.ThrowIfCancellationRequested();
+                    objOldAttrib.PropertyChangedAsync -= Attribute_PropertyChanged;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+
+            if (value != null)
+            {
+                IAsyncDisposable objLocker = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    value.PropertyChangedAsync += Attribute_PropertyChanged;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
 
             Font objFont = value == _objSkill.AttributeObject ? _fntNormal : _fntItalic;
             await btnAttribute.DoThreadSafeAsync(x => x.Font = objFont, token).ConfigureAwait(false);

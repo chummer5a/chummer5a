@@ -27,10 +27,6 @@ namespace Chummer
     {
         event PropertyChangedAsyncEventHandler PropertyChangedAsync;
 
-        Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default);
-
-        Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default);
-
         Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default);
     }
 

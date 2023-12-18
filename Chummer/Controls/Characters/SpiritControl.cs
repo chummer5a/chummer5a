@@ -135,8 +135,17 @@ namespace Chummer
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
 
-                await _objSpirit.CharacterObject
-                    .AddPropertyChangedAsync(RebuildSpiritListOnTraditionChange, _objMyToken).ConfigureAwait(false);
+                IAsyncDisposable objLocker =
+                    await _objSpirit.CharacterObject.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
+                try
+                {
+                    _objMyToken.ThrowIfCancellationRequested();
+                    _objSpirit.CharacterObject.PropertyChangedAsync += RebuildSpiritListOnTraditionChange;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -148,7 +157,7 @@ namespace Chummer
             }
         }
 
-        private void UnbindSpiritControl()
+        public void UnbindSpiritControl()
         {
             _objSpirit.CharacterObject.PropertyChangedAsync -= RebuildSpiritListOnTraditionChange;
 

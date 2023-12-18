@@ -1505,7 +1505,18 @@ namespace Chummer.Backend.Skills
                         {
                             token.ThrowIfCancellationRequested();
                             _lstAffectedSkills.Add(skill);
-                            await skill.AddPropertyChangedAsync(SkillOnPropertyChanged, token).ConfigureAwait(false);
+                            IAsyncDisposable objLocker5 =
+                                await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                skill.PropertyChangedAsync += SkillOnPropertyChanged;
+                            }
+                            finally
+                            {
+                                await objLocker5.DisposeAsync().ConfigureAwait(false);
+                            }
+
                             blnTemp = _objCharacter?.SkillsSection?.IsLoading != true;
                         }
                         finally
@@ -1571,7 +1582,18 @@ namespace Chummer.Backend.Skills
                         token.ThrowIfCancellationRequested();
                         if (!_lstAffectedSkills.Remove(skill))
                             return;
-                        await skill.RemovePropertyChangedAsync(SkillOnPropertyChanged, token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker4
+                            = await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            skill.PropertyChangedAsync -= SkillOnPropertyChanged;
+                        }
+                        finally
+                        {
+                            await objLocker4.DisposeAsync().ConfigureAwait(false);
+                        }
+
                         blnTemp = _objCharacter?.SkillsSection?.IsLoading != true;
                             
                     }
@@ -2191,34 +2213,6 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterWriteLock())
                     _lstPropertyChangedAsync.Remove(value);
-            }
-        }
-
-        public async Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                _lstPropertyChangedAsync.Add(value);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        public async Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                _lstPropertyChangedAsync.Remove(value);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

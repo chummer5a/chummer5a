@@ -2939,34 +2939,6 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task AddPropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                _lstPropertyChangedAsync.Add(value);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        public async Task RemovePropertyChangedAsync(PropertyChangedAsyncEventHandler value, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                _lstPropertyChangedAsync.Remove(value);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -3251,8 +3223,8 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (LifestyleQuality objQuality in LifestyleQualities)
                     await objQuality.DisposeAsync().ConfigureAwait(false);
-                await LifestyleQualities.RemoveCollectionChangedAsync(LifestyleQualitiesCollectionChanged).ConfigureAwait(false);
-                await LifestyleQualities.RemoveBeforeClearCollectionChangedAsync(LifestyleQualitiesOnBeforeClearCollectionChanged).ConfigureAwait(false);
+                LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
+                LifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 await LifestyleQualities.DisposeAsync().ConfigureAwait(false);
             }
             finally

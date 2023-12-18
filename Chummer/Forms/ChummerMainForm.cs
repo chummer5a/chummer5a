@@ -742,7 +742,7 @@ namespace Chummer
                                                          .ConfigureAwait(false),
                                     token: _objGenericToken).ConfigureAwait(false);
 
-                                await Program.OpenCharacters.AddCollectionChangedAsync(OpenCharactersOnCollectionChanged, _objGenericToken).ConfigureAwait(false);
+                                Program.OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
 
                                 // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
                                 bool blnShowTest = false;
@@ -1102,7 +1102,7 @@ namespace Chummer
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
-        private async Task OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -1112,8 +1112,7 @@ namespace Chummer
                     {
                         foreach (Character objCharacter in e.NewItems)
                         {
-                            await objCharacter.AddPropertyChangedAsync(UpdateCharacterTabTitle, token)
-                                .ConfigureAwait(false);
+                            objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
                         }
 
                         break;
@@ -1126,8 +1125,7 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    await objCharacter.RemovePropertyChangedAsync(UpdateCharacterTabTitle, token)
-                                        .ConfigureAwait(false);
+                                    objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -1146,8 +1144,7 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    await objCharacter.RemovePropertyChangedAsync(UpdateCharacterTabTitle, token)
-                                        .ConfigureAwait(false);
+                                    objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -1158,8 +1155,7 @@ namespace Chummer
 
                         foreach (Character objCharacter in e.NewItems)
                         {
-                            await objCharacter.AddPropertyChangedAsync(UpdateCharacterTabTitle, token)
-                                .ConfigureAwait(false);
+                            objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
                         }
 
                         break;
@@ -2632,8 +2628,7 @@ namespace Chummer
             if (Interlocked.Exchange(ref _intFormClosing, 1) == 1)
                 return;
             _objGenericCancellationTokenSource.Cancel(false);
-            // ReSharper disable once MethodSupportsCancellation
-            await Program.OpenCharacters.RemoveCollectionChangedAsync(OpenCharactersOnCollectionChanged).ConfigureAwait(false);
+            Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
             foreach (Character objCharacter in Program.OpenCharacters)
             {
                 if (objCharacter?.IsDisposed == false)

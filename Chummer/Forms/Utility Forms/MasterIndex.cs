@@ -266,8 +266,16 @@ namespace Chummer
 
                     if (objSettings != null)
                     {
-                        await objSettings.AddPropertyChangedAsync(OnSelectedSettingChanged, _objGenericToken)
-                            .ConfigureAwait(false);
+                        IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            _objGenericToken.ThrowIfCancellationRequested();
+                            objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
                 finally
@@ -429,26 +437,33 @@ namespace Chummer
                         CharacterSettings objPreviousSettings = Interlocked.Exchange(ref _objSelectedSetting, objSettings);
                         if (objPreviousSettings != objSettings)
                         {
-                            await Task.WhenAll(Task.Run(async () =>
+                            if (objPreviousSettings != null)
+                            {
+                                IAsyncDisposable objLocker = await objPreviousSettings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
                                 {
-                                    if (objPreviousSettings == null)
-                                        return;
+                                    token.ThrowIfCancellationRequested();
+                                    objPreviousSettings.PropertyChangedAsync -= OnSelectedSettingChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
 
-                                    try
-                                    {
-                                        await objPreviousSettings
-                                            .RemovePropertyChangedAsync(OnSelectedSettingChanged, token)
-                                            .ConfigureAwait(false);
-                                    }
-                                    catch (ObjectDisposedException)
-                                    {
-                                        // swallow this
-                                    }
-                                }, token),
-                                Task.Run(() => objSettings != null
-                                    ? objSettings
-                                        .AddPropertyChangedAsync(OnSelectedSettingChanged, token)
-                                    : Task.CompletedTask, token)).ConfigureAwait(false);
+                            if (objSettings != null)
+                            {
+                                IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
 
                             await LoadContent(token).ConfigureAwait(false);
                         }
