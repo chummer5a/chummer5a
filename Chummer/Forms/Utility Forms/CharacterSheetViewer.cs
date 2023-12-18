@@ -364,18 +364,8 @@ namespace Chummer
             {
                 if (objCharacter?.IsDisposed == false)
                 {
-                    IAsyncDisposable objLocker
-                        // ReSharper disable once MethodSupportsCancellation
-                        = await objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                    try
-                    {
-                        objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
-                        objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
+                    objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
                 }
             }
 

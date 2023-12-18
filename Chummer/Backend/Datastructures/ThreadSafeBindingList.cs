@@ -776,7 +776,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    await _lstData.DisposeAsync().ConfigureAwait(false);
+                    _lstData.Dispose();
                 }
                 finally
                 {
@@ -814,16 +814,8 @@ namespace Chummer
 
         public event AsyncBeforeRemoveEventHandler BeforeRemoveAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.BeforeRemoveAsync += value;
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.BeforeRemoveAsync -= value;
-            }
+            add => _lstData.BeforeRemoveAsync += value;
+            remove => _lstData.BeforeRemoveAsync -= value;
         }
 
         /// <inheritdoc cref="BindingList{T}.AddingNew" />
@@ -843,16 +835,8 @@ namespace Chummer
 
         public event AsyncAddingNewEventHandler AddingNewAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.AddingNewAsync += value;
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.AddingNewAsync -= value;
-            }
+            add => _lstData.AddingNewAsync += value;
+            remove => _lstData.AddingNewAsync -= value;
         }
 
         /// <inheritdoc />
@@ -875,16 +859,8 @@ namespace Chummer
 
         public event AsyncListChangedEventHandler ListChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.ListChangedAsync += value;
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.ListChangedAsync -= value;
-            }
+            add => _lstData.ListChangedAsync += value;
+            remove => _lstData.ListChangedAsync -= value;
         }
 
         /// <inheritdoc cref="BindingList{T}.RaiseListChangedEvents" />

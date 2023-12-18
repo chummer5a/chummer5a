@@ -1656,21 +1656,13 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new List<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Add(value);
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Remove(value);
-            }
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -1707,19 +1699,17 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
-                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
-                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
-                        int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
-                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs);
+                        Utils.RunWithoutThreadLock(lstFuncs);
                         if (PropertyChanged != null)
                         {
                             Utils.RunOnMainThread(() =>
@@ -1785,13 +1775,13 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
                         List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                         int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
@@ -2039,7 +2029,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (_objLinkedCharacter.LockObject.EnterUpgradeableReadLock(token))
+                            using (_objLinkedCharacter.LockObject.EnterReadLock(token))
                             {
                                 if (string.IsNullOrEmpty(_strCritterName))
                                 {
@@ -2129,17 +2119,7 @@ namespace Chummer
                         blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
-                            IAsyncDisposable objLocker3 = await objOldLinkedCharacter.LockObject
-                                .EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker3.DisposeAsync().ConfigureAwait(false);
-                            }
+                            objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
 
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
@@ -2159,8 +2139,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            IAsyncDisposable objLocker3 = await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                            try
+                            using (await _objLinkedCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 if (string.IsNullOrEmpty(_strCritterName))
@@ -2184,10 +2163,6 @@ namespace Chummer
                                 {
                                     await objLocker4.DisposeAsync().ConfigureAwait(false);
                                 }
-                            }
-                            finally
-                            {
-                                await objLocker3.DisposeAsync().ConfigureAwait(false);
                             }
                         }
                     }

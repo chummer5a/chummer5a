@@ -45,8 +45,8 @@ namespace Chummer
         [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         public virtual event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged;
 
-        private readonly List<AsyncNotifyCollectionChangedEventHandler> _lstBeforeClearCollectionChangedAsync =
-            new List<AsyncNotifyCollectionChangedEventHandler>();
+        private readonly ConcurrentHashSet<AsyncNotifyCollectionChangedEventHandler> _setBeforeClearCollectionChangedAsync =
+            new ConcurrentHashSet<AsyncNotifyCollectionChangedEventHandler>();
 
         /// <summary>
         /// CollectionChanged event subscription for async events that will fire right before the collection is cleared.
@@ -56,8 +56,8 @@ namespace Chummer
         [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         public virtual event AsyncNotifyCollectionChangedEventHandler BeforeClearCollectionChangedAsync
         {
-            add => _lstBeforeClearCollectionChangedAsync.Add(value);
-            remove => _lstBeforeClearCollectionChangedAsync.Remove(value);
+            add => _setBeforeClearCollectionChangedAsync.TryAdd(value);
+            remove => _setBeforeClearCollectionChangedAsync.Remove(value);
         }
 
         /// <inheritdoc />
@@ -77,13 +77,13 @@ namespace Chummer
 
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new List<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public virtual event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add => _lstPropertyChangedAsync.Add(value);
-            remove => _lstPropertyChangedAsync.Remove(value);
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -99,18 +99,17 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            if (_lstPropertyChangedAsync.Count > 0)
+            if (_setPropertyChangedAsync.Count > 0)
             {
                 List<PropertyChangedEventArgs> lstArgsList = lstPropertyNames.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
-                int i = 0;
-                foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                 {
                     foreach (PropertyChangedEventArgs objArg in lstArgsList)
-                        aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                        lstFuncs.Add(() => objEvent.Invoke(this, objArg));
                 }
 
-                Utils.RunWithoutThreadLock(aFuncs);
+                Utils.RunWithoutThreadLock(lstFuncs);
                 Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
@@ -160,13 +159,13 @@ namespace Chummer
 
         public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
-            if (_lstPropertyChangedAsync.Count > 0)
+            if (_setPropertyChangedAsync.Count > 0)
             {
                 List<PropertyChangedEventArgs> lstArgsList = lstPropertyNames
                     .Select(x => new PropertyChangedEventArgs(x)).ToList();
                 List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                 int i = 0;
-                foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                 {
                     foreach (PropertyChangedEventArgs objArg in lstArgsList)
                     {
@@ -252,7 +251,7 @@ namespace Chummer
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            if (_lstBeforeClearCollectionChangedAsync.Count != 0)
+            if (_setBeforeClearCollectionChangedAsync.Count != 0)
             {
                 Utils.SafelyRunSynchronously(async () =>
                 {
@@ -267,7 +266,7 @@ namespace Chummer
                                 new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                                     (IList)Items);
                             await Task.WhenAll(
-                                _lstBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs))).ConfigureAwait(false);
+                                _setBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs))).ConfigureAwait(false);
                             BeforeClearCollectionChanged?.Invoke(this, objArgs);
                         }
                     }
@@ -307,7 +306,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_lstBeforeClearCollectionChangedAsync.Count != 0)
+                if (_setBeforeClearCollectionChangedAsync.Count != 0)
                 {
 
                     using (BlockReentrancy())
@@ -316,7 +315,7 @@ namespace Chummer
                             new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                                 (IList)Items);
                         await Task.WhenAll(
-                                _lstBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs, token)))
+                                _setBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs, token)))
                             .ConfigureAwait(false);
                         BeforeClearCollectionChanged?.Invoke(this, objArgs);
                     }
@@ -382,7 +381,7 @@ namespace Chummer
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (_lstCollectionChangedAsync.Count != 0)
+            if (_setCollectionChangedAsync.Count != 0)
             {
                 Utils.SafelyRunSynchronously(async () =>
                 {
@@ -392,7 +391,7 @@ namespace Chummer
                     try
                     {
                         await Task.WhenAll(
-                            _lstCollectionChangedAsync.Select(x => x.Invoke(this, e))).ConfigureAwait(false);
+                            _setCollectionChangedAsync.Select(x => x.Invoke(this, e))).ConfigureAwait(false);
                         base.OnCollectionChanged(e);
                     }
                     finally
@@ -418,7 +417,7 @@ namespace Chummer
         protected virtual async Task OnCollectionChangedAsync(NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_lstCollectionChangedAsync.Count != 0)
+            if (_setCollectionChangedAsync.Count != 0)
             {
                 IDisposable objLocker = null;
                 if (CollectionChangedLock != null)
@@ -426,7 +425,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    await Task.WhenAll(_lstCollectionChangedAsync.Select(x => x.Invoke(this, e, token))).ConfigureAwait(false);
+                    await Task.WhenAll(_setCollectionChangedAsync.Select(x => x.Invoke(this, e, token))).ConfigureAwait(false);
                     base.OnCollectionChanged(e);
                 }
                 finally
@@ -451,8 +450,8 @@ namespace Chummer
 
         public AsyncFriendlyReaderWriterLock CollectionChangedLock { get; set; }
 
-        private readonly List<AsyncNotifyCollectionChangedEventHandler> _lstCollectionChangedAsync =
-            new List<AsyncNotifyCollectionChangedEventHandler>();
+        private readonly ConcurrentHashSet<AsyncNotifyCollectionChangedEventHandler> _setCollectionChangedAsync =
+            new ConcurrentHashSet<AsyncNotifyCollectionChangedEventHandler>();
 
         /// <summary>
         /// Like CollectionChanged, occurs when an item is added, removed, changed, moved, or the entire list is refreshed.
@@ -461,8 +460,8 @@ namespace Chummer
         [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         public virtual event AsyncNotifyCollectionChangedEventHandler CollectionChangedAsync
         {
-            add => _lstCollectionChangedAsync.Add(value);
-            remove => _lstCollectionChangedAsync.Remove(value);
+            add => _setCollectionChangedAsync.TryAdd(value);
+            remove => _setCollectionChangedAsync.Remove(value);
         }
 
         public Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)

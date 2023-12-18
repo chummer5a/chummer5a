@@ -496,7 +496,6 @@ namespace Chummer
                                 if (!ReferenceEquals(objLoop.LinkedObject, objItem))
                                     continue;
                                 await SustainedCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
-                                await objLoop.DisposeAsync().ConfigureAwait(false);
                             }
                         }
 
@@ -518,7 +517,6 @@ namespace Chummer
                                     y => ReferenceEquals(y, objLoop.LinkedObject), token: token).ConfigureAwait(false))
                                 continue;
                             await SustainedCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
-                            await objLoop.DisposeAsync().ConfigureAwait(false);
                         }
 
                         break;
@@ -8902,30 +8900,13 @@ namespace Chummer
                                     if (objSustained.InternalId !=
                                         Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
                                     {
-                                        try
-                                        {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                _lstSustainedObjects.Add(objSustained);
-                                            else
-                                                await _lstSustainedObjects.AddAsync(objSustained, token)
-                                                    .ConfigureAwait(false);
-                                        }
-                                        catch
-                                        {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                objSustained.Dispose();
-                                            else
-                                                await objSustained.DisposeAsync().ConfigureAwait(false);
-                                            throw;
-                                        }
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstSustainedObjects.Add(objSustained);
+                                        else
+                                            await _lstSustainedObjects.AddAsync(objSustained, token)
+                                                .ConfigureAwait(false);
                                     }
-                                    else if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        objSustained.Dispose();
-                                    else
-                                        await objSustained.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
 
@@ -11235,8 +11216,6 @@ namespace Chummer
                 _lstVehicleLocations.Dispose();
                 _lstImprovementGroups.Dispose();
                 _lstLimitModifiers.Dispose();
-                foreach (SustainedObject objItem in _lstSustainedObjects)
-                    objItem.Dispose();
                 _lstSustainedObjects.Dispose();
                 _lstPrioritySkills.Dispose();
                 _objSkillsSection.Dispose();
@@ -11276,15 +11255,7 @@ namespace Chummer
             try
             {
                 Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
-                IAsyncDisposable objLocker2 = await _objSettings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                try
-                {
-                    _objSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+                _objSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
                 ImprovementManager.ClearCachedValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
@@ -11331,7 +11302,6 @@ namespace Chummer
                 await _lstVehicleLocations.DisposeAsync().ConfigureAwait(false);
                 await _lstImprovementGroups.DisposeAsync().ConfigureAwait(false);
                 await _lstLimitModifiers.DisposeAsync().ConfigureAwait(false);
-                await _lstSustainedObjects.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstSustainedObjects.DisposeAsync().ConfigureAwait(false);
                 await _lstPrioritySkills.DisposeAsync().ConfigureAwait(false);
                 await _objSkillsSection.DisposeAsync().ConfigureAwait(false);
@@ -11466,7 +11436,6 @@ namespace Chummer
                 _lstArmorLocations.ForEach(x => x.Dispose(), token);
                 _lstWeaponLocations.ForEach(x => x.Dispose(), token);
                 _lstVehicleLocations.ForEach(x => x.Dispose(), token);
-                _lstSustainedObjects.ForEach(x => x.Dispose(), token);
                 // Reset all of the Lists.
                 // This kills the GC
                 ImprovementManager.ClearCachedValues(this, token);
@@ -11630,7 +11599,6 @@ namespace Chummer
                 await _lstArmorLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
                 await _lstWeaponLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
                 await _lstVehicleLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
-                await _lstSustainedObjects.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
                 // Reset all of the Lists.
                 // This kills the GC
                 ImprovementManager.ClearCachedValues(this, token);
@@ -14963,26 +14931,19 @@ namespace Chummer
                             if (ReferenceEquals(objOldSettings, value))
                                 return;
                             bool blnActuallyDifferentSettings = objOldSettings?.HasIdenticalSettings(value) != false;
-                            Utils.RunWithoutThreadLock(
-                                () =>
+                            if (objOldSettings != null)
+                            {
+                                try
                                 {
-                                    if (objOldSettings == null)
-                                        return;
-                                    try
-                                    {
-                                        objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
-                                    }
-                                    catch (ObjectDisposedException)
-                                    {
-                                        //swallow this
-                                    }
-                                },
-                                () =>
+                                    objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
+                                }
+                                catch (ObjectDisposedException)
                                 {
-                                    if (value == null)
-                                        return;
-                                    value.PropertyChangedAsync += OptionsOnPropertyChanged;
-                                });
+                                    //swallow this
+                                }
+                            }
+                            if (value != null)
+                                value.PropertyChangedAsync += OptionsOnPropertyChanged;
 
                             if (!blnActuallyDifferentSettings || IsLoading)
                                 return;
@@ -15061,32 +15022,12 @@ namespace Chummer
                         {
                             blnActuallyDifferentSettings = !await objOldSettings.HasIdenticalSettingsAsync(value, token)
                                 .ConfigureAwait(false);
-                            IAsyncDisposable objLocker4 = await objOldSettings.LockObject.EnterWriteLockAsync(token)
-                                .ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker4.DisposeAsync().ConfigureAwait(false);
-                            }
+                            objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
                         }
 
                         if (value != null)
                         {
-                            IAsyncDisposable objLocker4
-                                = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                value.PropertyChangedAsync += OptionsOnPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker4.DisposeAsync().ConfigureAwait(false);
-                            }
+                            value.PropertyChangedAsync += OptionsOnPropertyChanged;
                         }
 
                         if (!blnActuallyDifferentSettings || IsLoading)
@@ -38437,21 +38378,13 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new List<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Add(value);
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Remove(value);
-            }
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         // Kept separate for events that are meant to work off of changes to whatever settings the character even if they change
@@ -39355,18 +39288,17 @@ namespace Chummer
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                         RefreshAstralReputationImprovements();
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
-                        int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
-                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs);
+                        Utils.RunWithoutThreadLock(lstFuncs);
                         if (PropertyChanged != null)
                         {
                             Utils.RunOnMainThread(() =>
@@ -39617,13 +39549,13 @@ namespace Chummer
 
                     await Task.WhenAll(lstTasks).ConfigureAwait(false);
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
                         lstTasks.Clear();
                         int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {

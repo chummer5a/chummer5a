@@ -1117,31 +1117,15 @@ namespace Chummer
         /// <inheritdoc cref="EnhancedObservableCollection{T}.BeforeClearCollectionChangedAsync" />
         public virtual event AsyncNotifyCollectionChangedEventHandler BeforeClearCollectionChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.BeforeClearCollectionChangedAsync += value;
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.BeforeClearCollectionChangedAsync -= value;
-            }
+            add => _lstData.BeforeClearCollectionChangedAsync += value;
+            remove => _lstData.BeforeClearCollectionChangedAsync -= value;
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.CollectionChangedAsync" />
         public virtual event AsyncNotifyCollectionChangedEventHandler CollectionChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.CollectionChangedAsync += value;
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.CollectionChangedAsync -= value;
-            }
+            add => _lstData.CollectionChangedAsync += value;
+            remove => _lstData.CollectionChangedAsync -= value;
         }
 
         /// <inheritdoc />
@@ -1163,16 +1147,8 @@ namespace Chummer
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.PropertyChangedAsync += value;
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.PropertyChangedAsync -= value;
-            }
+            add => _lstData.PropertyChangedAsync += value;
+            remove => _lstData.PropertyChangedAsync -= value;
         }
 
         [NotifyPropertyChangedInvocator]

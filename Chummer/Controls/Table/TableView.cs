@@ -914,17 +914,7 @@ namespace Chummer.UI.Table
                 if (lstOldItems != null)
                 {
                     // remove listener from old items
-                    IAsyncDisposable objLocker3 =
-                        await lstOldItems.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        lstOldItems.ListChangedAsync -= ItemsChanged;
-                    }
-                    finally
-                    {
-                        await objLocker3.DisposeAsync().ConfigureAwait(false);
-                    }
-
+                    lstOldItems.ListChangedAsync -= ItemsChanged;
                     intOldCount = lstOldItems.Count;
                 }
 
@@ -1019,16 +1009,7 @@ namespace Chummer.UI.Table
 
                     if (value != null)
                     {
-                        IAsyncDisposable objLocker3 =
-                            await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            value.ListChangedAsync += ItemsChanged;
-                        }
-                        finally
-                        {
-                            await objLocker3.DisposeAsync().ConfigureAwait(false);
-                        }
+                        value.ListChangedAsync += ItemsChanged;
                     }
                 }
                 finally

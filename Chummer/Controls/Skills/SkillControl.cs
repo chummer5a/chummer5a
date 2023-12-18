@@ -972,26 +972,19 @@ namespace Chummer.UI.Skills
                 CharacterAttrib objOldAttrib = Interlocked.Exchange(ref _objAttributeActive, value);
                 if (objOldAttrib == value)
                     return;
-                Utils.RunWithoutThreadLock(
-                    () =>
+                if (objOldAttrib != null)
+                {
+                    try
                     {
-                        if (objOldAttrib == null)
-                            return;
-                        try
-                        {
-                            objOldAttrib.PropertyChangedAsync -= Attribute_PropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
-                    },
-                    () =>
+                        objOldAttrib.PropertyChangedAsync -= Attribute_PropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
                     {
-                        if (value == null)
-                            return;
-                        value.PropertyChangedAsync += Attribute_PropertyChanged;
-                    });
+                        //swallow this
+                    }
+                }
+                if (value != null)
+                    value.PropertyChangedAsync += Attribute_PropertyChanged;
 
                 btnAttribute.Font = value == _objSkill.AttributeObject
                     ? _fntNormal
@@ -1008,31 +1001,17 @@ namespace Chummer.UI.Skills
                 return;
             if (objOldAttrib != null)
             {
-                IAsyncDisposable objLocker = await objOldAttrib.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
                     objOldAttrib.PropertyChangedAsync -= Attribute_PropertyChanged;
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    //swallow this
                 }
             }
-
             if (value != null)
-            {
-                IAsyncDisposable objLocker = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    value.PropertyChangedAsync += Attribute_PropertyChanged;
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
+                value.PropertyChangedAsync += Attribute_PropertyChanged;
 
             Font objFont = value == _objSkill.AttributeObject ? _fntNormal : _fntItalic;
             await btnAttribute.DoThreadSafeAsync(x => x.Font = objFont, token).ConfigureAwait(false);

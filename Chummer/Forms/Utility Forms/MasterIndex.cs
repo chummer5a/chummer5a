@@ -266,16 +266,7 @@ namespace Chummer
 
                     if (objSettings != null)
                     {
-                        IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
-                        try
-                        {
-                            _objGenericToken.ThrowIfCancellationRequested();
-                            objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
+                        objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
                     }
                 }
                 finally
@@ -295,26 +286,11 @@ namespace Chummer
 
         private async void MasterIndex_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objSelectedSetting != null)
-            {
-                try
-                {
-                    IAsyncDisposable objLocker = await _objSelectedSetting.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
-                    try
-                    {
-                        _objGenericToken.ThrowIfCancellationRequested();
-                        _objSelectedSetting.PropertyChangedAsync -= OnSelectedSettingChanged;
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    return;
-                }
-            }
+            if (_objGenericToken.IsCancellationRequested)
+                return;
+            CharacterSettings objSettings = Interlocked.Exchange(ref _objSelectedSetting, null);
+            if (objSettings != null)
+                objSettings.PropertyChangedAsync -= OnSelectedSettingChanged;
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, null);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
             {
@@ -439,30 +415,12 @@ namespace Chummer
                         {
                             if (objPreviousSettings != null)
                             {
-                                IAsyncDisposable objLocker = await objPreviousSettings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    objPreviousSettings.PropertyChangedAsync -= OnSelectedSettingChanged;
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
+                                objPreviousSettings.PropertyChangedAsync -= OnSelectedSettingChanged;
                             }
 
                             if (objSettings != null)
                             {
-                                IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
+                                objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
                             }
 
                             await LoadContent(token).ConfigureAwait(false);

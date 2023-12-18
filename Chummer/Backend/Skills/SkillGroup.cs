@@ -99,16 +99,7 @@ namespace Chummer.Backend.Skills
                 {
                     try
                     {
-                        IAsyncDisposable objLocker2
-                            = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                        try
-                        {
-                            _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
+                        _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -117,16 +108,7 @@ namespace Chummer.Backend.Skills
 
                     try
                     {
-                        IAsyncDisposable objLocker2 = await _objCharacter.Settings.LockObject.EnterWriteLockAsync()
-                                                                         .ConfigureAwait(false);
-                        try
-                        {
-                            _objCharacter.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
+                        _objCharacter.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -138,16 +120,7 @@ namespace Chummer.Backend.Skills
                 {
                     try
                     {
-                        IAsyncDisposable objLocker2
-                            = await objSkill.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                        try
-                        {
-                            objSkill.PropertyChangedAsync -= SkillOnPropertyChanged;
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
+                        objSkill.PropertyChangedAsync -= SkillOnPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -1505,17 +1478,7 @@ namespace Chummer.Backend.Skills
                         {
                             token.ThrowIfCancellationRequested();
                             _lstAffectedSkills.Add(skill);
-                            IAsyncDisposable objLocker5 =
-                                await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                skill.PropertyChangedAsync += SkillOnPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker5.DisposeAsync().ConfigureAwait(false);
-                            }
+                            skill.PropertyChangedAsync += SkillOnPropertyChanged;
 
                             blnTemp = _objCharacter?.SkillsSection?.IsLoading != true;
                         }
@@ -1548,7 +1511,6 @@ namespace Chummer.Backend.Skills
             using (LockObject.EnterUpgradeableReadLock())
             {
                 bool blnTemp;
-                using (skill.LockObject.EnterUpgradeableReadLock())
                 using (LockObject.EnterWriteLock())
                 {
                     if (!_lstAffectedSkills.Remove(skill))
@@ -1569,38 +1531,16 @@ namespace Chummer.Backend.Skills
                 await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
-                bool blnTemp;
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 =
-                    await skill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                bool blnTemp;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!_lstAffectedSkills.Remove(skill))
-                            return;
-                        IAsyncDisposable objLocker4
-                            = await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            skill.PropertyChangedAsync -= SkillOnPropertyChanged;
-                        }
-                        finally
-                        {
-                            await objLocker4.DisposeAsync().ConfigureAwait(false);
-                        }
-
-                        blnTemp = _objCharacter?.SkillsSection?.IsLoading != true;
-                            
-                    }
-                    finally
-                    {
-                        await objLocker3.DisposeAsync().ConfigureAwait(false);
-                    }
+                    if (!_lstAffectedSkills.Remove(skill))
+                        return;
+                    skill.PropertyChangedAsync -= SkillOnPropertyChanged;
+                    blnTemp = _objCharacter?.SkillsSection?.IsLoading != true;
                 }
                 finally
                 {
@@ -2199,21 +2139,13 @@ namespace Chummer.Backend.Skills
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new List<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Add(value);
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Remove(value);
-            }
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -2273,18 +2205,17 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
-                        int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
-                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs);
+                        Utils.RunWithoutThreadLock(lstFuncs);
                         if (PropertyChanged != null)
                         {
                             Utils.RunOnMainThread(() =>
@@ -2381,15 +2312,15 @@ namespace Chummer.Backend.Skills
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
                         List<Task> lstTasks =
-                            new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count,
+                            new List<Task>(Math.Min(lstArgsList.Count * _setPropertyChangedAsync.Count,
                                 Utils.MaxParallelBatchSize));
                         int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {

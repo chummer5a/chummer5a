@@ -135,12 +135,9 @@ namespace Chummer
             tabWeaponCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
 
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
-            using (objCharacter.LockObject.EnterWriteLock())
-            {
-                objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
-                objCharacter.SettingsPropertyChangedAsync += OnCharacterSettingsPropertyChanged;
-                objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-            }
+            objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
+            objCharacter.SettingsPropertyChangedAsync += OnCharacterSettingsPropertyChanged;
+            objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
 
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
@@ -2066,25 +2063,9 @@ namespace Chummer
                         CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
                         CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
                         CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
-                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                        try
-                        {
-                            IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                            try
-                            {
-                                CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                            }
-                            finally
-                            {
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
-                            }
-                            CharacterObject.PropertyChangedAsync -= OnCharacterPropertyChanged;
-                            CharacterObject.SettingsPropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
+                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
+                        CharacterObject.PropertyChangedAsync -= OnCharacterPropertyChanged;
+                        CharacterObject.SettingsPropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
 
                         SetupCommonCollectionDatabindings(false);
 

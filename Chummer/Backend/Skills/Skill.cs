@@ -87,45 +87,22 @@ namespace Chummer.Backend.Skills
                 }
 
                 CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strAttributeString);
-                IDisposable objLocker = objNewAttribute?.LockObject.EnterUpgradeableReadLock();
-                try
+                CharacterAttrib objOldAttribute = Interlocked.Exchange(ref _objAttribute, objNewAttribute);
+                if (objOldAttribute == objNewAttribute)
+                    return;
+                if (objOldAttribute != null)
                 {
-                    CharacterAttrib objOldAttribute = Interlocked.Exchange(ref _objAttribute, objNewAttribute);
-                    IDisposable objLocker2 = objOldAttribute?.LockObject.EnterUpgradeableReadLock();
                     try
                     {
-                        if (objOldAttribute == objNewAttribute)
-                            return;
-                        Utils.RunWithoutThreadLock(
-                            () =>
-                            {
-                                if (objOldAttribute == null)
-                                    return;
-                                try
-                                {
-                                    objOldAttribute.PropertyChangedAsync -= OnLinkedAttributeChanged;
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            },
-                            () =>
-                            {
-                                if (objNewAttribute == null)
-                                    return;
-                                objNewAttribute.PropertyChangedAsync += OnLinkedAttributeChanged;
-                            });
+                        objOldAttribute.PropertyChangedAsync -= OnLinkedAttributeChanged;
                     }
-                    finally
+                    catch (ObjectDisposedException)
                     {
-                        objLocker2?.Dispose();
+                        //swallow this
                     }
                 }
-                finally
-                {
-                    objLocker?.Dispose();
-                }
+                if (objNewAttribute != null)
+                    objNewAttribute.PropertyChangedAsync += OnLinkedAttributeChanged;
                 if (CharacterObject.SkillsSection?.IsLoading != true)
                     this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
             }
@@ -151,72 +128,23 @@ namespace Chummer.Backend.Skills
                         strAttributeString = objImprovementOverride.ImprovedName;
                 }
 
-                CharacterAttrib objNewAttribute
-                    = await CharacterObject.GetAttributeAsync(strAttributeString, token: token).ConfigureAwait(false);
-                IAsyncDisposable objLocker2 = null;
-                if (objNewAttribute != null)
-                    objLocker2 = await objNewAttribute.LockObject.EnterUpgradeableReadLockAsync(token)
-                        .ConfigureAwait(false);
-                try
+                CharacterAttrib objNewAttribute = await CharacterObject.GetAttributeAsync(strAttributeString, token: token).ConfigureAwait(false);
+                CharacterAttrib objOldAttribute = Interlocked.Exchange(ref _objAttribute, objNewAttribute);
+                if (objOldAttribute == objNewAttribute)
+                    return;
+                if (objOldAttribute != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    CharacterAttrib objOldAttribute = Interlocked.Exchange(ref _objAttribute, objNewAttribute);
-                    IAsyncDisposable objLocker3 = null;
-                    if (objOldAttribute != null)
-                        objLocker3 = await objOldAttribute.LockObject.EnterUpgradeableReadLockAsync(token)
-                            .ConfigureAwait(false);
                     try
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (objOldAttribute == objNewAttribute)
-                            return;
-                        await Task.WhenAll(
-                            Task.Run(async () =>
-                            {
-                                if (objOldAttribute != null)
-                                {
-                                    IAsyncDisposable objLocker4 = await objOldAttribute.LockObject
-                                        .EnterWriteLockAsync(token).ConfigureAwait(false);
-                                    try
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        objOldAttribute.PropertyChangedAsync -= OnLinkedAttributeChanged;
-                                    }
-                                    finally
-                                    {
-                                        await objLocker4.DisposeAsync().ConfigureAwait(false);
-                                    }
-                                }
-                            }, token),
-                            Task.Run(async () =>
-                            {
-                                if (objNewAttribute != null)
-                                {
-                                    IAsyncDisposable objLocker4 = await objNewAttribute.LockObject
-                                        .EnterWriteLockAsync(token).ConfigureAwait(false);
-                                    try
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        objNewAttribute.PropertyChangedAsync -= OnLinkedAttributeChanged;
-                                    }
-                                    finally
-                                    {
-                                        await objLocker4.DisposeAsync().ConfigureAwait(false);
-                                    }
-                                }
-                            }, token)).ConfigureAwait(false);
+                        objOldAttribute.PropertyChangedAsync -= OnLinkedAttributeChanged;
                     }
-                    finally
+                    catch (ObjectDisposedException)
                     {
-                        if (objLocker3 != null)
-                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        //swallow this
                     }
                 }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+                if (objNewAttribute != null)
+                    objNewAttribute.PropertyChangedAsync += OnLinkedAttributeChanged;
 
                 if (CharacterObject.SkillsSection?.IsLoading != true)
                     await this.OnMultiplePropertyChangedAsync(token, nameof(AttributeModifiers), nameof(Enabled))
@@ -777,22 +705,13 @@ namespace Chummer.Backend.Skills
         protected Skill(Character character)
         {
             CharacterObject = character ?? throw new ArgumentNullException(nameof(character));
+            character.PropertyChangedAsync += OnCharacterChanged;
             character.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
-            using (character.LockObject.EnterWriteLock())
-            {
-                character.PropertyChangedAsync += OnCharacterChanged;
-                using (character.AttributeSection.LockObject.EnterWriteLock())
-                {
-                    character.AttributeSection.PropertyChangedAsync += OnAttributeSectionChanged;
-                    character.AttributeSection.Attributes.CollectionChangedAsync += OnAttributesCollectionChanged;
-                }
-            }
+            character.AttributeSection.PropertyChangedAsync += OnAttributeSectionChanged;
+            character.AttributeSection.Attributes.CollectionChangedAsync += OnAttributesCollectionChanged;
 
-            using (Specializations.LockObject.EnterWriteLock())
-            {
-                Specializations.CollectionChangedAsync += SpecializationsOnCollectionChanged;
-                Specializations.BeforeClearCollectionChangedAsync += SpecializationsOnBeforeClearCollectionChanged;
-            }
+            Specializations.CollectionChangedAsync += SpecializationsOnCollectionChanged;
+            Specializations.BeforeClearCollectionChangedAsync += SpecializationsOnBeforeClearCollectionChanged;
         }
 
         private async Task OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -5628,21 +5547,13 @@ namespace Chummer.Backend.Skills
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new List<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Add(value);
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Remove(value);
-            }
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -5721,18 +5632,18 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
-                        int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
-                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs);
+                        Utils.RunWithoutThreadLock(lstFuncs);
+
                         if (PropertyChanged != null)
                         {
                             Utils.RunOnMainThread(() =>
@@ -5846,13 +5757,13 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
                         List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                         int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
@@ -7425,16 +7336,10 @@ namespace Chummer.Backend.Skills
         {
             if (disposing)
             {
+                CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
                 CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
-                using (CharacterObject.LockObject.EnterWriteLock())
-                {
-                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
-                    using (CharacterObject.AttributeSection.LockObject.EnterWriteLock())
-                    {
-                        CharacterObject.AttributeSection.PropertyChangedAsync -= OnAttributeSectionChanged;
-                        CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
-                    }
-                }
+                CharacterObject.AttributeSection.PropertyChangedAsync -= OnAttributeSectionChanged;
+                CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
 
                 if (AttributeObject != null)
                 {
@@ -7491,50 +7396,19 @@ namespace Chummer.Backend.Skills
         {
             if (disposing)
             {
-                IAsyncDisposable objLocker = await CharacterObject.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                try
-                {
-                    CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-                objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                try
-                {
-                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
-                    IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                    try
-                    {
-                        AttributeSection objSection = await CharacterObject.GetAttributeSectionAsync().ConfigureAwait(false);
-                        objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
-                        ThreadSafeObservableCollection<CharacterAttrib> objAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
-                        objAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
+                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync().ConfigureAwait(false);
+                objSettings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
+                AttributeSection objSection = await CharacterObject.GetAttributeSectionAsync().ConfigureAwait(false);
+                objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
+                ThreadSafeObservableCollection<CharacterAttrib> objAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
+                objAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
 
                 if (AttributeObject != null)
                 {
                     try
                     {
-                        objLocker = await AttributeObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                        try
-                        {
-                            AttributeObject.PropertyChangedAsync -= OnLinkedAttributeChanged;
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
+                        AttributeObject.PropertyChangedAsync -= OnLinkedAttributeChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -7546,15 +7420,7 @@ namespace Chummer.Backend.Skills
                 {
                     try
                     {
-                        objLocker = await SkillGroupObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                        try
-                        {
-                            SkillGroupObject.PropertyChangedAsync -= OnSkillGroupChanged;
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
+                        SkillGroupObject.PropertyChangedAsync -= OnSkillGroupChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -7562,7 +7428,7 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                objLocker = await _lstSpecializations.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await _lstSpecializations.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     _lstSpecializations.CollectionChangedAsync -= SpecializationsOnCollectionChanged;
