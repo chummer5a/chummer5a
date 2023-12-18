@@ -414,55 +414,79 @@ namespace Chummer
             // Negative = there's a writer lock that's waiting or active
             if (lngNumReaders < 0)
             {
-                if (blnSkipSemaphore)
+                try
                 {
-                    // We aren't blocked because we are a re-entrant reader lock, so we should make sure we up the pending count as well
-                    DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
-                    if (objLoopSemaphore != null)
+                    if (blnSkipSemaphore)
                     {
-                        try
+                        // We aren't blocked because we are a re-entrant reader lock, so we should make sure we up the pending count as well
+                        DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                        if (objLoopSemaphore != null)
                         {
                             using (CancellationTokenSource objNewTokenSource =
                                    CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
                                 objLoopSemaphore.SafeWait(objNewTokenSource.Token);
                         }
-                        catch
+                        try
                         {
-                            Interlocked.Decrement(ref _lngNumReaders);
-                            throw;
+                            if (_lngNumReaders < 0) // Check to make sure we didn't cancel in-between
+                                Interlocked.Increment(ref _lngPendingCountForWriter);
+                        }
+                        finally
+                        {
+                            objLoopSemaphore?.Release();
                         }
                     }
+                    else
+                    {
+                        using (CancellationTokenSource objNewTokenSource =
+                               CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
+                        {
+                            token = objNewTokenSource.Token;
+                            // Use local for thread safety
+                            DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
+                            token.ThrowIfCancellationRequested();
+                            objReaderSemaphore.SafeWait(token);
+                            objReaderSemaphore.Release();
+                        }
+                    }
+                }
+                catch
+                {
+                    lngNumReaders = Interlocked.Decrement(ref _lngNumReaders);
+                    if (lngNumReaders >= 0)
+                        throw;
+                    // Use locals for thread safety
+                    DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                    // ReSharper disable once MethodSupportsCancellation
+                    objLoopSemaphore?.SafeWait();
+                    long lngPendingCount;
                     try
                     {
-                        if (_lngNumReaders < 0) // Check to make sure we didn't cancel in-between
-                            Interlocked.Increment(ref _lngPendingCountForWriter);
+                        if (_lngNumReaders >= 0) // Check to make sure we didn't cancel in-between
+                            throw;
+                        lngPendingCount = Interlocked.Decrement(ref _lngPendingCountForWriter);
                     }
                     finally
                     {
                         objLoopSemaphore?.Release();
                     }
-                }
-                else
-                {
-                    using (CancellationTokenSource objNewTokenSource =
-                           CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
-                    {
-                        token = objNewTokenSource.Token;
-                        // Use local for thread safety
-                        DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            objReaderSemaphore.SafeWait(token);
-                        }
-                        catch
-                        {
-                            Interlocked.Decrement(ref _lngNumReaders);
-                            throw;
-                        }
 
-                        objReaderSemaphore.Release();
+                    if (lngPendingCount != 0)
+                        throw;
+                    try
+                    {
+                        _objPendingWriterSemaphore?.Release();
                     }
+                    catch (SemaphoreFullException) when (_intDisposedStatus > 1)
+                    {
+                        // swallow this if we got disposed in-between
+                    }
+                    catch (ObjectDisposedException) when (_intDisposedStatus > 1)
+                    {
+                        // swallow this if we got disposed in-between
+                    }
+
+                    throw;
                 }
             }
         }
@@ -483,56 +507,81 @@ namespace Chummer
             // Negative = there's a writer lock that's waiting or active
             if (lngNumReaders < 0)
             {
-                if (blnSkipSemaphore)
+                try
                 {
-                    // We aren't blocked because we are a re-entrant reader lock, so we should make sure we up the pending count as well
-                    DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
-                    if (objLoopSemaphore != null)
+                    if (blnSkipSemaphore)
                     {
-                        try
+                        // We aren't blocked because we are a re-entrant reader lock, so we should make sure we up the pending count as well
+                        DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                        if (objLoopSemaphore != null)
                         {
                             using (CancellationTokenSource objNewTokenSource =
                                    CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
                                 await objLoopSemaphore.WaitAsync(objNewTokenSource.Token).ConfigureAwait(false);
                         }
-                        catch
+
+                        try
                         {
-                            Interlocked.Decrement(ref _lngNumReaders);
-                            throw;
+                            if (_lngNumReaders < 0) // Check to make sure we didn't cancel in-between
+                                Interlocked.Increment(ref _lngPendingCountForWriter);
+                        }
+                        finally
+                        {
+                            objLoopSemaphore?.Release();
                         }
                     }
-
+                    else
+                    {
+                        using (CancellationTokenSource objNewTokenSource =
+                               CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
+                        {
+                            token = objNewTokenSource.Token;
+                            // Use local for thread safety
+                            DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
+                            token.ThrowIfCancellationRequested();
+                            await objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                            objReaderSemaphore.Release();
+                        }
+                    }
+                }
+                catch
+                {
+                    lngNumReaders = Interlocked.Decrement(ref _lngNumReaders);
+                    if (lngNumReaders >= 0)
+                        throw;
+                    // Use locals for thread safety
+                    DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                    if (objLoopSemaphore != null)
+                        // ReSharper disable once MethodSupportsCancellation
+                        await objLoopSemaphore.WaitAsync().ConfigureAwait(false);
+                    long lngPendingCount;
                     try
                     {
-                        if (_lngNumReaders < 0) // Check to make sure we didn't cancel in-between
-                            Interlocked.Increment(ref _lngPendingCountForWriter);
+                        if (_lngNumReaders >= 0) // Check to make sure we didn't cancel in-between
+                            throw;
+                        lngPendingCount = Interlocked.Decrement(ref _lngPendingCountForWriter);
                     }
                     finally
                     {
                         objLoopSemaphore?.Release();
                     }
-                }
-                else
-                {
-                    using (CancellationTokenSource objNewTokenSource =
-                           CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
-                    {
-                        token = objNewTokenSource.Token;
-                        // Use local for thread safety
-                        DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            Interlocked.Decrement(ref _lngNumReaders);
-                            throw;
-                        }
 
-                        objReaderSemaphore.Release();
+                    if (lngPendingCount != 0)
+                        throw;
+                    try
+                    {
+                        _objPendingWriterSemaphore?.Release();
                     }
+                    catch (SemaphoreFullException) when (_intDisposedStatus > 1)
+                    {
+                        // swallow this if we got disposed in-between
+                    }
+                    catch (ObjectDisposedException) when (_intDisposedStatus > 1)
+                    {
+                        // swallow this if we got disposed in-between
+                    }
+
+                    throw;
                 }
             }
         }
