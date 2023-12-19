@@ -2723,6 +2723,7 @@
       <name>Born Rich</name>
       <karma>5</karma>
       <category>Positive</category>
+      <chargenonly />
       <bonus>
         <nuyenmaxbp>30</nuyenmaxbp>
       </bonus>
