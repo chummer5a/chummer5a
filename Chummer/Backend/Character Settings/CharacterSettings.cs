@@ -332,18 +332,10 @@ namespace Chummer
                             _intCachedEssenceDecimals = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
                             _intCachedWeightDecimals = int.MinValue;
-                        if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
-                        {
-                            if (setNamesOfChangedProperties.Contains(nameof(Books)))
-                            {
-                                Utils.RunWithoutThreadLock(() => RecalculateEnabledCustomDataDirectories(),
-                                    () => RecalculateBookXPath());
-                            }
-                            else
-                                RecalculateEnabledCustomDataDirectories();
-                        }
-                        else if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                        if (setNamesOfChangedProperties.Contains(nameof(Books)))
                             RecalculateBookXPath();
+                        if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+                            RecalculateEnabledCustomDataDirectories();
                     }
 
                     if (_setPropertyChangedAsync.Count > 0)
@@ -436,16 +428,10 @@ namespace Chummer
                             _intCachedEssenceDecimals = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
                             _intCachedWeightDecimals = int.MinValue;
-                        if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
-                        {
-                            if (setNamesOfChangedProperties.Contains(nameof(Books)))
-                                await Task.WhenAll(RecalculateEnabledCustomDataDirectoriesAsync(token),
-                                    RecalculateBookXPathAsync(token)).ConfigureAwait(false);
-                            else
-                                await RecalculateEnabledCustomDataDirectoriesAsync(token).ConfigureAwait(false);
-                        }
-                        else if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                        if (setNamesOfChangedProperties.Contains(nameof(Books)))
                             await RecalculateBookXPathAsync(token).ConfigureAwait(false);
+                        if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+                            await RecalculateEnabledCustomDataDirectoriesAsync(token).ConfigureAwait(false);
                     }
                     finally
                     {
