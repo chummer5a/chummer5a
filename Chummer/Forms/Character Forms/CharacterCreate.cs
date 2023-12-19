@@ -20265,36 +20265,31 @@ namespace Chummer
                     {
                         // Gear Availability.
                         int intRestrictedCount = await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
-                                                       .SumAsync(
-                                                           async objGear => await objGear.CheckRestrictedGear(
+                                                       .SumAsync(objGear => objGear.CheckRestrictedGear(
                                                                dicRestrictedGearLimits, sbdAvailItems,
                                                                sbdRestrictedItems,
-                                                               token).ConfigureAwait(false), token)
+                                                               token), token)
                                                        .ConfigureAwait(false)
                                                  // Cyberware Availability.
                                                  + await (await CharacterObject.GetCyberwareAsync(token)
-                                                                               .ConfigureAwait(false)).SumAsync(
-                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                                               .ConfigureAwait(false)).SumAsync(objGear => objGear.CheckRestrictedGear(
                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                         token), token).ConfigureAwait(false)
                                                  // Armor Availability.
                                                  + await (await CharacterObject.GetArmorAsync(token)
-                                                                               .ConfigureAwait(false)).SumAsync(
-                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                                               .ConfigureAwait(false)).SumAsync(objGear => objGear.CheckRestrictedGear(
                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                         token), token).ConfigureAwait(false)
                                                  // Weapon Availability.
                                                  + await (await CharacterObject.GetWeaponsAsync(token)
-                                                                               .ConfigureAwait(false)).SumAsync(
-                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                                               .ConfigureAwait(false)).SumAsync(objGear => objGear.CheckRestrictedGear(
                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                         token), token).ConfigureAwait(false)
                                                  // Vehicle Availability.
                                                  + await (await CharacterObject.GetVehiclesAsync(token)
-                                                                               .ConfigureAwait(false)).SumAsync(
-                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                                               .ConfigureAwait(false)).SumAsync(objGear => objGear.CheckRestrictedGear(
                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                                         token), token).ConfigureAwait(false);
 
                         // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
                         if (intRestrictedCount > 0)

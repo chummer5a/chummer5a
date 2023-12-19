@@ -1089,13 +1089,14 @@ namespace Chummer
 
         private bool _blnPromptPdfReaderOnLoad;
 
-        public async Task DoLinkPdfReader(CancellationToken token = default)
+        public Task DoLinkPdfReader(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_intLoading > 0)
                 _blnPromptPdfReaderOnLoad = true;
             else
-                await PromptPdfAppPath(token).ConfigureAwait(false);
+                return PromptPdfAppPath(token);
+            return Task.CompletedTask;
         }
 
         private string _strSelectCodeOnRefresh = string.Empty;

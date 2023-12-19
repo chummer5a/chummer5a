@@ -25048,9 +25048,9 @@ namespace Chummer
             }
         }
 
-        private async Task ExpenseEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private Task ExpenseEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            await DoExpenseEntriesCollectionChanged(e, token).ConfigureAwait(false);
+            return DoExpenseEntriesCollectionChanged(e, token);
         }
 
         private async Task DoExpenseEntriesCollectionChanged(NotifyCollectionChangedEventArgs e,

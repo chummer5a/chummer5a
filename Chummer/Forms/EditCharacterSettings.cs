@@ -1715,20 +1715,19 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 await _dicCharacterCustomDataDirectoryInfos.ClearAsync(token).ConfigureAwait(false);
-                await _objCharacterSettings.CustomDataDirectoryKeys.ForEachAsync(
-                    async kvpCustomDataDirectory =>
+                await _objCharacterSettings.CustomDataDirectoryKeys.ForEachAsync(kvpCustomDataDirectory =>
                     {
                         CustomDataDirectoryInfo objLoopInfo
                             = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
                                 x => x.CharacterSettingsSaveKey == kvpCustomDataDirectory.Key);
                         if (objLoopInfo != default)
                         {
-                            await _dicCharacterCustomDataDirectoryInfos.AddAsync(objLoopInfo, kvpCustomDataDirectory.Value, token).ConfigureAwait(false);
+                            return _dicCharacterCustomDataDirectoryInfos.AddAsync(objLoopInfo, kvpCustomDataDirectory.Value, token);
                         }
                         else
                         {
-                            await _dicCharacterCustomDataDirectoryInfos.AddAsync(kvpCustomDataDirectory.Key,
-                                kvpCustomDataDirectory.Value, token).ConfigureAwait(false);
+                            return _dicCharacterCustomDataDirectoryInfos.AddAsync(kvpCustomDataDirectory.Key,
+                                kvpCustomDataDirectory.Value, token);
                         }
                     }, token: token).ConfigureAwait(false);
             }

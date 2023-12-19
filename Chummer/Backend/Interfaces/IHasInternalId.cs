@@ -444,9 +444,9 @@ namespace Chummer
                         {
                             await AddToTree(objWeaponAccessory, intNewIndex).ConfigureAwait(false);
 
-                            async Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objWeaponAccessory.RefreshChildrenGears(
-                                    treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                            Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objWeaponAccessory.RefreshChildrenGears(
+                                    treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: innerToken);
 
                             objWeaponAccessory.GearChildren.AddTaggedCollectionChanged(
                                 treWeapons, FuncDelegateToAdd);
@@ -493,9 +493,9 @@ namespace Chummer
                         {
                             await AddToTree(objWeaponAccessory, intNewIndex).ConfigureAwait(false);
 
-                            async Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objWeaponAccessory.RefreshChildrenGears(
-                                    treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                            Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objWeaponAccessory.RefreshChildrenGears(
+                                    treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: innerToken);
 
                             objWeaponAccessory.GearChildren.AddTaggedCollectionChanged(
                                 treWeapons, FuncDelegateToAdd);
@@ -588,14 +588,14 @@ namespace Chummer
                         {
                             await AddToTree(objVehicleMod, intNewIndex).ConfigureAwait(false);
 
-                            async Task FuncVehicleModCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objVehicleMod.RefreshChildrenCyberware(
-                                    treVehicles, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                            Task FuncVehicleModCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objVehicleMod.RefreshChildrenCyberware(
+                                    treVehicles, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty, token: innerToken);
 
-                            async Task FuncVehicleModWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objVehicleMod.RefreshChildrenWeapons(
+                            Task FuncVehicleModWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objVehicleMod.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                                    cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y, funcMakeDirty, token: innerToken);
 
                             objVehicleMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncVehicleModCyberwareToAdd);
                             objVehicleMod.Weapons.AddTaggedCollectionChanged(treVehicles, FuncVehicleModWeaponsToAdd);
@@ -648,14 +648,14 @@ namespace Chummer
                         {
                             await AddToTree(objVehicleMod, intNewIndex).ConfigureAwait(false);
 
-                            async Task FuncVehicleModCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objVehicleMod.RefreshChildrenCyberware(
-                                    treVehicles, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                            Task FuncVehicleModCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objVehicleMod.RefreshChildrenCyberware(
+                                    treVehicles, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty, token: innerToken);
 
-                            async Task FuncVehicleModWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objVehicleMod.RefreshChildrenWeapons(
+                            Task FuncVehicleModWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objVehicleMod.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                                    cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y, funcMakeDirty, token: innerToken);
 
                             objVehicleMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncVehicleModCyberwareToAdd);
                             objVehicleMod.Weapons.AddTaggedCollectionChanged(treVehicles, FuncVehicleModWeaponsToAdd);
@@ -755,15 +755,16 @@ namespace Chummer
                         {
                             await AddToTree(objWeaponMount, intNewIndex).ConfigureAwait(false);
 
-                            async Task FuncWeaponMountVehicleModToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objWeaponMount.RefreshVehicleMods(treVehicles, cmsVehicleMod, cmsCyberware,
-                                                                        cmsCyberwareGear, cmsVehicleWeapon,
-                                                                        cmsVehicleWeaponAccessory,
-                                                                        cmsVehicleWeaponAccessoryGear, null, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
-                            async Task FuncWeaponMountWeaponToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objWeaponMount.RefreshChildrenWeapons(
+                            Task FuncWeaponMountVehicleModToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objWeaponMount.RefreshVehicleMods(treVehicles, cmsVehicleMod, cmsCyberware,
+                                    cmsCyberwareGear, cmsVehicleWeapon,
+                                    cmsVehicleWeaponAccessory,
+                                    cmsVehicleWeaponAccessoryGear, null, y, funcMakeDirty, token: innerToken);
+
+                            Task FuncWeaponMountWeaponToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objWeaponMount.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                                    cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y, funcMakeDirty, token: innerToken);
 
                             objWeaponMount.Mods.AddTaggedCollectionChanged(treVehicles,
                                 FuncWeaponMountVehicleModToAdd);
@@ -780,17 +781,17 @@ namespace Chummer
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, funcMakeDirty);
                             foreach (VehicleMod objMod in objWeaponMount.Mods)
                             {
-                                async Task FuncWeaponMountVehicleModCyberwareToAdd(
+                                Task FuncWeaponMountVehicleModCyberwareToAdd(
                                     object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                    await objMod.RefreshChildrenCyberware(
-                                        treVehicles, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                                    objMod.RefreshChildrenCyberware(
+                                        treVehicles, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty, token: innerToken);
 
-                                async Task FuncWeaponMountVehicleModWeaponsToAdd(
+                                Task FuncWeaponMountVehicleModWeaponsToAdd(
                                     object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                    await objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                                        cmsVehicleWeaponAccessory,
-                                                                        cmsVehicleWeaponAccessoryGear,
-                                                                        () => objMod.Cyberware.Count, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                                    objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
+                                        cmsVehicleWeaponAccessory,
+                                        cmsVehicleWeaponAccessoryGear,
+                                        () => objMod.Cyberware.Count, y, funcMakeDirty, token: innerToken);
 
                                 objMod.Cyberware.AddTaggedCollectionChanged(
                                     treVehicles, FuncWeaponMountVehicleModCyberwareToAdd);
@@ -869,15 +870,16 @@ namespace Chummer
                         {
                             await AddToTree(objWeaponMount, intNewIndex).ConfigureAwait(false);
 
-                            async Task FuncWeaponMountVehicleModToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objWeaponMount.RefreshVehicleMods(treVehicles, cmsVehicleMod, cmsCyberware,
-                                                                        cmsCyberwareGear, cmsVehicleWeapon,
-                                                                        cmsVehicleWeaponAccessory,
-                                                                        cmsVehicleWeaponAccessoryGear, null, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
-                            async Task FuncWeaponMountWeaponToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                await objWeaponMount.RefreshChildrenWeapons(
+                            Task FuncWeaponMountVehicleModToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objWeaponMount.RefreshVehicleMods(treVehicles, cmsVehicleMod, cmsCyberware,
+                                    cmsCyberwareGear, cmsVehicleWeapon,
+                                    cmsVehicleWeaponAccessory,
+                                    cmsVehicleWeaponAccessoryGear, null, y, funcMakeDirty, token: innerToken);
+
+                            Task FuncWeaponMountWeaponToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                objWeaponMount.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                                    cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y, funcMakeDirty, token: innerToken);
 
                             objWeaponMount.Mods.AddTaggedCollectionChanged(treVehicles,
                                 FuncWeaponMountVehicleModToAdd);
@@ -894,17 +896,17 @@ namespace Chummer
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, funcMakeDirty);
                             foreach (VehicleMod objMod in objWeaponMount.Mods)
                             {
-                                async Task FuncWeaponMountVehicleModCyberwareToAdd(
+                                Task FuncWeaponMountVehicleModCyberwareToAdd(
                                     object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                    await objMod.RefreshChildrenCyberware(
-                                        treVehicles, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                                    objMod.RefreshChildrenCyberware(
+                                        treVehicles, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty, token: innerToken);
 
-                                async Task FuncWeaponMountVehicleModWeaponsToAdd(
+                                Task FuncWeaponMountVehicleModWeaponsToAdd(
                                     object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                    await objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                                        cmsVehicleWeaponAccessory,
-                                                                        cmsVehicleWeaponAccessoryGear,
-                                                                        () => objMod.Cyberware.Count, y, funcMakeDirty, token: innerToken).ConfigureAwait(false);
+                                    objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
+                                        cmsVehicleWeaponAccessory,
+                                        cmsVehicleWeaponAccessoryGear,
+                                        () => objMod.Cyberware.Count, y, funcMakeDirty, token: innerToken);
 
                                 objMod.Cyberware.AddTaggedCollectionChanged(
                                     treVehicles, FuncWeaponMountVehicleModCyberwareToAdd);

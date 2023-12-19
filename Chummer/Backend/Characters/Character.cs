@@ -1220,28 +1220,32 @@ namespace Chummer
             }
         }
 
-        private async Task AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (e.PropertyName == nameof(AttributeSection.AttributeCategory) || IsLoading)
             {
-                await this.OnMultiplePropertyChangedAsync(token, nameof(CurrentWalkingRateString),
+                return this.OnMultiplePropertyChangedAsync(token, nameof(CurrentWalkingRateString),
                     nameof(CurrentRunningRateString),
-                    nameof(CurrentSprintingRateString)).ConfigureAwait(false);
+                    nameof(CurrentSprintingRateString));
             }
+
+            return Task.CompletedTask;
         }
 
-        private async Task ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private Task ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (e.Action != NotifyCollectionChangedAction.Move || IsLoading)
             {
-                await this.OnMultiplePropertyChangedAsync(token, nameof(NegativeQualityKarma),
+                return this.OnMultiplePropertyChangedAsync(token, nameof(NegativeQualityKarma),
                     nameof(NegativeQualityLimitKarma),
                     nameof(PositiveQualityLimitKarma),
                     nameof(PositiveQualityKarma),
-                    nameof(EnemyKarma)).ConfigureAwait(false);
+                    nameof(EnemyKarma));
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task PowersOnBeforeRemove(object sender, RemovingOldEventArgs e,
@@ -10382,15 +10386,15 @@ namespace Chummer
                         .ConfigureAwait(false);
                     try
                     {
-                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(
-                            async objLimitModifier =>
-                            {
-                                if (objLimitModifier.Limit == "Physical")
+                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
+                        {
+                            if (objLimitModifier.Limit == "Physical")
                                 {
-                                    await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                        .ConfigureAwait(false);
+                                    return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
                                 }
-                            }, token).ConfigureAwait(false);
+
+                            return Task.CompletedTask;
+                        }, token).ConfigureAwait(false);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager
@@ -10450,15 +10454,15 @@ namespace Chummer
                         .ConfigureAwait(false);
                     try
                     {
-                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(
-                            async objLimitModifier =>
-                            {
-                                if (objLimitModifier.Limit == "Mental")
+                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
+                        {
+                            if (objLimitModifier.Limit == "Mental")
                                 {
-                                    await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                        .ConfigureAwait(false);
+                                    return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
                                 }
-                            }, token).ConfigureAwait(false);
+
+                            return Task.CompletedTask;
+                        }, token).ConfigureAwait(false);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager
@@ -10515,15 +10519,15 @@ namespace Chummer
                         = await objWriter.StartElementAsync("limitmodifierssoc", token: token).ConfigureAwait(false);
                     try
                     {
-                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(
-                            async objLimitModifier =>
-                            {
-                                if (objLimitModifier.Limit == "Social")
+                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
+                        {
+                            if (objLimitModifier.Limit == "Social")
                                 {
-                                    await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                        .ConfigureAwait(false);
+                                    return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
                                 }
-                            }, token).ConfigureAwait(false);
+
+                            return Task.CompletedTask;
+                        }, token).ConfigureAwait(false);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager
@@ -13523,9 +13527,9 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
-                    await objLoopVehicle.WeaponMounts.ForEachAsync(async objLoopWeaponMount =>
+                    await objLoopVehicle.WeaponMounts.ForEachAsync(objLoopWeaponMount =>
                     {
-                        await objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
+                        return objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
                         {
                             await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)
                                 .ConfigureAwait(false)).ForEachAsync(
@@ -13552,7 +13556,7 @@ namespace Chummer
                                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                                     }
                                 }, token).ConfigureAwait(false);
-                        }, token).ConfigureAwait(false);
+                        }, token);
                     }, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
             }
@@ -39692,24 +39696,30 @@ namespace Chummer
 
             if (Program.MainForm == null || IsLoading)
                 return;
-            await Program.OpenCharacters.ForEachParallelAsync(async objLoopOpenCharacter =>
+            await Program.OpenCharacters.ForEachParallelAsync(objLoopOpenCharacter =>
             {
                 if (objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
                 {
-                    await Task.WhenAll(objLoopOpenCharacter.Spirits.ForEachParallelAsync(async objSpirit =>
+                    return Task.WhenAll(objLoopOpenCharacter.Spirits.ForEachParallelAsync(objSpirit =>
                     {
                         if (objSpirit.LinkedCharacter == this)
                         {
-                            await objSpirit.OnPropertyChangedAsync(nameof(Spirit.LinkedCharacter), token).ConfigureAwait(false);
+                            return objSpirit.OnPropertyChangedAsync(nameof(Spirit.LinkedCharacter), token);
                         }
-                    }, token), objLoopOpenCharacter.Contacts.ForEachParallelAsync(async objContact =>
+
+                        return Task.CompletedTask;
+                    }, token), objLoopOpenCharacter.Contacts.ForEachParallelAsync(objContact =>
                     {
                         if (objContact.LinkedCharacter == this)
                         {
-                            await objContact.OnPropertyChangedAsync(nameof(Contact.LinkedCharacter), token).ConfigureAwait(false);
+                            return objContact.OnPropertyChangedAsync(nameof(Contact.LinkedCharacter), token);
                         }
-                    }, token)).ConfigureAwait(false);
+
+                        return Task.CompletedTask;
+                    }, token));
                 }
+
+                return Task.CompletedTask;
             }, token).ConfigureAwait(false);
         }
 

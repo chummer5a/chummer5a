@@ -251,12 +251,12 @@ namespace Chummer.UI.Skills
 
         private int _intLoaded;
 
-        public async Task DoLoad(CancellationToken token)
+        public Task DoLoad(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
-                return;
-            await DoDataBindingsAsync(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return DoDataBindingsAsync(token);
         }
 
         private async void SkillGroupControl_Load(object sender, EventArgs e)

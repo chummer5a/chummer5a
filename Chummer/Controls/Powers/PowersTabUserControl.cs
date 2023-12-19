@@ -868,8 +868,8 @@ namespace Chummer.UI.Powers
                         Alignment = Alignment.Center
                     };
 
-                    async Task ValueUpdater(Power p, bool check) =>
-                        await p.SetDiscountedAdeptWayAsync(check, _objMyToken).ConfigureAwait(false);
+                    Task ValueUpdater(Power p, bool check) =>
+                        p.SetDiscountedAdeptWayAsync(check, _objMyToken);
 
                     async Task<bool> EnabledExtractor(Power p, CancellationToken t) =>
                         await p.CharacterObject.GetAllowAdeptWayPowerDiscountAsync(t).ConfigureAwait(false) || await p

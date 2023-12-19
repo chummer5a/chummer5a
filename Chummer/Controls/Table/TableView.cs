@@ -592,12 +592,12 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, Task<bool>> Filter => _funcFilter;
 
-        public async Task SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
+        public Task SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
         {
             Func<T, Task<bool>> objNewValue = value ?? _funcDefaultFilter;
             if (Interlocked.Exchange(ref _funcFilter, objNewValue) == objNewValue)
-                return;
-            await DoFilter(token: token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return DoFilter(token: token);
         }
 
         private async Task ItemsChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
@@ -1044,11 +1044,12 @@ namespace Chummer.UI.Table
             }
         }
 
-        public async Task SetSortOrderAsync(SortOrder value, CancellationToken token = default)
+        public Task SetSortOrderAsync(SortOrder value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (InterlockedExtensions.Exchange(ref _eSortType, value) != value)
-                await SortAsync(token: token).ConfigureAwait(false);
+                return SortAsync(token: token);
+            return Task.CompletedTask;
         }
     }
 }

@@ -4695,12 +4695,11 @@ namespace Chummer.Backend.Equipment
             }
 
             intRestrictedCount += await Children
-                                        .SumAsync(
-                                            async objChild =>
-                                                await objChild
-                                                      .CheckRestrictedGear(
-                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                          token).ConfigureAwait(false), token: token)
+                                        .SumAsync(objChild =>
+                                                objChild
+                                                    .CheckRestrictedGear(
+                                                        dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                        token), token: token)
                                         .ConfigureAwait(false);
 
             return intRestrictedCount;
@@ -4793,8 +4792,8 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                async Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
-                    await this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y, funcMakeDirty, token: token).ConfigureAwait(false);
+                Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
+                    this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y, funcMakeDirty, token: token);
 
                 Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);
                 if (funcMakeDirty != null)

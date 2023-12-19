@@ -1717,7 +1717,7 @@ namespace Chummer.Backend.Skills
                 )
             );
 
-        private async Task SkillOnPropertyChanged(object sender, PropertyChangedEventArgs e,
+        private Task SkillOnPropertyChanged(object sender, PropertyChangedEventArgs e,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1725,29 +1725,30 @@ namespace Chummer.Backend.Skills
             {
                 case nameof(Skill.BasePoints):
                 case nameof(Skill.FreeBase):
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(BaseUnbroken), nameof(KarmaUnbroken))
-                        .ConfigureAwait(false);
+                    return this.OnMultiplePropertyChangedAsync(token, nameof(BaseUnbroken), nameof(KarmaUnbroken));
                     break;
 
                 case nameof(Skill.KarmaPoints):
                 case nameof(Skill.FreeKarma):
-                    await OnPropertyChangedAsync(nameof(KarmaUnbroken), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(KarmaUnbroken), token);
                     break;
 
                 case nameof(Skill.Specializations):
                     if (CharacterObject.Settings.SpecializationsBreakSkillGroups)
-                        await OnPropertyChangedAsync(nameof(HasAnyBreakingSkills), token).ConfigureAwait(false);
+                        return OnPropertyChangedAsync(nameof(HasAnyBreakingSkills), token);
                     break;
 
                 case nameof(Skill.TotalBaseRating):
                 case nameof(Skill.Enabled):
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(HasAnyBreakingSkills),
+                    return this.OnMultiplePropertyChangedAsync(token, nameof(HasAnyBreakingSkills),
                         nameof(DisplayRating),
                         nameof(UpgradeToolTip),
                         nameof(CurrentKarmaCost),
-                        nameof(UpgradeKarmaCost)).ConfigureAwait(false);
+                        nameof(UpgradeKarmaCost));
                     break;
             }
+
+            return Task.CompletedTask;
         }
 
         private readonly List<Skill> _lstAffectedSkills = new List<Skill>(4);

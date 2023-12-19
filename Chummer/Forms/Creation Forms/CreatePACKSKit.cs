@@ -753,12 +753,12 @@ namespace Chummer
                                 // Underbarrel Weapon.
                                 if (await objWeapon.UnderbarrelWeapons.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
-                                    await objWeapon.UnderbarrelWeapons.ForEachAsync(async objUnderbarrelWeapon =>
+                                    await objWeapon.UnderbarrelWeapons.ForEachAsync(objUnderbarrelWeapon =>
                                     {
                                         if (!objUnderbarrelWeapon.IncludedInWeapon)
-                                            await objWriter
-                                                  .WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name)
-                                                  .ConfigureAwait(false);
+                                            return objWriter
+                                                .WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name);
+                                        return Task.CompletedTask;
                                     }).ConfigureAwait(false);
                                 }
 
@@ -833,14 +833,14 @@ namespace Chummer
                             {
                                 // <weapons>
                                 await objWriter.WriteStartElementAsync("weapons").ConfigureAwait(false);
-                                await objVehicle.Mods.ForEachAsync(async objVehicleMod =>
+                                await objVehicle.Mods.ForEachAsync(objVehicleMod =>
                                 {
-                                    await objVehicleMod.Weapons.ForEachAsync(async objWeapon =>
+                                    return objVehicleMod.Weapons.ForEachAsync(async objWeapon =>
                                     {
                                         // <weapon>
                                         await objWriter.WriteStartElementAsync("weapon").ConfigureAwait(false);
                                         await objWriter.WriteElementStringAsync("name", objWeapon.Name)
-                                                       .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
 
                                         // Weapon Accessories.
                                         if (await objWeapon.WeaponAccessories.GetCountAsync().ConfigureAwait(false) > 0)
@@ -854,15 +854,15 @@ namespace Chummer
                                                 {
                                                     // <accessory>
                                                     await objWriter.WriteStartElementAsync("accessory")
-                                                                   .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                                     await objWriter.WriteElementStringAsync("name", objAccessory.Name)
-                                                                   .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                                     await objWriter.WriteElementStringAsync("mount", objAccessory.Mount)
-                                                                   .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                                     await objWriter
-                                                          .WriteElementStringAsync(
-                                                              "extramount", objAccessory.ExtraMount)
-                                                          .ConfigureAwait(false);
+                                                        .WriteElementStringAsync(
+                                                            "extramount", objAccessory.ExtraMount)
+                                                        .ConfigureAwait(false);
                                                     // </accessory>
                                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                 }
@@ -883,7 +883,7 @@ namespace Chummer
 
                                         // </weapon>
                                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                    }).ConfigureAwait(false);
+                                    });
                                 }).ConfigureAwait(false);
 
                                 // </weapons>

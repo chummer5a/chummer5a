@@ -84,8 +84,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             List<TreeNode> lstTreeNodes = new List<TreeNode>();
             bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            AsyncLazy<string> strBookPath = new AsyncLazy<string>(
-                async () => await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false), Utils.JoinableTaskFactory);
+            AsyncLazy<string> strBookPath = new AsyncLazy<string>(() => _objCharacter.Settings.BookXPathAsync(token: token), Utils.JoinableTaskFactory);
             foreach (XPathNavigator xmlNode in lstXmlNodes)
             {
                 token.ThrowIfCancellationRequested();

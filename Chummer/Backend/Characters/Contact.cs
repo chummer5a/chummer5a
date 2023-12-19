@@ -2530,40 +2530,42 @@ namespace Chummer
             }
         }
 
-        private async Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             switch (e.PropertyName)
             {
                 case nameof(Character.Name):
-                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Name), token);
                     break;
 
                 case nameof(Character.Age):
-                    await OnPropertyChangedAsync(nameof(Age), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Age), token);
                     break;
 
                 case nameof(Character.Gender):
-                    await OnPropertyChangedAsync(nameof(Gender), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Gender), token);
                     break;
 
                 case nameof(Character.Metatype):
                 case nameof(Character.Metavariant):
-                    await OnPropertyChangedAsync(nameof(Metatype), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Metatype), token);
                     break;
 
                 case nameof(Character.Mugshots):
-                    await OnPropertyChangedAsync(nameof(Mugshots), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Mugshots), token);
                     break;
 
                 case nameof(Character.MainMugshot):
-                    await OnPropertyChangedAsync(nameof(MainMugshot), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(MainMugshot), token);
                     break;
 
                 case nameof(Character.MainMugshotIndex):
-                    await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(MainMugshotIndex), token);
                     break;
             }
+
+            return Task.CompletedTask;
         }
 
         #endregion Properties

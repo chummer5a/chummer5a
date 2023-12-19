@@ -75,11 +75,11 @@ namespace Chummer
             }
         }
 
-        public async Task SetTargetAsync(int value, CancellationToken token = default)
+        public Task SetTargetAsync(int value, CancellationToken token = default)
         {
             if (Interlocked.Exchange(ref _intTarget, value) == value)
-                return;
-            await UpdateColorAsync(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return UpdateColorAsync(token);
         }
 
         public int GlitchMin
@@ -93,11 +93,11 @@ namespace Chummer
             }
         }
 
-        public async Task SetGlitchMinAsync(int value, CancellationToken token = default)
+        public Task SetGlitchMinAsync(int value, CancellationToken token = default)
         {
             if (Interlocked.Exchange(ref _intGlitchMin, value) == value)
-                return;
-            await UpdateColorAsync(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return UpdateColorAsync(token);
         }
 
         public bool BubbleDie
@@ -112,12 +112,12 @@ namespace Chummer
             }
         }
 
-        public async Task SetBubbleDie(bool value, CancellationToken token = default)
+        public Task SetBubbleDie(bool value, CancellationToken token = default)
         {
             int intNewValue = value.ToInt32();
             if (Interlocked.Exchange(ref _intBubbleDie, intNewValue) == intNewValue)
-                return;
-            await UpdateTextAsync(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return UpdateTextAsync(token);
         }
 
         public bool IsHit => Result >= Target && !BubbleDie;

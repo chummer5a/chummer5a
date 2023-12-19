@@ -2181,32 +2181,34 @@ namespace Chummer
             }
         }
 
-        private async Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             switch (e.PropertyName)
             {
                 case nameof(Character.Name):
-                    await OnPropertyChangedAsync(nameof(CritterName), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(CritterName), token);
                     break;
 
                 case nameof(Character.Mugshots):
-                    await OnPropertyChangedAsync(nameof(Mugshots), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Mugshots), token);
                     break;
 
                 case nameof(Character.MainMugshot):
-                    await OnPropertyChangedAsync(nameof(MainMugshot), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(MainMugshot), token);
                     break;
 
                 case nameof(Character.MainMugshotIndex):
-                    await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(MainMugshotIndex), token);
                     break;
 
                 case nameof(Character.AllowSpriteFettering):
                     _intCachedAllowFettering = int.MinValue;
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(AllowFettering), nameof(Fettered)).ConfigureAwait(false);
+                    return this.OnMultiplePropertyChangedAsync(token, nameof(AllowFettering), nameof(Fettered));
                     break;
             }
+
+            return Task.CompletedTask;
         }
 
         #endregion Properties

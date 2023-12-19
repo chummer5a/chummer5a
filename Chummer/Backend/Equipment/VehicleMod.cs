@@ -2203,23 +2203,21 @@ namespace Chummer.Backend.Equipment
             }
 
             intRestrictedCount += await Weapons
-                                        .SumAsync(
-                                            async objChild =>
-                                                await objChild
-                                                      .CheckRestrictedGear(
-                                                          dicRestrictedGearLimits, sbdAvailItems,
-                                                          sbdRestrictedItems,
-                                                          token).ConfigureAwait(false), token: token)
+                                        .SumAsync(objChild =>
+                                                objChild
+                                                    .CheckRestrictedGear(
+                                                        dicRestrictedGearLimits, sbdAvailItems,
+                                                        sbdRestrictedItems,
+                                                        token), token: token)
                                         .ConfigureAwait(false)
                                   + await Cyberware
-                                          .SumAsync(
-                                              async objChild =>
-                                                  await objChild
-                                                        .CheckRestrictedGear(
-                                                            dicRestrictedGearLimits,
-                                                            sbdAvailItems,
-                                                            sbdRestrictedItems,
-                                                            token).ConfigureAwait(false),
+                                          .SumAsync(objChild =>
+                                                  objChild
+                                                      .CheckRestrictedGear(
+                                                          dicRestrictedGearLimits,
+                                                          sbdAvailItems,
+                                                          sbdRestrictedItems,
+                                                          token),
                                               token: token)
                                           .ConfigureAwait(false);
 

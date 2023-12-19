@@ -347,10 +347,9 @@ namespace Chummer.Backend.Skills
                         .StartElementAsync("skillspecializations", token: token).ConfigureAwait(false);
                     try
                     {
-                        await (await GetSpecializationsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSpec =>
+                        await (await GetSpecializationsAsync(token).ConfigureAwait(false)).ForEachAsync(objSpec =>
                         {
-                            await objSpec.Print(objWriter, objCulture, strLanguageToPrint, token: token)
-                                .ConfigureAwait(false);
+                            return objSpec.Print(objWriter, objCulture, strLanguageToPrint, token: token);
                         }, token).ConfigureAwait(false);
                     }
                     finally
@@ -5950,68 +5949,70 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async Task OnCharacterChanged(object sender, PropertyChangedEventArgs e,
+        private Task OnCharacterChanged(object sender, PropertyChangedEventArgs e,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
-                return;
+                return Task.CompletedTask;
             switch (e.PropertyName)
             {
                 case nameof(Character.Karma):
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(CanUpgradeCareer),
-                        nameof(CanAffordSpecialization)).ConfigureAwait(false);
+                    return this.OnMultiplePropertyChangedAsync(token, nameof(CanUpgradeCareer),
+                        nameof(CanAffordSpecialization));
                     break;
 
                 case nameof(Character.WoundModifier):
                 case nameof(Character.SustainingPenalty):
-                    await OnPropertyChangedAsync(nameof(PoolOtherAttribute), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(PoolOtherAttribute), token);
                     break;
 
                 case nameof(Character.PrimaryArm):
-                    await OnPropertyChangedAsync(nameof(PoolToolTip), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(PoolToolTip), token);
                     break;
 
                 case nameof(Character.GetMovement):
                     if (RequiresGroundMovement)
-                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
+                        return OnPropertyChangedAsync(nameof(Enabled), token);
                     break;
 
                 case nameof(Character.GetSwim):
                     if (RequiresSwimMovement)
-                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
+                        return OnPropertyChangedAsync(nameof(Enabled), token);
                     break;
 
                 case nameof(Character.GetFly):
                     if (RequiresFlyMovement)
-                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
+                        return OnPropertyChangedAsync(nameof(Enabled), token);
                     break;
 
                 case nameof(Character.MAGEnabled):
                     if (Attribute == "MAG" || Attribute == "MAGAdept")
-                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
+                        return OnPropertyChangedAsync(nameof(Enabled), token);
                     break;
 
                 case nameof(Character.RESEnabled):
                     if (Attribute == "RES")
-                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
+                        return OnPropertyChangedAsync(nameof(Enabled), token);
                     break;
 
                 case nameof(Character.DEPEnabled):
                     if (Attribute == "DEP")
-                        await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
+                        return OnPropertyChangedAsync(nameof(Enabled), token);
                     break;
 
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(Base),
+                    return this.OnMultiplePropertyChangedAsync(token, nameof(Base),
                         nameof(BaseUnlocked),
-                        nameof(ForcedBuyWithKarma)).ConfigureAwait(false);
+                        nameof(ForcedBuyWithKarma));
                     break;
 
                 case nameof(Character.IsCritter):
-                    await OnPropertyChangedAsync(nameof(Default), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Default), token);
                     break;
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e,
@@ -6129,22 +6130,24 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        protected async Task OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e,
+        protected Task OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
-                return;
+                return Task.CompletedTask;
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
-                    await OnPropertyChangedAsync(nameof(AttributeModifiers), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(AttributeModifiers), token);
                     break;
 
                 case nameof(CharacterAttrib.Abbrev):
-                    await OnPropertyChangedAsync(nameof(Enabled), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Enabled), token);
                     break;
             }
+
+            return Task.CompletedTask;
         }
 
         private int _intSkipSpecializationRefresh;

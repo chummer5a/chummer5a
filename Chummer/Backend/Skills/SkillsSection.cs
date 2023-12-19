@@ -299,29 +299,31 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async Task OnKnowledgeSkillPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task OnKnowledgeSkillPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             if (_intLoading > 0)
-                return;
+                return Task.CompletedTask;
             switch (e.PropertyName)
             {
                 case nameof(KnowledgeSkill.CurrentSpCost):
-                    await OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token);
                     break;
 
                 case nameof(KnowledgeSkill.IsNativeLanguage):
-                    await OnPropertyChangedAsync(nameof(HasAvailableNativeLanguageSlots), token)
-                        .ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(HasAvailableNativeLanguageSlots), token);
                     break;
             }
+
+            return Task.CompletedTask;
         }
 
-        private async Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             if (_intLoading > 0)
-                return;
+                return Task.CompletedTask;
             if (e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
-                await OnPropertyChangedAsync(nameof(SkillPointsSpentOnKnoskills), token).ConfigureAwait(false);
+                return OnPropertyChangedAsync(nameof(SkillPointsSpentOnKnoskills), token);
+            return Task.CompletedTask;
         }
 
         private async Task OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)

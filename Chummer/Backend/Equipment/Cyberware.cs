@@ -8821,23 +8821,21 @@ namespace Chummer.Backend.Equipment
                 }
 
                 intRestrictedCount += await Children
-                                            .SumAsync(
-                                                async objChild =>
-                                                    await objChild
-                                                          .CheckRestrictedGear(
-                                                              dicRestrictedGearLimits, sbdAvailItems,
-                                                              sbdRestrictedItems,
-                                                              token).ConfigureAwait(false), token: token)
+                                            .SumAsync(objChild =>
+                                                    objChild
+                                                        .CheckRestrictedGear(
+                                                            dicRestrictedGearLimits, sbdAvailItems,
+                                                            sbdRestrictedItems,
+                                                            token), token: token)
                                             .ConfigureAwait(false)
                                       + await GearChildren
-                                              .SumAsync(
-                                                  async objChild =>
-                                                      await objChild
-                                                            .CheckRestrictedGear(
-                                                                dicRestrictedGearLimits,
-                                                                sbdAvailItems,
-                                                                sbdRestrictedItems,
-                                                                token).ConfigureAwait(false),
+                                              .SumAsync(objChild =>
+                                                      objChild
+                                                          .CheckRestrictedGear(
+                                                              dicRestrictedGearLimits,
+                                                              sbdAvailItems,
+                                                              sbdRestrictedItems,
+                                                              token),
                                                   token: token)
                                               .ConfigureAwait(false);
             }
@@ -8964,16 +8962,16 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                async Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
+                Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
                 {
-                    await this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
-                        funcMakeDirty, token: token).ConfigureAwait(false);
+                    return this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
+                        funcMakeDirty, token: token);
                 }
 
-                async Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
+                Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
                 {
-                    await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
-                        funcMakeDirty, token: token).ConfigureAwait(false);
+                    return this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
+                        funcMakeDirty, token: token);
                 }
 
                 Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
