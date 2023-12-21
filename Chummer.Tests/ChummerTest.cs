@@ -290,8 +290,10 @@ namespace Chummer.Tests
                             .WithTest(testFileStream)
                             .CheckForSimilar()
                             .WithNodeFilter(x =>
-                                x.Name !=
-                                "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                                // image loading and unloading is not going to be deterministic due to compression algorithms
+                                x.Name != "mugshot"
+                                // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
+                                && x.Name != "improvement") 
                             .WithNodeMatcher(objDiffNodeMatcher)
                             // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
                             .WithDifferenceEvaluator((x, y) =>

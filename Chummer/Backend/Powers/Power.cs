@@ -2261,16 +2261,18 @@ namespace Chummer
                 new DependencyGraphNode<string, Power>(nameof(DisplayPoints),
                     new DependencyGraphNode<string, Power>(nameof(PowerPoints),
                         new DependencyGraphNode<string, Power>(nameof(TotalRating),
-                            new DependencyGraphNode<string, Power>(nameof(Rating)),
+                            new DependencyGraphNode<string, Power>(nameof(Rating),
+                                new DependencyGraphNode<string, Power>(nameof(TotalMaximumLevels),
+                                    new DependencyGraphNode<string, Power>(nameof(LevelsEnabled)),
+                                    new DependencyGraphNode<string, Power>(nameof(MaxLevels), x => x.LevelsEnabled)
+                                )
+                            ),
                             new DependencyGraphNode<string, Power>(nameof(FreeLevels),
                                 new DependencyGraphNode<string, Power>(nameof(FreePoints)),
                                 new DependencyGraphNode<string, Power>(nameof(ExtraPointCost)),
                                 new DependencyGraphNode<string, Power>(nameof(PointsPerLevel))
                             ),
-                            new DependencyGraphNode<string, Power>(nameof(TotalMaximumLevels),
-                                new DependencyGraphNode<string, Power>(nameof(LevelsEnabled)),
-                                new DependencyGraphNode<string, Power>(nameof(MaxLevels), x => x.LevelsEnabled)
-                            )
+                            new DependencyGraphNode<string, Power>(nameof(TotalMaximumLevels))
                         ),
                         new DependencyGraphNode<string, Power>(nameof(Rating)),
                         new DependencyGraphNode<string, Power>(nameof(LevelsEnabled)),

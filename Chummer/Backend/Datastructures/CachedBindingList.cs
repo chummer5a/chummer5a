@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class CachedBindingList<T> : BindingList<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IDisposable
+    public class CachedBindingList<T> : BindingList<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IDisposable, IAsyncDisposable
     {
         public AsyncFriendlyReaderWriterLock BindingListLock { get; set; }
 
@@ -326,7 +326,7 @@ namespace Chummer
             if (!RaiseListChangedEvents)
             {
                 foreach (T obj in Items)
-                    UnhookAsyncPropertyChanged(obj);
+                    await UnhookAsyncPropertyChangedAsync(obj, token).ConfigureAwait(false);
                 base.ClearItems();
                 return;
             }
@@ -358,7 +358,7 @@ namespace Chummer
             try
             {
                 foreach (T obj in Items)
-                    UnhookAsyncPropertyChanged(obj);
+                    await UnhookAsyncPropertyChangedAsync(obj, token).ConfigureAwait(false);
                 base.ClearItems();
             }
             finally
@@ -410,7 +410,7 @@ namespace Chummer
             T objOldItem = this[index];
             if (!RaiseListChangedEvents)
             {
-                UnhookAsyncPropertyChanged(objOldItem);
+                await UnhookAsyncPropertyChangedAsync(objOldItem, token).ConfigureAwait(false);
                 await HookAsyncPropertyChangedAsync(value, token).ConfigureAwait(false);
                 base.SetItem(index, value);
                 return;
@@ -437,7 +437,7 @@ namespace Chummer
             RaiseListChangedEvents = false;
             try
             {
-                UnhookAsyncPropertyChanged(objOldItem);
+                await UnhookAsyncPropertyChangedAsync(objOldItem, token).ConfigureAwait(false);
                 await HookAsyncPropertyChangedAsync(value, token).ConfigureAwait(false);
                 base.SetItem(index, value);
             }
@@ -494,7 +494,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!RaiseListChangedEvents)
             {
-                UnhookAsyncPropertyChanged(this[index]);
+                await UnhookAsyncPropertyChangedAsync(this[index], token).ConfigureAwait(false);
                 RemoveAt(index);
                 return;
             }
@@ -520,7 +520,7 @@ namespace Chummer
             RaiseListChangedEvents = false;
             try
             {
-                UnhookAsyncPropertyChanged(this[index]);
+                await UnhookAsyncPropertyChangedAsync(this[index], token).ConfigureAwait(false);
                 base.RemoveItem(index);
             }
             finally
@@ -636,6 +636,37 @@ namespace Chummer
         {
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
+            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            try
+            {
+                if (propertyChangedAsyncEventHandler == null)
+                    return;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+            notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
+        }
+
+        private async Task UnhookAsyncPropertyChangedAsync(T item, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
+                return;
+            IDisposable objLocker = BindingListLock != null
+                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
+                : null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (propertyChangedAsyncEventHandler == null)
+                    return;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
             notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
         }
 
@@ -698,7 +729,7 @@ namespace Chummer
                 }
                 else
                 {
-                    UnhookAsyncPropertyChanged(obj);
+                    await UnhookAsyncPropertyChangedAsync(obj, token).ConfigureAwait(false);
                     await ResetBindingsAsync(token).ConfigureAwait(false);
                 }
             }
@@ -727,9 +758,24 @@ namespace Chummer
             }
         }
 
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                foreach (T obj in Items)
+                    await UnhookAsyncPropertyChangedAsync(obj).ConfigureAwait(false);
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
     }

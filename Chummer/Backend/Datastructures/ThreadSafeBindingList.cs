@@ -776,7 +776,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    _lstData.Dispose();
+                    await _lstData.DisposeAsync().ConfigureAwait(false);
                 }
                 finally
                 {

@@ -531,7 +531,7 @@ namespace Chummer
                 bool blnDoUnlock;
                 try
                 {
-                    blnDoUnlock = objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0;
+                    blnDoUnlock = objCurrentHelper.ActiveUpgradeableReaderSemaphore.CurrentCount == 0;
                 }
                 catch
                 {
@@ -542,7 +542,7 @@ namespace Chummer
                 {
                     try
                     {
-                        await _objNextHelper.TakeUpgradeableReadLockAsync().ConfigureAwait(false);
+                        await _objNextHelper.TakeSingleWriteLockAsync().ConfigureAwait(false);
                     }
                     catch
                     {
@@ -557,16 +557,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        bool blnGotWriteLock = true;
-                        try
-                        {
-                            await _objNextHelper.SingleUpgradeToWriteLockAsync().ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            blnGotWriteLock = false;
-                        }
-                        await _objNextHelper.DisposeAsync(blnGotWriteLock).ConfigureAwait(false);
+                        await _objNextHelper.DisposeAsync(true).ConfigureAwait(false);
                     }
                 }
                 else
@@ -589,7 +580,7 @@ namespace Chummer
                 try
                 {
                     blnDoUnlock = !_blnSkipUnlockOnDispose &&
-                                  objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0;
+                                  objCurrentHelper.ActiveUpgradeableReaderSemaphore.CurrentCount == 0;
                 }
                 catch
                 {
@@ -600,7 +591,7 @@ namespace Chummer
                 {
                     try
                     {
-                        _objNextHelper.TakeUpgradeableReadLock();
+                        _objNextHelper.TakeSingleWriteLock();
                     }
                     catch
                     {
@@ -615,16 +606,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        bool blnGotWriteLock = true;
-                        try
-                        {
-                            _objNextHelper.SingleUpgradeToWriteLock();
-                        }
-                        catch
-                        {
-                            blnGotWriteLock = false;
-                        }
-                        _objNextHelper.Dispose(blnGotWriteLock);
+                        _objNextHelper.Dispose(true);
                     }
                 }
                 else
@@ -695,8 +677,7 @@ namespace Chummer
                 bool blnDoUnlock;
                 try
                 {
-                    blnDoUnlock = objCurrentHelper.ReaderSemaphore.CurrentCount == 0 &&
-                                  objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0;
+                    blnDoUnlock = objCurrentHelper.ActiveWriterSemaphore.CurrentCount == 0;
                 }
                 catch
                 {
@@ -746,8 +727,7 @@ namespace Chummer
                 bool blnDoUnlock;
                 try
                 {
-                    blnDoUnlock = !_blnSkipUnlockOnDispose && objCurrentHelper.ReaderSemaphore.CurrentCount == 0 &&
-                                  objCurrentHelper.UpgradeableReaderSemaphore.CurrentCount == 0;
+                    blnDoUnlock = !_blnSkipUnlockOnDispose && objCurrentHelper.ActiveWriterSemaphore.CurrentCount == 0;
                 }
                 catch
                 {

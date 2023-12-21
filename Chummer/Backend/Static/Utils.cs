@@ -459,9 +459,9 @@ namespace Chummer
 
         public const int DefaultSleepDuration = 1;
 
-        public const int SleepEmergencyReleaseMaxTicks = 60000 / 15; // About 1 minute in ticks (assuming 15 ms timer frequency)
+        public const int SleepEmergencyReleaseMaxTicks = 60000 / 5; // About 1 minute in ticks (assuming 15 ms timer frequency)
 
-        public const int WaitEmergencyReleaseMaxTicks = 1800000 / 15; // About 30 minutes in ticks (assuming 15 ms timer frequency)
+        public const int WaitEmergencyReleaseMaxTicks = 1800000 / 5; // About 30 minutes in ticks (assuming 15 ms timer frequency)
 
         /// <summary>
         /// Can the current user context write to a given file path?
@@ -1995,7 +1995,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                return JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
+                return JoinableTaskFactory.Run(() => Task.Run(funcToRun, token), JoinableTaskCreationOptions.LongRunning);
             }
             if (!EverDoEvents)
             {
@@ -2021,7 +2021,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                return JoinableTaskFactory.Run(() => funcToRun(token), JoinableTaskCreationOptions.LongRunning);
+                return JoinableTaskFactory.Run(() => Task.Run(() => funcToRun(token), token), JoinableTaskCreationOptions.LongRunning);
             }
             if (!EverDoEvents)
             {
@@ -2161,7 +2161,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
+                JoinableTaskFactory.Run(() => Task.Run(funcToRun, token), JoinableTaskCreationOptions.LongRunning);
                 return;
             }
             if (!EverDoEvents)
@@ -2192,7 +2192,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                JoinableTaskFactory.Run(() => funcToRun(token), JoinableTaskCreationOptions.LongRunning);
+                JoinableTaskFactory.Run(() => Task.Run(() => funcToRun(token), token), JoinableTaskCreationOptions.LongRunning);
                 return;
             }
             if (!EverDoEvents)

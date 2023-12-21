@@ -37,20 +37,22 @@ namespace Chummer
         private int _intDisposedStatus;
         private readonly bool _blnSemaphoreIsPooled;
         private const long MaxReaderCount = long.MaxValue >> 2;
-        private DebuggableSemaphoreSlim _objWriterCancellationSemaphore; // We need this semaphore to prevent race conditions during cancellations
+        private DebuggableSemaphoreSlim _objCancelledWriterSemaphore; // We need this semaphore to prevent race conditions during cancellations
         private DebuggableSemaphoreSlim _objPendingWriterSemaphore;
-        private DebuggableSemaphoreSlim _objUpgradeableReaderSemaphore;
-        private DebuggableSemaphoreSlim _objReaderSemaphore;
+        private DebuggableSemaphoreSlim _objActiveUpgradeableReaderSemaphore;
+        private DebuggableSemaphoreSlim _objActiveWriterSemaphore;
         private long _lngNumReaders;
         private long _lngPendingCountForWriter;
+        private int _intNumChildren;
+        private DebuggableSemaphoreSlim _objHasChildrenSemaphore; // Used to prevent disposing a helper until it has no more children left
 
         private LinkedAsyncRWLockHelper _objParentLinkedHelper;
         private readonly CancellationTokenSource _objDisposalTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objDisposalToken;
 
         public DebuggableSemaphoreSlim PendingWriterSemaphore => _objPendingWriterSemaphore;
-        public DebuggableSemaphoreSlim UpgradeableReaderSemaphore => _objUpgradeableReaderSemaphore;
-        public DebuggableSemaphoreSlim ReaderSemaphore => _objReaderSemaphore;
+        public DebuggableSemaphoreSlim ActiveUpgradeableReaderSemaphore => _objActiveUpgradeableReaderSemaphore;
+        public DebuggableSemaphoreSlim ActiveWriterSemaphore => _objActiveWriterSemaphore;
 
         public LinkedAsyncRWLockHelper ParentLinkedHelper => _objParentLinkedHelper;
 
@@ -92,10 +94,10 @@ namespace Chummer
                 _blnSemaphoreIsPooled = true;
                 LinkedAsyncRWLockHelper objGrandParent = objParent?.ParentLinkedHelper;
 
-                _objWriterCancellationSemaphore = safelyGetNewPooledSemaphoreSlim();
+                _objCancelledWriterSemaphore = safelyGetNewPooledSemaphoreSlim();
                 _objPendingWriterSemaphore = safelyGetNewPooledSemaphoreSlim();
-                _objUpgradeableReaderSemaphore = safelyGetNewPooledSemaphoreSlim();
-                _objReaderSemaphore = safelyGetNewPooledSemaphoreSlim();
+                _objActiveUpgradeableReaderSemaphore = safelyGetNewPooledSemaphoreSlim();
+                _objActiveWriterSemaphore = safelyGetNewPooledSemaphoreSlim();
                 _objHasChildrenSemaphore = safelyGetNewPooledSemaphoreSlim();
 
                 DebuggableSemaphoreSlim safelyGetNewPooledSemaphoreSlim()
@@ -110,11 +112,11 @@ namespace Chummer
                         if (objGrandParent != null)
                         {
                             while (objNewSemaphore == objParent.PendingWriterSemaphore
-                                   || objNewSemaphore == objParent.UpgradeableReaderSemaphore
-                                   || objNewSemaphore == objParent.ReaderSemaphore
+                                   || objNewSemaphore == objParent.ActiveUpgradeableReaderSemaphore
+                                   || objNewSemaphore == objParent.ActiveWriterSemaphore
                                    || objNewSemaphore == objGrandParent.PendingWriterSemaphore
-                                   || objNewSemaphore == objGrandParent.UpgradeableReaderSemaphore
-                                   || objNewSemaphore == objGrandParent.ReaderSemaphore)
+                                   || objNewSemaphore == objGrandParent.ActiveUpgradeableReaderSemaphore
+                                   || objNewSemaphore == objGrandParent.ActiveWriterSemaphore)
                             {
                                 objNewSemaphore = Utils.SemaphorePool.Get();
                             }
@@ -122,8 +124,8 @@ namespace Chummer
                         else
                         {
                             while (objNewSemaphore == objParent.PendingWriterSemaphore
-                                   || objNewSemaphore == objParent.UpgradeableReaderSemaphore
-                                   || objNewSemaphore == objParent.ReaderSemaphore)
+                                   || objNewSemaphore == objParent.ActiveUpgradeableReaderSemaphore
+                                   || objNewSemaphore == objParent.ActiveWriterSemaphore)
                             {
                                 objNewSemaphore = Utils.SemaphorePool.Get();
                             }
@@ -135,10 +137,10 @@ namespace Chummer
             }
             else
             {
-                _objWriterCancellationSemaphore = new DebuggableSemaphoreSlim();
+                _objCancelledWriterSemaphore = new DebuggableSemaphoreSlim();
                 _objPendingWriterSemaphore = new DebuggableSemaphoreSlim();
-                _objUpgradeableReaderSemaphore = new DebuggableSemaphoreSlim();
-                _objReaderSemaphore = new DebuggableSemaphoreSlim();
+                _objActiveUpgradeableReaderSemaphore = new DebuggableSemaphoreSlim();
+                _objActiveWriterSemaphore = new DebuggableSemaphoreSlim();
                 _objHasChildrenSemaphore = new DebuggableSemaphoreSlim();
             }
 
@@ -148,10 +150,6 @@ namespace Chummer
             RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
-
-        private int _intNumChildren;
-
-        private DebuggableSemaphoreSlim _objHasChildrenSemaphore;
 
 #if LINKEDSEMAPHOREDEBUG
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
@@ -203,11 +201,11 @@ namespace Chummer
         private void RemoveChild()
 #endif
         {
-            if (Interlocked.Decrement(ref _intNumChildren) == 0)
-                _objHasChildrenSemaphore.Release();
 #if LINKEDSEMAPHOREDEBUG
             _setChildren.Remove(objChild);
 #endif
+            if (Interlocked.Decrement(ref _intNumChildren) == 0)
+                _objHasChildrenSemaphore.Release();
         }
 
         public void Dispose()
@@ -221,35 +219,33 @@ namespace Chummer
                 return;
             _objDisposalTokenSource.Cancel();
             // Acquire all of our locks
-            DebuggableSemaphoreSlim objUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objUpgradeableReaderSemaphore, null);
+            DebuggableSemaphoreSlim objHasChildrenSemaphore = _objHasChildrenSemaphore;
+            // ReSharper disable once MethodSupportsCancellation
+            _objHasChildrenSemaphore?.SafeWait();
+#if LINKEDSEMAPHOREDEBUG
+            if (!_setChildren.IsEmpty)
+                Utils.BreakIfDebug();
+#endif
+            DebuggableSemaphoreSlim objActiveUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objActiveUpgradeableReaderSemaphore, null);
             if (!blnHasWriteLockAlready)
                 // ReSharper disable once MethodSupportsCancellation
-                objUpgradeableReaderSemaphore?.SafeWait();
-            DebuggableSemaphoreSlim objReaderSemaphore = Interlocked.Exchange(ref _objReaderSemaphore, null);
+                objActiveUpgradeableReaderSemaphore?.SafeWait();
+            DebuggableSemaphoreSlim objActiveWriterSemaphore = Interlocked.Exchange(ref _objActiveWriterSemaphore, null);
             if (!blnHasWriteLockAlready)
                 // ReSharper disable once MethodSupportsCancellation
-                objReaderSemaphore?.SafeWait();
+                objActiveWriterSemaphore?.SafeWait();
             DebuggableSemaphoreSlim objPendingWriterSemaphore = Interlocked.Exchange(ref _objPendingWriterSemaphore, null);
             // ReSharper disable once MethodSupportsCancellation
             objPendingWriterSemaphore?.SafeWait();
-            DebuggableSemaphoreSlim objWriterCancellationSemaphore = Interlocked.Exchange(ref _objWriterCancellationSemaphore, null);
+            DebuggableSemaphoreSlim objCancelledWriterSemaphore = Interlocked.Exchange(ref _objCancelledWriterSemaphore, null);
             // ReSharper disable once MethodSupportsCancellation
-            objWriterCancellationSemaphore?.SafeWait();
-
-#if LINKEDSEMAPHOREDEBUG
-            while (!_setChildren.IsEmpty)
-                // ReSharper disable once MethodSupportsCancellation
-                Utils.SafeSleep();
-#endif
-
-            DebuggableSemaphoreSlim objHasChildrenSemaphore = Interlocked.Exchange(ref _objHasChildrenSemaphore, null);
-            // ReSharper disable once MethodSupportsCancellation
-            objHasChildrenSemaphore?.SafeWait();
+            objCancelledWriterSemaphore?.SafeWait();
 
 #if LINKEDSEMAPHOREDEBUG
             RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
+            _objHasChildrenSemaphore = null;
 #if LINKEDSEMAPHOREDEBUG
             _objParentLinkedHelper?.RemoveChild(this);
 #else
@@ -257,22 +253,13 @@ namespace Chummer
 #endif
 
             // Progressively release and dispose of our locks
-            if (objHasChildrenSemaphore != null)
+            if (objCancelledWriterSemaphore != null)
             {
-                objHasChildrenSemaphore.Release();
+                objCancelledWriterSemaphore.Release();
                 if (_blnSemaphoreIsPooled)
-                    Utils.SemaphorePool.Return(ref objHasChildrenSemaphore);
+                    Utils.SemaphorePool.Return(ref objCancelledWriterSemaphore);
                 else
-                    objHasChildrenSemaphore.Dispose();
-            }
-
-            if (objWriterCancellationSemaphore != null)
-            {
-                objWriterCancellationSemaphore.Release();
-                if (_blnSemaphoreIsPooled)
-                    Utils.SemaphorePool.Return(ref objWriterCancellationSemaphore);
-                else
-                    objWriterCancellationSemaphore.Dispose();
+                    objCancelledWriterSemaphore.Dispose();
             }
 
             if (objPendingWriterSemaphore != null)
@@ -284,22 +271,31 @@ namespace Chummer
                     objPendingWriterSemaphore.Dispose();
             }
 
-            if (objReaderSemaphore != null)
+            if (objActiveWriterSemaphore != null)
             {
-                objReaderSemaphore.Release();
+                objActiveWriterSemaphore.Release();
                 if (_blnSemaphoreIsPooled)
-                    Utils.SemaphorePool.Return(ref objReaderSemaphore);
+                    Utils.SemaphorePool.Return(ref objActiveWriterSemaphore);
                 else
-                    objReaderSemaphore.Dispose();
+                    objActiveWriterSemaphore.Dispose();
             }
 
-            if (objUpgradeableReaderSemaphore != null)
+            if (objActiveUpgradeableReaderSemaphore != null)
             {
-                objUpgradeableReaderSemaphore.Release();
+                objActiveUpgradeableReaderSemaphore.Release();
                 if (_blnSemaphoreIsPooled)
-                    Utils.SemaphorePool.Return(ref objUpgradeableReaderSemaphore);
+                    Utils.SemaphorePool.Return(ref objActiveUpgradeableReaderSemaphore);
                 else
-                    objUpgradeableReaderSemaphore.Dispose();
+                    objActiveUpgradeableReaderSemaphore.Dispose();
+            }
+
+            if (objHasChildrenSemaphore != null)
+            {
+                objHasChildrenSemaphore.Release();
+                if (_blnSemaphoreIsPooled)
+                    Utils.SemaphorePool.Return(ref objHasChildrenSemaphore);
+                else
+                    objHasChildrenSemaphore.Dispose();
             }
         }
 
@@ -314,37 +310,35 @@ namespace Chummer
                 return;
             _objDisposalTokenSource.Cancel();
             // Acquire all of our locks
-            DebuggableSemaphoreSlim objUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objUpgradeableReaderSemaphore, null);
-            if (objUpgradeableReaderSemaphore != null && !blnHasWriteLockAlready)
+            DebuggableSemaphoreSlim objHasChildrenSemaphore = _objHasChildrenSemaphore;
+            if (objHasChildrenSemaphore != null)
                 // ReSharper disable once MethodSupportsCancellation
-                await objUpgradeableReaderSemaphore.WaitAsync().ConfigureAwait(false);
-            DebuggableSemaphoreSlim objReaderSemaphore = Interlocked.Exchange(ref _objReaderSemaphore, null);
-            if (objReaderSemaphore != null && !blnHasWriteLockAlready)
+                await objHasChildrenSemaphore.WaitAsync().ConfigureAwait(false);
+#if LINKEDSEMAPHOREDEBUG
+            if (!_setChildren.IsEmpty)
+                Utils.BreakIfDebug();
+#endif
+            DebuggableSemaphoreSlim objActiveUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objActiveUpgradeableReaderSemaphore, null);
+            if (objActiveUpgradeableReaderSemaphore != null && !blnHasWriteLockAlready)
                 // ReSharper disable once MethodSupportsCancellation
-                await objReaderSemaphore.WaitAsync().ConfigureAwait(false);
+                await objActiveUpgradeableReaderSemaphore.WaitAsync().ConfigureAwait(false);
+            DebuggableSemaphoreSlim objActiveWriterSemaphore = Interlocked.Exchange(ref _objActiveWriterSemaphore, null);
+            if (objActiveWriterSemaphore != null && !blnHasWriteLockAlready)
+                // ReSharper disable once MethodSupportsCancellation
+                await objActiveWriterSemaphore.WaitAsync().ConfigureAwait(false);
             DebuggableSemaphoreSlim objPendingWriterSemaphore = Interlocked.Exchange(ref _objPendingWriterSemaphore, null);
             if (objPendingWriterSemaphore != null)
                 // ReSharper disable once MethodSupportsCancellation
                 await objPendingWriterSemaphore.WaitAsync().ConfigureAwait(false);
-            DebuggableSemaphoreSlim objWriterCancellationSemaphore = Interlocked.Exchange(ref _objWriterCancellationSemaphore, null);
+            DebuggableSemaphoreSlim objCancelledWriterSemaphore = Interlocked.Exchange(ref _objCancelledWriterSemaphore, null);
             // ReSharper disable once MethodSupportsCancellation
-            objWriterCancellationSemaphore?.SafeWait();
-
-#if LINKEDSEMAPHOREDEBUG
-            while (!_setChildren.IsEmpty)
-                // ReSharper disable once MethodSupportsCancellation
-                await Utils.SafeSleepAsync().ConfigureAwait(false);
-#endif
-
-            DebuggableSemaphoreSlim objHasChildrenSemaphore = Interlocked.Exchange(ref _objHasChildrenSemaphore, null);
-            if (objHasChildrenSemaphore != null)
-                // ReSharper disable once MethodSupportsCancellation
-                await objHasChildrenSemaphore.WaitAsync().ConfigureAwait(false);
+            objCancelledWriterSemaphore?.SafeWait();
 
 #if LINKEDSEMAPHOREDEBUG
             RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
+            _objHasChildrenSemaphore = null;
 #if LINKEDSEMAPHOREDEBUG
             _objParentLinkedHelper?.RemoveChild(this);
 #else
@@ -352,22 +346,13 @@ namespace Chummer
 #endif
 
             // Progressively release and dispose of our locks
-            if (objHasChildrenSemaphore != null)
+            if (objCancelledWriterSemaphore != null)
             {
-                objHasChildrenSemaphore.Release();
+                objCancelledWriterSemaphore.Release();
                 if (_blnSemaphoreIsPooled)
-                    Utils.SemaphorePool.Return(ref objHasChildrenSemaphore);
+                    Utils.SemaphorePool.Return(ref objCancelledWriterSemaphore);
                 else
-                    objHasChildrenSemaphore.Dispose();
-            }
-
-            if (objWriterCancellationSemaphore != null)
-            {
-                objWriterCancellationSemaphore.Release();
-                if (_blnSemaphoreIsPooled)
-                    Utils.SemaphorePool.Return(ref objWriterCancellationSemaphore);
-                else
-                    objWriterCancellationSemaphore.Dispose();
+                    objCancelledWriterSemaphore.Dispose();
             }
 
             if (objPendingWriterSemaphore != null)
@@ -379,22 +364,31 @@ namespace Chummer
                     objPendingWriterSemaphore.Dispose();
             }
 
-            if (objReaderSemaphore != null)
+            if (objActiveWriterSemaphore != null)
             {
-                objReaderSemaphore.Release();
+                objActiveWriterSemaphore.Release();
                 if (_blnSemaphoreIsPooled)
-                    Utils.SemaphorePool.Return(ref objReaderSemaphore);
+                    Utils.SemaphorePool.Return(ref objActiveWriterSemaphore);
                 else
-                    objReaderSemaphore.Dispose();
+                    objActiveWriterSemaphore.Dispose();
             }
 
-            if (objUpgradeableReaderSemaphore != null)
+            if (objActiveUpgradeableReaderSemaphore != null)
             {
-                objUpgradeableReaderSemaphore.Release();
+                objActiveUpgradeableReaderSemaphore.Release();
                 if (_blnSemaphoreIsPooled)
-                    Utils.SemaphorePool.Return(ref objUpgradeableReaderSemaphore);
+                    Utils.SemaphorePool.Return(ref objActiveUpgradeableReaderSemaphore);
                 else
-                    objUpgradeableReaderSemaphore.Dispose();
+                    objActiveUpgradeableReaderSemaphore.Dispose();
+            }
+
+            if (objHasChildrenSemaphore != null)
+            {
+                objHasChildrenSemaphore.Release();
+                if (_blnSemaphoreIsPooled)
+                    Utils.SemaphorePool.Return(ref objHasChildrenSemaphore);
+                else
+                    objHasChildrenSemaphore.Dispose();
             }
         }
 
@@ -419,7 +413,7 @@ namespace Chummer
                     if (blnSkipSemaphore)
                     {
                         // We aren't blocked because we are a re-entrant reader lock, so we should make sure we up the pending count as well
-                        DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                        DebuggableSemaphoreSlim objLoopSemaphore = _objCancelledWriterSemaphore;
                         if (objLoopSemaphore != null)
                         {
                             using (CancellationTokenSource objNewTokenSource =
@@ -443,7 +437,7 @@ namespace Chummer
                         {
                             token = objNewTokenSource.Token;
                             // Use local for thread safety
-                            DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
+                            DebuggableSemaphoreSlim objReaderSemaphore = ActiveWriterSemaphore;
                             token.ThrowIfCancellationRequested();
                             objReaderSemaphore.SafeWait(token);
                             objReaderSemaphore.Release();
@@ -456,7 +450,7 @@ namespace Chummer
                     if (lngNumReaders >= 0)
                         throw;
                     // Use locals for thread safety
-                    DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                    DebuggableSemaphoreSlim objLoopSemaphore = _objCancelledWriterSemaphore;
                     // ReSharper disable once MethodSupportsCancellation
                     objLoopSemaphore?.SafeWait();
                     long lngPendingCount;
@@ -512,7 +506,7 @@ namespace Chummer
                     if (blnSkipSemaphore)
                     {
                         // We aren't blocked because we are a re-entrant reader lock, so we should make sure we up the pending count as well
-                        DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                        DebuggableSemaphoreSlim objLoopSemaphore = _objCancelledWriterSemaphore;
                         if (objLoopSemaphore != null)
                         {
                             using (CancellationTokenSource objNewTokenSource =
@@ -537,7 +531,7 @@ namespace Chummer
                         {
                             token = objNewTokenSource.Token;
                             // Use local for thread safety
-                            DebuggableSemaphoreSlim objReaderSemaphore = ReaderSemaphore;
+                            DebuggableSemaphoreSlim objReaderSemaphore = ActiveWriterSemaphore;
                             token.ThrowIfCancellationRequested();
                             await objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
                             objReaderSemaphore.Release();
@@ -550,7 +544,7 @@ namespace Chummer
                     if (lngNumReaders >= 0)
                         throw;
                     // Use locals for thread safety
-                    DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                    DebuggableSemaphoreSlim objLoopSemaphore = _objCancelledWriterSemaphore;
                     if (objLoopSemaphore != null)
                         // ReSharper disable once MethodSupportsCancellation
                         await objLoopSemaphore.WaitAsync().ConfigureAwait(false);
@@ -595,7 +589,7 @@ namespace Chummer
             if (lngNumReaders < 0)
             {
                 // Use locals for thread safety
-                DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                DebuggableSemaphoreSlim objLoopSemaphore = _objCancelledWriterSemaphore;
                 // ReSharper disable once MethodSupportsCancellation
                 objLoopSemaphore?.SafeWait();
                 long lngPendingCount;
@@ -637,7 +631,7 @@ namespace Chummer
             if (lngNumReaders < 0)
             {
                 // Use locals for thread safety
-                DebuggableSemaphoreSlim objLoopSemaphore = _objWriterCancellationSemaphore;
+                DebuggableSemaphoreSlim objLoopSemaphore = _objCancelledWriterSemaphore;
                 if (objLoopSemaphore != null)
                     await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                 long lngPendingCount;
@@ -680,7 +674,7 @@ namespace Chummer
                 token = objNewTokenSource.Token;
                 // Use locals for thread safety
                 // Acquire the upgradeable read lock that also prevents all other locks besides read locks
-                DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+                DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
                 token.ThrowIfCancellationRequested();
                 objLoopSemaphore.SafeWait(token);
             }
@@ -697,7 +691,7 @@ namespace Chummer
                 token = objNewTokenSource.Token;
                 // Use locals for thread safety
                 // Acquire the upgradeable read lock that also prevents all other locks besides read locks
-                DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+                DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
                 token.ThrowIfCancellationRequested();
                 await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
             }
@@ -708,7 +702,7 @@ namespace Chummer
             if (_intDisposedStatus > 1)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             // Use locals for thread safety
-            DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+            DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             try
             {
                 // Release our upgradeable read lock, allowing pending upgradeable reader locks and writer locks through
@@ -740,7 +734,7 @@ namespace Chummer
                     {
                         token = objNewTokenSource.Token;
                         // Use locals for thread safety
-                        DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+                        DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
                         // First lock to prevent any more upgradeable read locks (also makes sure only one writer lock is queued at a time)
                         token.ThrowIfCancellationRequested();
                         objLoopSemaphore.SafeWait(token);
@@ -755,7 +749,7 @@ namespace Chummer
                         {
                             // Acquire the reader lock to lock out readers
                             token.ThrowIfCancellationRequested();
-                            objLoopSemaphore = objLoopHelper.ReaderSemaphore;
+                            objLoopSemaphore = objLoopHelper.ActiveWriterSemaphore;
                             token.ThrowIfCancellationRequested();
                             objLoopSemaphore.SafeWait(token);
                             stkUndo.Push(
@@ -785,7 +779,7 @@ namespace Chummer
                                     long lngPendingCount;
                                     // Use locals for thread safety
                                     DebuggableSemaphoreSlim objLoopSemaphore2 =
-                                        objLoopHelper._objWriterCancellationSemaphore;
+                                        objLoopHelper._objCancelledWriterSemaphore;
                                     objLoopSemaphore2?.SafeWait(token);
                                     try
                                     {
@@ -809,7 +803,7 @@ namespace Chummer
                             {
                                 // Use locals for thread safety
                                 DebuggableSemaphoreSlim objLoopSemaphore2 =
-                                    objLoopHelper._objWriterCancellationSemaphore;
+                                    objLoopHelper._objCancelledWriterSemaphore;
                                 // ReSharper disable once MethodSupportsCancellation
                                 objLoopSemaphore2?.SafeWait();
                                 try
@@ -891,7 +885,7 @@ namespace Chummer
                     {
                         token = objNewTokenSource.Token;
                         // Use locals for thread safety
-                        DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+                        DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
                         token.ThrowIfCancellationRequested();
                         // First lock to prevent any more upgradeable read locks (also makes sure only one writer lock is queued at a time)
                         await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -906,7 +900,7 @@ namespace Chummer
                         {
                             // Acquire the reader lock to lock out readers
                             token.ThrowIfCancellationRequested();
-                            objLoopSemaphore = objLoopHelper.ReaderSemaphore;
+                            objLoopSemaphore = objLoopHelper.ActiveWriterSemaphore;
                             token.ThrowIfCancellationRequested();
                             await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                             stkUndo.Push(
@@ -935,7 +929,7 @@ namespace Chummer
                                 {
                                     long lngPendingCount;
                                     // Use locals for thread safety
-                                    DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper._objWriterCancellationSemaphore;
+                                    DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper._objCancelledWriterSemaphore;
                                     if (objLoopSemaphore2 != null)
                                         await objLoopSemaphore2.WaitAsync(token).ConfigureAwait(false);
                                     try
@@ -959,7 +953,7 @@ namespace Chummer
                             catch
                             {
                                 // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper._objWriterCancellationSemaphore;
+                                DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper._objCancelledWriterSemaphore;
                                 if (objLoopSemaphore2 != null)
                                     // ReSharper disable once MethodSupportsCancellation
                                     await objLoopSemaphore2.WaitAsync().ConfigureAwait(false);
@@ -1042,7 +1036,7 @@ namespace Chummer
                         token = objNewTokenSource.Token;
                         // Use locals for thread safety
                         // First lock to prevent any more upgradeable read locks (also makes sure only one writer lock is queued at a time)
-                        DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+                        DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
                         token.ThrowIfCancellationRequested();
                         objLoopSemaphore.SafeWait(token);
                         stkLockedSemaphores.Push(objLoopSemaphore);
@@ -1050,7 +1044,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
 
                         // Acquire the reader lock to lock out readers
-                        objLoopSemaphore = ReaderSemaphore;
+                        objLoopSemaphore = ActiveWriterSemaphore;
                         token.ThrowIfCancellationRequested();
                         objLoopSemaphore.SafeWait(token);
                         stkLockedSemaphores.Push(objLoopSemaphore);
@@ -1079,7 +1073,7 @@ namespace Chummer
                             {
                                 long lngPendingCount;
                                 // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objWriterCancellationSemaphore;
+                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                                 objLoopSemaphore2?.SafeWait(token);
                                 try
                                 {
@@ -1102,7 +1096,7 @@ namespace Chummer
                         catch
                         {
                             // Use locals for thread safety
-                            DebuggableSemaphoreSlim objLoopSemaphore2 = _objWriterCancellationSemaphore;
+                            DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                             // ReSharper disable once MethodSupportsCancellation
                             objLoopSemaphore2?.SafeWait();
                             try
@@ -1164,13 +1158,13 @@ namespace Chummer
                         token = objNewTokenSource.Token;
                         // Use locals for thread safety
                         // First lock to prevent any more upgradeable read locks (also makes sure only one writer lock is queued at a time)
-                        DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+                        DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
                         token.ThrowIfCancellationRequested();
                         await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                         stkLockedSemaphores.Push(objLoopSemaphore);
 
                         // Acquire the reader lock to lock out readers
-                        objLoopSemaphore = ReaderSemaphore;
+                        objLoopSemaphore = ActiveWriterSemaphore;
                         token.ThrowIfCancellationRequested();
                         await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                         stkLockedSemaphores.Push(objLoopSemaphore);
@@ -1199,7 +1193,7 @@ namespace Chummer
                             {
                                 long lngPendingCount;
                                 // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objWriterCancellationSemaphore;
+                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                                 if (objLoopSemaphore2 != null)
                                     await objLoopSemaphore2.WaitAsync(token).ConfigureAwait(false);
                                 try
@@ -1223,7 +1217,7 @@ namespace Chummer
                         catch
                         {
                             // Use locals for thread safety
-                            DebuggableSemaphoreSlim objLoopSemaphore2 = _objWriterCancellationSemaphore;
+                            DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                             if (objLoopSemaphore2 != null)
                                 // ReSharper disable once MethodSupportsCancellation
                                 await objLoopSemaphore2.WaitAsync().ConfigureAwait(false);
@@ -1276,7 +1270,7 @@ namespace Chummer
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             // Use locals for thread safety
-            DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+            DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             if (objLoopSemaphore.CurrentCount != 0)
                 throw new InvalidOperationException("Attempting to upgrade to write lock while not inside of an upgradeable read lock");
             using (new FetchSafelyFromPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
@@ -1290,7 +1284,7 @@ namespace Chummer
                         token = objNewTokenSource.Token;
 
                         // Acquire the reader lock to lock out readers
-                        objLoopSemaphore = ReaderSemaphore;
+                        objLoopSemaphore = ActiveWriterSemaphore;
                         token.ThrowIfCancellationRequested();
                         objLoopSemaphore.SafeWait(token);
                         stkLockedSemaphores.Push(objLoopSemaphore);
@@ -1319,7 +1313,7 @@ namespace Chummer
                             {
                                 long lngPendingCount;
                                 // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objWriterCancellationSemaphore;
+                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                                 objLoopSemaphore2?.SafeWait(token);
                                 try
                                 {
@@ -1342,7 +1336,7 @@ namespace Chummer
                         catch
                         {
                             // Use locals for thread safety
-                            DebuggableSemaphoreSlim objLoopSemaphore2 = _objWriterCancellationSemaphore;
+                            DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                             // ReSharper disable once MethodSupportsCancellation
                             objLoopSemaphore2?.SafeWait();
                             try
@@ -1394,7 +1388,7 @@ namespace Chummer
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             // Use locals for thread safety
-            DebuggableSemaphoreSlim objLoopSemaphore = UpgradeableReaderSemaphore;
+            DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             if (objLoopSemaphore.CurrentCount != 0)
                 throw new InvalidOperationException("Attempting to upgrade to write lock while not inside of an upgradeable read lock");
             using (new FetchSafelyFromPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
@@ -1408,7 +1402,7 @@ namespace Chummer
                         token = objNewTokenSource.Token;
 
                         // Acquire the reader lock to lock out readers
-                        objLoopSemaphore = ReaderSemaphore;
+                        objLoopSemaphore = ActiveWriterSemaphore;
                         token.ThrowIfCancellationRequested();
                         await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                         stkLockedSemaphores.Push(objLoopSemaphore);
@@ -1437,7 +1431,7 @@ namespace Chummer
                             {
                                 long lngPendingCount;
                                 // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objWriterCancellationSemaphore;
+                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                                 if (objLoopSemaphore2 != null)
                                     await objLoopSemaphore2.WaitAsync(token).ConfigureAwait(false);
                                 try
@@ -1461,7 +1455,7 @@ namespace Chummer
                         catch
                         {
                             // Use locals for thread safety
-                            DebuggableSemaphoreSlim objLoopSemaphore2 = _objWriterCancellationSemaphore;
+                            DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                             if (objLoopSemaphore2 != null)
                                 // ReSharper disable once MethodSupportsCancellation
                                 await objLoopSemaphore2.WaitAsync().ConfigureAwait(false);
@@ -1542,7 +1536,7 @@ namespace Chummer
                             throw new ObjectDisposedException(nameof(objLoopHelper));
                         // Use locals for thread safety
                         // Release our reader lock, allowing waiting readers to pass through
-                        DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper.ReaderSemaphore;
+                        DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper.ActiveWriterSemaphore;
                         try
                         {
                             objLoopSemaphore2?.Release();
@@ -1567,7 +1561,7 @@ namespace Chummer
 
             // Use locals for thread safety
             // Release our reader lock, allowing waiting readers to pass through
-            DebuggableSemaphoreSlim objLoopSemaphore = ReaderSemaphore;
+            DebuggableSemaphoreSlim objLoopSemaphore = ActiveWriterSemaphore;
             try
             {
                 objLoopSemaphore?.Release();
@@ -1582,7 +1576,7 @@ namespace Chummer
             }
 
             // Release our upgradeable read lock, allowing pending upgradeable reader locks and writer locks through
-            objLoopSemaphore = UpgradeableReaderSemaphore;
+            objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             try
             {
                 objLoopSemaphore?.Release();

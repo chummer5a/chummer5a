@@ -622,6 +622,7 @@ namespace Chummer
                 Stack<IDisposable> stkLockers = new Stack<IDisposable>();
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // First remove all existing bindings
                     foreach (CharacterAttrib objAttribute in GetAllAttributes(token))
                     {
@@ -774,6 +775,7 @@ namespace Chummer
                         = new ConcurrentStack<IAsyncDisposable>();
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         // First remove all existing bindings
                         foreach (CharacterAttrib objAttribute in GetAllAttributes(token))
                         {
@@ -1276,6 +1278,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     switch (e.ListChangedType)
                     {
                         case ListChangedType.Reset:
@@ -1443,6 +1446,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(MentorSpirits));
                     dicChangedProperties.Add(this, strTemp);
@@ -1519,6 +1523,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(Qualities));
                     dicChangedProperties.Add(this, strTemp);
@@ -1612,6 +1617,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(MartialArts));
                     dicChangedProperties.Add(this, strTemp);
@@ -1694,6 +1700,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(Metamagics));
                     dicChangedProperties.Add(this, strTemp);
@@ -1824,6 +1831,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
@@ -1975,6 +1983,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
@@ -2136,6 +2145,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
@@ -2321,6 +2331,7 @@ namespace Chummer
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
@@ -2665,6 +2676,7 @@ namespace Chummer
                                     Quality objQuality = new Quality(this);
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         string strForceValue =
                                             objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
                                         QualitySource objSource =
@@ -2710,6 +2722,7 @@ namespace Chummer
                             CritterPowers.Add(objPower);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 ImprovementManager.CreateImprovement(this, objPower.InternalId,
                                                                      Improvement.ImprovementSource.Metatype,
                                                                      string.Empty,
@@ -2778,6 +2791,7 @@ namespace Chummer
                     {
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             ImprovementManager.CreateImprovement(this, xmlSkill.InnerText,
                                                                  Improvement.ImprovementSource.Metatype, string.Empty,
                                                                  Improvement.ImprovementType.SkillLevel,
@@ -2824,9 +2838,11 @@ namespace Chummer
                             SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 objSkill.Specializations.Add(objSpec);
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     ImprovementManager.CreateImprovement(this, strSkill,
                                                                          Improvement.ImprovementSource.Metatype,
                                                                          string.Empty,
@@ -2859,6 +2875,7 @@ namespace Chummer
                     {
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             ImprovementManager.CreateImprovement(this, xmlSkillGroup.InnerText,
                                                                  Improvement.ImprovementSource.Metatype, string.Empty,
                                                                  Improvement.ImprovementType.SkillGroupLevel,
@@ -2917,6 +2934,7 @@ namespace Chummer
 
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             ImprovementManager.CreateImprovement(this, strName,
                                                                  Improvement.ImprovementSource.Metatype, string.Empty,
                                                                  Improvement.ImprovementType.SkillLevel, string.Empty,
@@ -2951,6 +2969,7 @@ namespace Chummer
 
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         ImprovementManager.CreateImprovement(this, objComplexform.InternalId,
                                                              Improvement.ImprovementSource.Metatype, string.Empty,
                                                              Improvement.ImprovementType.ComplexForm,
@@ -2984,6 +3003,7 @@ namespace Chummer
                     Cyberware.Add(objWare);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         ImprovementManager.CreateImprovement(this, objWare.InternalId,
                                                              Improvement.ImprovementSource.Metatype,
                                                              string.Empty, Improvement.ImprovementType.FreeWare,
@@ -3017,6 +3037,7 @@ namespace Chummer
                     Cyberware.Add(objWare);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         ImprovementManager.CreateImprovement(this, objWare.InternalId,
                                                              Improvement.ImprovementSource.Metatype,
                                                              string.Empty, Improvement.ImprovementType.FreeWare,
@@ -3066,6 +3087,7 @@ namespace Chummer
 
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         ImprovementManager.CreateImprovement(this, objAIProgram.InternalId,
                                                              Improvement.ImprovementSource.Metatype, string.Empty,
                                                              Improvement.ImprovementType.AIProgram,
@@ -3123,6 +3145,7 @@ namespace Chummer
 
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         ImprovementManager.CreateImprovement(this, objGear.InternalId,
                                                              Improvement.ImprovementSource.Metatype,
                                                              string.Empty, Improvement.ImprovementType.Gear,
@@ -3198,6 +3221,7 @@ namespace Chummer
 
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         ImprovementManager.CreateImprovement(this, objPower.InternalId,
                                                                              Improvement.ImprovementSource.Metatype,
                                                                              string.Empty,
@@ -3230,6 +3254,7 @@ namespace Chummer
 
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     ImprovementManager.CreateImprovement(this, objPower.InternalId,
                                                                          Improvement.ImprovementSource.Metatype,
                                                                          string.Empty,
@@ -3912,6 +3937,7 @@ namespace Chummer
                         // Validate that the character can save properly. If there's no error, save the file to the listed file location.
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             XmlDocument objDoc = new XmlDocument { XmlResolver = null };
                             using (XmlReader objXmlReader
                                    = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
@@ -4747,6 +4773,7 @@ namespace Chummer
                         // Validate that the character can save properly. If there's no error, save the file to the listed file location.
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             XmlDocument objDoc = new XmlDocument { XmlResolver = null };
                             using (XmlReader objXmlReader
                                    = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
@@ -5175,6 +5202,7 @@ namespace Chummer
                 {
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         using (Timekeeper.StartSyncron("upload_AI_options", loadActivity))
                         {
                             UploadObjectAsMetric.UploadObject(TelemetryClient, Settings);
@@ -5207,6 +5235,7 @@ namespace Chummer
                                 {
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                                             objXmlDocument.LoadStandard(strFileName, !blnErrorCaught);
                                         else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
@@ -5270,6 +5299,7 @@ namespace Chummer
                                 {
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                                             await objXmlDocument.LoadStandardAsync(
                                                 strFileName, !blnErrorCaught, token).ConfigureAwait(false);
@@ -5348,6 +5378,7 @@ namespace Chummer
 
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             if (frmLoadingForm != null)
                             {
                                 if (blnSync)
@@ -6581,6 +6612,7 @@ namespace Chummer
                                     Improvement objImprovement = new Improvement(this);
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         objImprovement.Load(objXmlImprovement);
                                         // This is initially set to false make sure no property changers are triggered
                                         objImprovement.SetupComplete = true;
@@ -6708,6 +6740,7 @@ namespace Chummer
                                                 Quality objQuality = new Quality(this);
                                                 try
                                                 {
+                                                    token.ThrowIfCancellationRequested();
                                                     objQuality.Load(objXmlQuality);
                                                     // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
                                                     if (blnSync
@@ -6967,6 +7000,7 @@ namespace Chummer
                                                         objQuality.Extra = string.Empty;
                                                         try
                                                         {
+                                                            token.ThrowIfCancellationRequested();
                                                             if (blnSync)
                                                             {
                                                                 // ReSharper disable MethodHasAsyncOverload
@@ -7100,6 +7134,7 @@ namespace Chummer
                                                                 "quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
                                                         try
                                                         {
+                                                            token.ThrowIfCancellationRequested();
                                                             if (blnSync)
                                                             {
                                                                 // ReSharper disable MethodHasAsyncOverload
@@ -8977,6 +9012,7 @@ namespace Chummer
                                     CalendarWeek objWeek = new CalendarWeek();
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         objWeek.Load(objXmlWeek);
                                         await _lstCalendar
                                               .AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x), token: token)
@@ -9091,6 +9127,7 @@ namespace Chummer
 
                                             try
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype,
                                                                   lstWeapons);
 
@@ -9310,6 +9347,7 @@ namespace Chummer
                             {
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     HashSet<string> setAlwaysChangedProperties = Utils.StringHashSetPool.Get();
                                     dicChangedProperties.Add(this, setAlwaysChangedProperties);
                                     setAlwaysChangedProperties.Add(nameof(BlackMarketDiscount));
@@ -9488,6 +9526,7 @@ namespace Chummer
                     = await objWriter.StartElementAsync("character", token: token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // <settings />
                     await objWriter
                         .WriteElementStringAsync("settings", await GetSettingsKeyAsync(token).ConfigureAwait(false),
@@ -9589,6 +9628,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("priorityskills", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (string strSkill in PriorityBonusSkillList)
                         {
                             await objWriter.WriteElementStringAsync("priorityskill", strSkill, token: token)
@@ -9906,6 +9946,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("attributes", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         await AttributeSection.Print(objWriter, objCulture, strLanguageToPrint, token)
                             .ConfigureAwait(false);
                     }
@@ -10353,6 +10394,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("skills", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         await SkillsSection.Print(objWriter, objCulture, strLanguageToPrint, token: token)
                             .ConfigureAwait(false);
                     }
@@ -10367,6 +10409,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("contacts", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Contact objContact in Contacts)
                         {
                             await objContact.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10386,6 +10429,7 @@ namespace Chummer
                         .ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
                         {
                             if (objLimitModifier.Limit == "Physical")
@@ -10428,6 +10472,7 @@ namespace Chummer
                                 .StartElementAsync("limitmodifier", token: token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
                                     .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
@@ -10454,6 +10499,7 @@ namespace Chummer
                         .ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
                         {
                             if (objLimitModifier.Limit == "Mental")
@@ -10495,6 +10541,7 @@ namespace Chummer
                                 .StartElementAsync("limitmodifier", token: token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
                                     .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
@@ -10519,12 +10566,13 @@ namespace Chummer
                         = await objWriter.StartElementAsync("limitmodifierssoc", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
                         {
                             if (objLimitModifier.Limit == "Social")
-                                {
-                                    return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
-                                }
+                            {
+                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
+                            }
 
                             return Task.CompletedTask;
                         }, token).ConfigureAwait(false);
@@ -10560,6 +10608,7 @@ namespace Chummer
                                 .StartElementAsync("limitmodifier", token: token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
                                     .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
@@ -10584,6 +10633,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("mentorspirits", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (MentorSpirit objMentorSpirit in MentorSpirits)
                         {
                             await objMentorSpirit.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
@@ -10600,6 +10650,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("spells", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Spell objSpell in Spells)
                         {
                             await objSpell.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10617,6 +10668,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("powers", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Power objPower in Powers)
                         {
                             await objPower.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10634,6 +10686,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("spirits", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Spirit objSpirit in Spirits)
                         {
                             await objSpirit.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10651,6 +10704,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("complexforms", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (ComplexForm objComplexForm in ComplexForms)
                         {
                             await objComplexForm.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
@@ -10667,6 +10721,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("aiprograms", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (AIProgram objProgram in AIPrograms)
                         {
                             await objProgram.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
@@ -10683,6 +10738,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("martialarts", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (MartialArt objMartialArt in MartialArts)
                         {
                             await objMartialArt.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10700,6 +10756,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("armors", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Armor objArmor in Armor)
                         {
                             await objArmor.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10717,6 +10774,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("weapons", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Weapon objWeapon in Weapons)
                         {
                             await objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10734,6 +10792,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("cyberwares", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Cyberware objCyberware in Cyberware)
                         {
                             await objCyberware.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10751,6 +10810,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("qualities", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
                         Dictionary<string, int> strQualitiesToPrint = new Dictionary<string, int>(Qualities.Count);
                         foreach (Quality objQuality in Qualities)
@@ -10790,6 +10850,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("lifestyles", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Lifestyle objLifestyle in Lifestyles)
                         {
                             await objLifestyle.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10807,6 +10868,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("gears", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Gear objGear in Gear)
                         {
                             await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
@@ -10823,6 +10885,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("drugs", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Drug objDrug in Drugs)
                         {
                             await objDrug.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
@@ -10839,6 +10902,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("vehicles", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Vehicle objVehicle in Vehicles)
                         {
                             await objVehicle.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10856,6 +10920,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("initiationgrade", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (InitiationGrade objGrade in InitiationGrades)
                         {
                             await objGrade.Print(objWriter, objCulture, token).ConfigureAwait(false);
@@ -10866,6 +10931,7 @@ namespace Chummer
                                 = await objWriter.StartElementAsync("metamagics", token: token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 foreach (Metamagic objMetamagic in Metamagics)
                                 {
                                     if (objMetamagic.Grade == objGrade.Grade)
@@ -10884,6 +10950,7 @@ namespace Chummer
                                 = await objWriter.StartElementAsync("arts", token: token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 foreach (Art objArt in Arts)
                                 {
                                     if (objArt.Grade == objGrade.Grade)
@@ -10901,6 +10968,7 @@ namespace Chummer
                                 .StartElementAsync("enhancements", token: token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 foreach (Enhancement objEnhancement in Enhancements)
                                 {
                                     if (objEnhancement.Grade == objGrade.Grade)
@@ -10926,6 +10994,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("metamagics", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Metamagic objMetamagic in Metamagics)
                         {
                             await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -10943,6 +11012,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("arts", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Art objArt in Arts)
                         {
                             await objArt.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
@@ -10959,6 +11029,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("enhancements", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Enhancement objEnhancement in Enhancements)
                         {
                             await objEnhancement.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
@@ -10975,6 +11046,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("critterpowers", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (CritterPower objPower in CritterPowers)
                         {
                             await objPower.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
@@ -10991,6 +11063,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("sustainedobjects", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (SustainedObject objSustained in SustainedCollection)
                         {
                             await objSustained.Print(objWriter, objCulture, strLanguageToPrint, token)
@@ -11008,6 +11081,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("otherarmors", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Improvement objImprovement in await ImprovementManager
                                      .GetCachedImprovementListForValueOfAsync(
                                          this, Improvement.ImprovementType.Armor,
@@ -11022,6 +11096,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 await objWriter.WriteElementStringAsync("guid", objImprovement.InternalId, token: token)
                                     .ConfigureAwait(false);
                                 await objWriter
@@ -11079,6 +11154,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("calendar", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (CalendarWeek objWeek in Calendar)
                             await objWeek.Print(objWriter, objCulture, GlobalSettings.PrintNotes, token)
                                 .ConfigureAwait(false);
@@ -11097,6 +11173,7 @@ namespace Chummer
                             = await objWriter.StartElementAsync("expenses", token: token).ConfigureAwait(false);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             foreach (ExpenseLogEntry objExpense in ExpenseEntries.Reverse())
                                 await objExpense.Print(objWriter, objCulture, strLanguageToPrint, token)
                                     .ConfigureAwait(false);
@@ -14851,6 +14928,7 @@ namespace Chummer
                 _blnClearingInitiations = true;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // We need to remove grades that can potentially add stuff that adds grades, so we cannot use foreach
                     for (int i = InitiationGrades.Count - 1; i >= 0; --i)
                     {
@@ -14881,6 +14959,7 @@ namespace Chummer
                 _blnClearingInitiations = true;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // We need to remove grades that can potentially add stuff that adds grades, so we cannot use foreach
                     for (int i = await InitiationGrades.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
@@ -15160,6 +15239,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (_blnCreated == value)
                     return;
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -15353,6 +15433,7 @@ namespace Chummer
                     XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         foreach (Image imgMugshot in Mugshots)
                         {
                             await objWriter.WriteElementStringAsync(
@@ -15481,6 +15562,7 @@ namespace Chummer
                     {
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             Directory.CreateDirectory(strMugshotsDirectoryPath);
                         }
                         catch (UnauthorizedAccessException)
@@ -15506,6 +15588,7 @@ namespace Chummer
                     XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots", token: token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         for (int i = 0; i < Mugshots.Count; ++i)
                         {
                             if (i == MainMugshotIndex)
@@ -15516,6 +15599,7 @@ namespace Chummer
                             XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot", token: token).ConfigureAwait(false);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 await objWriter.WriteElementStringAsync(
                                     "stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token).ConfigureAwait(false),
                                     token: token).ConfigureAwait(false);
@@ -15584,6 +15668,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (_strSettingsKey == value)
                     return;
                 if (!(await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)).TryGetValue(
@@ -16400,6 +16485,7 @@ namespace Chummer
                 ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements, token: token);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     ImprovementManager.CreateImprovement(this, "Summoning",
                         Improvement.ImprovementSource.AstralReputation,
                         nameof(TotalAstralReputation).ToUpperInvariant(),
@@ -16463,6 +16549,7 @@ namespace Chummer
                     token: token).ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await ImprovementManager.CreateImprovementAsync(this, "Summoning",
                         Improvement.ImprovementSource.AstralReputation,
                         nameof(TotalAstralReputation).ToUpperInvariant(),
@@ -17015,6 +17102,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _intContactPointsUsed, value) == value)
                     return;
                 await OnPropertyChangedAsync(nameof(ContactPointsUsed), token).ConfigureAwait(false);
@@ -17442,6 +17530,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _intKarma, value) == value)
                     return;
                 await OnPropertyChangedAsync(nameof(Karma), token).ConfigureAwait(false);
@@ -17462,6 +17551,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 Interlocked.Add(ref _intKarma, value);
                 await OnPropertyChangedAsync(nameof(Karma), token).ConfigureAwait(false);
             }
@@ -18838,6 +18928,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (_blnMAGEnabled == value)
                     return;
                 if (IsLoading)
@@ -19707,6 +19798,7 @@ namespace Chummer
                     {
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             // Create the new Improvement.
                             await ImprovementManager.CreateImprovementAsync(
                                 this, "MAG", Improvement.ImprovementSource.Initiation,
@@ -19760,6 +19852,7 @@ namespace Chummer
                             // Create the new Improvement.
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 await ImprovementManager.CreateImprovementAsync(this, "MAG",
                                         Improvement.ImprovementSource.Initiation,
                                         string.Empty,
@@ -19811,6 +19904,7 @@ namespace Chummer
                                 {
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         await ImprovementManager.CreateImprovementsAsync(
                                             this, Improvement.ImprovementSource.Metamagic, strMetamagicId,
                                             objMetamagic.Bonus, value,
@@ -21115,6 +21209,7 @@ namespace Chummer
                     {
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             // Create the new Improvement.
                             await ImprovementManager.CreateImprovementAsync(
                                 this, "RES", Improvement.ImprovementSource.Submersion,
@@ -21162,6 +21257,7 @@ namespace Chummer
                             // Create the new Improvement.
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 await ImprovementManager.CreateImprovementAsync(this, "RES",
                                         Improvement.ImprovementSource.Submersion,
                                         string.Empty,
@@ -21207,6 +21303,7 @@ namespace Chummer
                                 {
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         await ImprovementManager.CreateImprovementsAsync(
                                             this, Improvement.ImprovementSource.Echo, strMetamagicId,
                                             objMetamagic.Bonus,
@@ -21454,6 +21551,7 @@ namespace Chummer
 
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
                         return _decCachedEssence;
                 }
@@ -21466,6 +21564,7 @@ namespace Chummer
                     objLocker = _objCachedEssenceLock.EnterUpgradeableReadLock(token);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
                         return _decCachedEssence;
                     IDisposable objWriteLocker = null;
@@ -21473,6 +21572,7 @@ namespace Chummer
                         objWriteLocker = _objCachedEssenceLock.EnterWriteLock(token);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                         if (ImprovementManager
                             .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence,
@@ -34657,6 +34757,7 @@ namespace Chummer
 
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // Add new improvements or old improvements with new values
                     foreach (string strAttribute in lstSeekerAttributes)
                     {
@@ -34769,6 +34870,7 @@ namespace Chummer
 
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // Add new improvements or old improvements with new values
                     foreach (string strAttribute in lstSeekerAttributes)
                     {
@@ -34882,6 +34984,7 @@ namespace Chummer
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CyberadeptDaemon, token: token);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (intMagMaxReduction != 0)
                                 {
                                     ImprovementManager.CreateImprovement(this, "MAG", eEssenceLossSource, string.Empty,
@@ -35109,6 +35212,7 @@ namespace Chummer
                                         {
                                             try
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 ImprovementManager.CreateImprovement(this, string.Empty,
                                                     Improvement.ImprovementSource
                                                                .EssenceLossChargen, string.Empty,
@@ -35166,6 +35270,7 @@ namespace Chummer
                                 // Create Improvements
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0)
                                         ImprovementManager.CreateImprovement(this, "MAG",
                                                                              Improvement.ImprovementSource.EssenceLoss,
@@ -35241,6 +35346,7 @@ namespace Chummer
                                 {
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         ImprovementManager.CreateImprovement(this, "RES",
                                                                              Improvement.ImprovementSource.EssenceLoss,
                                                                              string.Empty,
@@ -35303,6 +35409,7 @@ namespace Chummer
                                 {
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         ImprovementManager.CreateImprovement(this, "DEP",
                                                                              Improvement.ImprovementSource.EssenceLoss,
                                                                              string.Empty,
@@ -35379,6 +35486,7 @@ namespace Chummer
 
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (intResMaxReduction != 0 || intRESMinimumReduction != 0)
                                 {
                                     ImprovementManager.CreateImprovement(this, "RES",
@@ -35504,6 +35612,7 @@ namespace Chummer
                     {
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             ImprovementManager.RemoveImprovements(
                                 this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss,
@@ -35537,6 +35646,7 @@ namespace Chummer
                         {
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 ImprovementManager.CreateImprovement(this, "BOD",
                                                                      Improvement.ImprovementSource.Cyberzombie,
                                                                      string.Empty,
@@ -35686,6 +35796,7 @@ namespace Chummer
 
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (intMagMaxReduction != 0)
                                 {
                                     await ImprovementManager.CreateImprovementAsync(
@@ -35980,6 +36091,7 @@ namespace Chummer
                                         {
                                             try
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 await ImprovementManager.CreateImprovementAsync(this, string.Empty,
                                                     Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
                                                     Improvement.ImprovementType.AdeptPowerPoints, string.Empty,
@@ -36040,6 +36152,7 @@ namespace Chummer
                                 // Create Improvements
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0)
                                         await ImprovementManager.CreateImprovementAsync(this, "MAG",
                                                 Improvement.ImprovementSource.EssenceLoss,
@@ -36121,6 +36234,7 @@ namespace Chummer
                                 {
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         await ImprovementManager.CreateImprovementAsync(this, "RES",
                                                 Improvement.ImprovementSource.EssenceLoss,
                                                 string.Empty, Improvement.ImprovementType.Attribute,
@@ -36194,6 +36308,7 @@ namespace Chummer
                                 {
                                     try
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         await ImprovementManager.CreateImprovementAsync(this, "DEP",
                                                 Improvement.ImprovementSource.EssenceLoss,
                                                 string.Empty, Improvement.ImprovementType.Attribute,
@@ -36278,6 +36393,7 @@ namespace Chummer
 
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0
                                                             || intMAGAdeptMinimumReduction != 0)
                                 {
@@ -36444,6 +36560,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             await ImprovementManager.RemoveImprovementsAsync(
                                     this, Improvement.ImprovementSource.EssenceLossChargen,
                                     token: token)
@@ -36485,6 +36602,7 @@ namespace Chummer
                         {
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 await ImprovementManager.CreateImprovementAsync(
                                     this, "BOD", Improvement.ImprovementSource.Cyberzombie,
                                     string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
@@ -37482,6 +37600,7 @@ namespace Chummer
                     return;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (Settings.DoEncumbrancePenaltyPhysicalLimit)
                         ImprovementManager.CreateImprovement(this, "Physical",
                             Improvement.ImprovementSource.Encumbrance,
@@ -37612,6 +37731,7 @@ namespace Chummer
                     return;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (Settings.DoEncumbrancePenaltyPhysicalLimit)
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Physical", Improvement.ImprovementSource.Encumbrance,
@@ -37738,6 +37858,7 @@ namespace Chummer
                 {
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         ImprovementManager.CreateImprovement(this, "AGI",
                             Improvement.ImprovementSource.ArmorEncumbrance,
                             string.Empty, Improvement.ImprovementType.Attribute,
@@ -37780,6 +37901,7 @@ namespace Chummer
                 {
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         await ImprovementManager.CreateImprovementAsync(
                             this, "AGI", Improvement.ImprovementSource.ArmorEncumbrance,
                             string.Empty, Improvement.ImprovementType.Attribute,
@@ -39426,6 +39548,7 @@ namespace Chummer
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (string strPropertyName in lstPropertyNames)
                     {
                         if (setNamesOfChangedProperties == null)
@@ -39772,11 +39895,13 @@ namespace Chummer
                 {
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         op_load.MyDependencyTelemetry.Type = "loadHeroLab";
                         op_load.MyDependencyTelemetry.Target = strPorFile;
 
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             string strLeadsName = string.Empty;
                             using (ZipArchive zipArchive = ZipFile.Open(strPorFile, ZipArchiveMode.Read,
                                                                         Encoding.GetEncoding(850)))
@@ -39801,6 +39926,7 @@ namespace Chummer
                                         {
                                             try
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (blnSync)
                                                     DoLoadStatblocks();
                                                 else
@@ -39924,6 +40050,7 @@ namespace Chummer
                                         {
                                             try
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (blnSync)
                                                     DoLoadLeads();
                                                 else
@@ -40044,6 +40171,7 @@ namespace Chummer
                         IsLoading = true;
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             XPathNavigator xmlStatBlockBaseNode;
                             XPathNavigator xmlLeadsBaseNode;
 
@@ -40771,6 +40899,7 @@ namespace Chummer
                                                 Quality objQuality = new Quality(this);
                                                 try
                                                 {
+                                                    token.ThrowIfCancellationRequested();
                                                     objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
                                                                       lstWeapons,
                                                                       strForcedValue);
@@ -40902,6 +41031,7 @@ namespace Chummer
                                                 Quality objQuality = new Quality(this);
                                                 try
                                                 {
+                                                    token.ThrowIfCancellationRequested();
                                                     objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
                                                                       lstWeapons,
                                                                       strForcedValue);
@@ -42816,6 +42946,7 @@ namespace Chummer
                             {
                                 try
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     HashSet<string> setAlwaysChangedProperties = Utils.StringHashSetPool.Get();
                                     dicChangedProperties.Add(this, setAlwaysChangedProperties);
                                     setAlwaysChangedProperties.Add(nameof(BlackMarketDiscount));
@@ -43976,6 +44107,7 @@ namespace Chummer
 
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await ImprovementManager.CreateImprovementAsync(this, string.Empty,
                             Improvement.ImprovementSource.Cyberzombie,
                             string.Empty,
