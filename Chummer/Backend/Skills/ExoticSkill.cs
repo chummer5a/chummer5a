@@ -155,13 +155,18 @@ namespace Chummer.Backend.Skills
 
         public async Task SetSpecificAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _strSpecific, value) == value)
                     return;
-                OnPropertyChanged(nameof(Specific));
+                await OnPropertyChangedAsync(nameof(Specific), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

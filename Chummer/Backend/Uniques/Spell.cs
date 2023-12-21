@@ -310,8 +310,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // <spell>
@@ -403,10 +402,6 @@ namespace Chummer
                     // </spell>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
         }
 
@@ -1448,8 +1443,9 @@ namespace Chummer
             }
             set
             {
+                string strExtra = _objCharacter.ReverseTranslateExtra(value);
                 using (LockObject.EnterUpgradeableReadLock())
-                    _strExtra = _objCharacter.ReverseTranslateExtra(value);
+                    _strExtra = strExtra;
             }
         }
 
@@ -1482,22 +1478,35 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnExtended == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnExtended == value)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    if (value)
                     {
-                        _blnExtended = value;
-                        if (value)
+                        bool blnNewCustomExtended = !HashDescriptors.Any(x =>
+                            string.Equals(
+                                x.Trim(), "Extended Area",
+                                StringComparison.OrdinalIgnoreCase));
+                        using (LockObject.EnterWriteLock())
                         {
-                            _blnCustomExtended = !HashDescriptors.Any(x =>
-                                string.Equals(
-                                    x.Trim(), "Extended Area",
-                                    StringComparison.OrdinalIgnoreCase));
+                            _blnExtended = true;
+                            _blnCustomExtended = blnNewCustomExtended;
                         }
-                        else
+                    }
+                    else
+                    {
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _blnExtended = false;
                             _blnCustomExtended = false;
+                        }
                     }
                 }
             }

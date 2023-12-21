@@ -43,21 +43,13 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new List<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Add(value);
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Remove(value);
-            }
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -75,18 +67,17 @@ namespace Chummer
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (_lstPropertyChangedAsync.Count > 0)
+                if (_setPropertyChangedAsync.Count > 0)
                 {
                     List<PropertyChangedEventArgs> lstArgsList = lstPropertyNames.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                    Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
-                    int i = 0;
-                    foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                    List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                    foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                     {
                         foreach (PropertyChangedEventArgs objArg in lstArgsList)
-                            aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArg));
                     }
 
-                    Utils.RunWithoutThreadLock(aFuncs);
+                    Utils.RunWithoutThreadLock(lstFuncs);
                     if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
@@ -121,15 +112,18 @@ namespace Chummer
         public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                if (_lstPropertyChangedAsync.Count > 0)
+                if (_setPropertyChangedAsync.Count > 0)
                 {
-                    List<PropertyChangedEventArgs> lstArgsList = lstPropertyNames.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                    List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                    List<PropertyChangedEventArgs> lstArgsList =
+                        lstPropertyNames.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                    List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _setPropertyChangedAsync.Count,
+                        Utils.MaxParallelBatchSize));
                     int i = 0;
-                    foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                    foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                     {
                         foreach (PropertyChangedEventArgs objArg in lstArgsList)
                         {
@@ -141,6 +135,7 @@ namespace Chummer
                             i = 0;
                         }
                     }
+
                     await Task.WhenAll(lstTasks).ConfigureAwait(false);
                     if (PropertyChanged != null)
                     {
@@ -173,6 +168,10 @@ namespace Chummer
                         }
                     }, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -241,8 +240,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // <week>
@@ -265,10 +263,6 @@ namespace Chummer
                     // </week>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
         }
 
@@ -553,15 +547,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _colNotes = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }

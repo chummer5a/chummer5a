@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,11 +31,9 @@ namespace Chummer
         public AsyncFriendlyReaderWriterLock BindingListLock { get; set; }
 
         [NonSerialized]
-        private PropertyDescriptorCollection itemTypeProperties;
+        private readonly PropertyDescriptorCollection itemTypeProperties = TypeDescriptor.GetProperties(typeof(T));
         [NonSerialized]
         private PropertyChangedAsyncEventHandler propertyChangedAsyncEventHandler;
-        [NonSerialized]
-        private int _intLastAsyncChangeIndex = -1;
 
 #pragma warning disable CA1070
         /// <summary>
@@ -42,12 +41,12 @@ namespace Chummer
         /// </summary>
         public virtual event EventHandler<RemovingOldEventArgs> BeforeRemove;
 
-        private readonly List<AsyncBeforeRemoveEventHandler> _lstBeforeRemoveAsync =
-            new List<AsyncBeforeRemoveEventHandler>();
-        private readonly List<AsyncAddingNewEventHandler> _lstAddingNewAsync =
-            new List<AsyncAddingNewEventHandler>();
-        private readonly List<AsyncListChangedEventHandler> _lstListChangedAsync =
-            new List<AsyncListChangedEventHandler>();
+        private readonly ConcurrentHashSet<AsyncBeforeRemoveEventHandler> _setBeforeRemoveAsync =
+            new ConcurrentHashSet<AsyncBeforeRemoveEventHandler>();
+        private readonly ConcurrentHashSet<AsyncAddingNewEventHandler> _setAddingNewAsync =
+            new ConcurrentHashSet<AsyncAddingNewEventHandler>();
+        private readonly ConcurrentHashSet<AsyncListChangedEventHandler> _setListChangedAsync =
+            new ConcurrentHashSet<AsyncListChangedEventHandler>();
 
         /// <summary>
         /// ListChanged event subscription that will fire right before an item is removed or the list is cleared.
@@ -55,8 +54,8 @@ namespace Chummer
         /// </summary>
         public virtual event AsyncBeforeRemoveEventHandler BeforeRemoveAsync
         {
-            add => _lstBeforeRemoveAsync.Add(value);
-            remove => _lstBeforeRemoveAsync.Remove(value);
+            add => _setBeforeRemoveAsync.TryAdd(value);
+            remove => _setBeforeRemoveAsync.Remove(value);
         }
 
         /// <summary>
@@ -65,8 +64,8 @@ namespace Chummer
         /// </summary>
         public virtual event AsyncAddingNewEventHandler AddingNewAsync
         {
-            add => _lstAddingNewAsync.Add(value);
-            remove => _lstAddingNewAsync.Remove(value);
+            add => _setAddingNewAsync.TryAdd(value);
+            remove => _setAddingNewAsync.Remove(value);
         }
 
         /// <summary>
@@ -75,8 +74,8 @@ namespace Chummer
         /// </summary>
         public virtual event AsyncListChangedEventHandler ListChangedAsync
         {
-            add => _lstListChangedAsync.Add(value);
-            remove => _lstListChangedAsync.Remove(value);
+            add => _setListChangedAsync.TryAdd(value);
+            remove => _setListChangedAsync.Remove(value);
         }
 #pragma warning restore CA1070
 
@@ -98,17 +97,12 @@ namespace Chummer
                 IDisposable objLocker = BindingListLock?.EnterReadLock();
                 try
                 {
-                    if (_lstBeforeRemoveAsync.Count > 0)
+                    if (_setBeforeRemoveAsync.Count > 0)
                     {
                         RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
-                        Func<Task>[] aFuncs = new Func<Task>[_lstBeforeRemoveAsync.Count];
-                        int i = 0;
-                        foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
-                        {
-                            aFuncs[i++] = () => objEvent.Invoke(this, objArgs);
-                        }
-
-                        Utils.RunWithoutThreadLock(aFuncs);
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setBeforeRemoveAsync.Count);
+                        lstFuncs.AddRange(_setBeforeRemoveAsync.Select(objEvent => (Func<Task>)(() => objEvent.Invoke(this, objArgs))));
+                        Utils.RunWithoutThreadLock(lstFuncs);
                         if (BeforeRemove != null)
                         {
                             Utils.RunOnMainThread(() => BeforeRemove?.Invoke(this, objArgs));
@@ -138,20 +132,20 @@ namespace Chummer
                 IDisposable objLocker = BindingListLock?.EnterReadLock();
                 try
                 {
-                    if (_lstBeforeRemoveAsync.Count > 0)
+                    if (_setBeforeRemoveAsync.Count > 0)
                     {
                         List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>();
                         for (int i = 0; i < Items.Count; ++i)
                             lstArgsList.Add(new RemovingOldEventArgs(Items[i], i));
-                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstBeforeRemoveAsync.Count];
-                        int j = 0;
-                        foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
+                        List<Func<Task>> lstFuncs =
+                            new List<Func<Task>>(lstArgsList.Count * _setBeforeRemoveAsync.Count);
+                        foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
                         {
                             foreach (RemovingOldEventArgs objArgs in lstArgsList)
-                                aFuncs[j++] = () => objEvent.Invoke(this, objArgs);
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs);
+                        Utils.RunWithoutThreadLock(lstFuncs);
                         if (BeforeRemove != null)
                         {
                             Utils.RunOnMainThread(() =>
@@ -203,17 +197,12 @@ namespace Chummer
                     T objOldItem = Items[index];
                     if (!ReferenceEquals(objOldItem, item))
                     {
-                        if (_lstBeforeRemoveAsync.Count > 0)
+                        if (_setBeforeRemoveAsync.Count > 0)
                         {
                             RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
-                            Func<Task>[] aFuncs = new Func<Task>[_lstBeforeRemoveAsync.Count];
-                            int i = 0;
-                            foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
-                            {
-                                aFuncs[i++] = () => objEvent.Invoke(this, objArgs);
-                            }
-
-                            Utils.RunWithoutThreadLock(aFuncs);
+                            List<Func<Task>> lstFuncs = new List<Func<Task>>(_setBeforeRemoveAsync.Count);
+                            lstFuncs.AddRange(_setBeforeRemoveAsync.Select(objEvent => (Func<Task>)(() => objEvent.Invoke(this, objArgs))));
+                            Utils.RunWithoutThreadLock(lstFuncs);
                             if (BeforeRemove != null)
                             {
                                 Utils.RunOnMainThread(() => BeforeRemove?.Invoke(this, objArgs));
@@ -244,14 +233,11 @@ namespace Chummer
             IDisposable objLocker = BindingListLock?.EnterReadLock();
             try
             {
-                if (_lstAddingNewAsync.Count > 0)
+                if (_setAddingNewAsync.Count > 0)
                 {
-                    Func<Task>[] aFuncs = new Func<Task>[_lstAddingNewAsync.Count];
-                    int i = 0;
-                    foreach (AsyncAddingNewEventHandler objEvent in _lstAddingNewAsync)
-                        aFuncs[i++] = () => objEvent.Invoke(this, e);
-
-                    Utils.RunWithoutThreadLock(aFuncs);
+                    List<Func<Task>> lstFuncs = new List<Func<Task>>(_setAddingNewAsync.Count);
+                    lstFuncs.AddRange(_setAddingNewAsync.Select(objEvent => (Func<Task>)(() => objEvent.Invoke(this, e))));
+                    Utils.RunWithoutThreadLock(lstFuncs);
                 }
 
                 base.OnAddingNew(e);
@@ -268,14 +254,11 @@ namespace Chummer
             IDisposable objLocker = BindingListLock?.EnterReadLock();
             try
             {
-                if (_lstListChangedAsync.Count > 0)
+                if (_setListChangedAsync.Count > 0)
                 {
-                    Func<Task>[] aFuncs = new Func<Task>[_lstListChangedAsync.Count];
-                    int i = 0;
-                    foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
-                        aFuncs[i++] = () => objEvent.Invoke(this, e);
-
-                    Utils.RunWithoutThreadLock(aFuncs);
+                    List<Func<Task>> lstFuncs = new List<Func<Task>>(_setListChangedAsync.Count);
+                    lstFuncs.AddRange(_setListChangedAsync.Select(objEvent => (Func<Task>)(() => objEvent.Invoke(this, e))));
+                    Utils.RunWithoutThreadLock(lstFuncs);
                 }
 
                 base.OnListChanged(e);
@@ -293,11 +276,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_lstListChangedAsync.Count > 0)
+                if (_setListChangedAsync.Count > 0)
                 {
                     List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                     int i = 0;
-                    foreach (AsyncListChangedEventHandler objEvent in _lstListChangedAsync)
+                    foreach (AsyncListChangedEventHandler objEvent in _setListChangedAsync)
                     {
                         lstTasks.Add(objEvent.Invoke(this, e, token));
                         if (++i < Utils.MaxParallelBatchSize)
@@ -348,14 +331,14 @@ namespace Chummer
                 return;
             }
 
-            if (_lstBeforeRemoveAsync.Count > 0)
+            if (_setBeforeRemoveAsync.Count > 0)
             {
                 List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>();
                 for (int j = 0; j < Items.Count; ++j)
                     lstArgsList.Add(new RemovingOldEventArgs(Items[j], j));
                 List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                 int i = 0;
-                foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
+                foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
                 {
                     foreach (RemovingOldEventArgs objArgs in lstArgsList)
                     {
@@ -383,7 +366,7 @@ namespace Chummer
                 RaiseListChangedEvents = true;
             }
 
-            await FireListChangedAsync(ListChangedType.Reset, -1, token);
+            await FireListChangedAsync(ListChangedType.Reset, -1, token).ConfigureAwait(false);
         }
 
         public Task<bool> ContainsAsync(T item, CancellationToken token = default)
@@ -433,12 +416,12 @@ namespace Chummer
                 return;
             }
 
-            if (_lstBeforeRemoveAsync.Count > 0 && !ReferenceEquals(objOldItem, value))
+            if (_setBeforeRemoveAsync.Count > 0 && !ReferenceEquals(objOldItem, value))
             {
                 RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
                 List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                 int i = 0;
-                foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
+                foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
                 {
                     lstTasks.Add(objEvent.Invoke(this, objArgs, token));
                     if (++i < Utils.MaxParallelBatchSize)
@@ -463,7 +446,7 @@ namespace Chummer
                 RaiseListChangedEvents = true;
             }
 
-            await FireListChangedAsync(ListChangedType.ItemChanged, index, token);
+            await FireListChangedAsync(ListChangedType.ItemChanged, index, token).ConfigureAwait(false);
         }
 
         public Task<int> IndexOfAsync(T item, CancellationToken token = default)
@@ -503,7 +486,7 @@ namespace Chummer
                 RaiseListChangedEvents = true;
             }
 
-            await FireListChangedAsync(ListChangedType.ItemAdded, index, token);
+            await FireListChangedAsync(ListChangedType.ItemAdded, index, token).ConfigureAwait(false);
         }
 
         public async Task RemoveAtAsync(int index, CancellationToken token = default)
@@ -516,12 +499,12 @@ namespace Chummer
                 return;
             }
 
-            if (_lstBeforeRemoveAsync.Count > 0)
+            if (_setBeforeRemoveAsync.Count > 0)
             {
                 RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
                 List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                 int i = 0;
-                foreach (AsyncBeforeRemoveEventHandler objEvent in _lstBeforeRemoveAsync)
+                foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
                 {
                     lstTasks.Add(objEvent.Invoke(this, objArgs, token));
                     if (++i < Utils.MaxParallelBatchSize)
@@ -545,7 +528,7 @@ namespace Chummer
                 RaiseListChangedEvents = true;
             }
 
-            await FireListChangedAsync(ListChangedType.ItemDeleted, index, token);
+            await FireListChangedAsync(ListChangedType.ItemDeleted, index, token).ConfigureAwait(false);
         }
 
         public Task ResetBindingsAsync(CancellationToken token = default)
@@ -562,7 +545,22 @@ namespace Chummer
         {
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
-            IDisposable objLocker = BindingListLock?.EnterUpgradeableReadLock();
+
+            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            try
+            {
+                if (propertyChangedAsyncEventHandler != null)
+                {
+                    notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
+                    return;
+                }
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+
+            objLocker = BindingListLock?.EnterUpgradeableReadLock();
             try
             {
                 if (propertyChangedAsyncEventHandler == null)
@@ -596,22 +594,41 @@ namespace Chummer
             }
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
-            using (await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+
+            using (await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
+                if (propertyChangedAsyncEventHandler != null)
+                {
+                    notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
+                    return;
+                }
+            }
+
+            IAsyncDisposable objLocker = await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 if (propertyChangedAsyncEventHandler == null)
                 {
-                    IAsyncDisposable objLocker = await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 =
+                        await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         propertyChangedAsyncEventHandler = Child_PropertyChangedAsync;
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 
                 notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -624,112 +641,103 @@ namespace Chummer
             {
                 if (propertyChangedAsyncEventHandler == null)
                     return;
-                notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
             }
             finally
             {
                 objLocker?.Dispose();
             }
+            notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
         }
 
         private async Task UnhookAsyncPropertyChangedAsync(T item, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (BindingListLock == null)
-            {
-                UnhookAsyncPropertyChanged(item);
-                return;
-            }
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
-            using (await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            IDisposable objLocker = BindingListLock != null
+                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
+                : null;
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (propertyChangedAsyncEventHandler == null)
                     return;
-                notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
             }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+            notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
         }
 
         private async Task Child_PropertyChangedAsync(object sender, PropertyChangedEventArgs e,
             CancellationToken token = default)
         {
-            IDisposable objReadLocker = BindingListLock != null
+            IDisposable objLocker = BindingListLock != null
                 ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
                 : null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (!RaiseListChangedEvents)
                     return;
             }
             finally
             {
-                objReadLocker?.Dispose();
+                objLocker?.Dispose();
             }
 
-            if (sender != null && e != null && !string.IsNullOrEmpty(e.PropertyName))
+            string strPropertyName = e?.PropertyName;
+            if (string.IsNullOrEmpty(strPropertyName) || !(sender is T obj))
             {
-                T obj;
-                try
-                {
-                    obj = (T)sender;
-                }
-                catch (InvalidCastException)
-                {
-                    await ResetBindingsAsync(token).ConfigureAwait(false);
-                    return;
-                }
-
-                IDisposable objLocker = BindingListLock != null
-                    ? await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
-                {
-                    int num = _intLastAsyncChangeIndex;
-                    if (num < 0 || num >= await GetCountAsync(token).ConfigureAwait(false) ||
-                        !(await GetValueAtAsync(num, token).ConfigureAwait(false)).Equals(obj))
-                    {
-                        IAsyncDisposable objLocker2 = BindingListLock != null
-                            ? await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false)
-                            : null;
-                        try
-                        {
-                            num = _intLastAsyncChangeIndex;
-                            if (num < 0 || num >= await GetCountAsync(token).ConfigureAwait(false) ||
-                                !(await GetValueAtAsync(num, token).ConfigureAwait(false)).Equals(obj))
-                            {
-                                num = await IndexOfAsync(obj, token).ConfigureAwait(false);
-                                _intLastAsyncChangeIndex = num;
-                            }
-                        }
-                        finally
-                        {
-                            if (objLocker2 != null)
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-
-                    if (num == -1)
-                    {
-                        await UnhookAsyncPropertyChangedAsync(obj, token).ConfigureAwait(false);
-                        await ResetBindingsAsync(token).ConfigureAwait(false);
-                        return;
-                    }
-
-                    if (itemTypeProperties == null)
-                        itemTypeProperties = TypeDescriptor.GetProperties(typeof(T));
-                    PropertyDescriptor propDesc = itemTypeProperties.Find(e.PropertyName, true);
-                    await OnListChangedAsync(new ListChangedEventArgs(ListChangedType.ItemChanged, num, propDesc),
-                        token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    objLocker?.Dispose();
-                }
-
+                await ResetBindingsAsync(token).ConfigureAwait(false);
                 return;
             }
 
-            await ResetBindingsAsync(token).ConfigureAwait(false);
+            PropertyDescriptor propDesc = itemTypeProperties.Find(strPropertyName, true);
+
+            objLocker = BindingListLock != null
+                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
+                : null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int num = await IndexOfAsync(obj, token).ConfigureAwait(false);
+                if (num != -1)
+                {
+                    await OnListChangedAsync(new ListChangedEventArgs(ListChangedType.ItemChanged, num, propDesc),
+                        token).ConfigureAwait(false);
+                    return;
+                }
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+
+            IAsyncDisposable objLocker2 = BindingListLock != null
+                ? await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
+                : null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int num = await IndexOfAsync(obj, token).ConfigureAwait(false);
+                if (num != -1)
+                {
+                    await OnListChangedAsync(new ListChangedEventArgs(ListChangedType.ItemChanged, num, propDesc),
+                        token).ConfigureAwait(false);
+                }
+                else
+                {
+                    await UnhookAsyncPropertyChangedAsync(obj, token).ConfigureAwait(false);
+                    await ResetBindingsAsync(token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objLocker2 != null)
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private Task FireListChangedAsync(ListChangedType type, int index, CancellationToken token = default)
@@ -750,21 +758,24 @@ namespace Chummer
             }
         }
 
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                foreach (T obj in Items)
+                    await UnhookAsyncPropertyChangedAsync(obj).ConfigureAwait(false);
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual async ValueTask DisposeAsyncCore()
-        {
-            foreach (T obj in Items)
-                await UnhookAsyncPropertyChangedAsync(obj).ConfigureAwait(false);
-        }
-
         public async ValueTask DisposeAsync()
         {
-            await DisposeAsyncCore().ConfigureAwait(false);
+            await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
     }

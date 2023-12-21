@@ -133,11 +133,8 @@ namespace Chummer
             tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
-            using (objCharacter.LockObject.EnterWriteLock())
-            {
-                objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
-                objCharacter.SettingsPropertyChangedAsync += OnCharacterSettingsPropertyChanged;
-            }
+            objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
+            objCharacter.SettingsPropertyChangedAsync += OnCharacterSettingsPropertyChanged;
 
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
@@ -1668,25 +1665,9 @@ namespace Chummer
                         CharacterObject.Cyberware.CollectionChangedAsync -= CyberwareCollectionChanged;
                         CharacterObject.Vehicles.CollectionChangedAsync -= VehicleCollectionChanged;
                         CharacterObject.VehicleLocations.CollectionChangedAsync -= VehicleLocationCollectionChanged;
-                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                        try
-                        {
-                            IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                            try
-                            {
-                                CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                            }
-                            finally
-                            {
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
-                            }
-                            CharacterObject.PropertyChangedAsync -= OnCharacterPropertyChanged;
-                            CharacterObject.SettingsPropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
+                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
+                        CharacterObject.PropertyChangedAsync -= OnCharacterPropertyChanged;
+                        CharacterObject.SettingsPropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
 
                         SetupCommonCollectionDatabindings(false);
 
@@ -5973,7 +5954,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
@@ -5991,18 +5973,18 @@ namespace Chummer
                             intShowBP *= objSelectedQuality.Levels;
                         string strBP = intShowBP.ToString(GlobalSettings.CultureInfo)
                                        + await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                              .ConfigureAwait(false)
+                                           .ConfigureAwait(false)
                                        + await LanguageManager.GetStringAsync("String_Karma", token: token)
-                                                              .ConfigureAwait(false);
+                                           .ConfigureAwait(false);
 
                         if (blnConfirmDelete &&
                             !await CommonFunctions.ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo,
-                                                                          await LanguageManager.GetStringAsync(
-                                                                              blnCompleteDelete
-                                                                                  ? "Message_DeleteMetatypeQuality"
-                                                                                  : "Message_LowerMetatypeQualityLevel",
-                                                                              token: token).ConfigureAwait(false),
-                                                                          strBP), token).ConfigureAwait(false))
+                                await LanguageManager.GetStringAsync(
+                                    blnCompleteDelete
+                                        ? "Message_DeleteMetatypeQuality"
+                                        : "Message_LowerMetatypeQualityLevel",
+                                    token: token).ConfigureAwait(false),
+                                strBP), token).ConfigureAwait(false))
                             return false;
 
                         // Remove any Improvements that the Quality might have.
@@ -6017,7 +5999,7 @@ namespace Chummer
                         try
                         {
                             objReplaceQuality.Create(xmlDeleteQualityNoBonus, QualitySource.MetatypeRemovedAtChargen,
-                                                     lstWeapons);
+                                lstWeapons);
                             objReplaceQuality.BP *= -1;
                             // If a Negative Quality is being bought off, the replacement one is Positive.
                             if (objSelectedQuality.Type == QualityType.Positive)
@@ -6025,24 +6007,24 @@ namespace Chummer
                                 objReplaceQuality.Type = QualityType.Negative;
                                 if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
                                     objReplaceQuality.Extra += ',' + await LanguageManager
-                                                                           .GetStringAsync("String_Space", token: token)
-                                                                           .ConfigureAwait(false);
+                                        .GetStringAsync("String_Space", token: token)
+                                        .ConfigureAwait(false);
                                 objReplaceQuality.Extra
                                     += await LanguageManager
-                                             .GetStringAsync("String_ExpenseRemovePositiveQuality", token: token)
-                                             .ConfigureAwait(false);
+                                        .GetStringAsync("String_ExpenseRemovePositiveQuality", token: token)
+                                        .ConfigureAwait(false);
                             }
                             else
                             {
                                 objReplaceQuality.Type = QualityType.Positive;
                                 if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
                                     objReplaceQuality.Extra += ',' + await LanguageManager
-                                                                           .GetStringAsync("String_Space", token: token)
-                                                                           .ConfigureAwait(false);
+                                        .GetStringAsync("String_Space", token: token)
+                                        .ConfigureAwait(false);
                                 objReplaceQuality.Extra
                                     += await LanguageManager
-                                             .GetStringAsync("String_ExpenseRemoveNegativeQuality", token: token)
-                                             .ConfigureAwait(false);
+                                        .GetStringAsync("String_ExpenseRemoveNegativeQuality", token: token)
+                                        .ConfigureAwait(false);
                             }
 
                             // The replacement Quality does not count towards the BP limit of the new type, nor should it be printed.
@@ -6061,9 +6043,9 @@ namespace Chummer
                         if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
                                 blnCompleteDelete
                                     ? await LanguageManager.GetStringAsync("Message_DeleteQuality", token: token)
-                                                           .ConfigureAwait(false)
+                                        .ConfigureAwait(false)
                                     : await LanguageManager.GetStringAsync("Message_LowerQualityLevel", token: token)
-                                                           .ConfigureAwait(false), token).ConfigureAwait(false))
+                                        .ConfigureAwait(false), token).ConfigureAwait(false))
                             return false;
 
                         if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
@@ -6074,7 +6056,7 @@ namespace Chummer
                             {
                                 XmlDocument xmlQualitiesDoc
                                     = await CharacterObject.LoadDataAsync("qualities.xml", token: token)
-                                                           .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                                 // Create the Qualities that come with the Metatype.
                                 foreach (XPathNavigator objXmlQualityItem in xmlCharacterNode.Select(
                                              "qualities/*/quality[. = " + objSelectedQuality.Name.CleanXPath() + ']'))
@@ -6092,9 +6074,9 @@ namespace Chummer
                                                 ? QualitySource.MetatypeRemovable
                                                 : QualitySource.Metatype;
                                         objQuality.Create(objXmlQuality, objSource, CharacterObject.Weapons,
-                                                          strForceValue);
+                                            strForceValue);
                                         await CharacterObject.Qualities.AddAsync(objQuality, token)
-                                                             .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                     }
                                     catch
                                     {
@@ -6109,8 +6091,8 @@ namespace Chummer
                     {
                         objXmlDeleteQuality
                             = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString,
-                                                          await CharacterObject.LoadDataAsync(
-                                                              "lifemodules.xml", token: token).ConfigureAwait(false));
+                                await CharacterObject.LoadDataAsync(
+                                    "lifemodules.xml", token: token).ConfigureAwait(false));
                     }
 
                     // Fix for legacy characters with old addqualities improvements.
@@ -6118,6 +6100,10 @@ namespace Chummer
                         await RemoveAddedQualities(
                             objXmlDeleteQuality.SelectAndCacheExpressionAsNavigator("addqualities/addquality", token),
                             token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 // Perform removal
@@ -9809,15 +9795,16 @@ namespace Chummer
                                         .ConfigureAwait(false) is Quality objSelectedQuality))
                     return;
                 bool blnDoRemoveQuality = false;
-                using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                try
                 {
                     GenericToken.ThrowIfCancellationRequested();
                     int intCurrentLevels = objSelectedQuality.Levels;
                     int intSelectedLevels = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                                 .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     // Helps to capture a write lock here for performance purposes
-                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
-                                                                      .ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
+                        .ConfigureAwait(false);
                     try
                     {
                         GenericToken.ThrowIfCancellationRequested();
@@ -9825,9 +9812,9 @@ namespace Chummer
                         for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
                         {
                             if (!await (await objSelectedQuality.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))
-                                       .RequirementsMetAsync(CharacterObject,
-                                                             await LanguageManager.GetStringAsync("String_Quality", token: GenericToken)
-                                                                 .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
+                                    .RequirementsMetAsync(CharacterObject,
+                                        await LanguageManager.GetStringAsync("String_Quality", token: GenericToken)
+                                            .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
                             {
                                 await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
                                 break;
@@ -9837,13 +9824,13 @@ namespace Chummer
                             Quality objQuality = new Quality(CharacterObject);
 
                             objQuality.Create(await objSelectedQuality.GetNodeAsync(GenericToken).ConfigureAwait(false),
-                                              QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                                QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                             if (objQuality.InternalId.IsEmptyGuid())
                             {
                                 // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                                 await ImprovementManager
-                                      .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality,
-                                                               objQuality.InternalId, token: GenericToken).ConfigureAwait(false);
+                                    .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality,
+                                        objQuality.InternalId, token: GenericToken).ConfigureAwait(false);
                                 await objQuality.DisposeAsync().ConfigureAwait(false);
                                 await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
                                 break;
@@ -9859,8 +9846,10 @@ namespace Chummer
                                 // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
                                 string strAmount
                                     = CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo)
-                                      + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false)
-                                      + await LanguageManager.GetStringAsync("String_Karma", token: GenericToken).ConfigureAwait(false);
+                                      + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                          .ConfigureAwait(false)
+                                      + await LanguageManager.GetStringAsync("String_Karma", token: GenericToken)
+                                          .ConfigureAwait(false);
                                 int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
 
                                 // Add the cost of the Quality that is being added.
@@ -9877,12 +9866,14 @@ namespace Chummer
                                             Program.ShowScrollableMessageBox(
                                                 this,
                                                 string.Format(GlobalSettings.CultureInfo,
-                                                              await LanguageManager
-                                                                    .GetStringAsync("Message_NegativeQualityLimit", token: GenericToken)
-                                                                    .ConfigureAwait(false), strAmount),
+                                                    await LanguageManager
+                                                        .GetStringAsync("Message_NegativeQualityLimit",
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false), strAmount),
                                                 await LanguageManager
-                                                      .GetStringAsync("MessageTitle_NegativeQualityLimit", token: GenericToken)
-                                                      .ConfigureAwait(false), MessageBoxButtons.OK,
+                                                    .GetStringAsync("MessageTitle_NegativeQualityLimit",
+                                                        token: GenericToken)
+                                                    .ConfigureAwait(false), MessageBoxButtons.OK,
                                                 MessageBoxIcon.Information);
                                             blnAddItem = false;
                                         }
@@ -9892,13 +9883,15 @@ namespace Chummer
                                             Program.ShowScrollableMessageBox(
                                                 this,
                                                 string.Format(GlobalSettings.CultureInfo,
-                                                              await LanguageManager
-                                                                    .GetStringAsync(
-                                                                        "Message_NegativeQualityAndMetatypeLimit", token: GenericToken)
-                                                                    .ConfigureAwait(false), strAmount),
+                                                    await LanguageManager
+                                                        .GetStringAsync(
+                                                            "Message_NegativeQualityAndMetatypeLimit",
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false), strAmount),
                                                 await LanguageManager
-                                                      .GetStringAsync("MessageTitle_NegativeQualityLimit", token: GenericToken)
-                                                      .ConfigureAwait(false), MessageBoxButtons.OK,
+                                                    .GetStringAsync("MessageTitle_NegativeQualityLimit",
+                                                        token: GenericToken)
+                                                    .ConfigureAwait(false), MessageBoxButtons.OK,
                                                 MessageBoxIcon.Information);
                                             blnAddItem = false;
                                         }
@@ -9911,16 +9904,16 @@ namespace Chummer
                                     if (intBP > intMaxQualityAmount)
                                     {
                                         Program.ShowScrollableMessageBox(this,
-                                                               string.Format(
-                                                                   GlobalSettings.CultureInfo,
-                                                                   await LanguageManager
-                                                                         .GetStringAsync("Message_PositiveQualityLimit", token: GenericToken)
-                                                                         .ConfigureAwait(false), strAmount),
-                                                               await LanguageManager
-                                                                     .GetStringAsync(
-                                                                         "MessageTitle_PositiveQualityLimit", token: GenericToken)
-                                                                     .ConfigureAwait(false),
-                                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            string.Format(
+                                                GlobalSettings.CultureInfo,
+                                                await LanguageManager
+                                                    .GetStringAsync("Message_PositiveQualityLimit", token: GenericToken)
+                                                    .ConfigureAwait(false), strAmount),
+                                            await LanguageManager
+                                                .GetStringAsync(
+                                                    "MessageTitle_PositiveQualityLimit", token: GenericToken)
+                                                .ConfigureAwait(false),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         blnAddItem = false;
                                     }
                                 }
@@ -9932,7 +9925,8 @@ namespace Chummer
                                 Interlocked.Increment(ref _intSkipQualityLevelChanged);
                                 try
                                 {
-                                    await CharacterObject.Qualities.AddAsync(objQuality, GenericToken).ConfigureAwait(false);
+                                    await CharacterObject.Qualities.AddAsync(objQuality, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
                                 finally
                                 {
@@ -9942,15 +9936,16 @@ namespace Chummer
                                 // Add any created Weapons to the character.
                                 foreach (Weapon objWeapon in lstWeapons)
                                 {
-                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
                             }
                             else
                             {
                                 // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                                 await ImprovementManager
-                                      .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality,
-                                                               objQuality.InternalId, token: GenericToken).ConfigureAwait(false);
+                                    .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality,
+                                        objQuality.InternalId, token: GenericToken).ConfigureAwait(false);
                                 await objQuality.DisposeAsync().ConfigureAwait(false);
                                 await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
                                 break;
@@ -9977,8 +9972,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 if (blnDoRemoveQuality && !await RemoveQuality(objSelectedQuality, false, false, GenericToken)
@@ -11771,8 +11770,8 @@ namespace Chummer
 
             try
             {
-                using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken)
-                           .ConfigureAwait(false))
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                try
                 {
                     CursorWait objCursorWait =
                         await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
@@ -11882,7 +11881,7 @@ namespace Chummer
                             }
                         }
 
-                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
+                        IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
                             .ConfigureAwait(false);
                         try
                         {
@@ -12021,13 +12020,17 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
                     {
                         await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -14301,7 +14304,8 @@ namespace Chummer
         protected override async Task DoUpdateCharacterInfo(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 while (SkipUpdate)
@@ -14328,10 +14332,10 @@ namespace Chummer
                                 "Spirits", StringComparison.Ordinal))
                         {
                             await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                            .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             string strFreeSpiritPowerPoints = await CharacterObject
-                                                                    .CalculateFreeSpiritPowerPointsAsync(token)
-                                                                    .ConfigureAwait(false);
+                                .CalculateFreeSpiritPowerPointsAsync(token)
+                                .ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -14341,10 +14345,10 @@ namespace Chummer
                         else if (await CharacterObject.GetIsFreeSpriteAsync(token).ConfigureAwait(false))
                         {
                             await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                            .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             string strFreeSpritePowerPoints = await CharacterObject
-                                                                    .CalculateFreeSpritePowerPointsAsync(token)
-                                                                    .ConfigureAwait(false);
+                                .CalculateFreeSpritePowerPointsAsync(token)
+                                .ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -14354,21 +14358,21 @@ namespace Chummer
                         else
                         {
                             await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                            .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                       .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         }
 
                         await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
-                                           RefreshSelectedArmor(token),
-                                           RefreshSelectedGear(token), RefreshSelectedDrug(token),
-                                           RefreshSelectedLifestyle(token),
-                                           RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
-                                           RefreshSelectedSpell(token),
-                                           RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
-                                           RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
-                                           RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
-                                           UpdateSkillRelatedInfo(token)).ConfigureAwait(false);
+                            RefreshSelectedArmor(token),
+                            RefreshSelectedGear(token), RefreshSelectedDrug(token),
+                            RefreshSelectedLifestyle(token),
+                            RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
+                            RefreshSelectedSpell(token),
+                            RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
+                            RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
+                            RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
+                            UpdateSkillRelatedInfo(token)).ConfigureAwait(false);
                         await tskAutosave.ConfigureAwait(false);
                     }
                     finally
@@ -14380,6 +14384,10 @@ namespace Chummer
                 {
                     SkipUpdate = false;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -20257,36 +20265,31 @@ namespace Chummer
                     {
                         // Gear Availability.
                         int intRestrictedCount = await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
-                                                       .SumAsync(
-                                                           async objGear => await objGear.CheckRestrictedGear(
+                                                       .SumAsync(objGear => objGear.CheckRestrictedGear(
                                                                dicRestrictedGearLimits, sbdAvailItems,
                                                                sbdRestrictedItems,
-                                                               token).ConfigureAwait(false), token)
+                                                               token), token)
                                                        .ConfigureAwait(false)
                                                  // Cyberware Availability.
                                                  + await (await CharacterObject.GetCyberwareAsync(token)
-                                                                               .ConfigureAwait(false)).SumAsync(
-                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                                               .ConfigureAwait(false)).SumAsync(objGear => objGear.CheckRestrictedGear(
                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                         token), token).ConfigureAwait(false)
                                                  // Armor Availability.
                                                  + await (await CharacterObject.GetArmorAsync(token)
-                                                                               .ConfigureAwait(false)).SumAsync(
-                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                                               .ConfigureAwait(false)).SumAsync(objGear => objGear.CheckRestrictedGear(
                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                         token), token).ConfigureAwait(false)
                                                  // Weapon Availability.
                                                  + await (await CharacterObject.GetWeaponsAsync(token)
-                                                                               .ConfigureAwait(false)).SumAsync(
-                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                                               .ConfigureAwait(false)).SumAsync(objGear => objGear.CheckRestrictedGear(
                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                         token), token).ConfigureAwait(false)
                                                  // Vehicle Availability.
                                                  + await (await CharacterObject.GetVehiclesAsync(token)
-                                                                               .ConfigureAwait(false)).SumAsync(
-                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                                               .ConfigureAwait(false)).SumAsync(objGear => objGear.CheckRestrictedGear(
                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                                         token), token).ConfigureAwait(false);
 
                         // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
                         if (intRestrictedCount > 0)

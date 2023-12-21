@@ -1655,11 +1655,10 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            intRestrictedCount += await Weapons.SumAsync(async objChild =>
-                                                             await objChild.CheckRestrictedGear(
-                                                                               dicRestrictedGearLimits, sbdAvailItems,
-                                                                               sbdRestrictedItems, token)
-                                                                           .ConfigureAwait(false), token)
+            intRestrictedCount += await Weapons.SumAsync(objChild =>
+                                                             objChild.CheckRestrictedGear(
+                                                                 dicRestrictedGearLimits, sbdAvailItems,
+                                                                 sbdRestrictedItems, token), token)
                                                .ConfigureAwait(false);
 
             foreach (WeaponMountOption objChild in WeaponMountOptions)

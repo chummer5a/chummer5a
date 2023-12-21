@@ -407,7 +407,7 @@ namespace Chummer
         public void CopyFrom(CharacterCache objExistingCache)
         {
             using (LockObject.EnterWriteLock())
-            using (objExistingCache.LockObject.EnterHiPrioReadLock())
+            using (objExistingCache.LockObject.EnterReadLock())
             {
                 _strBackground = objExistingCache.Background;
                 _strBuildMethod = objExistingCache.BuildMethod;
@@ -435,9 +435,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                IDisposable objLocker2 =
-                    await objExistingCache.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-                try
+                using (await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _strBackground = objExistingCache.Background;
@@ -457,10 +455,6 @@ namespace Chummer
                     _strPlayerName = objExistingCache.PlayerName;
                     _strSettingsFile = objExistingCache.SettingsFile;
                     Interlocked.Exchange(ref _imgMugshot, objExistingCache.Mugshot.Clone() as Image)?.Dispose();
-                }
-                finally
-                {
-                    objLocker2.Dispose();
                 }
             }
             finally

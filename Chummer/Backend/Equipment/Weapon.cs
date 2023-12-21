@@ -8432,17 +8432,15 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            intRestrictedCount += await UnderbarrelWeapons.SumAsync(async objChild =>
-                                                                        await objChild.CheckRestrictedGear(
-                                                                                dicRestrictedGearLimits, sbdAvailItems,
-                                                                                sbdRestrictedItems, token)
-                                                                            .ConfigureAwait(false), token)
+            intRestrictedCount += await UnderbarrelWeapons.SumAsync(objChild =>
+                                                                        objChild.CheckRestrictedGear(
+                                                                            dicRestrictedGearLimits, sbdAvailItems,
+                                                                            sbdRestrictedItems, token), token)
                                                           .ConfigureAwait(false)
-                                  + await WeaponAccessories.SumAsync(async objChild =>
-                                                                         await objChild.CheckRestrictedGear(
-                                                                                 dicRestrictedGearLimits, sbdAvailItems,
-                                                                                 sbdRestrictedItems, token)
-                                                                             .ConfigureAwait(false), token)
+                                  + await WeaponAccessories.SumAsync(objChild =>
+                                                                         objChild.CheckRestrictedGear(
+                                                                             dicRestrictedGearLimits, sbdAvailItems,
+                                                                             sbdRestrictedItems, token), token)
                                                            .ConfigureAwait(false);
 
             return intRestrictedCount;
@@ -8951,12 +8949,13 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                async Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
-                    await this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
-                                                      null, y, funcMakeDirty, token: token).ConfigureAwait(false);
-                async Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
-                    await this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
-                                                        () => UnderbarrelWeapons.Count, y, funcMakeDirty, token: token).ConfigureAwait(false);
+                Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
+                    this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
+                        null, y, funcMakeDirty, token: token);
+
+                Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
+                    this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
+                        () => UnderbarrelWeapons.Count, y, funcMakeDirty, token: token);
 
                 UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, FuncUnderbarrelWeaponsToAdd);
                 WeaponAccessories.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoriesToAdd);
@@ -8972,8 +8971,8 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    async Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
-                        await objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: token).ConfigureAwait(false);
+                    Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
+                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: token);
 
                     objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
                     if (funcMakeDirty != null)

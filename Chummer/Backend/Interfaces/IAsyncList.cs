@@ -47,7 +47,7 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
                 objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -121,7 +121,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -133,7 +134,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
                 objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -207,7 +208,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -219,7 +221,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
                 objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -293,7 +295,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -400,7 +403,7 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
                 objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -474,7 +477,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -486,7 +490,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
                 objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -560,7 +564,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -572,7 +577,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
                 objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -646,7 +651,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -658,7 +664,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
                 objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -732,7 +738,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -744,7 +751,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
                 objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             else
@@ -818,7 +825,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1286,7 +1294,7 @@ namespace Chummer
                 if (num < n)
                 {
                     T key3 = await lstCollection.GetValueAtAsync(lo + num, token).ConfigureAwait(false);
-                    if (await comparer(key2, key3) < 0)
+                    if (await comparer(key2, key3).ConfigureAwait(false) < 0)
                         key2 = key3;
                 }
 

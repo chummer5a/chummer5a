@@ -540,8 +540,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (!AllowPrint)
@@ -621,10 +620,6 @@ namespace Chummer
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                objLocker.Dispose();
-            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -692,15 +687,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (!Guid.TryParse(value, out Guid guiTemp) || _guiWeaponID == guiTemp)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (!Guid.TryParse(value, out Guid guiTemp) || _guiWeaponID == guiTemp)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _guiWeaponID = guiTemp;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1272,15 +1271,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnPrint == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnPrint == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnPrint = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1297,15 +1300,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnDoubleCostCareer == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnDoubleCostCareer == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDoubleCostCareer = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1322,15 +1329,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnCanBuyWithSpellPoints == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnCanBuyWithSpellPoints == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnCanBuyWithSpellPoints = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1347,15 +1358,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnImplemented == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnImplemented == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnImplemented = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1398,15 +1413,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnContributeToLimit == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnContributeToLimit == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnContributeToLimit = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1505,6 +1524,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnStagedPurchase == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnStagedPurchase == value)
@@ -1691,6 +1716,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
@@ -1772,7 +1803,8 @@ namespace Chummer
         private async Task RefreshSuppressedAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strSourceIdString = await GetSourceIDStringAsync(token).ConfigureAwait(false);
@@ -1788,6 +1820,10 @@ namespace Chummer
                         (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).Where(imp =>
                             imp.SourceName == strSourceIdString && !imp.Enabled), token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1948,7 +1984,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            using (objCharacter.LockObject.EnterHiPrioReadLock(token))
+            using (objCharacter.LockObject.EnterReadLock(token))
             {
                 conflictingQualities = new List<Quality>(objCharacter.Qualities.Count);
                 reason = QualityFailureReasons.None;
@@ -2183,12 +2219,13 @@ namespace Chummer
         {
             if (objOldQuality == null)
                 throw new ArgumentNullException(nameof(objOldQuality));
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // Helps to capture a write lock here for performance purposes
-                IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token)
-                                                                .ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token)
+                    .ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -2196,7 +2233,8 @@ namespace Chummer
                     Create(objXmlQuality, QualitySource.Selected, lstWeapons);
 
                     int intKarmaCost;
-                    using (await objOldQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker3 = await objOldQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         bool blnAddItem = true;
@@ -2204,7 +2242,7 @@ namespace Chummer
                                        * _objCharacter.Settings.KarmaQuality;
 
                         string strOldQualityName = await objOldQuality.GetCurrentDisplayNameShortAsync(token)
-                                                                      .ConfigureAwait(false);
+                            .ConfigureAwait(false);
 
                         // Make sure the character has enough Karma to pay for the Quality.
                         if (Type == QualityType.Positive)
@@ -2219,7 +2257,7 @@ namespace Chummer
                             {
                                 Program.ShowScrollableMessageBox(
                                     await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
-                                                         .ConfigureAwait(false),
+                                        .ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(
                                         "MessageTitle_NotEnoughKarma", token: token).ConfigureAwait(false),
                                     MessageBoxButtons.OK,
@@ -2228,15 +2266,15 @@ namespace Chummer
                             }
 
                             if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                                                        string.Format(GlobalSettings.CultureInfo,
-                                                                            await LanguageManager
-                                                                                .GetStringAsync("Message_QualitySwap",
-                                                                                    token: token)
-                                                                                .ConfigureAwait(false)
-                                                                            , strOldQualityName
-                                                                            , await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)),
-                                                                        token)
-                                                                    .ConfigureAwait(false))
+                                        string.Format(GlobalSettings.CultureInfo,
+                                            await LanguageManager
+                                                .GetStringAsync("Message_QualitySwap",
+                                                    token: token)
+                                                .ConfigureAwait(false)
+                                            , strOldQualityName
+                                            , await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)),
+                                        token)
+                                    .ConfigureAwait(false))
                             {
                                 blnAddItem = false;
                             }
@@ -2255,22 +2293,22 @@ namespace Chummer
                                 {
                                     Program.ShowScrollableMessageBox(
                                         await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
-                                                             .ConfigureAwait(false),
+                                            .ConfigureAwait(false),
                                         await LanguageManager
-                                              .GetStringAsync("MessageTitle_NotEnoughKarma", token: token)
-                                              .ConfigureAwait(false),
+                                            .GetStringAsync("MessageTitle_NotEnoughKarma", token: token)
+                                            .ConfigureAwait(false),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     blnAddItem = false;
                                 }
 
                                 if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
                                         string.Format(GlobalSettings.CultureInfo,
-                                                      await LanguageManager
-                                                            .GetStringAsync("Message_QualitySwap", token: token)
-                                                            .ConfigureAwait(false),
-                                                      strOldQualityName,
-                                                      await GetCurrentDisplayNameShortAsync(token)
-                                                          .ConfigureAwait(false)),
+                                            await LanguageManager
+                                                .GetStringAsync("Message_QualitySwap", token: token)
+                                                .ConfigureAwait(false),
+                                            strOldQualityName,
+                                            await GetCurrentDisplayNameShortAsync(token)
+                                                .ConfigureAwait(false)),
                                         token).ConfigureAwait(false))
                                 {
                                     blnAddItem = false;
@@ -2282,8 +2320,13 @@ namespace Chummer
                                 intKarmaCost = 0;
                             }
                         }
+
                         if (!blnAddItem)
                             return false;
+                    }
+                    finally
+                    {
+                        await objLocker3.DisposeAsync().ConfigureAwait(false);
                     }
 
                     // Removing the old quality from the character
@@ -2298,7 +2341,7 @@ namespace Chummer
                         try
                         {
                             objNewQualityLevel.Create(objXmlQuality, QualitySource.Selected, lstWeapons, _strExtra,
-                                                      _strSourceName);
+                                _strSourceName);
                             await _objCharacter.Qualities.AddAsync(objNewQualityLevel, token).ConfigureAwait(false);
                         }
                         catch
@@ -2319,27 +2362,31 @@ namespace Chummer
                         // Create the Karma expense.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(intKarmaCost * -1,
-                                          string.Format(GlobalSettings.CultureInfo,
-                                                        await LanguageManager.GetStringAsync(
-                                                                                 Type == QualityType.Positive
-                                                                                     ? "String_ExpenseSwapPositiveQuality"
-                                                                                     : "String_ExpenseSwapNegativeQuality",
-                                                                                 token: token)
-                                                                             .ConfigureAwait(false)
-                                                        , await objOldQuality.GetCurrentDisplayNameAsync(token)
-                                                                             .ConfigureAwait(false)
-                                                        , await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)),
-                                          ExpenseType.Karma,
-                                          DateTime.Now);
+                            string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                        Type == QualityType.Positive
+                                            ? "String_ExpenseSwapPositiveQuality"
+                                            : "String_ExpenseSwapNegativeQuality",
+                                        token: token)
+                                    .ConfigureAwait(false)
+                                , await objOldQuality.GetCurrentDisplayNameAsync(token)
+                                    .ConfigureAwait(false)
+                                , await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)),
+                            ExpenseType.Karma,
+                            DateTime.Now);
                         await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                                           .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                         await _objCharacter.ModifyKarmaAsync(-intKarmaCost, token).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await objOldQuality.DisposeAsync().ConfigureAwait(false);
@@ -2363,21 +2410,13 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new List<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Add(value);
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Remove(value);
-            }
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -2423,18 +2462,17 @@ namespace Chummer
                         }
                     }
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
-                        int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
-                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs);
+                        Utils.RunWithoutThreadLock(lstFuncs);
                         if (PropertyChanged != null)
                         {
                             Utils.RunOnMainThread(() =>
@@ -2476,7 +2514,8 @@ namespace Chummer
         public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -2500,7 +2539,7 @@ namespace Chummer
 
                     if (lstPropertyNames.Contains(nameof(Suppressed)))
                     {
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -2509,16 +2548,19 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
-                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _lstPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks =
+                            new List<Task>(Math.Min(lstArgsList.Count * _setPropertyChangedAsync.Count,
+                                Utils.MaxParallelBatchSize));
                         int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
@@ -2530,6 +2572,7 @@ namespace Chummer
                                 i = 0;
                             }
                         }
+
                         await Task.WhenAll(lstTasks).ConfigureAwait(false);
                         if (PropertyChanged != null)
                         {
@@ -2568,6 +2611,10 @@ namespace Chummer
                     if (setNamesOfChangedProperties != null)
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

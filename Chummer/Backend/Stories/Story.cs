@@ -54,19 +54,25 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                 {
-                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         _blnNeedToRegeneratePersistents = true;
                         foreach (StoryModule objModule in e.NewItems)
                             objModule.ParentStory = this;
                     }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
 
                     break;
                 }
                 case NotifyCollectionChangedAction.Remove:
                 {
-                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         _blnNeedToRegeneratePersistents = true;
@@ -79,12 +85,17 @@ namespace Chummer
                             }
                         }
                     }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
 
                     break;
                 }
                 case NotifyCollectionChangedAction.Replace:
                 {
-                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         _blnNeedToRegeneratePersistents = true;
@@ -100,13 +111,25 @@ namespace Chummer
                         foreach (StoryModule objModule in e.NewItems)
                             objModule.ParentStory = this;
                     }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
 
                     break;
                 }
                 case NotifyCollectionChangedAction.Reset:
                 {
-                    using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
                         _blnNeedToRegeneratePersistents = true;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+
                     break;
                 }
             }
@@ -227,14 +250,14 @@ namespace Chummer
 
         public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
                 string[] strModuleOutputStrings;
-                IDisposable objLocker2 = await Modules.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                IDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();

@@ -415,8 +415,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // <mentorspirit>
@@ -483,10 +482,6 @@ namespace Chummer
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                objLocker.Dispose();
-            }
         }
 
         #endregion Constructor
@@ -539,16 +534,18 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strName, value) != value)
+                    if (Interlocked.Exchange(ref _strName, value) == value)
+                        return;
+                    if (SourceID == Guid.Empty)
                     {
-                        if (SourceID == Guid.Empty)
-                        {
-                            _objCachedMyXmlNode = null;
-                            _objCachedMyXPathNode = null;
-                        }
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
 
+                    using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                    {
                         if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
-                            _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
+                            _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
                     }
                 }
             }
@@ -657,9 +654,14 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strExtra, value) != value && _objCharacter.MentorSpirits.Count > 0
-                                                                            && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                    if (Interlocked.Exchange(ref _strExtra, value) != value)
+                    {
+                        using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                        {
+                            if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                                _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                        }
+                    }
                 }
             }
         }
@@ -678,9 +680,14 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strExtraChoice1, value) != value && _objCharacter.MentorSpirits.Count > 0
-                                                                            && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                    if (Interlocked.Exchange(ref _strExtraChoice1, value) != value)
+                    {
+                        using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                        {
+                            if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                                _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                        }
+                    }
                 }
             }
         }
@@ -699,9 +706,14 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strExtraChoice2, value) != value && _objCharacter.MentorSpirits.Count > 0
-                                                                            && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                    if (Interlocked.Exchange(ref _strExtraChoice2, value) != value)
+                    {
+                        using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                        {
+                            if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                                _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                        }
+                    }
                 }
             }
         }

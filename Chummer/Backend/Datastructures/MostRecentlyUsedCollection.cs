@@ -98,14 +98,20 @@ namespace Chummer
 
         public override async Task AddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
                     await base.AddAsync(item, token).ConfigureAwait(false);
                 else
-                    await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
+                    await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token)
+                        .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -125,14 +131,20 @@ namespace Chummer
         /// <inheritdoc />
         public override async Task<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
                     return await base.TryAddAsync(item, token).ConfigureAwait(false);
-                await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
+                await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token)
+                    .ConfigureAwait(false);
                 return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

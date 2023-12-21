@@ -592,12 +592,12 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, Task<bool>> Filter => _funcFilter;
 
-        public async Task SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
+        public Task SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
         {
             Func<T, Task<bool>> objNewValue = value ?? _funcDefaultFilter;
             if (Interlocked.Exchange(ref _funcFilter, objNewValue) == objNewValue)
-                return;
-            await DoFilter(token: token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return DoFilter(token: token);
         }
 
         private async Task ItemsChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
@@ -905,7 +905,8 @@ namespace Chummer.UI.Table
 
         public async Task SetItemsAsync(ThreadSafeBindingList<T> value, CancellationToken token = default)
         {
-            using (await _objItemsLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await _objItemsLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 int intOldCount = 0;
@@ -913,20 +914,11 @@ namespace Chummer.UI.Table
                 if (lstOldItems != null)
                 {
                     // remove listener from old items
-                    IAsyncDisposable objLocker2 = await lstOldItems.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        lstOldItems.ListChangedAsync -= ItemsChanged;
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-
+                    lstOldItems.ListChangedAsync -= ItemsChanged;
                     intOldCount = lstOldItems.Count;
                 }
 
-                IAsyncDisposable objLocker = await _objItemsLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await _objItemsLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -945,7 +937,8 @@ namespace Chummer.UI.Table
                                 intLimit = intOldCount;
                                 for (int j = intOldCount; j < intNewCount; j++)
                                 {
-                                    TableRow row = await this.DoThreadSafeFuncAsync(x => x.CreateRow(), token).ConfigureAwait(false);
+                                    TableRow row = await this.DoThreadSafeFuncAsync(x => x.CreateRow(), token)
+                                        .ConfigureAwait(false);
                                     _lstRowCells.Add(row);
                                 }
 
@@ -955,9 +948,11 @@ namespace Chummer.UI.Table
                                     IList<TableCell> cells = _lstCells[i].cells;
                                     for (int j = intOldCount; j < intNewCount; j++)
                                     {
-                                        TableCell cell = await CreateCell(value[j], column, token).ConfigureAwait(false);
+                                        TableCell cell =
+                                            await CreateCell(value[j], column, token).ConfigureAwait(false);
                                         cells.Add(cell);
-                                        await _lstRowCells[j].DoThreadSafeAsync(x => x.Controls.Add(cell), token: token).ConfigureAwait(false);
+                                        await _lstRowCells[j].DoThreadSafeAsync(x => x.Controls.Add(cell), token: token)
+                                            .ConfigureAwait(false);
                                     }
                                 }
                             }
@@ -975,7 +970,8 @@ namespace Chummer.UI.Table
                                     if (row.Parent != null)
                                     {
                                         // ReSharper disable once AccessToDisposedClosure
-                                        await this.DoThreadSafeAsync(x => x.Controls.Remove(row), token: token).ConfigureAwait(false);
+                                        await this.DoThreadSafeAsync(x => x.Controls.Remove(row), token: token)
+                                            .ConfigureAwait(false);
                                     }
 
                                     await row.DoThreadSafeAsync(x => x.Dispose(), token).ConfigureAwait(false);
@@ -1002,7 +998,8 @@ namespace Chummer.UI.Table
                         }
                         finally
                         {
-                            await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
+                            await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token)
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
@@ -1012,21 +1009,17 @@ namespace Chummer.UI.Table
 
                     if (value != null)
                     {
-                        IAsyncDisposable objLocker2 = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            value.ListChangedAsync += ItemsChanged;
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
+                        value.ListChangedAsync += ItemsChanged;
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1051,11 +1044,12 @@ namespace Chummer.UI.Table
             }
         }
 
-        public async Task SetSortOrderAsync(SortOrder value, CancellationToken token = default)
+        public Task SetSortOrderAsync(SortOrder value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (InterlockedExtensions.Exchange(ref _eSortType, value) != value)
-                await SortAsync(token: token).ConfigureAwait(false);
+                return SortAsync(token: token);
+            return Task.CompletedTask;
         }
     }
 }

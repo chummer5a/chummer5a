@@ -134,7 +134,7 @@ namespace Chummer
             {
                 // ReSharper disable MethodHasAsyncOverload
                 // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                using (LockObject.EnterHiPrioReadLock(token))
+                using (LockObject.EnterReadLock(token))
                 using (objWriter.StartElement("spirit"))
                 {
                     objWriter.WriteElementString(
@@ -162,8 +162,7 @@ namespace Chummer
             }
             else
             {
-                IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-                try
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     // <spirit>
@@ -213,10 +212,6 @@ namespace Chummer
                         // </spirit>
                         await objBaseElement.DisposeAsync().ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    objLocker.Dispose();
                 }
             }
         }
@@ -327,8 +322,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            IDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Translate the Critter name if applicable.
@@ -582,10 +576,6 @@ namespace Chummer
                     // </spirit>
                     await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                objLocker.Dispose();
             }
         }
 
@@ -867,8 +857,12 @@ namespace Chummer
                 {
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+
                     OnPropertyChanged();
                 }
             }
@@ -965,6 +959,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_intServicesOwed == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_intServicesOwed == value)
@@ -1068,7 +1068,8 @@ namespace Chummer
         public async Task SetForceAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 switch (EntityType)
@@ -1089,6 +1090,10 @@ namespace Chummer
                 if (Interlocked.Exchange(ref _intForce, value) != value)
                     await OnPropertyChangedAsync(nameof(Force), token: token).ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1103,6 +1108,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnBound == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnBound == value)
@@ -1126,10 +1137,9 @@ namespace Chummer
                     }
 
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnBound = value;
-                        OnPropertyChanged();
-                    }
+
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1150,8 +1160,12 @@ namespace Chummer
                 {
                     if (InterlockedExtensions.Exchange(ref _eEntityType, value) == value)
                         return;
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+
                     OnPropertyChanged();
                 }
             }
@@ -1246,15 +1260,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _colNotes = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1314,9 +1332,41 @@ namespace Chummer
                     return _blnFettered && _intCachedAllowFettering > 0;
                 }
             }
-
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnFettered == value)
+                        return;
+                    if (value)
+                    {
+                        //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                        if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite)
+                            return;
+
+                        //Only one Fettered spirit is permitted.
+                        if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                            return;
+                    }
+                    else if (CharacterObject.Created && !Bound && ServicesOwed > 0 && CharacterObject.Spirits.Any(
+                                 x =>
+                                     !ReferenceEquals(x, this) && x.EntityType == EntityType && x.ServicesOwed > 0
+                                     && !x.Bound &&
+                                     !x.Fettered))
+                    {
+                        // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                        Program.ShowScrollableMessageBox(
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "Message_UnregisteredSpriteLimit"
+                                : "Message_UnboundSpiritLimit"),
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "MessageTitle_UnregisteredSpriteLimit"
+                                : "MessageTitle_UnboundSpiritLimit"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFettered == value)
@@ -1411,10 +1461,164 @@ namespace Chummer
                             ImprovementManager.RemoveImprovements(CharacterObject,
                                 Improvement.ImprovementSource.SpiritFettering);
                         }
+                    }
 
-                        OnPropertyChanged();
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public async Task SetFetteredAsync(bool value, CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (_blnFettered == value)
+                    return;
+                SpiritType eEntityType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (value)
+                {
+                    //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                    if (!await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false) && eEntityType == SpiritType.Sprite)
+                        return;
+
+                    //Only one Fettered spirit is permitted.
+                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.Fettered, token: token).ConfigureAwait(false))
+                        return;
+                }
+                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !Bound && ServicesOwed > 0 && await CharacterObject.Spirits.AnyAsync(
+                             async x =>
+                                 !ReferenceEquals(x, this) && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType && x.ServicesOwed > 0
+                                 && !x.Bound && !x.Fettered, token: token).ConfigureAwait(false))
+                {
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnFettered == value)
+                    return;
+                int intFetteringCost = 0;
+                SpiritType eEntityType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (value)
+                {
+                    //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                    if (!await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false) &&
+                        eEntityType == SpiritType.Sprite)
+                        return;
+
+                    //Only one Fettered spirit is permitted.
+                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.Fettered, token: token)
+                            .ConfigureAwait(false))
+                        return;
+                    if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                    {
+                        // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
+                        intFetteringCost = eEntityType == SpiritType.Spirit
+                            ? await GetForceAsync(token).ConfigureAwait(false) *
+                              await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                                  .GetKarmaSpiritFetteringAsync(token).ConfigureAwait(false)
+                            : await GetForceAsync(token).ConfigureAwait(false);
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend", token: token).ConfigureAwait(false),
+                                Name,
+                                intFetteringCost.ToString(GlobalSettings.CultureInfo)), token).ConfigureAwait(false))
+                        {
+                            return;
+                        }
                     }
                 }
+                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !Bound &&
+                         ServicesOwed > 0 && await CharacterObject.Spirits.AnyAsync(
+                             async x =>
+                                 !ReferenceEquals(x, this) &&
+                                 await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType &&
+                                 x.ServicesOwed > 0
+                                 && !x.Bound && !x.Fettered, token: token).ConfigureAwait(false))
+                {
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnFettered = value;
+                    if (value)
+                    {
+                        if (await GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit)
+                        {
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(CharacterObject, "MAG",
+                                    Improvement.ImprovementSource.SpiritFettering,
+                                    string.Empty,
+                                    Improvement.ImprovementType.Attribute,
+                                    string.Empty, 0,
+                                    1, 0, 0, -1, token: token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(CharacterObject, CancellationToken.None)
+                                    .ConfigureAwait(false);
+                                throw;
+                            }
+
+                            ImprovementManager.Commit(CharacterObject);
+                        }
+
+                        if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(intFetteringCost * -1,
+                                await LanguageManager.GetStringAsync("String_ExpenseFetteredSpirit", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + Name,
+                                ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                .ConfigureAwait(false);
+                            await CharacterObject.ModifyKarmaAsync(-intFetteringCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                    }
+                    else
+                    {
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                            Improvement.ImprovementSource.SpiritFettering, token: token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(Fettered), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1431,15 +1635,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_objColor == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_objColor == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _objColor = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1448,21 +1656,13 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new List<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Add(value);
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstPropertyChangedAsync.Remove(value);
-            }
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -1499,19 +1699,17 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
-                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
-                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        Func<Task>[] aFuncs = new Func<Task>[lstArgsList.Count * _lstPropertyChangedAsync.Count];
-                        int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
-                                aFuncs[i++] = () => objEvent.Invoke(this, objArg);
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
                         }
 
-                        Utils.RunWithoutThreadLock(aFuncs);
+                        Utils.RunWithoutThreadLock(lstFuncs);
                         if (PropertyChanged != null)
                         {
                             Utils.RunOnMainThread(() =>
@@ -1554,7 +1752,8 @@ namespace Chummer
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -1576,13 +1775,13 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (_lstPropertyChangedAsync.Count > 0)
+                    if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
                         List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                         int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _lstPropertyChangedAsync)
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
@@ -1632,6 +1831,10 @@ namespace Chummer
                     if (setNamesOfChangedProperties != null)
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1747,6 +1950,7 @@ namespace Chummer
             using (LockObject.EnterUpgradeableReadLock(token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
+                bool blnDoPropertyChanged = false;
                 using (LockObject.EnterWriteLock(token))
                 {
                     CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
@@ -1797,6 +2001,7 @@ namespace Chummer
 
                     if (_objLinkedCharacter != objOldLinkedCharacter)
                     {
+                        blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
                             if (!objOldLinkedCharacter.IsDisposed)
@@ -1824,7 +2029,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (_objLinkedCharacter.LockObject.EnterUpgradeableReadLock(token))
+                            using (_objLinkedCharacter.LockObject.EnterReadLock(token))
                             {
                                 if (string.IsNullOrEmpty(_strCritterName))
                                 {
@@ -1837,20 +2042,23 @@ namespace Chummer
                                 _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
                             }
                         }
-
-                        OnPropertyChanged(nameof(LinkedCharacter));
                     }
                 }
+
+                if (blnDoPropertyChanged)
+                    OnPropertyChanged(nameof(LinkedCharacter));
             }
         }
 
         public async Task RefreshLinkedCharacterAsync(bool blnShowError = false, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                bool blnDoPropertyChanged = false;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1873,9 +2081,11 @@ namespace Chummer
                         {
                             Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
-                                              await LanguageManager.GetStringAsync("Message_FileNotFound", token: token).ConfigureAwait(false),
-                                              FileName),
-                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                                    await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
+                                        .ConfigureAwait(false),
+                                    FileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
+                                    .ConfigureAwait(false), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     }
@@ -1886,13 +2096,17 @@ namespace Chummer
                         if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                             || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                         {
-                            if ((_objLinkedCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, token: token).ConfigureAwait(false)) == null)
+                            if ((_objLinkedCharacter = await Program.OpenCharacters
+                                    .FirstOrDefaultAsync(x => x.FileName == strFile, token: token)
+                                    .ConfigureAwait(false)) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                       = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections, token).ConfigureAwait(false))
+                                       = await Program
+                                           .CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections, token)
+                                           .ConfigureAwait(false))
                                     _objLinkedCharacter
                                         = await Program.LoadCharacterAsync(strFile, string.Empty, false, false,
-                                                                           frmLoadingBar.MyForm, token).ConfigureAwait(false);
+                                            frmLoadingBar.MyForm, token).ConfigureAwait(false);
                             }
 
                             if (_objLinkedCharacter != null)
@@ -1902,27 +2116,22 @@ namespace Chummer
 
                     if (_objLinkedCharacter != objOldLinkedCharacter)
                     {
+                        blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
-                            IAsyncDisposable objLocker2 = await objOldLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
-                            }
+                            objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
 
-                            if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token).ConfigureAwait(false))
+                            if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
+                                    .ConfigureAwait(false))
                             {
                                 if (await Program.OpenCharacters.AllAsync(x => x == _objLinkedCharacter
-                                                                              || !x.LinkedCharacters.Contains(
-                                                                                  objOldLinkedCharacter), token: token).ConfigureAwait(false)
+                                                                               || !x.LinkedCharacters.Contains(
+                                                                                   objOldLinkedCharacter), token: token)
+                                        .ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
                                         x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token).ConfigureAwait(false);
+                                    await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token)
+                                        .ConfigureAwait(false);
                             }
                             else
                                 await objOldLinkedCharacter.DisposeAsync().ConfigureAwait(false);
@@ -1930,18 +2139,21 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            using (await _objLinkedCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 if (string.IsNullOrEmpty(_strCritterName))
                                 {
-                                    string strCritterName = await _objLinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
+                                    string strCritterName = await _objLinkedCharacter.GetCharacterNameAsync(token)
+                                        .ConfigureAwait(false);
                                     if (strCritterName !=
-                                        await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
+                                        await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token)
+                                            .ConfigureAwait(false))
                                         _strCritterName = strCritterName;
                                 }
 
-                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker4 = await _objLinkedCharacter.LockObject
+                                    .EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -1949,47 +2161,54 @@ namespace Chummer
                                 }
                                 finally
                                 {
-                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                    await objLocker4.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                         }
-
-                        await OnPropertyChangedAsync(nameof(LinkedCharacter), token).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+
+                if (blnDoPropertyChanged)
+                    await OnPropertyChangedAsync(nameof(LinkedCharacter), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        private async Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             switch (e.PropertyName)
             {
                 case nameof(Character.Name):
-                    await OnPropertyChangedAsync(nameof(CritterName), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(CritterName), token);
                     break;
 
                 case nameof(Character.Mugshots):
-                    await OnPropertyChangedAsync(nameof(Mugshots), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(Mugshots), token);
                     break;
 
                 case nameof(Character.MainMugshot):
-                    await OnPropertyChangedAsync(nameof(MainMugshot), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(MainMugshot), token);
                     break;
 
                 case nameof(Character.MainMugshotIndex):
-                    await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
+                    return OnPropertyChangedAsync(nameof(MainMugshotIndex), token);
                     break;
 
                 case nameof(Character.AllowSpriteFettering):
                     _intCachedAllowFettering = int.MinValue;
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(AllowFettering), nameof(Fettered)).ConfigureAwait(false);
+                    return this.OnMultiplePropertyChangedAsync(token, nameof(AllowFettering), nameof(Fettered));
                     break;
             }
+
+            return Task.CompletedTask;
         }
 
         #endregion Properties

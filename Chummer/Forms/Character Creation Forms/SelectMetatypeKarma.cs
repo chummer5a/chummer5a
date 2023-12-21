@@ -285,11 +285,11 @@ namespace Chummer
             }
         }
 
-        private async Task ProcessMetatypeSelectedChanged(CancellationToken token = default)
+        private Task ProcessMetatypeSelectedChanged(CancellationToken token = default)
         {
             if (_intLoading > 0)
-                return;
-            await PopulateMetavariants(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return PopulateMetavariants(token);
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -342,11 +342,11 @@ namespace Chummer
             }
         }
 
-        private async Task ProcessMetavariantSelectedChanged(CancellationToken token = default)
+        private Task ProcessMetavariantSelectedChanged(CancellationToken token = default)
         {
             if (_intLoading > 0)
-                return;
-            await RefreshSelectedMetavariant(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return RefreshSelectedMetavariant(token);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

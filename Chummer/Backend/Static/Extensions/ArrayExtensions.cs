@@ -46,27 +46,27 @@ namespace Chummer
                         break;
                     if (num2 == 2)
                     {
-                        await SwapIfGreaterAsync(keys, comparer, lo, hi, token);
+                        await SwapIfGreaterAsync(keys, comparer, lo, hi, token).ConfigureAwait(false);
                         break;
                     }
                     if (num2 == 3)
                     {
-                        await SwapIfGreaterAsync(keys, comparer, lo, hi - 1, token);
-                        await SwapIfGreaterAsync(keys, comparer, lo, hi, token);
-                        await SwapIfGreaterAsync(keys, comparer, hi - 1, hi, token);
+                        await SwapIfGreaterAsync(keys, comparer, lo, hi - 1, token).ConfigureAwait(false);
+                        await SwapIfGreaterAsync(keys, comparer, lo, hi, token).ConfigureAwait(false);
+                        await SwapIfGreaterAsync(keys, comparer, hi - 1, hi, token).ConfigureAwait(false);
                         break;
                     }
-                    await InsertionSortAsync(keys, lo, hi, comparer, token);
+                    await InsertionSortAsync(keys, lo, hi, comparer, token).ConfigureAwait(false);
                     break;
                 }
                 if (depthLimit == 0)
                 {
-                    await HeapsortAsync(keys, lo, hi, comparer, token);
+                    await HeapsortAsync(keys, lo, hi, comparer, token).ConfigureAwait(false);
                     break;
                 }
                 --depthLimit;
-                num1 = await PickPivotAndPartitionAsync(keys, lo, hi, comparer, token);
-                await IntroSortAsync(keys, num1 + 1, hi, depthLimit, comparer, token);
+                num1 = await PickPivotAndPartitionAsync(keys, lo, hi, comparer, token).ConfigureAwait(false);
+                await IntroSortAsync(keys, num1 + 1, hi, depthLimit, comparer, token).ConfigureAwait(false);
             }
         }
 
@@ -90,27 +90,27 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             int index = lo + (hi - lo) / 2;
-            await SwapIfGreaterAsync(keys, comparer, lo, index, token);
-            await SwapIfGreaterAsync(keys, comparer, lo, hi, token);
-            await SwapIfGreaterAsync(keys, comparer, index, hi, token);
+            await SwapIfGreaterAsync(keys, comparer, lo, index, token).ConfigureAwait(false);
+            await SwapIfGreaterAsync(keys, comparer, lo, hi, token).ConfigureAwait(false);
+            await SwapIfGreaterAsync(keys, comparer, index, hi, token).ConfigureAwait(false);
             T key = keys[index];
-            await SwapAsync(keys, index, hi - 1, token);
+            await SwapAsync(keys, index, hi - 1, token).ConfigureAwait(false);
             int i = lo;
             int j = hi - 1;
             while (i < j)
             {
                 do
                 {
-                } while (await comparer(keys[++i], key) < 0);
+                } while (await comparer(keys[++i], key).ConfigureAwait(false) < 0);
                 do
                 {
-                } while (await comparer(key, keys[--j]) < 0);
+                } while (await comparer(key, keys[--j]).ConfigureAwait(false) < 0);
                 if (i < j)
-                    await SwapAsync(keys, i, j, token);
+                    await SwapAsync(keys, i, j, token).ConfigureAwait(false);
                 else
                     break;
             }
-            await SwapAsync(keys, i, hi - 1, token);
+            await SwapAsync(keys, i, hi - 1, token).ConfigureAwait(false);
             return i;
         }
 
@@ -119,11 +119,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             int n = hi - lo + 1;
             for (int i = n / 2; i >= 1; --i)
-                await DownHeapAsync(keys, i, n, lo, comparer, token);
+                await DownHeapAsync(keys, i, n, lo, comparer, token).ConfigureAwait(false);
             for (int index = n; index > 1; --index)
             {
-                await SwapAsync(keys, lo, lo + index - 1, token);
-                await DownHeapAsync(keys, 1, index - 1, lo, comparer, token);
+                await SwapAsync(keys, lo, lo + index - 1, token).ConfigureAwait(false);
+                await DownHeapAsync(keys, 1, index - 1, lo, comparer, token).ConfigureAwait(false);
             }
         }
 
@@ -136,9 +136,9 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 num = 2 * i;
-                if (num < n && await comparer(keys[lo + num - 1], keys[lo + num]) < 0)
+                if (num < n && await comparer(keys[lo + num - 1], keys[lo + num]).ConfigureAwait(false) < 0)
                     ++num;
-                if (await comparer(key, keys[lo + num - 1]) < 0)
+                if (await comparer(key, keys[lo + num - 1]).ConfigureAwait(false) < 0)
                     keys[lo + i - 1] = keys[lo + num - 1];
                 else
                     break;
@@ -154,7 +154,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 int index2 = index1;
                 T key;
-                for (key = keys[index1 + 1]; index2 >= lo && await comparer(key, keys[index2]) < 0; --index2)
+                for (key = keys[index1 + 1]; index2 >= lo && await comparer(key, keys[index2]).ConfigureAwait(false) < 0; --index2)
                 {
                     token.ThrowIfCancellationRequested();
                     keys[index2 + 1] = keys[index2];

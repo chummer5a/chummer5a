@@ -89,6 +89,12 @@ namespace Chummer
 
         public override int Add(object value)
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (Count >= _intMaxSize)
+                    return -1;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
@@ -100,6 +106,12 @@ namespace Chummer
         /// <inheritdoc />
         public override void Add(T item)
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (Count >= _intMaxSize)
+                    return;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
@@ -110,18 +122,29 @@ namespace Chummer
 
         public override async Task AddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
                     return;
                 await base.AddAsync(item, token).ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public override bool TryAdd(T item)
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (Count >= _intMaxSize)
+                    return false;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Count >= _intMaxSize)
@@ -134,13 +157,18 @@ namespace Chummer
         /// <inheritdoc />
         public override async Task<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
                     return false;
                 await base.AddAsync(item, token).ConfigureAwait(false);
                 return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

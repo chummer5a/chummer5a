@@ -31,7 +31,7 @@ using NLog;
 
 namespace Chummer
 {
-    public sealed class SustainedObject : IHasInternalId, INotifyPropertyChangedAsync, IDisposable, IAsyncDisposable
+    public sealed class SustainedObject : IHasInternalId, INotifyPropertyChangedAsync
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -362,21 +362,21 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly ThreadSafeList<PropertyChangedAsyncEventHandler> _lstPropertyChangedAsync =
-            new ThreadSafeList<PropertyChangedAsyncEventHandler>();
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
         public event PropertyChangedAsyncEventHandler PropertyChangedAsync
         {
-            add => _lstPropertyChangedAsync.Add(value);
-            remove => _lstPropertyChangedAsync.Remove(value);
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
-            if (_lstPropertyChangedAsync.Count > 0)
-                Utils.RunWithoutThreadLock(_lstPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))));
+            if (_setPropertyChangedAsync.Count > 0)
+                Utils.RunWithoutThreadLock(_setPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))));
             if (PropertyChanged != null)
                 Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
             if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
@@ -387,24 +387,14 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
-            if (await _lstPropertyChangedAsync.GetCountAsync(token).ConfigureAwait(false) > 0)
-                await Task.WhenAll(_lstPropertyChangedAsync.Select(x => x.Invoke(this, objArgs, token))).ConfigureAwait(false);
+            if (_setPropertyChangedAsync.Count > 0)
+                await Task.WhenAll(_setPropertyChangedAsync.Select(x => x.Invoke(this, objArgs, token))).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (PropertyChanged != null)
                 await Utils.RunOnMainThreadAsync(() => PropertyChanged?.Invoke(this, objArgs), token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
                 await _objCharacter.RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
-        }
-
-        public void Dispose()
-        {
-            _lstPropertyChangedAsync.Dispose();
-        }
-
-        public ValueTask DisposeAsync()
-        {
-            return _lstPropertyChangedAsync.DisposeAsync();
         }
     }
 }

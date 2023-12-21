@@ -58,7 +58,7 @@ namespace Chummer.UI.Table
             {
                 try
                 {
-                    await _objUpdateSemaphore.WaitAsync(_objMyToken);
+                    await _objUpdateSemaphore.WaitAsync(_objMyToken).ConfigureAwait(false);
                     try
                     {
                         await ClickHandler.Invoke(Value as T).ConfigureAwait(false);

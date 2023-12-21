@@ -135,10 +135,16 @@ namespace Chummer
         /// <inheritdoc />
         public async Task<bool> RemoveAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                return await ContainsAsync(item, token).ConfigureAwait(false) && await RemoveAsync(item.Key, token).ConfigureAwait(false);
+                return await ContainsAsync(item, token).ConfigureAwait(false) &&
+                       await RemoveAsync(item.Key, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -457,14 +463,17 @@ namespace Chummer
                     return objExistingValue;
             }
             TValue objReturn = addValueFactory(key);
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                using (LockObject.EnterWriteLock(token))
+                {
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -481,14 +490,17 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                _dicUnorderedData.Add(key, addValue);
-                _lstIndexes.Add(key);
-                return addValue;
+                using (LockObject.EnterWriteLock(token))
+                {
+                    _dicUnorderedData.Add(key, addValue);
+                    _lstIndexes.Add(key);
+                }
             }
+            return addValue;
         }
 
         /// <summary>
@@ -507,20 +519,29 @@ namespace Chummer
                     return objExistingValue;
             }
             TValue objReturn = addValueFactory(key);
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -538,20 +559,29 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                _dicUnorderedData.Add(key, addValue);
-                _lstIndexes.Add(key);
-                return addValue;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _dicUnorderedData.Add(key, addValue);
+                    _lstIndexes.Add(key);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return addValue;
         }
 
         /// <summary>
@@ -570,20 +600,29 @@ namespace Chummer
                     return objExistingValue;
             }
             TValue objReturn = await addValueFactory(key).ConfigureAwait(false);
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -602,22 +641,32 @@ namespace Chummer
                     return objExistingValue;
             }
 
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                TValue objReturn = await addValue.ConfigureAwait(false);
+                objReturn = await addValue.ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -635,15 +684,20 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-            using (LockObject.EnterWriteLock(token))
+
+            TValue objReturn;
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                TValue objReturn = addValueFactory(key);
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                using (LockObject.EnterWriteLock(token))
+                {
+                    objReturn = addValueFactory(key);
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -662,22 +716,33 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                TValue objReturn = addValueFactory(key);
-                token.ThrowIfCancellationRequested();
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    objReturn = addValueFactory(key);
+                    token.ThrowIfCancellationRequested();
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -696,22 +761,33 @@ namespace Chummer
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
-                TValue objReturn = await addValueFactory(key).ConfigureAwait(false);
-                token.ThrowIfCancellationRequested();
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    objReturn = await addValueFactory(key).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -747,8 +823,8 @@ namespace Chummer
                 }
                 _dicUnorderedData.Add(key, objReturn);
                 _lstIndexes.Add(key);
-                return objReturn;
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -781,8 +857,8 @@ namespace Chummer
                 }
                 _dicUnorderedData.Add(key, addValue);
                 _lstIndexes.Add(key);
-                return addValue;
             }
+            return addValue;
         }
 
         /// <summary>
@@ -797,14 +873,14 @@ namespace Chummer
                                                         Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            IAsyncDisposable objLocker;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -812,11 +888,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
                     return objReturn;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             objReturn = addValueFactory(key);
             objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -828,16 +908,18 @@ namespace Chummer
                     objReturn = updateValueFactory(key, objExistingValue);
                     token.ThrowIfCancellationRequested();
                     _dicUnorderedData[key] = objReturn;
-                    return objReturn;
                 }
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                else
+                {
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -850,14 +932,14 @@ namespace Chummer
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
         public async Task<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -865,10 +947,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+
                     return objNewValue;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -883,12 +970,12 @@ namespace Chummer
                 }
                 _dicUnorderedData.Add(key, addValue);
                 _lstIndexes.Add(key);
-                return addValue;
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return addValue;
         }
 
         /// <summary>
@@ -903,14 +990,14 @@ namespace Chummer
                                                         Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            IAsyncDisposable objLocker;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -918,10 +1005,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+
                     return objReturn;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             objReturn = await addValueFactory(key).ConfigureAwait(false);
             objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -933,16 +1025,18 @@ namespace Chummer
                     objReturn = updateValueFactory(key, objExistingValue);
                     token.ThrowIfCancellationRequested();
                     _dicUnorderedData[key] = objReturn;
-                    return objReturn;
                 }
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                else
+                {
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -956,14 +1050,14 @@ namespace Chummer
         public async Task<TValue> AddOrUpdateAsync(TKey key, Task<TValue> addValue, Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            IAsyncDisposable objLocker;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -971,10 +1065,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+
                     return objReturn;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -986,16 +1085,18 @@ namespace Chummer
                     objReturn = updateValueFactory(key, objExistingValue);
                     token.ThrowIfCancellationRequested();
                     _dicUnorderedData[key] = objReturn;
-                    return objReturn;
                 }
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                else
+                {
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -1010,14 +1111,14 @@ namespace Chummer
                                                         Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            IAsyncDisposable objLocker;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1025,10 +1126,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+
                     return objReturn;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             objReturn = addValueFactory(key);
             objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -1040,16 +1146,18 @@ namespace Chummer
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     _dicUnorderedData[key] = objReturn;
-                    return objReturn;
                 }
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                else
+                {
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -1063,14 +1171,14 @@ namespace Chummer
         public async Task<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            IAsyncDisposable objLocker;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1078,10 +1186,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+
                     return objReturn;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -1096,12 +1209,12 @@ namespace Chummer
                 }
                 _dicUnorderedData.Add(key, addValue);
                 _lstIndexes.Add(key);
-                return addValue;
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return addValue;
         }
 
         /// <summary>
@@ -1116,14 +1229,14 @@ namespace Chummer
                                                         Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            IAsyncDisposable objLocker;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1131,10 +1244,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+
                     return objReturn;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             objReturn = await addValueFactory(key).ConfigureAwait(false);
             objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -1146,16 +1264,18 @@ namespace Chummer
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     _dicUnorderedData[key] = objReturn;
-                    return objReturn;
                 }
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                else
+                {
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <summary>
@@ -1169,14 +1289,14 @@ namespace Chummer
         public async Task<TValue> AddOrUpdateAsync(TKey key, Task<TValue> addValue, Func<TKey, TValue, Task<TValue>> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            IAsyncDisposable objLocker;
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
-                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1184,10 +1304,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+
                     return objReturn;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -1200,16 +1325,18 @@ namespace Chummer
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     _dicUnorderedData[key] = objReturn;
-                    return objReturn;
                 }
-                _dicUnorderedData.Add(key, objReturn);
-                _lstIndexes.Add(key);
-                return objReturn;
+                else
+                {
+                    _dicUnorderedData.Add(key, objReturn);
+                    _lstIndexes.Add(key);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+            return objReturn;
         }
 
         /// <inheritdoc />
@@ -1567,6 +1694,18 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    TValue objOldValue = _dicUnorderedData[key];
+                    if (objOldValue == null)
+                    {
+                        if (value == null)
+                            return;
+                    }
+                    else if (objOldValue.Equals(value))
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     TValue objOldValue = _dicUnorderedData[key];
@@ -1594,7 +1733,8 @@ namespace Chummer
 
         public async Task SetValueAtAsync(TKey key, TValue value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 TValue objOldValue = _dicUnorderedData[key];
@@ -1605,7 +1745,22 @@ namespace Chummer
                 }
                 else if (objOldValue.Equals(value))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                TValue objOldValue = _dicUnorderedData[key];
+                if (objOldValue == null)
+                {
+                    if (value == null)
+                        return;
+                }
+                else if (objOldValue.Equals(value))
+                    return;
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1613,14 +1768,19 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SetValueAtAsync(int index, TValue value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 TKey objKey = _lstIndexes[index];
@@ -1632,7 +1792,8 @@ namespace Chummer
                 }
                 else if (objOldValue.Equals(value))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1640,8 +1801,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1695,6 +1860,16 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_dicUnorderedData.TryGetValue(value.Key, out TValue _))
+                    {
+                        int intOriginalIndex = _lstIndexes.IndexOf(value.Key);
+                        if (index == intOriginalIndex)
+                            return;
+                    }
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_dicUnorderedData.TryGetValue(value.Key, out TValue objOldValue))
@@ -1754,7 +1929,20 @@ namespace Chummer
 
         public async Task SetValueAtAsync(int index, KeyValuePair<TKey, TValue> value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicUnorderedData.TryGetValue(value.Key, out TValue _))
+                {
+                    int intOriginalIndex = _lstIndexes.IndexOf(value.Key);
+                    if (index == intOriginalIndex)
+                        return;
+                }
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.TryGetValue(value.Key, out TValue objOldValue))
@@ -1763,7 +1951,7 @@ namespace Chummer
                     if (index == intOriginalIndex)
                         return;
                     TKey objKeyToRemove = _lstIndexes[index];
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1782,12 +1970,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -1798,9 +1986,13 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1819,12 +2011,20 @@ namespace Chummer
         /// <inheritdoc />
         public async Task InsertAsync(int index, KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.ContainsKey(item.Key))
                     throw new ArgumentException(null, nameof(item));
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            }
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicUnorderedData.ContainsKey(item.Key))
+                    throw new ArgumentException(null, nameof(item));
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -1833,8 +2033,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2027,6 +2231,12 @@ namespace Chummer
 
         public void Insert(int index, KeyValuePair<TKey, TValue> item)
         {
+            using (LockObject.EnterReadLock())
+            {
+                if (_dicUnorderedData.ContainsKey(item.Key))
+                    throw new ArgumentException(null, nameof(item));
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_dicUnorderedData.ContainsKey(item.Key))
@@ -2041,10 +2251,16 @@ namespace Chummer
 
         public void Insert(int index, Tuple<TKey, TValue> item)
         {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+            using (LockObject.EnterReadLock())
+            {
+                if (_dicUnorderedData.ContainsKey(item.Item1))
+                    throw new ArgumentException(null, nameof(item));
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (item == null)
-                    throw new ArgumentNullException(nameof(item));
                 if (_dicUnorderedData.ContainsKey(item.Item1))
                     throw new ArgumentException(null, nameof(item));
                 using (LockObject.EnterWriteLock())
@@ -2057,6 +2273,13 @@ namespace Chummer
 
         public void RemoveAt(int index)
         {
+            using (LockObject.EnterReadLock())
+            {
+                TKey objKeyToRemove = _lstIndexes[index];
+                if (objKeyToRemove.Equals(default))
+                    return;
+            }
+
             using (LockObject.EnterUpgradeableReadLock())
             {
                 TKey objKeyToRemove = _lstIndexes[index];
@@ -2073,13 +2296,23 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.RemoveAt" />
         public async Task RemoveAtAsync(int index, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 TKey objKeyToRemove = _lstIndexes[index];
                 if (objKeyToRemove.Equals(default))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                TKey objKeyToRemove = _lstIndexes[index];
+                if (objKeyToRemove.Equals(default))
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -2088,8 +2321,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2123,7 +2360,7 @@ namespace Chummer
                     try
                     {
                         foreach (IHasLockObject objTemp in _lstIndexes.Select(v => (IHasLockObject)v))
-                            stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            stkLockers.Push(objTemp.LockObject.EnterReadLock());
                         using (LockObject.EnterWriteLock())
                             _lstIndexes.Sort();
                     }
@@ -2153,7 +2390,7 @@ namespace Chummer
                     try
                     {
                         foreach (IHasLockObject objTemp in _lstIndexes.Select(v => (IHasLockObject)v))
-                            stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            stkLockers.Push(objTemp.LockObject.EnterReadLock());
                         using (LockObject.EnterWriteLock())
                             _lstIndexes.Sort(comparison);
                     }
@@ -2185,9 +2422,9 @@ namespace Chummer
                         foreach (TKey objKey in _lstIndexes)
                         {
                             if (objKey is IHasLockObject objTemp)
-                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp.LockObject.EnterReadLock());
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
-                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp2.LockObject.EnterReadLock());
                         }
 
                         using (LockObject.EnterWriteLock())
@@ -2224,9 +2461,9 @@ namespace Chummer
                         foreach (TKey objKey in _lstIndexes)
                         {
                             if (objKey is IHasLockObject objTemp)
-                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp.LockObject.EnterReadLock());
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
-                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp2.LockObject.EnterReadLock());
                         }
 
                         using (LockObject.EnterWriteLock())
@@ -2260,7 +2497,7 @@ namespace Chummer
                     try
                     {
                         foreach (IHasLockObject objTemp in _lstIndexes.Select(v => (IHasLockObject)v))
-                            stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                            stkLockers.Push(objTemp.LockObject.EnterReadLock());
                         using (LockObject.EnterWriteLock())
                             _lstIndexes.Sort(comparer);
                     }
@@ -2292,9 +2529,9 @@ namespace Chummer
                         foreach (TKey objKey in _lstIndexes)
                         {
                             if (objKey is IHasLockObject objTemp)
-                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp.LockObject.EnterReadLock());
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
-                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp2.LockObject.EnterReadLock());
                         }
 
                         using (LockObject.EnterWriteLock())
@@ -2332,9 +2569,9 @@ namespace Chummer
                         foreach (TKey objKey in _lstIndexes)
                         {
                             if (objKey is IHasLockObject objTemp)
-                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp.LockObject.EnterReadLock());
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
-                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp2.LockObject.EnterReadLock());
                         }
 
                         using (LockObject.EnterWriteLock())
@@ -2371,7 +2608,7 @@ namespace Chummer
                         {
                             TKey objKey = _lstIndexes[index + i];
                             if (objKey is IHasLockObject objTemp)
-                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp.LockObject.EnterReadLock());
                         }
 
                         using (LockObject.EnterWriteLock())
@@ -2406,9 +2643,9 @@ namespace Chummer
                         {
                             TKey objKey = _lstIndexes[index + i];
                             if (objKey is IHasLockObject objTemp)
-                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp.LockObject.EnterReadLock());
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
-                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp2.LockObject.EnterReadLock());
                         }
 
                         using (LockObject.EnterWriteLock())
@@ -2443,9 +2680,9 @@ namespace Chummer
                         {
                             TKey objKey = _lstIndexes[index + i];
                             if (objKey is IHasLockObject objTemp)
-                                stkLockers.Push(objTemp.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp.LockObject.EnterReadLock());
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
-                                stkLockers.Push(objTemp2.LockObject.EnterHiPrioReadLock());
+                                stkLockers.Push(objTemp2.LockObject.EnterReadLock());
                         }
 
                         using (LockObject.EnterWriteLock())
@@ -2469,7 +2706,8 @@ namespace Chummer
 
         public async Task SortAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
@@ -2482,13 +2720,13 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -2496,7 +2734,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2509,7 +2747,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -2517,15 +2755,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(Comparison<TKey> comparison, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
@@ -2538,13 +2781,13 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -2552,7 +2795,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2565,7 +2808,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -2573,15 +2816,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(Comparison<KeyValuePair<TKey, TValue>> comparison, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
@@ -2594,29 +2842,30 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
 
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
                             {
-                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp2.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            _lstIndexes.Sort((x, y) => comparison(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                            _lstIndexes.Sort((x, y) => comparison(
+                                new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
                                 new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2629,7 +2878,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -2638,15 +2887,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(Comparison<Tuple<TKey, TValue>> comparison, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
@@ -2659,20 +2913,20 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
 
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
                             {
-                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp2.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -2681,7 +2935,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2694,7 +2948,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -2703,15 +2957,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(IComparer<TKey> comparer, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
@@ -2724,13 +2983,13 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -2738,7 +2997,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2751,7 +3010,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -2759,15 +3018,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(IComparer<KeyValuePair<TKey, TValue>> comparer, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
@@ -2780,20 +3044,20 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
 
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
                             {
-                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp2.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -2803,7 +3067,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2816,7 +3080,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -2826,15 +3090,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(IComparer<Tuple<TKey, TValue>> comparer, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > 0 && _lstIndexes[0] is IHasLockObject)
@@ -2847,29 +3116,30 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
 
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
                             {
-                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp2.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            _lstIndexes.Sort((x, y) => comparer.Compare(
+                                new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
                                 new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2882,7 +3152,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -2891,15 +3161,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(int index, int count, IComparer<TKey> comparer, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
@@ -2913,13 +3188,13 @@ namespace Chummer
                             TKey objKey = _lstIndexes[index + i];
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -2927,7 +3202,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -2940,7 +3215,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -2948,15 +3223,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(int index, int count, IComparer<KeyValuePair<TKey, TValue>> comparer, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
@@ -2970,20 +3250,20 @@ namespace Chummer
                             TKey objKey = _lstIndexes[index + i];
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
 
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
                             {
-                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token)
+                                stkLockers.Push(await objTemp2.LockObject.EnterReadLockAsync(token)
                                     .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -2991,7 +3271,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -3004,7 +3284,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -3012,15 +3292,20 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SortAsync(int index, int count, IComparer<Tuple<TKey, TValue>> comparer, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count > index && _lstIndexes[index] is IHasLockObject)
@@ -3034,18 +3319,20 @@ namespace Chummer
                             TKey objKey = _lstIndexes[index + i];
                             if (objKey is IHasLockObject objTemp)
                             {
-                                stkLockers.Push(await objTemp.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
+                                stkLockers.Push(
+                                    await objTemp.LockObject.EnterReadLockAsync(token).ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
 
                             if (_dicUnorderedData[objKey] is IHasLockObject objTemp2)
                             {
-                                stkLockers.Push(await objTemp2.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false));
+                                stkLockers.Push(await objTemp2.LockObject.EnterReadLockAsync(token)
+                                    .ConfigureAwait(false));
                                 token.ThrowIfCancellationRequested();
                             }
                         }
 
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -3053,7 +3340,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -3066,7 +3353,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -3074,9 +3361,13 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

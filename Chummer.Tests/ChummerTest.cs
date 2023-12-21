@@ -262,8 +262,7 @@ namespace Chummer.Tests
         public void Test05_LoadThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Test05_LoadThenSaveIsDeterministic()");
-            DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(
-                ElementSelectors.Or(ElementSelectors.ByNameAndText, ElementSelectors.ByName));
+            DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
             foreach (Character objCharacterControl in GetTestCharacters())
             {
                 string strFileName = Path.GetFileName(objCharacterControl.FileName) ??
@@ -289,11 +288,18 @@ namespace Chummer.Tests
                         Diff myDiff = DiffBuilder
                             .Compare(controlFileStream)
                             .WithTest(testFileStream)
-                            .CheckForIdentical()
+                            .CheckForSimilar()
                             .WithNodeFilter(x =>
-                                x.Name !=
-                                "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                                // image loading and unloading is not going to be deterministic due to compression algorithms
+                                x.Name != "mugshot"
+                                // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
+                                && x.Name != "improvement") 
                             .WithNodeMatcher(objDiffNodeMatcher)
+                            // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
+                            .WithDifferenceEvaluator((x, y) =>
+                                string.Equals(x.ControlDetails.Target?.Name, "improvements", StringComparison.OrdinalIgnoreCase)
+                                    ? EvaluateNodeWithChildrenIgnoringOrder(x, y)
+                                    : DifferenceEvaluators.Default(x, y))
                             .IgnoreWhitespace()
                             .Build();
                         foreach (Difference diff in myDiff.Differences)
@@ -309,6 +315,52 @@ namespace Chummer.Tests
                 {
                     Assert.Fail("Unexpected validation failure: " + e.Message);
                 }
+            }
+
+            ComparisonResult EvaluateNodeWithChildrenIgnoringOrder(Comparison objComparison, ComparisonResult eOutcome)
+            {
+                if (eOutcome == ComparisonResult.EQUAL)
+                    return eOutcome;
+                // First check for true equality, in which case we don't need to mess around with checking in an out-of-order way
+                if (DifferenceEvaluators.Default(objComparison, eOutcome) == ComparisonResult.EQUAL)
+                    return ComparisonResult.EQUAL;
+                XmlNode xmlParentControl = objComparison.ControlDetails.Target;
+                XmlNode xmlParentTest = objComparison.TestDetails.Target;
+                if (!string.Equals(xmlParentControl.Name, xmlParentTest.Name, StringComparison.OrdinalIgnoreCase))
+                    return ComparisonResult.DIFFERENT;
+                int intTestChildCount = xmlParentTest.ChildNodes.Count;
+                if (xmlParentControl.ChildNodes.Count != intTestChildCount)
+                    return ComparisonResult.DIFFERENT;
+                List<XmlNode> lstXmlChildrenTest =
+                    new List<XmlNode>(intTestChildCount);
+                foreach (XmlNode xmlChildTest in xmlParentTest.ChildNodes)
+                    lstXmlChildrenTest.Add(xmlChildTest);
+                foreach (XmlNode xmlLoopChildControl in xmlParentControl.ChildNodes)
+                {
+                    bool blnFoundMatch = false;
+                    for (int i = 0; i < lstXmlChildrenTest.Count; ++i)
+                    {
+                        XmlNode xmlLoopChildTest = lstXmlChildrenTest[i];
+                        Diff objLoopDiff = DiffBuilder
+                            .Compare(xmlLoopChildControl)
+                            .WithTest(xmlLoopChildTest)
+                            .CheckForSimilar()
+                            .WithNodeMatcher(objDiffNodeMatcher)
+                            .IgnoreWhitespace()
+                            .Build();
+                        if (!objLoopDiff.HasDifferences())
+                        {
+                            blnFoundMatch = true;
+                            lstXmlChildrenTest.RemoveAt(i);
+                            break;
+                        }
+                    }
+
+                    if (!blnFoundMatch)
+                        return ComparisonResult.DIFFERENT;
+                }
+                // Because we already checked to make sure the number of children is the same, if every control child matches to a test child, we must be similar
+                return ComparisonResult.SIMILAR;
             }
         }
 

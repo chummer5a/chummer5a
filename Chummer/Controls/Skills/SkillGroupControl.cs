@@ -251,19 +251,19 @@ namespace Chummer.UI.Skills
 
         private int _intLoaded;
 
-        public async Task DoLoad(CancellationToken token)
+        public Task DoLoad(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
-                return;
-            await DoDataBindingsAsync(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return DoDataBindingsAsync(token);
         }
 
         private async void SkillGroupControl_Load(object sender, EventArgs e)
         {
             try
             {
-                await DoLoad(_objMyToken);
+                await DoLoad(_objMyToken).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x => x.AdjustForDpi(), token: _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -286,25 +286,30 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                using (await _skillGroup.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await _skillGroup.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                try
                 {
                     _objMyToken.ThrowIfCancellationRequested();
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
-                                                      await LanguageManager
-                                                            .GetStringAsync(
-                                                                "Message_ConfirmKarmaExpense", token: _objMyToken)
-                                                            .ConfigureAwait(false),
-                                                      await _skillGroup.GetCurrentDisplayNameAsync(_objMyToken)
-                                                                       .ConfigureAwait(false),
-                                                      await _skillGroup.GetRatingAsync(_objMyToken)
-                                                                       .ConfigureAwait(false) + 1,
-                                                      await _skillGroup.GetUpgradeKarmaCostAsync(_objMyToken)
-                                                                       .ConfigureAwait(false));
+                        await LanguageManager
+                            .GetStringAsync(
+                                "Message_ConfirmKarmaExpense", token: _objMyToken)
+                            .ConfigureAwait(false),
+                        await _skillGroup.GetCurrentDisplayNameAsync(_objMyToken)
+                            .ConfigureAwait(false),
+                        await _skillGroup.GetRatingAsync(_objMyToken)
+                            .ConfigureAwait(false) + 1,
+                        await _skillGroup.GetUpgradeKarmaCostAsync(_objMyToken)
+                            .ConfigureAwait(false));
 
                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
                         return;
 
                     await _skillGroup.Upgrade(_objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
