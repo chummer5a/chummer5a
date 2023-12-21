@@ -2441,7 +2441,7 @@ namespace Chummer
                                 break;
 
                             case 10:
-                                strReturn = "Windows 10";
+                                strReturn = objOSInfoVersion.Build >= 22000 ? "Windows 11" : "Windows 10";
                                 break;
 
                             case 11:
