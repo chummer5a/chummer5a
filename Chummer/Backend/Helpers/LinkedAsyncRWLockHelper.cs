@@ -210,30 +210,36 @@ namespace Chummer
 
         public void Dispose()
         {
-            Dispose(false);
-        }
-
-        public void Dispose(bool blnHasWriteLockAlready)
-        {
-            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) > 0)
+            if (_objDisposalTokenSource.IsCancellationRequested)
                 return;
-            _objDisposalTokenSource.Cancel();
             // Acquire all of our locks
             DebuggableSemaphoreSlim objHasChildrenSemaphore = _objHasChildrenSemaphore;
-            // ReSharper disable once MethodSupportsCancellation
-            _objHasChildrenSemaphore?.SafeWait();
+            if (objHasChildrenSemaphore != null)
+            {
+                try
+                {
+                    objHasChildrenSemaphore.SafeWait(_objDisposalToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    if (_objDisposalTokenSource.IsCancellationRequested)
+                        return;
+                    throw;
+                }
+            }
 #if LINKEDSEMAPHOREDEBUG
             if (!_setChildren.IsEmpty)
                 Utils.BreakIfDebug();
 #endif
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
+                return;
+            _objDisposalTokenSource.Cancel();
             DebuggableSemaphoreSlim objActiveUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objActiveUpgradeableReaderSemaphore, null);
-            if (!blnHasWriteLockAlready)
-                // ReSharper disable once MethodSupportsCancellation
-                objActiveUpgradeableReaderSemaphore?.SafeWait();
+            // ReSharper disable once MethodSupportsCancellation
+            objActiveUpgradeableReaderSemaphore?.SafeWait();
             DebuggableSemaphoreSlim objActiveWriterSemaphore = Interlocked.Exchange(ref _objActiveWriterSemaphore, null);
-            if (!blnHasWriteLockAlready)
-                // ReSharper disable once MethodSupportsCancellation
-                objActiveWriterSemaphore?.SafeWait();
+            // ReSharper disable once MethodSupportsCancellation
+            objActiveWriterSemaphore?.SafeWait();
             DebuggableSemaphoreSlim objPendingWriterSemaphore = Interlocked.Exchange(ref _objPendingWriterSemaphore, null);
             // ReSharper disable once MethodSupportsCancellation
             objPendingWriterSemaphore?.SafeWait();
@@ -299,31 +305,38 @@ namespace Chummer
             }
         }
 
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            return DisposeAsync(false);
-        }
-
-        public async ValueTask DisposeAsync(bool blnHasWriteLockAlready)
-        {
-            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) > 0)
+            if (_objDisposalTokenSource.IsCancellationRequested)
                 return;
-            _objDisposalTokenSource.Cancel();
             // Acquire all of our locks
             DebuggableSemaphoreSlim objHasChildrenSemaphore = _objHasChildrenSemaphore;
             if (objHasChildrenSemaphore != null)
-                // ReSharper disable once MethodSupportsCancellation
-                await objHasChildrenSemaphore.WaitAsync().ConfigureAwait(false);
+            {
+                try
+                {
+                    await objHasChildrenSemaphore.WaitAsync(_objDisposalToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    if (_objDisposalTokenSource.IsCancellationRequested)
+                        return;
+                    throw;
+                }
+            }
 #if LINKEDSEMAPHOREDEBUG
             if (!_setChildren.IsEmpty)
                 Utils.BreakIfDebug();
 #endif
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
+                return;
+            _objDisposalTokenSource.Cancel();
             DebuggableSemaphoreSlim objActiveUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objActiveUpgradeableReaderSemaphore, null);
-            if (objActiveUpgradeableReaderSemaphore != null && !blnHasWriteLockAlready)
+            if (objActiveUpgradeableReaderSemaphore != null)
                 // ReSharper disable once MethodSupportsCancellation
                 await objActiveUpgradeableReaderSemaphore.WaitAsync().ConfigureAwait(false);
             DebuggableSemaphoreSlim objActiveWriterSemaphore = Interlocked.Exchange(ref _objActiveWriterSemaphore, null);
-            if (objActiveWriterSemaphore != null && !blnHasWriteLockAlready)
+            if (objActiveWriterSemaphore != null)
                 // ReSharper disable once MethodSupportsCancellation
                 await objActiveWriterSemaphore.WaitAsync().ConfigureAwait(false);
             DebuggableSemaphoreSlim objPendingWriterSemaphore = Interlocked.Exchange(ref _objPendingWriterSemaphore, null);
@@ -1117,10 +1130,8 @@ namespace Chummer
                         }
                     }
                 }
-                catch
+                catch when (_intDisposedStatus <= 1)
                 {
-                    if (_intDisposedStatus > 1)
-                        throw;
                     while (stkLockedSemaphores.Count > 0)
                     {
                         try
@@ -1239,10 +1250,8 @@ namespace Chummer
                         }
                     }
                 }
-                catch
+                catch when (_intDisposedStatus <= 1)
                 {
-                    if (_intDisposedStatus > 1)
-                        throw;
                     while (stkLockedSemaphores.Count > 0)
                     {
                         try
@@ -1357,10 +1366,8 @@ namespace Chummer
                         }
                     }
                 }
-                catch
+                catch when (_intDisposedStatus <= 1)
                 {
-                    if (_intDisposedStatus > 1)
-                        throw;
                     while (stkLockedSemaphores.Count > 0)
                     {
                         try
@@ -1477,10 +1484,8 @@ namespace Chummer
                         }
                     }
                 }
-                catch
+                catch when (_intDisposedStatus <= 1)
                 {
-                    if (_intDisposedStatus > 1)
-                        throw;
                     while (stkLockedSemaphores.Count > 0)
                     {
                         try

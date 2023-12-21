@@ -538,30 +538,35 @@ namespace Chummer
                     await _objNextHelper.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
-                if (blnDoUnlock)
-                {
-                    try
-                    {
-                        await _objNextHelper.TakeSingleWriteLockAsync().ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        objCurrentHelper.ReleaseUpgradeableReadLock();
-                        await _objNextHelper.DisposeAsync().ConfigureAwait(false);
-                        throw;
-                    }
 
-                    try
+                try
+                {
+                    if (blnDoUnlock)
                     {
-                        objCurrentHelper.ReleaseUpgradeableReadLock();
-                    }
-                    finally
-                    {
-                        await _objNextHelper.DisposeAsync(true).ConfigureAwait(false);
+                        try
+                        {
+                            await _objNextHelper.TakeSingleWriteLockAsync().ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            objCurrentHelper.ReleaseUpgradeableReadLock();
+                            throw;
+                        }
+
+                        try
+                        {
+                            objCurrentHelper.ReleaseUpgradeableReadLock();
+                        }
+                        finally
+                        {
+                            _objNextHelper.ReleaseSingleWriteLock();
+                        }
                     }
                 }
-                else
+                finally
+                {
                     await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                }
             }
 
             /// <inheritdoc />
@@ -587,30 +592,35 @@ namespace Chummer
                     _objNextHelper.Dispose();
                     return;
                 }
-                if (blnDoUnlock)
-                {
-                    try
-                    {
-                        _objNextHelper.TakeSingleWriteLock();
-                    }
-                    catch
-                    {
-                        objCurrentHelper.ReleaseUpgradeableReadLock();
-                        _objNextHelper.Dispose();
-                        throw;
-                    }
 
-                    try
+                try
+                {
+                    if (blnDoUnlock)
                     {
-                        objCurrentHelper.ReleaseUpgradeableReadLock();
-                    }
-                    finally
-                    {
-                        _objNextHelper.Dispose(true);
+                        try
+                        {
+                            _objNextHelper.TakeSingleWriteLock();
+                        }
+                        catch
+                        {
+                            objCurrentHelper.ReleaseUpgradeableReadLock();
+                            throw;
+                        }
+
+                        try
+                        {
+                            objCurrentHelper.ReleaseUpgradeableReadLock();
+                        }
+                        finally
+                        {
+                            _objNextHelper.ReleaseSingleWriteLock();
+                        }
                     }
                 }
-                else
+                finally
+                {
                     _objNextHelper.Dispose();
+                }
             }
         }
 
@@ -684,32 +694,37 @@ namespace Chummer
                     await _objNextHelper.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
-                if (blnDoUnlock)
-                {
-                    try
-                    {
-                        await _objNextHelper.TakeSingleWriteLockAsync().ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
-                            _objPreviousTopMostHeldWriter);
-                        await _objNextHelper.DisposeAsync().ConfigureAwait(false);
-                        throw;
-                    }
 
-                    try
+                try
+                {
+                    if (blnDoUnlock)
                     {
-                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
-                            _objPreviousTopMostHeldWriter);
-                    }
-                    finally
-                    {
-                        await _objNextHelper.DisposeAsync(true).ConfigureAwait(false);
+                        try
+                        {
+                            await _objNextHelper.TakeSingleWriteLockAsync().ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                                _objPreviousTopMostHeldWriter);
+                            throw;
+                        }
+
+                        try
+                        {
+                            objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                                _objPreviousTopMostHeldWriter);
+                        }
+                        finally
+                        {
+                            _objNextHelper.ReleaseSingleWriteLock();
+                        }
                     }
                 }
-                else
+                finally
+                {
                     await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                }
             }
 
             /// <inheritdoc />
@@ -734,32 +749,36 @@ namespace Chummer
                     _objNextHelper.Dispose();
                     return;
                 }
-                if (blnDoUnlock)
+                try
                 {
-                    try
+                    if (blnDoUnlock)
                     {
-                        _objNextHelper.TakeSingleWriteLock();
-                    }
-                    catch
-                    {
-                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
-                            _objPreviousTopMostHeldWriter);
-                        _objNextHelper.Dispose();
-                        throw;
-                    }
+                        try
+                        {
+                            _objNextHelper.TakeSingleWriteLock();
+                        }
+                        catch
+                        {
+                            objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                                _objPreviousTopMostHeldWriter);
+                            throw;
+                        }
 
-                    try
-                    {
-                        objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
-                            _objPreviousTopMostHeldWriter);
-                    }
-                    finally
-                    {
-                        _objNextHelper.Dispose(true);
+                        try
+                        {
+                            objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                                _objPreviousTopMostHeldWriter);
+                        }
+                        finally
+                        {
+                            _objNextHelper.ReleaseSingleWriteLock();
+                        }
                     }
                 }
-                else
+                finally
+                {
                     _objNextHelper.Dispose();
+                }
             }
         }
     }

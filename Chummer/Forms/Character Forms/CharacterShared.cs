@@ -47,7 +47,7 @@ namespace Chummer
     /// Contains functionality shared between frmCreate and frmCareer
     /// </summary>
     [DesignerCategory("")]
-    public class CharacterShared : Form, IHasCharacterObjects, IAsyncDisposable
+    public class CharacterShared : Form, IHasCharacterObjects
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -9358,51 +9358,6 @@ namespace Chummer
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_objCharacter?.IsDisposed == false)
-                {
-                    _objCharacter.PropertyChangedAsync -= CharacterPropertyChanged;
-                }
-
-                Interlocked.Exchange(ref _objCharacterFileWatcher, null)?.Dispose();
-                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null);
-                if (objTemp != null)
-                {
-                    try
-                    {
-                        objTemp.Cancel(false);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                    finally
-                    {
-                        objTemp.Dispose();
-                    }
-                }
-                _objUpdateCharacterInfoSemaphoreSlim.Dispose();
-                dlgSaveFile?.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        public ValueTask DisposeAsync()
-        {
-            GC.SuppressFinalize(this);
-            return DisposeAsync(true);
-        }
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)
             {

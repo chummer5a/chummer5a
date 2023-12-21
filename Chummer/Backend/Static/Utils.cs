@@ -1828,15 +1828,11 @@ namespace Chummer
                     Parallel.Invoke(afuncToRun);
                 else
                 {
-                    Parallel.ForEach(afuncToRun, (x, y) =>
+                    ParallelOptions objOptions = new ParallelOptions
                     {
-                        if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
-                        {
-                            y.Stop();
-                            return;
-                        }
-                        x.Invoke();
-                    });
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(afuncToRun, objOptions, x => x.Invoke());
                     token.ThrowIfCancellationRequested();
                 }
                 return;
@@ -1846,17 +1842,14 @@ namespace Chummer
                 ? Task.Run(() => Parallel.Invoke(afuncToRun), token)
                 : Task.Run(() =>
                 {
-                    Parallel.ForEach(afuncToRun, (x, y) =>
+                    ParallelOptions objOptions = new ParallelOptions
                     {
-                        if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
-                        {
-                            y.Stop();
-                            return;
-                        }
-                        x.Invoke();
-                    });
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(afuncToRun, objOptions, x => x.Invoke());
                     token.ThrowIfCancellationRequested();
                 }, token);
+
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
@@ -1939,15 +1932,12 @@ namespace Chummer
             }
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
-                Parallel.For(0, intLength, (i, y) =>
+                ParallelOptions objOptions = new ParallelOptions
                 {
-                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
-                    {
-                        y.Stop();
-                        return;
-                    }
-                    aobjReturn[i] = lstfuncToRun[i].Invoke();
-                });
+                    CancellationToken = token
+                };
+                Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0),
+                    (i, x, y) => new Tuple<T, int>(lstfuncToRun[i].Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
@@ -2100,20 +2090,19 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                Parallel.For(0, intLength, (i, y) =>
+                ParallelOptions objOptions = new ParallelOptions
                 {
-                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
-                    {
-                        y.Stop();
-                        return;
-                    }
+                    CancellationToken = token
+                };
+                Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0), (i, x, y) =>
+                {
                     Task<T> objSyncTask = lstfuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
                     if (objSyncTask.Exception != null)
                         throw objSyncTask.Exception;
-                    aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
-                });
+                    return new Tuple<T, int>(objSyncTask.GetAwaiter().GetResult(), i);
+                }, x => aobjReturn[x.Item2] = x.Item1);
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
@@ -2256,14 +2245,12 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                Parallel.ForEach(lstfuncToRun, (funcToRun, y) =>
+                ParallelOptions objOptions = new ParallelOptions
                 {
-                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
-                    {
-                        y.Stop();
-                        return;
-                    }
-
+                    CancellationToken = token
+                };
+                Parallel.ForEach(lstfuncToRun, objOptions, funcToRun =>
+                {
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
@@ -2339,14 +2326,12 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                Parallel.ForEach(lstfuncToRun, (funcToRun, y) =>
+                ParallelOptions objOptions = new ParallelOptions
                 {
-                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
-                    {
-                        y.Stop();
-                        return;
-                    }
-
+                    CancellationToken = token
+                };
+                Parallel.ForEach(lstfuncToRun, objOptions, funcToRun =>
+                {
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();

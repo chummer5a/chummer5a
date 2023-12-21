@@ -1152,7 +1152,6 @@ namespace Chummer
                     }
                 }
 
-
                 IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
