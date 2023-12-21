@@ -25814,7 +25814,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
-        copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+        copy "$(SolutionDir)LICENSE" "$(TargetDir)LICENSE"
         if not exist "$(TargetDir)livecustomdata" mkdir "$(TargetDir)livecustomdata"
         if not exist "$(TargetDir)packs" mkdir "$(TargetDir)packs"
         if not exist "$(TargetDir)settings" mkdir "$(TargetDir)settings"
