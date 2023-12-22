@@ -63,20 +63,63 @@ namespace Chummer
             LinkedAsyncRWLockHelper objTopMostHeldUReader = null;
             LinkedAsyncRWLockHelper objTopMostHeldWriter = null;
             bool blnIsInReadLock = false;
+            LinkedAsyncRWLockHelper objNextHelper = null;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
             int intLoopCount = 0;
-            do
+            if (blnMakeNext)
             {
-                token.ThrowIfCancellationRequested();
-                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
-                    throw new TimeoutException();
-                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool> objAsyncLocals =
-                    _objAsyncLocalCurrentsContainer.Value;
-                if (objAsyncLocals != null)
-                    (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) = objAsyncLocals;
-            } while (objCurrentHelper.IsDisposed);
+                do
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                        throw new TimeoutException();
+                    Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>
+                        objAsyncLocals =
+                            _objAsyncLocalCurrentsContainer.Value;
+                    if (objAsyncLocals != null)
+                    {
+                        (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) =
+                            objAsyncLocals;
+                    }
+                    else
+                    {
+                        objCurrentHelper = _objTopLevelHelper;
+                        objTopMostHeldUReader = null;
+                        objTopMostHeldWriter = null;
+                        blnIsInReadLock = false;
+                    }
 
-            LinkedAsyncRWLockHelper objNextHelper = blnMakeNext ? new LinkedAsyncRWLockHelper(objCurrentHelper) : null;
+                    if (objCurrentHelper.IsDisposed)
+                        continue;
+                    try
+                    {
+                        // Setting the helper here makes sure we prevent the current helper from being disposed in-between
+                        objNextHelper = new LinkedAsyncRWLockHelper(objCurrentHelper);
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // Current helper got disposed in-between, so swallow this
+                        continue;
+                    }
+
+                    break;
+                } while (true);
+            }
+            else
+            {
+                do
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                        throw new TimeoutException();
+                    Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>
+                        objAsyncLocals =
+                            _objAsyncLocalCurrentsContainer.Value;
+                    if (objAsyncLocals != null)
+                        (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) =
+                            objAsyncLocals;
+                } while (objCurrentHelper.IsDisposed);
+            }
 
             return new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
                 LinkedAsyncRWLockHelper, bool>(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock);

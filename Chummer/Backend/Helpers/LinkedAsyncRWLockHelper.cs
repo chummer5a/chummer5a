@@ -71,24 +71,12 @@ namespace Chummer
 
         public LinkedAsyncRWLockHelper(LinkedAsyncRWLockHelper objParent, bool blnGetFromPool = true)
         {
-            _objDisposalToken = _objDisposalTokenSource.Token;
-            if (objParent?.IsDisposed == false)
-            {
-                try
-                {
 #if LINKEDSEMAPHOREDEBUG
-                    objParent.AddChild(this);
+            objParent?.AddChild(this);
 #else
-                    objParent.AddChild();
+            objParent?.AddChild();
 #endif
-                }
-                catch (ObjectDisposedException)
-                {
-                    objParent = null;
-                }
-            }
-            else
-                objParent = null;
+            _objDisposalToken = _objDisposalTokenSource.Token;
             if (blnGetFromPool)
             {
                 _blnSemaphoreIsPooled = true;
