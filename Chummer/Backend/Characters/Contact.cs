@@ -2537,32 +2537,25 @@ namespace Chummer
             {
                 case nameof(Character.Name):
                     return OnPropertyChangedAsync(nameof(Name), token);
-                    break;
 
                 case nameof(Character.Age):
                     return OnPropertyChangedAsync(nameof(Age), token);
-                    break;
 
                 case nameof(Character.Gender):
                     return OnPropertyChangedAsync(nameof(Gender), token);
-                    break;
 
                 case nameof(Character.Metatype):
                 case nameof(Character.Metavariant):
                     return OnPropertyChangedAsync(nameof(Metatype), token);
-                    break;
 
                 case nameof(Character.Mugshots):
                     return OnPropertyChangedAsync(nameof(Mugshots), token);
-                    break;
 
                 case nameof(Character.MainMugshot):
                     return OnPropertyChangedAsync(nameof(MainMugshot), token);
-                    break;
 
                 case nameof(Character.MainMugshotIndex):
                     return OnPropertyChangedAsync(nameof(MainMugshotIndex), token);
-                    break;
             }
 
             return Task.CompletedTask;

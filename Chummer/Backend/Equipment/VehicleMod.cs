@@ -1897,6 +1897,8 @@ namespace Chummer.Backend.Equipment
         public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
+        private static readonly string[] s_astrLimbStrings = { "ARM", "LEG" };
+
         /// <summary>
         /// Vehicle arm/leg Strength.
         /// </summary>
@@ -1904,7 +1906,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!Name.ContainsAny(new []{ "ARM", "LEG"}, StringComparison.OrdinalIgnoreCase))
+                if (!Name.ContainsAny(s_astrLimbStrings, StringComparison.OrdinalIgnoreCase))
                     return 0;
                 int intAttribute = 0;
                 int bod = 1;
@@ -1940,7 +1942,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!Name.ContainsAny(new[] { "ARM", "LEG" }, StringComparison.OrdinalIgnoreCase))
+                if (!Name.ContainsAny(s_astrLimbStrings, StringComparison.OrdinalIgnoreCase))
                     return 0;
 
                 int intAttribute = 0;
@@ -1977,7 +1979,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetTotalStrengthAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!Name.ContainsAny(new[] { "ARM", "LEG" }, StringComparison.OrdinalIgnoreCase))
+            if (!Name.ContainsAny(s_astrLimbStrings, StringComparison.OrdinalIgnoreCase))
                 return 0;
             int intAttribute = 0;
             int bod = 1;
@@ -2013,7 +2015,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetTotalAgilityAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!Name.ContainsAny(new[] { "ARM", "LEG" }, StringComparison.OrdinalIgnoreCase))
+            if (!Name.ContainsAny(s_astrLimbStrings, StringComparison.OrdinalIgnoreCase))
                 return 0;
 
             int intAttribute = 0;

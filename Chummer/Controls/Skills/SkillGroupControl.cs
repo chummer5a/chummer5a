@@ -99,7 +99,6 @@ namespace Chummer.UI.Skills
                             AutoSize = true,
                             InterceptMouseWheel = GlobalSettings.InterceptMode,
                             Margin = new Padding(3, 2, 3, 2),
-                            Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                             Name = "nudKarma"
                         };
                         nudSkill = new NumericUpDownEx
@@ -108,7 +107,6 @@ namespace Chummer.UI.Skills
                             AutoSize = true,
                             InterceptMouseWheel = GlobalSettings.InterceptMode,
                             Margin = new Padding(3, 2, 3, 2),
-                            Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                             Name = "nudSkill"
                         };
                         tlpMain.Controls.Add(nudSkill, 2, 0);
@@ -175,11 +173,19 @@ namespace Chummer.UI.Skills
                                                             nameof(SkillGroup.BaseUnbroken),
                                                             x => x.GetBaseUnbrokenAsync(_objMyToken),
                                                             _objMyToken);
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _skillGroup,
+                        nameof(SkillGroup.RatingMaximum),
+                        x => x.GetRatingMaximumAsync(_objMyToken),
+                        _objMyToken);
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _skillGroup,
                                                             nameof(SkillGroup.KarmaUnbroken),
                                                             x => x.GetKarmaUnbrokenAsync(_objMyToken)
                                                                   ,
                                                             _objMyToken);
+                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _skillGroup,
+                        nameof(SkillGroup.RatingMaximum),
+                        x => x.GetRatingMaximumAsync(_objMyToken),
+                        _objMyToken);
 
                     nudKarma.DoDataBinding("Value", _skillGroup, nameof(SkillGroup.Karma), _objMyToken);
                     nudSkill.DoDataBinding("Value", _skillGroup, nameof(SkillGroup.Base), _objMyToken);

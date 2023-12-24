@@ -148,7 +148,6 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = GlobalSettings.InterceptMode,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudSkill"
                     };
                     nudKarma = new NumericUpDownEx
@@ -157,7 +156,6 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = GlobalSettings.InterceptMode,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudKarma"
                     };
 
@@ -344,10 +342,18 @@ namespace Chummer.UI.Skills
                                                                   nameof(KnowledgeSkill.AllowUpgrade),
                                                                   x => x.GetAllowUpgradeAsync(_objMyToken),
                                                                   _objMyToken);
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _objSkill,
+                        nameof(KnowledgeSkill.RatingMaximum),
+                        x => x.GetRatingMaximumAsync(_objMyToken),
+                        _objMyToken);
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                   nameof(KnowledgeSkill.AllowUpgrade),
                                                                   x => x.GetAllowUpgradeAsync(_objMyToken),
                                                                   _objMyToken);
+                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _objSkill,
+                        nameof(KnowledgeSkill.RatingMaximum),
+                        x => x.GetRatingMaximumAsync(_objMyToken),
+                        _objMyToken);
 
                     chkNativeLanguage.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
                                                                            nameof(KnowledgeSkill.IsLanguage),

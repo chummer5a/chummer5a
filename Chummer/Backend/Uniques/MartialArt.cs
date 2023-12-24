@@ -119,7 +119,7 @@ namespace Chummer
                         break;
                 }
 
-                if (lstImprovementSourcesToProcess.Count <= 0 || _objCharacter?.IsLoading != false)
+                if (lstImprovementSourcesToProcess.Count == 0 || _objCharacter?.IsLoading != false)
                     return;
                 using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,

@@ -2455,7 +2455,7 @@ namespace Chummer.Backend.Equipment
             return strAmmo;
         }
 
-        private static readonly Lazy<Regex> s_RgxAmmoCapacityFirst = new Lazy<Regex>(() => new Regex(@"^[0-9]*[0-9]*x",
+        private static readonly Lazy<Regex> s_RgxAmmoCapacityFirst = new Lazy<Regex>(() => new Regex("^[0-9]*[0-9]*x",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
         private static readonly Lazy<Regex> s_RgxAmmoCapacitySecond = new Lazy<Regex>(() => new Regex(@"(?<=\))(x[0-9]*[0-9]*$)*",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));

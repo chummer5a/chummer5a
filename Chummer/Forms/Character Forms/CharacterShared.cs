@@ -6784,7 +6784,6 @@ namespace Chummer
                                         panContacts.Controls.Add(objContactControl);
                                     }, token);
                                 }
-                                    break;
 
                                 case ContactType.Enemy:
                                 {
@@ -6801,7 +6800,6 @@ namespace Chummer
                                         panEnemies.Controls.Add(objContactControl);
                                     }, token);
                                 }
-                                    break;
 
                                 case ContactType.Pet:
                                 {
@@ -6818,7 +6816,6 @@ namespace Chummer
                                         panPets.Controls.Add(objContactControl);
                                     }, token);
                                 }
-                                    break;
                             }
 
                             return Task.CompletedTask;

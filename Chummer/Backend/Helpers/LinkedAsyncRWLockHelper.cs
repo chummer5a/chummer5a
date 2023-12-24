@@ -46,7 +46,11 @@ namespace Chummer
         private int _intNumChildren;
         private DebuggableSemaphoreSlim _objHasChildrenSemaphore; // Used to prevent disposing a helper until it has no more children left
 
+#if LINKEDSEMAPHOREDEBUG
+        private readonly LinkedAsyncRWLockHelper _objParentLinkedHelper;
+#else
         private LinkedAsyncRWLockHelper _objParentLinkedHelper;
+#endif
         private readonly CancellationTokenSource _objDisposalTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objDisposalToken;
 

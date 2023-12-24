@@ -36657,7 +36657,7 @@ namespace Chummer
             }
         }
 
-        private async Task ProcessSettingsExpressionsForDependentProperties(ICollection<string> lstPropertyChangedHolder, string strExpressionToFind, CancellationToken token = default)
+        private async Task ProcessSettingsExpressionsForDependentProperties(List<string> lstPropertyChangedHolder, string strExpressionToFind, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))

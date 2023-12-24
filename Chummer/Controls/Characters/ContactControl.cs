@@ -1013,10 +1013,10 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = new decimal(new[] {12, 0, 0, 0}),
-                        Minimum = new decimal(new[] {1, 0, 0, 0}),
+                        Maximum = DecimalExtensions.Twelve,
+                        Minimum = decimal.One,
                         Name = "nudConnection",
-                        Value = new decimal(new[] {1, 0, 0, 0})
+                        Value = decimal.One
                     };
                     x.lblLoyalty = new Label
                     {
@@ -1031,10 +1031,10 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = new decimal(new[] {6, 0, 0, 0}),
-                        Minimum = new decimal(new[] {1, 0, 0, 0}),
+                        Maximum = DecimalExtensions.Six,
+                        Minimum = decimal.One,
                         Name = "nudLoyalty",
-                        Value = new decimal(new[] {1, 0, 0, 0})
+                        Value = decimal.One
                     };
                     x.chkFree = new ColorableCheckBox
                     {

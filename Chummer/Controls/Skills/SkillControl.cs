@@ -196,7 +196,6 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = GlobalSettings.InterceptMode,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudSkill"
                     };
                     nudKarma = new NumericUpDownEx
@@ -205,7 +204,6 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = GlobalSettings.InterceptMode,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudKarma"
                     };
 
@@ -393,11 +391,19 @@ namespace Chummer.UI.Skills
                                                             nameof(Skill.BaseUnlocked),
                                                             x => x.GetBaseUnlockedAsync(_objMyToken),
                                                             _objMyToken);
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _objSkill,
+                        nameof(Skill.RatingMaximum),
+                        x => x.GetRatingMaximumAsync(_objMyToken),
+                        _objMyToken);
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                             nameof(Skill.KarmaUnlocked),
                                                             x => x.GetKarmaUnlockedAsync(_objMyToken)
                                                                   ,
                                                             _objMyToken);
+                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _objSkill,
+                        nameof(Skill.RatingMaximum),
+                        x => x.GetRatingMaximumAsync(_objMyToken),
+                        _objMyToken);
 
                     if (_objSkill.IsExoticSkill)
                     {

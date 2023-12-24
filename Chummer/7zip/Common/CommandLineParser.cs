@@ -199,7 +199,7 @@ namespace SevenZip.CommandLineParser
                 string id = commandForms[i].IDString;
                 if (commandForms[i].PostStringMode)
                 {
-                    if (commandString.IndexOf(id, StringComparison.Ordinal) == 0)
+                    if (commandString.StartsWith(id, StringComparison.Ordinal))
                     {
                         postString = commandString.Substring(id.Length);
                         return i;

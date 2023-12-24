@@ -2188,24 +2188,19 @@ namespace Chummer
             {
                 case nameof(Character.Name):
                     return OnPropertyChangedAsync(nameof(CritterName), token);
-                    break;
 
                 case nameof(Character.Mugshots):
                     return OnPropertyChangedAsync(nameof(Mugshots), token);
-                    break;
 
                 case nameof(Character.MainMugshot):
                     return OnPropertyChangedAsync(nameof(MainMugshot), token);
-                    break;
 
                 case nameof(Character.MainMugshotIndex):
                     return OnPropertyChangedAsync(nameof(MainMugshotIndex), token);
-                    break;
 
                 case nameof(Character.AllowSpriteFettering):
                     _intCachedAllowFettering = int.MinValue;
                     return this.OnMultiplePropertyChangedAsync(token, nameof(AllowFettering), nameof(Fettered));
-                    break;
             }
 
             return Task.CompletedTask;

@@ -1072,15 +1072,13 @@ namespace Chummer
             string strGrade = await chkGrade.DoThreadSafeFuncAsync(x => x.Tag.ToString()).ConfigureAwait(false);
             if (await chkGrade.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
-                if (_objCharacterSettings.BannedWareGrades.Contains(strGrade))
+                if (_objCharacterSettings.BannedWareGrades.Remove(strGrade))
                 {
-                    _objCharacterSettings.BannedWareGrades.Remove(strGrade);
                     await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.BannedWareGrades)).ConfigureAwait(false);
                 }
             }
-            else if (!_objCharacterSettings.BannedWareGrades.Contains(strGrade))
+            else if (_objCharacterSettings.BannedWareGrades.Add(strGrade))
             {
-                _objCharacterSettings.BannedWareGrades.Add(strGrade);
                 await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.BannedWareGrades)).ConfigureAwait(false);
             }
         }

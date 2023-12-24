@@ -307,11 +307,9 @@ namespace Chummer.Backend.Skills
             {
                 case nameof(KnowledgeSkill.CurrentSpCost):
                     return OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token);
-                    break;
 
                 case nameof(KnowledgeSkill.IsNativeLanguage):
                     return OnPropertyChangedAsync(nameof(HasAvailableNativeLanguageSlots), token);
-                    break;
             }
 
             return Task.CompletedTask;

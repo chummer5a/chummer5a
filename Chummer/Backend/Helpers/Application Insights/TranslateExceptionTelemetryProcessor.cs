@@ -124,7 +124,7 @@ namespace Chummer
 
         private static readonly Lazy<Regex> s_RgxFirstReplacePattern = new Lazy<Regex>(() => new Regex(@"\\{([0-9]+)\}",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-        private static readonly Lazy<Regex> s_RgxSecondReplacePattern = new Lazy<Regex>(() => new Regex(@"{([0-9]+)}",
+        private static readonly Lazy<Regex> s_RgxSecondReplacePattern = new Lazy<Regex>(() => new Regex("{([0-9]+)}",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
     }
 }

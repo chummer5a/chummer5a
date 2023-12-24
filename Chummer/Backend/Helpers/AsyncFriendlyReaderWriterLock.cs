@@ -47,9 +47,11 @@ namespace Chummer
         // Because .NET Framework doesn't have dictionary optimizations for dealing with multiple AsyncLocals stored per context, we need scrape together something similar.
         // Therefore, we store a nested tuple where the first element is the number of active local readers and the second element is the tuple containing our writer lock semaphores
         // TODO: Revert this cursed bodge once we migrate to a version of .NET that has these AsyncLocal optimizations
-        private readonly AsyncLocal<Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>>
+        private readonly AsyncLocal<
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>>
             _objAsyncLocalCurrentsContainer =
-                new AsyncLocal<Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>>();
+                new AsyncLocal<Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
+                    bool>>();
 
         private readonly LinkedAsyncRWLockHelper _objTopLevelHelper = new LinkedAsyncRWLockHelper(null, false);
 
@@ -78,7 +80,7 @@ namespace Chummer
             }
             else
             {
-                do
+                while (true)
                 {
                     token.ThrowIfCancellationRequested();
                     if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
@@ -113,11 +115,12 @@ namespace Chummer
                     }
 
                     break;
-                } while (true);
+                }
             }
 
             return new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
-                LinkedAsyncRWLockHelper, bool>(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock);
+                LinkedAsyncRWLockHelper, bool>(objCurrentHelper, objNextHelper, objTopMostHeldUReader,
+                objTopMostHeldWriter, blnIsInReadLock);
         }
 
         /// <summary>
@@ -130,11 +133,13 @@ namespace Chummer
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
             (LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper objNextHelper,
-                    LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, bool blnIsInReadLock) =
+                    LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter,
+                    bool blnIsInReadLock) =
                 GetHelpers(token: token);
 
             if (blnIsInReadLock)
-                throw new InvalidOperationException("Attempted to take a write lock while inside of a non-upgradeable read lock.");
+                throw new InvalidOperationException(
+                    "Attempted to take a write lock while inside of a non-upgradeable read lock.");
 
             try
             {
@@ -174,7 +179,8 @@ namespace Chummer
             bool blnIsInReadLock;
             try
             {
-                (objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) = GetHelpers(token: token);
+                (objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) =
+                    GetHelpers(token: token);
             }
             catch (Exception e)
             {
@@ -193,15 +199,18 @@ namespace Chummer
                 new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
                     objNextHelper, objTopMostHeldUReader, objCurrentHelper, false);
 
-            return TakeWriteLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, token);
+            return TakeWriteLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                token);
 
-            async Task<IAsyncDisposable> TakeWriteLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper, LinkedAsyncRWLockHelper objInnerNextHelper,
+            async Task<IAsyncDisposable> TakeWriteLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                LinkedAsyncRWLockHelper objInnerNextHelper,
                 LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
                 CancellationToken innerToken = default)
             {
                 try
                 {
-                    await objInnerCurrentHelper.TakeWriteLockAsync(objInnerTopMostHeldWriter, innerToken).ConfigureAwait(false);
+                    await objInnerCurrentHelper.TakeWriteLockAsync(objInnerTopMostHeldWriter, innerToken)
+                        .ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -224,12 +233,14 @@ namespace Chummer
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
             (LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper objNextHelper,
-                    LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, bool blnIsInReadLock) =
+                    LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter,
+                    bool blnIsInReadLock) =
                 GetHelpers(token: token);
 
             if (blnIsInReadLock)
             {
-                throw new InvalidOperationException("Attempted to take an upgradeable read lock while inside of a non-upgradeable read lock.");
+                throw new InvalidOperationException(
+                    "Attempted to take an upgradeable read lock while inside of a non-upgradeable read lock.");
             }
 
             try
@@ -246,7 +257,8 @@ namespace Chummer
                 new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
                     objNextHelper, objCurrentHelper, objTopMostHeldWriter, false);
 
-            return new SafeUpgradeableReaderSemaphoreRelease(objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, this);
+            return new SafeUpgradeableReaderSemaphoreRelease(objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                this);
         }
 
         /// <summary>
@@ -258,7 +270,8 @@ namespace Chummer
             if (token.IsCancellationRequested)
                 return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
             if (_intDisposedStatus != 0)
-                return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
+                return Task.FromException<IAsyncDisposable>(
+                    new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
 
             LinkedAsyncRWLockHelper objCurrentHelper;
             LinkedAsyncRWLockHelper objNextHelper;
@@ -267,7 +280,8 @@ namespace Chummer
             bool blnIsInReadLock;
             try
             {
-                (objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) = GetHelpers(token: token);
+                (objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) =
+                    GetHelpers(token: token);
             }
             catch (Exception e)
             {
@@ -286,10 +300,13 @@ namespace Chummer
                 new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
                     objNextHelper, objCurrentHelper, objTopMostHeldWriter, false);
 
-            return TakeUpgradeableReadLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, token);
+            return TakeUpgradeableReadLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader,
+                objTopMostHeldWriter, token);
 
-            async Task<IAsyncDisposable> TakeUpgradeableReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper, LinkedAsyncRWLockHelper objInnerNextHelper,
-                LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter, CancellationToken innerToken = default)
+            async Task<IAsyncDisposable> TakeUpgradeableReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                LinkedAsyncRWLockHelper objInnerNextHelper,
+                LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                CancellationToken innerToken = default)
             {
                 try
                 {
@@ -302,7 +319,8 @@ namespace Chummer
                         objInnerTopMostHeldWriter, this, true);
                 }
 
-                return new SafeUpgradeableReaderSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader, objInnerTopMostHeldWriter, this);
+                return new SafeUpgradeableReaderSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
+                    objInnerTopMostHeldWriter, this);
             }
         }
 
@@ -324,8 +342,27 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             (LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper _,
-                    LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, bool blnIsInReadLock) =
+                    LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter,
+                    bool blnIsInReadLock) =
                 GetHelpers(true, token);
+
+            if (objCurrentHelper.IsDisposed)
+            {
+#if DEBUG
+                Debug.WriteLine(
+                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
+#endif
+                if (!blnIsInReadLock)
+                {
+                    _objAsyncLocalCurrentsContainer.Value =
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
+                            objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, true);
+                }
+
+                return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                    blnIsInReadLock, this, true);
+            }
 
             objCurrentHelper.TakeReadLock(blnIsInReadLock, token);
 
@@ -336,8 +373,10 @@ namespace Chummer
                         objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, true);
             }
 
-            return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock, this);
+            return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                blnIsInReadLock, this, objCurrentHelper.IsDisposed);
         }
+
         /// <summary>
         /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
         /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
@@ -363,7 +402,8 @@ namespace Chummer
             bool blnIsInReadLock;
             try
             {
-                (objCurrentHelper, _, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) = GetHelpers(true, token);
+                (objCurrentHelper, _, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) =
+                    GetHelpers(true, token);
             }
             catch (Exception e)
             {
@@ -378,32 +418,38 @@ namespace Chummer
                         objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, true);
             }
 
-            return TakeReadLockCoreAsync(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock, token);
+            return TakeReadLockCoreAsync(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock,
+                token);
 
             async Task<IDisposable> TakeReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
-                LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter, bool blnInnerIsInReadLock, CancellationToken innerToken = default)
+                LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                bool blnInnerIsInReadLock, CancellationToken innerToken = default)
             {
-                if (_intDisposedStatus != 0)
+                if (_intDisposedStatus != 0 || objCurrentHelper.IsDisposed)
                 {
 #if DEBUG
                     Debug.WriteLine(
                         "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
                     Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
-                    return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader, objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true);
+                    return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true);
                 }
 
                 try
                 {
-                    await objInnerCurrentHelper.TakeReadLockAsync(blnInnerIsInReadLock, innerToken).ConfigureAwait(false);
+                    await objInnerCurrentHelper.TakeReadLockAsync(blnInnerIsInReadLock, innerToken)
+                        .ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
                     //swallow this because unsetting the AsyncLocal must be handled as a disposal in the original ExecutionContext
-                    return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader, objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true);
+                    return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true);
                 }
-                
-                return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader, objInnerTopMostHeldWriter, blnInnerIsInReadLock, this);
+
+                return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader,
+                    objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, objCurrentHelper.IsDisposed);
             }
         }
 
@@ -453,7 +499,10 @@ namespace Chummer
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
             private readonly bool _blnSkipUnlockOnDispose;
 
-            public SafeReaderSemaphoreRelease(LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, bool blnIsInReadLock, AsyncFriendlyReaderWriterLock objReaderWriterLock, bool blnSkipUnlockOnDispose = false)
+            public SafeReaderSemaphoreRelease(LinkedAsyncRWLockHelper objCurrentHelper,
+                LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter,
+                bool blnIsInReadLock, AsyncFriendlyReaderWriterLock objReaderWriterLock,
+                bool blnSkipUnlockOnDispose = false)
             {
                 if (objCurrentHelper == null)
                     throw new ArgumentNullException(nameof(objCurrentHelper));
@@ -482,6 +531,7 @@ namespace Chummer
                         new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
                             _objCurrentHelper, _objTopMostHeldUReader, _objTopMostHeldWriter, false);
                 }
+
                 if (!_blnSkipUnlockOnDispose)
                     _objCurrentHelper.ReleaseReadLock();
             }
@@ -514,8 +564,10 @@ namespace Chummer
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
             private readonly bool _blnSkipUnlockOnDispose;
 
-            public SafeUpgradeableReaderSemaphoreRelease(LinkedAsyncRWLockHelper objNextHelper, LinkedAsyncRWLockHelper objPreviousTopMostHeldUReader,
-                LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock, bool blnSkipUnlockOnDispose = false)
+            public SafeUpgradeableReaderSemaphoreRelease(LinkedAsyncRWLockHelper objNextHelper,
+                LinkedAsyncRWLockHelper objPreviousTopMostHeldUReader,
+                LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock,
+                bool blnSkipUnlockOnDispose = false)
             {
                 if (objNextHelper == null)
                     throw new ArgumentNullException(nameof(objNextHelper));
@@ -670,8 +722,10 @@ namespace Chummer
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
             private readonly bool _blnSkipUnlockOnDispose;
 
-            public SafeWriterSemaphoreRelease(LinkedAsyncRWLockHelper objNextHelper, LinkedAsyncRWLockHelper objPreviousTopMostHeldUReader,
-                LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock, bool blnSkipUnlockOnDispose = false)
+            public SafeWriterSemaphoreRelease(LinkedAsyncRWLockHelper objNextHelper,
+                LinkedAsyncRWLockHelper objPreviousTopMostHeldUReader,
+                LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock,
+                bool blnSkipUnlockOnDispose = false)
             {
                 if (objNextHelper == null)
                     throw new ArgumentNullException(nameof(objNextHelper));
@@ -787,6 +841,7 @@ namespace Chummer
                     _objNextHelper.Dispose();
                     return;
                 }
+
                 try
                 {
                     if (blnDoUnlock)
