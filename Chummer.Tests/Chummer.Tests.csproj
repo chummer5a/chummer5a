@@ -169,8 +169,8 @@
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
     <PackageReference Include="XMLUnit.Core" Version="2.9.2" />
-    <PackageReference Include="xunit" Version="2.6.3" />
-    <PackageReference Include="xunit.analyzers" Version="1.7.0" />
-    <PackageReference Include="xunit.core" Version="2.6.3" />
+    <PackageReference Include="xunit" Version="2.6.4" />
+    <PackageReference Include="xunit.analyzers" Version="1.8.0" />
+    <PackageReference Include="xunit.core" Version="2.6.4" />
   </ItemGroup>
 </Project>

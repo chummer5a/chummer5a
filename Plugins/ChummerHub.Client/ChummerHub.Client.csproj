@@ -119,7 +119,7 @@
   <ItemGroup>
     <PackageReference Include="GroupControls" Version="1.9.0" />
     <PackageReference Include="IdentityModel" Version="6.2.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.22.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
