@@ -56,7 +56,7 @@ namespace Chummer
         private int _intDisposedStatus;
 
         private Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
-            LinkedAsyncRWLockHelper, bool> GetHelpers(bool blnMakeNext = true, CancellationToken token = default)
+            LinkedAsyncRWLockHelper, bool> GetHelpers(bool blnForReadLock = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             LinkedAsyncRWLockHelper objCurrentHelper = _objTopLevelHelper;
@@ -66,7 +66,17 @@ namespace Chummer
             LinkedAsyncRWLockHelper objNextHelper = null;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
             int intLoopCount = 0;
-            if (blnMakeNext)
+            if (blnForReadLock)
+            {
+                token.ThrowIfCancellationRequested();
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>
+                    objAsyncLocals =
+                        _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                    (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) =
+                        objAsyncLocals;
+            }
+            else
             {
                 do
                 {
@@ -104,21 +114,6 @@ namespace Chummer
 
                     break;
                 } while (true);
-            }
-            else
-            {
-                do
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
-                        throw new TimeoutException();
-                    Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>
-                        objAsyncLocals =
-                            _objAsyncLocalCurrentsContainer.Value;
-                    if (objAsyncLocals != null)
-                        (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) =
-                            objAsyncLocals;
-                } while (objCurrentHelper.IsDisposed);
             }
 
             return new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
@@ -330,7 +325,7 @@ namespace Chummer
 
             (LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper _,
                     LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter, bool blnIsInReadLock) =
-                GetHelpers(false, token);
+                GetHelpers(true, token);
 
             objCurrentHelper.TakeReadLock(blnIsInReadLock, token);
 
@@ -368,7 +363,7 @@ namespace Chummer
             bool blnIsInReadLock;
             try
             {
-                (objCurrentHelper, _, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) = GetHelpers(false, token);
+                (objCurrentHelper, _, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock) = GetHelpers(true, token);
             }
             catch (Exception e)
             {
