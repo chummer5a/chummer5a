@@ -347,10 +347,10 @@ namespace Chummer.Backend.Skills
                         .StartElementAsync("skillspecializations", token: token).ConfigureAwait(false);
                     try
                     {
-                        await (await GetSpecializationsAsync(token).ConfigureAwait(false)).ForEachAsync(objSpec =>
-                        {
-                            return objSpec.Print(objWriter, objCulture, strLanguageToPrint, token: token);
-                        }, token).ConfigureAwait(false);
+                        await (await GetSpecializationsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(
+                                objSpec => objSpec.Print(objWriter, objCulture, strLanguageToPrint, token: token),
+                                token).ConfigureAwait(false);
                     }
                     finally
                     {

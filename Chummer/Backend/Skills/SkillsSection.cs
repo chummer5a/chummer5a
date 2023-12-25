@@ -3401,13 +3401,13 @@ namespace Chummer.Backend.Skills
                 List<ListItem> lstReturn = new List<ListItem>();
                 XPathNavigator xmlSkillsDocument = await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                 foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
-                             "/chummer/knowledgeskills/skill"))
+                             "/chummer/knowledgeskills/skill", token))
                 {
-                    string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                    string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
                     lstReturn.Add(
                         new ListItem(
                             strName,
-                            xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                            xmlSkill.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? strName));
                 }
 
                 lstReturn.Sort(CompareListItems.CompareNames);
@@ -3435,14 +3435,14 @@ namespace Chummer.Backend.Skills
                         XPathNavigator xmlSkillsDocument =
                             await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                         foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
-                                     "/chummer/knowledgeskills/skill"))
+                                     "/chummer/knowledgeskills/skill", token))
                         {
-                            string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ??
+                            string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name", token)?.Value ??
                                              string.Empty;
                             _lstDefaultKnowledgeSkills.Add(
                                 new ListItem(
                                     strName,
-                                    xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                    xmlSkill.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? strName));
                         }
 
                         _lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
@@ -3531,12 +3531,12 @@ namespace Chummer.Backend.Skills
                 List<ListItem> lstReturn = new List<ListItem>();
                 XPathNavigator xmlSkillsDocument = await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
-                             "/chummer/categories/category[@type = \"knowledge\"]"))
+                             "/chummer/categories/category[@type = \"knowledge\"]", token))
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstReturn.Add(new ListItem(strInnerText,
                         objXmlCategory
-                            .SelectSingleNodeAndCacheExpression("@translate")
+                            .SelectSingleNodeAndCacheExpression("@translate", token)
                             ?.Value ?? strInnerText));
                 }
 
@@ -3565,12 +3565,12 @@ namespace Chummer.Backend.Skills
                         XPathNavigator xmlSkillsDocument =
                             await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                         foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
-                                     "/chummer/categories/category[@type = \"knowledge\"]"))
+                                     "/chummer/categories/category[@type = \"knowledge\"]", token))
                         {
                             string strInnerText = objXmlCategory.Value;
                             _lstKnowledgeTypes.Add(new ListItem(strInnerText,
                                 objXmlCategory
-                                    .SelectSingleNodeAndCacheExpression("@translate")
+                                    .SelectSingleNodeAndCacheExpression("@translate", token)
                                     ?.Value ?? strInnerText));
                         }
 

@@ -299,7 +299,7 @@ namespace Chummer.Backend.Equipment
                                                                                         t => t.Equipped),
                                                                                     y => y.Equipped
                                                                                         && !string.IsNullOrEmpty(
-                                                                                            y.Weight))))))))
+                                                                                            y.Weight))), token)))))
                             blnDoEncumbranceRefresh = true;
                     }
                     break;
@@ -326,7 +326,7 @@ namespace Chummer.Backend.Equipment
                                                                                         t => t.Equipped),
                                                                                     y => y.Equipped
                                                                                         && !string.IsNullOrEmpty(
-                                                                                            y.Weight))))))))
+                                                                                            y.Weight))), token)))))
                             blnDoEncumbranceRefresh = true;
                     }
                     break;
@@ -353,7 +353,7 @@ namespace Chummer.Backend.Equipment
                                                                                         t => t.Equipped),
                                                                                     y => y.Equipped
                                                                                         && !string.IsNullOrEmpty(
-                                                                                            y.Weight))))))))
+                                                                                            y.Weight))), token)))))
                             blnDoEncumbranceRefresh = true;
                     }
                     foreach (Weapon objNewItem in e.NewItems)
@@ -377,7 +377,7 @@ namespace Chummer.Backend.Equipment
                                                                                         t => t.Equipped),
                                                                                     y => y.Equipped
                                                                                         && !string.IsNullOrEmpty(
-                                                                                            y.Weight))))))))
+                                                                                            y.Weight))), token)))))
                             blnDoEncumbranceRefresh = true;
                     }
                     break;
