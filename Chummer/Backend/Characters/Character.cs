@@ -21884,8 +21884,8 @@ namespace Chummer
                     .SumAsync(async objCyberware =>
                     {
                         Guid guiSourceId = await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false);
-                        return !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
-                               && !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
+                        return guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
+                               || guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                     }, objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token).ConfigureAwait(false);
             }
         }
