@@ -29260,7 +29260,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await OnPropertyChangedAsync(nameof(StolenNuyen), token).ConfigureAwait(false);
