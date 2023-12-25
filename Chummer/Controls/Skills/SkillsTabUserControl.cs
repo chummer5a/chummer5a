@@ -170,10 +170,10 @@ namespace Chummer.UI.Skills
             _lstDropDownActiveSkills = GenerateDropdownFilter(_objCharacter);
             _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter(_objCharacter);
 
+#if DEBUG
             Stopwatch sw = Utils.StopwatchPool.Get();
             try
             {
-#if DEBUG
                 sw.Start();
 #endif
                 //Keep everything visible until ready to display everything. This
@@ -192,8 +192,7 @@ namespace Chummer.UI.Skills
                         + ']') != null;
                 await this.DoThreadSafeAsync(() =>
                 {
-                    Stopwatch parts = Utils.StopwatchPool.Get();
-                    try
+                    using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
                     {
                         parts.Start();
                         SuspendLayout();
@@ -363,10 +362,6 @@ namespace Chummer.UI.Skills
                             ResumeLayout(true);
                         }
                     }
-                    finally
-                    {
-                        Utils.StopwatchPool.Return(ref parts);
-                    }
                 }, token: token).ConfigureAwait(false);
 
                 await Task.WhenAll(_lstActiveSkills.ContentControls.OfType<SkillControl>()
@@ -429,15 +424,15 @@ namespace Chummer.UI.Skills
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+#if DEBUG
             }
             finally
             {
-#if DEBUG
                 sw.Stop();
                 Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-#endif
                 Utils.StopwatchPool.Return(ref sw);
             }
+#endif
         }
 
         private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1053,7 +1048,7 @@ namespace Chummer.UI.Skills
                                    Description = strDescription
                                }, MyToken).ConfigureAwait(false))
                     {
-                        form.MyForm.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
+                        form.MyForm.SetDropdownItemsMode(await _objCharacter.SkillsSection.GetMyDefaultKnowledgeSkillsAsync(MyToken).ConfigureAwait(false));
                         if (await form.ShowDialogSafeAsync(_objCharacter, MyToken).ConfigureAwait(false)
                             != DialogResult.OK)
                             return;

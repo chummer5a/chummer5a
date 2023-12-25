@@ -425,7 +425,7 @@ namespace Chummer.UI.Skills
                                                            token).ConfigureAwait(false);
 
             await cboType
-                  .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes,
+                  .PopulateWithListItemsAsync(await _objSkill.CharacterObject.SkillsSection.GetMyKnowledgeTypesAsync(_objMyToken).ConfigureAwait(false),
                                               token: _objMyToken).ConfigureAwait(false);
             await cboType.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                          nameof(KnowledgeSkill.AllowTypeChange),
@@ -453,7 +453,7 @@ namespace Chummer.UI.Skills
             try
             {
                 await cboName
-                      .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills,
+                      .PopulateWithListItemsAsync(await _objSkill.CharacterObject.SkillsSection.GetMyDefaultKnowledgeSkillsAsync(token).ConfigureAwait(false),
                                                   token: token).ConfigureAwait(false);
                 await cboName.DoThreadSafeAsync(x =>
                 {

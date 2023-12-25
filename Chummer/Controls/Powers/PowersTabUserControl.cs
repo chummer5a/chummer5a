@@ -133,10 +133,10 @@ namespace Chummer.UI.Powers
                 return;
 
             ThreadSafeBindingList<Power> lstPowers = await _objCharacter.GetPowersAsync(token).ConfigureAwait(false);
+#if DEBUG
             Stopwatch sw = Utils.StopwatchPool.Get();
             try
             {
-#if DEBUG
                 sw.Start();
 #endif
                 //Keep everything visible until ready to display everything. This
@@ -149,8 +149,7 @@ namespace Chummer.UI.Powers
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                 try
                 {
-                    Stopwatch parts = Utils.StopwatchPool.Get();
-                    try
+                    using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
                     {
                         parts.Start();
                         parts.TaskEnd("MakePowerDisplay()");
@@ -184,10 +183,6 @@ namespace Chummer.UI.Powers
 
                         parts.TaskEnd("resize");
                     }
-                    finally
-                    {
-                        Utils.StopwatchPool.Return(ref parts);
-                    }
                 }
                 finally
                 {
@@ -198,15 +193,15 @@ namespace Chummer.UI.Powers
                     nameof(Character.DisplayPowerPointsRemaining),
                     x => x.GetDisplayPowerPointsRemainingAsync(MyToken),
                     token).ConfigureAwait(false);
+#if DEBUG
             }
             finally
             {
-#if DEBUG
                 sw.Stop();
                 Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-#endif
                 Utils.StopwatchPool.Return(ref sw);
             }
+#endif
 
             lstPowers.ListChangedAsync += OnPowersListChanged;
             _objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;

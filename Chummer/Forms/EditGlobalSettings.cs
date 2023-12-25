@@ -2387,8 +2387,7 @@ namespace Chummer
                 if (eResult != DialogResult.OK || string.IsNullOrWhiteSpace(strSelectedPath))
                     return;
 
-                Stopwatch sw = Utils.StopwatchPool.Get();
-                try
+                using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
                 {
                     sw.Start();
                     XPathNavigator objBooks = await tskLoadBooks.ConfigureAwait(false);
@@ -2465,10 +2464,6 @@ namespace Chummer
                         Program.ShowScrollableMessageBox(message, title, MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                     }
-                }
-                finally
-                {
-                    Utils.StopwatchPool.Return(ref sw);
                 }
             }
             finally

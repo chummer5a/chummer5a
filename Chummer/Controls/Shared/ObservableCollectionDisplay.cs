@@ -267,8 +267,7 @@ namespace Chummer.Controls.Shared
                 end = _lstDisplayIndex.Count;
 
             end = Math.Min(end, firstUnrendered + _intOffScreenChunkSize);
-            Stopwatch sw = Utils.StopwatchPool.Get();
-            try
+            using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
             {
                 sw.Start();
 
@@ -301,10 +300,6 @@ namespace Chummer.Controls.Shared
                     Log.Trace("Offscreen chunk render size increased to " +
                               _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
                 }
-            }
-            finally
-            {
-                Utils.StopwatchPool.Return(ref sw);
             }
         }
 

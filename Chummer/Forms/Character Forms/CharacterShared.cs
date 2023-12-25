@@ -73,7 +73,14 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 objCancellationRegistration.Dispose();
-                Utils.StopwatchPool.Return(ref _stpAutosaveStopwatch);
+                try
+                {
+                    Utils.StopwatchPool.Return(ref _stpAutosaveStopwatch);
+                }
+                catch (ArgumentNullException)
+                {
+                    //swallow this, the event handler somehow called this twice
+                }
             };
             _objCharacter.PropertyChangedAsync += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();

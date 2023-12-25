@@ -749,10 +749,9 @@ namespace Chummer
                                 if (!Utils.IsUnitTest)
                                 {
                                     string[] strArgs = Environment.GetCommandLineArgs();
-                                    ProcessCommandLineArguments(strArgs, out blnShowTest,
-                                                                out HashSet<string> setFilesToLoad,
-                                                                opFrmChummerMain);
-                                    try
+                                    using (ProcessCommandLineArguments(strArgs, out blnShowTest,
+                                               out HashSet<string> setFilesToLoad,
+                                               opFrmChummerMain))
                                     {
                                         if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                         {
@@ -874,10 +873,6 @@ namespace Chummer
                                                 setNewCharactersToOpen.TryAdd(strFile);
                                             _tmrCharactersToOpenCheck.Start();
                                         }
-                                    }
-                                    finally
-                                    {
-                                        Utils.StringHashSetPool.Return(ref setFilesToLoad);
                                     }
                                 }
 
@@ -4185,9 +4180,9 @@ namespace Chummer
                             string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
 
                             _objGenericToken.ThrowIfCancellationRequested();
-                            ProcessCommandLineArguments(strArgs, out bool blnShowTest,
-                                                        out HashSet<string> setFilesToLoad);
-                            try
+                            bool blnShowTest;
+                            using (ProcessCommandLineArguments(strArgs, out blnShowTest,
+                                       out HashSet<string> setFilesToLoad))
                             {
                                 _objGenericToken.ThrowIfCancellationRequested();
                                 if (Directory.Exists(Utils.GetAutosavesFolderPath))
@@ -4224,9 +4219,11 @@ namespace Chummer
                                             objMostRecentAutosave = objAutosave;
                                         string strAutosaveName = Path.GetFileNameWithoutExtension(objAutosave.Name);
                                         if (GlobalSettings.MostRecentlyUsedCharacters.Any(
-                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken) ||
+                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName,
+                                                _objGenericToken) ||
                                             GlobalSettings.FavoriteCharacters.Any(
-                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName, _objGenericToken))
+                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName,
+                                                _objGenericToken))
                                             blnAnyAutosaveInMru = true;
                                     }
 
@@ -4240,18 +4237,21 @@ namespace Chummer
                                         string strAutosaveName
                                             = Path.GetFileNameWithoutExtension(objMostRecentAutosave.Name);
                                         if (GlobalSettings.MostRecentlyUsedCharacters.All(
-                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName, _objGenericToken)
+                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
+                                                _objGenericToken)
                                             && GlobalSettings.FavoriteCharacters.All(
-                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName, _objGenericToken)
-                                            && Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
-                                                                              "Message_PossibleCrashAutosaveFound", token: _objGenericToken),
-                                                                          objMostRecentAutosave.Name,
-                                                                          objMostRecentAutosave.LastWriteTimeUtc
-                                                                              .ToLocalTime()),
-                                                                      LanguageManager.GetString(
-                                                                          "MessageTitle_AutosaveFound", token: _objGenericToken),
-                                                                      MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
+                                                _objGenericToken)
+                                            && Program.ShowScrollableMessageBox(string.Format(
+                                                    GlobalSettings.CultureInfo,
+                                                    LanguageManager.GetString(
+                                                        "Message_PossibleCrashAutosaveFound", token: _objGenericToken),
+                                                    objMostRecentAutosave.Name,
+                                                    objMostRecentAutosave.LastWriteTimeUtc
+                                                        .ToLocalTime()),
+                                                LanguageManager.GetString(
+                                                    "MessageTitle_AutosaveFound", token: _objGenericToken),
+                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                                             == DialogResult.Yes)
                                         {
                                             _objGenericToken.ThrowIfCancellationRequested();
@@ -4274,12 +4274,9 @@ namespace Chummer
                                         _objGenericToken.ThrowIfCancellationRequested();
                                         setNewCharactersToOpen.TryAdd(strFile);
                                     }
+
                                     _tmrCharactersToOpenCheck.Start();
                                 }
-                            }
-                            finally
-                            {
-                                Utils.StringHashSetPool.Return(ref setFilesToLoad);
                             }
 
                             if (blnShowTest)
@@ -4317,12 +4314,12 @@ namespace Chummer
             }
         }
 
-        private static void ProcessCommandLineArguments(IReadOnlyCollection<string> strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
+        private static FetchSafelyFromPool<HashSet<string>> ProcessCommandLineArguments(IReadOnlyCollection<string> strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
-            setFilesToLoad = Utils.StringHashSetPool.Get();
+            FetchSafelyFromPool<HashSet<string>> objReturn = new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
             if (strArgs.Count == 0)
-                return;
+                return objReturn;
             try
             {
                 foreach (string strArg in strArgs)
@@ -4338,45 +4335,39 @@ namespace Chummer
                         case "/help":
                         case "?":
                         case "/?":
-                            {
-                                string msg = "Commandline parameters are either " +
+                            string msg = "Commandline parameters are either " +
                                              Environment.NewLine + "\t/test" + Environment.NewLine +
                                              "\t/help" + Environment.NewLine +
                                              "\t(filename to open)" +
                                              Environment.NewLine +
                                              "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
                                              Environment.NewLine;
-                                Console.WriteLine(msg);
-                                break;
-                            }
+                            Console.WriteLine(msg);
+                            break;
                         default:
+                            if (strArg.Contains("/plugin"))
                             {
-                                if (strArg.Contains("/plugin"))
-                                {
-                                    Log.Info(
-                                        "Encountered command line argument, that should already have been handled in one of the plugins: " +
-                                        strArg);
-                                }
-                                else if (!strArg.StartsWith('/'))
-                                {
-                                    if (!File.Exists(strArg))
-                                    {
-                                        throw new ArgumentException(
-                                            "Chummer started with unknown command line arguments: " +
-                                            strArgs.Aggregate((j, k) => j + ' ' + k));
-                                    }
-
-                                    string strExtension = Path.GetExtension(strArg);
-                                    if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
-                                        && !string.Equals(strExtension, ".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                        Utils.BreakIfDebug();
-                                    if (setFilesToLoad.Contains(strArg))
-                                        continue;
-                                    setFilesToLoad.Add(strArg);
-                                }
-
-                                break;
+                                Log.Info(
+                                    "Encountered command line argument, that should already have been handled in one of the plugins: " +
+                                    strArg);
                             }
+                            else if (!strArg.StartsWith('/'))
+                            {
+                                if (!File.Exists(strArg))
+                                {
+                                    throw new ArgumentException(
+                                        "Chummer started with unknown command line arguments: " +
+                                        strArgs.Aggregate((j, k) => j + ' ' + k));
+                                }
+
+                                string strExtension = Path.GetExtension(strArg);
+                                if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
+                                    && !string.Equals(strExtension, ".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                    Utils.BreakIfDebug();
+                                setFilesToLoad.Add(strArg);
+                            }
+
+                            break;
                     }
                 }
             }
@@ -4393,6 +4384,8 @@ namespace Chummer
                 }
                 Log.Warn(ex);
             }
+
+            return objReturn;
         }
 
 #endregion Methods

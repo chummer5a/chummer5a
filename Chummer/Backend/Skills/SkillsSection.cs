@@ -3333,24 +3333,112 @@ namespace Chummer.Backend.Skills
         }
 
         private List<ListItem> _lstDefaultKnowledgeSkills;
+        private readonly AsyncFriendlyReaderWriterLock _objDefaultKnowledgeSkillsLock = new AsyncFriendlyReaderWriterLock();
 
         public IReadOnlyList<ListItem> MyDefaultKnowledgeSkills
         {
             get
             {
+                if (GlobalSettings.LiveCustomData)
+                {
+                    List<ListItem> lstReturn = new List<ListItem>();
+                    XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
+                    foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
+                                 "/chummer/knowledgeskills/skill"))
+                    {
+                        string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                        lstReturn.Add(
+                            new ListItem(
+                                strName,
+                                xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                    }
+
+                    lstReturn.Sort(CompareListItems.CompareNames);
+                    return lstReturn;
+                }
+
                 using (LockObject.EnterReadLock())
                 {
-                    if (GlobalSettings.LiveCustomData || _lstDefaultKnowledgeSkills == null)
+                    using (_objDefaultKnowledgeSkillsLock.EnterReadLock())
                     {
-                        if (_lstDefaultKnowledgeSkills == null)
-                            _lstDefaultKnowledgeSkills = Utils.ListItemListPool.Get();
-                        else
-                            _lstDefaultKnowledgeSkills.Clear();
-                        XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
+                        if (_lstDefaultKnowledgeSkills != null)
+                            return _lstDefaultKnowledgeSkills;
+                    }
+
+                    using (_objDefaultKnowledgeSkillsLock.EnterUpgradeableReadLock())
+                    {
+                        if (_lstDefaultKnowledgeSkills != null)
+                            return _lstDefaultKnowledgeSkills;
+
+                        using (_objDefaultKnowledgeSkillsLock.EnterWriteLock())
+                        {
+                            _lstDefaultKnowledgeSkills = new List<ListItem>();
+                            XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
+                            foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
+                                         "/chummer/knowledgeskills/skill"))
+                            {
+                                string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ??
+                                                 string.Empty;
+                                _lstDefaultKnowledgeSkills.Add(
+                                    new ListItem(
+                                        strName,
+                                        xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                            }
+
+                            _lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
+                        }
+                    }
+
+                    return _lstDefaultKnowledgeSkills;
+                }
+            }
+        }
+
+        public async Task<IReadOnlyList<ListItem>> GetMyDefaultKnowledgeSkillsAsync(CancellationToken token = default)
+        {
+            if (GlobalSettings.LiveCustomData)
+            {
+                List<ListItem> lstReturn = new List<ListItem>();
+                XPathNavigator xmlSkillsDocument = await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
+                foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
+                             "/chummer/knowledgeskills/skill"))
+                {
+                    string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                    lstReturn.Add(
+                        new ListItem(
+                            strName,
+                            xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                }
+
+                lstReturn.Sort(CompareListItems.CompareNames);
+                return lstReturn;
+            }
+
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                using (await _objDefaultKnowledgeSkillsLock.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    if (_lstDefaultKnowledgeSkills != null)
+                        return _lstDefaultKnowledgeSkills;
+                }
+
+                IAsyncDisposable objLocker = await _objDefaultKnowledgeSkillsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    if (_lstDefaultKnowledgeSkills != null)
+                        return _lstDefaultKnowledgeSkills;
+
+                    IAsyncDisposable objLocker2 = await _objDefaultKnowledgeSkillsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        _lstDefaultKnowledgeSkills = new List<ListItem>();
+                        XPathNavigator xmlSkillsDocument =
+                            await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                         foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
                                      "/chummer/knowledgeskills/skill"))
                         {
-                            string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                            string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ??
+                                             string.Empty;
                             _lstDefaultKnowledgeSkills.Add(
                                 new ListItem(
                                     strName,
@@ -3359,13 +3447,22 @@ namespace Chummer.Backend.Skills
 
                         _lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                     }
-
-                    return _lstDefaultKnowledgeSkills;
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                return _lstDefaultKnowledgeSkills;
             }
         }
 
         private List<ListItem> _lstKnowledgeTypes;
+        private readonly AsyncFriendlyReaderWriterLock _objKnowledgeTypesLock = new AsyncFriendlyReaderWriterLock();
         private int _intSkillGroupPointsMaximum;
         private int _intSkillPointsMaximum;
 
@@ -3373,30 +3470,123 @@ namespace Chummer.Backend.Skills
         {
             get
             {
+                if (GlobalSettings.LiveCustomData)
+                {
+                    List<ListItem> lstReturn = new List<ListItem>();
+                    XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
+                    foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
+                                 "/chummer/categories/category[@type = \"knowledge\"]"))
+                    {
+                        string strInnerText = objXmlCategory.Value;
+                        lstReturn.Add(new ListItem(strInnerText,
+                            objXmlCategory
+                                .SelectSingleNodeAndCacheExpression("@translate")
+                                ?.Value ?? strInnerText));
+                    }
+
+                    lstReturn.Sort(CompareListItems.CompareNames);
+                    return lstReturn;
+                }
+
                 using (LockObject.EnterReadLock())
                 {
-                    if (GlobalSettings.LiveCustomData || _lstKnowledgeTypes == null)
+                    using (_objKnowledgeTypesLock.EnterReadLock())
                     {
-                        if (_lstKnowledgeTypes == null)
-                            _lstKnowledgeTypes = Utils.ListItemListPool.Get();
-                        else
-                            _lstKnowledgeTypes.Clear();
-                        XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
+                        if (_lstKnowledgeTypes != null)
+                            return _lstKnowledgeTypes;
+                    }
+
+                    using (_objKnowledgeTypesLock.EnterUpgradeableReadLock())
+                    {
+                        if (_lstKnowledgeTypes != null)
+                            return _lstKnowledgeTypes;
+
+                        using (_objKnowledgeTypesLock.EnterWriteLock())
+                        {
+                            _lstKnowledgeTypes = new List<ListItem>();
+                            XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
+                            foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
+                                         "/chummer/categories/category[@type = \"knowledge\"]"))
+                            {
+                                string strInnerText = objXmlCategory.Value;
+                                _lstKnowledgeTypes.Add(new ListItem(strInnerText,
+                                    objXmlCategory
+                                        .SelectSingleNodeAndCacheExpression("@translate")
+                                        ?.Value ?? strInnerText));
+                            }
+
+                            _lstKnowledgeTypes.Sort(CompareListItems.CompareNames);
+                        }
+                    }
+
+                    return _lstKnowledgeTypes;
+                }
+            }
+        }
+
+        public async Task<IReadOnlyList<ListItem>> GetMyKnowledgeTypesAsync(CancellationToken token = default)
+        {
+            if (GlobalSettings.LiveCustomData)
+            {
+                List<ListItem> lstReturn = new List<ListItem>();
+                XPathNavigator xmlSkillsDocument = await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
+                foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
+                             "/chummer/categories/category[@type = \"knowledge\"]"))
+                {
+                    string strInnerText = objXmlCategory.Value;
+                    lstReturn.Add(new ListItem(strInnerText,
+                        objXmlCategory
+                            .SelectSingleNodeAndCacheExpression("@translate")
+                            ?.Value ?? strInnerText));
+                }
+
+                lstReturn.Sort(CompareListItems.CompareNames);
+                return lstReturn;
+            }
+
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                using (await _objKnowledgeTypesLock.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    if (_lstKnowledgeTypes != null)
+                        return _lstKnowledgeTypes;
+                }
+
+                IAsyncDisposable objLocker = await _objDefaultKnowledgeSkillsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    if (_lstKnowledgeTypes != null)
+                        return _lstKnowledgeTypes;
+
+                    IAsyncDisposable objLocker2 = await _objDefaultKnowledgeSkillsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        _lstKnowledgeTypes = new List<ListItem>();
+                        XPathNavigator xmlSkillsDocument =
+                            await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                         foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
                                      "/chummer/categories/category[@type = \"knowledge\"]"))
                         {
                             string strInnerText = objXmlCategory.Value;
                             _lstKnowledgeTypes.Add(new ListItem(strInnerText,
-                                                                objXmlCategory
-                                                                    .SelectSingleNodeAndCacheExpression("@translate")
-                                                                    ?.Value ?? strInnerText));
+                                objXmlCategory
+                                    .SelectSingleNodeAndCacheExpression("@translate")
+                                    ?.Value ?? strInnerText));
                         }
 
                         _lstKnowledgeTypes.Sort(CompareListItems.CompareNames);
                     }
-
-                    return _lstKnowledgeTypes;
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                return _lstKnowledgeTypes;
             }
         }
 
@@ -3642,10 +3832,18 @@ namespace Chummer.Backend.Skills
                 _lstSkillGroups.Dispose();
                 _objSkillsInitializerLock.Dispose();
                 _objCachedKnowledgePointsLock.Dispose();
-                if (_lstDefaultKnowledgeSkills != null)
-                    Utils.ListItemListPool.Return(ref _lstDefaultKnowledgeSkills);
-                if (_lstKnowledgeTypes != null)
-                    Utils.ListItemListPool.Return(ref _lstKnowledgeTypes);
+                using (_objDefaultKnowledgeSkillsLock.EnterWriteLock())
+                {
+                    if (_lstDefaultKnowledgeSkills != null)
+                        Utils.ListItemListPool.Return(ref _lstDefaultKnowledgeSkills);
+                }
+                _objDefaultKnowledgeSkillsLock.Dispose();
+                using (_objKnowledgeTypesLock.EnterWriteLock())
+                {
+                    if (_lstKnowledgeTypes != null)
+                        Utils.ListItemListPool.Return(ref _lstKnowledgeTypes);
+                }
+                _objKnowledgeTypesLock.Dispose();
             }
             LockObject.Dispose();
         }
@@ -3686,10 +3884,28 @@ namespace Chummer.Backend.Skills
                 await _lstSkillGroups.DisposeAsync().ConfigureAwait(false);
                 await _objSkillsInitializerLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedKnowledgePointsLock.DisposeAsync().ConfigureAwait(false);
-                if (_lstDefaultKnowledgeSkills != null)
-                    Utils.ListItemListPool.Return(ref _lstDefaultKnowledgeSkills);
-                if (_lstKnowledgeTypes != null)
-                    Utils.ListItemListPool.Return(ref _lstKnowledgeTypes);
+                IAsyncDisposable objLocker2 = await _objDefaultKnowledgeSkillsLock.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    if (_lstDefaultKnowledgeSkills != null)
+                        Utils.ListItemListPool.Return(ref _lstDefaultKnowledgeSkills);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+                await _objDefaultKnowledgeSkillsLock.DisposeAsync().ConfigureAwait(false);
+                objLocker2 = await _objKnowledgeTypesLock.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    if (_lstKnowledgeTypes != null)
+                        Utils.ListItemListPool.Return(ref _lstKnowledgeTypes);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+                await _objKnowledgeTypesLock.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {

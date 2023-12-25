@@ -211,8 +211,7 @@ namespace Chummer
 
                         string strInfo;
 
-                        Stopwatch sw = Utils.StopwatchPool.Get();
-                        try
+                        using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
                         {
                             sw.Start();
                             //If debugging and launched from other place (Bootstrap), launch debugger
@@ -249,10 +248,6 @@ namespace Chummer
                                 AppDomain.CurrentDomain.UnhandledException += HandleCrash;
 
                             sw.TaskEnd("Startup");
-                        }
-                        finally
-                        {
-                            Utils.StopwatchPool.Return(ref sw);
                         }
 
                         void HandleCrash(object o, UnhandledExceptionEventArgs exa)

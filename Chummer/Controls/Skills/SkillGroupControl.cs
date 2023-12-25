@@ -52,8 +52,7 @@ namespace Chummer.UI.Skills
             InitializeComponent();
             Disposed += (sender, args) => UnbindSkillGroupControl();
             //This is apparently a factor 30 faster than placed in load. NFI why
-            Stopwatch sw = Utils.StopwatchPool.Get();
-            try
+            using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
             {
                 sw.Start();
                 SuspendLayout();
@@ -123,10 +122,6 @@ namespace Chummer.UI.Skills
                 }
 
                 sw.TaskEnd("Create skillgroup");
-            }
-            finally
-            {
-                Utils.StopwatchPool.Return(ref sw);
             }
         }
 
