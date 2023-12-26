@@ -742,6 +742,7 @@ namespace Chummer
                                                          .ConfigureAwait(false),
                                     token: _objGenericToken).ConfigureAwait(false);
 
+                                Program.OpenCharacters.BeforeClearCollectionChanged += OpenCharactersOnBeforeClearCollectionChanged;
                                 Program.OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
 
                                 // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
@@ -1097,12 +1098,38 @@ namespace Chummer
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
+        private void OpenCharactersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (Character objCharacter in e.OldItems)
+            {
+                if (objCharacter?.IsDisposed != false)
+                    continue;
+                try
+                {
+                    objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
+        }
+
         private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
                 switch (e.Action)
                 {
+                    case NotifyCollectionChangedAction.Reset:
+                    {
+                        foreach (Character objCharacter in Program.OpenCharacters)
+                        {
+                            objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
+                        }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Add:
                     {
                         foreach (Character objCharacter in e.NewItems)
@@ -1116,16 +1143,15 @@ namespace Chummer
                     {
                         foreach (Character objCharacter in e.OldItems)
                         {
-                            if (objCharacter?.IsDisposed == false)
+                            if (objCharacter?.IsDisposed != false)
+                                continue;
+                            try
                             {
-                                try
-                                {
-                                    objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
+                                objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                //swallow this
                             }
                         }
 
@@ -1135,16 +1161,15 @@ namespace Chummer
                     {
                         foreach (Character objCharacter in e.OldItems)
                         {
-                            if (objCharacter?.IsDisposed == false)
+                            if (objCharacter?.IsDisposed != false)
+                                continue;
+                            try
                             {
-                                try
-                                {
-                                    objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
+                                objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                //swallow this
                             }
                         }
 

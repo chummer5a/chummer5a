@@ -60,9 +60,9 @@ namespace Chummer
         private readonly Timer _tmrHobbiesViceChangeTimer;
 
         // Events.
-        public event EventHandler<TextEventArgs> ContactDetailChanged;
+        public event EventHandlerExtensions.SafeAsyncEventHandler ContactDetailChanged;
 
-        public event EventHandler DeleteContact;
+        public event EventHandlerExtensions.SafeAsyncEventHandler DeleteContact;
 
         #region Control Events
 
@@ -176,11 +176,21 @@ namespace Chummer
             }
         }
 
-        private void nudConnection_ValueChanged(object sender, EventArgs e)
+        private async void nudConnection_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
-            if (_intLoading == 0 && _intStatBlockIsLoaded > 1)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Connection"));
+            if (_intLoading == 0 && _intStatBlockIsLoaded > 1 && ContactDetailChanged != null)
+            {
+                try
+                {
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Connection"), _objMyToken)
+                        .ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
+            }
         }
 
         private async void nudLoyalty_ValueChanged(object sender, EventArgs e)
@@ -193,7 +203,8 @@ namespace Chummer
             {
                 while (_intStatBlockIsLoaded == 1)
                     await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Loyalty"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Loyalty"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -201,11 +212,20 @@ namespace Chummer
             }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteContact?.Invoke(this, e);
+            if (DeleteContact == null)
+                return;
+            try
+            {
+                await DeleteContact.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private async void chkGroup_CheckedChanged(object sender, EventArgs e)
@@ -216,7 +236,8 @@ namespace Chummer
             {
                 while (_intStatBlockIsLoaded == 1)
                     await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Group"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -237,18 +258,20 @@ namespace Chummer
             }
         }
 
-        private void txtContactName_TextChanged(object sender, EventArgs e)
+        private async void txtContactName_TextChanged(object sender, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
-            ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
+            if (ContactDetailChanged != null)
+                await ContactDetailChanged.Invoke(this, new TextEventArgs("Name"), _objMyToken).ConfigureAwait(false);
         }
 
-        private void txtContactLocation_TextChanged(object sender, EventArgs e)
+        private async void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
-            ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
+            if (ContactDetailChanged != null)
+                await ContactDetailChanged.Invoke(this, new TextEventArgs("Location"), _objMyToken).ConfigureAwait(false);
         }
 
         private async void UpdateMetatype(object sender, EventArgs e)
@@ -283,7 +306,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Metatype"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -323,7 +347,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Gender"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Gender"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -362,7 +387,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Age"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -402,7 +428,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("PersonalLife"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -441,7 +468,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Type"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -481,7 +509,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("PreferredPayment"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -521,7 +550,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("HobbiesVice"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -557,7 +587,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Role"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -710,7 +741,8 @@ namespace Chummer
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objContact.RelativeFileName = "../" + uriRelative;
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -743,7 +775,8 @@ namespace Chummer
                         await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
                     }
 
-                    ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+                    if (ContactDetailChanged != null)
+                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -774,7 +807,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Notes"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -790,7 +824,8 @@ namespace Chummer
             {
                 while (_intStatBlockIsLoaded == 1)
                     await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Free"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Free"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -806,7 +841,8 @@ namespace Chummer
             {
                 while (_intStatBlockIsLoaded == 1)
                     await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Blackmail"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Blackmail"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -822,7 +858,8 @@ namespace Chummer
             {
                 while (_intStatBlockIsLoaded == 1)
                     await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Family"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

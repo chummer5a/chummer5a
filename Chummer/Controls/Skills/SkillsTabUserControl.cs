@@ -36,7 +36,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillsTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
+        public event PropertyChangedAsyncEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Skill> _lstActiveSkills;
         private BindingListDisplay<SkillGroup> _lstSkillGroups;
@@ -334,9 +334,9 @@ namespace Chummer.UI.Skills
                             parts.TaskEnd("_sort databind");
 
                             if (_lstSkillGroups != null)
-                                _lstSkillGroups.ChildPropertyChanged += ChildPropertyChanged;
-                            _lstActiveSkills.ChildPropertyChanged += ChildPropertyChanged;
-                            _lstKnowledgeSkills.ChildPropertyChanged += ChildPropertyChanged;
+                                _lstSkillGroups.ChildPropertyChangedAsync += ChildPropertyChanged;
+                            _lstActiveSkills.ChildPropertyChangedAsync += ChildPropertyChanged;
+                            _lstKnowledgeSkills.ChildPropertyChangedAsync += ChildPropertyChanged;
 
                             if (_objCharacter.Created)
                             {
@@ -435,9 +435,21 @@ namespace Chummer.UI.Skills
 #endif
         }
 
-        private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ChildPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            MakeDirtyWithCharacterUpdate?.Invoke(sender, e);
+            if (MakeDirtyWithCharacterUpdate != null)
+            {
+                if (token != MyToken)
+                {
+                    using (CancellationTokenSource objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, MyToken))
+                    {
+                        token = objNewSource.Token;
+                        await MakeDirtyWithCharacterUpdate.Invoke(sender, e, token);
+                    }
+                }
+                else
+                    await MakeDirtyWithCharacterUpdate.Invoke(sender, e, token);
+            }
         }
 
         private async Task SkillsSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
@@ -461,70 +473,67 @@ namespace Chummer.UI.Skills
 
         private void RefreshSkillGroupLabels()
         {
-            if (_lstSkillGroups != null)
+            if (_lstSkillGroups == null)
+                return;
+            int intNameLabelWidth = lblSkillGroups.PreferredWidth;
+            foreach (SkillGroupControl sg in _lstSkillGroups.DisplayPanel.Controls)
             {
-                int intNameLabelWidth = lblSkillGroups.PreferredWidth;
-                foreach (SkillGroupControl sg in _lstSkillGroups.DisplayPanel.Controls)
-                {
-                    intNameLabelWidth = Math.Max(sg.NameWidth, intNameLabelWidth);
-                }
-                lblSkillGroups.MinimumSize = new Size(intNameLabelWidth, lblSkillGroups.MinimumSize.Height);
-                foreach (SkillGroupControl s in _lstSkillGroups.DisplayPanel.Controls)
-                {
-                    s.MoveControls(intNameLabelWidth);
-                }
+                intNameLabelWidth = Math.Max(sg.NameWidth, intNameLabelWidth);
+            }
+            lblSkillGroups.MinimumSize = new Size(intNameLabelWidth, lblSkillGroups.MinimumSize.Height);
+            foreach (SkillGroupControl s in _lstSkillGroups.DisplayPanel.Controls)
+            {
+                s.MoveControls(intNameLabelWidth);
             }
         }
 
         private void RefreshSkillLabels()
         {
-            if (_lstActiveSkills != null)
+            if (_lstActiveSkills == null)
+                return;
+            int intNameLabelWidth = lblActiveSkills.PreferredWidth;
+            int intRatingLabelWidth = lblActiveSp.PreferredWidth;
+            foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
             {
-                int intNameLabelWidth = lblActiveSkills.PreferredWidth;
-                int intRatingLabelWidth = lblActiveSp.PreferredWidth;
-                foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
-                {
-                    intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
-                    intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
-                }
-                lblActiveSkills.MinimumSize = new Size(intNameLabelWidth - lblActiveSkills.Margin.Right, lblActiveSkills.MinimumSize.Height);
-                lblActiveKarma.Margin = new Padding(
-                    Math.Max(0, lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width),
-                    lblActiveKarma.Margin.Top,
-                    lblActiveKarma.Margin.Right,
-                    lblActiveKarma.Margin.Bottom);
-                foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
-                {
-                    objSkillControl.MoveControls(intNameLabelWidth);
-                }
+                intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
+                intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
+            }
+            lblActiveSkills.MinimumSize = new Size(intNameLabelWidth - lblActiveSkills.Margin.Right, lblActiveSkills.MinimumSize.Height);
+            lblActiveKarma.Margin = new Padding(
+                Math.Max(0, lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width),
+                lblActiveKarma.Margin.Top,
+                lblActiveKarma.Margin.Right,
+                lblActiveKarma.Margin.Bottom);
+            foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+            {
+                objSkillControl.MoveControls(intNameLabelWidth);
             }
         }
 
         private void RefreshKnowledgeSkillLabels()
         {
-            if (_lstKnowledgeSkills != null)
+            if (_lstKnowledgeSkills == null)
+                return;
+            int intNameLabelWidth = 0;
+            int intRatingLabelWidth = lblKnoSp.PreferredWidth;
+            int intRightButtonsWidth = 0;
+            foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.DisplayPanel.Controls)
             {
-                int intNameLabelWidth = 0;
-                int intRatingLabelWidth = lblKnoSp.PreferredWidth;
-                int intRightButtonsWidth = 0;
-                foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.DisplayPanel.Controls)
-                {
-                    intNameLabelWidth = Math.Max(intNameLabelWidth, objKnowledgeSkillControl.NameWidth);
-                    intRatingLabelWidth = Math.Max(intRatingLabelWidth, objKnowledgeSkillControl.NudSkillWidth);
-                    intRightButtonsWidth = Math.Max(intRightButtonsWidth, objKnowledgeSkillControl.RightButtonsWidth);
-                }
-                lblKnowledgeSkills.MinimumSize = new Size(intNameLabelWidth, lblKnowledgeSkills.MinimumSize.Height);
-                lblKnoKarma.Margin = new Padding(
-                    Math.Max(0, lblKnoSp.Margin.Left + intRatingLabelWidth - lblKnoSp.Width),
-                    lblKnoKarma.Margin.Top,
-                    lblKnoKarma.Margin.Right,
-                    lblKnoKarma.Margin.Bottom);
-                lblKnoBwk.Margin = new Padding(
-                    lblKnoBwk.Margin.Left,
-                    lblKnoBwk.Margin.Top,
-                    Math.Max(0, lblKnoBwk.Margin.Left + intRightButtonsWidth + SystemInformation.VerticalScrollBarWidth - lblKnoBwk.PreferredWidth / 2),
-                    lblKnoBwk.Margin.Bottom);
+                intNameLabelWidth = Math.Max(intNameLabelWidth, objKnowledgeSkillControl.NameWidth);
+                intRatingLabelWidth = Math.Max(intRatingLabelWidth, objKnowledgeSkillControl.NudSkillWidth);
+                intRightButtonsWidth = Math.Max(intRightButtonsWidth, objKnowledgeSkillControl.RightButtonsWidth);
             }
+            lblKnowledgeSkills.MinimumSize = new Size(intNameLabelWidth, lblKnowledgeSkills.MinimumSize.Height);
+            lblKnoKarma.Margin = new Padding(
+                Math.Max(0, lblKnoSp.Margin.Left + intRatingLabelWidth - lblKnoSp.Width),
+                lblKnoKarma.Margin.Top,
+                lblKnoKarma.Margin.Right,
+                lblKnoKarma.Margin.Bottom);
+            lblKnoBwk.Margin = new Padding(
+                lblKnoBwk.Margin.Left,
+                lblKnoBwk.Margin.Top,
+                Math.Max(0, lblKnoBwk.Margin.Left + intRightButtonsWidth + SystemInformation.VerticalScrollBarWidth - lblKnoBwk.PreferredWidth / 2),
+                lblKnoBwk.Margin.Bottom);
         }
 
         private void SkillGroupsOnListChanged(object sender, ListChangedEventArgs e)

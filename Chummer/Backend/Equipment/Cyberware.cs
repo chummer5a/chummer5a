@@ -8949,7 +8949,7 @@ namespace Chummer.Backend.Equipment
         }
 
         public void SetupChildrenCyberwareCollectionChanged(bool blnAdd, TreeView treCyberware,
-            ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
+            ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null, AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null)
         {
             if (blnAdd)
             {

@@ -32,7 +32,7 @@ namespace Chummer.UI.Shared
         private Character _objCharacter;
         private readonly CancellationToken _objMyToken;
 
-        public event EventHandler MakeDirty;
+        public event PropertyChangedAsyncEventHandler MakeDirty;
 
         public LimitTabUserControl(CancellationToken objMyToken = default)
         {
@@ -215,7 +215,8 @@ namespace Chummer.UI.Shared
                                 objSelectedNode.ForeColor = objImprovement.PreferredColor;
                                 objSelectedNode.ToolTipText = strTooltip;
                             }, token: _objMyToken).ConfigureAwait(false);
-                            MakeDirty?.Invoke(this, EventArgs.Empty);
+                            if (MakeDirty != null)
+                                await MakeDirty.Invoke(this, default, _objMyToken).ConfigureAwait(false);
                         }, token: _objMyToken).ConfigureAwait(false);
 
                         break;
@@ -273,7 +274,8 @@ namespace Chummer.UI.Shared
                 treNode.ForeColor = objNotes.PreferredColor;
                 treNode.ToolTipText = objNotes.Notes.WordWrap();
             }
-            MakeDirty?.Invoke(this, EventArgs.Empty);
+            if (MakeDirty != null)
+                await MakeDirty.Invoke(this, default, token).ConfigureAwait(false);
         }
 
         /// <summary>

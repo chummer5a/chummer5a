@@ -33,7 +33,7 @@ namespace Chummer
 
     public static class InternalId
     {
-        public static async Task RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treGear == null)
                 return;
@@ -182,7 +182,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treCyberware == null)
                 return;
@@ -302,7 +302,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treWeapons == null)
                 return;
@@ -424,7 +424,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treWeapons == null)
                 return;
@@ -568,7 +568,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (treVehicles == null || e == null)
                 return;
@@ -736,7 +736,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (treVehicles == null || e == null)
                 return;

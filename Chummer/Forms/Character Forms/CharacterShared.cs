@@ -123,9 +123,10 @@ namespace Chummer
         {
             try
             {
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken).ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: GenericToken).ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken).ConfigureAwait(false);
+                string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken).ConfigureAwait(false) + '|' +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: GenericToken).ConfigureAwait(false) + '|' +
+                                   await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(() => dlgSaveFile.Filter = strFilter, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -7475,27 +7476,41 @@ namespace Chummer
             }
         }
 
-        public async void DeleteSustainedObject(object sender, EventArgs e)
+        public async Task DeleteSustainedObject(object sender, EventArgs e, CancellationToken token = default)
         {
+            if (!(sender is SustainedObjectControl objSender))
+                return;
+            token.ThrowIfCancellationRequested();
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
+            {
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
+            }
+
             try
             {
-                if (sender is SustainedObjectControl objSender)
-                {
-                    SustainedObject objSustainedObject = objSender.LinkedSustainedObject;
+                token.ThrowIfCancellationRequested();
+                SustainedObject objSustainedObject = objSender.LinkedSustainedObject;
 
-                    if (!await CommonFunctions.ConfirmDeleteAsync(
-                            string.Format(
-                                await LanguageManager.GetStringAsync("Message_DeleteSustainedSpell",
-                                                                     token: GenericToken).ConfigureAwait(false),
-                                await objSustainedObject.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
-                        return;
+                if (!await CommonFunctions.ConfirmDeleteAsync(
+                        string.Format(
+                            await LanguageManager.GetStringAsync("Message_DeleteSustainedSpell",
+                                token: GenericToken).ConfigureAwait(false),
+                            await objSustainedObject.GetCurrentDisplayNameAsync(GenericToken)
+                                .ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
+                    return;
 
-                    await CharacterObject.SustainedCollection.RemoveAsync(objSustainedObject, GenericToken).ConfigureAwait(false);
-                }
+                await CharacterObject.SustainedCollection.RemoveAsync(objSustainedObject, GenericToken)
+                    .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objNewSource?.Dispose();
             }
         }
 
@@ -7953,31 +7968,64 @@ namespace Chummer
 
         protected async Task AddContact(CancellationToken token = default)
         {
-            Contact objContact = new Contact(CharacterObject)
+            token.ThrowIfCancellationRequested();
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
             {
-                EntityType = ContactType.Contact
-            };
-            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
-        }
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
+            }
 
-        protected async void DeleteContact(object sender, EventArgs e)
-        {
             try
             {
-                if (!(sender is ContactControl objSender))
-                    return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                Contact objContact = new Contact(CharacterObject)
+                {
+                    EntityType = ContactType.Contact
+                };
+                await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                objNewSource?.Dispose();
+            }
+        }
+
+        protected async Task DeleteContact(object sender, EventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!(sender is ContactControl objSender))
+                return;
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
+            {
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
+            }
+
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteContact", token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
-                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
-                await SetDirty(true, GenericToken).ConfigureAwait(false);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
+                    .ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objNewSource?.Dispose();
             }
         }
 
@@ -7987,32 +8035,61 @@ namespace Chummer
 
         protected async Task AddPet(CancellationToken token = default)
         {
-            Contact objContact = new Contact(CharacterObject)
+            token.ThrowIfCancellationRequested();
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
             {
-                EntityType = ContactType.Pet
-            };
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
+            }
 
-            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
-        }
-
-        protected async void DeletePet(object sender, EventArgs e)
-        {
             try
             {
-                if (!(sender is PetControl objSender))
-                    return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                Contact objContact = new Contact(CharacterObject)
+                {
+                    EntityType = ContactType.Pet
+                };
+
+                await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                objNewSource?.Dispose();
+            }
+        }
+
+        protected async Task DeletePet(object sender, EventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!(sender is PetControl objSender))
+                return;
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
+            {
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
+            }
+
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: token).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
-                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
-                await SetDirty(true, GenericToken).ConfigureAwait(false);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token).ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objNewSource?.Dispose();
             }
         }
 
@@ -8022,33 +8099,66 @@ namespace Chummer
 
         protected async Task AddEnemy(CancellationToken token = default)
         {
-            // Handle the ConnectionRatingChanged Event for the ContactControl object.
-            Contact objContact = new Contact(CharacterObject)
+            token.ThrowIfCancellationRequested();
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
             {
-                EntityType = ContactType.Enemy
-            };
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
+            }
 
-            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
-        }
-
-        protected async void DeleteEnemy(object sender, EventArgs e)
-        {
             try
             {
-                if (!(sender is ContactControl objSender))
-                    return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                // Handle the ConnectionRatingChanged Event for the ContactControl object.
+                Contact objContact = new Contact(CharacterObject)
+                {
+                    EntityType = ContactType.Enemy
+                };
+
+                await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                objNewSource?.Dispose();
+            }
+        }
+
+        protected async Task DeleteEnemy(object sender, EventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!(sender is ContactControl objSender))
+                return;
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
+            {
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
+            }
+
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken)
+                                .ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken)
+                    .ConfigureAwait(false);
                 await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
                 await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objNewSource?.Dispose();
             }
         }
 
@@ -8492,43 +8602,68 @@ namespace Chummer
 
         protected async Task AddSprite(CancellationToken token = default)
         {
-            // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
-            if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
-                await CharacterObject.Spirits
-                    .CountAsync(
-                        async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite &&
-                                   x.Bound && !x.Fettered, token).ConfigureAwait(false) >=
-                CharacterObject.RegisteredSpriteLimit)
+            token.ThrowIfCancellationRequested();
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
             {
-                Program.ShowScrollableMessageBox(
-                    this,
-                    string.Format(GlobalSettings.CultureInfo,
-                        await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token)
-                            .ConfigureAwait(false),
-                        CharacterObject.Settings.RegisteredSpriteExpression,
-                        CharacterObject.RegisteredSpriteLimit),
-                    await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token)
-                        .ConfigureAwait(false),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
             }
 
-            Spirit objSprite = new Spirit(CharacterObject)
-            {
-                EntityType = SpiritType.Sprite,
-                Force = await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false)
-            };
-            await CharacterObject.Spirits.AddAsync(objSprite, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
-        }
-
-        protected async void DeleteSpirit(object sender, EventArgs e)
-        {
             try
             {
-                if (!(sender is SpiritControl objSender))
+                token.ThrowIfCancellationRequested();
+                // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
+                if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
+                    await CharacterObject.Spirits
+                        .CountAsync(
+                            async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite &&
+                                       x.Bound && !x.Fettered, token).ConfigureAwait(false) >=
+                    CharacterObject.RegisteredSpriteLimit)
+                {
+                    Program.ShowScrollableMessageBox(
+                        this,
+                        string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token)
+                                .ConfigureAwait(false),
+                            CharacterObject.Settings.RegisteredSpriteExpression,
+                            CharacterObject.RegisteredSpriteLimit),
+                        await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
+                }
+
+                Spirit objSprite = new Spirit(CharacterObject)
+                {
+                    EntityType = SpiritType.Sprite,
+                    Force = await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false)
+                };
+                await CharacterObject.Spirits.AddAsync(objSprite, token: token).ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                objNewSource?.Dispose();
+            }
+        }
+
+        protected async Task DeleteSpirit(object sender, EventArgs e, CancellationToken token = default)
+        {
+            if (!(sender is SpiritControl objSender))
+                return;
+            token.ThrowIfCancellationRequested();
+            CancellationTokenSource objNewSource = null;
+            if (token != GenericToken)
+            {
+                objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objNewSource.Token;
+            }
+
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 Spirit objSpirit = objSender.SpiritObject;
                 bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(GenericToken).ConfigureAwait(false) ==
                                    SpiritType.Spirit;
@@ -8547,6 +8682,10 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objNewSource?.Dispose();
             }
         }
 
@@ -8912,25 +9051,12 @@ namespace Chummer
             }
         }
 
-        public async Task MakeDirtyWithCharacterUpdate(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task MakeDirtyWithCharacterUpdate(object sender, EventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RequestCharacterUpdate(token).ConfigureAwait(false);
                 await SetDirty(true, token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
-        public async void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
-        {
-            try
-            {
-                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
-                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8971,23 +9097,11 @@ namespace Chummer
             }
         }
 
-        public async Task MakeDirty(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task MakeDirty(object sender, EventArgs e, CancellationToken token = default)
         {
             try
             {
                 await SetDirty(true, token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
-        public async void MakeDirty(object sender, EventArgs e)
-        {
-            try
-            {
-                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

@@ -38,9 +38,9 @@ namespace Chummer
         private bool _blnLoading = true;
 
         // Events.
-        public event EventHandler ContactDetailChanged;
+        public event EventHandlerExtensions.SafeAsyncEventHandler ContactDetailChanged;
 
-        public event EventHandler DeleteSpirit;
+        public event EventHandlerExtensions.SafeAsyncEventHandler DeleteSpirit;
 
         #region Control Events
 
@@ -157,55 +157,112 @@ namespace Chummer
             }
         }
 
-        private void chkFettered_CheckedChanged(object sender, EventArgs e)
+        private async void chkFettered_CheckedChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the Checkbox's Checked status changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, e);
+            if (_blnLoading || ContactDetailChanged == null)
+                return;
+            try
+            {
+                await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        private void nudServices_ValueChanged(object sender, EventArgs e)
+        private async void nudServices_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, e);
+            if (_blnLoading || ContactDetailChanged == null)
+                return;
+            try
+            {
+                await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteSpirit Event when the user has confirmed their desire to delete the Spirit.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteSpirit?.Invoke(this, e);
+            if (_blnLoading || DeleteSpirit == null)
+                return;
+            try
+            {
+                await DeleteSpirit.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        private void nudForce_ValueChanged(object sender, EventArgs e)
+        private async void nudForce_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, e);
+            if (_blnLoading || ContactDetailChanged == null)
+                return;
+            try
+            {
+                await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        private void chkBound_CheckedChanged(object sender, EventArgs e)
+        private async void chkBound_CheckedChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the Checkbox's Checked status changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, e);
+            if (_blnLoading || ContactDetailChanged == null)
+                return;
+            try
+            {
+                await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        private void cboSpiritName_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSpiritName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, e);
+            if (_blnLoading || ContactDetailChanged == null)
+                return;
+            try
+            {
+                await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        private void txtCritterName_TextChanged(object sender, EventArgs e)
+        private async void txtCritterName_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, e);
+            if (_blnLoading || ContactDetailChanged == null)
+                return;
+            try
+            {
+                await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private async void tsContactOpen_Click(object sender, EventArgs e)
@@ -307,7 +364,8 @@ namespace Chummer
                     Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                     _objSpirit.RelativeFileName = "../" + uriRelative;
 
-                    ContactDetailChanged?.Invoke(this, e);
+                    if (ContactDetailChanged != null)
+                        await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -357,7 +415,8 @@ namespace Chummer
                             : "Tip_Sprite_OpenFile", token: _objMyToken)
                     .ConfigureAwait(false);
                 await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
-                ContactDetailChanged?.Invoke(this, e);
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -431,7 +490,8 @@ namespace Chummer
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
 
-                ContactDetailChanged?.Invoke(this, e);
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -757,7 +817,8 @@ namespace Chummer
                     string strText = await LanguageManager.GetStringAsync(
                         _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", token: token).ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, token).ConfigureAwait(false);
-                    ContactDetailChanged?.Invoke(this, EventArgs.Empty);
+                    if (ContactDetailChanged != null)
+                        await ContactDetailChanged.Invoke(this, EventArgs.Empty, _objMyToken).ConfigureAwait(false);
 
                     await Program.OpenCharacter(objCharacter, token: token).ConfigureAwait(false);
                 }

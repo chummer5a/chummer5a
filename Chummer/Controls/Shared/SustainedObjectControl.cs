@@ -28,9 +28,9 @@ namespace Chummer
         private bool _blnLoading = true;
 
         //Events
-        public event EventHandler SustainedObjectDetailChanged;
+        public event EventHandlerExtensions.SafeAsyncEventHandler SustainedObjectDetailChanged;
 
-        public event EventHandler UnsustainObject;
+        public event EventHandlerExtensions.SafeAsyncEventHandler UnsustainObject;
 
         public SustainedObjectControl(SustainedObject objLinkedSustainedObject)
         {
@@ -71,20 +71,40 @@ namespace Chummer
             }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             // Raise the UnsustainSpell Event when the user has confirmed their desire to Unsustain a Spell
-            // The entire SustainedSpellControll is passed as an argument so the handling event can evaluate its contents.
-            UnsustainObject?.Invoke(this, e);
+            // The entire SustainedSpellControl is passed as an argument so the handling event can evaluate its contents.
+            if (UnsustainObject != null)
+            {
+                try
+                {
+                    await UnsustainObject.Invoke(this, e).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
+            }
         }
 
-        private void SustainedObject_ControlStateChanged(object sender, EventArgs e)
+        private async void SustainedObject_ControlStateChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            SustainedObjectDetailChanged?.Invoke(this, e);
+            if (SustainedObjectDetailChanged != null)
+            {
+                try
+                {
+                    await SustainedObjectDetailChanged.Invoke(this, e).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
+            }
         }
 
         #region Properties
