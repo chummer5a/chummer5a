@@ -1007,7 +1007,7 @@ namespace Chummer
                                 }
                                 else if (setUniqueNames.Contains("precedence1"))
                                 {
-                                    // Retrieve all of the items that are precedence1 and nothing else.
+                                    // Retrieve all the items that are precedence1 and nothing else.
                                     decimal decHighest = 0;
                                     foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                                     {
@@ -1896,7 +1896,7 @@ namespace Chummer
         #region Improvement System
 
         /// <summary>
-        /// Create all of the Improvements for an XML Node.
+        /// Create all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
@@ -1917,7 +1917,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Create all of the Improvements for an XML Node.
+        /// Create all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
@@ -1940,7 +1940,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Create all of the Improvements for an XML Node.
+        /// Create all the Improvements for an XML Node.
         /// Uses flag hack method design outlined here to avoid locking:
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
@@ -3798,7 +3798,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
@@ -3819,7 +3819,7 @@ namespace Chummer
             List<Improvement> objImprovementList;
             using (objCharacter.LockObject.EnterReadLock(token))
             {
-                // A List of Improvements to hold all of the items that will eventually be deleted.
+                // A List of Improvements to hold all the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
                     ? objCharacter.Improvements.Where(objImprovement =>
                                                           objImprovement.ImproveSource == objImprovementSource)
@@ -3846,7 +3846,186 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="lstImprovementSources">Types of object that granted these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static decimal RemoveImprovements(Character objCharacter,
+            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            string strSourceName = "", CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
+                      + lstImprovementSources + Environment.NewLine + "strSourceName = " + strSourceName);
+            List<Improvement> objImprovementList;
+            using (objCharacter.LockObject.EnterReadLock(token))
+            {
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                objImprovementList = (string.IsNullOrEmpty(strSourceName)
+                    ? objCharacter.Improvements.Where(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource))
+                    : objCharacter.Improvements.Where(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                        objImprovement.SourceName == strSourceName)).ToList();
+
+                // Compatibility fix for when blnConcatSelectedValue was around
+                if (strSourceName.IsGuid())
+                {
+                    string strSourceNameSpaced =
+                        strSourceName + LanguageManager.GetString("String_Space", token: token);
+                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    objImprovementList.AddRange(objCharacter.Improvements.Where(
+                        objImprovement =>
+                            lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                            (objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpaced, StringComparison.Ordinal)
+                             || objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                }
+            }
+
+            return RemoveImprovements(objCharacter, objImprovementList, token: token);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
+        /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static decimal RemoveImprovements(Character objCharacter,
+            Improvement.ImprovementSource objImprovementSource,
+            ICollection<string> lstSourceNames, CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
+                      + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
+            List<Improvement> objImprovementList;
+            using (objCharacter.LockObject.EnterReadLock(token))
+            {
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                {
+                    objImprovementList = objCharacter.Improvements
+                        .Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList();
+                }
+                else if (lstSourceNames.Any(x => x.IsGuid()))
+                {
+                    // Compatibility fix for when blnConcatSelectedValue was around
+                    HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
+                    foreach (string strSourceName in lstSourceNames)
+                    {
+                        if (!strSourceName.IsGuid())
+                            continue;
+                        setSpacedSourceNames.Add(
+                            strSourceName + LanguageManager.GetString("String_Space", token: token));
+                        setSpacedSourceNames.Add(
+                            strSourceName + ' ');
+                    }
+
+                    objImprovementList = new List<Improvement>();
+                    foreach (Improvement objImprovement in objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveSource != objImprovementSource)
+                            continue;
+                        if (lstSourceNames.Contains(objImprovement.SourceName) || setSpacedSourceNames.Any(x =>
+                                objImprovement.SourceName.StartsWith(x, StringComparison.Ordinal)))
+                        {
+                            objImprovementList.Add(objImprovement);
+                        }
+                    }
+                }
+                else
+                {
+                    objImprovementList = objCharacter.Improvements.Where(objImprovement =>
+                        objImprovement.ImproveSource == objImprovementSource &&
+                        lstSourceNames.Contains(objImprovement.SourceName)).ToList();
+                }
+            }
+
+            return RemoveImprovements(objCharacter, objImprovementList, token: token);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="lstImprovementSources">Types of object that granted these Improvements.</param>
+        /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static decimal RemoveImprovements(Character objCharacter,
+            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            ICollection<string> lstSourceNames, CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
+                      + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
+            List<Improvement> objImprovementList;
+            using (objCharacter.LockObject.EnterReadLock(token))
+            {
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                {
+                    objImprovementList = objCharacter.Improvements
+                        .Where(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource)).ToList();
+                }
+                else if (lstSourceNames.Any(x => x.IsGuid()))
+                {
+                    // Compatibility fix for when blnConcatSelectedValue was around
+                    HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
+                    foreach (string strSourceName in lstSourceNames)
+                    {
+                        if (!strSourceName.IsGuid())
+                            continue;
+                        setSpacedSourceNames.Add(
+                            strSourceName + LanguageManager.GetString("String_Space", token: token));
+                        setSpacedSourceNames.Add(
+                            strSourceName + ' ');
+                    }
+
+                    objImprovementList = new List<Improvement>();
+                    foreach (Improvement objImprovement in objCharacter.Improvements)
+                    {
+                        if (!lstImprovementSources.Contains(objImprovement.ImproveSource))
+                            continue;
+                        if (lstSourceNames.Contains(objImprovement.SourceName) || setSpacedSourceNames.Any(x =>
+                                objImprovement.SourceName.StartsWith(x, StringComparison.Ordinal)))
+                        {
+                            objImprovementList.Add(objImprovement);
+                        }
+                    }
+                }
+                else
+                {
+                    objImprovementList = objCharacter.Improvements.Where(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                        lstSourceNames.Contains(objImprovement.SourceName)).ToList();
+                }
+            }
+
+            return RemoveImprovements(objCharacter, objImprovementList, token: token);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
@@ -3868,7 +4047,7 @@ namespace Chummer
             using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // A List of Improvements to hold all of the items that will eventually be deleted.
+                // A List of Improvements to hold all the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
                     ? objCharacter.Improvements.Where(objImprovement =>
                                                           objImprovement.ImproveSource == objImprovementSource)
@@ -3895,7 +4074,194 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="lstImprovementSources">Types of object that granted these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
+            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            string strSourceName = "", CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
+                      + lstImprovementSources + Environment.NewLine + "strSourceName = " + strSourceName);
+            List<Improvement> objImprovementList;
+            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                objImprovementList = await (string.IsNullOrEmpty(strSourceName)
+                    ? objCharacter.Improvements.ToListAsync(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource), token: token)
+                    : objCharacter.Improvements.ToListAsync(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                        objImprovement.SourceName == strSourceName, token: token)).ConfigureAwait(false);
+
+                // Compatibility fix for when blnConcatSelectedValue was around
+                if (strSourceName.IsGuid())
+                {
+                    string strSourceNameSpaced = strSourceName +
+                                                 await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                     .ConfigureAwait(false);
+                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    objImprovementList.AddRange(objCharacter.Improvements.Where(
+                        objImprovement =>
+                            lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                            (objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpaced, StringComparison.Ordinal)
+                             || objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                }
+            }
+
+            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
+        /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
+            Improvement.ImprovementSource objImprovementSource,
+            ICollection<string> lstSourceNames, CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
+                      + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
+            List<Improvement> objImprovementList;
+            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                {
+                    objImprovementList = await objCharacter.Improvements
+                        .ToListAsync(objImprovement => objImprovement.ImproveSource == objImprovementSource,
+                            token: token).ConfigureAwait(false);
+                }
+                else if (lstSourceNames.Any(x => x.IsGuid()))
+                {
+                    // Compatibility fix for when blnConcatSelectedValue was around
+                    HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
+                    foreach (string strSourceName in lstSourceNames)
+                    {
+                        if (!strSourceName.IsGuid())
+                            continue;
+                        setSpacedSourceNames.Add(
+                            strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                .ConfigureAwait(false));
+                        setSpacedSourceNames.Add(
+                            strSourceName + ' ');
+                    }
+
+                    objImprovementList = new List<Improvement>();
+                    await objCharacter.Improvements.ForEachAsync(objImprovement =>
+                    {
+                        if (objImprovement.ImproveSource != objImprovementSource)
+                            return;
+                        if (lstSourceNames.Contains(objImprovement.SourceName) || setSpacedSourceNames.Any(x =>
+                                objImprovement.SourceName.StartsWith(x, StringComparison.Ordinal)))
+                        {
+                            objImprovementList.Add(objImprovement);
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    objImprovementList = await objCharacter.Improvements.ToListAsync(objImprovement =>
+                        objImprovement.ImproveSource == objImprovementSource &&
+                        lstSourceNames.Contains(objImprovement.SourceName), token: token).ConfigureAwait(false);
+                }
+            }
+
+            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="lstImprovementSources">Types of object that granted these Improvements.</param>
+        /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
+            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            ICollection<string> lstSourceNames, CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
+                      + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
+            List<Improvement> objImprovementList;
+            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                {
+                    objImprovementList = await objCharacter.Improvements
+                        .ToListAsync(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource),
+                            token: token).ConfigureAwait(false);
+                }
+                else if (lstSourceNames.Any(x => x.IsGuid()))
+                {
+                    // Compatibility fix for when blnConcatSelectedValue was around
+                    HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
+                    foreach (string strSourceName in lstSourceNames)
+                    {
+                        if (!strSourceName.IsGuid())
+                            continue;
+                        setSpacedSourceNames.Add(
+                            strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                .ConfigureAwait(false));
+                        setSpacedSourceNames.Add(
+                            strSourceName + ' ');
+                    }
+
+                    objImprovementList = new List<Improvement>();
+                    await objCharacter.Improvements.ForEachAsync(objImprovement =>
+                    {
+                        if (!lstImprovementSources.Contains(objImprovement.ImproveSource))
+                            return;
+                        if (lstSourceNames.Contains(objImprovement.SourceName) || setSpacedSourceNames.Any(x =>
+                                objImprovement.SourceName.StartsWith(x, StringComparison.Ordinal)))
+                        {
+                            objImprovementList.Add(objImprovement);
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    objImprovementList = await objCharacter.Improvements.ToListAsync(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                        lstSourceNames.Contains(objImprovement.SourceName), token: token).ConfigureAwait(false);
+                }
+            }
+
+            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementList">List of improvements to delete.</param>
@@ -3911,7 +4277,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementList">List of improvements to delete.</param>
@@ -3927,7 +4293,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
         /// Uses flag hack method design outlined here to avoid locking:
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
@@ -3964,7 +4330,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
 
-                // Now that we have all of the applicable Improvements, remove them from the character.
+                // Now that we have all the applicable Improvements, remove them from the character.
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Remove the Improvement.
@@ -5037,12 +5403,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Clear all of the Improvements from the Transaction List.
+        /// Clear all the Improvements from the Transaction List.
         /// </summary>
         public static void Commit(Character objCharacter)
         {
             Log.Debug("Commit");
-            // Clear all of the Improvements from the Transaction List.
+            // Clear all the Improvements from the Transaction List.
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
                 lstTransactions.ProcessRelevantEvents();
@@ -5052,25 +5418,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Rollback all of the Improvements from the Transaction List.
+        /// Rollback all the Improvements from the Transaction List.
         /// </summary>
         public static void Rollback(Character objCharacter, CancellationToken token = default)
         {
             Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
-                using (objCharacter.LockObject.EnterWriteLock(token))
-                {
-                    // Remove all of the Improvements that were added.
-                    foreach (Improvement objTransactingImprovement in lstTransactions)
-                    {
-                        RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource,
-                                           objTransactingImprovement.SourceName, token);
-                        ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType,
-                                         objTransactingImprovement.ImprovedName, token);
-                    }
-                }
-
+                // Remove all the Improvements that were added.
+                RemoveImprovements(objCharacter, lstTransactions, token: token);
                 lstTransactions.Clear();
             }
 
@@ -5078,31 +5434,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Rollback all of the Improvements from the Transaction List.
+        /// Rollback all the Improvements from the Transaction List.
         /// </summary>
         public static async Task RollbackAsync(Character objCharacter, CancellationToken token = default)
         {
             Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
-                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    // Remove all of the Improvements that were added.
-                    foreach (Improvement objTransactingImprovement in lstTransactions)
-                    {
-                        await RemoveImprovementsAsync(objCharacter, objTransactingImprovement.ImproveSource,
-                                                      objTransactingImprovement.SourceName, token).ConfigureAwait(false);
-                        ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType,
-                            objTransactingImprovement.ImprovedName, token);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-
+                // Remove all the Improvements that were added.
+                await RemoveImprovementsAsync(objCharacter, lstTransactions, token: token).ConfigureAwait(false);
                 lstTransactions.Clear();
             }
 

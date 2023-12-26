@@ -7682,21 +7682,13 @@ namespace Chummer
                                             {
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId, token: token);
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId + "Pair", token: token);
+                                                    new[] { objCyberware.InternalId, objCyberware.InternalId + "Pair"}, token: token);
                                             }
                                             else
                                             {
                                                 await ImprovementManager.RemoveImprovementsAsync(
                                                     this, objCyberware.SourceType,
-                                                    objCyberware.InternalId, token: token).ConfigureAwait(false);
-                                                await ImprovementManager.RemoveImprovementsAsync(
-                                                                            this, objCyberware.SourceType,
-                                                                            objCyberware.InternalId + "Pair",
-                                                                            token: token)
-                                                                        .ConfigureAwait(false);
+                                                    new[] { objCyberware.InternalId, objCyberware.InternalId + "Pair" }, token: token).ConfigureAwait(false);
                                             }
 
                                             objCyberware.Bonus = objNode["bonus"];
@@ -7807,9 +7799,7 @@ namespace Chummer
                                                 if (objNode != null)
                                                 {
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                        objCyberware.InternalId, token: token);
-                                                    ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                        objCyberware.InternalId + "Pair", token: token);
+                                                        new[] { objCyberware.InternalId, objCyberware.InternalId + "Pair" }, token: token);
 
                                                     objCyberware.Bonus = objNode["bonus"];
                                                     objCyberware.WirelessBonus = objNode["wirelessbonus"];
@@ -7884,12 +7874,11 @@ namespace Chummer
                                                 {
                                                     await ImprovementManager.RemoveImprovementsAsync(
                                                         this, objCyberware.SourceType,
-                                                        objCyberware.InternalId, token: token).ConfigureAwait(false);
-                                                    await ImprovementManager.RemoveImprovementsAsync(
-                                                                                this, objCyberware.SourceType,
-                                                                                objCyberware.InternalId + "Pair",
-                                                                                token: token)
-                                                                            .ConfigureAwait(false);
+                                                        new[]
+                                                        {
+                                                            objCyberware.InternalId,
+                                                            objCyberware.InternalId + "Pair"
+                                                        }, token: token).ConfigureAwait(false);
                                                     objCyberware.Bonus = objNode["bonus"];
                                                     objCyberware.WirelessBonus = objNode["wirelessbonus"];
                                                     objCyberware.PairBonus = objNode["pairbonus"];
@@ -34892,11 +34881,13 @@ namespace Chummer
                             : Improvement.ImprovementSource.EssenceLossChargen;
                         using (LockObject.EnterWriteLock(token))
                         {
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss, token: token);
-                            ImprovementManager.RemoveImprovements(
-                                this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
-                            // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CyberadeptDaemon, token: token);
+                            ImprovementManager.RemoveImprovements(this, new[]
+                            {
+                                Improvement.ImprovementSource.EssenceLossChargen,
+                                Improvement.ImprovementSource.EssenceLoss,
+                                // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
+                                Improvement.ImprovementSource.CyberadeptDaemon
+                            }, token: token);
                             try
                             {
                                 token.ThrowIfCancellationRequested();
@@ -35378,30 +35369,32 @@ namespace Chummer
 
                         using (LockObject.EnterWriteLock(token))
                         {
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss, token: token);
-                            ImprovementManager.RemoveImprovements(
-                                this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
-
-                            if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0
-                                                        || intMAGAdeptMinimumReduction != 0)
+                            ImprovementManager.RemoveImprovements(this, new[]
                             {
-                                ImprovementManager.CreateImprovement(this, "MAG",
-                                                                     Improvement.ImprovementSource.EssenceLossChargen,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0, 1, -intMAGMinimumReduction,
-                                                                     -intMagMaxReduction, token: token);
-                                ImprovementManager.CreateImprovement(this, "MAGAdept",
-                                                                     Improvement.ImprovementSource.EssenceLossChargen,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0, 1, -intMAGAdeptMinimumReduction,
-                                                                     -intMagMaxReduction, token: token);
-                            }
+                                Improvement.ImprovementSource.EssenceLossChargen,
+                                Improvement.ImprovementSource.EssenceLoss
+                            }, token: token);
 
                             try
                             {
                                 token.ThrowIfCancellationRequested();
+                                if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0
+                                                            || intMAGAdeptMinimumReduction != 0)
+                                {
+                                    ImprovementManager.CreateImprovement(this, "MAG",
+                                        Improvement.ImprovementSource.EssenceLossChargen,
+                                        string.Empty,
+                                        Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0, 1, -intMAGMinimumReduction,
+                                        -intMagMaxReduction, token: token);
+                                    ImprovementManager.CreateImprovement(this, "MAGAdept",
+                                        Improvement.ImprovementSource.EssenceLossChargen,
+                                        string.Empty,
+                                        Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0, 1, -intMAGAdeptMinimumReduction,
+                                        -intMagMaxReduction, token: token);
+                                }
+
                                 if (intResMaxReduction != 0 || intRESMinimumReduction != 0)
                                 {
                                     ImprovementManager.CreateImprovement(this, "RES",
@@ -35523,24 +35516,13 @@ namespace Chummer
                 // Otherwise any essence loss improvements that might have been left need to be deleted (e.g. character is in create mode and had access to special attributes, but that access was removed)
                 else
                 {
-                    using (LockObject.EnterWriteLock(token))
-                    {
-                        try
+                    ImprovementManager.RemoveImprovements(
+                        this,
+                        new[]
                         {
-                            token.ThrowIfCancellationRequested();
-                            ImprovementManager.RemoveImprovements(
-                                this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss,
-                                                                  token: token);
-                        }
-                        catch
-                        {
-                            ImprovementManager.Rollback(this, CancellationToken.None);
-                            throw;
-                        }
-
-                        ImprovementManager.Commit(this);
-                    }
+                            Improvement.ImprovementSource.EssenceLossChargen,
+                            Improvement.ImprovementSource.EssenceLoss
+                        }, token: token);
                 }
 
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
@@ -35696,16 +35678,13 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             await ImprovementManager.RemoveImprovementsAsync(
-                                    this, Improvement.ImprovementSource.EssenceLoss,
-                                    token: token)
-                                .ConfigureAwait(false);
-                            await ImprovementManager.RemoveImprovementsAsync(
-                                    this, Improvement.ImprovementSource.EssenceLossChargen,
-                                    token: token)
-                                .ConfigureAwait(false);
-                            // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
-                            await ImprovementManager.RemoveImprovementsAsync(
-                                    this, Improvement.ImprovementSource.CyberadeptDaemon,
+                                    this, new[]
+                                    {
+                                        Improvement.ImprovementSource.EssenceLossChargen,
+                                        Improvement.ImprovementSource.EssenceLoss,
+                                        // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
+                                        Improvement.ImprovementSource.CyberadeptDaemon
+                                    },
                                     token: token)
                                 .ConfigureAwait(false);
 
@@ -36298,11 +36277,11 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             await ImprovementManager.RemoveImprovementsAsync(
-                                    this, Improvement.ImprovementSource.EssenceLoss,
-                                    token: token)
-                                .ConfigureAwait(false);
-                            await ImprovementManager.RemoveImprovementsAsync(
-                                    this, Improvement.ImprovementSource.EssenceLossChargen,
+                                    this, new[]
+                                    {
+                                        Improvement.ImprovementSource.EssenceLossChargen,
+                                        Improvement.ImprovementSource.EssenceLoss
+                                    },
                                     token: token)
                                 .ConfigureAwait(false);
 
@@ -36469,34 +36448,14 @@ namespace Chummer
                 // Otherwise any essence loss improvements that might have been left need to be deleted (e.g. character is in create mode and had access to special attributes, but that access was removed)
                 else
                 {
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await ImprovementManager.RemoveImprovementsAsync(
-                                    this, Improvement.ImprovementSource.EssenceLossChargen,
-                                    token: token)
-                                .ConfigureAwait(false);
-                            await ImprovementManager
-                                .RemoveImprovementsAsync(this, Improvement.ImprovementSource.EssenceLoss,
-                                    token: token)
-                                .ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
-                            throw;
-                        }
-
-                        ImprovementManager.Commit(this);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    await ImprovementManager.RemoveImprovementsAsync(
+                            this, new[]
+                            {
+                                Improvement.ImprovementSource.EssenceLossChargen,
+                                Improvement.ImprovementSource.EssenceLoss
+                            },
+                            token: token)
+                        .ConfigureAwait(false);
                 }
 
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.

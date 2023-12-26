@@ -4430,7 +4430,10 @@ namespace Chummer.Backend.Equipment
 
                                 if (Bonus != null)
                                 {
-                                    ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
+                                    if (PairBonus != null)
+                                        ImprovementManager.RemoveImprovements(_objCharacter, SourceType, new[] { InternalId, InternalId + "Pair"});
+                                    else
+                                        ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
                                     ImprovementManager.CreateImprovements(_objCharacter, SourceType,
                                                                           InternalId, Bonus, Rating,
                                                                           CurrentDisplayNameShort);
@@ -4442,8 +4445,8 @@ namespace Chummer.Backend.Equipment
 
                                 if (PairBonus != null)
                                 {
-                                    ImprovementManager.RemoveImprovements(
-                                        _objCharacter, SourceType, InternalId + "Pair");
+                                    if (Bonus == null)
+                                        ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "Pair");
                                     // This cyberware should not be included in the count to make things easier.
                                     List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(
                                         x => x.Children,
@@ -8283,8 +8286,9 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                decReturn += ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
-                decReturn += ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "Pair");
+                decReturn += ImprovementManager.RemoveImprovements(_objCharacter, SourceType,
+                    new[] { InternalId, InternalId + "Pair", InternalId + "WirelessPair" });
+
                 if (PairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.
@@ -8334,8 +8338,6 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                decReturn += ImprovementManager.RemoveImprovements(_objCharacter, SourceType,
-                                                                   InternalId + "WirelessPair");
                 if (WirelessPairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.
@@ -8581,11 +8583,10 @@ namespace Chummer.Backend.Equipment
                 }
 
                 decReturn += await ImprovementManager
-                                   .RemoveImprovementsAsync(_objCharacter, SourceType, InternalId, token)
-                                   .ConfigureAwait(false);
-                decReturn += await ImprovementManager
-                                   .RemoveImprovementsAsync(_objCharacter, SourceType, InternalId + "Pair", token)
-                                   .ConfigureAwait(false);
+                    .RemoveImprovementsAsync(_objCharacter, SourceType,
+                        new[] { InternalId, InternalId + "Pair", InternalId + "WirelessPair" }, token)
+                    .ConfigureAwait(false);
+
                 if (PairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.
@@ -8644,10 +8645,6 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                decReturn += await ImprovementManager
-                                   .RemoveImprovementsAsync(_objCharacter, SourceType, InternalId + "WirelessPair",
-                                                            token)
-                                   .ConfigureAwait(false);
                 if (WirelessPairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.

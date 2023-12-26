@@ -11922,10 +11922,10 @@ namespace Chummer
                             == DialogResult.Cancel)
                         {
                             //And if it was, remove Improvements that was already added based on the lifestyle
-                            foreach (LifestyleQuality lifestyleQuality in objLifeStyle.LifestyleQualities)
-                                await ImprovementManager.RemoveImprovementsAsync(
+                            await ImprovementManager.RemoveImprovementsAsync(
                                     CharacterObject, Improvement.ImprovementSource.Quality,
-                                    lifestyleQuality.InternalId, GenericToken).ConfigureAwait(false);
+                                    objLifeStyle.LifestyleQualities.Select(x => x.InternalId).ToList(), GenericToken)
+                                .ConfigureAwait(false);
 
                             return;
                         }
