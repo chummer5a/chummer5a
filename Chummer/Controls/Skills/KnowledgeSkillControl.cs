@@ -182,6 +182,7 @@ namespace Chummer.UI.Skills
                         Name = "cboSpec",
                         TabStop = false
                     };
+                    cboSpec.TextChanged += cboSpec_TextChanged;
                     
                     chkKarma = new ColorableCheckBox
                     {
