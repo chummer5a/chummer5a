@@ -351,7 +351,7 @@ namespace Chummer.Controls.Shared
                     {
                         int intIndex = e.NewStartingIndex;
                         foreach (TType objNewItem in e.NewItems)
-                            _lstContentList.Insert(intIndex++, await this.DoThreadSafeFuncAsync(x => new ControlWithMetaData(objNewItem, x), token));
+                            _lstContentList.Insert(intIndex++, await this.DoThreadSafeFuncAsync(x => new ControlWithMetaData(objNewItem, x), token).ConfigureAwait(false));
                         _indexComparer.Reset(Contents);
                         lstToRedraw = _lstContentList.Skip(e.NewStartingIndex);
                         break;
@@ -361,7 +361,7 @@ namespace Chummer.Controls.Shared
                         int intIndex = e.OldStartingIndex;
                         foreach (TType _ in e.OldItems)
                         {
-                            await _lstContentList[intIndex].CleanupAsync(token);
+                            await _lstContentList[intIndex].CleanupAsync(token).ConfigureAwait(false);
                             _lstContentList.RemoveAt(intIndex);
                         }
                         _indexComparer.Reset(Contents);
@@ -373,11 +373,11 @@ namespace Chummer.Controls.Shared
                         int intIndex = e.OldStartingIndex;
                         foreach (TType _ in e.OldItems)
                         {
-                            await _lstContentList[intIndex].CleanupAsync(token);
+                            await _lstContentList[intIndex].CleanupAsync(token).ConfigureAwait(false);
                             _lstContentList.RemoveAt(intIndex);
                         }
                         foreach (TType objNewItem in e.NewItems)
-                            _lstContentList.Insert(intIndex++, await this.DoThreadSafeFuncAsync(x => new ControlWithMetaData(objNewItem, x), token));
+                            _lstContentList.Insert(intIndex++, await this.DoThreadSafeFuncAsync(x => new ControlWithMetaData(objNewItem, x), token).ConfigureAwait(false));
                         _indexComparer.Reset(Contents);
                         lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
                         break;
@@ -422,26 +422,26 @@ namespace Chummer.Controls.Shared
                 case NotifyCollectionChangedAction.Reset:
                     {
                         if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
-                            await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                            await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                         try
                         {
                             foreach (ControlWithMetaData objLoopControl in _lstContentList)
                             {
-                                await objLoopControl.CleanupAsync(token);
+                                await objLoopControl.CleanupAsync(token).ConfigureAwait(false);
                             }
 
                             _lstContentList.Clear();
                             foreach (TType objLoopTType in Contents)
                             {
-                                _lstContentList.Add(await this.DoThreadSafeFuncAsync(x => new ControlWithMetaData(objLoopTType, x, false), token));
+                                _lstContentList.Add(await this.DoThreadSafeFuncAsync(x => new ControlWithMetaData(objLoopTType, x, false), token).ConfigureAwait(false));
                             }
 
-                            await pnlDisplay.DoThreadSafeAsync(y => y.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray()), token);
+                            await pnlDisplay.DoThreadSafeAsync(y => y.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray()), token).ConfigureAwait(false);
                         }
                         finally
                         {
                             if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                                await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                                await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                         }
 
                         _indexComparer.Reset(Contents);

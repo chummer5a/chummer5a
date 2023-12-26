@@ -849,12 +849,12 @@ namespace Chummer
                 await lblSlots.DoThreadSafeAsync(x => x.Text = intSlots.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
                 await lblAvailability.DoThreadSafeAsync(x => x.Text = strAvailText, token).ConfigureAwait(false);
                 string strSource
-                    = xmlSelectedMount.SelectSingleNodeAndCacheExpression("source", token)?.Value ?? await LanguageManager
-                        .GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    = xmlSelectedMount.SelectSingleNodeAndCacheExpression("source", token)?.Value
+                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 string strPage
                     = xmlSelectedMount.SelectSingleNodeAndCacheExpression("altpage", token)?.Value
-                      ?? xmlSelectedMount.SelectSingleNodeAndCacheExpression("page", token)?.Value ?? await LanguageManager
-                          .GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                      ?? xmlSelectedMount.SelectSingleNodeAndCacheExpression("page", token)?.Value
+                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token).ConfigureAwait(false);
                 await objSourceString.SetControlAsync(lblSource, token).ConfigureAwait(false);
                 string strLoop5 = await lblCost.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);

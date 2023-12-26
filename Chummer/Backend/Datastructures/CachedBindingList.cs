@@ -775,7 +775,7 @@ namespace Chummer
 
         public async ValueTask DisposeAsync()
         {
-            await DisposeAsync(true);
+            await DisposeAsync(true).ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
     }

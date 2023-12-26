@@ -216,10 +216,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                return objNode != null
-                    ? objNode.SelectSingleNodeAndCacheExpression("translate", token)
-                        ?.Value ?? Name
-                    : Name;
+                return objNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
             }
         }
 

@@ -444,11 +444,11 @@ namespace Chummer.UI.Skills
                     using (CancellationTokenSource objNewSource = CancellationTokenSource.CreateLinkedTokenSource(token, MyToken))
                     {
                         token = objNewSource.Token;
-                        await MakeDirtyWithCharacterUpdate.Invoke(sender, e, token);
+                        await MakeDirtyWithCharacterUpdate.Invoke(sender, e, token).ConfigureAwait(false);
                     }
                 }
                 else
-                    await MakeDirtyWithCharacterUpdate.Invoke(sender, e, token);
+                    await MakeDirtyWithCharacterUpdate.Invoke(sender, e, token).ConfigureAwait(false);
             }
         }
 

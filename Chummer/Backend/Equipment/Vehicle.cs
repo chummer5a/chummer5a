@@ -1115,24 +1115,24 @@ namespace Chummer.Backend.Equipment
                           : string.Empty, token).ConfigureAwait(false);
 
             await objWriter
-                  .WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture), token)
+                  .WriteElementStringAsync("attack", (await this.GetTotalMatrixAttributeAsync("Attack", token).ConfigureAwait(false)).ToString(objCulture), token)
                   .ConfigureAwait(false);
             await objWriter
-                  .WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture), token)
+                  .WriteElementStringAsync("sleaze", (await this.GetTotalMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false)).ToString(objCulture), token)
                   .ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("dataprocessing",
-                                                    this.GetTotalMatrixAttribute("Data Processing")
+                                                    (await this.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false))
                                                         .ToString(objCulture), token).ConfigureAwait(false);
             await objWriter
-                  .WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture),
+                  .WriteElementStringAsync("firewall", (await this.GetTotalMatrixAttributeAsync("Firewall", token).ConfigureAwait(false)).ToString(objCulture),
                                            token).ConfigureAwait(false);
             await objWriter
                   .WriteElementStringAsync("devicerating",
-                                           this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture), token)
+                                           (await this.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false)).ToString(objCulture), token)
                   .ConfigureAwait(false);
             await objWriter
                   .WriteElementStringAsync("programlimit",
-                                           this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture), token)
+                                           (await this.GetTotalMatrixAttributeAsync("Program Limit", token).ConfigureAwait(false)).ToString(objCulture), token)
                   .ConfigureAwait(false);
             await objWriter
                   .WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo),
@@ -1142,11 +1142,11 @@ namespace Chummer.Backend.Equipment
                   .ConfigureAwait(false);
             await objWriter
                   .WriteElementStringAsync(
-                      "active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo),
+                      "active", (await this.IsActiveCommlinkAsync(_objCharacter, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                       token).ConfigureAwait(false);
             await objWriter
                   .WriteElementStringAsync(
-                      "homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo), token)
+                      "homenode", (await this.IsHomeNodeAsync(_objCharacter, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token)
                   .ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("matrixcm", MatrixCM.ToString(objCulture), token)
                            .ConfigureAwait(false);

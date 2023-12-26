@@ -99,7 +99,7 @@ namespace Chummer
             if (_intLoading != 0)
                 return;
             if (ContactDetailChanged != null)
-                await ContactDetailChanged.Invoke(this, new TextEventArgs("Name"), _objMyToken);
+                await ContactDetailChanged.Invoke(this, new TextEventArgs("Name"), _objMyToken).ConfigureAwait(false);
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
@@ -140,7 +140,7 @@ namespace Chummer
                 }
 
                 if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Metatype"), _objMyToken);
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Metatype"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -302,7 +302,7 @@ namespace Chummer
                     _objContact.RelativeFileName = "../" + uriRelative;
 
                     if (ContactDetailChanged != null)
-                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken);
+                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -332,7 +332,7 @@ namespace Chummer
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile", token: _objMyToken).ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
                     if (ContactDetailChanged != null)
-                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken);
+                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -361,7 +361,7 @@ namespace Chummer
                 strTooltip = strTooltip.WordWrap();
                 await cmdNotes.SetToolTipTextAsync(strTooltip, _objMyToken).ConfigureAwait(false);
                 if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Notes"), _objMyToken);
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Notes"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

@@ -1962,10 +1962,7 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            return objNode != null
-                ? objNode.SelectSingleNodeAndCacheExpression("translate", token)
-                ?.Value ?? Name
-                : Name;
+            return objNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
         }
 
         public Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)

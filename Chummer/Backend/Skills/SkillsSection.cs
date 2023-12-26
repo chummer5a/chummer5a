@@ -1521,6 +1521,7 @@ namespace Chummer.Backend.Skills
                                             }
                                             else if (blnSync)
                                             {
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 stkSyncLockers.Push(objSkill.LockObject.EnterReadLock(token));
                                                 if (OldSkillFilter(objSkill))
                                                     lstUnsortedSkills.Add(objSkill);

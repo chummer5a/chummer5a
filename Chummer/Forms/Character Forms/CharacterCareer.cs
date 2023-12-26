@@ -12712,9 +12712,9 @@ namespace Chummer
                         case NuyenExpenseType.AddCyberware:
                         {
                             // Locate the Cyberware that was added.
-                            Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(strUndoId) ??
-                                                     CharacterObject.Vehicles.FindVehicleCyberware(
-                                                         x => x.InternalId == strUndoId);
+                            Cyberware objCyberware = await CharacterObject.Cyberware.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                                     await CharacterObject.Vehicles.FindVehicleCyberwareAsync(
+                                                         x => x.InternalId == strUndoId, GenericToken).ConfigureAwait(false);
                             if (objCyberware != null)
                                 await objCyberware.DeleteCyberwareAsync(blnIncreaseEssenceHole: false, token: GenericToken)
                                                   .ConfigureAwait(false);
@@ -12725,7 +12725,7 @@ namespace Chummer
                         {
                             // Locate the Gear that was added.
                             //If the gear was already deleted manually we will not be able to locate it here
-                            Gear objGear = CharacterObject.Gear.DeepFindById(strUndoId);
+                            Gear objGear = await CharacterObject.Gear.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             TreeNode objNode;
                             if (objGear != null)
                             {
@@ -12734,7 +12734,7 @@ namespace Chummer
                             }
                             else
                             {
-                                objGear = CharacterObject.Vehicles.FindVehicleGear(strUndoId);
+                                objGear = await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
                                 if (objGear != null)
                                     objNode = await treVehicles.DoThreadSafeFuncAsync(
                                         x => x.FindNode(objGear.InternalId), GenericToken).ConfigureAwait(false);
@@ -12781,16 +12781,16 @@ namespace Chummer
                         {
                             // Locate the Gear that was added.
                             TreeNode objNode = null;
-                            Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strUndoId);
+                            Gear objGear = await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objGear == null)
                             {
-                                objGear = CharacterObject.Gear.DeepFindById(strUndoId);
+                                objGear = await CharacterObject.Gear.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                                 if (objGear == null)
                                 {
-                                    objGear = CharacterObject.Cyberware.FindCyberwareGear(strUndoId);
+                                    objGear = await CharacterObject.Cyberware.FindCyberwareGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
                                     if (objGear == null)
                                     {
-                                        objGear = CharacterObject.Weapons.FindWeaponGear(strUndoId);
+                                        objGear = await CharacterObject.Weapons.FindWeaponGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
                                         if (objGear != null)
                                             objNode = await treWeapons.DoThreadSafeFuncAsync(
                                                 x => x.FindNode(strUndoId), GenericToken).ConfigureAwait(false);
@@ -12831,8 +12831,8 @@ namespace Chummer
                         case NuyenExpenseType.AddVehicleWeapon:
                         {
                             // Locate the Weapon that was added.
-                            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strUndoId) ??
-                                               CharacterObject.Weapons.DeepFindById(strUndoId);
+                            Weapon objWeapon = await CharacterObject.Vehicles.FindVehicleWeaponAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                               await CharacterObject.Weapons.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objWeapon != null)
                                 await objWeapon.DeleteWeaponAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -12887,8 +12887,8 @@ namespace Chummer
                         case NuyenExpenseType.AddWeapon:
                         {
                             // Locate the Weapon that was added.
-                            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(strUndoId) ??
-                                               CharacterObject.Vehicles.FindVehicleWeapon(strUndoId);
+                            Weapon objWeapon = await CharacterObject.Weapons.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                               await CharacterObject.Vehicles.FindVehicleWeaponAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objWeapon != null)
                                 await objWeapon.DeleteWeaponAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -12920,7 +12920,7 @@ namespace Chummer
                         case NuyenExpenseType.AddArmorGear:
                         {
                             // Locate the Armor Gear that was added.
-                            Gear objGear = CharacterObject.Armor.FindArmorGear(strUndoId);
+                            Gear objGear = await CharacterObject.Armor.FindArmorGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objGear != null)
                             {
                                 // Deduct the Qty from the Gear.
@@ -12950,8 +12950,8 @@ namespace Chummer
                         {
                             // Locate the Cyberware that was added.
                             Cyberware objCyberware
-                                = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strUndoId) ??
-                                  CharacterObject.Cyberware.DeepFindById(strUndoId);
+                                = await CharacterObject.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == strUndoId, GenericToken).ConfigureAwait(false) ??
+                                  await CharacterObject.Cyberware.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objCyberware != null)
                                 await objCyberware
                                       .DeleteCyberwareAsync(blnIncreaseEssenceHole: false, token: GenericToken)
@@ -12962,9 +12962,9 @@ namespace Chummer
                         case NuyenExpenseType.AddCyberwareGear:
                         {
                             // Locate the Gear that was added.
-                            Gear objGear = CharacterObject.Cyberware.FindCyberwareGear(strUndoId) ??
-                                           CharacterObject.Vehicles.FindVehicleGear(strUndoId) ??
-                                           CharacterObject.Gear.DeepFindById(strUndoId);
+                            Gear objGear = await CharacterObject.Cyberware.FindCyberwareGearAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                           await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                           await CharacterObject.Gear.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objGear != null)
                                 await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -12973,9 +12973,9 @@ namespace Chummer
                         case NuyenExpenseType.AddWeaponGear:
                         {
                             // Locate the Gear that was added.
-                            Gear objGear = CharacterObject.Weapons.FindWeaponGear(strUndoId) ??
-                                           CharacterObject.Vehicles.FindVehicleGear(strUndoId) ??
-                                           CharacterObject.Gear.DeepFindById(strUndoId);
+                            Gear objGear = await CharacterObject.Weapons.FindWeaponGearAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                           await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                           await CharacterObject.Gear.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objGear != null)
                                 await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -20155,7 +20155,7 @@ namespace Chummer
                             if (await gpbCyberwareMatrix.DoThreadSafeFuncAsync(x => x.Visible, token)
                                                         .ConfigureAwait(false))
                             {
-                                int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
+                                int intDeviceRating = await objCyberware.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                                 await lblCyberDeviceRating.DoThreadSafeAsync(
                                                               x => x.Text = intDeviceRating.ToString(GlobalSettings
                                                                   .CultureInfo), token)
@@ -20250,7 +20250,7 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbCyberwareMatrix
-                            int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblCyberDeviceRating.DoThreadSafeAsync(
                                                           x => x.Text = intDeviceRating.ToString(GlobalSettings
                                                               .CultureInfo), token)
@@ -20907,7 +20907,7 @@ namespace Chummer
                             }
 
                             // gpbWeaponsMatrix
-                            int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objWeapon.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblWeaponDeviceRating
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -21316,7 +21316,7 @@ namespace Chummer
                                                      .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbWeaponsMatrix
-                            int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblWeaponDeviceRating
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -21857,7 +21857,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (objSelectedNodeTag is IHasMatrixAttributes objHasMatrixAttributes)
                     {
-                        int intDeviceRating = objHasMatrixAttributes.GetTotalMatrixAttribute("Device Rating");
+                        int intDeviceRating = await objHasMatrixAttributes.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                         await lblArmorDeviceRating
                               .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                  token).ConfigureAwait(false);
@@ -22195,7 +22195,7 @@ namespace Chummer
                         }
 
                         // gpbGearMatrix
-                        int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                        int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                         await lblGearDeviceRating
                               .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                  token).ConfigureAwait(false);
@@ -22818,7 +22818,7 @@ namespace Chummer
                         // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
                         if (CharacterObject.ActiveCommlink == null && objSelectedGear.IsCommlink)
                         {
-                            objSelectedGear.SetActiveCommlink(CharacterObject, true);
+                            await objSelectedGear.SetActiveCommlinkAsync(CharacterObject, true, token).ConfigureAwait(false);
                         }
                     }
 
@@ -23806,7 +23806,7 @@ namespace Chummer
 
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesMatrix
-                            int intDeviceRating = objVehicle.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objVehicle.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblVehicleDevice
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -24456,7 +24456,7 @@ namespace Chummer
 
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesMatrix
-                            int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objWeapon.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblVehicleDevice
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -24841,7 +24841,7 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesMatrix
-                            int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objCyberware.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblVehicleDevice
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -24945,7 +24945,7 @@ namespace Chummer
                             await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
                             // gpbVehiclesMatrix
-                            int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblVehicleDevice
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);

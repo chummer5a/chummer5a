@@ -1848,10 +1848,7 @@ namespace Chummer
                                 }
 
                                 token.ThrowIfCancellationRequested();
-                                string strMetatype = objMetatypeNode != null
-                                    ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
-                                      ?? objCache.Metatype
-                                    : objCache.Metatype;
+                                string strMetatype = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objCache.Metatype;
 
                                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                                 {
@@ -1859,11 +1856,7 @@ namespace Chummer
                                         "metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
 
                                     strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                                        + (objMetatypeNode != null
-                                            ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)
-                                              ?.Value
-                                              ?? objCache.Metavariant
-                                            : objCache.Metavariant) + ')';
+                                        + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objCache.Metavariant) + ')';
                                 }
 
                                 await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatype, token).ConfigureAwait(false);

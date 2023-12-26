@@ -275,14 +275,11 @@ namespace Chummer
         private async void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
         {
             string strSelected = await cboStage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
-            if (strSelected == "0")
-            {
-                _strWorkStage = string.Empty;
-            }
-            else
-            {
-                _strWorkStage = _xmlLifeModulesDocumentChummerNode.SelectSingleNodeAndCacheExpression("stages/stage[@order = " + strSelected.CleanXPath() + ']')?.Value ?? string.Empty;
-            }
+            _strWorkStage = strSelected == "0"
+                ? string.Empty
+                : _xmlLifeModulesDocumentChummerNode
+                    .SelectSingleNodeAndCacheExpression("stages/stage[@order = " + strSelected.CleanXPath() + ']')
+                    ?.Value ?? string.Empty;
             await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }
 

@@ -1421,7 +1421,7 @@ namespace Chummer.Backend.Attributes
                             : await _objCharacter.LimbCountAsync(token: token).ConfigureAwait(false);
                         int intMissingLimbCount = Math.Max(intMaxLimbs - intLimbCount, 0);
                         intPureCyberValue = intLimbTotal;
-                        // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
+                        // Not all limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
                         intLimbTotal += Math.Max(intMeat, 0) * intMissingLimbCount;
                         intReturn = (intLimbTotal + intMaxLimbs - 1) / intMaxLimbs;
                     }
@@ -2188,7 +2188,7 @@ namespace Chummer.Backend.Attributes
                             }
                             else if (setUniqueNames.Contains("precedence1"))
                             {
-                                // Retrieve all of the items that are precedence1 and nothing else.
+                                // Retrieve all the items that are precedence1 and nothing else.
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdNewModifier))
                                 {
@@ -2424,7 +2424,7 @@ namespace Chummer.Backend.Attributes
                         }
                         else if (setUniqueNames.Contains("precedence1"))
                         {
-                            // Retrieve all of the items that are precedence1 and nothing else.
+                            // Retrieve all the items that are precedence1 and nothing else.
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdNewModifier))
                             {

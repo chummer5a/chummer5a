@@ -10041,13 +10041,13 @@ namespace Chummer
                     // Calculate Initiatives.
                     // Initiative.
                     await objWriter
-                        .WriteElementStringAsync("init", GetInitiative(objCulture, strLanguageToPrint), token: token)
+                        .WriteElementStringAsync("init", await GetInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("initdice", InitiativeDice.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("initdice", (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("initvalue", InitiativeValue.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("initvalue", (await GetInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("initbonus",
                             Math.Max(
@@ -10062,52 +10062,52 @@ namespace Chummer
                     if (await GetMAGEnabledAsync(token).ConfigureAwait(false))
                     {
                         await objWriter.WriteElementStringAsync("astralinit",
-                            GetAstralInitiative(objCulture, strLanguageToPrint),
+                            await GetAstralInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("astralinitdice",
-                                AstralInitiativeDice.ToString(objCulture), token: token)
+                                (await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                             .ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("astralinitvalue",
-                            AstralInitiativeValue.ToString(objCulture),
+                            (await GetAstralInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture),
                             token: token).ConfigureAwait(false);
                     }
 
                     // Matrix Initiative (AR).
                     await objWriter.WriteElementStringAsync("matrixarinit",
-                        GetMatrixInitiative(objCulture, strLanguageToPrint),
+                        await GetMatrixInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixarinitdice",
-                            MatrixInitiativeDice.ToString(objCulture), token: token)
+                            (await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixarinitvalue",
-                            MatrixInitiativeValue.ToString(objCulture), token: token)
+                            (await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
 
                     // Matrix Initiative (Cold).
                     await objWriter.WriteElementStringAsync("matrixcoldinit",
-                        GetMatrixInitiativeCold(objCulture, strLanguageToPrint),
+                        await GetMatrixInitiativeColdAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixcoldinitdice",
-                            MatrixInitiativeDice.ToString(objCulture), token: token)
+                            (await GetMatrixInitiativeColdDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixcoldinitvalue",
-                            MatrixInitiativeValue.ToString(objCulture), token: token)
+                            (await GetMatrixInitiativeColdValueAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
 
                     // Matrix Initiative (Hot).
                     await objWriter.WriteElementStringAsync("matrixhotinit",
-                        GetMatrixInitiativeHot(objCulture, strLanguageToPrint),
+                        await GetMatrixInitiativeHotAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixhotinitdice",
-                            MatrixInitiativeDice.ToString(objCulture), token: token)
+                            (await GetMatrixInitiativeHotDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("matrixhotinitvalue",
-                            MatrixInitiativeValue.ToString(objCulture), token: token)
+                        (await GetMatrixInitiativeHotValueAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
 
                     // Rigger Initiative.
                     await objWriter.WriteElementStringAsync("riggerinit",
-                            GetInitiative(objCulture, strLanguageToPrint), token: token)
+                            await GetInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
 
                     // <magenabled />
@@ -10353,9 +10353,9 @@ namespace Chummer
                         await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
                         {
                             if (objLimitModifier.Limit == "Physical")
-                                {
-                                    return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
-                                }
+                            {
+                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
+                            }
 
                             return Task.CompletedTask;
                         }, token).ConfigureAwait(false);
@@ -10423,9 +10423,9 @@ namespace Chummer
                         await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
                         {
                             if (objLimitModifier.Limit == "Mental")
-                                {
-                                    return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
-                                }
+                            {
+                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
+                            }
 
                             return Task.CompletedTask;
                         }, token).ConfigureAwait(false);
@@ -22637,7 +22637,7 @@ namespace Chummer
         /// <summary>
         /// AR Matrix Initiative Value.
         /// </summary>
-        public async Task<int> GetMatrixInitiativeValueAsync(CancellationToken token)
+        public async Task<int> GetMatrixInitiativeValueAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -22703,7 +22703,7 @@ namespace Chummer
         /// <summary>
         /// AR Matrix Initiative Dice.
         /// </summary>
-        public async Task<int> GetMatrixInitiativeDiceAsync(CancellationToken token)
+        public async Task<int> GetMatrixInitiativeDiceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -28737,7 +28737,7 @@ namespace Chummer
                             + await LanguageManager.GetStringAsync("String_DeviceRating", token: token)
                                                    .ConfigureAwait(false) + '÷' + 2.ToString(GlobalSettings.CultureInfo)
                             + ')' + strSpace + '('
-                            + ((HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2).ToString(
+                            + ((await HomeNode.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false) + 1) / 2).ToString(
                                 GlobalSettings.CultureInfo) + ')';
                     intBonus = HomeNode.TotalBonusMatrixBoxes;
                     if (intBonus != 0)
@@ -29741,7 +29741,7 @@ namespace Chummer
                         }
                     }
 
-                    int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                    int intHomeNodeDP = await HomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
                     if (intHomeNodeDP > intLimit)
                     {
                         intLimit = intHomeNodeDP;
@@ -29861,7 +29861,7 @@ namespace Chummer
                             }
                         }
 
-                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                        int intHomeNodeDP = await HomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
                         if (intHomeNodeDP > intLimit)
                         {
                             intLimit = intHomeNodeDP;
@@ -29932,7 +29932,7 @@ namespace Chummer
                 int intHomeNodeDP = 0;
                 if (await GetIsAIAsync(token).ConfigureAwait(false) && HomeNode != null)
                 {
-                    intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                    intHomeNodeDP = await HomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
 
                     if (HomeNode is Vehicle objHomeNodeVehicle)
                     {
@@ -30026,7 +30026,7 @@ namespace Chummer
                               .Append(intCha.ToString(GlobalSettings.CultureInfo)).Append(']');
                     if (await GetIsAIAsync(token).ConfigureAwait(false) && HomeNode != null)
                     {
-                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                        int intHomeNodeDP = await HomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
                         string strDPString = await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false);
                         if (HomeNode is Vehicle objHomeNodeVehicle)
                         {
@@ -41321,21 +41321,28 @@ namespace Chummer
                                                         else
                                                         {
                                                             Gear objPlugin = new Gear(this);
-                                                            if (objPlugin.ImportHeroLabGear(xmlArmorModToImport,
-                                                                    xmlArmorData,
-                                                                    lstWeapons, token))
+                                                            if (blnSync)
                                                             {
-                                                                if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                if (objPlugin.ImportHeroLabGear(xmlArmorModToImport,
+                                                                        xmlArmorData,
+                                                                        lstWeapons, token))
+                                                                {
                                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     objArmor.GearChildren.Add(objPlugin);
+                                                                }
                                                                 else
-                                                                    await objArmor.GearChildren
+                                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                                    objPlugin.Dispose();
+                                                            }
+                                                            else if (await objPlugin.ImportHeroLabGearAsync(xmlArmorModToImport,
+                                                                         xmlArmorData,
+                                                                         lstWeapons, token).ConfigureAwait(false))
+                                                            {
+                                                                await objArmor.GearChildren
                                                                         .AddAsync(objPlugin, token)
                                                                         .ConfigureAwait(false);
                                                             }
-                                                            else if (blnSync)
-                                                                // ReSharper disable once MethodHasAsyncOverload
-                                                                objPlugin.Dispose();
                                                             else
                                                                 await objPlugin.DisposeAsync().ConfigureAwait(false);
                                                         }
@@ -41379,28 +41386,31 @@ namespace Chummer
                                                                                  "/item[@useradded != \"no\"]"))
                                                                 {
                                                                     Gear objPlugin = new Gear(this);
-                                                                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
-                                                                            blnSync
-                                                                                // ReSharper disable once MethodHasAsyncOverload
-                                                                                ? objArmorMod.GetNode(token)
-                                                                                : await objArmorMod.GetNodeAsync(token)
-                                                                                    .ConfigureAwait(false),
-                                                                            lstWeapons, token))
+                                                                    if (blnSync)
                                                                     {
-                                                                        if (blnSync)
+                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
+                                                                                objArmorMod.GetNode(token),
+                                                                                lstWeapons, token))
+                                                                        {
                                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                             objArmorMod.GearChildren.Add(objPlugin);
+                                                                        }
                                                                         else
-                                                                            await objArmorMod.GearChildren
-                                                                                .AddAsync(objPlugin, token)
-                                                                                .ConfigureAwait(false);
+                                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                                            objPlugin.Dispose();
                                                                     }
-                                                                    else if (blnSync)
-                                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                                        objPlugin.Dispose();
-                                                                    else
-                                                                        await objPlugin.DisposeAsync()
+                                                                    else if (await objPlugin.ImportHeroLabGearAsync(xmlPluginToAdd,
+                                                                                 await objArmorMod.GetNodeAsync(token)
+                                                                                     .ConfigureAwait(false),
+                                                                                 lstWeapons, token).ConfigureAwait(false))
+                                                                    {
+                                                                        await objArmorMod.GearChildren
+                                                                            .AddAsync(objPlugin, token)
                                                                             .ConfigureAwait(false);
+                                                                    }
+                                                                    else
+                                                                        await objPlugin.DisposeAsync().ConfigureAwait(false);
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -42320,13 +42330,16 @@ namespace Chummer
                                              "gear/equipment/item[@useradded != \"no\"]"))
                                 {
                                     Gear objGear = new Gear(this);
-                                    if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons, token))
+                                    if (blnSync)
                                     {
-                                        if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons, token))
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             _lstGear.Add(objGear);
-                                        else
-                                            await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                                    }
+                                    else if (await objGear.ImportHeroLabGearAsync(xmlGearToImport, null, lstWeapons, token).ConfigureAwait(false))
+                                    {
+                                        await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
                                     }
                                 }
 

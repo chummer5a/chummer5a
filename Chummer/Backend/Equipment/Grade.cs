@@ -234,9 +234,7 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            return objNode != null
-                ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
-                : Name;
+            return objNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);

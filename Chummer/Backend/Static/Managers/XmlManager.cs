@@ -2398,7 +2398,7 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     // If the Node has a source element, check it and see if it's in the list of books that were specified.
-                                    // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
+                                    // This is done since not all the books are available in every language or the user may only wish to verify the content of certain books.
                                     bool blnContinue = true;
                                     XPathNavigator xmlSource
                                         = objChild.SelectSingleNodeAndCacheExpression("source", token: token);

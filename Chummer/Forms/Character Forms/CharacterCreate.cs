@@ -14730,7 +14730,7 @@ namespace Chummer
                             if (await gpbCyberwareMatrix.DoThreadSafeFuncAsync(x => x.Visible, token)
                                                         .ConfigureAwait(false))
                             {
-                                int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
+                                int intDeviceRating = await objCyberware.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                                 await lblCyberDeviceRating
                                       .DoThreadSafeAsync(
                                           x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo), token)
@@ -14885,7 +14885,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbCyberwareMatrix
-                            int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblCyberDeviceRating
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -14903,7 +14903,7 @@ namespace Chummer
                                 bool blnEnabled
                                     = await chkCyberwareActiveCommlink.DoThreadSafeFuncAsync(x => x.Visible, token)
                                                                       .ConfigureAwait(false)
-                                      && objGear.GetTotalMatrixAttribute("Program Limit")
+                                      && await objGear.GetTotalMatrixAttributeAsync("Program Limit", token).ConfigureAwait(false)
                                       >= (await CharacterObject.DEP.GetTotalValueAsync(token).ConfigureAwait(false)
                                           > intDeviceRating
                                           ? 2
@@ -15305,7 +15305,7 @@ namespace Chummer
                             }
 
                             // gpbWeaponsMatrix
-                            int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objWeapon.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblWeaponDeviceRating
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -15779,7 +15779,7 @@ namespace Chummer
                             }
 
                             // gpbWeaponsMatrix
-                            int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblWeaponDeviceRating
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -15979,7 +15979,7 @@ namespace Chummer
 
                         token.ThrowIfCancellationRequested();
                         // gpbArmorMatrix
-                        int intDeviceRating = objArmor.GetTotalMatrixAttribute("Device Rating");
+                        int intDeviceRating = await objArmor.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                         await lblArmorDeviceRating
                               .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                  token).ConfigureAwait(false);
@@ -16259,7 +16259,7 @@ namespace Chummer
 
                                     token.ThrowIfCancellationRequested();
                                     // gpbArmorMatrix
-                                    int intDeviceRating = objSelectedGear.GetTotalMatrixAttribute("Device Rating");
+                                    int intDeviceRating = await objSelectedGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                                     await lblArmorDeviceRating
                                           .DoThreadSafeAsync(
                                               x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo), token)
@@ -16677,7 +16677,7 @@ namespace Chummer
 
                         token.ThrowIfCancellationRequested();
                         // gpbGearMatrix
-                        int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                        int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                         await lblGearDeviceRating
                               .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                  token).ConfigureAwait(false);
@@ -16693,7 +16693,7 @@ namespace Chummer
                         {
                             bool blnEnabled
                                 = objGear.IsCommlink
-                                  && objGear.GetTotalMatrixAttribute("Program Limit")
+                                  && await objGear.GetTotalMatrixAttributeAsync("Program Limit", token).ConfigureAwait(false)
                                   >= (await CharacterObject.DEP.GetTotalValueAsync(token).ConfigureAwait(false)
                                       > intDeviceRating
                                       ? 2
@@ -17420,7 +17420,7 @@ namespace Chummer
                     // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
                     if (CharacterObject.ActiveCommlink == null && objGear.IsCommlink)
                     {
-                        objGear.SetActiveCommlink(CharacterObject, true);
+                        await objGear.SetActiveCommlinkAsync(CharacterObject, true, token).ConfigureAwait(false);
                     }
 
                     // reduce the cost for Black Market Pipeline
@@ -18184,7 +18184,7 @@ namespace Chummer
 
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesMatrix
-                            int intDeviceRating = objVehicle.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objVehicle.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblVehicleDevice
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -18739,7 +18739,7 @@ namespace Chummer
 
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesMatrix
-                            int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objWeapon.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblVehicleDevice
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -19183,7 +19183,7 @@ namespace Chummer
 
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesMatrix
-                            int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objCyberware.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblVehicleDevice
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
@@ -19371,7 +19371,7 @@ namespace Chummer
 
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesMatrix
-                            int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                            int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
                             await lblVehicleDevice
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);

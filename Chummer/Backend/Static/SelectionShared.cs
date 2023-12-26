@@ -1010,8 +1010,11 @@ namespace Chummer
                         = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
-                        XPathNavigator objLoopDoc = objCharacter.LoadDataXPath("cyberware.xml", token: token);
-                            string strTranslate
+                        XPathNavigator objLoopDoc = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token).ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                               ?? objLoopDoc
@@ -1188,7 +1191,7 @@ namespace Chummer
                 {
                     int intCount
                         = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
-                        if (blnShowMessage)
+                    if (blnShowMessage)
                     {
                         string strTranslate = (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
@@ -1261,12 +1264,12 @@ namespace Chummer
                                                            objCyberware.PlugsIntoModularMount) &&
                                                        strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                                                    >= intCount, strName);
-                    }
+                }
                 case "biowarecontains":
                 {
                     int intCount
                         = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
-                        if (blnShowMessage)
+                    if (blnShowMessage)
                     {
                         string strTranslate
                             = (blnSync
@@ -3075,12 +3078,13 @@ namespace Chummer
                     {
                         string strTranslate
                             = (blnSync
-                                  // ReSharper disable once MethodHasAsyncOverload
-                                  ? objCharacter.LoadDataXPath("spells.xml", token: token)
-                                  : await objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false))
-                              .SelectSingleNode(
-                                  "/chummer/categories/category[. = "
-                                  + strNodeName.CleanXPath() + "]/@translate")?.Value;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCharacter.LoadDataXPath("spells.xml", token: token)
+                                : await objCharacter.LoadDataXPathAsync("spells.xml", token: token)
+                                    .ConfigureAwait(false))
+                            .SelectSingleNode(
+                                "/chummer/categories/category[. = "
+                                + strNodeName.CleanXPath() + "]/@translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
@@ -3095,16 +3099,16 @@ namespace Chummer
                                                               token: token).ConfigureAwait(false)) + ')';
                     }
 
+                    int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0;
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
-                        return new Tuple<bool, string>(objCharacter.Spells.Count(
-                                                           objSpell => objSpell.Category == strNodeName, token)
-                                                       // ReSharper disable once MethodHasAsyncOverload
-                                                       >= (xmlNode.SelectSingleNodeAndCacheExpression("count", token)
-                                                                  ?.ValueAsInt ?? 0), strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).CountAsync(
-                                                       objSpell => objSpell.Category == strNodeName, token).ConfigureAwait(false)
-                                                   >= (xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0), strName);
+                        return new Tuple<bool, string>(
+                            objCharacter.Spells.Count(objSpell => objSpell.Category == strNodeName, token) >= intTarget,
+                            strName);
+                    return new Tuple<bool, string>(
+                        await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false))
+                            .CountAsync(objSpell => objSpell.Category == strNodeName, token).ConfigureAwait(false) >=
+                        intTarget, strName);
                 }
                 case "spelldescriptor":
                 {
