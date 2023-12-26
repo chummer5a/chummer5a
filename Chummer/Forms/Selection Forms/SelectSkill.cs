@@ -219,8 +219,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlSkill in objXmlSkillList)
                     {
-                        string strXmlSkillName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name")
-                                                                   .ConfigureAwait(false))?.Value;
+                        string strXmlSkillName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                         Skill objExistingSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync(strXmlSkillName)
                                                                     .ConfigureAwait(false);
                         if (objExistingSkill == null)
@@ -237,13 +236,8 @@ namespace Chummer
                         }
 
                         lstSkills.Add(new ListItem(
-                                          new Tuple<string, bool>(strXmlSkillName,
-                                                                  (await objXmlSkill
-                                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                                             "exotic").ConfigureAwait(false))?.Value
-                                                                  == bool.TrueString),
-                                          (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate")
-                                                            .ConfigureAwait(false))?.Value
+                                          new Tuple<string, bool>(strXmlSkillName, objXmlSkill.SelectSingleNodeAndCacheExpression("exotic")?.Value == bool.TrueString),
+                                          objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
                                           ?? strXmlSkillName));
                     }
                 }
@@ -577,16 +571,13 @@ namespace Chummer
                     {
                         foreach (XPathNavigator xmlWeapon in xmlWeaponList)
                         {
-                            string strName = (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                             .ConfigureAwait(false))?.Value;
+                            string strName = xmlWeapon.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 lstSkillSpecializations.Add(
                                     new ListItem(
                                         strName,
-                                        (await xmlWeapon
-                                               .SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                               .ConfigureAwait(false))?.Value ?? strName));
+                                        xmlWeapon.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                             }
                         }
                     }
@@ -604,18 +595,13 @@ namespace Chummer
                         {
                             lstSkillSpecializations.Add(new ListItem(
                                                             strName,
-                                                            (await xmlSpec
-                                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "@translate", token: token)
-                                                                   .ConfigureAwait(false))?.Value
+                                                            xmlSpec.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value
                                                             ?? strName));
                         }
                     }
                 }
 
-                foreach (Skill objSkill in await (await _objCharacter.GetSkillsSectionAsync(token)
-                                                                     .ConfigureAwait(false)).GetSkillsAsync(token)
-                             .ConfigureAwait(false))
+                foreach (Skill objSkill in await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetSkillsAsync(token).ConfigureAwait(false))
                 {
                     if (await objSkill.GetNameAsync(token).ConfigureAwait(false) != strSelectedCategory)
                         continue;

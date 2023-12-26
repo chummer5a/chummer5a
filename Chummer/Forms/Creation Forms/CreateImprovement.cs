@@ -59,16 +59,14 @@ namespace Chummer
                 // Populate the Improvement Type list.
                 foreach (XPathNavigator objXmlImprovement in _objImprovementsDocumentImprovementsNode.Select("improvement"))
                 {
-                    string strId = (await objXmlImprovement.SelectSingleNodeAndCacheExpressionAsync("id").ConfigureAwait(false))?.Value;
+                    string strId = objXmlImprovement.SelectSingleNodeAndCacheExpression("id")?.Value;
                     if (!string.IsNullOrEmpty(strId))
                     {
                         lstTypes.Add(new ListItem(strId,
-                                                  (await objXmlImprovement
-                                                         .SelectSingleNodeAndCacheExpressionAsync("translate")
-                                                         .ConfigureAwait(false))?.Value
-                                                  ?? (await objXmlImprovement
-                                                            .SelectSingleNodeAndCacheExpressionAsync("name")
-                                                            .ConfigureAwait(false))?.Value
+                                                  objXmlImprovement
+                                                      .SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                  ?? objXmlImprovement
+                                                      .SelectSingleNodeAndCacheExpression("name")?.Value
                                                   ?? await LanguageManager.GetStringAsync("String_Unknown")
                                                                           .ConfigureAwait(false)));
                     }
@@ -112,9 +110,7 @@ namespace Chummer
                             = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId(
                                 "improvement",
                                 cboImprovemetType.SelectedValue.ToString(),blnIdIsGuid:false);
-                        XPathNavigator objFetchNode = xmlImprovementNode != null
-                            ? await xmlImprovementNode.SelectSingleNodeAndCacheExpressionAsync("fields/field").ConfigureAwait(false)
-                            : null;
+                        XPathNavigator objFetchNode = xmlImprovementNode?.SelectSingleNodeAndCacheExpression("fields/field");
                         string strText
                             = await TranslateField(objFetchNode?.Value, EditImprovementObject.ImprovedName).ConfigureAwait(false);
                         await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
@@ -222,11 +218,11 @@ namespace Chummer
                                                                    .SelectAndCacheExpression(
                                                                        "/chummer/actions/action"))
                         {
-                            string strName = (await xmlAction.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                            string strName = xmlAction.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstActions.Add(new ListItem(
                                                    strName,
-                                                   (await xmlAction.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                                   xmlAction.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                    ?? strName));
                         }
 
@@ -302,8 +298,7 @@ namespace Chummer
                                         .TryGetNodeByNameOrId(
                                             "/chummer/echoes/echo", strSelectedId);
                                     string strEchoName = xmlEchoNode != null
-                                        ? (await xmlEchoNode.SelectSingleNodeAndCacheExpressionAsync("name")
-                                                            .ConfigureAwait(false))?.Value
+                                        ? xmlEchoNode.SelectSingleNodeAndCacheExpression("name")?.Value
                                         : string.Empty;
                                     if (!string.IsNullOrEmpty(strEchoName))
                                     {
@@ -344,8 +339,7 @@ namespace Chummer
                                         .TryGetNodeByNameOrId(
                                             "/chummer/metamagics/metamagic", strSelectedId);
                                     string strMetamagicName = xmlMetamagicNode != null
-                                        ? (await xmlMetamagicNode.SelectSingleNodeAndCacheExpressionAsync("name")
-                                                                 .ConfigureAwait(false))?.Value
+                                        ? xmlMetamagicNode.SelectSingleNodeAndCacheExpression("name")?.Value
                                         : string.Empty;
                                     if (!string.IsNullOrEmpty(strMetamagicName))
                                     {
@@ -503,12 +497,12 @@ namespace Chummer
                                  .Select("/chummer/knowledgeskills/skill"
                                          + strFilter))
                         {
-                            string strName = (await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                            string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstDropdownItems.Add(
                                     new ListItem(
                                         strName,
-                                        (await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value ??
+                                        xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ??
                                         strName));
                         }
 
@@ -572,11 +566,11 @@ namespace Chummer
                                                                   .SelectAndCacheExpression(
                                                                       "/chummer/complexforms/complexform"))
                         {
-                            string strName = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                            string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstComplexForms.Add(new ListItem(
                                     strName,
-                                    (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                    xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value
                                     ?? strName));
                         }
 
@@ -606,11 +600,11 @@ namespace Chummer
                                                                   .SelectAndCacheExpression(
                                                                       "/chummer/spells/spell"))
                         {
-                            string strName = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                            string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstSpells.Add(new ListItem(
                                     strName,
-                                    (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                    xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value
                                     ?? strName));
                         }
 
@@ -738,7 +732,7 @@ namespace Chummer
                     XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedType, blnIdIsGuid: false);
                     if (objFetchNode == null)
                         return;
-                    string strInternal = (await objFetchNode.SelectSingleNodeAndCacheExpressionAsync("internal", token).ConfigureAwait(false))?.Value;
+                    string strInternal = objFetchNode.SelectSingleNodeAndCacheExpression("internal", token)?.Value;
                     if (string.IsNullOrEmpty(strInternal))
                         return;
                     await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
@@ -759,8 +753,7 @@ namespace Chummer
 
                             // ReSharper disable once PossibleNullReferenceException
                             string strXml
-                                = await (await objFetchNode.SelectSingleNodeAndCacheExpressionAsync("xml", token)
-                                                           .ConfigureAwait(false)).Value
+                                = await objFetchNode.SelectSingleNodeAndCacheExpression("xml", token).Value
                                     .CheapReplaceAsync("{val}",
                                                        () => nudVal.DoThreadSafeFuncAsync(
                                                            x => x.Value.ToString(
@@ -895,68 +888,66 @@ namespace Chummer
 
                         objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", astrToTranslateParts[0]);
                         string strFirstPartTranslated = objXmlNode != null
-                            ? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                              ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                            ? objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                              ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                               ?? astrToTranslateParts[0]
                             : astrToTranslateParts[0];
 
                         return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ')';
                     }
-                    else
-                    {
-                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", strToTranslate);
-                        if (objXmlNode == null)
-                            return strToTranslate;
-                        return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
-                    }
+
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", strToTranslate);
+                    if (objXmlNode == null)
+                        return strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectKnowSkill":
                     objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/knowledgeskills/skill", strToTranslate);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSkillCategory":
-                    objXmlNode = await (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token).ConfigureAwait(false);
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSkillGroup":
-                    objXmlNode = await (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsync("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + ']', token: token).ConfigureAwait(false);
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + ']', token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectWeaponCategory":
-                    objXmlNode = await (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token).ConfigureAwait(false);
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSpellCategory":
-                    objXmlNode = await (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token).ConfigureAwait(false);
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectAdeptPower":
                     objXmlNode = (await _objCharacter.LoadDataXPathAsync("powers.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/powers/power", strToTranslate);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectMetamagic":
                     objXmlNode = (await _objCharacter.LoadDataXPathAsync("metamagic.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/metamagics/metamagic", strToTranslate);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectEcho":
                     objXmlNode = (await _objCharacter.LoadDataXPathAsync("echoes.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/echoes/echo", strToTranslate.CleanXPath());
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 default:
                     return strToTranslate;

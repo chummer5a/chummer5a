@@ -160,11 +160,9 @@ namespace Chummer
                 {
                     _decCostMultiplier
                         = Convert.ToDecimal(
-                            (await xmlGrade.SelectSingleNodeAndCacheExpressionAsync("cost", token)
-                                           .ConfigureAwait(false))?.Value, GlobalSettings.InvariantCultureInfo);
+                            xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value, GlobalSettings.InvariantCultureInfo);
                     _intAvailModifier
-                        = (await xmlGrade.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))
-                        ?.ValueAsInt ?? 0;
+                        = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)?.ValueAsInt ?? 0;
 
                     await RefreshList(token: token).ConfigureAwait(false);
                 }
@@ -214,15 +212,12 @@ namespace Chummer
                 string strForceGrade;
                 if (xmlDrug != null)
                 {
-                    strForceGrade = (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("forcegrade")
-                                                  .ConfigureAwait(false))?.Value;
+                    strForceGrade = xmlDrug.SelectSingleNodeAndCacheExpression("forcegrade")?.Value;
                     // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
-                    XPathNavigator xmlRatingNode = await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("rating")
-                                                                .ConfigureAwait(false);
+                    XPathNavigator xmlRatingNode = xmlDrug.SelectSingleNodeAndCacheExpression("rating");
                     if (xmlRatingNode != null)
                     {
-                        string strMinRating = (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("minrating")
-                                                            .ConfigureAwait(false))?.Value;
+                        string strMinRating = xmlDrug.SelectSingleNodeAndCacheExpression("minrating")?.Value;
                         int intMinRating = 1;
                         // Not a simple integer, so we need to start mucking around with strings
                         if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
@@ -333,11 +328,11 @@ namespace Chummer
                     }
 
                     string strSource
-                        = (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value
+                        = xmlDrug.SelectSingleNodeAndCacheExpression("source")?.Value
                           ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     string strPage
-                        = (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))
-                        ?.Value ?? (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))
+                        = xmlDrug.SelectSingleNodeAndCacheExpression("altpage")
+                        ?.Value ?? xmlDrug.SelectSingleNodeAndCacheExpression("page")
                         ?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSource = await SourceString.GetSourceStringAsync(
                         strSource, strPage, GlobalSettings.Language,
@@ -368,7 +363,7 @@ namespace Chummer
                     }
 
                     bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(
-                        (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("category").ConfigureAwait(false))
+                        xmlDrug.SelectSingleNodeAndCacheExpression("category")
                         ?.Value);
                     await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                     {
@@ -642,7 +637,7 @@ namespace Chummer
             int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strAvail = (await objXmlDrug.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value;
+            string strAvail = objXmlDrug.SelectSingleNodeAndCacheExpression("avail", token)?.Value;
             if (!string.IsNullOrEmpty(strAvail))
             {
                 string strAvailExpr = strAvail;
@@ -714,7 +709,7 @@ namespace Chummer
             }
             else
             {
-                string strCost = (await objXmlDrug.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false))?.Value;
+                string strCost = objXmlDrug.SelectSingleNodeAndCacheExpression("cost", token)?.Value;
                 if (!string.IsNullOrEmpty(strCost))
                 {
                     if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
@@ -797,8 +792,7 @@ namespace Chummer
             return RefreshList(strCategory, true, token);
         }
 
-        private async Task<bool> RefreshList(string strCategory, bool blnDoUIUpdate,
-                                                  CancellationToken token = default)
+        private async Task<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
         {
             if ((_intLoading > 0 || _intSkipListRefresh > 0) && blnDoUIUpdate)
                 return false;
@@ -848,7 +842,7 @@ namespace Chummer
                     / 100.0m;
                 foreach (XPathNavigator xmlDrug in _xmlBaseDrugDataNode.Select(_strNodeXPath + strFilter))
                 {
-                    bool blnIsForceGrade = await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token).ConfigureAwait(false) == null;
+                    bool blnIsForceGrade = xmlDrug.SelectSingleNodeAndCacheExpression("forcegrade", token) == null;
                     if (objCurrentGrade != null && blnIsForceGrade && objCurrentGrade.Name.ContainsAny(
                             (await ImprovementManager
                                    .GetCachedImprovementListForValueOfAsync(
@@ -859,8 +853,8 @@ namespace Chummer
                             .Select(x => x.ImprovedName)))
                         continue;
 
-                    string strMaxRating = (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("rating", token).ConfigureAwait(false))?.Value;
-                    string strMinRating = (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("minrating", token).ConfigureAwait(false))?.Value;
+                    string strMaxRating = xmlDrug.SelectSingleNodeAndCacheExpression("rating", token)?.Value;
+                    string strMinRating = xmlDrug.SelectSingleNodeAndCacheExpression("minrating", token)?.Value;
                     int intMinRating = 1;
                     // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
                     if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)
@@ -898,7 +892,7 @@ namespace Chummer
                     if (blnShowOnlyAffordItems && !blnFree)
                     {
                         decimal decCostMultiplier = decBaseCostMultiplier;
-                        if (_setBlackMarketMaps.Contains((await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
+                        if (_setBlackMarketMaps.Contains(xmlDrug.SelectSingleNodeAndCacheExpression("category", token)?.Value))
                             decCostMultiplier *= 0.9m;
                         if (!await xmlDrug
                                    .CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token)
@@ -909,11 +903,9 @@ namespace Chummer
                         }
                     }
 
-                    lstDrugs.Add(new ListItem((await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value,
-                                              (await xmlDrug
-                                                     .SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                                     .ConfigureAwait(false))?.Value
-                                              ?? (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value));
+                    lstDrugs.Add(new ListItem(xmlDrug.SelectSingleNodeAndCacheExpression("id", token)?.Value,
+                                              xmlDrug.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                              ?? xmlDrug.SelectSingleNodeAndCacheExpression("name", token)?.Value));
                 }
 
                 if (blnDoUIUpdate)
@@ -993,7 +985,7 @@ namespace Chummer
             if (!await objDrugNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_SelectPACKSKit_Drug", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return;
 
-            string strForceGrade = (await objDrugNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token).ConfigureAwait(false))?.Value;
+            string strForceGrade = objDrugNode.SelectSingleNodeAndCacheExpression("forcegrade", token)?.Value;
             if (!string.IsNullOrEmpty(strForceGrade))
             {
                 SelectedGrade = _lstGrades.Find(x => x.Name == strForceGrade);

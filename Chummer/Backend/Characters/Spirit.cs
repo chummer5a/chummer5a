@@ -401,17 +401,15 @@ namespace Chummer
                             //Dump skills, (optional)powers if present to output
 
                             XPathNavigator xmlSpiritPowersBaseChummerNode
-                                = await (await _objLinkedCharacter
+                                = (await _objLinkedCharacter
                                         .LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint, token: token)
                                         .ConfigureAwait(false))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token)
-                                    .ConfigureAwait(false);
+                                    .SelectSingleNodeAndCacheExpression("/chummer", token: token);
                             XPathNavigator xmlCritterPowersBaseChummerNode
-                                = await (await _objLinkedCharacter
+                                = (await _objLinkedCharacter
                                         .LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint,
                                             token: token).ConfigureAwait(false))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token)
-                                    .ConfigureAwait(false);
+                                    .SelectSingleNodeAndCacheExpression("/chummer", token: token);
 
                             XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                             if (xmlPowersNode != null)
@@ -648,8 +646,7 @@ namespace Chummer
                                               + "]/@translate")?.Value
                                       ?? strEnglishCategory;
 
-                        switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("type", token: token)
-                                    .ConfigureAwait(false))?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type", token: token)?.Value)
                         {
                             case "M":
                                 strDisplayType = await LanguageManager
@@ -664,8 +661,7 @@ namespace Chummer
                                 break;
                         }
 
-                        switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("action", token: token)
-                                    .ConfigureAwait(false))?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action", token: token)?.Value)
                         {
                             case "Auto":
                                 strDisplayAction = await LanguageManager
@@ -703,8 +699,7 @@ namespace Chummer
                                 break;
                         }
 
-                        switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("duration", token: token)
-                                    .ConfigureAwait(false))?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration", token: token)?.Value)
                         {
                             case "Instant":
                                 strDisplayDuration

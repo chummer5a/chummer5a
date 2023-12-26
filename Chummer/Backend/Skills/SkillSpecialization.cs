@@ -175,7 +175,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))
+                    ? objNode.SelectSingleNodeAndCacheExpression("@translate", token)
                     ?.Value ?? Name
                     : Name;
             }

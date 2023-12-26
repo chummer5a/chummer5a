@@ -139,10 +139,10 @@ namespace Chummer
                 await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);
                 await lblBPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBP)).ConfigureAwait(false);
 
-                string strSource = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value
+                string strSource = objXmlQuality.SelectSingleNodeAndCacheExpression("source")?.Value
                                    ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                string strPage = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value
-                                 ?? (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value
+                string strPage = objXmlQuality.SelectSingleNodeAndCacheExpression("altpage")?.Value
+                                 ?? objXmlQuality.SelectSingleNodeAndCacheExpression("page")?.Value
                                  ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
@@ -158,7 +158,7 @@ namespace Chummer
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
-                string strAllowed = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("allowed").ConfigureAwait(false))?.Value;
+                string strAllowed = objXmlQuality.SelectSingleNodeAndCacheExpression("allowed")?.Value;
                 if (!string.IsNullOrEmpty(strAllowed))
                 {
                     await lblMinimum.DoThreadSafeAsync(x =>
@@ -174,7 +174,7 @@ namespace Chummer
                     await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
-                string strCost = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("cost").ConfigureAwait(false))?.Value;
+                string strCost = objXmlQuality.SelectSingleNodeAndCacheExpression("cost")?.Value;
                 if (!string.IsNullOrEmpty(strCost))
                 {
                     if (chkFree.Checked)
@@ -402,7 +402,7 @@ namespace Chummer
                                                       .ConfigureAwait(false);
                 foreach (XPathNavigator objXmlQuality in _objXPathDocument.Select("/chummer/qualities/quality" + strFilter))
                 {
-                    string strId = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
+                    string strId = objXmlQuality.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!blnDoUIUpdate)
@@ -416,8 +416,8 @@ namespace Chummer
                     lstLifestyleQuality.Add(
                         new ListItem(
                             strId,
-                            (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
-                            ?? (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
+                            objXmlQuality.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                            ?? objXmlQuality.SelectSingleNodeAndCacheExpression("name", token)?.Value
                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
                                                     .ConfigureAwait(false)));
                 }
@@ -458,16 +458,16 @@ namespace Chummer
                 return;
             XPathNavigator objNode = _objXPathDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strSelectedSourceIDString);
             if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, _objParentLifestyle,
-                                                                       (await objNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                           "translate", token).ConfigureAwait(false))?.Value
-                                                                       ?? (await objNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                           "name", token).ConfigureAwait(false))?.Value, _strIgnoreQuality, token: token).ConfigureAwait(false))
+                                                                       objNode.SelectSingleNodeAndCacheExpression(
+                                                                           "translate", token)?.Value
+                                                                       ?? objNode.SelectSingleNodeAndCacheExpression(
+                                                                           "name", token)?.Value, _strIgnoreQuality, token: token).ConfigureAwait(false))
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
             _strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
-                : (await objNode.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value;
+                : objNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
 
             await this.DoThreadSafeAsync(x =>
             {

@@ -2740,8 +2740,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                        .ConfigureAwait(false))?.Value ?? Name
+                    ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
                     : Name;
             }
         }
@@ -2888,14 +2887,13 @@ namespace Chummer.Backend.Equipment
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return (await (await _objCharacter
-                            .LoadDataXPathAsync(
-                                SourceType == Improvement.ImprovementSource.Cyberware
-                                    ? "cyberware.xml"
-                                    : "bioware.xml", strLanguage, token: token).ConfigureAwait(false))
-                        .SelectSingleNodeAndCacheExpressionAsync(
-                            "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token)
-                        .ConfigureAwait(false))
+                return (await _objCharacter
+                        .LoadDataXPathAsync(
+                            SourceType == Improvement.ImprovementSource.Cyberware
+                                ? "cyberware.xml"
+                                : "bioware.xml", strLanguage, token: token).ConfigureAwait(false))
+                    .SelectSingleNodeAndCacheExpression(
+                        "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token)
                     ?.Value ?? Category;
             }
         }
@@ -3301,10 +3299,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Page
-                    : Page;
+                string s = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
             }
         }
@@ -5048,9 +5043,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                if (objNode != null
-                    && (await objNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token)
-                        .ConfigureAwait(false))?.Value == "None")
+                if (objNode?.SelectSingleNodeAndCacheExpression("forcegrade", token)?.Value == "None")
                 {
                     return;
                 }
@@ -5061,9 +5054,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                if (objNode != null
-                    && (await objNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token)
-                        .ConfigureAwait(false))?.Value == "None")
+                if (objNode?.SelectSingleNodeAndCacheExpression("forcegrade", token)?.Value == "None")
                 {
                     return;
                 }

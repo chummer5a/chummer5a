@@ -110,18 +110,18 @@ namespace Chummer
                     {
                         foreach (XPathNavigator xmlSizeNode in xmlSizeNodeList)
                         {
-                            string strId = (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("id", _objGenericToken).ConfigureAwait(false))?.Value;
+                            string strId = xmlSizeNode.SelectSingleNodeAndCacheExpression("id", _objGenericToken)?.Value;
                             if (string.IsNullOrEmpty(strId))
                                 continue;
 
-                            XPathNavigator xmlTestNode = await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("forbidden/vehicledetails", _objGenericToken).ConfigureAwait(false);
+                            XPathNavigator xmlTestNode = xmlSizeNode.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails", _objGenericToken);
                             if (xmlTestNode != null && await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, _objGenericToken).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails", _objGenericToken).ConfigureAwait(false);
+                            xmlTestNode = xmlSizeNode.SelectSingleNodeAndCacheExpression("required/vehicledetails", _objGenericToken);
                             if (xmlTestNode != null && !await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, _objGenericToken).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
@@ -130,8 +130,8 @@ namespace Chummer
 
                             lstSize.Add(new ListItem(
                                             strId,
-                                            (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("translate", _objGenericToken).ConfigureAwait(false))?.Value
-                                            ?? (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("name", _objGenericToken).ConfigureAwait(false))?.Value
+                                            xmlSizeNode.SelectSingleNodeAndCacheExpression("translate", _objGenericToken)?.Value
+                                            ?? xmlSizeNode.SelectSingleNodeAndCacheExpression("name", _objGenericToken)?.Value
                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: _objGenericToken).ConfigureAwait(false)));
                         }
                     }
@@ -734,8 +734,7 @@ namespace Chummer
                 {
                     bool blnCanBlackMarketDiscount
                         = _setBlackMarketMaps.Contains(
-                            (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("category", token: token)
-                                                   .ConfigureAwait(false))?.Value ?? string.Empty);
+                            xmlSelectedMount.SelectSingleNodeAndCacheExpression("category", token: token)?.Value ?? string.Empty);
                     await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = blnCanBlackMarketDiscount;
@@ -759,7 +758,7 @@ namespace Chummer
                 int intSlots = 0;
                 xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intSlots);
 
-                string strAvail = (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                string strAvail = xmlSelectedMount.SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty;
                 char chrAvailSuffix = strAvail.Length > 0 ? strAvail[strAvail.Length - 1] : ' ';
                 if (chrAvailSuffix == 'F' || chrAvailSuffix == 'R')
                     strAvail = strAvail.Substring(0, strAvail.Length - 1);
@@ -850,14 +849,11 @@ namespace Chummer
                 await lblSlots.DoThreadSafeAsync(x => x.Text = intSlots.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
                 await lblAvailability.DoThreadSafeAsync(x => x.Text = strAvailText, token).ConfigureAwait(false);
                 string strSource
-                    = (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("source", token)
-                                             .ConfigureAwait(false))?.Value ?? await LanguageManager
+                    = xmlSelectedMount.SelectSingleNodeAndCacheExpression("source", token)?.Value ?? await LanguageManager
                         .GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 string strPage
-                    = (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("altpage", token)
-                                             .ConfigureAwait(false))?.Value
-                      ?? (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("page", token)
-                                                .ConfigureAwait(false))?.Value ?? await LanguageManager
+                    = xmlSelectedMount.SelectSingleNodeAndCacheExpression("altpage", token)?.Value
+                      ?? xmlSelectedMount.SelectSingleNodeAndCacheExpression("page", token)?.Value ?? await LanguageManager
                           .GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token).ConfigureAwait(false);
                 await objSourceString.SetControlAsync(lblSource, token).ConfigureAwait(false);
@@ -1031,8 +1027,8 @@ namespace Chummer
                     XPathNavigator xmlSelectedMount = _xmlDocXPath.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strSelectedMount);
                     if (xmlSelectedMount != null)
                     {
-                        xmlForbiddenNode = await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("forbidden/weaponmountdetails", token: token).ConfigureAwait(false);
-                        xmlRequiredNode = await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("required/weaponmountdetails", token: token).ConfigureAwait(false);
+                        xmlForbiddenNode = xmlSelectedMount.SelectSingleNodeAndCacheExpression("forbidden/weaponmountdetails", token: token);
+                        xmlRequiredNode = xmlSelectedMount.SelectSingleNodeAndCacheExpression("required/weaponmountdetails", token: token);
                     }
                 }
 
@@ -1051,28 +1047,28 @@ namespace Chummer
                     {
                         foreach (XPathNavigator xmlWeaponMountOptionNode in xmlWeaponMountOptionNodeList)
                         {
-                            string strId = (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
+                            string strId = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                             if (string.IsNullOrEmpty(strId))
                                 continue;
 
-                            XPathNavigator xmlTestNode = await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("forbidden/vehicledetails", token: token).ConfigureAwait(false);
+                            XPathNavigator xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails", token: token);
                             if (xmlTestNode != null && await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails", token: token).ConfigureAwait(false);
+                            xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("required/vehicledetails", token: token);
                             if (xmlTestNode != null && !await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            string strName = (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                            string strName = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                             bool blnAddItem = true;
-                            switch ((await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value)
+                            switch (xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("category", token: token)?.Value)
                             {
                                 case "Visibility":
                                     {
@@ -1152,7 +1148,7 @@ namespace Chummer
                                         if (blnAddItem)
                                             lstFlexibility.Add(
                                                 new ListItem(
-                                                    strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                                                    strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                                     }
                                     break;
 
@@ -1195,7 +1191,7 @@ namespace Chummer
                                         if (blnAddItem)
                                             lstControl.Add(
                                                 new ListItem(
-                                                    strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                                                    strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                                     }
                                     break;
 

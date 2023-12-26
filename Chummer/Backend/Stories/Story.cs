@@ -163,10 +163,10 @@ namespace Chummer
                 int intTotalWeight = 0;
                 foreach (XPathNavigator xmlStory in xmlPossibleStoryList)
                 {
-                    string strStoryId = (await xmlStory.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strStoryId = xmlStory.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (!string.IsNullOrEmpty(strStoryId))
                     {
-                        if (!int.TryParse((await xmlStory.SelectSingleNodeAndCacheExpressionAsync("weight", token: token).ConfigureAwait(false))?.Value ?? "1", out int intWeight))
+                        if (!int.TryParse(xmlStory.SelectSingleNodeAndCacheExpression("weight", token: token)?.Value ?? "1", out int intWeight))
                             intWeight = 1;
                         intTotalWeight += intWeight;
                         if (dicStoriesListWithWeights.TryGetValue(strStoryId, out int intExistingWeight))

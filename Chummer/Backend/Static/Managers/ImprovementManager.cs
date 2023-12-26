@@ -2113,14 +2113,8 @@ namespace Chummer
                                                 if (string.IsNullOrEmpty(strKey))
                                                 {
                                                     string strName
-                                                        = (blnSync
-                                                              // ReSharper disable once MethodHasAsyncOverload
-                                                              ? objNode.SelectSingleNodeAndCacheExpression(
-                                                                  "name", token)
-                                                              : await objNode
-                                                                      .SelectSingleNodeAndCacheExpressionAsync(
-                                                                          "name", token: token).ConfigureAwait(false))
-                                                          ?.Value
+                                                        = objNode.SelectSingleNodeAndCacheExpression(
+                                                                  "name", token)?.Value
                                                           ?? string.Empty;
                                                     if (string.IsNullOrWhiteSpace(strName))
                                                     {

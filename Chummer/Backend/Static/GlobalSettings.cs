@@ -1654,8 +1654,7 @@ namespace Chummer
                                      .ConfigureAwait(false))
                                  .SelectAndCacheExpression("/chummer/books/book", token: token))
                     {
-                        string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
-                            .ConfigureAwait(false))?.Value;
+                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
                         if (string.IsNullOrEmpty(strCode))
                             continue;
                         SourcebookInfo objSource = new SourcebookInfo
@@ -1722,8 +1721,7 @@ namespace Chummer
                              .SelectAndCacheExpression(
                                  "/chummer/books/book", token: token))
                 {
-                    string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
-                        .ConfigureAwait(false))?.Value;
+                    string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
                     if (string.IsNullOrEmpty(strCode))
                         continue;
                     SourcebookInfo objSource = new SourcebookInfo

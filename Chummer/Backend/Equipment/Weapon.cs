@@ -2258,12 +2258,11 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token)
-                                              .ConfigureAwait(false))
-                          .SelectSingleNodeAndCacheExpressionAsync(
-                              "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate",
-                              token: token)
-                          .ConfigureAwait(false))?.Value ?? Category;
+            return (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token)
+                    .ConfigureAwait(false))
+                .SelectSingleNodeAndCacheExpression(
+                    "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate",
+                    token: token)?.Value ?? Category;
         }
 
         /// <summary>
@@ -2290,12 +2289,11 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return AmmoCategory;
 
-            return (await (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token)
-                                              .ConfigureAwait(false))
-                          .SelectSingleNodeAndCacheExpressionAsync(
-                              "/chummer/categories/category[. = " + AmmoCategory.CleanXPath() + "]/@translate",
-                              token: token)
-                          .ConfigureAwait(false))?.Value ?? AmmoCategory;
+            return (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token)
+                    .ConfigureAwait(false))
+                .SelectSingleNodeAndCacheExpression(
+                    "/chummer/categories/category[. = " + AmmoCategory.CleanXPath() + "]/@translate",
+                    token: token)?.Value ?? AmmoCategory;
         }
 
         /// <summary>
@@ -5579,9 +5577,7 @@ namespace Chummer.Backend.Equipment
             {
                 XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage, token: token).ConfigureAwait(false);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/ranges/range", strRange);
-                XPathNavigator xmlTranslateNode = objXmlCategoryNode != null
-                    ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false)
-                    : null;
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate", token: token);
                 if (xmlTranslateNode != null)
                 {
                     strRange = xmlTranslateNode.Value;
@@ -5589,14 +5585,14 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
-                    objXmlCategoryNode = await objXmlDocument
-                                               .SelectSingleNodeAndCacheExpressionAsync(
+                    objXmlCategoryNode = objXmlDocument
+                                               .SelectSingleNodeAndCacheExpression(
                                                    "/chummer/categories/category[. = " + strRange.CleanXPath() + ']',
-                                                   token: token).ConfigureAwait(false);
+                                                   token: token);
                     if (objXmlCategoryNode != null)
                     {
                         xmlTranslateNode
-                            = await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false);
+                            = objXmlCategoryNode.SelectSingleNodeAndCacheExpression("@translate", token: token);
                         if (xmlTranslateNode != null)
                             strRange = xmlTranslateNode.Value;
                     }
@@ -5647,9 +5643,7 @@ namespace Chummer.Backend.Equipment
             {
                 XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage, token: token).ConfigureAwait(false);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/ranges/range", strRange);
-                XPathNavigator xmlTranslateNode = objXmlCategoryNode != null
-                    ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false)
-                    : null;
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate", token: token);
                 if (xmlTranslateNode != null)
                 {
                     strRange = xmlTranslateNode.Value;
@@ -5657,14 +5651,14 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
-                    objXmlCategoryNode = await objXmlDocument
-                                               .SelectSingleNodeAndCacheExpressionAsync(
+                    objXmlCategoryNode = objXmlDocument
+                                               .SelectSingleNodeAndCacheExpression(
                                                    "/chummer/categories/category[. = " + strRange.CleanXPath() + ']',
-                                                   token: token).ConfigureAwait(false);
+                                                   token: token);
                     if (objXmlCategoryNode != null)
                     {
                         xmlTranslateNode
-                            = await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false);
+                            = objXmlCategoryNode.SelectSingleNodeAndCacheExpression("@translate", token: token);
                         if (xmlTranslateNode != null)
                             strRange = xmlTranslateNode.Value;
                     }
@@ -6762,7 +6756,7 @@ namespace Chummer.Backend.Equipment
             XPathNavigator xmlNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false);
             if (xmlNode != null)
             {
-                string strGunnerySpec = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("category/@gunneryspec", token).ConfigureAwait(false))?.Value;
+                string strGunnerySpec = xmlNode.SelectSingleNodeAndCacheExpression("category/@gunneryspec", token)?.Value;
                 if (string.IsNullOrEmpty(strGunnerySpec))
                 {
                     strGunnerySpec = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
@@ -10052,8 +10046,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlAccessory == null)
                 return false;
             string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            XPathNavigator xmlMountNode = await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("mount", token)
-                                                               .ConfigureAwait(false);
+            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount", token);
             if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value
                     .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
                         !string.IsNullOrEmpty(strItem)
@@ -10062,8 +10055,7 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
 
-            xmlMountNode = await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("extramount", token)
-                                                .ConfigureAwait(false);
+            xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount", token);
             if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value
                     .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
                         !string.IsNullOrEmpty(strItem)
@@ -10075,9 +10067,9 @@ namespace Chummer.Backend.Equipment
             if (!await objXmlAccessory.RequirementsMetAsync(_objCharacter, this, string.Empty, string.Empty, token: token).ConfigureAwait(false))
                 return false;
 
-            XPathNavigator xmlTestNode = await objXmlAccessory
-                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                   "forbidden/weapondetails", token).ConfigureAwait(false);
+            XPathNavigator xmlTestNode = objXmlAccessory
+                                               .SelectSingleNodeAndCacheExpression(
+                                                   "forbidden/weapondetails", token);
             if (xmlTestNode != null)
             {
                 XPathNavigator xmlRequirementsNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false);
@@ -10085,17 +10077,15 @@ namespace Chummer.Backend.Equipment
                 if (await xmlRequirementsNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token)
                                              .ConfigureAwait(false))
                     return false;
-                xmlTestNode = await objXmlAccessory
-                                    .SelectSingleNodeAndCacheExpressionAsync("required/weapondetails", token)
-                                    .ConfigureAwait(false);
+                xmlTestNode = objXmlAccessory
+                                    .SelectSingleNodeAndCacheExpression("required/weapondetails", token);
                 // Assumes topmost parent is an AND node
                 return xmlTestNode == null || await xmlRequirementsNode
                                                     .ProcessFilterOperationNodeAsync(xmlTestNode, false, token)
                                                     .ConfigureAwait(false);
             }
 
-            xmlTestNode = await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("required/weapondetails", token)
-                                               .ConfigureAwait(false);
+            xmlTestNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("required/weapondetails", token);
             // Assumes topmost parent is an AND node
             return xmlTestNode == null || await (await this.GetNodeXPathAsync(token).ConfigureAwait(false))
                                                 .ProcessFilterOperationNodeAsync(xmlTestNode, false, token)

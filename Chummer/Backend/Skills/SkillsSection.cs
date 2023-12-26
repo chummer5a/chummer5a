@@ -922,19 +922,13 @@ namespace Chummer.Backend.Skills
                     strKnowledgeSkillTypeToUse = new AsyncLazy<string>(async () =>
                     {
                         XPathNavigator xmlCategories =
-                            await (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token)
-                                    .ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsync(
-                                    "/chummer/categories", token).ConfigureAwait(false);
-                        if (await xmlCategories
-                                .SelectSingleNodeAndCacheExpressionAsync(
-                                    "category[@type = \"knowledge\" and . = \"Professional\"]", token)
-                                .ConfigureAwait(false)
-                            != null)
+                            (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                            .SelectSingleNodeAndCacheExpression("/chummer/categories", token);
+                        if (xmlCategories.SelectSingleNodeAndCacheExpression(
+                                "category[@type = \"knowledge\" and . = \"Professional\"]", token) != null)
                             return "Professional";
-                        return (await xmlCategories
-                                   .SelectSingleNodeAndCacheExpressionAsync("category[@type = \"knowledge\"]", token)
-                                   .ConfigureAwait(false))?.Value
+                        return xmlCategories
+                                   .SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\"]", token)?.Value
                                ?? "Professional";
                     }, Utils.JoinableTaskFactory);
                 }

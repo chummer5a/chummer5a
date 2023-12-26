@@ -716,10 +716,8 @@ namespace Chummer.Backend.Equipment
                         if (objXmlAspect != null)
                         {
                             strBaseLifestyle
-                                = (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("translate", token)
-                                      .ConfigureAwait(false))?.Value
-                                  ?? (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                      .ConfigureAwait(false))?.Value ?? strBaseLifestyle;
+                                = objXmlAspect.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                                  ?? objXmlAspect.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? strBaseLifestyle;
                         }
                     }
 
@@ -873,7 +871,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
+                    ? objNode.SelectSingleNodeAndCacheExpression("translate", token)
                     ?.Value ?? BaseLifestyle
                     : BaseLifestyle;
             }
@@ -994,8 +992,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Page
+                    ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                     : Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
             }

@@ -150,7 +150,7 @@ namespace Chummer
                     if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
                     {
                         _lstCategory.Add(new ListItem(strInnerText,
-                            (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate", _objGenericToken).ConfigureAwait(false))?.Value ?? strInnerText));
+                            objXmlCategory.SelectSingleNodeAndCacheExpression("@translate", _objGenericToken)?.Value ?? strInnerText));
                     }
                 }
                 _lstCategory.Sort(CompareListItems.CompareNames);
@@ -422,21 +422,21 @@ namespace Chummer
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                 try
                 {
-                    string strHandling = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("handling", token).ConfigureAwait(false))?.Value;
+                    string strHandling = objXmlVehicle.SelectSingleNodeAndCacheExpression("handling", token)?.Value;
                     await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = strHandling, token: token).ConfigureAwait(false);
-                    string strAccel = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("accel", token).ConfigureAwait(false))?.Value;
+                    string strAccel = objXmlVehicle.SelectSingleNodeAndCacheExpression("accel", token)?.Value;
                     await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = strAccel, token: token).ConfigureAwait(false);
-                    string strSpeed = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("speed", token).ConfigureAwait(false))?.Value;
+                    string strSpeed = objXmlVehicle.SelectSingleNodeAndCacheExpression("speed", token)?.Value;
                     await lblVehicleSpeed.DoThreadSafeAsync(x => x.Text = strSpeed, token: token).ConfigureAwait(false);
-                    string strPilot = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("pilot", token).ConfigureAwait(false))?.Value;
+                    string strPilot = objXmlVehicle.SelectSingleNodeAndCacheExpression("pilot", token)?.Value;
                     await lblVehiclePilot.DoThreadSafeAsync(x => x.Text = strPilot, token: token).ConfigureAwait(false);
-                    string strBody = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("body", token).ConfigureAwait(false))?.Value;
+                    string strBody = objXmlVehicle.SelectSingleNodeAndCacheExpression("body", token)?.Value;
                     await lblVehicleBody.DoThreadSafeAsync(x => x.Text = strBody, token: token).ConfigureAwait(false);
-                    string strArmor = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("armor", token).ConfigureAwait(false))?.Value;
+                    string strArmor = objXmlVehicle.SelectSingleNodeAndCacheExpression("armor", token)?.Value;
                     await lblVehicleArmor.DoThreadSafeAsync(x => x.Text = strArmor, token: token).ConfigureAwait(false);
-                    string strSeats = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("seats", token).ConfigureAwait(false))?.Value;
+                    string strSeats = objXmlVehicle.SelectSingleNodeAndCacheExpression("seats", token)?.Value;
                     await lblVehicleSeats.DoThreadSafeAsync(x => x.Text = strSeats, token: token).ConfigureAwait(false);
-                    string strSensor = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("sensor", token).ConfigureAwait(false))?.Value;
+                    string strSensor = objXmlVehicle.SelectSingleNodeAndCacheExpression("sensor", token)?.Value;
                     await lblVehicleSensor.DoThreadSafeAsync(x => x.Text = strSensor, token: token).ConfigureAwait(false);
                     await lblVehicleHandlingLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strHandling), token: token).ConfigureAwait(false);
                     await lblVehicleAccelLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccel), token: token).ConfigureAwait(false);
@@ -447,14 +447,14 @@ namespace Chummer
                     await lblVehicleSeatsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSeats), token: token).ConfigureAwait(false);
                     await lblVehicleSensorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSensor), token: token).ConfigureAwait(false);
                     AvailabilityValue objTotalAvail
-                        = new AvailabilityValue(0, (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value,
+                        = new AvailabilityValue(0, objXmlVehicle.SelectSingleNodeAndCacheExpression("avail", token)?.Value,
                                                 await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? -4 : 0);
                     string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
                     await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblVehicleAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
 
                     bool blnCanBlackMarketDiscount
-                        = _setBlackMarketMaps.Contains((await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value);
+                        = _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNodeAndCacheExpression("category", token)?.Value);
                     await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = blnCanBlackMarketDiscount;
@@ -471,10 +471,10 @@ namespace Chummer
 
                     await UpdateSelectedVehicleCost(token).ConfigureAwait(false);
 
-                    string strSource = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value
+                    string strSource = objXmlVehicle.SelectSingleNodeAndCacheExpression("source", token)?.Value
                                        ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                    string strPage = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value
-                                     ?? (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value
+                    string strPage = objXmlVehicle.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value
+                                     ?? objXmlVehicle.SelectSingleNodeAndCacheExpression("page", token)?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     SourceString objSource = await SourceString.GetSourceStringAsync(
                         strSource, strPage, GlobalSettings.Language,
@@ -521,7 +521,7 @@ namespace Chummer
                 }
 
                 // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
-                string strCost = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                string strCost = objXmlVehicle.SelectSingleNodeAndCacheExpression("cost", token)?.Value ?? string.Empty;
                 if (strCost.StartsWith("Variable", StringComparison.Ordinal))
                 {
                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
@@ -544,7 +544,7 @@ namespace Chummer
 
                         if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                             decCost *= 0.9m;
-                        if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
+                        if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, objXmlVehicle.SelectSingleNodeAndCacheExpression("category", token)?.Value))
                             decCost *= 0.9m;
                     }
 
@@ -659,15 +659,15 @@ namespace Chummer
                         {
                             decimal decCostMultiplier = decBaseCostMultiplier;
                             if (blnBlackMarketDiscount
-                                && _setBlackMarketMaps.Contains((await objXmlVehicle
-                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                           "category", token).ConfigureAwait(false))
+                                && _setBlackMarketMaps.Contains(objXmlVehicle
+                                    .SelectSingleNodeAndCacheExpression(
+                                        "category", token)
                                                                 ?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
-                                                                  (await objXmlVehicle
-                                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                                             "category", token).ConfigureAwait(false))
+                                                                  objXmlVehicle
+                                                                      .SelectSingleNodeAndCacheExpression(
+                                                                          "category", token)
                                                                   ?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (!await objXmlVehicle.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false))
@@ -789,15 +789,14 @@ namespace Chummer
                             {
                                 decimal decCostMultiplier = decBaseCostMultiplier;
                                 if (blnBlackMarketDiscount
-                                    && _setBlackMarketMaps.Contains((await objXmlVehicle
-                                                                           .SelectSingleNodeAndCacheExpressionAsync(
-                                                                               "category", token).ConfigureAwait(false))
+                                    && _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNodeAndCacheExpression(
+                                            "category", token)
                                                                     ?.Value))
                                     decCostMultiplier *= 0.9m;
                                 if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
-                                                                      (await objXmlVehicle
-                                                                             .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                 "category", token).ConfigureAwait(false))
+                                                                      objXmlVehicle
+                                                                          .SelectSingleNodeAndCacheExpression(
+                                                                              "category", token)
                                                                       ?.Value))
                                     decCostMultiplier *= 0.9m;
                                 if (!await objXmlVehicle.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false))
@@ -808,14 +807,14 @@ namespace Chummer
                             }
 
                             string strDisplayname
-                                = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
-                                  ?? (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
+                                = objXmlVehicle.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                                  ?? objXmlVehicle.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                   ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
 
                             if (!GlobalSettings.SearchInCategoryOnly && blnHasSearch)
                             {
                                 string strCategory
-                                    = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value;
+                                    = objXmlVehicle.SelectSingleNodeAndCacheExpression("category", token)?.Value;
                                 if (!string.IsNullOrEmpty(strCategory))
                                 {
                                     ListItem objFoundItem
@@ -828,8 +827,7 @@ namespace Chummer
                             }
 
                             lstVehicles.Add(new ListItem(
-                                                (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))
-                                                ?.Value ?? string.Empty,
+                                                objXmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty,
                                                 strDisplayname));
                         }
 
@@ -894,10 +892,8 @@ namespace Chummer
                                 ? await cboCategory
                                         .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                         .ConfigureAwait(false)
-                                : (await xmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token)
-                                                   .ConfigureAwait(false))?.Value;
-                            _strSelectedVehicle = (await xmlVehicle.SelectSingleNodeAndCacheExpressionAsync("id", token)
-                                                                   .ConfigureAwait(false))?.Value;
+                                : xmlVehicle.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+                            _strSelectedVehicle = xmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                             _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
                                                         .ConfigureAwait(false);
                             _blnBlackMarketDiscount = await chkBlackMarketDiscount
@@ -932,10 +928,8 @@ namespace Chummer
                                     ? await cboCategory
                                             .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                             .ConfigureAwait(false)
-                                    : (await xmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token)
-                                                       .ConfigureAwait(false))?.Value;
-                            _strSelectedVehicle = (await xmlVehicle.SelectSingleNodeAndCacheExpressionAsync("id", token)
-                                                                   .ConfigureAwait(false))?.Value;
+                                    : xmlVehicle.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+                            _strSelectedVehicle = xmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                         }
 
                         _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
@@ -955,7 +949,7 @@ namespace Chummer
             {
                 decimal decCost = xmlVehicle != null
                     ? Convert.ToDecimal(
-                        (await xmlVehicle.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false))
+                        xmlVehicle.SelectSingleNodeAndCacheExpression("cost", token)
                         ?.Value, GlobalSettings.InvariantCultureInfo)
                     : 0;
                 decCost *= 1 - await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token)
@@ -984,10 +978,8 @@ namespace Chummer
                                            .ConfigureAwait(false);
             }
             else if (xmlVehicle != null)
-            {
-                _strSelectCategory = (await xmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token)
-                                                      .ConfigureAwait(false))?.Value ?? string.Empty;
-            }
+                _strSelectCategory = xmlVehicle.SelectSingleNodeAndCacheExpression("category", token)?.Value ??
+                                     string.Empty;
             else
                 _strSelectCategory = string.Empty;
             _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);

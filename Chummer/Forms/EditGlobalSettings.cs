@@ -1298,17 +1298,14 @@ namespace Chummer
                                                             .SelectAndCacheExpression(
                                                                 "/chummer/books/book", token: token))
                 {
-                    string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
-                                                      .ConfigureAwait(false))?.Value;
+                    string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
                     if (!string.IsNullOrEmpty(strCode))
                     {
                         ListItem objBookInfo
                             = new ListItem(
                                 strCode,
-                                (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                                 .ConfigureAwait(false))?.Value
-                                ?? (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token)
-                                                    .ConfigureAwait(false))?.Value ?? strCode);
+                                objXmlBook.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                ?? objXmlBook.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strCode);
                         lstSourcebookInfos.Add(objBookInfo);
                     }
                 }
@@ -1869,18 +1866,15 @@ namespace Chummer
                                                             .SelectAndCacheExpression(
                                                                 "/chummer/pdfarguments/pdfargument", token: token))
                 {
-                    string strValue = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("value", token: token)
-                                                       .ConfigureAwait(false))?.Value;
+                    string strValue = objXmlNode.SelectSingleNodeAndCacheExpression("value", token: token)?.Value;
                     if (string.IsNullOrEmpty(strValue))
                         continue;
                     lstPdfParameters.Add(new ListItem(
                                              strValue,
-                                             (await objXmlNode
-                                                    .SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                                    .ConfigureAwait(false))?.Value
-                                             ?? (await objXmlNode
-                                                       .SelectSingleNodeAndCacheExpressionAsync("name", token: token)
-                                                       .ConfigureAwait(false))?.Value
+                                             objXmlNode
+                                                 .SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                             ?? objXmlNode
+                                                 .SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                              ?? string.Empty));
                     if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfParameters)
                         && GlobalSettings.PdfParameters == strValue)
@@ -2077,12 +2071,7 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    if (xmlDocument == null)
-                        continue;
-
-                    XPathNavigator node = await xmlDocument.CreateNavigator()
-                                                           .SelectSingleNodeAndCacheExpressionAsync(
-                                                               "/chummer/name", token: token).ConfigureAwait(false);
+                    XPathNavigator node = xmlDocument?.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token: token);
                     if (node == null)
                         continue;
 
@@ -2143,12 +2132,7 @@ namespace Chummer
 
                         token.ThrowIfCancellationRequested();
 
-                        if (xmlDocument == null)
-                            continue;
-
-                        XPathNavigator node = await xmlDocument.CreateNavigator()
-                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                   "/chummer/name", token: token).ConfigureAwait(false);
+                        XPathNavigator node = xmlDocument?.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token: token);
                         if (node == null)
                             continue;
 
@@ -2186,15 +2170,13 @@ namespace Chummer
                                                               + "]/sheet[not(hide)]", token: token))
                 {
                     string strFile
-                        = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename", token: token)
-                                         .ConfigureAwait(false))?.Value ?? string.Empty;
+                        = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token: token)?.Value ?? string.Empty;
                     lstFiles.Add(new ListItem(
                                      !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                      StringComparison.OrdinalIgnoreCase)
                                          ? Path.Combine(GlobalSettings.Language, strFile)
                                          : strFile,
-                                     (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name", token: token)
-                                                    .ConfigureAwait(false))?.Value ?? string.Empty));
+                                     xmlSheet.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? string.Empty));
                 }
 
                 string strOldSelected;
@@ -2400,23 +2382,22 @@ namespace Chummer
                                      + _strSelectedLanguage.CleanXPath() + ']'))
                     {
                         string strCode
-                            = (await objBook.SelectSingleNodeAndCacheExpressionAsync("code").ConfigureAwait(false))
+                            = objBook.SelectSingleNodeAndCacheExpression("code")
                             ?.Value;
                         if (string.IsNullOrEmpty(strCode))
                             continue;
                         XPathNavigator objMatch
-                            = await objBook.SelectSingleNodeAndCacheExpressionAsync(
-                                    "matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']')
-                                .ConfigureAwait(false);
+                            = objBook.SelectSingleNodeAndCacheExpression(
+                                    "matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']');
                         if (objMatch == null)
                             continue;
                         string strMatchText
-                            = (await objMatch.SelectSingleNodeAndCacheExpressionAsync("text").ConfigureAwait(false))
+                            = objMatch.SelectSingleNodeAndCacheExpression("text")
                             ?.Value;
                         if (string.IsNullOrEmpty(strMatchText))
                             continue;
                         if (!int.TryParse(
-                                (await objMatch.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))
+                                objMatch.SelectSingleNodeAndCacheExpression("page")
                                 ?.Value, out int intMatchPage))
                             continue;
                         Tuple<string, int> tupValue = new Tuple<string, int>(strMatchText, intMatchPage);

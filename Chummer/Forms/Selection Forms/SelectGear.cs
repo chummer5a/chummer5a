@@ -179,13 +179,13 @@ namespace Chummer
                 {
                     string strCategory = objXmlCategory.Value;
                     // Make sure the Category isn't in the exclusion list.
-                    if (!_setAllowedCategories.Contains(strCategory) && (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@show", _objGenericToken).ConfigureAwait(false))?.Value == bool.FalseString)
+                    if (!_setAllowedCategories.Contains(strCategory) && objXmlCategory.SelectSingleNodeAndCacheExpression("@show", _objGenericToken)?.Value == bool.FalseString)
                     {
                         continue;
                     }
                     if (_lstCategory.All(x => x.Value.ToString() != strCategory) && await AnyItemInList(strCategory, _objGenericToken).ConfigureAwait(false))
                     {
-                        _lstCategory.Add(new ListItem(strCategory, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate", _objGenericToken).ConfigureAwait(false))?.Value ?? strCategory));
+                        _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate", _objGenericToken)?.Value ?? strCategory));
                     }
                 }
                 _lstCategory.Sort(CompareListItems.CompareNames);
@@ -309,10 +309,10 @@ namespace Chummer
 
                         if (objXmlGear != null)
                         {
-                            string strName = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                            string strName = objXmlGear.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
 
                             // Quantity.
-                            string strCostFor = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("costfor", token).ConfigureAwait(false))?.Value;
+                            string strCostFor = objXmlGear.SelectSingleNodeAndCacheExpression("costfor", token)?.Value;
                             await nudGearQty.DoThreadSafeAsync(x =>
                             {
                                 x.Enabled = true;
@@ -359,7 +359,7 @@ namespace Chummer
                                     }, token).ConfigureAwait(false);
                                 }
                             }
-                            else if ((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value == "Currency")
+                            else if (objXmlGear.SelectSingleNodeAndCacheExpression("category", token)?.Value == "Currency")
                             {
                                 await nudGearQty.DoThreadSafeAsync(x =>
                                 {
@@ -380,7 +380,7 @@ namespace Chummer
                             await lblGearQtyLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
                             await chkStack.DoThreadSafeAsync(x => x.Visible = _objCharacter.Created, token: token).ConfigureAwait(false);
 
-                            string strRatingLabel = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token).ConfigureAwait(false))?.Value;
+                            string strRatingLabel = objXmlGear.SelectSingleNodeAndCacheExpression("ratinglabel", token)?.Value;
                             strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
                                 ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
                                                 await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
@@ -768,7 +768,7 @@ namespace Chummer
                 {
                     int intRatingValue = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
                     // Retrieve the information for the selected piece of Cyberware.
-                    string strDeviceRating = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("devicerating", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strDeviceRating = objXmlGear.SelectSingleNodeAndCacheExpression("devicerating", token)?.Value ?? string.Empty;
                     strDeviceRating = await strDeviceRating.CheapReplaceAsync("{Rating}", () => intRatingValue.ToString(), token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                         strDeviceRating, token).ConfigureAwait(false);
@@ -777,18 +777,18 @@ namespace Chummer
                     await lblGearDeviceRating.DoThreadSafeFuncAsync(x => x.Text = strDeviceRating, token: token).ConfigureAwait(false);
                     await lblGearDeviceRatingLabel.DoThreadSafeFuncAsync(x => x.Visible = !string.IsNullOrEmpty(strDeviceRating), token: token).ConfigureAwait(false);
 
-                    string strSource = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value
+                    string strSource = objXmlGear.SelectSingleNodeAndCacheExpression("source", token)?.Value
                                        ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                    string strPage = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value
-                                     ?? (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value
+                    string strPage = objXmlGear.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value
+                                     ?? objXmlGear.SelectSingleNodeAndCacheExpression("page", token)?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     SourceString objSource = await SourceString.GetSourceStringAsync(
                         strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
                     await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
-                    string strAvail = new AvailabilityValue(intRatingValue,
-                                                            (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value).ToString();
+                    string strAvail = await new AvailabilityValue(intRatingValue,
+                        objXmlGear.SelectSingleNodeAndCacheExpression("avail", token)?.Value).ToStringAsync(token).ConfigureAwait(false);
                     await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
 
@@ -798,7 +798,7 @@ namespace Chummer
 
                     // Cost.
                     bool blnCanBlackMarketDiscount
-                        = _setBlackMarketMaps.Contains((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value);
+                        = _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category", token)?.Value);
                     await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = blnCanBlackMarketDiscount;
@@ -822,7 +822,7 @@ namespace Chummer
                     }
                     else
                     {
-                        XPathNavigator objCostNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false);
+                        XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost", token);
                         if (objCostNode == null)
                         {
                             int intHighestCostNode = 0;
@@ -1080,7 +1080,7 @@ namespace Chummer
                     await lblCapacityLabel.DoThreadSafeAsync(x => x.Visible = blnShowCapacity, token: token).ConfigureAwait(false);
 
                     // Rating.
-                    string strExpression = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("rating", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strExpression = objXmlGear.SelectSingleNodeAndCacheExpression("rating", token)?.Value ?? string.Empty;
                     if (strExpression == "0")
                         strExpression = string.Empty;
                     int intRating = int.MaxValue;
@@ -1121,7 +1121,7 @@ namespace Chummer
                     if (intRating > 0 && intRating != int.MaxValue)
                     {
                         await nudRating.DoThreadSafeAsync(x => x.Maximum = intRating, token: token).ConfigureAwait(false);
-                        XPathNavigator xmlMinRatingNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("minrating", token).ConfigureAwait(false);
+                        XPathNavigator xmlMinRatingNode = objXmlGear.SelectSingleNodeAndCacheExpression("minrating", token);
                         if (xmlMinRatingNode != null)
                         {
                             decimal decOldMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.Minimum, token: token).ConfigureAwait(false);
@@ -1195,7 +1195,7 @@ namespace Chummer
                             if (await chkDoItYourself.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                                 decCostMultiplier *= 0.5m;
                             decCostMultiplier *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
-                            if (_setBlackMarketMaps.Contains((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
+                            if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category", token)?.Value))
                                 decCostMultiplier *= 0.9m;
                             int intMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false);
                             int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token).ConfigureAwait(false);
@@ -1341,28 +1341,28 @@ namespace Chummer
                 foreach (XPathNavigator objXmlGear in _xmlBaseGearDataNode.Select("gears/gear" + strFilter))
                 {
                     XPathNavigator xmlTestNode
-                        = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("forbidden/parentdetails", token: token).ConfigureAwait(false);
+                        = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/parentdetails", token: token);
                     if (xmlTestNode != null && await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("required/parentdetails", token: token).ConfigureAwait(false);
+                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/parentdetails", token: token);
                     if (xmlTestNode != null && !await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("forbidden/geardetails", token: token).ConfigureAwait(false);
+                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/geardetails", token: token);
                     if (xmlTestNode != null && await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("required/geardetails", token: token).ConfigureAwait(false);
+                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/geardetails", token: token);
                     if (xmlTestNode != null && !await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                     {
                         // Assumes topmost parent is an AND node
@@ -1379,7 +1379,7 @@ namespace Chummer
                     }
 
                     decimal decCostMultiplier = decBaseCostMultiplier;
-                    if (_setBlackMarketMaps.Contains((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value))
+                    if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category", token: token)?.Value))
                         decCostMultiplier *= 0.9m;
                     if (!blnHideOverAvailLimit
                               || await objXmlGear.CheckAvailRestrictionAsync(_objCharacter, 1, _intAvailModifier, token).ConfigureAwait(false)
@@ -1388,11 +1388,11 @@ namespace Chummer
                                                   _objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
                     {
                         blnAnyItem = true;
-                        string strDisplayName = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                                ?? (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                        string strDisplayName = objXmlGear.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                                ?? objXmlGear.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                         lstGears.Add(new ListItem(
-                                         (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value ?? string.Empty,
+                                         objXmlGear.SelectSingleNodeAndCacheExpression("id", token: token)?.Value ?? string.Empty,
                                          strDisplayName));
                     }
                     else
@@ -1439,7 +1439,7 @@ namespace Chummer
                                         if (objXmlGear == null)
                                             continue;
                                         string strLoopCategory
-                                            = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value;
+                                            = objXmlGear.SelectSingleNodeAndCacheExpression("category", token: token)?.Value;
                                         if (string.IsNullOrEmpty(strLoopCategory))
                                             continue;
                                         ListItem objFoundItem

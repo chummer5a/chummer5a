@@ -451,10 +451,9 @@ namespace Chummer
                                 {
                                     // Populate the Magician Traditions list.
                                     XPathNavigator xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync(
+                                        (await CharacterObject.LoadDataXPathAsync(
                                                   "traditions.xml", token: GenericToken).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", GenericToken)
-                                              .ConfigureAwait(false);
+                                              .SelectSingleNodeAndCacheExpression("/chummer", GenericToken);
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstTraditions))
                                     {
@@ -468,18 +467,18 @@ namespace Chummer
                                                          + ']'))
                                             {
                                                 string strName
-                                                    = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", GenericToken).ConfigureAwait(false))
+                                                    = xmlTradition.SelectSingleNodeAndCacheExpression(
+                                                            "name", GenericToken)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstTraditions.Add(new ListItem(
-                                                                          (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "id", GenericToken).ConfigureAwait(false))
+                                                                          xmlTradition
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "id", GenericToken)
                                                                           ?.Value ?? strName,
-                                                                          (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                          xmlTradition
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "translate", GenericToken)
                                                                           ?.Value ?? strName));
                                             }
                                         }
@@ -517,15 +516,14 @@ namespace Chummer
                                                              "drainattributes/drainattribute", GenericToken))
                                             {
                                                 string strName
-                                                    = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name", GenericToken)
-                                                                     .ConfigureAwait(false))
+                                                    = xmlDrain.SelectSingleNodeAndCacheExpression("name", GenericToken)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
                                                     && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                                 {
-                                                    string strTranslatedName = (await xmlDrain
-                                                        .SelectSingleNodeAndCacheExpressionAsync(
-                                                            "translate", GenericToken).ConfigureAwait(false))?.Value ?? strName;
+                                                    string strTranslatedName = xmlDrain
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "translate", GenericToken)?.Value ?? strName;
                                                     lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
                                                 }
                                             }
@@ -597,16 +595,16 @@ namespace Chummer
                                                              .SelectAndCacheExpression("spirits/spirit", GenericToken))
                                                 {
                                                     string strSpiritName
-                                                        = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "name", GenericToken).ConfigureAwait(false))
+                                                        = xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                "name", GenericToken)
                                                         ?.Value;
                                                     if (!string.IsNullOrEmpty(strSpiritName)
                                                         && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                                     {
                                                         lstSpirit.Add(new ListItem(strSpiritName,
-                                                                          (await xmlSpirit
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                          xmlSpirit
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "translate", GenericToken)
                                                                           ?.Value
                                                                           ?? strSpiritName));
                                                     }
@@ -656,10 +654,9 @@ namespace Chummer
 
                                     // Populate the Technomancer Streams list.
                                     xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync(
+                                        (await CharacterObject.LoadDataXPathAsync(
                                                   "streams.xml", token: GenericToken).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", GenericToken)
-                                              .ConfigureAwait(false);
+                                              .SelectSingleNodeAndCacheExpression("/chummer", GenericToken);
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstStreams))
                                     {
@@ -673,19 +670,19 @@ namespace Chummer
                                                          + ']'))
                                             {
                                                 string strName
-                                                    = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", GenericToken).ConfigureAwait(false))
+                                                    = xmlTradition.SelectSingleNodeAndCacheExpression(
+                                                            "name", GenericToken)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstStreams.Add(new ListItem(
-                                                                       (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "id", GenericToken).ConfigureAwait(false))
+                                                                       xmlTradition
+                                                                           .SelectSingleNodeAndCacheExpression(
+                                                                               "id", GenericToken)
                                                                        ?.Value
                                                                        ?? strName,
-                                                                       (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                       xmlTradition
+                                                                           .SelectSingleNodeAndCacheExpression(
+                                                                               "translate", GenericToken)
                                                                        ?.Value ?? strName));
                                             }
                                         }
@@ -730,13 +727,10 @@ namespace Chummer
                                                    Utils.ListItemListPool, out List<ListItem> lstAttributeCategories))
                                         {
                                             lstAttributeCategories.Add(new ListItem("Standard",
-                                                                           node != null
-                                                                               ? (await node
-                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                       "name/@translate", GenericToken)
-                                                                                   .ConfigureAwait(false))?.Value
-                                                                               ?? CharacterObject.Metatype
-                                                                               : CharacterObject.Metatype));
+                                                                           node?
+                                                                               .SelectSingleNodeAndCacheExpression(
+                                                                                   "name/@translate", GenericToken)?.Value
+                                                                               ?? CharacterObject.Metatype));
 
                                             node = node?.SelectSingleNode(
                                                 "metavariants/metavariant[name = "
@@ -3249,10 +3243,9 @@ namespace Chummer
                                     }, token).ConfigureAwait(false);
 
                                     XPathNavigator xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync(
+                                        (await CharacterObject.LoadDataXPathAsync(
                                                   "traditions.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", token)
-                                              .ConfigureAwait(false);
+                                              .SelectSingleNodeAndCacheExpression("/chummer", token);
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstTraditions))
                                     {
@@ -3266,18 +3259,18 @@ namespace Chummer
                                                          + ']'))
                                             {
                                                 string strName
-                                                    = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", token).ConfigureAwait(false))
+                                                    = xmlTradition.SelectSingleNodeAndCacheExpression(
+                                                            "name", token)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstTraditions.Add(new ListItem(
-                                                                          (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "id", token).ConfigureAwait(false))
+                                                                          xmlTradition
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "id", token)
                                                                           ?.Value ?? strName,
-                                                                          (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", token).ConfigureAwait(false))
+                                                                          xmlTradition
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "translate", token)
                                                                           ?.Value ?? strName));
                                             }
                                         }
@@ -3328,16 +3321,16 @@ namespace Chummer
                                                              "drainattributes/drainattribute", token))
                                             {
                                                 string strName
-                                                    = (await xmlDrain
-                                                             .SelectSingleNodeAndCacheExpressionAsync(
-                                                                 "name", token).ConfigureAwait(false))
+                                                    = xmlDrain
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "name", token)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
                                                     && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                                 {
-                                                    string strTranslatedName = (await xmlDrain
-                                                        .SelectSingleNodeAndCacheExpressionAsync(
-                                                            "translate", token).ConfigureAwait(false))?.Value ?? strName;
+                                                    string strTranslatedName = xmlDrain
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "translate", token)?.Value ?? strName;
                                                     lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
                                                 }
                                             }
@@ -3371,16 +3364,16 @@ namespace Chummer
                                                              .SelectAndCacheExpression("spirits/spirit", token))
                                                 {
                                                     string strSpiritName
-                                                        = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "name", token).ConfigureAwait(false))
+                                                        = xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                "name", token)
                                                         ?.Value;
                                                     if (!string.IsNullOrEmpty(strSpiritName)
                                                         && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                                     {
                                                         lstSpirit.Add(new ListItem(strSpiritName,
-                                                                          (await xmlSpirit
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", token).ConfigureAwait(false))
+                                                                          xmlSpirit
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "translate", token)
                                                                           ?.Value
                                                                           ?? strSpiritName));
                                                     }
@@ -3404,10 +3397,9 @@ namespace Chummer
 
                                     // Populate the Technomancer Streams list.
                                     xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync(
+                                        (await CharacterObject.LoadDataXPathAsync(
                                                   "streams.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", token)
-                                              .ConfigureAwait(false);
+                                              .SelectSingleNodeAndCacheExpression("/chummer", token);
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstStreams))
                                     {
@@ -3421,18 +3413,18 @@ namespace Chummer
                                                          + ']'))
                                             {
                                                 string strName
-                                                    = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", token).ConfigureAwait(false))
+                                                    = xmlTradition.SelectSingleNodeAndCacheExpression(
+                                                        "name", token)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstStreams.Add(new ListItem(
-                                                                       (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "id", token).ConfigureAwait(false))
+                                                                       xmlTradition
+                                                                           .SelectSingleNodeAndCacheExpression(
+                                                                               "id", token)
                                                                        ?.Value ?? strName,
-                                                                       (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", token).ConfigureAwait(false))
+                                                                       xmlTradition
+                                                                           .SelectSingleNodeAndCacheExpression(
+                                                                               "translate", token)
                                                                        ?.Value ?? strName));
                                             }
                                         }
@@ -5199,15 +5191,13 @@ namespace Chummer
                     foreach (XPathNavigator xmlMetatype in xmlVesselsNavigator.SelectAndCacheExpression(
                                  "/chummer/metatypes/metatype", GenericToken))
                     {
-                        string strName = (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", GenericToken)
-                                                           .ConfigureAwait(false))?.Value;
+                        string strName = xmlMetatype.SelectSingleNodeAndCacheExpression("name", GenericToken)?.Value;
                         if (!string.IsNullOrEmpty(strName))
                         {
                             ListItem objItem
                                 = new ListItem(
                                     strName,
-                                    (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("translate", GenericToken)
-                                                      .ConfigureAwait(false))?.Value ?? strName);
+                                    xmlMetatype.SelectSingleNodeAndCacheExpression("translate", GenericToken)?.Value ?? strName);
                             lstMetatype.Add(objItem);
                         }
                     }
@@ -8312,14 +8302,12 @@ namespace Chummer
                     {
                         // Look up the cost of the Quality.
                         int intBP = 0;
-                        if (objSelectedQuality.Type == QualityType.Negative || await objXmlDeleteQuality
-                                .SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove", token: token)
-                                .ConfigureAwait(false) != null)
+                        if (objSelectedQuality.Type == QualityType.Negative || objXmlDeleteQuality
+                                .SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
                         {
                             intBP = Convert.ToInt32(
-                                (await objXmlDeleteQuality
-                                    .SelectSingleNodeAndCacheExpressionAsync("karma", token: token)
-                                    .ConfigureAwait(false))?.Value,
+                                objXmlDeleteQuality
+                                    .SelectSingleNodeAndCacheExpression("karma", token: token)?.Value,
                                 GlobalSettings.InvariantCultureInfo) * CharacterObjectSettings.KarmaQuality;
                             if (blnCompleteDelete)
                                 intBP *= objSelectedQuality.Levels;
@@ -8360,9 +8348,8 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (objSelectedQuality.Type == QualityType.Positive)
                     {
-                        if (await objXmlDeleteQuality
-                                .SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove", token: token)
-                                .ConfigureAwait(false) != null)
+                        if (objXmlDeleteQuality
+                                .SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
                         {
                             int intKarmaCost = objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality;
 
@@ -8464,8 +8451,7 @@ namespace Chummer
                     }
 
                     // Remove any Critter Powers that are gained through the Quality (Infected).
-                    if (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("powers/power", token: token)
-                            .ConfigureAwait(false) != null)
+                    if (objXmlDeleteQuality.SelectSingleNodeAndCacheExpression("powers/power", token: token) != null)
                     {
                         foreach (XPathNavigator objXmlPower in (await CharacterObject
                                      .LoadDataXPathAsync(
@@ -8474,9 +8460,8 @@ namespace Chummer
                                  .SelectAndCacheExpression(
                                      "optionalpowers/optionalpower", token: token))
                         {
-                            string strExtra = (await objXmlPower
-                                .SelectSingleNodeAndCacheExpressionAsync("@select", token: token)
-                                .ConfigureAwait(false))?.Value;
+                            string strExtra = objXmlPower
+                                .SelectSingleNodeAndCacheExpression("@select", token: token)?.Value ?? string.Empty;
 
                             CritterPower objRemovePower
                                 = await CharacterObject.CritterPowers.FirstOrDefaultAsync(
@@ -8551,14 +8536,10 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objQualityNode = await objSelectedQuality.GetNodeXPathAsync(token).ConfigureAwait(false);
-                string strLimitString = objQualityNode != null
-                    ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit", token: token)
-                        .ConfigureAwait(false))?.Value ?? string.Empty
-                    : string.Empty;
+                string strLimitString = objQualityNode?.SelectSingleNodeAndCacheExpression("limit", token: token)?.Value ?? string.Empty;
                 token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrWhiteSpace(strLimitString)
-                    && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels", token: token)
-                        .ConfigureAwait(false) == null
+                    && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels", token: token) == null
                     && int.TryParse(strLimitString, out int intMaxRating))
                 {
                     await nudQualityLevel.DoThreadSafeAsync(x =>
@@ -8632,9 +8613,8 @@ namespace Chummer
                             {
                                 objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
                                 XPathNavigator xpnDiscountNode
-                                    = await objXmlSelectedQuality
-                                        .SelectSingleNodeAndCacheExpressionAsync("costdiscount", GenericToken)
-                                        .ConfigureAwait(false);
+                                    = objXmlSelectedQuality
+                                        .SelectSingleNodeAndCacheExpression("costdiscount", GenericToken);
                                 if (xpnDiscountNode != null && await xpnDiscountNode
                                         .RequirementsMetAsync(CharacterObject, token: GenericToken)
                                         .ConfigureAwait(false))
@@ -8683,13 +8663,11 @@ namespace Chummer
                                     }
 
                                     string strDisplayName
-                                        = (await objXmlSelectedQuality
-                                              .SelectSingleNodeAndCacheExpressionAsync("translate", GenericToken)
-                                              .ConfigureAwait(false))
+                                        = objXmlSelectedQuality
+                                              .SelectSingleNodeAndCacheExpression("translate", GenericToken)
                                           ?.Value
-                                          ?? (await objXmlSelectedQuality
-                                              .SelectSingleNodeAndCacheExpressionAsync("name", GenericToken)
-                                              .ConfigureAwait(false))
+                                          ?? objXmlSelectedQuality
+                                              .SelectSingleNodeAndCacheExpression("name", GenericToken)
                                           ?.Value
                                           ?? await LanguageManager.GetStringAsync("String_Unknown", token: GenericToken)
                                               .ConfigureAwait(false);

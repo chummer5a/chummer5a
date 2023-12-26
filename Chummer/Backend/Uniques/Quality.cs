@@ -582,13 +582,12 @@ namespace Chummer
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         strQualityType =
-                            (await (await _objCharacter
-                                    .LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
-                                    .ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsync(
-                                    "/chummer/categories/category[. = " + strQualityType.CleanXPath()
-                                                                        + "]/@translate", token: token)
+                            (await _objCharacter
+                                .LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
                                 .ConfigureAwait(false))
+                            .SelectSingleNodeAndCacheExpression(
+                                "/chummer/categories/category[. = " + strQualityType.CleanXPath()
+                                                                    + "]/@translate", token: token)
                             ?.Value ?? strQualityType;
                     }
 
@@ -857,8 +856,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Page
+                    ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                     : Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
             }
@@ -1129,8 +1127,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Name
+                    ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
                     : Name;
             }
         }
@@ -1210,15 +1207,13 @@ namespace Chummer
                     // Add a "1" to qualities that have levels, but for which we are only at level 1
                     XPathNavigator xmlDataNode
                         = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                    if (xmlDataNode != null && await xmlDataNode
-                                                     .SelectSingleNodeAndCacheExpressionAsync("nolevels", token)
-                                                     .ConfigureAwait(false) == null)
+                    if (xmlDataNode != null && xmlDataNode.SelectSingleNodeAndCacheExpression("nolevels", token) == null)
                     {
                         XPathNavigator xmlMyLimitNode = null;
-                        if (!_objCharacter.Created)
-                            xmlMyLimitNode = await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("chargenlimit", token).ConfigureAwait(false);
+                        if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                            xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("chargenlimit", token);
                         if (xmlMyLimitNode == null)
-                            xmlMyLimitNode = await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("limit", token).ConfigureAwait(false);
+                            xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("limit", token);
                         if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                         {
                             strReturn += strSpace + intLevels.ToString(objCulture);

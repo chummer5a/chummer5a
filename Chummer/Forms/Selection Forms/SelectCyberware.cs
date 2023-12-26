@@ -243,15 +243,11 @@ namespace Chummer
                     if (xmlGrade != null)
                     {
                         _decCostMultiplier = Convert.ToDecimal(
-                            (await xmlGrade.SelectSingleNodeAndCacheExpressionAsync("cost", token: _objGenericToken)
-                                           .ConfigureAwait(false))?.Value, GlobalSettings.InvariantCultureInfo);
+                            xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value, GlobalSettings.InvariantCultureInfo);
                         _decESSMultiplier = Convert.ToDecimal(
-                            (await xmlGrade.SelectSingleNodeAndCacheExpressionAsync("ess", token: _objGenericToken)
-                                           .ConfigureAwait(false))?.Value, GlobalSettings.InvariantCultureInfo);
+                            xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value, GlobalSettings.InvariantCultureInfo);
                         _intAvailModifier
-                            = (await xmlGrade
-                                     .SelectSingleNodeAndCacheExpressionAsync("avail", token: _objGenericToken)
-                                     .ConfigureAwait(false))?.ValueAsInt ?? 0;
+                            = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token: _objGenericToken)?.ValueAsInt ?? 0;
                     }
                 }
 
@@ -351,14 +347,13 @@ namespace Chummer
                     {
                         _decCostMultiplier
                             = Convert.ToDecimal(
-                                (await xmlGrade.SelectSingleNodeAndCacheExpressionAsync("cost", token)
-                                               .ConfigureAwait(false))?.Value, GlobalSettings.InvariantCultureInfo);
+                                xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value, GlobalSettings.InvariantCultureInfo);
                         _decESSMultiplier
                             = Convert.ToDecimal(
-                                (await xmlGrade.SelectSingleNodeAndCacheExpressionAsync("ess", token).ConfigureAwait(false))
+                                xmlGrade.SelectSingleNodeAndCacheExpression("ess", token)
                                 ?.Value, GlobalSettings.InvariantCultureInfo);
                         _intAvailModifier
-                            = (await xmlGrade.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))
+                            = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)
                             ?.ValueAsInt ?? 0;
 
                         await PopulateCategories(token).ConfigureAwait(false);
@@ -498,7 +493,7 @@ namespace Chummer
                     string strForceGrade;
                     if (xmlCyberware != null)
                     {
-                        strForceGrade = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token).ConfigureAwait(false))?.Value;
+                        strForceGrade = xmlCyberware.SelectSingleNodeAndCacheExpression("forcegrade", token)?.Value;
                         if (!string.IsNullOrEmpty(strForceGrade))
                         {
                             // Force the Cyberware to be a particular Grade.
@@ -524,7 +519,7 @@ namespace Chummer
 
                         // We will need to rebuild the Grade list since certain categories of 'ware disallow certain grades (e.g. Used for cultured bioware) and ForceGrades can change.
                         HashSet<string> setDisallowedGrades = null;
-                        if (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token).ConfigureAwait(false) != null)
+                        if (xmlCyberware.SelectSingleNodeAndCacheExpression("bannedgrades", token) != null)
                         {
                             setDisallowedGrades = new HashSet<string>();
                             foreach (XPathNavigator objNode in xmlCyberware.SelectAndCacheExpression("bannedgrades/grade", token))
@@ -536,10 +531,10 @@ namespace Chummer
                                              await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                         // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
-                        XPathNavigator xmlRatingNode = await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("rating", token).ConfigureAwait(false);
+                        XPathNavigator xmlRatingNode = xmlCyberware.SelectSingleNodeAndCacheExpression("rating", token);
                         if (xmlRatingNode != null)
                         {
-                            string strMinRating = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("minrating", token).ConfigureAwait(false))?.Value;
+                            string strMinRating = xmlCyberware.SelectSingleNodeAndCacheExpression("minrating", token)?.Value;
                             int intMinRating = 1;
                             // Not a simple integer, so we need to start mucking around with strings
                             if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
@@ -625,7 +620,7 @@ namespace Chummer
                             }, token: token).ConfigureAwait(false);
                         }
 
-                        string strRatingLabel = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token).ConfigureAwait(false))?.Value;
+                        string strRatingLabel = xmlCyberware.SelectSingleNodeAndCacheExpression("ratinglabel", token)?.Value;
                         strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
                             ? string.Format(GlobalSettings.CultureInfo,
                                             await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
@@ -633,15 +628,15 @@ namespace Chummer
                             : await LanguageManager.GetStringAsync("Label_Rating", token: token).ConfigureAwait(false);
                         await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token).ConfigureAwait(false);
 
-                        string strSource = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                        string strPage = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                        string strSource = xmlCyberware.SelectSingleNodeAndCacheExpression("source", token)?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                        string strPage = xmlCyberware.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? xmlCyberware.SelectSingleNodeAndCacheExpression("page", token)?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                         SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                             GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
                         await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
                         bool blnShowSource = !string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
                         await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnShowSource, token: token).ConfigureAwait(false);
 
-                        bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains((await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value);
+                        bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value);
                         await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                         {
                             x.Enabled = blnCanBlackMarketDiscount;
@@ -656,7 +651,7 @@ namespace Chummer
                             }
                         }, token: token).ConfigureAwait(false);
 
-                        string strNotes = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("altnotes", token).ConfigureAwait(false))?.Value ?? (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("notes", token).ConfigureAwait(false))?.Value;
+                        string strNotes = xmlCyberware.SelectSingleNodeAndCacheExpression("altnotes", token)?.Value ?? xmlCyberware.SelectSingleNodeAndCacheExpression("notes", token)?.Value;
                         if (!string.IsNullOrEmpty(strNotes))
                         {
                             await lblCyberwareNotesLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
@@ -1047,9 +1042,9 @@ namespace Chummer
                     }, token: token).ConfigureAwait(false);
                     try
                     {
-                        string strSelectCategory = (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value ?? string.Empty;
-                        bool blnForceNoESSModifier = (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token).ConfigureAwait(false))?.Value == "None";
-                        bool blnIsGeneware = await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("isgeneware", token).ConfigureAwait(false) != null && (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("isgeneware", token).ConfigureAwait(false))?.Value != bool.FalseString;
+                        string strSelectCategory = objXmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value ?? string.Empty;
+                        bool blnForceNoESSModifier = objXmlCyberware.SelectSingleNodeAndCacheExpression("forcegrade", token)?.Value == "None";
+                        bool blnIsGeneware = objXmlCyberware.SelectSingleNodeAndCacheExpression("isgeneware", token) != null && objXmlCyberware.SelectSingleNodeAndCacheExpression("isgeneware", token)?.Value != bool.FalseString;
 
                         // Place the Genetech cost multiplier in a variable that can be safely modified.
                         decimal decGenetechCostModifier = 1;
@@ -1061,9 +1056,8 @@ namespace Chummer
                         // This is done using XPathExpression.
 
                         int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
-                        string strAvailExpression = (await objXmlCyberware
-                                                           .SelectSingleNodeAndCacheExpressionAsync("avail", token)
-                                                           .ConfigureAwait(false))?.Value ?? string.Empty;
+                        string strAvailExpression = objXmlCyberware
+                            .SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty;
                         AvailabilityValue objTotalAvail = new AvailabilityValue(
                             intRating,
                             await strAvailExpression.CheapReplaceAsync("MinRating",
@@ -1086,7 +1080,7 @@ namespace Chummer
                         }
                         else
                         {
-                            strCost = (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false))?.Value;
+                            strCost = objXmlCyberware.SelectSingleNodeAndCacheExpression("cost", token)?.Value;
                             if (!string.IsNullOrEmpty(strCost))
                             {
                                 if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
@@ -1202,7 +1196,7 @@ namespace Chummer
                         await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts, token: token).ConfigureAwait(false);
                         await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts, token: token).ConfigureAwait(false);
 
-                        bool blnAddToParentESS = await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("addtoparentess", token).ConfigureAwait(false) != null;
+                        bool blnAddToParentESS = objXmlCyberware.SelectSingleNodeAndCacheExpression("addtoparentess", token) != null;
                         if (_objParentNode == null || blnAddToParentESS)
                         {
                             decimal decESS = 0;
@@ -1246,7 +1240,7 @@ namespace Chummer
                                     }
                                 }
 
-                                string strEss = (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("ess", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                                string strEss = objXmlCyberware.SelectSingleNodeAndCacheExpression("ess", token)?.Value ?? string.Empty;
                                 if (strEss.StartsWith("FixedValues(", StringComparison.Ordinal))
                                 {
                                     string strSuffix = string.Empty;
@@ -1296,9 +1290,9 @@ namespace Chummer
                         await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = blnShowEssence, token: token).ConfigureAwait(false);
 
                         // Capacity.
-                        bool blnAddToParentCapacity = await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("addtoparentcapacity", token).ConfigureAwait(false) != null;
+                        bool blnAddToParentCapacity = objXmlCyberware.SelectSingleNodeAndCacheExpression("addtoparentcapacity", token) != null;
                         // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                        string strCapacity = (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("capacity", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                        string strCapacity = objXmlCyberware.SelectSingleNodeAndCacheExpression("capacity", token)?.Value ?? string.Empty;
                         bool blnSquareBrackets = strCapacity.StartsWith('[');
                         if (string.IsNullOrEmpty(strCapacity))
                         {
@@ -1526,8 +1520,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlCyberware in xmlIterator)
                     {
                         bool blnIsForceGrade
-                            = await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token: token)
-                                                .ConfigureAwait(false) != null;
+                            = xmlCyberware.SelectSingleNodeAndCacheExpression("forcegrade", token: token) != null;
                         if (objCurrentGrade != null && blnIsForceGrade)
                         {
                             if (WindowMode == Mode.Bioware)
@@ -1547,30 +1540,26 @@ namespace Chummer
                                 continue;
                         }
 
-                        if (blnCyberwareDisabled
-                            && await xmlCyberware
-                                     .SelectSingleNodeAndCacheExpressionAsync("subsystems/cyberware", token: token)
-                                     .ConfigureAwait(false) != null
-                            && await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("mountsto", token: token)
-                                                 .ConfigureAwait(false) == null)
+                        if (xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto", token: token) == null)
                         {
-                            continue;
-                        }
+                            if (blnCyberwareDisabled
+                                && xmlCyberware
+                                    .SelectSingleNodeAndCacheExpression("subsystems/cyberware", token: token) != null)
+                            {
+                                continue;
+                            }
 
-                        if (blnBiowareDisabled
-                            && await xmlCyberware
-                                     .SelectSingleNodeAndCacheExpressionAsync("subsystems/bioware", token: token)
-                                     .ConfigureAwait(false) != null
-                            && await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("mountsto", token: token)
-                                                 .ConfigureAwait(false) == null)
-                        {
-                            continue;
+                            if (blnBiowareDisabled
+                                && xmlCyberware
+                                    .SelectSingleNodeAndCacheExpression("subsystems/bioware", token: token) != null)
+                            {
+                                continue;
+                            }
                         }
 
                         XPathNavigator xmlTestNode
-                            = await xmlCyberware
-                                    .SelectSingleNodeAndCacheExpressionAsync("forbidden/parentdetails", token: token)
-                                    .ConfigureAwait(false);
+                            = xmlCyberware
+                                    .SelectSingleNodeAndCacheExpression("forbidden/parentdetails", token: token);
                         if (xmlTestNode != null && await _objParentNode
                                                          .ProcessFilterOperationNodeAsync(
                                                              xmlTestNode, false, token: token).ConfigureAwait(false))
@@ -1579,9 +1568,9 @@ namespace Chummer
                             continue;
                         }
 
-                        xmlTestNode = await xmlCyberware
-                                            .SelectSingleNodeAndCacheExpressionAsync(
-                                                "required/parentdetails", token: token).ConfigureAwait(false);
+                        xmlTestNode = xmlCyberware
+                                            .SelectSingleNodeAndCacheExpression(
+                                                "required/parentdetails", token: token);
                         if (xmlTestNode != null && !await _objParentNode
                                                           .ProcessFilterOperationNodeAsync(
                                                               xmlTestNode, false, token: token).ConfigureAwait(false))
@@ -1593,9 +1582,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(_strHasModularMounts))
                         {
                             string strBlocksMounts
-                                = (await xmlCyberware
-                                         .SelectSingleNodeAndCacheExpressionAsync("blocksmounts", token: token)
-                                         .ConfigureAwait(false))?.Value;
+                                = xmlCyberware
+                                    .SelectSingleNodeAndCacheExpression("blocksmounts", token: token)?.Value;
                             if (!string.IsNullOrEmpty(strBlocksMounts))
                             {
                                 ICollection<Cyberware> lstWareListToCheck = null;
@@ -1603,9 +1591,8 @@ namespace Chummer
                                     lstWareListToCheck = CyberwareParent.Children;
                                 else if (ParentVehicle == null)
                                     lstWareListToCheck = _objCharacter.Cyberware;
-                                if (await xmlCyberware
-                                          .SelectSingleNodeAndCacheExpressionAsync("selectside", token: token)
-                                          .ConfigureAwait(false) == null
+                                if (xmlCyberware
+                                          .SelectSingleNodeAndCacheExpression("selectside", token: token) == null
                                     || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
                                     lstWareListToCheck?.Any(x => x.Location == "Left") == true
                                     && lstWareListToCheck.Any(x => x.Location == "Right"))
@@ -1622,9 +1609,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(_strDisallowedMounts))
                         {
                             string strLoopMount
-                                = (await xmlCyberware
-                                         .SelectSingleNodeAndCacheExpressionAsync("modularmount", token: token)
-                                         .ConfigureAwait(false))?.Value;
+                                = xmlCyberware
+                                    .SelectSingleNodeAndCacheExpression("modularmount", token: token)?.Value;
                             if (!string.IsNullOrEmpty(strLoopMount) && _strDisallowedMounts
                                                                        .SplitNoAlloc(
                                                                            ',', StringSplitOptions.RemoveEmptyEntries)
@@ -1632,12 +1618,10 @@ namespace Chummer
                                 continue;
                         }
 
-                        string strMaxRating = (await xmlCyberware
-                                                     .SelectSingleNodeAndCacheExpressionAsync("rating", token: token)
-                                                     .ConfigureAwait(false))?.Value;
-                        string strMinRating = (await xmlCyberware
-                                                     .SelectSingleNodeAndCacheExpressionAsync("minrating", token: token)
-                                                     .ConfigureAwait(false))?.Value;
+                        string strMaxRating = xmlCyberware
+                            .SelectSingleNodeAndCacheExpression("rating", token: token)?.Value;
+                        string strMinRating = xmlCyberware
+                            .SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value;
                         int intMinRating = 1;
                         // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
                         if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating))
@@ -1728,9 +1712,9 @@ namespace Chummer
 
                         // Ex-Cons cannot have forbidden or restricted 'ware
                         if (_objCharacter.ExCon && ParentVehicle == null
-                                                && await xmlCyberware
-                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                             "mountsto", token: token).ConfigureAwait(false) == null)
+                                                && xmlCyberware
+                                                         .SelectSingleNodeAndCacheExpression(
+                                                             "mountsto", token: token) == null)
                         {
                             Cyberware objParent = CyberwareParent;
                             bool blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
@@ -1743,8 +1727,7 @@ namespace Chummer
                             if (!blnAnyParentIsModular)
                             {
                                 string strAvailExpr
-                                    = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("avail", token: token)
-                                                         .ConfigureAwait(false))?.Value
+                                    = xmlCyberware.SelectSingleNodeAndCacheExpression("avail", token: token)?.Value
                                       ?? string.Empty;
                                 if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                                 {
@@ -1782,9 +1765,8 @@ namespace Chummer
                         {
                             decimal decCostMultiplier = 1 + decMarkup / 100.0m;
                             if (_setBlackMarketMaps.Contains(
-                                    (await xmlCyberware
-                                           .SelectSingleNodeAndCacheExpressionAsync("category", token: token)
-                                           .ConfigureAwait(false))?.Value))
+                                    xmlCyberware
+                                        .SelectSingleNodeAndCacheExpression("category", token: token)?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (!await xmlCyberware
                                        .CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token)
@@ -1796,16 +1778,9 @@ namespace Chummer
                         }
 
                         lstCyberwares.Add(new ListItem(
-                                              (await xmlCyberware
-                                                     .SelectSingleNodeAndCacheExpressionAsync("id", token: token)
-                                                     .ConfigureAwait(false))?.Value,
-                                              (await xmlCyberware
-                                                     .SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                                     .ConfigureAwait(false))
-                                              ?.Value ?? (await xmlCyberware
-                                                                .SelectSingleNodeAndCacheExpressionAsync(
-                                                                    "name", token: token).ConfigureAwait(false))
-                                              ?.Value));
+                                              xmlCyberware.SelectSingleNodeAndCacheExpression("id", token: token)?.Value,
+                                              xmlCyberware.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                              ?? xmlCyberware.SelectSingleNodeAndCacheExpression("name", token: token)?.Value));
                     }
                 }
 
@@ -1891,9 +1866,9 @@ namespace Chummer
             if (_objCharacter.Settings.EnforceCapacity && _objParentObject != null)
             {
                 // Capacity.
-                bool blnAddToParentCapacity = await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("addtoparentcapacity", token: token).ConfigureAwait(false) != null;
+                bool blnAddToParentCapacity = objCyberwareNode.SelectSingleNodeAndCacheExpression("addtoparentcapacity", token: token) != null;
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacity = (await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("capacity", token: token).ConfigureAwait(false))?.Value;
+                string strCapacity = objCyberwareNode.SelectSingleNodeAndCacheExpression("capacity", token: token)?.Value;
                 if (strCapacity?.Contains('[') == true)
                 {
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -1927,7 +1902,7 @@ namespace Chummer
             if (!Upgrading && ParentVehicle == null && !await objCyberwareNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync(_eMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return;
 
-            string strForceGrade = (await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token: token).ConfigureAwait(false))?.Value;
+            string strForceGrade = objCyberwareNode.SelectSingleNodeAndCacheExpression("forcegrade", token: token)?.Value;
             if (!string.IsNullOrEmpty(strForceGrade))
             {
                 SelectedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
@@ -1943,7 +1918,7 @@ namespace Chummer
 
             s_strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
                 ? _strSelectedCategory
-                : (await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value;
+                : objCyberwareNode.SelectSingleNodeAndCacheExpression("category", token: token)?.Value;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
             SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
@@ -2119,7 +2094,7 @@ namespace Chummer
                     {
                         string strInnerText = objXmlCategory.Value;
                         lstCategory.Add(new ListItem(strInnerText,
-                                                     (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))
+                                                     objXmlCategory.SelectSingleNodeAndCacheExpression("@translate", token: token)
                                                                    ?.Value ?? strInnerText));
                     }
                 }

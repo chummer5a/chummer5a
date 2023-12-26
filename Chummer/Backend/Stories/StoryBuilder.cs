@@ -71,14 +71,13 @@ namespace Chummer
                 //Sort the list (Crude way, but have to do)
                 for (int i = 0; i < modules.Count; i++)
                 {
-                    string stageName = (await xdoc
-                        .SelectSingleNodeAndCacheExpressionAsync("chummer/stages/stage[@order = "
-                                                                 + (i <= 4
-                                                                     ? (i + 1).ToString(GlobalSettings
-                                                                         .InvariantCultureInfo)
-                                                                     .CleanXPath()
-                                                                     : "\"5\"") + ']', token: token)
-                        .ConfigureAwait(false))?.Value;
+                    string stageName = xdoc
+                        .SelectSingleNodeAndCacheExpression("chummer/stages/stage[@order = "
+                                                            + (i <= 4
+                                                                ? (i + 1).ToString(GlobalSettings
+                                                                    .InvariantCultureInfo)
+                                                                .CleanXPath()
+                                                                : "\"5\"") + ']', token: token)?.Value;
                     int j;
                     for (j = i; j < modules.Count; j++)
                     {
@@ -94,10 +93,9 @@ namespace Chummer
 
                 string[] story = new string[modules.Count];
                 Task<string>[] atskStoryTasks = new Task<string>[modules.Count];
-                XPathNavigator xmlBaseMacrosNode = await xdoc
-                    .SelectSingleNodeAndCacheExpressionAsync(
-                        "/chummer/storybuilder/macros", token: token)
-                    .ConfigureAwait(false);
+                XPathNavigator xmlBaseMacrosNode = xdoc
+                    .SelectSingleNodeAndCacheExpression(
+                        "/chummer/storybuilder/macros", token: token);
                 //Actually "write" the story
                 for (int i = 0; i < modules.Count; ++i)
                 {
@@ -322,9 +320,8 @@ namespace Chummer
                                 return strSelected;
                         }
 
-                        string strDefault = (await xmlUserMacroFirstChild
-                            .SelectSingleNodeAndCacheExpressionAsync("default", token: token)
-                            .ConfigureAwait(false))?.Value;
+                        string strDefault = xmlUserMacroFirstChild
+                            .SelectSingleNodeAndCacheExpression("default", token: token)?.Value;
                         if (!string.IsNullOrEmpty(strDefault))
                         {
                             return strDefault;

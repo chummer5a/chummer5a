@@ -927,7 +927,7 @@ namespace Chummer
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
-                    if (!(await CreateBackupZip(token).ConfigureAwait(false)))
+                    if (!await CreateBackupZip(token).ConfigureAwait(false))
                         return;
 
                     List<string> lstFilesToDelete = new List<string>(byte.MaxValue);

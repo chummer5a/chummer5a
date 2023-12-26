@@ -7384,7 +7384,7 @@ namespace Chummer
             }
             else
             {
-                SelectedValue = string.IsNullOrEmpty(strForcedValue) ? (bonusNode["name"]?.InnerText ?? string.Empty) : strForcedValue;
+                SelectedValue = string.IsNullOrEmpty(strForcedValue) ? bonusNode["name"]?.InnerText ?? string.Empty : strForcedValue;
             }
 
             string strVal = bonusNode["value"]?.InnerText;

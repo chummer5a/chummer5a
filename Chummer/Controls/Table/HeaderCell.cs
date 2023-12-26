@@ -156,7 +156,7 @@ namespace Chummer.UI.Table
             {
                 // draw arrow
                 int intTipY = ArrowPadding + ArrowSize / 6;
-                int intBottomY = (ArrowPadding + ArrowSize) - ArrowSize / 6;
+                int intBottomY = ArrowPadding + ArrowSize - ArrowSize / 6;
                 int intRight = Width - ArrowPadding;
                 int intLeft = intRight - ArrowSize;
                 int intTipX = intLeft + ArrowSize / 2;

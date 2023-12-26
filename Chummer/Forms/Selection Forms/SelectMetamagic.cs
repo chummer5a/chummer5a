@@ -104,8 +104,8 @@ namespace Chummer
 
                 if (objXmlMetamagic != null)
                 {
-                    string strSource = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value;
-                    string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value;
+                    string strSource = objXmlMetamagic.SelectSingleNodeAndCacheExpression("source")?.Value;
+                    string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("page")?.Value;
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
                     await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSourceString.ToString())).ConfigureAwait(false);
@@ -200,15 +200,15 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strRootXPath + '[' + strFilter + ']'))
                 {
-                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!chkLimitList.Checked || await objXmlMetamagic.CreateNavigator().RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                     {
                         lstMetamagics.Add(new ListItem(strId,
-                                                       (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
-                                                                      ?.Value ?? (await objXmlMetamagic
-                                                           .SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ??
+                                                       objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate", token: token)
+                                                                      ?.Value ?? objXmlMetamagic
+                                                           .SelectSingleNodeAndCacheExpression("name", token: token)?.Value ??
                                                        await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }

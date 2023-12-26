@@ -452,11 +452,11 @@ namespace Chummer.Backend.Equipment
                 {
                     objWriter.WriteElementString(
                         "sourceid",
-                        (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value ?? SourceIDString);
+                        xmlOverrideNode.SelectSingleNodeAndCacheExpression("id", token: token)?.Value ?? SourceIDString);
                     objWriter.WriteElementString(
                         "source",
                         await _objCharacter.LanguageBookShortAsync(
-                            (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))?.Value ?? Source,
+                            xmlOverrideNode.SelectSingleNodeAndCacheExpression("source", token: token)?.Value ?? Source,
                             strLanguageToPrint, token).ConfigureAwait(false));
                 }
                 else
@@ -1398,11 +1398,11 @@ namespace Chummer.Backend.Equipment
                 // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
-                    return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? Name;
+                    return xmlDataNode.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? Name;
                 return Name;
             }
 
-            return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? Name;
+            return xmlDataNode.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -1963,7 +1963,7 @@ namespace Chummer.Backend.Equipment
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             return objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
+                ? objNode.SelectSingleNodeAndCacheExpression("translate", token)
                 ?.Value ?? Name
                 : Name;
         }

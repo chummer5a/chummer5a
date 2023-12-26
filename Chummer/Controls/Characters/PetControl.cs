@@ -368,8 +368,8 @@ namespace Chummer
                                                                  .SelectAndCacheExpression(
                                                                      "/chummer/metatypes/metatype", token: token))
                 {
-                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
-                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
+                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                     XPathNodeIterator xmlMetavariantsList
@@ -380,7 +380,7 @@ namespace Chummer
                         foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                         {
                             string strMetavariantName
-                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                   ?? string.Empty;
                             if (lstMetatypes.All(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
@@ -388,8 +388,8 @@ namespace Chummer
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
-                                                                  (await objXmlMetavariantNode
-                                                                         .SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
+                                                                  objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpression("translate", token: token)
                                                                       ?.Value ?? strMetavariantName)));
                         }
                     }

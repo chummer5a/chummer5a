@@ -142,11 +142,11 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlPack in xmlPacksKits)
                 {
-                    string strName = (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
+                    string strName = objXmlPack.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
                     // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
                     lstKit.Add(new ListItem(
-                                   strName + '<' + (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value,
-                                   (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                                   strName + '<' + objXmlPack.SelectSingleNodeAndCacheExpression("category", token: token)?.Value,
+                                   objXmlPack.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                 }
 
                 lstKit.Sort(CompareListItems.CompareNames);
@@ -331,8 +331,8 @@ namespace Chummer
                     case "selectmartialart":
                         {
                             objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_SelectMartialArt").ConfigureAwait(false);
-                            int intRating = (await objXmlItem.SelectSingleNodeAndCacheExpressionAsync("@rating").ConfigureAwait(false))?.ValueAsInt ?? 1;
-                            string strSelect = (await objXmlItem.SelectSingleNodeAndCacheExpressionAsync("@select").ConfigureAwait(false))?.Value
+                            int intRating = objXmlItem.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 1;
+                            string strSelect = objXmlItem.SelectSingleNodeAndCacheExpression("@select")?.Value
                                                ?? await LanguageManager.GetStringAsync(
                                                    "String_SelectPACKSKit_SelectMartialArt").ConfigureAwait(false);
                             TreeNode objMartialArt = new TreeNode
@@ -911,7 +911,7 @@ namespace Chummer
             }
 
             // Reload the PACKS files since they have changed.
-            _xmlBaseChummerNode = await (await _objCharacter.LoadDataXPathAsync("packs.xml").ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsync("/chummer").ConfigureAwait(false);
+            _xmlBaseChummerNode = (await _objCharacter.LoadDataXPathAsync("packs.xml").ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer");
             await RefreshCategories().ConfigureAwait(false);
         }
 

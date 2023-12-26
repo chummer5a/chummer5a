@@ -930,14 +930,10 @@ namespace Chummer
                 {
                     XPathNavigator objNode
                         = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                    if (objNode != null)
+                    XPathNavigator objDataNode = objNode?.SelectSingleNodeAndCacheExpression("translate", token: token);
+                    if (objDataNode != null)
                     {
-                        XPathNavigator objDataNode = await objNode
-                            .SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false);
-                        if (objDataNode != null)
-                        {
-                            strReturn = objDataNode.Value;
-                        }
+                        strReturn = objDataNode.Value;
                     }
                 }
 
@@ -1695,8 +1691,7 @@ namespace Chummer
                     return Page;
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Page
+                    ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                     : Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
             }

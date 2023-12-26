@@ -1161,8 +1161,7 @@ namespace Chummer
                             foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
                                          .SelectAndCacheExpression("/chummer/strings/string", token))
                             {
-                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
-                                                              .ConfigureAwait(false))?.Value;
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
                                 if (!string.IsNullOrEmpty(strKey))
                                     setEnglishKeys.Add(strKey);
                             }
@@ -1189,8 +1188,7 @@ namespace Chummer
                             foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
                                          .SelectAndCacheExpression("/chummer/strings/string", token))
                             {
-                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
-                                                              .ConfigureAwait(false))?.Value;
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
                                 if (!string.IsNullOrEmpty(strKey))
                                     setLanguageKeys.Add(strKey);
                             }
@@ -2479,9 +2477,9 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                XPathNavigator node = await xmlDocument.CreateNavigator()
-                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                           "/chummer/name", token: token).ConfigureAwait(false);
+                XPathNavigator node = xmlDocument.CreateNavigator()
+                    .SelectSingleNodeAndCacheExpression(
+                        "/chummer/name", token: token);
 
                 if (node == null)
                     continue;

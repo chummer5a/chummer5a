@@ -91,17 +91,15 @@ namespace Chummer
                 xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 
-                XPathNavigator xmlTextsNode = await xmlStoryModuleDataNode
-                                                    .SelectSingleNodeAndCacheExpressionAsync("texts", token: token)
-                                                    .ConfigureAwait(false);
+                XPathNavigator xmlTextsNode = xmlStoryModuleDataNode
+                                                    .SelectSingleNodeAndCacheExpression("texts", token: token);
                 if (xmlTextsNode != null)
                 {
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
                         token.ThrowIfCancellationRequested();
                         _dicEnglishTexts.TryAdd(xmlText.Name, xmlText.Value);
-                        if ((await xmlText.SelectSingleNodeAndCacheExpressionAsync("@default", token: token)
-                                          .ConfigureAwait(false))?.Value == bool.TrueString)
+                        if (xmlText.SelectSingleNodeAndCacheExpression("@default", token: token)?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
 
@@ -219,8 +217,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
-                    ?.Value ?? Name
+                    ? objNode.SelectSingleNodeAndCacheExpression("translate", token)
+                        ?.Value ?? Name
                     : Name;
             }
         }

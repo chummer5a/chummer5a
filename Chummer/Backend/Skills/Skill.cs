@@ -3542,9 +3542,8 @@ namespace Chummer.Backend.Skills
                                     continue;
                                 _lstCachedSuggestedSpecializations.Add(
                                     new ListItem(strInnerText,
-                                        (await xmlSpecNode
-                                            .SelectSingleNodeAndCacheExpressionAsync("@translate", token)
-                                            .ConfigureAwait(false))?.Value
+                                        xmlSpecNode
+                                            .SelectSingleNodeAndCacheExpression("@translate", token)?.Value
                                         ?? strInnerText));
                             }
                         }
@@ -4814,7 +4813,7 @@ namespace Chummer.Backend.Skills
                     return Page;
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token).ConfigureAwait(false))
+                    ? objNode.SelectSingleNodeAndCacheExpression("altpage", token)
                     ?.Value ?? Page
                     : Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -4858,8 +4857,7 @@ namespace Chummer.Backend.Skills
 
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                        .ConfigureAwait(false))?.Value ?? Name
+                    ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
                     : Name;
             }
         }

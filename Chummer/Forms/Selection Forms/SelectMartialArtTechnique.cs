@@ -118,8 +118,8 @@ namespace Chummer
 
                 if (xmlTechnique != null)
                 {
-                    string strSource = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                    string strPage = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strSource = xmlTechnique.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strPage = xmlTechnique.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlTechnique.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
                     await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
                     string strSourceText = lblSource.ToString();
@@ -189,10 +189,10 @@ namespace Chummer
             {
                 foreach (XPathNavigator xmlTechnique in objTechniquesList)
                 {
-                    string strId = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = xmlTechnique.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (!string.IsNullOrEmpty(strId))
                     {
-                        string strTechniqueName = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                        string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                                   ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
 
                         if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
@@ -202,7 +202,7 @@ namespace Chummer
                         {
                             lstTechniqueItems.Add(new ListItem(
                                                       strId,
-                                                      (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
+                                                      xmlTechnique.SelectSingleNodeAndCacheExpression("translate", token: token)
                                                                   ?.Value ?? strTechniqueName));
                         }
                     }

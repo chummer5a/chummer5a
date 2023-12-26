@@ -1818,11 +1818,10 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Name;
-                return (await (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage, token: token)
-                                                  .ConfigureAwait(false))
-                              .SelectSingleNodeAndCacheExpressionAsync(
-                                  "/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate", token: token)
-                              .ConfigureAwait(false))?.Value
+                return (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage, token: token)
+                           .ConfigureAwait(false))
+                       .SelectSingleNodeAndCacheExpression(
+                           "/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate", token: token)?.Value
                        ?? Name;
             }
         }

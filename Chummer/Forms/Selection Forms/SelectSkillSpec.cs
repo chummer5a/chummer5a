@@ -84,7 +84,7 @@ namespace Chummer
                     {
                         string strInnerText = objXmlSpecialization.Value;
                         lstItems.Add(new ListItem(strInnerText,
-                                                  (await objXmlSpecialization.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))
+                                                  objXmlSpecialization.SelectSingleNodeAndCacheExpression("@translate")
                                                                       ?.Value ?? strInnerText));
                     }
                 }
@@ -117,15 +117,13 @@ namespace Chummer
                                              .BookXPathAsync().ConfigureAwait(false)
                                      + ")]"))
                         {
-                            string strName = (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name")
-                                                                .ConfigureAwait(false))?.Value;
+                            string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 lstWeaponItems.Add(new ListItem(
                                                        strName,
-                                                       (await objXmlWeapon
-                                                              .SelectSingleNodeAndCacheExpressionAsync("translate")
-                                                              .ConfigureAwait(false))?.Value
+                                                       objXmlWeapon
+                                                           .SelectSingleNodeAndCacheExpression("translate")?.Value
                                                        ?? strName));
                             }
                         }

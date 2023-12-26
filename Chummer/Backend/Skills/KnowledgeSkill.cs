@@ -109,13 +109,11 @@ namespace Chummer.Backend.Skills
                     foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                     {
                         string strCategory =
-                            (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("category", token)
-                                .ConfigureAwait(false))?.Value;
+                            objXmlSkill.SelectSingleNodeAndCacheExpression("category", token)?.Value;
                         if (!string.IsNullOrWhiteSpace(strCategory))
                         {
                             dicReturn[strCategory] =
-                                (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("attribute", token)
-                                    .ConfigureAwait(false))?.Value;
+                                objXmlSkill.SelectSingleNodeAndCacheExpression("attribute", token)?.Value;
                         }
                     }
 
@@ -152,14 +150,11 @@ namespace Chummer.Backend.Skills
                         foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                         {
                             string strCategory =
-                                (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("category", token)
-                                    .ConfigureAwait(false))?.Value;
+                                objXmlSkill.SelectSingleNodeAndCacheExpression("category", token)?.Value;
                             if (!string.IsNullOrWhiteSpace(strCategory))
                             {
                                 dicReturn[strCategory] =
-                                    (await objXmlSkill
-                                        .SelectSingleNodeAndCacheExpressionAsync("attribute", token)
-                                        .ConfigureAwait(false))?.Value;
+                                    objXmlSkill.SelectSingleNodeAndCacheExpression("attribute", token)?.Value;
                             }
                         }
 
@@ -436,14 +431,14 @@ namespace Chummer.Backend.Skills
                                           ? guidTemp
                                           : Guid.Empty, token).ConfigureAwait(false);
 
-                string strCategory = (await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value;
+                string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
 
                 if (!string.IsNullOrEmpty(strCategory))
                 {
                     await SetTypeAsync(strCategory, token).ConfigureAwait(false);
                 }
 
-                string strAttribute = (await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsync("attribute", token).ConfigureAwait(false))?.Value;
+                string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute", token)?.Value;
 
                 if (!string.IsNullOrEmpty(strAttribute))
                 {
@@ -502,7 +497,7 @@ namespace Chummer.Backend.Skills
                                                                             "skills.xml", token).ConfigureAwait(false);
                 }
 
-                return (await xmlSkillTranslationNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? strInputSkillName;
+                return xmlSkillTranslationNode.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? strInputSkillName;
             }
         }
 

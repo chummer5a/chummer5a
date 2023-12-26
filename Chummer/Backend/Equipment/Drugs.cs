@@ -461,10 +461,9 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await (await _objCharacter.LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false))
-                          .SelectSingleNodeAndCacheExpressionAsync(
-                              "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token)
-                          .ConfigureAwait(false))?.Value ?? Category;
+            return (await _objCharacter.LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false))
+                .SelectSingleNodeAndCacheExpression(
+                    "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token)?.Value ?? Category;
         }
 
         /// <summary>
@@ -1828,12 +1827,12 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator xmlGearDataNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            if (xmlGearDataNode != null && (await xmlGearDataNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value == "Custom Item")
+            if (xmlGearDataNode?.SelectSingleNodeAndCacheExpression("name", token)?.Value == "Custom Item")
             {
                 return await _objCharacter.TranslateExtraAsync(Name, strLanguage, token: token).ConfigureAwait(false);
             }
 
-            return xmlGearDataNode != null ? (await xmlGearDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? Name : Name;
+            return xmlGearDataNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
         }
 
         /// <summary>

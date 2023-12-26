@@ -520,10 +520,9 @@ namespace Chummer
                                 {
                                     // Populate the Magician Traditions list.
                                     XPathNavigator xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync(
+                                        (await CharacterObject.LoadDataXPathAsync(
                                                   "traditions.xml", token: GenericToken).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", GenericToken)
-                                              .ConfigureAwait(false);
+                                              .SelectSingleNodeAndCacheExpression("/chummer", GenericToken);
                                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                out List<ListItem> lstTraditions))
                                     {
@@ -537,18 +536,18 @@ namespace Chummer
                                                          + ']'))
                                             {
                                                 string strName
-                                                    = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", GenericToken).ConfigureAwait(false))
+                                                    = xmlTradition.SelectSingleNodeAndCacheExpression(
+                                                            "name", GenericToken)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstTraditions.Add(new ListItem(
-                                                                          (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "id", GenericToken).ConfigureAwait(false))
+                                                                          xmlTradition
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "id", GenericToken)
                                                                           ?.Value ?? strName,
-                                                                          (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                          xmlTradition
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "translate", GenericToken)
                                                                           ?.Value ?? strName));
                                             }
                                         }
@@ -585,15 +584,14 @@ namespace Chummer
                                                          "drainattributes/drainattribute"))
                                             {
                                                 string strName
-                                                    = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name", GenericToken)
-                                                                     .ConfigureAwait(false))
+                                                    = xmlDrain.SelectSingleNodeAndCacheExpression("name", GenericToken)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
                                                     && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                                 {
-                                                    string strTranslatedName = (await xmlDrain
-                                                        .SelectSingleNodeAndCacheExpressionAsync(
-                                                            "translate", GenericToken).ConfigureAwait(false))?.Value ?? strName;
+                                                    string strTranslatedName = xmlDrain
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "translate", GenericToken)?.Value ?? strName;
                                                     lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
                                                 }
                                             }
@@ -671,16 +669,16 @@ namespace Chummer
                                                              .SelectAndCacheExpression("spirits/spirit", GenericToken))
                                                 {
                                                     string strSpiritName
-                                                        = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "name", GenericToken).ConfigureAwait(false))
+                                                        = xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                "name", GenericToken)
                                                         ?.Value;
                                                     if (!string.IsNullOrEmpty(strSpiritName)
                                                         && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                                     {
                                                         lstSpirit.Add(new ListItem(strSpiritName,
-                                                                          (await xmlSpirit
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                          xmlSpirit
+                                                                              .SelectSingleNodeAndCacheExpression(
+                                                                                  "translate", GenericToken)
                                                                           ?.Value
                                                                           ?? strSpiritName));
                                                     }
@@ -730,10 +728,9 @@ namespace Chummer
 
                                     // Populate the Technomancer Streams list.
                                     xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync(
+                                        (await CharacterObject.LoadDataXPathAsync(
                                                   "streams.xml", token: GenericToken).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", GenericToken)
-                                              .ConfigureAwait(false);
+                                              .SelectSingleNodeAndCacheExpression("/chummer", GenericToken);
                                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                out List<ListItem> lstStreams))
                                     {
@@ -747,19 +744,19 @@ namespace Chummer
                                                          + ']'))
                                             {
                                                 string strName
-                                                    = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "name", GenericToken).ConfigureAwait(false))
+                                                    = xmlTradition.SelectSingleNodeAndCacheExpression(
+                                                            "name", GenericToken)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstStreams.Add(new ListItem(
-                                                                       (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "id", GenericToken).ConfigureAwait(false))
+                                                                       xmlTradition
+                                                                           .SelectSingleNodeAndCacheExpression(
+                                                                               "id", GenericToken)
                                                                        ?.Value
                                                                        ?? strName,
-                                                                       (await xmlTradition
-                                                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                  "translate", GenericToken).ConfigureAwait(false))
+                                                                       xmlTradition
+                                                                           .SelectSingleNodeAndCacheExpression(
+                                                                               "translate", GenericToken)
                                                                        ?.Value ?? strName));
                                             }
                                         }
@@ -2688,10 +2685,9 @@ namespace Chummer
                                     }, token).ConfigureAwait(false);
 
                                     XPathNavigator xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync(
+                                        (await CharacterObject.LoadDataXPathAsync(
                                                 "traditions.xml", token: token).ConfigureAwait(false))
-                                            .SelectSingleNodeAndCacheExpressionAsync("/chummer", token)
-                                            .ConfigureAwait(false);
+                                            .SelectSingleNodeAndCacheExpression("/chummer", token);
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstTraditions))
                                     {
@@ -2704,21 +2700,18 @@ namespace Chummer
                                                          + ']'))
                                             {
                                                 string strName
-                                                    = (await xmlTradition
-                                                        .SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                        .ConfigureAwait(false))
+                                                    = xmlTradition
+                                                        .SelectSingleNodeAndCacheExpression("name", token)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstTraditions.Add(new ListItem(
-                                                        (await xmlTradition
-                                                            .SelectSingleNodeAndCacheExpressionAsync(
+                                                        xmlTradition
+                                                            .SelectSingleNodeAndCacheExpression(
                                                                 "id", token)
-                                                            .ConfigureAwait(false))
                                                         ?.Value ?? strName,
-                                                        (await xmlTradition
-                                                            .SelectSingleNodeAndCacheExpressionAsync(
+                                                        xmlTradition
+                                                            .SelectSingleNodeAndCacheExpression(
                                                                 "translate", token)
-                                                            .ConfigureAwait(false))
                                                         ?.Value ?? strName));
                                             }
                                         }
@@ -2768,17 +2761,16 @@ namespace Chummer
                                                              "drainattributes/drainattribute", token))
                                             {
                                                 string strName
-                                                    = (await xmlDrain
-                                                        .SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                        .ConfigureAwait(false))
+                                                    = xmlDrain
+                                                        .SelectSingleNodeAndCacheExpression("name", token)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
                                                     && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                                 {
-                                                    string strTranslatedName = (await xmlDrain
-                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                    string strTranslatedName = xmlDrain
+                                                        .SelectSingleNodeAndCacheExpression(
                                                             "translate",
-                                                            token).ConfigureAwait(false))?.Value ?? strName;
+                                                            token)?.Value ?? strName;
                                                     lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
                                                 }
                                             }
@@ -2812,18 +2804,16 @@ namespace Chummer
                                                              .SelectAndCacheExpression("spirits/spirit", token))
                                                 {
                                                     string strSpiritName
-                                                        = (await xmlSpirit
-                                                            .SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                            .ConfigureAwait(false))
+                                                        = xmlSpirit
+                                                            .SelectSingleNodeAndCacheExpression("name", token)
                                                         ?.Value;
                                                     if (!string.IsNullOrEmpty(strSpiritName)
                                                         && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                                     {
                                                         lstSpirit.Add(new ListItem(strSpiritName,
-                                                            (await xmlSpirit
-                                                                .SelectSingleNodeAndCacheExpressionAsync(
-                                                                    "translate", token)
-                                                                .ConfigureAwait(false))?.Value
+                                                            xmlSpirit
+                                                                .SelectSingleNodeAndCacheExpression(
+                                                                    "translate", token)?.Value
                                                             ?? strSpiritName));
                                                     }
                                                 }
@@ -2846,10 +2836,9 @@ namespace Chummer
 
                                     // Populate the Technomancer Streams list.
                                     xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync("streams.xml", token: token)
+                                        (await CharacterObject.LoadDataXPathAsync("streams.xml", token: token)
                                                 .ConfigureAwait(false))
-                                            .SelectSingleNodeAndCacheExpressionAsync("/chummer", token)
-                                            .ConfigureAwait(false);
+                                            .SelectSingleNodeAndCacheExpression("/chummer", token);
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstStreams))
                                     {
@@ -2862,20 +2851,18 @@ namespace Chummer
                                                          + ']'))
                                             {
                                                 string strName
-                                                    = (await xmlTradition
-                                                        .SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                        .ConfigureAwait(false))
+                                                    = xmlTradition
+                                                        .SelectSingleNodeAndCacheExpression("name", token)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName))
                                                     lstStreams.Add(new ListItem(
-                                                        (await xmlTradition
-                                                            .SelectSingleNodeAndCacheExpressionAsync(
-                                                                "id", token).ConfigureAwait(false))
+                                                        xmlTradition
+                                                            .SelectSingleNodeAndCacheExpression(
+                                                                "id", token)
                                                         ?.Value ?? strName,
-                                                        (await xmlTradition
-                                                            .SelectSingleNodeAndCacheExpressionAsync(
+                                                        xmlTradition
+                                                            .SelectSingleNodeAndCacheExpression(
                                                                 "translate", token)
-                                                            .ConfigureAwait(false))
                                                         ?.Value ?? strName));
                                             }
                                         }
@@ -5647,13 +5634,13 @@ namespace Chummer
                         int intStage;
                         for (intStage = 1; intStage < 5; ++intStage)
                         {
-                            XPathNavigator xmlStageNode = await xmlStagesParentNode
-                                                                .SelectSingleNodeAndCacheExpressionAsync(
+                            XPathNavigator xmlStageNode = xmlStagesParentNode
+                                                                .SelectSingleNodeAndCacheExpression(
                                                                     "stage[@order = "
                                                                     + intStage.ToString(
                                                                                   GlobalSettings.InvariantCultureInfo)
                                                                               .CleanXPath()
-                                                                    + ']', GenericToken).ConfigureAwait(false);
+                                                                    + ']', GenericToken);
                             if (xmlStageNode == null)
                             {
                                 --intStage;
@@ -9753,16 +9740,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             XPathNavigator objQualityNode
                 = await objSelectedQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-            string strLimitString = objQualityNode != null
-                ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("chargenlimit", token: token)
-                                       .ConfigureAwait(false))?.Value
-                  ?? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit", token: token)
-                                          .ConfigureAwait(false))?.Value
-                : string.Empty;
+            string strLimitString =
+                objQualityNode?.SelectSingleNodeAndCacheExpression("chargenlimit", token: token)?.Value
+                ?? objQualityNode?.SelectSingleNodeAndCacheExpression("limit", token: token)?.Value
+                ?? string.Empty;
             token.ThrowIfCancellationRequested();
             if (!string.IsNullOrWhiteSpace(strLimitString)
-                && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels", token: token)
-                                       .ConfigureAwait(false) == null
+                && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels", token: token) == null
                 && int.TryParse(strLimitString, out int intMaxRating))
             {
                 await nudQualityLevel.DoThreadSafeAsync(x =>
@@ -14705,7 +14689,7 @@ namespace Chummer
                             if (CharacterObject.BlackMarketDiscount)
                             {
                                 bool blnEnabled = CharacterObject.GenerateBlackMarketMappings(
-                                                                     await (await CharacterObject
+                                                                     (await CharacterObject
                                                                                .LoadDataXPathAsync(
                                                                                    objCyberware.SourceType
                                                                                    == Improvement.ImprovementSource
@@ -14713,9 +14697,8 @@ namespace Chummer
                                                                                        ? "cyberware.xml"
                                                                                        : "bioware.xml", token: token)
                                                                                .ConfigureAwait(false))
-                                                                           .SelectSingleNodeAndCacheExpressionAsync(
-                                                                               "/chummer", token: token)
-                                                                           .ConfigureAwait(false), token)
+                                                                           .SelectSingleNodeAndCacheExpression(
+                                                                               "/chummer", token: token), token)
                                                                  .Contains(objCyberware.Category);
                                 await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -14873,13 +14856,12 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                                .GenerateBlackMarketMappings(
-                                                                                   await (await CharacterObject
+                                                                                   (await CharacterObject
                                                                                            .LoadDataXPathAsync(
                                                                                                "gear.xml", token: token)
                                                                                            .ConfigureAwait(false))
-                                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                           "/chummer", token: token)
-                                                                                       .ConfigureAwait(false), token)
+                                                                                       .SelectSingleNodeAndCacheExpression(
+                                                                                           "/chummer", token: token), token)
                                                                                .Contains(objGear.Category);
                                 await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -15141,11 +15123,11 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objWeapon.IncludedInWeapon && CharacterObject
                                     .GenerateBlackMarketMappings(
-                                        await (await CharacterObject
+                                        (await CharacterObject
                                                      .LoadDataXPathAsync(
                                                          "weapons.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                  "/chummer", token: token).ConfigureAwait(false), token)
+                                              .SelectSingleNodeAndCacheExpression(
+                                                  "/chummer", token: token), token)
                                     .Contains(objWeapon.Category);
                                 await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -15511,11 +15493,11 @@ namespace Chummer
                                 bool blnEnabled = !objSelectedAccessory.IncludedInWeapon
                                                   && CharacterObject
                                                      .GenerateBlackMarketMappings(
-                                                         await (await CharacterObject
+                                                         (await CharacterObject
                                                                       .LoadDataXPathAsync("weapons.xml", token: token)
                                                                       .ConfigureAwait(false))
-                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                   "/chummer", token: token).ConfigureAwait(false),
+                                                               .SelectSingleNodeAndCacheExpression(
+                                                                   "/chummer", token: token),
                                                          token)
                                                      .Contains(objSelectedAccessory.Parent?.Category);
                                 await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
@@ -15772,13 +15754,12 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                                .GenerateBlackMarketMappings(
-                                                                                   await (await CharacterObject
+                                                                                   (await CharacterObject
                                                                                            .LoadDataXPathAsync(
                                                                                                "gear.xml", token: token)
                                                                                            .ConfigureAwait(false))
-                                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                           "/chummer", token: token)
-                                                                                       .ConfigureAwait(false), token)
+                                                                                       .SelectSingleNodeAndCacheExpression(
+                                                                                           "/chummer", token: token), token)
                                                                                .Contains(objGear.Category);
                                 await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -15976,10 +15957,10 @@ namespace Chummer
                         {
                             bool blnEnabled = CharacterObject
                                               .GenerateBlackMarketMappings(
-                                                  await (await CharacterObject.LoadDataXPathAsync(
+                                                  (await CharacterObject.LoadDataXPathAsync(
                                                             "armor.xml", token: token).ConfigureAwait(false))
-                                                        .SelectSingleNodeAndCacheExpressionAsync(
-                                                            "/chummer", token: token).ConfigureAwait(false), token)
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "/chummer", token: token), token)
                                               .Contains(objArmor.Category);
                             await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -16138,11 +16119,11 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objArmorMod.IncludedInArmor && CharacterObject
                                     .GenerateBlackMarketMappings(
-                                        await (await CharacterObject
+                                        (await CharacterObject
                                                      .LoadDataXPathAsync(
                                                          "armor.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                  "/chummer/modcategories", token: token).ConfigureAwait(false), token)
+                                              .SelectSingleNodeAndCacheExpression(
+                                                  "/chummer/modcategories", token: token), token)
                                     .Contains(objArmorMod.Category);
                                 await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -16251,13 +16232,12 @@ namespace Chummer
                                         bool blnEnabled = !objSelectedGear.IncludedInParent
                                                           && CharacterObject
                                                              .GenerateBlackMarketMappings(
-                                                                 await (await CharacterObject
+                                                                 (await CharacterObject
                                                                               .LoadDataXPathAsync(
                                                                                   "gear.xml", token: token)
                                                                               .ConfigureAwait(false))
-                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                           "/chummer", token: token)
-                                                                       .ConfigureAwait(false), token)
+                                                                       .SelectSingleNodeAndCacheExpression(
+                                                                           "/chummer", token: token), token)
                                                              .Contains(objSelectedGear.Category);
                                         await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                                         {
@@ -16671,13 +16651,12 @@ namespace Chummer
                         {
                             bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                            .GenerateBlackMarketMappings(
-                                                                               await (await CharacterObject
+                                                                               (await CharacterObject
                                                                                        .LoadDataXPathAsync(
                                                                                            "gear.xml", token: token)
                                                                                        .ConfigureAwait(false))
-                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                       "/chummer", token: token)
-                                                                                   .ConfigureAwait(false), token)
+                                                                                   .SelectSingleNodeAndCacheExpression(
+                                                                                       "/chummer", token: token), token)
                                                                            .Contains(objGear.Category);
                             await chkGearBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -18030,10 +18009,10 @@ namespace Chummer
                             {
                                 bool blnEnabled = CharacterObject
                                                   .GenerateBlackMarketMappings(
-                                                      await (await CharacterObject.LoadDataXPathAsync(
+                                                      (await CharacterObject.LoadDataXPathAsync(
                                                                 "vehicles.xml", token: token).ConfigureAwait(false))
-                                                            .SelectSingleNodeAndCacheExpressionAsync(
-                                                                "/chummer", token: token).ConfigureAwait(false), token)
+                                                            .SelectSingleNodeAndCacheExpression(
+                                                                "/chummer", token: token), token)
                                                   .Contains(objVehicle.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -18301,10 +18280,10 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objWeaponMount.IncludedInVehicle && CharacterObject
                                     .GenerateBlackMarketMappings(
-                                        await (await CharacterObject.LoadDataXPathAsync("vehicles.xml", token: token)
+                                        (await CharacterObject.LoadDataXPathAsync("vehicles.xml", token: token)
                                                                     .ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                  "/chummer/weaponmountcategories", token: token).ConfigureAwait(false),
+                                              .SelectSingleNodeAndCacheExpression(
+                                                  "/chummer/weaponmountcategories", token: token),
                                         token)
                                     .Contains(objWeaponMount.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
@@ -18444,15 +18423,14 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objMod.IncludedInVehicle && CharacterObject
                                                                                .GenerateBlackMarketMappings(
-                                                                                   await (await CharacterObject
+                                                                                  (await CharacterObject
                                                                                            .LoadDataXPathAsync(
                                                                                                "weapons.xml",
                                                                                                token: token)
                                                                                            .ConfigureAwait(false))
-                                                                                       .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                       .SelectSingleNodeAndCacheExpression(
                                                                                            "/chummer/modcategories",
-                                                                                           token: token)
-                                                                                       .ConfigureAwait(false), token)
+                                                                                           token: token), token)
                                                                                .Contains(objMod.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -18577,11 +18555,11 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objWeapon.IncludedInWeapon && CharacterObject
                                     .GenerateBlackMarketMappings(
-                                        await (await CharacterObject
+                                        (await CharacterObject
                                                      .LoadDataXPathAsync(
                                                          "weapons.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                  "/chummer", token: token).ConfigureAwait(false), token)
+                                              .SelectSingleNodeAndCacheExpression(
+                                                  "/chummer", token: token), token)
                                     .Contains(objWeapon.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -18954,11 +18932,11 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objAccessory.IncludedInWeapon && CharacterObject
                                     .GenerateBlackMarketMappings(
-                                        await (await CharacterObject
+                                        (await CharacterObject
                                                      .LoadDataXPathAsync(
                                                          "weapons.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                  "/chummer", token: token).ConfigureAwait(false), token)
+                                              .SelectSingleNodeAndCacheExpression(
+                                                  "/chummer", token: token), token)
                                     .Contains(objAccessory.Parent.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -19177,7 +19155,7 @@ namespace Chummer
                             if (CharacterObject.BlackMarketDiscount && string.IsNullOrEmpty(objCyberware.ParentID))
                             {
                                 bool blnEnabled = CharacterObject.GenerateBlackMarketMappings(
-                                                                     await (await CharacterObject
+                                                                     (await CharacterObject
                                                                                .LoadDataXPathAsync(
                                                                                    objCyberware.SourceType
                                                                                    == Improvement.ImprovementSource
@@ -19185,9 +19163,8 @@ namespace Chummer
                                                                                        ? "cyberware.xml"
                                                                                        : "bioware.xml", token: token)
                                                                                .ConfigureAwait(false))
-                                                                           .SelectSingleNodeAndCacheExpressionAsync(
-                                                                               "/chummer", token: token)
-                                                                           .ConfigureAwait(false), token)
+                                                                           .SelectSingleNodeAndCacheExpression(
+                                                                               "/chummer", token: token), token)
                                                                  .Contains(objCyberware.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -19368,13 +19345,12 @@ namespace Chummer
                             {
                                 bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                                .GenerateBlackMarketMappings(
-                                                                                   await (await CharacterObject
+                                                                                   (await CharacterObject
                                                                                            .LoadDataXPathAsync(
                                                                                                "gear.xml", token: token)
                                                                                            .ConfigureAwait(false))
-                                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                           "/chummer", token: token)
-                                                                                       .ConfigureAwait(false), token)
+                                                                                       .SelectSingleNodeAndCacheExpression(
+                                                                                           "/chummer", token: token), token)
                                                                                .Contains(objGear.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {

@@ -140,11 +140,7 @@ namespace Chummer
             // See if the character is in career mode but would want to add a chargen-only Quality
             if (objCharacter.Created)
             {
-                if ((blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("chargenonly", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("chargenonly", token)
-                                       .ConfigureAwait(false)) != null)
+                if (xmlNode.SelectSingleNodeAndCacheExpression("chargenonly", token) != null)
                 {
                     if (blnShowMessage)
                     {
@@ -175,11 +171,7 @@ namespace Chummer
             // See if the character is using priority-based gen and is trying to add a Quality that can only be added through priorities
             else
             {
-                if ((blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("careeronly", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("careeronly", token)
-                                       .ConfigureAwait(false)) != null)
+                if (xmlNode.SelectSingleNodeAndCacheExpression("careeronly", token) != null)
                 {
                     if (blnShowMessage)
                     {
@@ -210,11 +202,7 @@ namespace Chummer
                 }
 
                 if (objCharacter.EffectiveBuildMethodUsesPriorityTables
-                    && (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("onlyprioritygiven", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("onlyprioritygiven", token)
-                                       .ConfigureAwait(false)) != null)
+                    && xmlNode.SelectSingleNodeAndCacheExpression("onlyprioritygiven", token) != null)
                 {
                     if (blnShowMessage)
                     {
@@ -247,19 +235,10 @@ namespace Chummer
             {
                 // See if the character already has this Quality and whether or not multiple copies are allowed.
                 // If the limit at chargen is different from the actual limit, we need to make sure we fetch the former if the character is in Create mode
-                string strLimitString = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? xmlNode.SelectSingleNodeAndCacheExpression("chargenlimit", token)
-                    : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("chargenlimit", token)
-                                   .ConfigureAwait(false))?.Value;
+                string strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("chargenlimit", token)?.Value ?? string.Empty;
                 if (string.IsNullOrWhiteSpace(strLimitString) || objCharacter.Created)
                 {
-                    strLimitString = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("limit", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("limit", token)
-                                           .ConfigureAwait(false))
-                        ?.Value;
+                    strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("limit", token)?.Value ?? string.Empty;
                     // Default case is each quality can only be taken once
                     if (string.IsNullOrWhiteSpace(strLimitString))
                     {
@@ -271,11 +250,7 @@ namespace Chummer
                             strLimitString = "1";
                         else if (xmlNode.Name == "lifestylequality")
                         {
-                            strLimitString = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlNode.SelectSingleNodeAndCacheExpression("allowmultiple", token)
-                                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("allowmultiple", token)
-                                               .ConfigureAwait(false)) != null
+                            strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("allowmultiple", token) != null
                                 ? bool.FalseString
                                 : "1";
                         }
@@ -414,35 +389,18 @@ namespace Chummer
 
                     int intLimit = Convert.ToInt32(strLimitString, GlobalSettings.InvariantCultureInfo);
                     int intExtendedLimit = intLimit;
-                    string strLimitWithInclusions = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("limitwithinclusions", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("limitwithinclusions", token)
-                                       .ConfigureAwait(false))?.Value;
+                    string strLimitWithInclusions = xmlNode.SelectSingleNodeAndCacheExpression("limitwithinclusions", token)?.Value;
                     if (!string.IsNullOrEmpty(strLimitWithInclusions))
                         intExtendedLimit = Convert.ToInt32(strLimitWithInclusions, GlobalSettings.InvariantCultureInfo);
                     int intCount = 0;
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
-                        string strNodeId = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlNode.SelectSingleNodeAndCacheExpression("id", token)
-                                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("id", token)
-                                               .ConfigureAwait(false))
-                            ?.Value ?? string.Empty;
-                        string strNodeName = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("name", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                           .ConfigureAwait(false))?.Value ?? string.Empty;
+                        string strNodeId = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty;
+                        string strNodeName = xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
                         intExtendedCount = intCount;
                         // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
-                        XPathNavigator xmlIncludeInLimit = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("includeinlimit", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("includeinlimit", token)
-                                           .ConfigureAwait(false);
+                        XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNodeAndCacheExpression("includeinlimit", token);
                         if (xmlIncludeInLimit != null)
                         {
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -571,10 +529,7 @@ namespace Chummer
                 }
             }
 
-            XPathNavigator xmlForbiddenNode = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? xmlNode.SelectSingleNodeAndCacheExpression("forbidden", token)
-                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("forbidden", token).ConfigureAwait(false);
+            XPathNavigator xmlForbiddenNode = xmlNode.SelectSingleNodeAndCacheExpression("forbidden", token);
             if (xmlForbiddenNode != null)
             {
                 // Loop through the oneof requirements.
@@ -626,10 +581,7 @@ namespace Chummer
                 }
             }
 
-            XPathNavigator xmlRequiredNode = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? xmlNode.SelectSingleNodeAndCacheExpression("required", token)
-                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("required", token).ConfigureAwait(false);
+            XPathNavigator xmlRequiredNode = xmlNode.SelectSingleNodeAndCacheExpression("required", token);
             if (xmlRequiredNode != null)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -791,15 +743,9 @@ namespace Chummer
                 : await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strNodeInnerText = xmlNode.Value;
             string strNodeId
-                = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? xmlNode.SelectSingleNodeAndCacheExpression("id", token)
-                    : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty;
             string strNodeName
-                = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? xmlNode.SelectSingleNodeAndCacheExpression("name", token)
-                    : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                = xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
             switch (xmlNode.Name)
             {
                 case "attribute":
@@ -827,12 +773,12 @@ namespace Chummer
                         // Check to see if an Attribute meets a requirement.
                         CharacterAttrib objAttribute = await objCharacter.GetAttributeAsync(strNodeName, token: token).ConfigureAwait(false);
                         int intTargetValue
-                            = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("total", token).ConfigureAwait(false))?.ValueAsInt ?? 0;
+                            = xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
                                                     await objAttribute.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false), strSpace, intTargetValue);
 
-                        if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("natural", token).ConfigureAwait(false) != null)
+                        if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
                             return new Tuple<bool, string>(await objAttribute.GetValueAsync(token).ConfigureAwait(false) >= intTargetValue, strName);
                         }
@@ -866,8 +812,8 @@ namespace Chummer
                     else
                     {
                         string strNodeAttributes
-                            = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("attributes", token).ConfigureAwait(false))?.Value ?? string.Empty;
-                        int intNodeVal = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))?.ValueAsInt ?? 0;
+                            = xmlNode.SelectSingleNodeAndCacheExpression("attributes", token)?.Value ?? string.Empty;
+                        int intNodeVal = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0;
                         // Check if the character's Attributes add up to a particular total.
                         AttributeSection objAttributeSection = await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
                         string strValue
@@ -952,29 +898,15 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                         XPathNavigator objLoopNode
                             = objLoopDoc.TryGetNodeByNameOrId("/chummer/powers/power", strNodeInnerText);
-                        string strTranslate = objLoopNode != null
-                            ? (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objLoopNode.SelectSingleNodeAndCacheExpression("translate", token)
-                                : await objLoopNode.SelectSingleNodeAndCacheExpressionAsync("translate", token)
-                                                   .ConfigureAwait(false))?.Value
-                            : string.Empty;
+                        string strTranslate = objLoopNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? string.Empty;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
-                                                              ? objLoopNode != null
-                                                                  ? (blnSync
-                                                                        ? objLoopNode
-                                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                                            .SelectSingleNodeAndCacheExpression(
-                                                                                "name", token)
-                                                                        : await objLoopNode
-                                                                            .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                "name", token)
-                                                                            .ConfigureAwait(false))?.Value
-                                                                    ?? strNodeInnerText
-                                                                  : strNodeInnerText
+                                                              ? objLoopNode?
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "name", token)?.Value
+                                                                ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
@@ -990,10 +922,7 @@ namespace Chummer
                 case "bioware":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         XPathNavigator objLoopDoc = blnSync
@@ -1025,10 +954,7 @@ namespace Chummer
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1081,16 +1007,10 @@ namespace Chummer
                 case "cyberware":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token).ConfigureAwait(false);
+                        XPathNavigator objLoopDoc = objCharacter.LoadDataXPath("cyberware.xml", token: token);
                             string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
@@ -1135,10 +1055,7 @@ namespace Chummer
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1191,10 +1108,7 @@ namespace Chummer
                 case "biowarecategory":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         string strTranslate = (blnSync
@@ -1230,10 +1144,7 @@ namespace Chummer
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1276,10 +1187,7 @@ namespace Chummer
                 case "cyberwarecategory":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                     {
                         string strTranslate = (blnSync
@@ -1314,10 +1222,7 @@ namespace Chummer
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1360,10 +1265,7 @@ namespace Chummer
                 case "biowarecontains":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                     {
                         string strTranslate
@@ -1389,10 +1291,7 @@ namespace Chummer
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1435,10 +1334,7 @@ namespace Chummer
                 case "cyberwarecontains":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         string strTranslate
@@ -1464,10 +1360,7 @@ namespace Chummer
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1554,10 +1447,7 @@ namespace Chummer
                 case "ess":
                 {
                     string strEssNodeGradeAttributeText
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@grade", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@grade", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@grade", token)?.Value
                           ?? string.Empty;
                     if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                     {
@@ -1717,10 +1607,7 @@ namespace Chummer
                     Gear objGear;
                     //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
 
-                    XPathNavigator objExactRatingNode = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("@rating", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@rating", token).ConfigureAwait(false);
+                    XPathNavigator objExactRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@rating", token);
                     if (objExactRatingNode != null)
                     {
                         int intRating = objExactRatingNode.ValueAsInt;
@@ -1735,14 +1622,8 @@ namespace Chummer
                     }
                     else
                     {
-                        XPathNavigator objMinRatingNode = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@minrating", token).ConfigureAwait(false);
-                        XPathNavigator objMaxRatingNode = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@maxrating", token).ConfigureAwait(false);
+                        XPathNavigator objMinRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
+                        XPathNavigator objMaxRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
                         if (objMinRatingNode != null || objMaxRatingNode != null)
                         {
                             int intMinRating = objMinRatingNode?.ValueAsInt ?? 0;
@@ -2084,13 +1965,11 @@ namespace Chummer
                         }
 
                         XPathNavigator xmlMetamagicDoc
-                            = blnSync
+                            = (blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? objCharacter.LoadDataXPath("metamagic.xml", token: token)
-                                              // ReSharper disable once MethodHasAsyncOverload
-                                              .SelectSingleNodeAndCacheExpression("/chummer", token)
-                                : await (await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token).ConfigureAwait(false))
-                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false);
+                                : await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token)
+                                    .ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer", token);
                         if (blnShowMessage)
                         {
                             string strTranslateArt
@@ -2463,10 +2342,7 @@ namespace Chummer
                 case "quality":
                 {
                     string strExtra
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@extra", token).ConfigureAwait(false))?.Value;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value;
                         Quality objQuality = blnSync
                         ? !string.IsNullOrEmpty(strExtra)
                             ? objCharacter.Qualities.FirstOrDefault(
@@ -2526,10 +2402,7 @@ namespace Chummer
                 case "lifestylequality":
                 {
                     string strExtra
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@extra", token).ConfigureAwait(false))?.Value;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value;
                     LifestyleQuality objQuality = null;
                     if (blnSync)
                     {
@@ -2702,25 +2575,16 @@ namespace Chummer
                 case "skill":
                 {
                     string strSpec
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("spec", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("spec", token).ConfigureAwait(false))?.Value;
-                    string strValue = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))?.Value;
-                    int intValue = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))?.ValueAsInt ?? 0;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("spec", token)?.Value;
+                    string strValue = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.Value;
+                    int intValue = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0;
                     Skill objSkill = null;
                     SkillsSection objSkillsSection = blnSync
                         ? objCharacter.SkillsSection
                         : await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                     // Check if the character has the required Skill.
                     // ReSharper disable once MethodHasAsyncOverload
-                    if ((blnSync ? xmlNode.SelectSingleNodeAndCacheExpression("type", token) : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("type", token).ConfigureAwait(false)) != null)
+                    if (xmlNode.SelectSingleNodeAndCacheExpression("type", token) != null)
                     {
                         if (blnSync)
                         {
@@ -2858,15 +2722,9 @@ namespace Chummer
                             ? objCharacter.LoadDataXPath("skills.xml", token: token)
                             : await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                         string strSkillId
-                            = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlNode.SelectSingleNodeAndCacheExpression("id", token)
-                                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
+                            = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                         string strSkillName
-                            = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlNode.SelectSingleNodeAndCacheExpression("name", token)
-                                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
+                            = xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                         string strTranslate
                             = xmlSkillDoc.SelectSingleNode("/chummer/skills/skill[id = " + strSkillId.CleanXPath()
                                                            + "]/translate")?.Value
@@ -2917,10 +2775,7 @@ namespace Chummer
                     // Check if the total combined Ratings of Skills adds up to a particular total.
                     int intTotal = 0;
                     IEnumerable<string> lstSkills
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("skills", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("skills", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("skills", token)?.Value
                         .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries);
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdOutput))
@@ -2934,7 +2789,6 @@ namespace Chummer
                             if (blnSync)
                             {
                                 // If the xmlnode contains Type element, assume that it is a Knowledge skill.
-                                // ReSharper disable once MethodHasAsyncOverload
                                 if (xmlNode.SelectSingleNodeAndCacheExpression("type", token) != null)
                                 {
                                     foreach (string strLoop in lstSkills)
@@ -2973,7 +2827,7 @@ namespace Chummer
                                 }
                             }
                             // If the xmlnode contains Type element, assume that it is a Knowledge skill.
-                            else if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("type", token).ConfigureAwait(false) != null)
+                            else if (xmlNode.SelectSingleNodeAndCacheExpression("type", token) != null)
                             {
                                 foreach (string strLoop in lstSkills)
                                 {
@@ -3014,10 +2868,7 @@ namespace Chummer
                         }
 
                         if (!blnShowMessage)
-                            return new Tuple<bool, string>(intTotal >= ((blnSync
-                                                               // ReSharper disable once MethodHasAsyncOverload
-                                                               ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                                                               : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))?.ValueAsInt ?? 0), strName);
+                            return new Tuple<bool, string>(intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0), strName);
                         if (sbdOutput.Length > 0)
                             sbdOutput.Length -= 2;
                         strName = sbdOutput + strSpace + '(' + (blnSync
@@ -3030,10 +2881,7 @@ namespace Chummer
                                 token: token).ConfigureAwait(false)) + ')';
                     }
 
-                    int intTarget = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))
+                    int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("val", token)
                         ?.ValueAsInt ?? 0;
                     return new Tuple<bool, string>(intTotal >= intTarget, strName);
                 }
@@ -3042,10 +2890,7 @@ namespace Chummer
                     // Check if the total combined Ratings of Skill Groups adds up to a particular total.
                     int intTotal = 0;
                     IEnumerable<string> lstGroups
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("skillgroups", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("skillgroups", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("skillgroups", token)?.Value
                         .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries);
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdOutput))
@@ -3112,12 +2957,8 @@ namespace Chummer
                         }
                     }
 
-                    int intTarget = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))
-                        ?.ValueAsInt ?? 0;
-                        return new Tuple<bool, string>(intTotal >= intTarget, strName);
+                    int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0;
+                    return new Tuple<bool, string>(intTotal >= intTarget, strName);
                 }
                 case "specialmodificationlimit":
                 {
@@ -3263,17 +3104,11 @@ namespace Chummer
                                                                   ?.ValueAsInt ?? 0), strName);
                     return new Tuple<bool, string>(await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).CountAsync(
                                                        objSpell => objSpell.Category == strNodeName, token).ConfigureAwait(false)
-                                                   >= ((await xmlNode
-                                                              .SelectSingleNodeAndCacheExpressionAsync("count", token).ConfigureAwait(false))
-                                                       ?.ValueAsInt ?? 0), strName);
+                                                   >= (xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0), strName);
                 }
                 case "spelldescriptor":
                 {
-                    int intCount = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("count", token)
-                        : await xmlNode
-                                .SelectSingleNodeAndCacheExpressionAsync("count", token).ConfigureAwait(false))?.ValueAsInt ?? 0;
+                    int intCount = xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0;
                     // Check for a specified amount of a particular Spell Descriptor.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + (blnSync
@@ -3699,7 +3534,7 @@ namespace Chummer
                 return true;
             // Avail.
 
-            XPathNavigator objAvailNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false);
+            XPathNavigator objAvailNode = objXmlGear.SelectSingleNodeAndCacheExpression("avail", token);
             if (objAvailNode == null)
             {
                 int intHighestAvailNode = 0;
@@ -3827,7 +3662,7 @@ namespace Chummer
                 return false;
             // Cost.
             decimal decCost = 0.0m;
-            XPathNavigator objCostNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false);
+            XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost", token);
             if (objCostNode == null)
             {
                 int intCostRating = 1;

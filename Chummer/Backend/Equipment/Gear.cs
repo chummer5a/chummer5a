@@ -3486,12 +3486,12 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator xmlGearDataNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            if (xmlGearDataNode != null && (await xmlGearDataNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value == "Custom Item")
+            if (xmlGearDataNode?.SelectSingleNodeAndCacheExpression("name", token)?.Value == "Custom Item")
             {
                 return await _objCharacter.TranslateExtraAsync(Name, strLanguage, token: token).ConfigureAwait(false);
             }
 
-            return xmlGearDataNode != null ? (await xmlGearDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
+            return xmlGearDataNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name;
         }
 
         /// <summary>
@@ -5110,8 +5110,7 @@ namespace Chummer.Backend.Equipment
             if (xmlGearImportNode == null)
                 return false;
             string strOriginalName
-                = (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("@name", token)
-                                          .ConfigureAwait(false))?.Value ?? string.Empty;
+                = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@name", token)?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
                 XmlDocument xmlGearDocument
@@ -5284,8 +5283,7 @@ namespace Chummer.Backend.Equipment
                 if (xmlGearDataNode != null)
                 {
                     Create(xmlGearDataNode,
-                           (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("@rating", token)
-                                                   .ConfigureAwait(false))?.ValueAsInt ?? 0, lstWeapons,
+                           xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating", token)?.ValueAsInt ?? 0, lstWeapons,
                            strForceValue);
                 }
                 else
@@ -5295,12 +5293,10 @@ namespace Chummer.Backend.Equipment
                     if (xmlCustomGearDataNode != null)
                     {
                         Create(xmlCustomGearDataNode,
-                               (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("@rating", token)
-                                                       .ConfigureAwait(false))?.ValueAsInt ?? 0,
+                               xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating", token)?.ValueAsInt ?? 0,
                                lstWeapons, strOriginalName);
-                        Cost = (await xmlGearImportNode
-                                      .SelectSingleNodeAndCacheExpressionAsync("gearcost/@value", token)
-                                      .ConfigureAwait(false))?.Value;
+                        Cost = xmlGearImportNode
+                            .SelectSingleNodeAndCacheExpression("gearcost/@value", token)?.Value;
                     }
                     else
                         return false;
@@ -5309,10 +5305,8 @@ namespace Chummer.Backend.Equipment
                 if (InternalId.IsEmptyGuid())
                     return false;
 
-                Quantity = (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("@quantity", token)
-                                                   .ConfigureAwait(false))?.ValueAsInt ?? 1;
-                Notes = (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("description", token)
-                                                .ConfigureAwait(false))?.Value;
+                Quantity = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@quantity", token)?.ValueAsInt ?? 1;
+                Notes = xmlGearImportNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
 
                 await ProcessHeroLabGearPluginsAsync(xmlGearImportNode, lstWeapons, token).ConfigureAwait(false);
 
@@ -5384,14 +5378,14 @@ namespace Chummer.Backend.Equipment
                 foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName +
                              "/item[@useradded = \"no\"]"))
                 {
-                    string strName = (await xmlPluginToAdd.SelectSingleNodeAndCacheExpressionAsync("@name", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name", token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strName))
                     {
                         Gear objPlugin = await Children.FirstOrDefaultAsync(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)), token: token).ConfigureAwait(false);
                         if (objPlugin != null)
                         {
-                            objPlugin.Quantity = (await xmlPluginToAdd.SelectSingleNodeAndCacheExpressionAsync("@quantity", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
-                            objPlugin.Notes = (await xmlPluginToAdd.SelectSingleNodeAndCacheExpressionAsync("description", token).ConfigureAwait(false))?.Value;
+                            objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity", token)?.ValueAsInt ?? 1;
+                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description", token)?.Value;
                             await objPlugin.ProcessHeroLabGearPluginsAsync(xmlPluginToAdd, lstWeapons, token).ConfigureAwait(false);
                         }
                     }

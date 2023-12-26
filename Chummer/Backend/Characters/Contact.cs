@@ -732,14 +732,14 @@ namespace Chummer
                 objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
                 objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
                 objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
-                if (await objNode.SelectSingleNodeAndCacheExpressionAsync("colour", token).ConfigureAwait(false) != null)
+                if (objNode.SelectSingleNodeAndCacheExpression("colour", token) != null)
                 {
                     int intTmp = _objColor.ToArgb();
                     if (objNode.TryGetInt32FieldQuickly("colour", ref intTmp))
                         _objColor = Color.FromArgb(intTmp);
                 }
 
-                _blnReadOnly = await objNode.SelectSingleNodeAndCacheExpressionAsync("readonly", token).ConfigureAwait(false) != null;
+                _blnReadOnly = objNode.SelectSingleNodeAndCacheExpression("readonly", token) != null;
 
                 if (!objNode.TryGetBoolFieldQuickly("groupenabled", ref _blnGroupEnabled))
                 {
@@ -1173,8 +1173,7 @@ namespace Chummer
                         = await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false);
 
                     strReturn
-                        = (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                                .ConfigureAwait(false))?.Value
+                        = objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                           ?? await _objCharacter.TranslateExtraAsync(
                               await LinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false),
                               strLanguage, "metatypes.xml", token).ConfigureAwait(false);
@@ -1185,10 +1184,7 @@ namespace Chummer
                     objMetatypeNode
                         = objMetatypeNode.TryGetNodeById("metavariants/metavariant", LinkedCharacter.MetavariantGuid);
 
-                    string strMetatypeTranslate = objMetatypeNode != null
-                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                                .ConfigureAwait(false))?.Value
-                        : null;
+                    string strMetatypeTranslate = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value;
                     strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                       .ConfigureAwait(false)
                                  + '('

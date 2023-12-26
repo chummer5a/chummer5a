@@ -504,16 +504,15 @@ namespace Chummer.Backend.Equipment
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         XPathNavigator objNode
-                            = await (await _objCharacter
+                            = (await _objCharacter
                                     .LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " +
-                                                                         strLifestyleQualityType.CleanXPath()
-                                                                         + ']', token: token).ConfigureAwait(false);
+                                .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " +
+                                                                    strLifestyleQualityType.CleanXPath()
+                                                                    + ']', token: token);
                         if (objNode != null)
                             strLifestyleQualityType
-                                = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token)
-                                    .ConfigureAwait(false))?.Value ?? strLifestyleQualityType;
+                                = objNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strLifestyleQualityType;
                     }
 
                     await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType, token)
@@ -711,8 +710,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Page
+                    ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
                     : Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
             }
@@ -815,8 +813,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Name
+                    ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
                     : Name;
             }
         }

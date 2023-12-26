@@ -500,7 +500,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritCombat
                                 : strSpiritCombat;
                             lstCritters.Add(new ListItem(strSpiritCombat, strTranslatedName));
@@ -513,7 +513,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritDetection
                                 : strSpiritDetection;
                             lstCritters.Add(new ListItem(strSpiritDetection, strTranslatedName));
@@ -526,7 +526,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritHealth
                                 : strSpiritHealth;
                             lstCritters.Add(new ListItem(strSpiritHealth, strTranslatedName));
@@ -539,7 +539,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritIllusion
                                 : strSpiritIllusion;
                             lstCritters.Add(new ListItem(strSpiritIllusion, strTranslatedName));
@@ -552,7 +552,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritManipulation.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritManipulation
                                 : strSpiritManipulation;
                             lstCritters.Add(new ListItem(strSpiritManipulation, strTranslatedName));
@@ -561,18 +561,18 @@ namespace Chummer
                     else
                     {
                         XPathNavigator objDataNode = await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                        if (objDataNode != null && await objDataNode.SelectSingleNodeAndCacheExpressionAsync("spirits/spirit[. = \"All\"]", token).ConfigureAwait(false) != null)
+                        if (objDataNode?.SelectSingleNodeAndCacheExpression("spirits/spirit[. = \"All\"]", token) != null)
                         {
                             if (setLimitCategories.Count == 0)
                             {
                                 foreach (XPathNavigator objXmlCritterNode in objXmlDocument.SelectAndCacheExpression(
                                              "/chummer/spirits/spirit", token: token))
                                 {
-                                    string strSpiritName = (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))
+                                    string strSpiritName = objXmlCritterNode.SelectSingleNodeAndCacheExpression("name", token: token)
                                                                             ?.Value;
                                     lstCritters.Add(new ListItem(strSpiritName,
-                                                                 (await objXmlCritterNode
-                                                                        .SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
+                                                                 objXmlCritterNode
+                                                                     .SelectSingleNodeAndCacheExpression("translate", token: token)
                                                                      ?.Value
                                                                  ?? strSpiritName));
                                 }
@@ -585,7 +585,7 @@ namespace Chummer
                                         = objXmlDocument.SelectSingleNode(
                                             "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + ']');
                                     string strTranslatedName = objXmlCritterNode != null
-                                        ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                        ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                           ?? strSpiritName
                                         : strSpiritName;
                                     lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
@@ -608,7 +608,7 @@ namespace Chummer
                                                 "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath()
                                                 + ']');
                                         string strTranslatedName = objXmlCritterNode != null
-                                            ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                            ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                               ?? strSpiritName
                                             : strSpiritName;
                                         lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));

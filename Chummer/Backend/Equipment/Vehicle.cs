@@ -1219,8 +1219,8 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await (await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
-                          .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token: token).ConfigureAwait(false))
+            return (await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
+                .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token: token)
                    ?.Value ?? Category;
         }
 
@@ -1957,7 +1957,7 @@ namespace Chummer.Backend.Equipment
             XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             if (xmlDataNode == null)
                 return Name;
-            return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? Name;
+            return xmlDataNode.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
         }
 
         /// <summary>
@@ -3523,9 +3523,9 @@ namespace Chummer.Backend.Equipment
                     .ConfigureAwait(false))
                 return false;
 
-            XPathNavigator xmlTestNode = await objXmlMod
-                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                   "forbidden/vehicledetails", token).ConfigureAwait(false);
+            XPathNavigator xmlTestNode = objXmlMod
+                                               .SelectSingleNodeAndCacheExpression(
+                                                   "forbidden/vehicledetails", token);
             if (xmlTestNode != null)
             {
                 XPathNavigator xmlRequirementsNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false);
@@ -3535,8 +3535,7 @@ namespace Chummer.Backend.Equipment
                     return false;
             }
 
-            xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails", token)
-                                               .ConfigureAwait(false);
+            xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/vehicledetails", token);
             // Assumes topmost parent is an AND node
             return xmlTestNode == null || await (await this.GetNodeXPathAsync(token).ConfigureAwait(false))
                                                 .ProcessFilterOperationNodeAsync(xmlTestNode, false, token)

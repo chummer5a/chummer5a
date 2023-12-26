@@ -356,8 +356,7 @@ namespace Chummer
                                       .ConfigureAwait(false))
                 .TryGetNodeByNameOrId("/chummer/programs/program", RequiresProgram);
             return xmlRequiresProgramNode != null
-                ? (await xmlRequiresProgramNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                               .ConfigureAwait(false))?.Value ?? RequiresProgram
+                ? xmlRequiresProgramNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? RequiresProgram
                 : RequiresProgram;
         }
 
