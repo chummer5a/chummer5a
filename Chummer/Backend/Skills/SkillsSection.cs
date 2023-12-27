@@ -1085,7 +1085,6 @@ namespace Chummer.Backend.Skills
                                                 objLocker2 = _objSkillsInitializerLock.EnterUpgradeableReadLock(token);
                                             else
                                             {
-                                                objLocker2 = null;
                                                 objLockerAsync2 = await _objSkillsInitializerLock
                                                     .EnterUpgradeableReadLockAsync(token)
                                                     .ConfigureAwait(false);

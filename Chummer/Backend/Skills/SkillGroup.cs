@@ -1726,12 +1726,10 @@ namespace Chummer.Backend.Skills
                 case nameof(Skill.BasePoints):
                 case nameof(Skill.FreeBase):
                     return this.OnMultiplePropertyChangedAsync(token, nameof(BaseUnbroken), nameof(KarmaUnbroken));
-                    break;
 
                 case nameof(Skill.KarmaPoints):
                 case nameof(Skill.FreeKarma):
                     return OnPropertyChangedAsync(nameof(KarmaUnbroken), token);
-                    break;
 
                 case nameof(Skill.Specializations):
                     if (CharacterObject.Settings.SpecializationsBreakSkillGroups)
@@ -1745,7 +1743,6 @@ namespace Chummer.Backend.Skills
                         nameof(UpgradeToolTip),
                         nameof(CurrentKarmaCost),
                         nameof(UpgradeKarmaCost));
-                    break;
             }
 
             return Task.CompletedTask;

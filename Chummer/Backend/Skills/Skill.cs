@@ -5955,56 +5955,39 @@ namespace Chummer.Backend.Skills
                 case nameof(Character.Karma):
                     return this.OnMultiplePropertyChangedAsync(token, nameof(CanUpgradeCareer),
                         nameof(CanAffordSpecialization));
-                    break;
 
                 case nameof(Character.WoundModifier):
                 case nameof(Character.SustainingPenalty):
                     return OnPropertyChangedAsync(nameof(PoolOtherAttribute), token);
-                    break;
 
                 case nameof(Character.PrimaryArm):
                     return OnPropertyChangedAsync(nameof(PoolToolTip), token);
-                    break;
 
-                case nameof(Character.GetMovement):
-                    if (RequiresGroundMovement)
-                        return OnPropertyChangedAsync(nameof(Enabled), token);
-                    break;
+                case nameof(Character.GetMovement) when RequiresGroundMovement:
+                    return OnPropertyChangedAsync(nameof(Enabled), token);
 
-                case nameof(Character.GetSwim):
-                    if (RequiresSwimMovement)
-                        return OnPropertyChangedAsync(nameof(Enabled), token);
-                    break;
+                case nameof(Character.GetSwim) when RequiresSwimMovement:
+                    return OnPropertyChangedAsync(nameof(Enabled), token);
 
-                case nameof(Character.GetFly):
-                    if (RequiresFlyMovement)
-                        return OnPropertyChangedAsync(nameof(Enabled), token);
-                    break;
+                case nameof(Character.GetFly) when RequiresFlyMovement:
+                    return OnPropertyChangedAsync(nameof(Enabled), token);
 
-                case nameof(Character.MAGEnabled):
-                    if (Attribute == "MAG" || Attribute == "MAGAdept")
-                        return OnPropertyChangedAsync(nameof(Enabled), token);
-                    break;
+                case nameof(Character.MAGEnabled) when Attribute == "MAG" || Attribute == "MAGAdept":
+                    return OnPropertyChangedAsync(nameof(Enabled), token);
 
-                case nameof(Character.RESEnabled):
-                    if (Attribute == "RES")
-                        return OnPropertyChangedAsync(nameof(Enabled), token);
-                    break;
+                case nameof(Character.RESEnabled) when Attribute == "RES":
+                    return OnPropertyChangedAsync(nameof(Enabled), token);
 
-                case nameof(Character.DEPEnabled):
-                    if (Attribute == "DEP")
-                        return OnPropertyChangedAsync(nameof(Enabled), token);
-                    break;
+                case nameof(Character.DEPEnabled) when Attribute == "DEP":
+                    return OnPropertyChangedAsync(nameof(Enabled), token);
 
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
                     return this.OnMultiplePropertyChangedAsync(token, nameof(Base),
                         nameof(BaseUnlocked),
                         nameof(ForcedBuyWithKarma));
-                    break;
 
                 case nameof(Character.IsCritter):
                     return OnPropertyChangedAsync(nameof(Default), token);
-                    break;
             }
 
             return Task.CompletedTask;
@@ -6135,11 +6118,9 @@ namespace Chummer.Backend.Skills
             {
                 case nameof(CharacterAttrib.TotalValue):
                     return OnPropertyChangedAsync(nameof(AttributeModifiers), token);
-                    break;
 
                 case nameof(CharacterAttrib.Abbrev):
                     return OnPropertyChangedAsync(nameof(Enabled), token);
-                    break;
             }
 
             return Task.CompletedTask;
