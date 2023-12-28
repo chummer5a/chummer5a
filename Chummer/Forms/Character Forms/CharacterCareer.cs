@@ -3701,7 +3701,7 @@ namespace Chummer
                             throw;
                         }
 
-                        ImprovementManager.Commit(CharacterObject);
+                        await ImprovementManager.CommitAsync(CharacterObject, GenericToken).ConfigureAwait(false);
                     }
 
                     // Permanently reduce the CharacterAttribute's value.
@@ -5339,7 +5339,7 @@ namespace Chummer
                                 throw;
                             }
 
-                            ImprovementManager.Commit(objMerge);
+                            await ImprovementManager.CommitAsync(objMerge, GenericToken).ConfigureAwait(false);
                             XmlDocument xmlPowerDoc
                                 = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken)
                                                        .ConfigureAwait(false);

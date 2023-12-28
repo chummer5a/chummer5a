@@ -2349,7 +2349,11 @@ namespace Chummer
                     if (blnAddImprovementsToCharacter)
                     {
                         sbdTrace.AppendLine("Committing improvements.");
-                        Commit(objCharacter);
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            Commit(objCharacter);
+                        else
+                            await CommitAsync(objCharacter, token).ConfigureAwait(false);
                         sbdTrace.AppendLine("Finished committing improvements");
                     }
                     else
@@ -3128,7 +3132,11 @@ namespace Chummer
                     }
                 }
 
-                objImprovementList.ProcessRelevantEvents(token);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objImprovementList.ProcessRelevantEvents(token);
+                else
+                    await objImprovementList.ProcessRelevantEventsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -3787,7 +3795,11 @@ namespace Chummer
                     }
                 }
 
-                objImprovementList.ProcessRelevantEvents(token);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objImprovementList.ProcessRelevantEvents(token);
+                else
+                    await objImprovementList.ProcessRelevantEventsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -5186,7 +5198,11 @@ namespace Chummer
                     }
                 }
 
-                objImprovementList.ProcessRelevantEvents(token);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objImprovementList.ProcessRelevantEvents(token);
+                else
+                    await objImprovementList.ProcessRelevantEventsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -5418,6 +5434,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Clear all the Improvements from the Transaction List.
+        /// </summary>
+        public static async Task CommitAsync(Character objCharacter, CancellationToken token = default)
+        {
+            Log.Debug("Commit");
+            // Clear all the Improvements from the Transaction List.
+            if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
+            {
+                await lstTransactions.ProcessRelevantEventsAsync(token: token).ConfigureAwait(false);
+            }
+
+            Log.Debug("Commit exit");
+        }
+
+        /// <summary>
         /// Rollback all the Improvements from the Transaction List.
         /// </summary>
         public static void Rollback(Character objCharacter, CancellationToken token = default)
@@ -5574,6 +5605,145 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         kvpChangedProperties.Key.OnMultiplePropertyChanged(kvpChangedProperties.Value.ToList());
+                    }
+                }
+                finally
+                {
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fire off all events relevant to an improvement, making sure each event is only fired once.
+        /// </summary>
+        /// <param name="objImprovement">Improvement whose events to fire</param>
+        /// <param name="lstExtraImprovedName">Additional ImprovedName versions to check, if any.</param>
+        /// <param name="lstExtraImprovementTypes">Additional ImprovementType versions to check, if any.</param>
+        /// <param name="lstExtraUniqueName">Additional UniqueName versions to check, if any.</param>
+        /// <param name="lstExtraTarget">Additional Target versions to check, if any.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ProcessRelevantEventsAsync(this Improvement objImprovement, ICollection<string> lstExtraImprovedName = null, IEnumerable<Improvement.ImprovementType> lstExtraImprovementTypes = null, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objImprovement?.SetupComplete != true)
+                return;
+            // Create a hashset of events to fire to make sure we only ever fire each event once
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+            {
+                try
+                {
+                    foreach ((INotifyMultiplePropertyChangedAsync objToNotify, string strProperty) in await objImprovement
+                                 .GetRelevantPropertyChangersAsync(lstExtraImprovedName: lstExtraImprovedName,
+                                     lstExtraUniqueName: lstExtraUniqueName,
+                                     lstExtraTarget: lstExtraTarget, token: token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                              out HashSet<string> setLoopPropertiesChanged))
+                        {
+                            setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
+                        }
+
+                        setLoopPropertiesChanged.Add(strProperty);
+                    }
+
+                    if (lstExtraImprovementTypes != null)
+                    {
+                        foreach (Improvement.ImprovementType eOverrideType in lstExtraImprovementTypes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            foreach ((INotifyMultiplePropertyChangedAsync objToNotify, string strProperty) in await objImprovement
+                                         .GetRelevantPropertyChangersAsync(lstExtraImprovedName: lstExtraImprovedName,
+                                             eOverrideType: eOverrideType,
+                                             lstExtraUniqueName: lstExtraUniqueName,
+                                             lstExtraTarget: lstExtraTarget, token: token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                                      out HashSet<string> setLoopPropertiesChanged))
+                                {
+                                    setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
+                                }
+
+                                setLoopPropertiesChanged.Add(strProperty);
+                            }
+                        }
+                    }
+
+                    token.ThrowIfCancellationRequested();
+
+                    // Fire each event once
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpChangedProperties in
+                             dicChangedProperties)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await kvpChangedProperties.Key.OnMultiplePropertyChangedAsync(kvpChangedProperties.Value.ToList(), token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fire off all events relevant to an enumerable of improvements, making sure each event is only fired once.
+        /// </summary>
+        /// <param name="lstImprovements">Enumerable of improvements whose events to fire</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ProcessRelevantEventsAsync(this IEnumerable<Improvement> lstImprovements, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstImprovements == null)
+                return;
+            // Create a hashset of events to fire to make sure we only ever fire each event once
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+            {
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        foreach ((INotifyMultiplePropertyChangedAsync objToNotify, string strProperty) in await objImprovement
+                                     .GetRelevantPropertyChangersAsync(token: token).ConfigureAwait(false))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                                  out HashSet<string> setLoopPropertiesChanged))
+                            {
+                                setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
+                            }
+                            setLoopPropertiesChanged.Add(strProperty);
+                        }
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    // Fire each event once
+                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpChangedProperties in
+                             dicChangedProperties)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await kvpChangedProperties.Key.OnMultiplePropertyChangedAsync(kvpChangedProperties.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally

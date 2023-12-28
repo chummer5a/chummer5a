@@ -3607,7 +3607,7 @@ namespace Chummer.Backend.Attributes
                                             throw;
                                         }
 
-                                        ImprovementManager.Commit(_objCharacter);
+                                        await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
                                     }
 
                                     continue; // Skip increasing Karma
@@ -3644,13 +3644,13 @@ namespace Chummer.Backend.Attributes
                     bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
                     for (int i = intAmount; i > 0; --i)
                     {
-                        if (Karma > 0)
+                        if (await GetKarmaAsync(token).ConfigureAwait(false) > 0)
                         {
-                            --Karma;
+                            await ModifyKarmaAsync(-1, token).ConfigureAwait(false);
                         }
-                        else if (Base > 0)
+                        else if (await GetBaseAsync(token).ConfigureAwait(false) > 0)
                         {
-                            --Base;
+                            await ModifyBaseAsync(-1, token).ConfigureAwait(false);
                         }
                         else if (Abbrev == "EDG" && blnCreated &&
                                  await GetTotalMinimumAsync(token).ConfigureAwait(false) > 0)
@@ -3680,7 +3680,7 @@ namespace Chummer.Backend.Attributes
                                 throw;
                             }
 
-                            ImprovementManager.Commit(_objCharacter);
+                            await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
                         }
                         else
                             return;

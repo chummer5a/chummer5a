@@ -144,6 +144,8 @@ namespace Chummer
         }
 
 #if LINKEDSEMAPHOREDEBUG
+        private readonly string _strGuid = Guid.NewGuid().ToString();
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
         private string RecordedStackTrace { get; set; }
 
@@ -761,40 +763,19 @@ namespace Chummer
                                 new Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper,
                                     objLoopSemaphore));
                             token.ThrowIfCancellationRequested();
+                            // Hold Pending Writer Semaphore before reader lock announcement to prevent edge case weird stuff
+                            objLoopSemaphore = objLoopHelper.PendingWriterSemaphore;
+                            objLoopSemaphore.SafeWait(token);
                             // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
                             long lngNumReaders = Interlocked.Add(ref objLoopHelper._lngNumReaders, -MaxReaderCount) +
                                                  MaxReaderCount;
                             // Wait for existing readers to exit
-                            objLoopSemaphore = objLoopHelper.PendingWriterSemaphore;
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objLoopSemaphore.SafeWait(token);
-                            }
-                            catch
-                            {
-                                Interlocked.Add(ref objLoopHelper._lngNumReaders, MaxReaderCount);
-                                throw;
-                            }
-
                             try
                             {
                                 if (lngNumReaders != 0)
                                 {
-                                    long lngPendingCount;
-                                    // Use locals for thread safety
-                                    DebuggableSemaphoreSlim objLoopSemaphore2 =
-                                        objLoopHelper._objCancelledWriterSemaphore;
-                                    objLoopSemaphore2?.SafeWait(token);
-                                    try
-                                    {
-                                        lngPendingCount = Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter,
-                                            lngNumReaders);
-                                    }
-                                    finally
-                                    {
-                                        objLoopSemaphore2?.Release();
-                                    }
+                                    long lngPendingCount = Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter,
+                                        lngNumReaders);
                                     if (lngPendingCount != lngNumReaders)
                                         Utils.BreakIfDebug();
                                     if (lngPendingCount > 0)
@@ -825,7 +806,8 @@ namespace Chummer
                             }
                             finally
                             {
-                                objLoopSemaphore.Release();
+                                if (objLoopSemaphore.CurrentCount == 0)
+                                    objLoopSemaphore.Release();
                             }
 
                             stkUndo.Push(
@@ -872,6 +854,10 @@ namespace Chummer
                     throw;
                 }
             }
+
+#if LINKEDSEMAPHOREDEBUG
+            Debug.Print("Entered write lock for id " + _strGuid);
+#endif
         }
 
         public async Task TakeWriteLockAsync(LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
@@ -912,40 +898,19 @@ namespace Chummer
                                 new Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper,
                                     objLoopSemaphore));
                             token.ThrowIfCancellationRequested();
+                            // Hold Pending Writer Semaphore before reader lock announcement to prevent edge case weird stuff
+                            objLoopSemaphore = objLoopHelper.PendingWriterSemaphore;
+                            await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                             // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
                             long lngNumReaders = Interlocked.Add(ref objLoopHelper._lngNumReaders, -MaxReaderCount) +
                                                  MaxReaderCount;
                             // Wait for existing readers to exit
-                            objLoopSemaphore = objLoopHelper.PendingWriterSemaphore;
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
-                            }
-                            catch
-                            {
-                                Interlocked.Add(ref objLoopHelper._lngNumReaders, MaxReaderCount);
-                                throw;
-                            }
-
                             try
                             {
                                 if (lngNumReaders != 0)
                                 {
-                                    long lngPendingCount;
-                                    // Use locals for thread safety
-                                    DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper._objCancelledWriterSemaphore;
-                                    if (objLoopSemaphore2 != null)
-                                        await objLoopSemaphore2.WaitAsync(token).ConfigureAwait(false);
-                                    try
-                                    {
-                                        lngPendingCount = Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter,
-                                            lngNumReaders);
-                                    }
-                                    finally
-                                    {
-                                        objLoopSemaphore2?.Release();
-                                    }
+                                    long lngPendingCount = Interlocked.Add(ref objLoopHelper._lngPendingCountForWriter,
+                                        lngNumReaders);
                                     if (lngPendingCount != lngNumReaders)
                                         Utils.BreakIfDebug();
                                     if (lngPendingCount > 0)
@@ -976,7 +941,8 @@ namespace Chummer
                             }
                             finally
                             {
-                                objLoopSemaphore.Release();
+                                if (objLoopSemaphore.CurrentCount == 0)
+                                    objLoopSemaphore.Release();
                             }
 
                             stkUndo.Push(
@@ -1023,6 +989,10 @@ namespace Chummer
                     throw;
                 }
             }
+
+#if LINKEDSEMAPHOREDEBUG
+            Debug.Print("Entered write lock for id " + _strGuid);
+#endif
         }
 
         public void TakeSingleWriteLock(CancellationToken token = default)
@@ -1056,39 +1026,20 @@ namespace Chummer
 
                         token.ThrowIfCancellationRequested();
 
+                        // Hold Pending Writer Semaphore before reader lock announcement to prevent edge case weird stuff
+                        objLoopSemaphore = PendingWriterSemaphore;
+                        objLoopSemaphore.SafeWait(token);
+
                         // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
                         long lngNumReaders = Interlocked.Add(ref _lngNumReaders, -MaxReaderCount) +
                                              MaxReaderCount;
                         // Wait for existing readers to exit
-                        objLoopSemaphore = PendingWriterSemaphore;
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            objLoopSemaphore.SafeWait(token);
-                        }
-                        catch
-                        {
-                            Interlocked.Add(ref _lngNumReaders, MaxReaderCount);
-                            throw;
-                        }
-
                         try
                         {
                             if (lngNumReaders != 0)
                             {
-                                long lngPendingCount;
-                                // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
-                                objLoopSemaphore2?.SafeWait(token);
-                                try
-                                {
-                                    lngPendingCount = Interlocked.Add(ref _lngPendingCountForWriter,
-                                        lngNumReaders);
-                                }
-                                finally
-                                {
-                                    objLoopSemaphore2?.Release();
-                                }
+                                long lngPendingCount = Interlocked.Add(ref _lngPendingCountForWriter,
+                                    lngNumReaders);
                                 if (lngPendingCount != lngNumReaders)
                                     Utils.BreakIfDebug();
                                 if (lngPendingCount > 0)
@@ -1118,7 +1069,8 @@ namespace Chummer
                         }
                         finally
                         {
-                            objLoopSemaphore.Release();
+                            if (objLoopSemaphore.CurrentCount == 0)
+                                objLoopSemaphore.Release();
                         }
                     }
                 }
@@ -1143,6 +1095,10 @@ namespace Chummer
                     throw;
                 }
             }
+
+#if LINKEDSEMAPHOREDEBUG
+            Debug.Print("Entered single write lock for id " + _strGuid);
+#endif
         }
 
         public async Task TakeSingleWriteLockAsync(CancellationToken token = default)
@@ -1173,41 +1129,19 @@ namespace Chummer
                         stkLockedSemaphores.Push(objLoopSemaphore);
 
                         token.ThrowIfCancellationRequested();
-
+                        // Hold Pending Writer Semaphore before reader lock announcement to prevent edge case weird stuff
+                        objLoopSemaphore = PendingWriterSemaphore;
+                        await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                         // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
                         long lngNumReaders = Interlocked.Add(ref _lngNumReaders, -MaxReaderCount) +
                                              MaxReaderCount;
                         // Wait for existing readers to exit
-                        objLoopSemaphore = PendingWriterSemaphore;
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            Interlocked.Add(ref _lngNumReaders, MaxReaderCount);
-                            throw;
-                        }
-
                         try
                         {
                             if (lngNumReaders != 0)
                             {
-                                long lngPendingCount;
-                                // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
-                                if (objLoopSemaphore2 != null)
-                                    await objLoopSemaphore2.WaitAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    lngPendingCount = Interlocked.Add(ref _lngPendingCountForWriter,
-                                        lngNumReaders);
-                                }
-                                finally
-                                {
-                                    objLoopSemaphore2?.Release();
-                                }
+                                long lngPendingCount = Interlocked.Add(ref _lngPendingCountForWriter,
+                                    lngNumReaders);
                                 if (lngPendingCount != lngNumReaders)
                                     Utils.BreakIfDebug();
                                 if (lngPendingCount > 0)
@@ -1238,7 +1172,8 @@ namespace Chummer
                         }
                         finally
                         {
-                            objLoopSemaphore.Release();
+                            if (objLoopSemaphore.CurrentCount == 0)
+                                objLoopSemaphore.Release();
                         }
                     }
                 }
@@ -1263,6 +1198,10 @@ namespace Chummer
                     throw;
                 }
             }
+
+#if LINKEDSEMAPHOREDEBUG
+            Debug.Print("Entered single write lock for id " + _strGuid);
+#endif
         }
 
         public void SingleUpgradeToWriteLock(CancellationToken token = default)
@@ -1292,39 +1231,20 @@ namespace Chummer
 
                         token.ThrowIfCancellationRequested();
 
+                        // Hold Pending Writer Semaphore before reader lock announcement to prevent edge case weird stuff
+                        objLoopSemaphore = PendingWriterSemaphore;
+                        objLoopSemaphore.SafeWait(token);
+
                         // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
                         long lngNumReaders = Interlocked.Add(ref _lngNumReaders, -MaxReaderCount) +
                                              MaxReaderCount;
                         // Wait for existing readers to exit
-                        objLoopSemaphore = PendingWriterSemaphore;
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            objLoopSemaphore.SafeWait(token);
-                        }
-                        catch
-                        {
-                            Interlocked.Add(ref _lngNumReaders, MaxReaderCount);
-                            throw;
-                        }
-
                         try
                         {
                             if (lngNumReaders != 0)
                             {
-                                long lngPendingCount;
-                                // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
-                                objLoopSemaphore2?.SafeWait(token);
-                                try
-                                {
-                                    lngPendingCount = Interlocked.Add(ref _lngPendingCountForWriter,
-                                        lngNumReaders);
-                                }
-                                finally
-                                {
-                                    objLoopSemaphore2?.Release();
-                                }
+                                long lngPendingCount = Interlocked.Add(ref _lngPendingCountForWriter,
+                                    lngNumReaders);
                                 if (lngPendingCount != lngNumReaders)
                                     Utils.BreakIfDebug();
                                 if (lngPendingCount > 0)
@@ -1354,7 +1274,8 @@ namespace Chummer
                         }
                         finally
                         {
-                            objLoopSemaphore.Release();
+                            if (objLoopSemaphore.CurrentCount == 0)
+                                objLoopSemaphore.Release();
                         }
                     }
                 }
@@ -1379,6 +1300,10 @@ namespace Chummer
                     throw;
                 }
             }
+
+#if LINKEDSEMAPHOREDEBUG
+            Debug.Print("Upgraded single write lock for id " + _strGuid);
+#endif
         }
 
         public async Task SingleUpgradeToWriteLockAsync(CancellationToken token = default)
@@ -1407,41 +1332,19 @@ namespace Chummer
                         stkLockedSemaphores.Push(objLoopSemaphore);
 
                         token.ThrowIfCancellationRequested();
-
+                        // Hold Pending Writer Semaphore before reader lock announcement to prevent edge case weird stuff
+                        objLoopSemaphore = PendingWriterSemaphore;
+                        await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                         // Announce that we have acquired the reader lock, preventing new reader locks from being acquired
                         long lngNumReaders = Interlocked.Add(ref _lngNumReaders, -MaxReaderCount) +
                                              MaxReaderCount;
                         // Wait for existing readers to exit
-                        objLoopSemaphore = PendingWriterSemaphore;
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            Interlocked.Add(ref _lngNumReaders, MaxReaderCount);
-                            throw;
-                        }
-
                         try
                         {
                             if (lngNumReaders != 0)
                             {
-                                long lngPendingCount;
-                                // Use locals for thread safety
-                                DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
-                                if (objLoopSemaphore2 != null)
-                                    await objLoopSemaphore2.WaitAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    lngPendingCount = Interlocked.Add(ref _lngPendingCountForWriter,
-                                        lngNumReaders);
-                                }
-                                finally
-                                {
-                                    objLoopSemaphore2?.Release();
-                                }
+                                long lngPendingCount = Interlocked.Add(ref _lngPendingCountForWriter,
+                                    lngNumReaders);
                                 if (lngPendingCount != lngNumReaders)
                                     Utils.BreakIfDebug();
                                 if (lngPendingCount > 0)
@@ -1472,7 +1375,8 @@ namespace Chummer
                         }
                         finally
                         {
-                            objLoopSemaphore.Release();
+                            if (objLoopSemaphore.CurrentCount == 0)
+                                objLoopSemaphore.Release();
                         }
                     }
                 }
@@ -1497,6 +1401,10 @@ namespace Chummer
                     throw;
                 }
             }
+
+#if LINKEDSEMAPHOREDEBUG
+            Debug.Print("Upgraded single write lock for id " + _strGuid);
+#endif
         }
 
         public void ReleaseSingleWriteLock()
@@ -1586,6 +1494,10 @@ namespace Chummer
             {
                 // swallow this if we got disposed in-between
             }
+
+#if LINKEDSEMAPHOREDEBUG
+            Debug.Print("Exited write lock for id " + _strGuid);
+#endif
         }
     }
 }

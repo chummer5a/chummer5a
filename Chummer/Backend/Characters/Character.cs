@@ -7048,7 +7048,11 @@ namespace Chummer
                                                             throw;
                                                         }
 
-                                                        ImprovementManager.Commit(this);
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            ImprovementManager.Commit(this);
+                                                        else
+                                                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                                     }
 
                                                     if (LastSavedVersion <= new Version(5, 212, 43)
@@ -7122,7 +7126,11 @@ namespace Chummer
                                                             throw;
                                                         }
 
-                                                        ImprovementManager.Commit(this);
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            ImprovementManager.Commit(this);
+                                                        else
+                                                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                                     }
                                                 }
                                                 catch
@@ -16506,7 +16514,7 @@ namespace Chummer
                     throw;
                 }
 
-                ImprovementManager.Commit(this);
+                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                 return true;
             }
             finally
@@ -19749,7 +19757,7 @@ namespace Chummer
                             throw;
                         }
 
-                        ImprovementManager.Commit(this);
+                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -19792,7 +19800,7 @@ namespace Chummer
                                 throw;
                             }
 
-                            ImprovementManager.Commit(this);
+                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         }
 
                         // Update any Metamagic Improvements the character might have.
@@ -19838,7 +19846,7 @@ namespace Chummer
                                         throw;
                                     }
 
-                                    ImprovementManager.Commit(this);
+                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                 }
                             }
                         }, token).ConfigureAwait(false);
@@ -21154,7 +21162,7 @@ namespace Chummer
                             throw;
                         }
 
-                        ImprovementManager.Commit(this);
+                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -21191,7 +21199,7 @@ namespace Chummer
                                 throw;
                             }
 
-                            ImprovementManager.Commit(this);
+                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         }
 
                         // Update any Echo Improvements the character might have.
@@ -21238,7 +21246,7 @@ namespace Chummer
                                         throw;
                                     }
 
-                                    ImprovementManager.Commit(this);
+                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                 }
                             }
                         }, token).ConfigureAwait(false);
@@ -34809,7 +34817,7 @@ namespace Chummer
                     throw;
                 }
 
-                ImprovementManager.Commit(this);
+                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
 
                 return true;
             }
@@ -35760,7 +35768,7 @@ namespace Chummer
                             }
 
                             if (intMagMaxReduction != 0 || intResMaxReduction != 0 || intDepMaxReduction != 0)
-                                ImprovementManager.Commit(this);
+                                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -35999,7 +36007,7 @@ namespace Chummer
                                                 throw;
                                             }
 
-                                            ImprovementManager.Commit(this);
+                                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -36071,7 +36079,7 @@ namespace Chummer
 
                                 if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0 ||
                                     intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
-                                    ImprovementManager.Commit(this);
+                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                             }
 
                             if (intResMaxReduction > 0
@@ -36144,7 +36152,7 @@ namespace Chummer
                                         throw;
                                     }
 
-                                    ImprovementManager.Commit(this);
+                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                 }
                             }
 
@@ -36218,7 +36226,7 @@ namespace Chummer
                                         throw;
                                     }
 
-                                    ImprovementManager.Commit(this);
+                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -36333,7 +36341,7 @@ namespace Chummer
                                 throw;
                             }
 
-                            ImprovementManager.Commit(this);
+                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
 
                             // If the character is in Career mode, it is possible for them to be forced to burn out.
                             if (await GetCreatedAsync(token).ConfigureAwait(false))
@@ -36517,7 +36525,7 @@ namespace Chummer
                                 throw;
                             }
 
-                            ImprovementManager.Commit(this);
+                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -37707,7 +37715,7 @@ namespace Chummer
                     throw;
                 }
 
-                ImprovementManager.Commit(this);
+                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
             }
             finally
             {
@@ -37793,7 +37801,7 @@ namespace Chummer
                         throw;
                     }
 
-                    ImprovementManager.Commit(this);
+                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                 }
             }
             finally
@@ -43760,7 +43768,7 @@ namespace Chummer
                     throw;
                 }
 
-                ImprovementManager.Commit(this);
+                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
 
                 // Convert the character.
                 // Characters lose access to Resonance.

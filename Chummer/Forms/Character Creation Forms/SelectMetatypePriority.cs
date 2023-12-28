@@ -2264,7 +2264,7 @@ namespace Chummer
                 }
 
                 if (blnCommit)
-                    ImprovementManager.Commit(_objCharacter);
+                    await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
 
                 async ValueTask AddExoticSkillIfNecessary(string strDictionaryKey)
                 {

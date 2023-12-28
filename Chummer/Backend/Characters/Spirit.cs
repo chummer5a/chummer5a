@@ -1578,7 +1578,7 @@ namespace Chummer
                                 throw;
                             }
 
-                            ImprovementManager.Commit(CharacterObject);
+                            await ImprovementManager.CommitAsync(CharacterObject, token).ConfigureAwait(false);
                         }
 
                         if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))

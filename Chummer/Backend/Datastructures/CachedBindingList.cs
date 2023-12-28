@@ -254,6 +254,9 @@ namespace Chummer
             IDisposable objLocker = BindingListLock?.EnterReadLock();
             try
             {
+                // INotifyPropertyChangedAsync will call PropertyChangedAsync anyway, which does everything we would do here
+                if (Count > 0 && this[0] is INotifyPropertyChangedAsync)
+                    return;
                 if (_setListChangedAsync.Count > 0)
                 {
                     List<Func<Task>> lstFuncs = new List<Func<Task>>(_setListChangedAsync.Count);
