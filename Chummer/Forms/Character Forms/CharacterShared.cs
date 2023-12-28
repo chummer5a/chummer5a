@@ -7334,6 +7334,74 @@ namespace Chummer
             }
         }
 
+        public void RefreshContactsClearBindings(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies,
+            FlowLayoutPanel panPets, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (panContacts != null)
+            {
+                panContacts.SuspendLayout();
+                try
+                {
+                    for (int i = panContacts.Controls.Count - 1; i >= 0; --i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!(panContacts.Controls[i] is ContactControl objContactControl))
+                            continue;
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objContactControl.DeleteContact -= DeleteContact;
+                        objContactControl.MouseDown -= DragContactControl;
+                    }
+                }
+                finally
+                {
+                    panContacts.ResumeLayout();
+                }
+            }
+
+            if (panEnemies != null)
+            {
+                panEnemies.SuspendLayout();
+                try
+                {
+                    for (int i = panEnemies.Controls.Count - 1; i >= 0; --i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!(panEnemies.Controls[i] is ContactControl objContactControl))
+                            continue;
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objContactControl.DeleteContact -= DeleteEnemy;
+                        objContactControl.MouseDown -= DragContactControl;
+                    }
+                }
+                finally
+                {
+                    panEnemies.ResumeLayout();
+                }
+            }
+
+            if (panPets != null)
+            {
+                panPets.SuspendLayout();
+                try
+                {
+                    for (int i = panPets.Controls.Count - 1; i >= 0; --i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!(panPets.Controls[i] is PetControl objPetControl))
+                            continue;
+                        objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objPetControl.DeleteContact -= DeletePet;
+                        objPetControl.MouseDown -= DragContactControl;
+                    }
+                }
+                finally
+                {
+                    panPets.ResumeLayout();
+                }
+            }
+        }
+
         public async Task RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             if (panContacts == null && panEnemies == null && panPets == null)
@@ -7708,6 +7776,70 @@ namespace Chummer
             }
         }
 
+        public void RefreshSustainedSpellsClearBindings(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (pnlSustainedSpells != null)
+            {
+                pnlSustainedSpells.SuspendLayout();
+                try
+                {
+                    for (int i = pnlSustainedSpells.Controls.Count - 1; i >= 0; --i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!(pnlSustainedSpells.Controls[i] is SustainedObjectControl objSustainedObjectControl))
+                            continue;
+                        objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
+                    }
+                }
+                finally
+                {
+                    pnlSustainedSpells.ResumeLayout();
+                }
+            }
+
+            if (pnlSustainedComplexForms != null)
+            {
+                pnlSustainedComplexForms.SuspendLayout();
+                try
+                {
+                    for (int i = pnlSustainedComplexForms.Controls.Count - 1; i >= 0; --i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!(pnlSustainedComplexForms.Controls[i] is SustainedObjectControl objSustainedObjectControl))
+                            continue;
+                        objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
+                    }
+                }
+                finally
+                {
+                    pnlSustainedComplexForms.ResumeLayout();
+                }
+            }
+
+            if (pnlSustainedCritterPowers != null)
+            {
+                pnlSustainedCritterPowers.SuspendLayout();
+                try
+                {
+                    for (int i = pnlSustainedCritterPowers.Controls.Count - 1; i >= 0; --i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!(pnlSustainedCritterPowers.Controls[i] is SustainedObjectControl objSustainedObjectControl))
+                            continue;
+                        objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
+                    }
+                }
+                finally
+                {
+                    pnlSustainedCritterPowers.ResumeLayout();
+                }
+            }
+        }
+
         /// <summary>
         /// Refreshes the all panels for sustained objects (spells, complex forms, critter powers)
         /// </summary>
@@ -8061,27 +8193,41 @@ namespace Chummer
             }
         }
 
-        public async void DeleteSustainedObject(object sender, EventArgs e)
+        public async Task DeleteSustainedObject(object sender, EventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            if (!(sender is SustainedObjectControl objSender))
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
-                if (sender is SustainedObjectControl objSender)
-                {
-                    SustainedObject objSustainedObject = objSender.LinkedSustainedObject;
+                SustainedObject objSustainedObject = objSender.LinkedSustainedObject;
 
-                    if (!await CommonFunctions.ConfirmDeleteAsync(
+                if (!await CommonFunctions.ConfirmDeleteAsync(
                             string.Format(
                                 await LanguageManager.GetStringAsync("Message_DeleteSustainedSpell",
-                                                                     token: GenericToken).ConfigureAwait(false),
-                                await objSustainedObject.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
-                        return;
+                                    token: token).ConfigureAwait(false),
+                                await objSustainedObject.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)),
+                            token)
+                        .ConfigureAwait(false))
+                    return;
 
-                    await CharacterObject.SustainedCollection.RemoveAsync(objSustainedObject, GenericToken).ConfigureAwait(false);
-                }
+                await CharacterObject.SustainedCollection.RemoveAsync(objSustainedObject, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
             }
         }
 
@@ -8548,22 +8694,39 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        protected async void DeleteContact(object sender, EventArgs e)
+        protected async Task DeleteContact(object sender, EventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            if (!(sender is ContactControl objSender))
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
-                if (!(sender is ContactControl objSender))
-                    return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                if (!await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteContact", token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
-                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
-                await SetDirty(true, GenericToken).ConfigureAwait(false);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
+                    .ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
             }
         }
 
@@ -8583,22 +8746,39 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        protected async void DeletePet(object sender, EventArgs e)
+        protected async Task DeletePet(object sender, EventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            if (!(sender is PetControl objSender))
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
-                if (!(sender is PetControl objSender))
-                    return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                if (!await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteContact", token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
-                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
-                await SetDirty(true, GenericToken).ConfigureAwait(false);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
+                    .ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
             }
         }
 
@@ -8619,22 +8799,39 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        protected async void DeleteEnemy(object sender, EventArgs e)
+        protected async Task DeleteEnemy(object sender, EventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            if (!(sender is ContactControl objSender))
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
-                if (!(sender is ContactControl objSender))
-                    return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                if (!await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
-                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
-                await SetDirty(true, GenericToken).ConfigureAwait(false);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
+                    .ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
             }
         }
 
@@ -8699,6 +8896,50 @@ namespace Chummer
         }
 
         #endregion Additional Relationships Tab Control Events
+
+        public void RefreshSpiritsClearBindings(Panel panSpirits, Panel panSprites, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (panSpirits != null)
+            {
+                panSpirits.SuspendLayout();
+                try
+                {
+                    for (int i = panSpirits.Controls.Count - 1; i >= 0; --i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!(panSpirits.Controls[i] is SpiritControl objSpiritControl))
+                            continue;
+                        objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                    }
+                }
+                finally
+                {
+                    panSpirits.ResumeLayout();
+                }
+            }
+
+            if (panSprites != null)
+            {
+                panSprites.SuspendLayout();
+                try
+                {
+                    for (int i = panSprites.Controls.Count - 1; i >= 0; --i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!(panSprites.Controls[i] is SpiritControl objSpiritControl))
+                            continue;
+                        objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                    }
+                }
+                finally
+                {
+                    panSprites.ResumeLayout();
+                }
+            }
+        }
 
         public async Task RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
@@ -9109,30 +9350,43 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        protected async void DeleteSpirit(object sender, EventArgs e)
+        protected async Task DeleteSpirit(object sender, EventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            if (!(sender is SpiritControl objSender))
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
-                if (!(sender is SpiritControl objSender))
-                    return;
                 Spirit objSpirit = objSender.SpiritObject;
-                bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(GenericToken).ConfigureAwait(false) ==
+                bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
                                    SpiritType.Spirit;
                 if (!await CommonFunctions
                         .ConfirmDeleteAsync(
                             await LanguageManager
                                 .GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite",
-                                    token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                                    token: token).ConfigureAwait(false), token).ConfigureAwait(false))
                     return;
                 await objSpirit.SetFetteredAsync(false, GenericToken)
                     .ConfigureAwait(false); // Fettered spirits consume MAG.
-                await CharacterObject.Spirits.RemoveAsync(objSpirit, token: GenericToken).ConfigureAwait(false);
-                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
-                await SetDirty(true, GenericToken).ConfigureAwait(false);
+                await CharacterObject.Spirits.RemoveAsync(objSpirit, token: token).ConfigureAwait(false);
+                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                await SetDirty(true, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
             }
         }
 

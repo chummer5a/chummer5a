@@ -1500,7 +1500,9 @@ namespace Chummer
                                         MartialArtBeforeClearCollectionChanged;
                                     CharacterObject.MartialArts.CollectionChangedAsync += MartialArtCollectionChanged;
                                     CharacterObject.Lifestyles.CollectionChangedAsync += LifestylesCollectionChanged;
+                                    CharacterObject.Contacts.BeforeClearCollectionChanged += ContactBeforeClearCollectionChanged;
                                     CharacterObject.Contacts.CollectionChangedAsync += ContactCollectionChanged;
+                                    CharacterObject.Spirits.BeforeClearCollectionChanged += SpiritBeforeClearCollectionChanged;
                                     CharacterObject.Spirits.CollectionChangedAsync += SpiritCollectionChanged;
                                     CharacterObject.Armor.BeforeClearCollectionChangedAsync +=
                                         ArmorBeforeClearCollectionChanged;
@@ -1657,6 +1659,12 @@ namespace Chummer
                             RefreshGearsClearBindings(treGear, CancellationToken.None),
                             RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
                             RefreshVehiclesClearBindings(treVehicles, CancellationToken.None)).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(
+                            x => x.RefreshContactsClearBindings(panContacts, panEnemies, panPets,
+                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(
+                            x => x.RefreshSpiritsClearBindings(panSpirits, panSprites,
+                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
                         GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
                         CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
                             -= AttributeBeforeClearCollectionChanged;
@@ -1676,7 +1684,9 @@ namespace Chummer
                             MartialArtBeforeClearCollectionChanged;
                         CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
                         CharacterObject.Lifestyles.CollectionChangedAsync -= LifestylesCollectionChanged;
+                        CharacterObject.Contacts.BeforeClearCollectionChanged -= ContactBeforeClearCollectionChanged;
                         CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
+                        CharacterObject.Spirits.BeforeClearCollectionChanged -= SpiritBeforeClearCollectionChanged;
                         CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
                         CharacterObject.Armor.BeforeClearCollectionChangedAsync -=
                             ArmorBeforeClearCollectionChanged;
@@ -23583,11 +23593,35 @@ namespace Chummer
             }
         }
 
+        private void ContactBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            try
+            {
+                RefreshContactsClearBindings(panContacts, panEnemies, panPets, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshContacts(panContacts, panEnemies, panPets, e, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private void SpiritBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            try
+            {
+                RefreshSpiritsClearBindings(panSpirits, panSprites, GenericToken);
             }
             catch (OperationCanceledException)
             {

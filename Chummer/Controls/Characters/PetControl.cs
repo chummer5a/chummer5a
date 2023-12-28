@@ -40,9 +40,9 @@ namespace Chummer
         private readonly Timer _tmrMetatypeChangeTimer;
 
         // Events.
-        public event EventHandler<TextEventArgs> ContactDetailChanged;
+        public event EventHandlerExtensions.SafeAsyncEventHandler ContactDetailChanged;
 
-        public event EventHandler DeleteContact;
+        public event EventHandlerExtensions.SafeAsyncEventHandler DeleteContact;
 
         #region Control Events
 
@@ -94,10 +94,12 @@ namespace Chummer
             }
         }
 
-        private void txtContactName_TextChanged(object sender, EventArgs e)
+        private async void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (_intLoading == 0)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
+            if (_intLoading != 0)
+                return;
+            if (ContactDetailChanged != null)
+                await ContactDetailChanged.Invoke(this, new TextEventArgs("Name"), _objMyToken).ConfigureAwait(false);
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
@@ -137,7 +139,8 @@ namespace Chummer
                     }
                 }
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Metatype"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -145,11 +148,20 @@ namespace Chummer
             }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteContact?.Invoke(this, e);
+            if (DeleteContact == null)
+                return;
+            try
+            {
+                await DeleteContact.Invoke(this, e, _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private void cmdLink_Click(object sender, EventArgs e)
@@ -289,7 +301,8 @@ namespace Chummer
                     Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                     _objContact.RelativeFileName = "../" + uriRelative;
 
-                    ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+                    if (ContactDetailChanged != null)
+                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -318,7 +331,8 @@ namespace Chummer
                     _objContact.RelativeFileName = string.Empty;
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile", token: _objMyToken).ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
-                    ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+                    if (ContactDetailChanged != null)
+                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -346,7 +360,8 @@ namespace Chummer
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 strTooltip = strTooltip.WordWrap();
                 await cmdNotes.SetToolTipTextAsync(strTooltip, _objMyToken).ConfigureAwait(false);
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
+                if (ContactDetailChanged != null)
+                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Notes"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

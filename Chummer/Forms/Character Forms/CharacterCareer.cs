@@ -1484,7 +1484,9 @@ namespace Chummer
                                         MartialArtBeforeClearCollectionChanged;
                                     CharacterObject.MartialArts.CollectionChangedAsync += MartialArtCollectionChanged;
                                     CharacterObject.Lifestyles.CollectionChangedAsync += LifestylesCollectionChanged;
+                                    CharacterObject.Contacts.BeforeClearCollectionChanged += ContactBeforeClearCollectionChanged;
                                     CharacterObject.Contacts.CollectionChangedAsync += ContactCollectionChanged;
+                                    CharacterObject.Spirits.BeforeClearCollectionChanged += SpiritBeforeClearCollectionChanged;
                                     CharacterObject.Spirits.CollectionChangedAsync += SpiritCollectionChanged;
                                     CharacterObject.Armor.BeforeClearCollectionChangedAsync +=
                                         ArmorBeforeClearCollectionChanged;
@@ -1514,6 +1516,8 @@ namespace Chummer
                                         += ImprovementGroupCollectionChanged;
                                     CharacterObject.Calendar.ListChangedAsync += CalendarWeekListChanged;
                                     CharacterObject.Drugs.CollectionChangedAsync += DrugCollectionChanged;
+                                    CharacterObject.SustainedCollection.BeforeClearCollectionChanged +=
+                                        SustainedSpellBeforeClearCollectionChanged;
                                     CharacterObject.SustainedCollection.CollectionChangedAsync
                                         += SustainedSpellCollectionChanged;
                                     CharacterObject.ExpenseEntries.CollectionChangedAsync += ExpenseEntriesCollectionChanged;
@@ -1814,6 +1818,18 @@ namespace Chummer
             }
         }
 
+        private void ContactBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            try
+            {
+                RefreshContactsClearBindings(panContacts, panEnemies, panPets, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
@@ -1826,11 +1842,35 @@ namespace Chummer
             }
         }
 
+        private void SpiritBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            try
+            {
+                RefreshSpiritsClearBindings(panSpirits, panSprites, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshSpirits(panSpirits, panSprites, e, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private void SustainedSpellBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            try
+            {
+                RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -2133,6 +2173,16 @@ namespace Chummer
                             RefreshGearsClearBindings(treGear, CancellationToken.None),
                             RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
                             RefreshVehiclesClearBindings(treVehicles, CancellationToken.None)).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(
+                            x => x.RefreshContactsClearBindings(panContacts, panEnemies, panPets,
+                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(
+                            x => x.RefreshSpiritsClearBindings(panSpirits, panSprites,
+                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(
+                            x => x.RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
+                                flpSustainedCritterPowers,
+                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
                         CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
                             -= AttributeBeforeClearCollectionChanged;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
@@ -2151,7 +2201,9 @@ namespace Chummer
                             MartialArtBeforeClearCollectionChanged;
                         CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
                         CharacterObject.Lifestyles.CollectionChangedAsync -= LifestylesCollectionChanged;
+                        CharacterObject.Contacts.BeforeClearCollectionChanged -= ContactBeforeClearCollectionChanged;
                         CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
+                        CharacterObject.Spirits.BeforeClearCollectionChanged -= SpiritBeforeClearCollectionChanged;
                         CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
                         CharacterObject.Armor.BeforeClearCollectionChangedAsync -=
                             ArmorBeforeClearCollectionChanged;
@@ -2178,6 +2230,8 @@ namespace Chummer
                         CharacterObject.ImprovementGroups.CollectionChangedAsync -= ImprovementGroupCollectionChanged;
                         CharacterObject.Calendar.ListChangedAsync -= CalendarWeekListChanged;
                         CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
+                        CharacterObject.SustainedCollection.BeforeClearCollectionChanged -=
+                            SustainedSpellBeforeClearCollectionChanged;
                         CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
                         CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
                         
