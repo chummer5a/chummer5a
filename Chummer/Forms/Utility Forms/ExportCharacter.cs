@@ -73,6 +73,7 @@ namespace Chummer
                 _objGenericFormClosingCancellationTokenSource.Dispose();
                 _objXmlGeneratorCancellationTokenSource?.Dispose();
                 _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
+                dlgSaveFile?.Dispose();
             };
             _objCharacter = objCharacter;
             Program.MainForm.OpenCharacterExportForms?.Add(this);

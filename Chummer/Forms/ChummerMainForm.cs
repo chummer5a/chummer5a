@@ -120,6 +120,7 @@ namespace Chummer
                 _tmrCharactersToOpenCheck.Dispose();
                 _objGenericCancellationTokenSource.Dispose();
                 _objFormOpeningSemaphore.Dispose();
+                dlgOpenFile?.Dispose();
                 DisposeOpenForms();
             };
 

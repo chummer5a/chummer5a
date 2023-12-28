@@ -39,7 +39,11 @@ namespace Chummer
 
         public PrintMultipleCharacters()
         {
-            Disposed += (sender, args) => _objGenericCancellationTokenSource.Dispose();
+            Disposed += (sender, args) =>
+            {
+                _objGenericCancellationTokenSource.Dispose();
+                dlgOpenFile?.Dispose();
+            };
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();

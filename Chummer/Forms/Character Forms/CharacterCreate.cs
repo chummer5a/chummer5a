@@ -1493,19 +1493,31 @@ namespace Chummer
                                     CharacterObject.AIPrograms.CollectionChangedAsync += AIProgramCollectionChanged;
                                     CharacterObject.CritterPowers.CollectionChangedAsync += CritterPowerCollectionChanged;
                                     CharacterObject.Qualities.CollectionChangedAsync += QualityCollectionChanged;
+                                    CharacterObject.MartialArts.BeforeClearCollectionChangedAsync +=
+                                        MartialArtBeforeClearCollectionChanged;
                                     CharacterObject.MartialArts.CollectionChangedAsync += MartialArtCollectionChanged;
-                                    CharacterObject.Lifestyles.CollectionChangedAsync += LifestyleCollectionChanged;
+                                    CharacterObject.Lifestyles.CollectionChangedAsync += LifestylesCollectionChanged;
                                     CharacterObject.Contacts.CollectionChangedAsync += ContactCollectionChanged;
                                     CharacterObject.Spirits.CollectionChangedAsync += SpiritCollectionChanged;
+                                    CharacterObject.Armor.BeforeClearCollectionChangedAsync +=
+                                        ArmorBeforeClearCollectionChanged;
                                     CharacterObject.Armor.CollectionChangedAsync += ArmorCollectionChanged;
                                     CharacterObject.ArmorLocations.CollectionChangedAsync += ArmorLocationCollectionChanged;
+                                    CharacterObject.Weapons.BeforeClearCollectionChangedAsync +=
+                                        WeaponBeforeClearCollectionChanged;
                                     CharacterObject.Weapons.CollectionChangedAsync += WeaponCollectionChanged;
                                     CharacterObject.WeaponLocations.CollectionChangedAsync
                                         += WeaponLocationCollectionChanged;
+                                    CharacterObject.Gear.BeforeClearCollectionChangedAsync +=
+                                        GearBeforeClearCollectionChanged;
                                     CharacterObject.Gear.CollectionChangedAsync += GearCollectionChanged;
                                     CharacterObject.GearLocations.CollectionChangedAsync += GearLocationCollectionChanged;
                                     CharacterObject.Drugs.CollectionChangedAsync += DrugCollectionChanged;
+                                    CharacterObject.Cyberware.BeforeClearCollectionChangedAsync +=
+                                        CyberwareBeforeClearCollectionChanged;
                                     CharacterObject.Cyberware.CollectionChangedAsync += CyberwareCollectionChanged;
+                                    CharacterObject.Vehicles.BeforeClearCollectionChangedAsync +=
+                                        VehicleBeforeClearCollectionChanged;
                                     CharacterObject.Vehicles.CollectionChangedAsync += VehicleCollectionChanged;
                                     CharacterObject.VehicleLocations.CollectionChangedAsync
                                         += VehicleLocationCollectionChanged;
@@ -1635,6 +1647,12 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
+                        await Task.WhenAll(RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
+                            RefreshArmorClearBindings(treArmor, CancellationToken.None),
+                            RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
+                            RefreshGearsClearBindings(treGear, CancellationToken.None),
+                            RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
+                            RefreshVehiclesClearBindings(treVehicles, CancellationToken.None)).ConfigureAwait(false);
                         GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
                         CharacterObject.Spells.CollectionChangedAsync -= SpellCollectionChanged;
@@ -1648,18 +1666,30 @@ namespace Chummer
                         CharacterObject.AIPrograms.CollectionChangedAsync -= AIProgramCollectionChanged;
                         CharacterObject.CritterPowers.CollectionChangedAsync -= CritterPowerCollectionChanged;
                         CharacterObject.Qualities.CollectionChangedAsync -= QualityCollectionChanged;
+                        CharacterObject.MartialArts.BeforeClearCollectionChangedAsync -=
+                            MartialArtBeforeClearCollectionChanged;
                         CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
-                        CharacterObject.Lifestyles.CollectionChangedAsync -= LifestyleCollectionChanged;
+                        CharacterObject.Lifestyles.CollectionChangedAsync -= LifestylesCollectionChanged;
                         CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
                         CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
+                        CharacterObject.Armor.BeforeClearCollectionChangedAsync -=
+                            ArmorBeforeClearCollectionChanged;
                         CharacterObject.Armor.CollectionChangedAsync -= ArmorCollectionChanged;
                         CharacterObject.ArmorLocations.CollectionChangedAsync -= ArmorLocationCollectionChanged;
+                        CharacterObject.Weapons.BeforeClearCollectionChangedAsync -=
+                            WeaponBeforeClearCollectionChanged;
                         CharacterObject.Weapons.CollectionChangedAsync -= WeaponCollectionChanged;
                         CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
                         CharacterObject.WeaponLocations.CollectionChangedAsync -= WeaponLocationCollectionChanged;
+                        CharacterObject.Gear.BeforeClearCollectionChangedAsync -=
+                            GearBeforeClearCollectionChanged;
                         CharacterObject.Gear.CollectionChangedAsync -= GearCollectionChanged;
                         CharacterObject.GearLocations.CollectionChangedAsync -= GearLocationCollectionChanged;
+                        CharacterObject.Cyberware.BeforeClearCollectionChangedAsync -=
+                            CyberwareBeforeClearCollectionChanged;
                         CharacterObject.Cyberware.CollectionChangedAsync -= CyberwareCollectionChanged;
+                        CharacterObject.Vehicles.BeforeClearCollectionChangedAsync -=
+                            VehicleBeforeClearCollectionChanged;
                         CharacterObject.Vehicles.CollectionChangedAsync -= VehicleCollectionChanged;
                         CharacterObject.VehicleLocations.CollectionChangedAsync -= VehicleLocationCollectionChanged;
                         CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
@@ -23494,6 +23524,18 @@ namespace Chummer
             }
         }
 
+        private async Task MartialArtBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                await RefreshMartialArtsClearBindings(treMartialArts, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
@@ -23507,7 +23549,7 @@ namespace Chummer
             }
         }
 
-        private async Task LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private async Task LifestylesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
@@ -23544,6 +23586,18 @@ namespace Chummer
             }
         }
 
+        private async Task ArmorBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                await RefreshArmorClearBindings(treArmor, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
@@ -23562,6 +23616,18 @@ namespace Chummer
             try
             {
                 await RefreshArmorLocations(treArmor, cmsArmorLocation, e, token: token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async Task WeaponBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                await RefreshWeaponsClearBindings(treWeapons, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -23607,6 +23673,18 @@ namespace Chummer
             }
         }
 
+        private async Task GearBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                await RefreshGearsClearBindings(treGear, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
@@ -23635,12 +23713,36 @@ namespace Chummer
             }
         }
 
+        private async Task CyberwareBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                await RefreshCyberwareClearBindings(treCyberware, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, e, token)
                     .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async Task VehicleBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                await RefreshVehiclesClearBindings(treMartialArts, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

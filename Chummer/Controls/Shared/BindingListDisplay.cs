@@ -53,6 +53,13 @@ namespace Chummer.Controls.Shared
         public BindingListDisplay(ThreadSafeBindingList<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
         {
             InitializeComponent();
+            Disposed += (sender, args) =>
+            {
+                foreach (ControlWithMetaData _objControlWithMetaData in _lstContentList)
+                {
+                    _objControlWithMetaData.Dispose();
+                }
+            };
             Contents = contents ?? throw new ArgumentNullException(nameof(contents));
             _funcCreateControl = funcCreateControl;
             _blnLoadVisibleOnly = blnLoadVisibleOnly;
@@ -502,7 +509,7 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private sealed class ControlWithMetaData
+        private sealed class ControlWithMetaData : IDisposable
         {
             public TType Item { get; }
 
@@ -822,6 +829,11 @@ namespace Chummer.Controls.Shared
                 Control objControl = Interlocked.Exchange(ref _objControl, null);
                 if (objControl != null)
                     await objControl.DoThreadSafeAsync(x => x.Dispose(), token).ConfigureAwait(false);
+            }
+
+            public void Dispose()
+            {
+                Interlocked.Exchange(ref _objControl, null)?.DoThreadSafe(x => x.Dispose());
             }
         }
 

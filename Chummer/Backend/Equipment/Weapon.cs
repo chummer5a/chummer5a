@@ -8941,15 +8941,27 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
+                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshChildrenWeaponsClearBindings(treWeapons, y, innerToken);
+
+                Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
-                        null, y, funcMakeDirty, token: token);
+                        null, y, funcMakeDirty, token: innerToken);
 
-                Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
+                Task FuncWeaponAccessoriesBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshWeaponAccessoriesClearBindings(treWeapons, y, innerToken);
+
+                Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
-                        () => UnderbarrelWeapons.Count, y, funcMakeDirty, token: token);
+                        () => UnderbarrelWeapons.Count, y, funcMakeDirty, token: innerToken);
 
+                UnderbarrelWeapons.AddTaggedBeforeClearCollectionChanged(treWeapons,
+                    FuncUnderbarrelWeaponsBeforeClearToAdd);
                 UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, FuncUnderbarrelWeaponsToAdd);
+                WeaponAccessories.AddTaggedBeforeClearCollectionChanged(treWeapons,
+                    FuncWeaponAccessoriesBeforeClearToAdd);
                 WeaponAccessories.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoriesToAdd);
                 if (funcMakeDirty != null)
                 {
@@ -8963,9 +8975,17 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
-                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: token);
+                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                        CancellationToken innerToken = default) =>
+                        this.RefreshChildrenGearsClearBindings(treWeapons, y, innerToken);
 
+                    Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                        CancellationToken innerToken = default) =>
+                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty,
+                            token: innerToken);
+
+                    objChild.GearChildren.AddTaggedBeforeClearCollectionChanged(treWeapons,
+                        FuncWeaponAccessoryGearBeforeClearToAdd);
                     objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
                     if (funcMakeDirty != null)
                         objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
@@ -8975,7 +8995,9 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
+                UnderbarrelWeapons.RemoveTaggedAsyncBeforeClearCollectionChanged(treWeapons);
                 UnderbarrelWeapons.RemoveTaggedAsyncCollectionChanged(treWeapons);
+                WeaponAccessories.RemoveTaggedAsyncBeforeClearCollectionChanged(treWeapons);
                 WeaponAccessories.RemoveTaggedAsyncCollectionChanged(treWeapons);
                 foreach (Weapon objChild in UnderbarrelWeapons)
                 {
@@ -8983,10 +9005,88 @@ namespace Chummer.Backend.Equipment
                 }
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
+                    objChild.GearChildren.RemoveTaggedAsyncBeforeClearCollectionChanged(treWeapons);
                     objChild.GearChildren.RemoveTaggedAsyncCollectionChanged(treWeapons);
                     foreach (Gear objGear in objChild.GearChildren)
                         objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                 }
+            }
+        }
+
+        public async Task SetupChildrenWeaponsCollectionChangedAsync(bool blnAdd, TreeView treWeapons, ContextMenuStrip cmsWeapon = null, ContextMenuStrip cmsWeaponAccessory = null, ContextMenuStrip cmsWeaponAccessoryGear = null, AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
+        {
+            if (blnAdd)
+            {
+                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshChildrenWeaponsClearBindings(treWeapons, y, innerToken);
+
+                Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
+                        null, y, funcMakeDirty, token: innerToken);
+
+                Task FuncWeaponAccessoriesBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshWeaponAccessoriesClearBindings(treWeapons, y, innerToken);
+
+                Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
+                        () => UnderbarrelWeapons.Count, y, funcMakeDirty, token: innerToken);
+
+                UnderbarrelWeapons.AddTaggedBeforeClearCollectionChanged(treWeapons,
+                    FuncUnderbarrelWeaponsBeforeClearToAdd);
+                UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, FuncUnderbarrelWeaponsToAdd);
+                WeaponAccessories.AddTaggedBeforeClearCollectionChanged(treWeapons,
+                    FuncWeaponAccessoriesBeforeClearToAdd);
+                WeaponAccessories.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoriesToAdd);
+                if (funcMakeDirty != null)
+                {
+                    UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
+                    WeaponAccessories.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
+                }
+                await UnderbarrelWeapons.ForEachAsync(
+                    objChild => objChild.SetupChildrenWeaponsCollectionChangedAsync(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, funcMakeDirty, token),
+                    token).ConfigureAwait(false);
+
+                await WeaponAccessories.ForEachAsync(async objChild =>
+                {
+                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                        CancellationToken innerToken = default) =>
+                        this.RefreshChildrenGearsClearBindings(treWeapons, y, innerToken);
+
+                    Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                        CancellationToken innerToken = default) =>
+                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty,
+                            token: innerToken);
+
+                    objChild.GearChildren.AddTaggedBeforeClearCollectionChanged(treWeapons,
+                        FuncWeaponAccessoryGearBeforeClearToAdd);
+                    objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
+                    if (funcMakeDirty != null)
+                        objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
+                    await objChild.GearChildren.ForEachAsync(
+                        objGear => objGear.SetupChildrenGearsCollectionChangedAsync(true, treWeapons,
+                            cmsWeaponAccessoryGear, null, funcMakeDirty, token),
+                        token).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+            }
+            else
+            {
+                await UnderbarrelWeapons.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
+                await UnderbarrelWeapons.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
+                await WeaponAccessories.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
+                await WeaponAccessories.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
+                await UnderbarrelWeapons.ForEachAsync(
+                    objChild => objChild.SetupChildrenWeaponsCollectionChangedAsync(false, treWeapons, token: token),
+                    token).ConfigureAwait(false);
+                await WeaponAccessories.ForEachAsync(async objChild =>
+                {
+                    await objChild.GearChildren.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
+                    await objChild.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
+                    await objChild.GearChildren.ForEachAsync(
+                        objGear => objGear.SetupChildrenGearsCollectionChangedAsync(false, treWeapons, token: token),
+                        token).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
             }
         }
 

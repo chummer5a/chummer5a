@@ -8950,19 +8950,25 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
-                {
-                    return this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
-                        funcMakeDirty, token: token);
-                }
+                Task FuncCyberwareBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshChildrenCyberwareClearBindings(treCyberware, y, innerToken);
 
-                Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default)
-                {
-                    return this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
-                        funcMakeDirty, token: token);
-                }
+                Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
+                        funcMakeDirty, token: innerToken);
 
+                Task FuncGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
+
+                Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
+                        funcMakeDirty, token: innerToken);
+
+                Children.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
                 Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
+                GearChildren.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncGearBeforeClearToAdd);
                 GearChildren.AddTaggedCollectionChanged(treCyberware, FuncGearToAdd);
                 if (funcMakeDirty != null)
                 {
@@ -8982,12 +8988,68 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
+                Children.RemoveTaggedAsyncBeforeClearCollectionChanged(treCyberware);
                 Children.RemoveTaggedAsyncCollectionChanged(treCyberware);
+                GearChildren.RemoveTaggedAsyncBeforeClearCollectionChanged(treCyberware);
                 GearChildren.RemoveTaggedAsyncCollectionChanged(treCyberware);
                 foreach (Cyberware objChild in Children)
                     objChild.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
                 foreach (Gear objGear in GearChildren)
                     objGear.SetupChildrenGearsCollectionChanged(false, treCyberware);
+            }
+        }
+
+        public async Task SetupChildrenCyberwareCollectionChangedAsync(bool blnAdd, TreeView treCyberware,
+            ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null,
+            AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
+        {
+            if (blnAdd)
+            {
+                Task FuncCyberwareBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshChildrenCyberwareClearBindings(treCyberware, y, innerToken);
+
+                Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
+                        funcMakeDirty, token: innerToken);
+
+                Task FuncGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
+
+                Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
+                        funcMakeDirty, token: innerToken);
+
+                Children.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
+                Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
+                GearChildren.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncGearBeforeClearToAdd);
+                GearChildren.AddTaggedCollectionChanged(treCyberware, FuncGearToAdd);
+                if (funcMakeDirty != null)
+                {
+                    Children.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
+                    GearChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
+                }
+
+                await Children.ForEachAsync(
+                    objChild => objChild.SetupChildrenCyberwareCollectionChangedAsync(true, treCyberware, cmsCyberware,
+                        cmsCyberwareGear, funcMakeDirty, token), token).ConfigureAwait(false);
+                await GearChildren.ForEachAsync(
+                    objChild => objChild.SetupChildrenGearsCollectionChangedAsync(true, treCyberware, cmsCyberwareGear,
+                        null, funcMakeDirty, token: token), token).ConfigureAwait(false);
+            }
+            else
+            {
+                await Children.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
+                await Children.RemoveTaggedAsyncCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
+                await GearChildren.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
+                await GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
+                await Children.ForEachAsync(
+                    objChild => objChild.SetupChildrenCyberwareCollectionChangedAsync(false, treCyberware,
+                        token: token), token).ConfigureAwait(false);
+                await GearChildren.ForEachAsync(
+                    objChild => objChild.SetupChildrenGearsCollectionChangedAsync(false, treCyberware, token: token),
+                    token).ConfigureAwait(false);
             }
         }
 

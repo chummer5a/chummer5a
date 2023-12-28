@@ -48,6 +48,7 @@ namespace Chummer
                 {
                     objImage.Dispose();
                 }
+                dlgOpenFile?.Dispose();
             };
             InitializeComponent();
             tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;

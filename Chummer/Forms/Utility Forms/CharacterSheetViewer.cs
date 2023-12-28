@@ -88,6 +88,7 @@ namespace Chummer
                     objTempTokenSource.Cancel(false);
                     objTempTokenSource.Dispose();
                 }
+                dlgSaveFile?.Dispose();
             };
             Program.MainForm.OpenCharacterSheetViewers?.Add(this);
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))

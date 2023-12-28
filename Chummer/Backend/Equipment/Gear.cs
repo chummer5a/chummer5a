@@ -4790,9 +4790,14 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken token = default) =>
-                    this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y, funcMakeDirty, token: token);
+                Task FuncDelegateBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshChildrenGearsClearBindings(treGear, y, innerToken);
 
+                Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y, funcMakeDirty, token: innerToken);
+
+                Children.AddTaggedBeforeClearCollectionChanged(treGear, FuncDelegateBeforeClearToAdd);
                 Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);
                 if (funcMakeDirty != null)
                     Children.AddTaggedCollectionChanged(treGear, funcMakeDirty);
@@ -4803,11 +4808,40 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
+                Children.RemoveTaggedAsyncBeforeClearCollectionChanged(treGear);
                 Children.RemoveTaggedAsyncCollectionChanged(treGear);
                 foreach (Gear objChild in Children)
                 {
                     objChild.SetupChildrenGearsCollectionChanged(false, treGear);
                 }
+            }
+        }
+
+        public async Task SetupChildrenGearsCollectionChangedAsync(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null, ContextMenuStrip cmsCustomGear = null, AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
+        {
+            if (blnAdd)
+            {
+                Task FuncDelegateBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    CancellationToken innerToken = default) =>
+                    this.RefreshChildrenGearsClearBindings(treGear, y, innerToken);
+
+                Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y, funcMakeDirty, token: innerToken);
+
+                Children.AddTaggedBeforeClearCollectionChanged(treGear, FuncDelegateBeforeClearToAdd);
+                Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);
+                if (funcMakeDirty != null)
+                    Children.AddTaggedCollectionChanged(treGear, funcMakeDirty);
+                await Children.ForEachAsync(
+                    objChild => objChild.SetupChildrenGearsCollectionChangedAsync(true, treGear, cmsGear, cmsCustomGear,
+                        funcMakeDirty, token), token).ConfigureAwait(false);
+            }
+            else
+            {
+                await Children.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treGear, token).ConfigureAwait(false);
+                await Children.RemoveTaggedAsyncCollectionChangedAsync(treGear, token).ConfigureAwait(false);
+                await Children.ForEachAsync(
+                    objChild => objChild.SetupChildrenGearsCollectionChangedAsync(false, treGear, token: token), token).ConfigureAwait(false);
             }
         }
 
