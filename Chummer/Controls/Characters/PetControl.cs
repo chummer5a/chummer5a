@@ -40,9 +40,9 @@ namespace Chummer
         private readonly Timer _tmrMetatypeChangeTimer;
 
         // Events.
-        public event EventHandlerExtensions.SafeAsyncEventHandler ContactDetailChanged;
+        public event EventHandler<TextEventArgs> ContactDetailChanged;
 
-        public event EventHandlerExtensions.SafeAsyncEventHandler DeleteContact;
+        public event EventHandler DeleteContact;
 
         #region Control Events
 
@@ -94,12 +94,10 @@ namespace Chummer
             }
         }
 
-        private async void txtContactName_TextChanged(object sender, EventArgs e)
+        private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (_intLoading != 0)
-                return;
-            if (ContactDetailChanged != null)
-                await ContactDetailChanged.Invoke(this, new TextEventArgs("Name"), _objMyToken).ConfigureAwait(false);
+            if (_intLoading == 0)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
@@ -139,8 +137,7 @@ namespace Chummer
                     }
                 }
 
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Metatype"), _objMyToken).ConfigureAwait(false);
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
             }
             catch (OperationCanceledException)
             {
@@ -148,20 +145,11 @@ namespace Chummer
             }
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            if (DeleteContact == null)
-                return;
-            try
-            {
-                await DeleteContact.Invoke(this, e, _objMyToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
+            DeleteContact?.Invoke(this, e);
         }
 
         private void cmdLink_Click(object sender, EventArgs e)
@@ -301,8 +289,7 @@ namespace Chummer
                     Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                     _objContact.RelativeFileName = "../" + uriRelative;
 
-                    if (ContactDetailChanged != null)
-                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
+                    ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
                 }
                 finally
                 {
@@ -331,8 +318,7 @@ namespace Chummer
                     _objContact.RelativeFileName = string.Empty;
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile", token: _objMyToken).ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
-                    if (ContactDetailChanged != null)
-                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
+                    ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
                 }
             }
             catch (OperationCanceledException)
@@ -360,8 +346,7 @@ namespace Chummer
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 strTooltip = strTooltip.WordWrap();
                 await cmdNotes.SetToolTipTextAsync(strTooltip, _objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Notes"), _objMyToken).ConfigureAwait(false);
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
             }
             catch (OperationCanceledException)
             {

@@ -8946,7 +8946,7 @@ namespace Chummer.Backend.Equipment
         }
 
         public void SetupChildrenCyberwareCollectionChanged(bool blnAdd, TreeView treCyberware,
-            ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null, AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null)
+            ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
         {
             if (blnAdd)
             {
@@ -9001,7 +9001,7 @@ namespace Chummer.Backend.Equipment
 
         public async Task SetupChildrenCyberwareCollectionChangedAsync(bool blnAdd, TreeView treCyberware,
             ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null,
-            AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
+            NotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
         {
             if (blnAdd)
             {

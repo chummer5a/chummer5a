@@ -32,7 +32,7 @@ namespace Chummer.UI.Attributes
 {
     public partial class AttributeControl : UserControl
     {
-        public event EventHandlerExtensions.SafeAsyncEventHandler ValueChanged;
+        public event EventHandler ValueChanged;
 
         private readonly string _strAttributeName;
         private int _oldBase;
@@ -432,8 +432,7 @@ namespace Chummer.UI.Attributes
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
-                if (ValueChanged != null)
-                    await ValueChanged.Invoke(this, e).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
             finally
             {
@@ -493,8 +492,7 @@ namespace Chummer.UI.Attributes
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
-                if (ValueChanged != null)
-                    await ValueChanged.Invoke(this, e).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
             finally
             {
@@ -570,8 +568,7 @@ namespace Chummer.UI.Attributes
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
-                if (ValueChanged != null)
-                    await ValueChanged.Invoke(this, e).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
             finally
             {
@@ -665,8 +662,7 @@ namespace Chummer.UI.Attributes
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
-                if (ValueChanged != null)
-                    await ValueChanged.Invoke(this, e).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
             finally
             {

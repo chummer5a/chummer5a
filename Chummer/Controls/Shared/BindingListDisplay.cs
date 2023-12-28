@@ -25,7 +25,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 
@@ -35,7 +34,6 @@ namespace Chummer.Controls.Shared
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(BindingListDisplay<TType>));
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
-        public PropertyChangedAsyncEventHandler ChildPropertyChangedAsync { get; set; }
 
         private int _intSuspendLayoutCount;
         private readonly Func<TType, Control> _funcCreateControl;  //Function to create a control out of a item
@@ -81,12 +79,12 @@ namespace Chummer.Controls.Shared
                 pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
-                Contents.ListChangedAsync += ContentsChanged;
+                Contents.ListChanged += ContentsChanged;
                 Disposed += (sender, args) =>
                 {
                     try
                     {
-                        Contents.ListChangedAsync -= ContentsChanged;
+                        Contents.ListChanged -= ContentsChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -95,7 +93,7 @@ namespace Chummer.Controls.Shared
                 };
                 ComputeDisplayIndex();
                 LoadScreenContent();
-                BindingListDisplay_SizeChanged(this, EventArgs.Empty);
+                BindingListDisplay_SizeChanged(null, null);
             }
             finally
             {
@@ -349,9 +347,8 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private async Task ContentsChanged(object sender, ListChangedEventArgs eventArgs, CancellationToken token = default)
+        private void ContentsChanged(object sender, ListChangedEventArgs eventArgs)
         {
-            token.ThrowIfCancellationRequested();
             int intNewIndex = eventArgs?.NewIndex ?? 0;
             IEnumerable<ControlWithMetaData> lstToRedraw;
             switch (eventArgs?.ListChangedType)
@@ -361,37 +358,37 @@ namespace Chummer.Controls.Shared
 
                 case ListChangedType.Reset:
                     if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
-                        await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        pnlDisplay.SuspendLayout();
                     try
                     {
                         foreach (ControlWithMetaData objLoopControl in _lstContentList)
                         {
-                            await objLoopControl.CleanupAsync(token).ConfigureAwait(false);
+                            objLoopControl.Cleanup();
                         }
                         _lstContentList.Clear();
                         foreach (TType objLoopTType in Contents)
                         {
-                            _lstContentList.Add(await this.DoThreadSafeFuncAsync(x => new ControlWithMetaData(objLoopTType, x, false), token).ConfigureAwait(false));
+                            _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
                         }
-                        await pnlDisplay.DoThreadSafeAsync(y => y.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray()), token).ConfigureAwait(false);
+                        pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
                     }
                     finally
                     {
                         if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                            await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                            pnlDisplay.ResumeLayout();
                     }
                     _indexComparer.Reset(Contents);
                     lstToRedraw = _lstContentList;
                     break;
 
                 case ListChangedType.ItemAdded:
-                    _lstContentList.Insert(intNewIndex, await this.DoThreadSafeFuncAsync(x => new ControlWithMetaData(x.Contents[intNewIndex], x), token).ConfigureAwait(false));
+                    _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this));
                     _indexComparer.Reset(Contents);
                     lstToRedraw = intNewIndex == 0 ? _lstContentList : _lstContentList.Skip(intNewIndex);
                     break;
 
                 case ListChangedType.ItemDeleted:
-                    await _lstContentList[intNewIndex].CleanupAsync(token).ConfigureAwait(false);
+                    _lstContentList[intNewIndex].Cleanup();
                     _lstContentList.RemoveAt(intNewIndex);
                     _indexComparer.Reset(Contents);
                     lstToRedraw = intNewIndex == 0 ? _lstContentList : _lstContentList.Skip(intNewIndex);
@@ -444,18 +441,16 @@ namespace Chummer.Controls.Shared
             if (lstToRedraw != null)
             {
                 if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
-                    await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                    pnlDisplay.SuspendLayout();
                 try
                 {
-                    if (ChildPropertyChangedAsync != null)
-                        await ChildPropertyChangedAsync.Invoke(this, new PropertyChangedEventArgs(nameof(Contents)), token).ConfigureAwait(false);
                     ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Contents)));
-                    await this.DoThreadSafeAsync(x => x.RedrawControls(lstToRedraw), token).ConfigureAwait(false);
+                    RedrawControls(lstToRedraw);
                 }
                 finally
                 {
                     if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                        await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        pnlDisplay.ResumeLayout();
                 }
             }
         }
@@ -517,16 +512,16 @@ namespace Chummer.Controls.Shared
             {
                 get
                 {
-                    if (_objControl == null)
+                    if (_control == null)
                         CreateControl();
-                    return _objControl;
+                    return _control;
                 }
             }
 
             public bool Visible => _visible ?? (_visible = _parent._visibleFilter(Item)).Value;
 
             private readonly BindingListDisplay<TType> _parent;
-            private Control _objControl;
+            private Control _control;
             private bool? _visible;
 
             public ControlWithMetaData(TType item, BindingListDisplay<TType> parent, bool blnAddControlAfterCreation = true)
@@ -537,38 +532,22 @@ namespace Chummer.Controls.Shared
                 // we need to create the control in the constructor (even if it isn't rendered) so that we can measure its
                 // elements' widths and/or heights
                 CreateControl(blnAddControlAfterCreation);
-                switch (item)
+                if (item is INotifyPropertyChanged prop)
                 {
-                    case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
+                    if (prop is IHasLockObject objHasLock)
+                    {
                         try
                         {
                             using (objHasLock.LockObject.EnterWriteLock())
-                                prop.PropertyChangedAsync += item_ChangedEventAsync;
+                                prop.PropertyChanged += item_ChangedEvent;
                         }
                         catch (ObjectDisposedException)
                         {
                             // swallow this
                         }
-
-                        break;
-                    case INotifyPropertyChangedAsync prop:
-                        prop.PropertyChangedAsync += item_ChangedEventAsync;
-                        break;
-                    case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
-                        try
-                        {
-                            using (objHasLock.LockObject.EnterWriteLock())
-                                prop2.PropertyChanged += item_ChangedEvent;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            // swallow this
-                        }
-
-                        break;
-                    case INotifyPropertyChanged prop2:
-                        prop2.PropertyChanged += item_ChangedEvent;
-                        break;
+                    }
+                    else
+                        prop.PropertyChanged += item_ChangedEvent;
                 }
             }
 
@@ -584,6 +563,7 @@ namespace Chummer.Controls.Shared
                 //else if (_visible != null && _visible.Value)
                 //{
                 //    int displayIndex = _parent._displayIndex.FindIndex(x => _parent._contentList[x] == this);
+
                 //    if (displayIndex > 0)
                 //    {
                 //        if(_parent._comparison.Compare(Item, _parent._contentList[_parent._displayIndex[displayIndex - 1]].Item) > 0)
@@ -598,6 +578,7 @@ namespace Chummer.Controls.Shared
                 //            changes = true;
                 //        }
                 //    }
+
                 //}
 
                 _parent.ChildPropertyChanged?.Invoke(sender, e);
@@ -607,48 +588,12 @@ namespace Chummer.Controls.Shared
                 }
             }
 
-            private async Task item_ChangedEventAsync(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
-            {
-                bool changes = false;
-                if (_visible != null && _visible.Value != await _parent.DoThreadSafeFuncAsync(x => x._visibleFilter(Item), token).ConfigureAwait(false))
-                {
-                    changes = true;
-                    _visible = !_visible;
-                }
-                //TODO: Add this back in, but it is spamming updates like crazy right now and not updating right
-                //else if (_visible != null && _visible.Value)
-                //{
-                //    int displayIndex = _parent._displayIndex.FindIndex(x => _parent._contentList[x] == this);
-                //    if (displayIndex > 0)
-                //    {
-                //        if(_parent._comparison.Compare(Item, _parent._contentList[_parent._displayIndex[displayIndex - 1]].Item) > 0)
-                //        {
-                //            changes = true;
-                //        }
-                //    }
-                //    if(_parent._displayIndex.Count - 1 > displayIndex)
-                //    {
-                //        if (_parent._comparison.Compare(Item, _parent._contentList[_parent._displayIndex[displayIndex + 1]].Item) < 0)
-                //        {
-                //            changes = true;
-                //        }
-                //    }
-                //}
-
-                if (_parent.ChildPropertyChangedAsync != null)
-                    await _parent.ChildPropertyChangedAsync.Invoke(sender, e, token).ConfigureAwait(false);
-                if (changes)
-                {
-                    await _parent.DoThreadSafeAsync(x => x.RedrawControls(this.Yield()), token).ConfigureAwait(false);
-                }
-            }
-
             /// <summary>
             /// Updates the height of the contained control if it exists. Necessary to ensure that the contained control doesn't get created prematurely.
             /// </summary>
             public void UpdateHeight()
             {
-                _objControl?.DoThreadSafe(x =>
+                _control?.DoThreadSafe(x =>
                 {
                     int intParentControlHeight = _parent.ListItemControlHeight;
                     if (x.AutoSize)
@@ -669,15 +614,8 @@ namespace Chummer.Controls.Shared
 
             private void CreateControl(bool blnAddControlAfterCreation = true)
             {
-                Control objNewControl = _parent.DoThreadSafeFunc(x => x._funcCreateControl(Item));
-                if (Interlocked.CompareExchange(ref _objControl, objNewControl, null) != null)
-                {
-                    Reset();
-                    objNewControl.Dispose();
-                    return;
-                }
-                _objControl = _parent.DoThreadSafeFunc(x => x._funcCreateControl(Item));
-                objNewControl.DoThreadSafe(x =>
+                _control = _parent.DoThreadSafeFunc(x => x._funcCreateControl(Item));
+                _control.DoThreadSafe(x =>
                 {
                     x.SuspendLayout();
                     try
@@ -701,20 +639,22 @@ namespace Chummer.Controls.Shared
                     }
                 });
                 if (blnAddControlAfterCreation)
-                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Add(objNewControl));
+                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Add(_control));
             }
 
             public void RefreshVisible()
             {
                 _visible = _parent.DoThreadSafeFunc(x => x._visibleFilter(Item));
-                if (!_visible.Value)
-                    _objControl?.DoThreadSafe(x => x.Visible = false);
+                if (!_visible.Value && _control != null)
+                {
+                    _control.DoThreadSafe(x => x.Visible = false);
+                }
             }
 
             public void Reset()
             {
                 _visible = null;
-                _objControl?.DoThreadSafe(x =>
+                _control?.DoThreadSafe(x =>
                 {
                     x.Visible = false;
                     x.Location = new Point(0, 0);
@@ -733,107 +673,34 @@ namespace Chummer.Controls.Shared
 
             public void Cleanup()
             {
-                if (_objControl == null)
-                    return;
-                switch (Item)
+                if (_control != null)
                 {
-                    case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
-                        try
+                    if (Item is INotifyPropertyChanged prop)
+                    {
+                        if (prop is IHasLockObject objHasLock)
                         {
-                            using (objHasLock.LockObject.EnterWriteLock())
-                                prop.PropertyChangedAsync -= item_ChangedEventAsync;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            // swallow this
-                        }
-
-                        break;
-                    case INotifyPropertyChangedAsync prop:
-                        prop.PropertyChangedAsync -= item_ChangedEventAsync;
-                        break;
-                    case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
-                        try
-                        {
-                            using (objHasLock.LockObject.EnterWriteLock())
-                                prop2.PropertyChanged -= item_ChangedEvent;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            // swallow this
-                        }
-
-                        break;
-                    case INotifyPropertyChanged prop2:
-                        prop2.PropertyChanged -= item_ChangedEvent;
-                        break;
-                }
-                _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Remove(Control));
-                Interlocked.Exchange(ref _objControl, null)?.DoThreadSafe(x => x.Dispose());
-            }
-
-            public async Task CleanupAsync(CancellationToken token = default)
-            {
-                if (_objControl == null)
-                    return;
-
-                switch (Item)
-                {
-                    case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
-                        try
-                        {
-                            IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                             try
                             {
-                                prop.PropertyChangedAsync -= item_ChangedEventAsync;
+                                using (objHasLock.LockObject.EnterWriteLock())
+                                    prop.PropertyChanged -= item_ChangedEvent;
                             }
-                            finally
+                            catch (ObjectDisposedException)
                             {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                // swallow this
                             }
                         }
-                        catch (ObjectDisposedException)
-                        {
-                            // swallow this
-                        }
-
-                        break;
-                    case INotifyPropertyChangedAsync prop:
-                        prop.PropertyChangedAsync -= item_ChangedEventAsync;
-                        break;
-                    case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
-                        try
-                        {
-                            IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                prop2.PropertyChanged -= item_ChangedEvent;
-                            }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            // swallow this
-                        }
-
-                        break;
-                    case INotifyPropertyChanged prop2:
-                        prop2.PropertyChanged -= item_ChangedEvent;
-                        break;
+                        else
+                            prop.PropertyChanged -= item_ChangedEvent;
+                    }
+                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Remove(Control));
+                    _control.DoThreadSafe(x => x.Dispose());
+                    _control = null;
                 }
-
-                await _parent.DisplayPanel.DoThreadSafeAsync(x => x.Controls.Remove(Control), token).ConfigureAwait(false);
-                Control objControl = Interlocked.Exchange(ref _objControl, null);
-                if (objControl != null)
-                    await objControl.DoThreadSafeAsync(x => x.Dispose(), token).ConfigureAwait(false);
             }
 
             public void Dispose()
             {
-                Interlocked.Exchange(ref _objControl, null)?.DoThreadSafe(x => x.Dispose());
+                Interlocked.Exchange(ref _control, null)?.DoThreadSafe(x => x.Dispose());
             }
         }
 
