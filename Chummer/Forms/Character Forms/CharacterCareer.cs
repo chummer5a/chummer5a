@@ -1316,6 +1316,8 @@ namespace Chummer
                                                                 .ConfigureAwait(false), GenericToken)
                                         .ConfigureAwait(false);
 
+                                    CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
+                                        += AttributeBeforeClearCollectionChanged;
                                     CharacterObject.AttributeSection.Attributes.CollectionChangedAsync
                                         += AttributeCollectionChanged;
 
@@ -1850,6 +1852,18 @@ namespace Chummer
             }
         }
 
+        private async Task AttributeBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                await RefreshAttributesClearBindings(pnlAttributes, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
@@ -2112,12 +2126,15 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
-                        await Task.WhenAll(RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
+                        await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
+                            RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
                             RefreshArmorClearBindings(treArmor, CancellationToken.None),
                             RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
                             RefreshGearsClearBindings(treGear, CancellationToken.None),
                             RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
                             RefreshVehiclesClearBindings(treVehicles, CancellationToken.None)).ConfigureAwait(false);
+                        CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
+                            -= AttributeBeforeClearCollectionChanged;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
                         CharacterObject.Spells.CollectionChangedAsync -= SpellCollectionChanged;
                         CharacterObject.ComplexForms.CollectionChangedAsync -= ComplexFormCollectionChanged;
@@ -2163,9 +2180,12 @@ namespace Chummer
                         CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
                         CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
                         CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
-                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
+                        
                         CharacterObject.PropertyChangedAsync -= OnCharacterPropertyChanged;
                         CharacterObject.SettingsPropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
+                        tabSkillsUc.MakeDirtyWithCharacterUpdate -= MakeDirtyWithCharacterUpdate;
+                        lmtControl.MakeDirty -= MakeDirty;
 
                         SetupCommonCollectionDatabindings(false);
 

@@ -468,6 +468,19 @@ namespace Chummer
 
         #region Refresh Treeviews and Panels
 
+        protected async Task RefreshAttributesClearBindings(FlowLayoutPanel pnlAttributes, CancellationToken token = default)
+        {
+            await pnlAttributes.DoThreadSafeAsync(x =>
+            {
+                foreach (AttributeControl objControl in x.Controls)
+                {
+                    objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
+                    x.Controls.Remove(objControl);
+                    objControl.Dispose();
+                }
+            }, token).ConfigureAwait(false);
+        }
+
         protected async Task RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs e = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1, CancellationToken token = default)
         {
             if (pnlAttributes == null)
@@ -9485,7 +9498,7 @@ namespace Chummer
             }
         }
 
-        public async Task MakeDirtyWithCharacterUpdate(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task MakeDirtyWithCharacterUpdate(object sender, EventArgs e, CancellationToken token)
         {
             try
             {
@@ -9544,7 +9557,7 @@ namespace Chummer
             }
         }
 
-        public async Task MakeDirty(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task MakeDirty(object sender, EventArgs e, CancellationToken token)
         {
             try
             {

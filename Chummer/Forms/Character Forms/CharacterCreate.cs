@@ -135,6 +135,7 @@ namespace Chummer
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
             objCharacter.SettingsPropertyChangedAsync += OnCharacterSettingsPropertyChanged;
+            objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
 
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
@@ -1320,6 +1321,8 @@ namespace Chummer
                                                                 .ConfigureAwait(false),
                                                             GenericToken).ConfigureAwait(false);
 
+                                    CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
+                                        += AttributeBeforeClearCollectionChanged;
                                     CharacterObject.AttributeSection.Attributes.CollectionChangedAsync
                                         += AttributeCollectionChanged;
 
@@ -1647,13 +1650,16 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
-                        await Task.WhenAll(RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
+                        await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
+                            RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
                             RefreshArmorClearBindings(treArmor, CancellationToken.None),
                             RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
                             RefreshGearsClearBindings(treGear, CancellationToken.None),
                             RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
                             RefreshVehiclesClearBindings(treVehicles, CancellationToken.None)).ConfigureAwait(false);
                         GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
+                        CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
+                            -= AttributeBeforeClearCollectionChanged;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
                         CharacterObject.Spells.CollectionChangedAsync -= SpellCollectionChanged;
                         CharacterObject.ComplexForms.CollectionChangedAsync -= ComplexFormCollectionChanged;
@@ -1692,9 +1698,12 @@ namespace Chummer
                             VehicleBeforeClearCollectionChanged;
                         CharacterObject.Vehicles.CollectionChangedAsync -= VehicleCollectionChanged;
                         CharacterObject.VehicleLocations.CollectionChangedAsync -= VehicleLocationCollectionChanged;
-                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
+
                         CharacterObject.PropertyChangedAsync -= OnCharacterPropertyChanged;
                         CharacterObject.SettingsPropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
+                        tabSkillsUc.MakeDirtyWithCharacterUpdate -= MakeDirtyWithCharacterUpdate;
+                        lmtControl.MakeDirty -= MakeDirty;
 
                         SetupCommonCollectionDatabindings(false);
 
@@ -23357,6 +23366,18 @@ namespace Chummer
                                                    .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
                                                    .ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async Task AttributeBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                await RefreshAttributesClearBindings(pnlAttributes, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
