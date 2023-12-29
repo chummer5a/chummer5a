@@ -438,7 +438,7 @@ namespace Chummer
 
                             _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
                                                                        .FirstOrDefault(
-                                                                           y => lstMethods.Any(
+                                                                           y => lstMethods.Exists(
                                                                                x => y.Equals(
                                                                                    x.Value.ToString(),
                                                                                    StringComparison.OrdinalIgnoreCase)));
@@ -2321,7 +2321,7 @@ namespace Chummer
                 lstCurrentPriorities.Remove(strResourcesSelected);
                 if (lstCurrentPriorities.Count == 0)
                     return;
-                string strComboBoxSelected = comboBox.DoThreadSafeFunc(x => x.SelectedValue).ToString();
+                string strComboBoxSelected = (await comboBox.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false)).ToString();
 
                 string strMissing = lstCurrentPriorities[0];
 
@@ -3517,7 +3517,7 @@ namespace Chummer
                             // Make sure the Category isn't in the exclusion list.
                             if (!setRemoveCategories.Contains(strInnerText) &&
                                 // Also make sure it is not already in the Category list.
-                                lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
+                                lstCategory.TrueForAll(objItem => objItem.Value.ToString() != strInnerText))
                             {
                                 lstCategory.Add(new ListItem(strInnerText,
                                                              objXmlCategory

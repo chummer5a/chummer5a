@@ -399,13 +399,14 @@ namespace Chummer
                 }
             }
 
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_lstData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     item = _lstData[0];
-                    _lstData.RemoveAt(0);
+                    using (LockObject.EnterWriteLock())
+                        _lstData.RemoveAt(0);
                     return true;
                 }
             }
@@ -423,7 +424,7 @@ namespace Chummer
                     return new Tuple<bool, T>(false, default);
             }
 
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -431,7 +432,17 @@ namespace Chummer
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     T objReturn = await _lstData.GetValueAtAsync(0, token).ConfigureAwait(false);
-                    await _lstData.RemoveAtAsync(0, token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await _lstData.RemoveAtAsync(0, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
                     return new Tuple<bool, T>(true, objReturn);
                 }
             }

@@ -1923,7 +1923,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             int intLength = lstfuncToRun.Count;
             if (intLength == 0)
-                return default;
+                return Array.Empty<T>();
             T[] aobjReturn = new T[intLength];
             if (intLength == 1)
             {
@@ -2048,7 +2048,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             int intLength = lstfuncToRun.Count;
             if (intLength == 0)
-                return default;
+                return Array.Empty<T>();
             T[] aobjReturn = new T[intLength];
             if (intLength == 1)
             {

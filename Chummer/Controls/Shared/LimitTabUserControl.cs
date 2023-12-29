@@ -154,7 +154,7 @@ namespace Chummer.UI.Shared
             }
             catch (OperationCanceledException)
             {
-
+                // swallow this
             }
         }
 
@@ -249,9 +249,6 @@ namespace Chummer.UI.Shared
         /// Allows the user to input notes that should be linked to the selected object.
         /// TODO: Should be linked back to CharacterShared in some way or moved into a more generic helper class.
         /// </summary>
-        /// <param name="objNotes"></param>
-        /// <param name="treNode"></param>
-        /// <param name="token"></param>
         private async Task WriteNotes(IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
         {
             using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token).ConfigureAwait(false))
@@ -318,12 +315,11 @@ namespace Chummer.UI.Shared
 
         private async Task LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            string strSelectedId = (await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId ?? string.Empty;
-
             TreeNode[] aobjLimitNodes = new TreeNode[(int)LimitType.NumLimitTypes];
 
             if (e == null)
             {
+                string strSelectedId = (await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId ?? string.Empty;
                 await treLimit.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
 
                 // Add Limit Modifiers.

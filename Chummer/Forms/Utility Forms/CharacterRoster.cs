@@ -246,7 +246,6 @@ namespace Chummer
                         objTemp = objCurrent;
                     }
 
-                    CancellationToken objTokenToUse = objTemp.Token;
                     if (_dicSavedCharacterCaches.TryRemove(e.FullPath, out CharacterCache objCacheToRemove))
                     {
                         await treCharacterList.DoThreadSafeAsync(x =>
@@ -257,7 +256,7 @@ namespace Chummer
                             {
                                 objNode.Remove();
                             }
-                        }, objTokenToUse).ConfigureAwait(false);
+                        }, objTemp.Token).ConfigureAwait(false);
                         await objCacheToRemove.DisposeAsync().ConfigureAwait(false);
                     }
                 }
@@ -1079,8 +1078,7 @@ namespace Chummer
                                                             x => x.Nodes.Cast<TreeNode>()
                                                                   .DeepWhere(y => y.Nodes.Cast<TreeNode>(),
                                                                              y => y.Tag is CharacterCache z
-                                                                                 && (lstNames == null
-                                                                                     || lstNames.Contains(z.FilePath)))
+                                                                                 && lstNames?.Contains(z.FilePath) != false)
                                                                   .ToList(),
                                                             token: token).ConfigureAwait(false))
             {
@@ -1643,10 +1641,9 @@ namespace Chummer
         private async Task PurgeUnusedCharacterCaches(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches.ToArray())
+            foreach (CharacterCache objCache in _dicSavedCharacterCaches.Select(x => x.Value).ToList())
             {
                 token.ThrowIfCancellationRequested();
-                CharacterCache objCache = kvpCache.Value;
                 if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token).ConfigureAwait(false) != null)
                     continue;
                 token.ThrowIfCancellationRequested();
@@ -1701,10 +1698,9 @@ namespace Chummer
                     }
                     finally
                     {
-                        if (objTemp != null)
+                        if (objTemp != null && !ReferenceEquals(objCache, objTemp))
                         {
-                            if (!ReferenceEquals(objCache, objTemp))
-                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                            await objTemp.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }

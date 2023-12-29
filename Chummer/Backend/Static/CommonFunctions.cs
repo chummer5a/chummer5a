@@ -1018,11 +1018,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstWeapons">List of Weapons to search.</param>
-        public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
         {
             if (lstWeapons == null)
                 throw new ArgumentNullException(nameof(lstWeapons));
-            return lstWeapons.FindWeaponGear(strGuid, out WeaponAccessory _);
+            return lstWeapons.FindWeaponGear(strGuid, out WeaponAccessory _, token);
         }
 
         /// <summary>
@@ -1031,16 +1032,20 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstWeapons">List of Weapons to search.</param>
         /// <param name="objFoundAccessory">WeaponAccessory that the Gear was found in.</param>
-        public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid, out WeaponAccessory objFoundAccessory)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid, out WeaponAccessory objFoundAccessory, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstWeapons == null)
                 throw new ArgumentNullException(nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token)))
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
+                        token.ThrowIfCancellationRequested();
                         Gear objReturn = objAccessory.GearChildren.DeepFindById(strGuid);
 
                         if (objReturn != null)
@@ -1067,9 +1072,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstWeapons == null)
                 throw new ArgumentNullException(nameof(lstWeapons));
-            Gear objReturn = null;
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
+                Gear objReturn = null;
                 foreach (Weapon objWeapon in await lstWeapons.DeepWhereAsync(x => x.Children,
                              x => x.WeaponAccessories.AnyAsync(
                                  async y => await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0, token),

@@ -411,7 +411,7 @@ namespace Chummer
                 if (_setData.Count == 0)
                     return new Tuple<bool, T>(false, default);
             }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -419,10 +419,19 @@ namespace Chummer
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     T objReturn = _lstOrderedData[0];
-                    if (_setData.Remove(objReturn))
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        _lstOrderedData.RemoveAt(0);
-                        return new Tuple<bool, T>(true, objReturn);
+                        token.ThrowIfCancellationRequested();
+                        if (_setData.Remove(objReturn))
+                        {
+                            _lstOrderedData.RemoveAt(0);
+                            return new Tuple<bool, T>(true, objReturn);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -444,16 +453,19 @@ namespace Chummer
                     return false;
                 }
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_setData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     item = _lstOrderedData[0];
-                    if (_setData.Remove(item))
+                    using (LockObject.EnterWriteLock())
                     {
-                        _lstOrderedData.RemoveAt(0);
-                        return true;
+                        if (_setData.Remove(item))
+                        {
+                            _lstOrderedData.RemoveAt(0);
+                            return true;
+                        }
                     }
                 }
             }

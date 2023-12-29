@@ -57,7 +57,7 @@ namespace Chummer
             {
                 try
                 {
-                    XPathDocument xmlEnglishDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath);
+                    XPathDocument xmlEnglishDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: CancellationToken.None);
                     XPathNodeIterator xmlStringList =
                         xmlEnglishDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string");
                     if (xmlStringList.Count > 0)
@@ -1782,7 +1782,6 @@ namespace Chummer
                                 }
                             }
 
-
                             using (CancellationTokenSource objCombinedCancellationTokenSource
                                    = CancellationTokenSource.CreateLinkedTokenSource(
                                        objCancellationToken, token))
@@ -2213,7 +2212,6 @@ namespace Chummer
                         }
                     }
                 }
-
 
                 using (CancellationTokenSource objCombinedCancellationTokenSource
                        = CancellationTokenSource.CreateLinkedTokenSource(

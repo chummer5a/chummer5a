@@ -1132,7 +1132,19 @@ namespace Chummer.UI.Skills
         [UsedImplicitly]
         public void MoveControls(int intNewNameWidth)
         {
-            lblName.DoThreadSafe(x => x.MinimumSize = new Size(intNewNameWidth - x.Margin.Right - pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width), x.MinimumSize.Height));
+            try
+            {
+                lblName.DoThreadSafe(
+                    x => x.MinimumSize =
+                        new Size(
+                            intNewNameWidth - x.Margin.Right -
+                            pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width),
+                            x.MinimumSize.Height), token: _objMyToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void UnbindSkillControl()

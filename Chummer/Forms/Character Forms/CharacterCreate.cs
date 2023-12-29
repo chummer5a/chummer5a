@@ -588,7 +588,7 @@ namespace Chummer
                                                     = xmlDrain.SelectSingleNodeAndCacheExpression("name", GenericToken)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
-                                                    && lstDrainAttributes.All(x => x.Value.ToString() != strName))
+                                                    && lstDrainAttributes.TrueForAll(x => x.Value.ToString() != strName))
                                                 {
                                                     string strTranslatedName = xmlDrain
                                                         .SelectSingleNodeAndCacheExpression(
@@ -855,7 +855,7 @@ namespace Chummer
                                             x => x.GetPhysicalCMAsync(GenericToken), GenericToken)
                                         .ConfigureAwait(false);
                                     await lblCMPhysicalLabel.RegisterOneWayAsyncDataBindingAsync(
-                                            (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo),
+                                            (x, y) => x.Text = y,
                                             CharacterObject,
                                             nameof(Character.PhysicalCMLabelText),
                                             x => x.GetPhysicalCMLabelTextAsync(GenericToken), GenericToken)
@@ -915,7 +915,7 @@ namespace Chummer
                                         .ConfigureAwait(false);
 
                                     await lblDodge.RegisterOneWayAsyncDataBindingAsync(
-                                            (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                            (x, y) => x.Text = y, CharacterObject,
                                             nameof(Character.DisplayDodge),
                                             x => x.GetDisplayDodgeAsync(GenericToken), GenericToken)
                                         .ConfigureAwait(false);
@@ -1345,7 +1345,7 @@ namespace Chummer
                                         // Run through all appropriate property changers
                                         foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
                                             await OnCharacterPropertyChanged(this,
-                                                new PropertyChangedEventArgs(objProperty.Name)).ConfigureAwait(false);
+                                                new PropertyChangedEventArgs(objProperty.Name), GenericToken).ConfigureAwait(false);
                                     }
 
                                     using (Timekeeper.StartSyncron(
@@ -1500,9 +1500,9 @@ namespace Chummer
                                         MartialArtBeforeClearCollectionChanged;
                                     CharacterObject.MartialArts.CollectionChangedAsync += MartialArtCollectionChanged;
                                     CharacterObject.Lifestyles.CollectionChangedAsync += LifestylesCollectionChanged;
-                                    CharacterObject.Contacts.BeforeClearCollectionChanged += ContactBeforeClearCollectionChanged;
+                                    CharacterObject.Contacts.BeforeClearCollectionChangedAsync += ContactBeforeClearCollectionChanged;
                                     CharacterObject.Contacts.CollectionChangedAsync += ContactCollectionChanged;
-                                    CharacterObject.Spirits.BeforeClearCollectionChanged += SpiritBeforeClearCollectionChanged;
+                                    CharacterObject.Spirits.BeforeClearCollectionChangedAsync += SpiritBeforeClearCollectionChanged;
                                     CharacterObject.Spirits.CollectionChangedAsync += SpiritCollectionChanged;
                                     CharacterObject.Armor.BeforeClearCollectionChangedAsync +=
                                         ArmorBeforeClearCollectionChanged;
@@ -1658,13 +1658,11 @@ namespace Chummer
                             RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
                             RefreshGearsClearBindings(treGear, CancellationToken.None),
                             RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
-                            RefreshVehiclesClearBindings(treVehicles, CancellationToken.None)).ConfigureAwait(false);
-                        await this.DoThreadSafeAsync(
-                            x => x.RefreshContactsClearBindings(panContacts, panEnemies, panPets,
-                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
-                        await this.DoThreadSafeAsync(
-                            x => x.RefreshSpiritsClearBindings(panSpirits, panSprites,
-                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
+                            RefreshVehiclesClearBindings(treVehicles, CancellationToken.None),
+                            RefreshContactsClearBindings(panContacts, panEnemies, panPets,
+                                CancellationToken.None),
+                            RefreshSpiritsClearBindings(panSpirits, panSprites,
+                                CancellationToken.None)).ConfigureAwait(false);
                         GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
                         CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
                             -= AttributeBeforeClearCollectionChanged;
@@ -1684,9 +1682,9 @@ namespace Chummer
                             MartialArtBeforeClearCollectionChanged;
                         CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
                         CharacterObject.Lifestyles.CollectionChangedAsync -= LifestylesCollectionChanged;
-                        CharacterObject.Contacts.BeforeClearCollectionChanged -= ContactBeforeClearCollectionChanged;
+                        CharacterObject.Contacts.BeforeClearCollectionChangedAsync -= ContactBeforeClearCollectionChanged;
                         CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
-                        CharacterObject.Spirits.BeforeClearCollectionChanged -= SpiritBeforeClearCollectionChanged;
+                        CharacterObject.Spirits.BeforeClearCollectionChangedAsync -= SpiritBeforeClearCollectionChanged;
                         CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
                         CharacterObject.Armor.BeforeClearCollectionChangedAsync -=
                             ArmorBeforeClearCollectionChanged;
@@ -2814,7 +2812,7 @@ namespace Chummer
                                                         .SelectSingleNodeAndCacheExpression("name", token)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
-                                                    && lstDrainAttributes.All(x => x.Value.ToString() != strName))
+                                                    && lstDrainAttributes.TrueForAll(x => x.Value.ToString() != strName))
                                                 {
                                                     string strTranslatedName = xmlDrain
                                                         .SelectSingleNodeAndCacheExpression(
@@ -5421,7 +5419,7 @@ namespace Chummer
                                 y.Checked = true;
                             else if (y.Checked)
                                 y.Checked = false;
-                        });
+                        }, GenericToken);
 
                         UpdateMugshot(picMugshot, x.ValueAsInt - 1);
                     }
@@ -6261,22 +6259,13 @@ namespace Chummer
         {
             try
             {
-                int intFree = 0;
-                List<Gear> lstGear = new List<Gear>(2);
-                List<Gear> lstStack = new List<Gear>(2);
-
-                // Run through all of the Foci the character has and count the un-Bonded ones.
-                await CharacterObject.Gear.ForEachAsync(objGear =>
-                {
-                    if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
-                    {
-                        intFree++;
-                        lstGear.Add(objGear);
-                    }
-                }, GenericToken).ConfigureAwait(false);
+                // Run through all the Foci the character has and count the un-Bonded ones.
+                List<Gear> lstGear
+                    = await CharacterObject.Gear.ToListAsync(x =>
+                        (x.Category == "Foci" || x.Category == "Metamagic Foci") && !x.Bonded, GenericToken);
 
                 // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
-                if (intFree < 2)
+                if (lstGear.Count < 2)
                 {
                     Program.ShowScrollableMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_CannotStackFoci", token: GenericToken).ConfigureAwait(false),
@@ -6285,6 +6274,7 @@ namespace Chummer
                     return;
                 }
 
+                List<Gear> lstStack = new List<Gear>(lstGear.Count);
                 string strDescription
                     = await LanguageManager.GetStringAsync("String_SelectItemFocus", token: GenericToken).ConfigureAwait(false);
                 DialogResult eResult;
@@ -6487,12 +6477,9 @@ namespace Chummer
                     // Equip all of the Armor in the Armor Bundle.
                     await selectedLocation.Children.ForEachAsync(child =>
                     {
-                        if (child is Armor objArmor)
+                        if (child is Armor objArmor && objArmor.Location == selectedLocation)
                         {
-                            if (objArmor.Location == selectedLocation)
-                            {
-                                objArmor.Equipped = true;
-                            }
+                            objArmor.Equipped = true;
                         }
                     }, GenericToken).ConfigureAwait(false);
                 }
@@ -6531,12 +6518,9 @@ namespace Chummer
                     // Equip all of the Armor in the Armor Bundle.
                     await selectedLocation.Children.ForEachAsync(child =>
                     {
-                        if (child is Armor objArmor)
+                        if (child is Armor objArmor && objArmor.Location == selectedLocation)
                         {
-                            if (objArmor.Location == selectedLocation)
-                            {
-                                objArmor.Equipped = false;
-                            }
+                            objArmor.Equipped = false;
                         }
                     }, GenericToken).ConfigureAwait(false);
                 }
@@ -8376,7 +8360,7 @@ namespace Chummer
                                            out HashSet<string> setHasMounts))
                                 {
                                     foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(
-                                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), GenericToken))
                                     {
                                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                                      ',', StringSplitOptions.RemoveEmptyEntries))
@@ -8455,7 +8439,7 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                         setHasMounts.Add(strLoopHasModularMount);
                                     foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(
-                                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), GenericToken))
                                     {
                                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                                      ',', StringSplitOptions.RemoveEmptyEntries))
@@ -10143,7 +10127,7 @@ namespace Chummer
                                 List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware
                                     .DeepWhere(x => x.Children,
                                                x => objCyberware.IncludePair.Contains(x.Name)
-                                                    && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped)
+                                                    && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped, GenericToken)
                                     .ToList();
                                 int intCyberwaresCount = lstPairableCyberwares.Count;
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
@@ -20415,7 +20399,7 @@ namespace Chummer
                                 }
 
                                 foreach (Gear objGear in objArmor.GearChildren.DeepWhere(
-                                             x => x.Children, x => x.CapacityRemaining < 0))
+                                             x => x.Children, x => x.CapacityRemaining < 0, token))
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                      .ConfigureAwait(false));
@@ -20426,7 +20410,7 @@ namespace Chummer
                                 {
                                     int intReturn2 = 0;
                                     foreach (Gear objGear in objArmorMod.GearChildren.DeepWhere(
-                                                 x => x.Children, x => x.CapacityRemaining < 0))
+                                                 x => x.Children, x => x.CapacityRemaining < 0, token))
                                     {
                                         lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                          .ConfigureAwait(false));
@@ -20446,7 +20430,7 @@ namespace Chummer
                             {
                                 int intReturn = 0;
                                 foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
-                                             x => x.Children, x => x.CapacityRemaining < 0))
+                                             x => x.Children, x => x.CapacityRemaining < 0, token))
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                      .ConfigureAwait(false));
@@ -20490,7 +20474,7 @@ namespace Chummer
 
                                 // Child Gear.
                                 foreach (Gear objChild in objGear.Children.DeepWhere(
-                                             x => x.Children, x => x.CapacityRemaining < 0))
+                                             x => x.Children, x => x.CapacityRemaining < 0, token))
                                 {
                                     lstOverCapacity.Add(await objChild.GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false));
@@ -20540,7 +20524,7 @@ namespace Chummer
                                 {
                                     int intReturn2 = 0;
                                     foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(
-                                                 x => x.Children))
+                                                 x => x.Children, token))
                                     {
                                         if (objCyberware.CapacityRemaining < 0)
                                         {
@@ -20551,7 +20535,7 @@ namespace Chummer
                                         }
 
                                         foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
-                                                     x => x.Children, x => x.CapacityRemaining < 0))
+                                                     x => x.Children, x => x.CapacityRemaining < 0, token))
                                         {
                                             lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                              .ConfigureAwait(false));
@@ -20573,13 +20557,13 @@ namespace Chummer
                                     }
 
                                     foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(
-                                                 x => x.Children, x => x.WeaponAccessories.Count > 0))
+                                                 x => x.Children, x => x.WeaponAccessories.Count > 0, token))
                                     {
                                         intReturn2 += await objWeapon.WeaponAccessories.SumAsync(async objAccessory =>
                                         {
                                             int intReturn3 = 0;
                                             foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
-                                                         x => x.Children, x => x.CapacityRemaining < 0))
+                                                         x => x.Children, x => x.CapacityRemaining < 0, token))
                                             {
                                                 lstOverCapacity.Add(
                                                     await objGear.GetCurrentDisplayNameShortAsync(token)
@@ -20595,7 +20579,7 @@ namespace Chummer
                                     {
                                         int intReturn3 = 0;
                                         foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(
-                                                     x => x.Children))
+                                                     x => x.Children, token))
                                         {
                                             if (objCyberware.CapacityRemaining < 0)
                                             {
@@ -20606,7 +20590,7 @@ namespace Chummer
                                             }
 
                                             foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
-                                                         x => x.Children, x => x.CapacityRemaining < 0))
+                                                         x => x.Children, x => x.CapacityRemaining < 0, token))
                                             {
                                                 lstOverCapacity.Add(
                                                     await objGear.GetCurrentDisplayNameShortAsync(token)
@@ -20622,7 +20606,7 @@ namespace Chummer
 
                                 // Check Vehicle Gear.
                                 foreach (Gear objGear in objVehicle.GearChildren.DeepWhere(
-                                             x => x.Children, x => x.CapacityRemaining < 0))
+                                             x => x.Children, x => x.CapacityRemaining < 0, token))
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                      .ConfigureAwait(false));
@@ -20857,178 +20841,175 @@ namespace Chummer
                     }
 
                     // Check if the character has extra spell points
-                    if (blnValid)
+                    if (blnValid && (await CharacterObject.GetFreeSpellsAsync(token).ConfigureAwait(false) > 0
+                                     || (await ImprovementManager
+                                         .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                             Improvement.ImprovementType.FreeSpells,
+                                             token: token)
+                                         .ConfigureAwait(false)).Count > 0
+                                     || (await ImprovementManager
+                                         .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                             Improvement.ImprovementType
+                                                 .FreeSpellsATT,
+                                             token: token).ConfigureAwait(false))
+                                     .Count > 0
+                                     || (await ImprovementManager
+                                         .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                             Improvement.ImprovementType
+                                                 .FreeSpellsSkill,
+                                             token: token).ConfigureAwait(false))
+                                     .Count > 0))
                     {
-                        if (await CharacterObject.GetFreeSpellsAsync(token).ConfigureAwait(false) > 0
-                            || (await ImprovementManager
-                                      .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                                                               Improvement.ImprovementType.FreeSpells,
-                                                                               token: token)
-                                      .ConfigureAwait(false)).Count > 0
-                            || (await ImprovementManager
-                                      .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                                                               Improvement.ImprovementType
-                                                                                   .FreeSpellsATT,
-                                                                               token: token).ConfigureAwait(false))
-                            .Count > 0
-                            || (await ImprovementManager
-                                      .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                                                               Improvement.ImprovementType
-                                                                                   .FreeSpellsSkill,
-                                                                               token: token).ConfigureAwait(false))
-                            .Count > 0)
+                        ThreadSafeObservableCollection<Spell> lstSpells
+                            = await CharacterObject.GetSpellsAsync(token).ConfigureAwait(false);
+                        // Count the number of Spells the character currently has
+                        int intUsedPoints = await lstSpells
+                            .CountAsync(
+                                spell => spell.Grade == 0 && !spell.FreeBonus,
+                                token: token).ConfigureAwait(false);
+                        int intTouchOnlySpells = await lstSpells
+                            .CountAsync(
+                                spell => spell.Grade == 0 && !spell.Alchemical
+                                                          && spell.Category != "Rituals"
+                                                          && (spell.Range == "T (A)"
+                                                              || spell.Range == "T")
+                                                          && !spell.FreeBonus, token: token)
+                            .ConfigureAwait(false);
+
+                        int intFreeSpells = await CharacterObject.GetFreeSpellsAsync(token).ConfigureAwait(false);
+
+                        token.ThrowIfCancellationRequested();
+
+                        if (intFreeSpells > 0)
                         {
-                            ThreadSafeObservableCollection<Spell> lstSpells
-                                = await CharacterObject.GetSpellsAsync(token).ConfigureAwait(false);
-                            // Count the number of Spells the character currently has
-                            int intUsedPoints = await lstSpells
-                                                      .CountAsync(
-                                                          spell => spell.Grade == 0 && !spell.FreeBonus,
-                                                          token: token).ConfigureAwait(false);
-                            int intTouchOnlySpells = await lstSpells
-                                                           .CountAsync(
-                                                               spell => spell.Grade == 0 && !spell.Alchemical
-                                                                   && spell.Category != "Rituals"
-                                                                   && (spell.Range == "T (A)"
-                                                                       || spell.Range == "T")
-                                                                   && !spell.FreeBonus, token: token)
-                                                           .ConfigureAwait(false);
-
-                            int intFreeSpells = await CharacterObject.GetFreeSpellsAsync(token).ConfigureAwait(false);
-
-                            token.ThrowIfCancellationRequested();
-
-                            if (intFreeSpells > 0)
+                            // Each spell costs KarmaSpell.
+                            int spellCost = await CharacterObject.SpellKarmaCostAsync("Spells", token)
+                                .ConfigureAwait(false);
+                            // Factor in any qualities that can be bought with spell points.
+                            // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
+                            int intKarmaSpell = await CharacterObjectSettings.GetKarmaSpellAsync(token)
+                                .ConfigureAwait(false);
+                            if (spellCost <= intKarmaSpell && intKarmaSpell != 0)
                             {
-                                // Each spell costs KarmaSpell.
-                                int spellCost = await CharacterObject.SpellKarmaCostAsync("Spells", token)
-                                                                     .ConfigureAwait(false);
-                                // Factor in any qualities that can be bought with spell points.
-                                // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-                                int intKarmaSpell = await CharacterObjectSettings.GetKarmaSpellAsync(token)
-                                    .ConfigureAwait(false);
-                                if (spellCost <= intKarmaSpell && intKarmaSpell != 0)
+                                // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                                int intMasteryQualityKarmaUsed
+                                    = await (await CharacterObject.GetQualitiesAsync(token).ConfigureAwait(false))
+                                        .SumAsync(
+                                            objQuality =>
+                                                objQuality.CanBuyWithSpellPoints,
+                                            objQuality => objQuality.BP, token)
+                                        .ConfigureAwait(false);
+                                if (intMasteryQualityKarmaUsed != 0)
                                 {
-                                    // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
-                                    int intMasteryQualityKarmaUsed
-                                        = await (await CharacterObject.GetQualitiesAsync(token).ConfigureAwait(false))
-                                                .SumAsync(
-                                                    objQuality =>
-                                                        objQuality.CanBuyWithSpellPoints,
-                                                    objQuality => objQuality.BP, token)
-                                                .ConfigureAwait(false);
-                                    if (intMasteryQualityKarmaUsed != 0)
-                                    {
-                                        int intQualityKarmaToSpellPoints
-                                            = Math.Min(
-                                                intFreeSpells,
-                                                intMasteryQualityKarmaUsed * await CharacterObjectSettings
-                                                    .GetKarmaQualityAsync(token)
-                                                    .ConfigureAwait(false)
-                                                / intKarmaSpell);
-                                        intUsedPoints += intQualityKarmaToSpellPoints;
-                                    }
+                                    int intQualityKarmaToSpellPoints
+                                        = Math.Min(
+                                            intFreeSpells,
+                                            intMasteryQualityKarmaUsed * await CharacterObjectSettings
+                                                .GetKarmaQualityAsync(token)
+                                                .ConfigureAwait(false)
+                                            / intKarmaSpell);
+                                    intUsedPoints += intQualityKarmaToSpellPoints;
                                 }
                             }
+                        }
 
+                        token.ThrowIfCancellationRequested();
+
+                        int intLimitMod = (await ImprovementManager
+                                               .ValueOfAsync(CharacterObject,
+                                                   Improvement.ImprovementType.SpellLimit,
+                                                   token: token).ConfigureAwait(false)
+                                           + await ImprovementManager
+                                               .ValueOfAsync(CharacterObject,
+                                                   Improvement.ImprovementType.FreeSpells,
+                                                   token: token).ConfigureAwait(false))
+                            .StandardRound();
+                        int intLimitModTouchOnly = 0;
+                        foreach (Improvement imp in await ImprovementManager
+                                     .GetCachedImprovementListForValueOfAsync(
+                                         CharacterObject,
+                                         Improvement.ImprovementType.FreeSpellsATT,
+                                         token: token).ConfigureAwait(false))
+                        {
                             token.ThrowIfCancellationRequested();
+                            int intAttValue
+                                = await (await CharacterObject.GetAttributeAsync(imp.ImprovedName, token: token)
+                                        .ConfigureAwait(false)).GetTotalValueAsync(token)
+                                    .ConfigureAwait(false);
+                            if (imp.UniqueName.Contains("half"))
+                                intAttValue = (intAttValue + 1) / 2;
+                            if (imp.UniqueName.Contains("touchonly"))
+                                intLimitModTouchOnly += intAttValue;
+                            else
+                                intLimitMod += intAttValue;
+                        }
 
-                            int intLimitMod = (await ImprovementManager
-                                                     .ValueOfAsync(CharacterObject,
-                                                                   Improvement.ImprovementType.SpellLimit,
-                                                                   token: token).ConfigureAwait(false)
-                                               + await ImprovementManager
-                                                       .ValueOfAsync(CharacterObject,
-                                                                     Improvement.ImprovementType.FreeSpells,
-                                                                     token: token).ConfigureAwait(false))
-                                .StandardRound();
-                            int intLimitModTouchOnly = 0;
-                            foreach (Improvement imp in await ImprovementManager
-                                                              .GetCachedImprovementListForValueOfAsync(
-                                                                  CharacterObject,
-                                                                  Improvement.ImprovementType.FreeSpellsATT,
-                                                                  token: token).ConfigureAwait(false))
-                            {
-                                token.ThrowIfCancellationRequested();
-                                int intAttValue
-                                    = await (await CharacterObject.GetAttributeAsync(imp.ImprovedName, token: token)
-                                                                  .ConfigureAwait(false)).GetTotalValueAsync(token)
-                                        .ConfigureAwait(false);
-                                if (imp.UniqueName.Contains("half"))
-                                    intAttValue = (intAttValue + 1) / 2;
-                                if (imp.UniqueName.Contains("touchonly"))
-                                    intLimitModTouchOnly += intAttValue;
-                                else
-                                    intLimitMod += intAttValue;
-                            }
+                        foreach (Improvement imp in await ImprovementManager
+                                     .GetCachedImprovementListForValueOfAsync(
+                                         CharacterObject,
+                                         Improvement.ImprovementType.FreeSpellsSkill,
+                                         token: token).ConfigureAwait(false))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            Skill skill = await objSkillsSection.GetActiveSkillAsync(imp.ImprovedName, token)
+                                .ConfigureAwait(false);
+                            if (skill == null)
+                                continue;
+                            int intSkillValue = await skill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
 
-                            foreach (Improvement imp in await ImprovementManager
-                                                              .GetCachedImprovementListForValueOfAsync(
-                                                                  CharacterObject,
-                                                                  Improvement.ImprovementType.FreeSpellsSkill,
-                                                                  token: token).ConfigureAwait(false))
-                            {
-                                token.ThrowIfCancellationRequested();
-                                Skill skill = await objSkillsSection.GetActiveSkillAsync(imp.ImprovedName, token)
-                                                                    .ConfigureAwait(false);
-                                if (skill == null)
-                                    continue;
-                                int intSkillValue = await skill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+                            if (imp.UniqueName.Contains("half"))
+                                intSkillValue = (intSkillValue + 1) / 2;
+                            if (imp.UniqueName.Contains("touchonly"))
+                                intLimitModTouchOnly += intSkillValue;
+                            else
+                                intLimitMod += intSkillValue;
+                            //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
+                            intUsedPoints -= await (await skill.GetSpecializationsAsync(token).ConfigureAwait(false))
+                                .CountAsync(
+                                    async spec =>
+                                        await (await CharacterObject.GetSpellsAsync(token)
+                                                .ConfigureAwait(false)).AnyAsync(
+                                                spell => spell.Category == spec.Name
+                                                         && !spell.FreeBonus,
+                                                token)
+                                            .ConfigureAwait(false),
+                                    token)
+                                .ConfigureAwait(false);
+                        }
 
-                                if (imp.UniqueName.Contains("half"))
-                                    intSkillValue = (intSkillValue + 1) / 2;
-                                if (imp.UniqueName.Contains("touchonly"))
-                                    intLimitModTouchOnly += intSkillValue;
-                                else
-                                    intLimitMod += intSkillValue;
-                                //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
-                                intUsedPoints -= await (await skill.GetSpecializationsAsync(token).ConfigureAwait(false))
-                                                       .CountAsync(
-                                                           async spec =>
-                                                               await (await CharacterObject.GetSpellsAsync(token)
-                                                                       .ConfigureAwait(false)).AnyAsync(
-                                                                       spell => spell.Category == spec.Name
-                                                                           && !spell.FreeBonus,
-                                                                       token)
-                                                                   .ConfigureAwait(false),
-                                                           token)
-                                                       .ConfigureAwait(false);
-                            }
+                        if (await CharacterObject.GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false)
+                            && await CharacterObjectSettings.GetPrioritySpellsAsAdeptPowersAsync(token)
+                                .ConfigureAwait(false))
+                        {
+                            intUsedPoints += await nudMysticAdeptMAGMagician
+                                .DoThreadSafeFuncAsync(x => x.ValueAsInt, token)
+                                .ConfigureAwait(false);
+                        }
 
-                            if (await CharacterObject.GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false)
-                                && await CharacterObjectSettings.GetPrioritySpellsAsAdeptPowersAsync(token)
-                                                                .ConfigureAwait(false))
-                            {
-                                intUsedPoints += await nudMysticAdeptMAGMagician
-                                                       .DoThreadSafeFuncAsync(x => x.ValueAsInt, token)
-                                                       .ConfigureAwait(false);
-                            }
+                        intUsedPoints -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
 
-                            intUsedPoints -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
+                        int intPointsRemaining = intFreeSpells + intLimitMod - intUsedPoints;
 
-                            int intPointsRemaining = intFreeSpells + intLimitMod - intUsedPoints;
-
-                            if (intPointsRemaining > 0
-                                && Program.ShowScrollableMessageBox(this,
-                                                                    string.Format(
-                                                                        GlobalSettings.CultureInfo,
-                                                                        await LanguageManager.GetStringAsync(
-                                                                                "Message_ExtraPoints", token: token)
-                                                                            .ConfigureAwait(false),
-                                                                        intPointsRemaining.ToString(
-                                                                            GlobalSettings.CultureInfo),
-                                                                        await LanguageManager
-                                                                              .GetStringAsync(
-                                                                                  "String_FreeSpells", token: token)
-                                                                              .ConfigureAwait(false)),
-                                                                    await LanguageManager.GetStringAsync(
-                                                                            "MessageTitle_ExtraPoints", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                    MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Warning) == DialogResult.No)
-                            {
-                                blnValid = false;
-                            }
+                        if (intPointsRemaining > 0
+                            && Program.ShowScrollableMessageBox(this,
+                                string.Format(
+                                    GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync(
+                                            "Message_ExtraPoints", token: token)
+                                        .ConfigureAwait(false),
+                                    intPointsRemaining.ToString(
+                                        GlobalSettings.CultureInfo),
+                                    await LanguageManager
+                                        .GetStringAsync(
+                                            "String_FreeSpells", token: token)
+                                        .ConfigureAwait(false)),
+                                await LanguageManager.GetStringAsync(
+                                        "MessageTitle_ExtraPoints", token: token)
+                                    .ConfigureAwait(false),
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Warning) == DialogResult.No)
+                        {
+                            blnValid = false;
                         }
                     }
 
@@ -22204,11 +22185,10 @@ namespace Chummer
         {
             // Make sure all of the Cyberware the character has is of the same grade.
             string strGrade = string.Empty;
-            bool blnReturn = false;
-            await CharacterObject.Cyberware.ForEachWithBreakAsync(async objCyberware =>
-            {
-                if (objCyberware.SourceType == objSource)
+            if (await CharacterObject.Cyberware.AnyAsync(async objCyberware =>
                 {
+                    if (objCyberware.SourceType != objSource)
+                        return false;
                     if (string.IsNullOrEmpty(strGrade))
                         strGrade = objCyberware.Grade.ToString();
                     else if (strGrade != objCyberware.Grade.ToString())
@@ -22216,17 +22196,14 @@ namespace Chummer
                         Program.ShowScrollableMessageBox(
                             this,
                             await LanguageManager.GetStringAsync("Message_CyberwareGradeMismatch", token: token)
-                                                 .ConfigureAwait(false),
+                                .ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_CyberwareGradeMismatch", token: token)
-                                                 .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        blnReturn = true;
-                        return false;
+                                .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return true;
                     }
-                }
 
-                return true;
-            }, token).ConfigureAwait(false);
-            if (blnReturn)
+                    return false;
+                }, token).ConfigureAwait(false))
                 return;
 
             // The character has no Cyberware!
@@ -23593,11 +23570,11 @@ namespace Chummer
             }
         }
 
-        private void ContactBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ContactBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                RefreshContactsClearBindings(panContacts, panEnemies, panPets, GenericToken);
+                await RefreshContactsClearBindings(panContacts, panEnemies, panPets, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -23617,11 +23594,11 @@ namespace Chummer
             }
         }
 
-        private void SpiritBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SpiritBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                RefreshSpiritsClearBindings(panSpirits, panSprites, GenericToken);
+                await RefreshSpiritsClearBindings(panSpirits, panSprites, token);
             }
             catch (OperationCanceledException)
             {
@@ -23910,7 +23887,7 @@ namespace Chummer
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
                     if (!objModularCyberware.IsModularCurrentlyEquipped
-                        && lstModularMounts.All(
+                        && lstModularMounts.TrueForAll(
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
                     {
                         Program.ShowScrollableMessageBox(this,
@@ -24039,7 +24016,7 @@ namespace Chummer
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
                     if (!objModularCyberware.IsModularCurrentlyEquipped
-                        && lstModularMounts.All(
+                        && lstModularMounts.TrueForAll(
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                     {
                         Program.ShowScrollableMessageBox(this,

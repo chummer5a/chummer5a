@@ -65,7 +65,7 @@ namespace Chummer
                 x.Shown += FormOnShown;
                 x.ShowInTaskbar = false;
                 x.Show(owner);
-            });
+            }, token);
             while (!blnDoClose)
             {
                 token.ThrowIfCancellationRequested();
@@ -76,7 +76,7 @@ namespace Chummer
             {
                 x.Close();
                 return x.DialogResult;
-            });
+            }, token);
         }
 
         /// <summary>
@@ -121,8 +121,8 @@ namespace Chummer
 
                     void FormOnShown(object sender, EventArgs args)
                     {
-                        frmForm.DoThreadSafe(x => x.Close());
-                        objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult));
+                        frmForm.DoThreadSafe(x => x.Close(), token);
+                        objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult, token));
                     }
                 }
 
@@ -220,8 +220,8 @@ namespace Chummer
                 frmInner.Show(owner);
                 void FormOnShown(object sender, EventArgs args)
                 {
-                    frmForm.DoThreadSafe(x => x.Close());
-                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult));
+                    frmForm.DoThreadSafe(x => x.Close(), token);
+                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult, token));
                     objCancelRegistration.Dispose();
                 }
             }
@@ -253,10 +253,12 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static void DoThreadSafe<T>(this T objControl, Action funcToRun) where T : Control
+        public static void DoThreadSafe<T>(this T objControl, Action funcToRun, CancellationToken token = default) where T : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             try
@@ -264,7 +266,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke();
                 else
-                    Utils.RunOnMainThread(funcToRun);
+                    Utils.RunOnMainThread(funcToRun, token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -299,10 +301,12 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static void DoThreadSafe<T>(this T objControl, Action<T> funcToRun) where T : Control
+        public static void DoThreadSafe<T>(this T objControl, Action<T> funcToRun, CancellationToken token = default) where T : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             try
@@ -310,7 +314,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke(null);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(objControl));
+                    Utils.RunOnMainThread(() => funcToRun(objControl), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -635,15 +639,17 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T2> funcToRun) where T1 : Control
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
             try
             {
-                return objControl == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
+                return objControl == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun, token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -680,15 +686,17 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun) where T1 : Control
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
             try
             {
-                return objControl == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objControl));
+                return objControl == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objControl), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1026,8 +1034,10 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoOneWayDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void DoOneWayDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objControl == null)
                 return;
             Utils.RunOnMainThread(() =>
@@ -1039,7 +1049,7 @@ namespace Chummer
 
                 objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false,
                                             DataSourceUpdateMode.Never);
-            });
+            }, token: token);
         }
 
         /// <summary>
@@ -1242,8 +1252,10 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoOneWayNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void DoOneWayNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objControl == null)
                 return;
             Utils.RunOnMainThread(() =>
@@ -1255,7 +1267,7 @@ namespace Chummer
 
                 objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
                                                                  DataSourceUpdateMode.Never));
-            });
+            }, token: token);
         }
 
         /// <summary>
@@ -1290,8 +1302,10 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void DoNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objControl == null)
                 return;
             Utils.RunOnMainThread(() =>
@@ -1303,7 +1317,7 @@ namespace Chummer
 
                 objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
                                                                  DataSourceUpdateMode.OnPropertyChanged));
-            });
+            }, token: token);
         }
 
         /// <summary>
@@ -1364,17 +1378,17 @@ namespace Chummer
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
+            lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         public static Task PopulateWithListItemsAsync([NotNull] this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)

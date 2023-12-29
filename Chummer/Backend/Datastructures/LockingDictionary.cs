@@ -234,7 +234,7 @@ namespace Chummer
             bool blnTakeSuccessful = false;
             TKey objKeyToTake = default;
             TValue objValue = default;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -244,7 +244,16 @@ namespace Chummer
                     objKeyToTake = _dicData.Keys.First();
                     if (_dicData.TryGetValue(objKeyToTake, out objValue))
                     {
-                        blnTakeSuccessful = _dicData.Remove(objKeyToTake);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            blnTakeSuccessful = _dicData.Remove(objKeyToTake);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
             }
@@ -389,7 +398,7 @@ namespace Chummer
             bool blnTakeSuccessful = false;
             TKey objKeyToTake = default;
             TValue objValue = default;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_dicData.Count > 0)
                 {
@@ -397,7 +406,10 @@ namespace Chummer
                     objKeyToTake = _dicData.Keys.First();
                     if (_dicData.TryGetValue(objKeyToTake, out objValue))
                     {
-                        blnTakeSuccessful = _dicData.Remove(objKeyToTake);
+                        using (LockObject.EnterWriteLock())
+                        {
+                            blnTakeSuccessful = _dicData.Remove(objKeyToTake);
+                        }
                     }
                 }
             }

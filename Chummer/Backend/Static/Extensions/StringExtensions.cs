@@ -348,7 +348,6 @@ namespace Chummer
 
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-            
             if (astrNeedles.All(x => x.Length > intHaystackLength))
                 return -1;
 
@@ -1668,7 +1667,7 @@ namespace Chummer
                 {
                     x.Text = strInput;
                     return x.Rtf;
-                });
+                }, token);
             }
             finally
             {
@@ -1833,7 +1832,7 @@ namespace Chummer
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
-        private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox()));
+        private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox(), token: CancellationToken.None));
 
         /// <summary>
         /// Strip RTF Tags from RTF Text.

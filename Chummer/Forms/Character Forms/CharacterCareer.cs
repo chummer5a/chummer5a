@@ -519,7 +519,7 @@ namespace Chummer
                                                     = xmlDrain.SelectSingleNodeAndCacheExpression("name", GenericToken)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
-                                                    && lstDrainAttributes.All(x => x.Value.ToString() != strName))
+                                                    && lstDrainAttributes.TrueForAll(x => x.Value.ToString() != strName))
                                                 {
                                                     string strTranslatedName = xmlDrain
                                                         .SelectSingleNodeAndCacheExpression(
@@ -849,7 +849,7 @@ namespace Chummer
                                             x => x.GetPhysicalCMAsync(GenericToken), GenericToken)
                                         .ConfigureAwait(false);
                                     await lblCMPhysicalLabel.RegisterOneWayAsyncDataBindingAsync(
-                                            (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo),
+                                            (x, y) => x.Text = y,
                                             CharacterObject,
                                             nameof(Character.PhysicalCMLabelText),
                                             x => x.GetPhysicalCMLabelTextAsync(GenericToken), GenericToken)
@@ -914,7 +914,7 @@ namespace Chummer
                                         .ConfigureAwait(false);
 
                                     await lblDodge.RegisterOneWayAsyncDataBindingAsync(
-                                            (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                            (x, y) => x.Text = y, CharacterObject,
                                             nameof(Character.DisplayDodge),
                                             x => x.GetDisplayDodgeAsync(GenericToken), GenericToken)
                                         .ConfigureAwait(false);
@@ -924,7 +924,7 @@ namespace Chummer
                                             x => x.GetDodgeToolTipAsync(GenericToken), GenericToken)
                                         .ConfigureAwait(false);
                                     await lblCMDodge.RegisterOneWayAsyncDataBindingAsync(
-                                            (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                                            (x, y) => x.Text = y, CharacterObject,
                                             nameof(Character.DisplayDodge),
                                             x => x.GetDisplayDodgeAsync(GenericToken), GenericToken)
                                         .ConfigureAwait(false);
@@ -1359,7 +1359,8 @@ namespace Chummer
                                         // Run through all appropriate property changers
                                         foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
                                             await OnCharacterPropertyChanged(this,
-                                                new PropertyChangedEventArgs(objProperty.Name)).ConfigureAwait(false);
+                                                    new PropertyChangedEventArgs(objProperty.Name), GenericToken)
+                                                .ConfigureAwait(false);
                                     }
 
                                     using (Timekeeper.StartSyncron(
@@ -1484,9 +1485,9 @@ namespace Chummer
                                         MartialArtBeforeClearCollectionChanged;
                                     CharacterObject.MartialArts.CollectionChangedAsync += MartialArtCollectionChanged;
                                     CharacterObject.Lifestyles.CollectionChangedAsync += LifestylesCollectionChanged;
-                                    CharacterObject.Contacts.BeforeClearCollectionChanged += ContactBeforeClearCollectionChanged;
+                                    CharacterObject.Contacts.BeforeClearCollectionChangedAsync += ContactBeforeClearCollectionChanged;
                                     CharacterObject.Contacts.CollectionChangedAsync += ContactCollectionChanged;
-                                    CharacterObject.Spirits.BeforeClearCollectionChanged += SpiritBeforeClearCollectionChanged;
+                                    CharacterObject.Spirits.BeforeClearCollectionChangedAsync += SpiritBeforeClearCollectionChanged;
                                     CharacterObject.Spirits.CollectionChangedAsync += SpiritCollectionChanged;
                                     CharacterObject.Armor.BeforeClearCollectionChangedAsync +=
                                         ArmorBeforeClearCollectionChanged;
@@ -1516,7 +1517,7 @@ namespace Chummer
                                         += ImprovementGroupCollectionChanged;
                                     CharacterObject.Calendar.ListChangedAsync += CalendarWeekListChanged;
                                     CharacterObject.Drugs.CollectionChangedAsync += DrugCollectionChanged;
-                                    CharacterObject.SustainedCollection.BeforeClearCollectionChanged +=
+                                    CharacterObject.SustainedCollection.BeforeClearCollectionChangedAsync +=
                                         SustainedSpellBeforeClearCollectionChanged;
                                     CharacterObject.SustainedCollection.CollectionChangedAsync
                                         += SustainedSpellCollectionChanged;
@@ -1818,11 +1819,11 @@ namespace Chummer
             }
         }
 
-        private void ContactBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ContactBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                RefreshContactsClearBindings(panContacts, panEnemies, panPets, GenericToken);
+                await RefreshContactsClearBindings(panContacts, panEnemies, panPets, token);
             }
             catch (OperationCanceledException)
             {
@@ -1842,11 +1843,11 @@ namespace Chummer
             }
         }
 
-        private void SpiritBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SpiritBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                RefreshSpiritsClearBindings(panSpirits, panSprites, GenericToken);
+                await RefreshSpiritsClearBindings(panSpirits, panSprites, token);
             }
             catch (OperationCanceledException)
             {
@@ -1866,11 +1867,11 @@ namespace Chummer
             }
         }
 
-        private void SustainedSpellBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task SustainedSpellBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, GenericToken);
+                await RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, token);
             }
             catch (OperationCanceledException)
             {
@@ -2172,17 +2173,14 @@ namespace Chummer
                             RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
                             RefreshGearsClearBindings(treGear, CancellationToken.None),
                             RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
-                            RefreshVehiclesClearBindings(treVehicles, CancellationToken.None)).ConfigureAwait(false);
-                        await this.DoThreadSafeAsync(
-                            x => x.RefreshContactsClearBindings(panContacts, panEnemies, panPets,
-                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
-                        await this.DoThreadSafeAsync(
-                            x => x.RefreshSpiritsClearBindings(panSpirits, panSprites,
-                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
-                        await this.DoThreadSafeAsync(
-                            x => x.RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
+                            RefreshVehiclesClearBindings(treVehicles, CancellationToken.None),
+                            RefreshContactsClearBindings(panContacts, panEnemies, panPets,
+                                CancellationToken.None),
+                            RefreshSpiritsClearBindings(panSpirits, panSprites,
+                                CancellationToken.None),
+                            RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
                                 flpSustainedCritterPowers,
-                                CancellationToken.None), CancellationToken.None).ConfigureAwait(false);
+                                CancellationToken.None)).ConfigureAwait(false);
                         CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
                             -= AttributeBeforeClearCollectionChanged;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
@@ -2201,9 +2199,9 @@ namespace Chummer
                             MartialArtBeforeClearCollectionChanged;
                         CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
                         CharacterObject.Lifestyles.CollectionChangedAsync -= LifestylesCollectionChanged;
-                        CharacterObject.Contacts.BeforeClearCollectionChanged -= ContactBeforeClearCollectionChanged;
+                        CharacterObject.Contacts.BeforeClearCollectionChangedAsync -= ContactBeforeClearCollectionChanged;
                         CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
-                        CharacterObject.Spirits.BeforeClearCollectionChanged -= SpiritBeforeClearCollectionChanged;
+                        CharacterObject.Spirits.BeforeClearCollectionChangedAsync -= SpiritBeforeClearCollectionChanged;
                         CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
                         CharacterObject.Armor.BeforeClearCollectionChangedAsync -=
                             ArmorBeforeClearCollectionChanged;
@@ -2230,7 +2228,7 @@ namespace Chummer
                         CharacterObject.ImprovementGroups.CollectionChangedAsync -= ImprovementGroupCollectionChanged;
                         CharacterObject.Calendar.ListChangedAsync -= CalendarWeekListChanged;
                         CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
-                        CharacterObject.SustainedCollection.BeforeClearCollectionChanged -=
+                        CharacterObject.SustainedCollection.BeforeClearCollectionChangedAsync -=
                             SustainedSpellBeforeClearCollectionChanged;
                         CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
                         CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
@@ -3506,7 +3504,7 @@ namespace Chummer
                                                             "name", token)
                                                     ?.Value;
                                                 if (!string.IsNullOrEmpty(strName)
-                                                    && lstDrainAttributes.All(x => x.Value.ToString() != strName))
+                                                    && lstDrainAttributes.TrueForAll(x => x.Value.ToString() != strName))
                                                 {
                                                     string strTranslatedName = xmlDrain
                                                         .SelectSingleNodeAndCacheExpression(
@@ -6712,7 +6710,7 @@ namespace Chummer
                                 y.Checked = true;
                             else if (y.Checked)
                                 y.Checked = false;
-                        });
+                        }, GenericToken);
 
                         UpdateMugshot(picMugshot, x.ValueAsInt - 1);
                     }
@@ -7869,7 +7867,7 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children)
+                        foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children, GenericToken)
                                                           .SelectMany(x => x.Clips))
                         {
                             if (objClip.AmmoGear != null)
@@ -9283,22 +9281,13 @@ namespace Chummer
         {
             try
             {
-                int intFree = 0;
+                // Run through all the Foci the character has and count the un-Bonded ones.
                 List<Gear> lstGear
-                    = new List<Gear>(await CharacterObject.Gear.GetCountAsync(GenericToken).ConfigureAwait(false));
-
-                // Run through all of the Foci the character has and count the un-Bonded ones.
-                await CharacterObject.Gear.ForEachAsync(objGear =>
-                {
-                    if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
-                    {
-                        ++intFree;
-                        lstGear.Add(objGear);
-                    }
-                }, GenericToken).ConfigureAwait(false);
+                    = await CharacterObject.Gear.ToListAsync(x =>
+                        (x.Category == "Foci" || x.Category == "Metamagic Foci") && !x.Bonded, GenericToken);
 
                 // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
-                if (intFree < 2)
+                if (lstGear.Count < 2)
                 {
                     Program.ShowScrollableMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_CannotStackFoci", token: GenericToken).ConfigureAwait(false),
@@ -13539,7 +13528,7 @@ namespace Chummer
                                                                             out HashSet<string> setHasMounts))
                             {
                                 foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(
-                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), GenericToken))
                                 {
                                     foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                                  ',', StringSplitOptions.RemoveEmptyEntries))
@@ -13616,7 +13605,7 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                     setHasMounts.Add(strLoopHasModularMount);
                                 foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(
-                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), GenericToken))
                                 {
                                     foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                                  ',', StringSplitOptions.RemoveEmptyEntries))
@@ -16121,19 +16110,12 @@ namespace Chummer
                                                              GenericToken).ConfigureAwait(false) is Weapon objWeapon))
                     return;
 
-                List<Vehicle> lstVehicles = new List<Vehicle>(await CharacterObject.Vehicles.GetCountAsync(GenericToken).ConfigureAwait(false));
-                await CharacterObject.Vehicles.ForEachAsync(async objCharacterVehicle =>
-                {
-                    if (await objCharacterVehicle.WeaponMounts.GetCountAsync(GenericToken).ConfigureAwait(false) > 0
-                        || await objCharacterVehicle.Mods.AnyAsync(objVehicleMod =>
-                                                                       objVehicleMod.Name.Contains("Drone Arm")
-                                                                       || objVehicleMod.Name.StartsWith(
-                                                                           "Mechanical Arm", StringComparison.Ordinal),
-                                                                   GenericToken).ConfigureAwait(false))
-                    {
-                        lstVehicles.Add(objCharacterVehicle);
-                    }
-                }, GenericToken).ConfigureAwait(false);
+                List<Vehicle> lstVehicles = await CharacterObject.Vehicles.ToListAsync(
+                    async x => await x.WeaponMounts.GetCountAsync(GenericToken).ConfigureAwait(false) > 0 || await x
+                        .Mods.AnyAsync(
+                            y => y.Name.Contains("Drone Arm") ||
+                                 y.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal), GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                 // Cannot continue if there are no Vehicles with a Weapon Mount or Mechanical Arm.
                 if (lstVehicles.Count == 0)
@@ -16279,7 +16261,7 @@ namespace Chummer
                     }
                 }
 
-                foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children).SelectMany(x => x.Clips))
+                foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children, GenericToken).SelectMany(x => x.Clips))
                 {
                     if (objClip.AmmoGear != null)
                     {
@@ -25449,7 +25431,7 @@ namespace Chummer
                     if (KarmaLast == DateTime.MinValue)
                         KarmaLast = File.Exists(CharacterObject.FileName)
                             ? File.GetCreationTime(CharacterObject.FileName)
-                            : new DateTime(DateTime.Now.Ticks - 1000);
+                            : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
                     if (chtKarma.ExpenseValues.Count < 2)
                     {
                         if (chtKarma.ExpenseValues.Count < 1)
@@ -25562,7 +25544,7 @@ namespace Chummer
                     if (NuyenLast == DateTime.MinValue)
                         NuyenLast = File.Exists(CharacterObject.FileName)
                             ? File.GetCreationTime(CharacterObject.FileName)
-                            : new DateTime(DateTime.Now.Ticks - 1000);
+                            : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
                     if (chtNuyen.ExpenseValues.Count < 2)
                     {
                         if (chtNuyen.ExpenseValues.Count < 1)
@@ -26569,20 +26551,8 @@ namespace Chummer
                 int intGrade = objGrade.Grade;
 
                 // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-                bool blnPayWithKarma = false;
-
-                // Evaluate each object
-                await CharacterObject.Metamagics.ForEachAsync(objMetamagic =>
-                {
-                    if (objMetamagic.Grade == intGrade)
-                        blnPayWithKarma = true;
-                }, GenericToken).ConfigureAwait(false);
-
-                await CharacterObject.Spells.ForEachAsync(objSpell =>
-                {
-                    if (objSpell.Grade == intGrade)
-                        blnPayWithKarma = true;
-                }, GenericToken).ConfigureAwait(false);
+                bool blnPayWithKarma = await CharacterObject.Metamagics.AnyAsync(x => x.Grade == intGrade, GenericToken).ConfigureAwait(false)
+                                       || await CharacterObject.Spells.AnyAsync(x => x.Grade == intGrade, GenericToken).ConfigureAwait(false);
 
                 int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Enchantments", GenericToken)
                                                              .ConfigureAwait(false);
@@ -26935,9 +26905,9 @@ namespace Chummer
                 {
                     if (strOldOverClocked == "Data Processing" || await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false) == "Data Processing")
                     {
-                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject).ConfigureAwait(false))
+                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                         {
-                            if (await objCommlink.IsHomeNodeAsync(CharacterObject).ConfigureAwait(false))
+                            if (await objCommlink.IsHomeNodeAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                                 await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
                                     nameof(Character.MatrixInitiativeValue),
                                     nameof(Character.MatrixInitiativeColdValue),
@@ -26986,9 +26956,9 @@ namespace Chummer
                 {
                     if (strOldOverClocked == "Data Processing" || await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false) == "Data Processing")
                     {
-                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject).ConfigureAwait(false))
+                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                         {
-                            if (await objCommlink.IsHomeNodeAsync(CharacterObject).ConfigureAwait(false))
+                            if (await objCommlink.IsHomeNodeAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                                 await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
                                     nameof(Character.MatrixInitiativeValue),
                                     nameof(Character.MatrixInitiativeColdValue),
@@ -27038,9 +27008,9 @@ namespace Chummer
                 {
                     if (strOldOverClocked == "Data Processing" || await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false) == "Data Processing")
                     {
-                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject).ConfigureAwait(false))
+                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                         {
-                            if (await objCommlink.IsHomeNodeAsync(CharacterObject).ConfigureAwait(false))
+                            if (await objCommlink.IsHomeNodeAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                                 await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
                                     nameof(Character.MatrixInitiativeValue),
                                     nameof(Character.MatrixInitiativeColdValue),
@@ -27090,9 +27060,9 @@ namespace Chummer
                 {
                     if (strOldOverClocked == "Data Processing" || await objCommlink.GetOverclockedAsync(GenericToken).ConfigureAwait(false) == "Data Processing")
                     {
-                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject).ConfigureAwait(false))
+                        if (await objCommlink.IsActiveCommlinkAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                         {
-                            if (await objCommlink.IsHomeNodeAsync(CharacterObject).ConfigureAwait(false))
+                            if (await objCommlink.IsHomeNodeAsync(CharacterObject, GenericToken).ConfigureAwait(false))
                                 await CharacterObject.OnMultiplePropertyChangedAsync(GenericToken,
                                     nameof(Character.MatrixInitiativeValue),
                                     nameof(Character.MatrixInitiativeColdValue),
@@ -27374,7 +27344,7 @@ namespace Chummer
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
                     if (!objModularCyberware.IsModularCurrentlyEquipped
-                        && lstModularMounts.All(
+                        && lstModularMounts.TrueForAll(
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                     {
                         Program.ShowScrollableMessageBox(this,
@@ -27486,7 +27456,7 @@ namespace Chummer
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
                     if (!objModularCyberware.IsModularCurrentlyEquipped
-                        && lstModularMounts.All(
+                        && lstModularMounts.TrueForAll(
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                     {
                         Program.ShowScrollableMessageBox(this,

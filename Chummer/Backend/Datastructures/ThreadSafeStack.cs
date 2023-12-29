@@ -226,11 +226,12 @@ namespace Chummer
                     return false;
                 }
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_stkData.Count > 0)
                 {
-                    item = _stkData.Pop();
+                    using (LockObject.EnterWriteLock())
+                        item = _stkData.Pop();
                     return true;
                 }
             }
@@ -248,11 +249,14 @@ namespace Chummer
                     return new Tuple<bool, T>(false, default);
                 }
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_stkData.Count > 0)
                 {
-                    return new Tuple<bool, T>(true, _stkData.Pop());
+                    T objReturn;
+                    using (LockObject.EnterWriteLock())
+                        objReturn = _stkData.Pop();
+                    return new Tuple<bool, T>(true, objReturn);
                 }
             }
 
@@ -267,13 +271,25 @@ namespace Chummer
                 if (_stkData.Count == 0)
                     return new Tuple<bool, T>(false, default);
             }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_stkData.Count > 0)
                 {
-                    return new Tuple<bool, T>(true, _stkData.Pop());
+                    T objReturn;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objReturn = _stkData.Pop();
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return new Tuple<bool, T>(true, objReturn);
                 }
             }
             finally

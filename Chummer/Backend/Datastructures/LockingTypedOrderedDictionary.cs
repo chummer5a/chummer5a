@@ -1351,7 +1351,7 @@ namespace Chummer
             bool blnTakeSuccessful = false;
             TKey objKeyToTake = default;
             TValue objValue = default;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1361,9 +1361,18 @@ namespace Chummer
                     objKeyToTake = _lstIndexes[0];
                     if (_dicUnorderedData.TryGetValue(objKeyToTake, out objValue))
                     {
-                        blnTakeSuccessful = _dicUnorderedData.Remove(objKeyToTake);
-                        if (blnTakeSuccessful)
-                            _lstIndexes.RemoveAt(0);
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            blnTakeSuccessful = _dicUnorderedData.Remove(objKeyToTake);
+                            if (blnTakeSuccessful)
+                                _lstIndexes.RemoveAt(0);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
             }
@@ -1408,7 +1417,7 @@ namespace Chummer
             bool blnTakeSuccessful = false;
             TKey objKeyToTake = default;
             TValue objValue = default;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_lstIndexes.Count > 0)
                 {
@@ -1416,9 +1425,12 @@ namespace Chummer
                     objKeyToTake = _lstIndexes[0];
                     if (_dicUnorderedData.TryGetValue(objKeyToTake, out objValue))
                     {
-                        blnTakeSuccessful = _dicUnorderedData.Remove(objKeyToTake);
-                        if (blnTakeSuccessful)
-                            _lstIndexes.RemoveAt(0);
+                        using (LockObject.EnterWriteLock())
+                        {
+                            blnTakeSuccessful = _dicUnorderedData.Remove(objKeyToTake);
+                            if (blnTakeSuccessful)
+                                _lstIndexes.RemoveAt(0);
+                        }
                     }
                 }
             }

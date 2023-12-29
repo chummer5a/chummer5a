@@ -177,8 +177,8 @@ namespace Chummer
                 {
                     x.Visible = AllowDiscounts || _objMount?.Markup != 0;
                     x.Enabled = AllowDiscounts;
-                    lblMarkupLabel.DoThreadSafe(y => y.Visible = x.Visible);
-                    lblMarkupPercentLabel.DoThreadSafe(y => y.Visible = x.Visible);
+                    lblMarkupLabel.DoThreadSafe(y => y.Visible = x.Visible, token: _objGenericToken);
+                    lblMarkupPercentLabel.DoThreadSafe(y => y.Visible = x.Visible, token: _objGenericToken);
                 }, _objGenericToken).ConfigureAwait(false);
 
                 if (_objMount != null)

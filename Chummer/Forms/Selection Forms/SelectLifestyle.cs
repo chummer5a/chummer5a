@@ -668,7 +668,7 @@ namespace Chummer
             await lblCostLabel.DoThreadSafeAsync(x => x.Visible = blnShowCost, token: token).ConfigureAwait(false);
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
-            if (Lifestyle.StaticIsTrustFundEligible(_objCharacter, strBaseLifestyle))
+            if (await Lifestyle.StaticIsTrustFundEligibleAsync(_objCharacter, strBaseLifestyle, token).ConfigureAwait(false))
             {
                 bool blnTrustFund = _objSourceLifestyle?.TrustFund ?? !await _objCharacter.Lifestyles
                     .AnyAsync(x => x.TrustFund, token: token).ConfigureAwait(false);

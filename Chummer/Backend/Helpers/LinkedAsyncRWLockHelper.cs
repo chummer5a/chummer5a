@@ -297,6 +297,8 @@ namespace Chummer
                 else
                     objHasChildrenSemaphore.Dispose();
             }
+
+            _objDisposalTokenSource.Dispose();
         }
 
         public async ValueTask DisposeAsync()
@@ -397,6 +399,8 @@ namespace Chummer
                 else
                     objHasChildrenSemaphore.Dispose();
             }
+
+            _objDisposalTokenSource.Dispose();
         }
 
         public void TakeReadLock(bool blnSkipSemaphore, CancellationToken token = default)
@@ -1460,9 +1464,6 @@ namespace Chummer
 
             // Announce to readers that we are no longer active
             Interlocked.Add(ref _lngNumReaders, MaxReaderCount);
-
-            if (_intDisposedStatus > 1)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
 
             // Use locals for thread safety
             // Release our reader lock, allowing waiting readers to pass through

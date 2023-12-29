@@ -2584,7 +2584,7 @@ namespace Chummer
         private bool IsVisibleOnAnyScreen()
         {
             Rectangle objMyRectangle = ClientRectangle;
-            return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(objMyRectangle));
+            return Screen.AllScreens.Exists(screen => screen.WorkingArea.IntersectsWith(objMyRectangle));
         }
 
         private async void ChummerMainForm_DragDrop(object sender, DragEventArgs e)
@@ -2734,6 +2734,7 @@ namespace Chummer
                     {
                         CharacterShared frmToClose = lstToClose1[i];
                         Character objFormCharacter = frmToClose.CharacterObject;
+                        // ReSharper disable once MethodSupportsCancellation
                         frmToClose.DoThreadSafe(x =>
                         {
                             try
@@ -2762,6 +2763,7 @@ namespace Chummer
                     {
                         ExportCharacter frmToClose = lstToClose2[i];
                         Character objFormCharacter = frmToClose.CharacterObject;
+                        // ReSharper disable once MethodSupportsCancellation
                         frmToClose.DoThreadSafe(x =>
                         {
                             try
@@ -2790,6 +2792,7 @@ namespace Chummer
                     {
                         CharacterSheetViewer frmToClose = lstToClose3[i];
                         List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
+                        // ReSharper disable once MethodSupportsCancellation
                         frmToClose.DoThreadSafe(x =>
                         {
                             try
@@ -3261,7 +3264,7 @@ namespace Chummer
                     {
                         bool blnMaximizeNewForm
                             = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                    || x.MdiChildren.Any(
+                                                                    || x.MdiChildren.Exists(
                                                                         y => y.WindowState
                                                                              == FormWindowState.Maximized),
                                                                token).ConfigureAwait(false);
@@ -3478,7 +3481,7 @@ namespace Chummer
                     {
                         bool blnMaximizeNewForm
                             = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                    || x.MdiChildren.Any(
+                                                                    || x.MdiChildren.Exists(
                                                                         y => y.WindowState
                                                                              == FormWindowState.Maximized),
                                                                token).ConfigureAwait(false);
@@ -3586,7 +3589,7 @@ namespace Chummer
                                 foreach (Form frmLoop in x.MdiChildren)
                                 {
                                     if (frmLoop.WindowState == FormWindowState.Maximized
-                                        && lstNewFormsToProcess.All(z => !ReferenceEquals(z.Item1, frmLoop)))
+                                        && lstNewFormsToProcess.TrueForAll(z => !ReferenceEquals(z.Item1, frmLoop)))
                                     {
                                         frmLoop.WindowState = FormWindowState.Normal;
                                         stkToMaximize.Push(frmLoop);
@@ -3723,7 +3726,7 @@ namespace Chummer
                     {
                         bool blnMaximizeNewForm
                             = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                    || x.MdiChildren.Any(
+                                                                    || x.MdiChildren.Exists(
                                                                         y => y.WindowState
                                                                              == FormWindowState.Maximized),
                                                                token).ConfigureAwait(false);

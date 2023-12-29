@@ -88,7 +88,7 @@ namespace Chummer
 
         private static async void TmrDarkModeCheckerTimerOnTick(object sender, EventArgs e)
         {
-            await AutoApplyLightDarkModeAsync().ConfigureAwait(false);
+            await AutoApplyLightDarkModeAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
         public static void AutoApplyLightDarkMode()
@@ -135,7 +135,7 @@ namespace Chummer
                 if (Program.MainForm == null)
                     return;
                 using (CursorWait.New(Program.MainForm))
-                    Program.MainForm.UpdateLightDarkMode();
+                    Program.MainForm.UpdateLightDarkMode(CancellationToken.None);
             }
         }
 
@@ -171,7 +171,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
         public static Color GenerateDarkModeColor(Color objColor)
         {
-            return s_DicDarkModeColors.GetOrAdd(objColor, x => GetDarkModeVersion(objColor));
+            return s_DicDarkModeColors.GetOrAdd(objColor, GetDarkModeVersion);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
         public static Color GenerateInverseDarkModeColor(Color objColor)
         {
-            return s_DicInverseDarkModeColors.GetOrAdd(objColor, x => InverseGetDarkModeVersion(objColor));
+            return s_DicInverseDarkModeColors.GetOrAdd(objColor, InverseGetDarkModeVersion);
         }
 
         /// <summary>
@@ -212,8 +212,8 @@ namespace Chummer
         public static Color GenerateCurrentModeDimmedColor(Color objColor)
         {
             return IsLightMode
-                ? s_DicDimmedColors.GetOrAdd(objColor, x => GetDimmedVersion(objColor))
-                : s_DicBrightenedColors.GetOrAdd(objColor, x => GetBrightenedVersion(objColor));
+                ? s_DicDimmedColors.GetOrAdd(objColor, GetDimmedVersion)
+                : s_DicBrightenedColors.GetOrAdd(objColor, GetBrightenedVersion);
         }
 
         /// <summary>
@@ -538,7 +538,7 @@ namespace Chummer
                             x.LineColor = WindowTextDark;
                         }
                     }, token);
-                    foreach (TreeNode objNode in treControl.DoThreadSafeFunc(x => x.Nodes))
+                    foreach (TreeNode objNode in treControl.DoThreadSafeFunc(x => x.Nodes, token))
                         ApplyColorsRecursively(objNode, blnLightMode, token);
                     break;
 
@@ -830,7 +830,7 @@ namespace Chummer
 
             ToolStrip objParent = tssItem.GetCurrentParent();
             if (objParent != null)
-                objParent.DoThreadSafe(DoColor);
+                objParent.DoThreadSafe(DoColor, token: token);
             else
                 DoColor();
 
@@ -882,7 +882,7 @@ namespace Chummer
                         ApplyColorsRecursively(tssDropDownChild, blnLightMode, token);
                     break;
                 case ColorableToolStripSeparator tssSeparator when objParent != null:
-                    objParent.DoThreadSafe(() => tssSeparator.DefaultColorScheme = blnLightMode);
+                    objParent.DoThreadSafe(() => tssSeparator.DefaultColorScheme = blnLightMode, token: token);
                     break;
                 case ColorableToolStripSeparator tssSeparator:
                     tssSeparator.DefaultColorScheme = blnLightMode;
@@ -895,7 +895,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             TreeView treView = nodNode.TreeView;
             if (treView != null)
-                treView.DoThreadSafe(DoColor);
+                treView.DoThreadSafe(DoColor, token: token);
             else
                 DoColor();
 

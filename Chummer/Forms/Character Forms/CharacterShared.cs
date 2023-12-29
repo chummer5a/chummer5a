@@ -468,17 +468,15 @@ namespace Chummer
 
         #region Refresh Treeviews and Panels
 
-        protected async Task RefreshAttributesClearBindings(FlowLayoutPanel pnlAttributes, CancellationToken token = default)
+        protected Task RefreshAttributesClearBindings(FlowLayoutPanel pnlAttributes, CancellationToken token = default)
         {
-            await pnlAttributes.DoThreadSafeAsync(x =>
+            return pnlAttributes.DoThreadSafeAsync(x =>
             {
                 foreach (AttributeControl objControl in x.Controls)
                 {
                     objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                    x.Controls.Remove(objControl);
-                    objControl.Dispose();
                 }
-            }, token).ConfigureAwait(false);
+            }, token);
         }
 
         protected async Task RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs e = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1, CancellationToken token = default)
@@ -6381,7 +6379,6 @@ namespace Chummer
                                     treMartialArts, MakeDirtyWithCharacterUpdate);
                                 objMartialArt.Techniques.AddTaggedCollectionChanged(
                                     treMartialArts, FuncDelegateToAdd);
-                                continue;
 
                                 Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                                     RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y, innerToken);
@@ -6759,7 +6756,7 @@ namespace Chummer
                                                 if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                                     objParent.Remove();
                                             }
-                                        });
+                                        }, token);
                                     }
                                 }
                             }, token).ConfigureAwait(false);
@@ -6792,7 +6789,7 @@ namespace Chummer
                                                 lstOldParents.Add(objNode.Parent);
                                                 objNode.Remove();
                                             }
-                                        });
+                                        }, token);
                                     }
                                 }
                             }, token).ConfigureAwait(false);
@@ -7334,71 +7331,95 @@ namespace Chummer
             }
         }
 
-        public void RefreshContactsClearBindings(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies,
+        public async Task RefreshContactsClearBindings(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies,
             FlowLayoutPanel panPets, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (panContacts != null)
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
             {
-                panContacts.SuspendLayout();
-                try
-                {
-                    for (int i = panContacts.Controls.Count - 1; i >= 0; --i)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!(panContacts.Controls[i] is ContactControl objContactControl))
-                            continue;
-                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        objContactControl.DeleteContact -= DeleteContact;
-                        objContactControl.MouseDown -= DragContactControl;
-                    }
-                }
-                finally
-                {
-                    panContacts.ResumeLayout();
-                }
+                GenericToken.ThrowIfCancellationRequested();
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
             }
 
-            if (panEnemies != null)
+            try
             {
-                panEnemies.SuspendLayout();
-                try
+                if (panContacts != null)
                 {
-                    for (int i = panEnemies.Controls.Count - 1; i >= 0; --i)
+                    await panContacts.DoThreadSafeAsync(x =>
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (!(panEnemies.Controls[i] is ContactControl objContactControl))
-                            continue;
-                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        objContactControl.DeleteContact -= DeleteEnemy;
-                        objContactControl.MouseDown -= DragContactControl;
-                    }
+                        x.SuspendLayout();
+                        try
+                        {
+                            for (int i = x.Controls.Count - 1; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!(x.Controls[i] is ContactControl objContactControl))
+                                    continue;
+                                objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                objContactControl.DeleteContact -= DeleteContact;
+                                objContactControl.MouseDown -= DragContactControl;
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token).ConfigureAwait(false);
                 }
-                finally
+
+                if (panEnemies != null)
                 {
-                    panEnemies.ResumeLayout();
+                    await panEnemies.DoThreadSafeAsync(x =>
+                    {
+                        x.SuspendLayout();
+                        try
+                        {
+                            for (int i = x.Controls.Count - 1; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!(x.Controls[i] is ContactControl objContactControl))
+                                    continue;
+                                objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                objContactControl.DeleteContact -= DeleteEnemy;
+                                objContactControl.MouseDown -= DragContactControl;
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+
+                if (panPets != null)
+                {
+                    await panPets.DoThreadSafeAsync(x =>
+                    {
+                        x.SuspendLayout();
+                        try
+                        {
+                            for (int i = x.Controls.Count - 1; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!(x.Controls[i] is PetControl objPetControl))
+                                    continue;
+                                objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                objPetControl.DeleteContact -= DeletePet;
+                                objPetControl.MouseDown -= DragContactControl;
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token).ConfigureAwait(false);
                 }
             }
-
-            if (panPets != null)
+            finally
             {
-                panPets.SuspendLayout();
-                try
-                {
-                    for (int i = panPets.Controls.Count - 1; i >= 0; --i)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!(panPets.Controls[i] is PetControl objPetControl))
-                            continue;
-                        objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        objPetControl.DeleteContact -= DeletePet;
-                        objPetControl.MouseDown -= DragContactControl;
-                    }
-                }
-                finally
-                {
-                    panPets.ResumeLayout();
-                }
+                objSource?.Dispose();
             }
         }
 
@@ -7574,12 +7595,11 @@ namespace Chummer
                                                 if (x.Controls[i] is ContactControl objContactControl &&
                                                     objContactControl.ContactObject == objContact)
                                                 {
-                                                    x.Controls.RemoveAt(i);
                                                     objContactControl.ContactDetailChanged
                                                         -= MakeDirtyWithCharacterUpdate;
                                                     objContactControl.DeleteContact -= DeleteContact;
                                                     objContactControl.MouseDown -= DragContactControl;
-                                                    objContactControl.Dispose();
+                                                    x.Controls.RemoveAt(i);
                                                 }
                                             }
                                         }, token).ConfigureAwait(false);
@@ -7597,11 +7617,10 @@ namespace Chummer
                                                 if (x.Controls[i] is ContactControl objContactControl
                                                     && objContactControl.ContactObject == objContact)
                                                 {
-                                                    x.Controls.RemoveAt(i);
                                                     objContactControl.ContactDetailChanged
                                                         -= MakeDirtyWithCharacterUpdate;
                                                     objContactControl.DeleteContact -= DeleteEnemy;
-                                                    objContactControl.Dispose();
+                                                    x.Controls.RemoveAt(i);
                                                 }
                                             }
                                         }, token).ConfigureAwait(false);
@@ -7619,11 +7638,10 @@ namespace Chummer
                                                 if (x.Controls[i] is PetControl objPetControl &&
                                                     objPetControl.ContactObject == objContact)
                                                 {
-                                                    x.Controls.RemoveAt(i);
                                                     objPetControl.ContactDetailChanged
                                                         -= MakeDirtyWithCharacterUpdate;
                                                     objPetControl.DeleteContact -= DeletePet;
-                                                    objPetControl.Dispose();
+                                                    x.Controls.RemoveAt(i);
                                                 }
                                             }
                                         }, token).ConfigureAwait(false);
@@ -7651,12 +7669,11 @@ namespace Chummer
                                                 if (x.Controls[i] is ContactControl objContactControl &&
                                                     objContactControl.ContactObject == objContact)
                                                 {
-                                                    x.Controls.RemoveAt(i);
                                                     objContactControl.ContactDetailChanged
                                                         -= MakeDirtyWithCharacterUpdate;
                                                     objContactControl.DeleteContact -= DeleteContact;
                                                     objContactControl.MouseDown -= DragContactControl;
-                                                    objContactControl.Dispose();
+                                                    x.Controls.RemoveAt(i);
                                                 }
                                             }
                                         }, token).ConfigureAwait(false);
@@ -7674,11 +7691,10 @@ namespace Chummer
                                                 if (x.Controls[i] is ContactControl objContactControl
                                                     && objContactControl.ContactObject == objContact)
                                                 {
-                                                    x.Controls.RemoveAt(i);
                                                     objContactControl.ContactDetailChanged
                                                         -= MakeDirtyWithCharacterUpdate;
                                                     objContactControl.DeleteContact -= DeleteEnemy;
-                                                    objContactControl.Dispose();
+                                                    x.Controls.RemoveAt(i);
                                                 }
                                             }
                                         }, token).ConfigureAwait(false);
@@ -7696,11 +7712,10 @@ namespace Chummer
                                                 if (x.Controls[i] is PetControl objPetControl &&
                                                     objPetControl.ContactObject == objContact)
                                                 {
-                                                    x.Controls.RemoveAt(i);
                                                     objPetControl.ContactDetailChanged
                                                         -= MakeDirtyWithCharacterUpdate;
                                                     objPetControl.DeleteContact -= DeletePet;
-                                                    objPetControl.Dispose();
+                                                    x.Controls.RemoveAt(i);
                                                 }
                                             }
                                         }, token).ConfigureAwait(false);
@@ -7776,67 +7791,91 @@ namespace Chummer
             }
         }
 
-        public void RefreshSustainedSpellsClearBindings(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CancellationToken token = default)
+        public async Task RefreshSustainedSpellsClearBindings(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (pnlSustainedSpells != null)
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
             {
-                pnlSustainedSpells.SuspendLayout();
-                try
-                {
-                    for (int i = pnlSustainedSpells.Controls.Count - 1; i >= 0; --i)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!(pnlSustainedSpells.Controls[i] is SustainedObjectControl objSustainedObjectControl))
-                            continue;
-                        objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
-                    }
-                }
-                finally
-                {
-                    pnlSustainedSpells.ResumeLayout();
-                }
+                GenericToken.ThrowIfCancellationRequested();
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
             }
 
-            if (pnlSustainedComplexForms != null)
+            try
             {
-                pnlSustainedComplexForms.SuspendLayout();
-                try
+                if (pnlSustainedSpells != null)
                 {
-                    for (int i = pnlSustainedComplexForms.Controls.Count - 1; i >= 0; --i)
+                    await pnlSustainedSpells.DoThreadSafeAsync(x =>
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (!(pnlSustainedComplexForms.Controls[i] is SustainedObjectControl objSustainedObjectControl))
-                            continue;
-                        objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
-                    }
+                        x.SuspendLayout();
+                        try
+                        {
+                            for (int i = x.Controls.Count - 1; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!(x.Controls[i] is SustainedObjectControl objSustainedObjectControl))
+                                    continue;
+                                objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token).ConfigureAwait(false);
                 }
-                finally
+
+                if (pnlSustainedComplexForms != null)
                 {
-                    pnlSustainedComplexForms.ResumeLayout();
+                    await pnlSustainedComplexForms.DoThreadSafeAsync(x =>
+                    {
+                        x.SuspendLayout();
+                        try
+                        {
+                            for (int i = x.Controls.Count - 1; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!(x.Controls[i] is SustainedObjectControl objSustainedObjectControl))
+                                    continue;
+                                objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+
+                if (pnlSustainedCritterPowers != null)
+                {
+                    await pnlSustainedCritterPowers.DoThreadSafeAsync(x =>
+                    {
+                        x.SuspendLayout();
+                        try
+                        {
+                            for (int i = x.Controls.Count - 1; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!(x.Controls[i] is SustainedObjectControl objSustainedObjectControl))
+                                    continue;
+                                objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token).ConfigureAwait(false);
                 }
             }
-
-            if (pnlSustainedCritterPowers != null)
+            finally
             {
-                pnlSustainedCritterPowers.SuspendLayout();
-                try
-                {
-                    for (int i = pnlSustainedCritterPowers.Controls.Count - 1; i >= 0; --i)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!(pnlSustainedCritterPowers.Controls[i] is SustainedObjectControl objSustainedObjectControl))
-                            continue;
-                        objSustainedObjectControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        objSustainedObjectControl.UnsustainObject -= DeleteSustainedObject;
-                    }
-                }
-                finally
-                {
-                    pnlSustainedCritterPowers.ResumeLayout();
-                }
+                objSource?.Dispose();
             }
         }
 
@@ -7934,7 +7973,7 @@ namespace Chummer
                                     {
                                         if (y != null)
                                             y.Visible = true;
-                                    });
+                                    }, token);
                                     break;
 
                                 case Improvement.ImprovementSource.ComplexForm:
@@ -7942,7 +7981,7 @@ namespace Chummer
                                     {
                                         if (y != null)
                                             y.Visible = true;
-                                    });
+                                    }, token);
                                     break;
                             }
 
@@ -7983,7 +8022,7 @@ namespace Chummer
                                             {
                                                 if (y != null)
                                                     y.Visible = true;
-                                            });
+                                            }, token);
                                             break;
 
                                         case Improvement.ImprovementSource.ComplexForm:
@@ -7991,7 +8030,7 @@ namespace Chummer
                                             {
                                                 if (y != null)
                                                     y.Visible = true;
-                                            });
+                                            }, token);
                                             break;
                                     }
 
@@ -8060,7 +8099,7 @@ namespace Chummer
                                             {
                                                 if (y != null)
                                                     y.Visible = false;
-                                            });
+                                            }, token);
                                         }
                                         else if (x == pnlSustainedComplexForms)
                                         {
@@ -8068,7 +8107,7 @@ namespace Chummer
                                             {
                                                 if (y != null)
                                                     y.Visible = false;
-                                            });
+                                            }, token);
                                         }
                                     }
                                 }, token).ConfigureAwait(false);
@@ -8123,7 +8162,7 @@ namespace Chummer
                                             {
                                                 if (y != null)
                                                     y.Visible = false;
-                                            });
+                                            }, token);
                                         }
                                         else if (x == pnlSustainedComplexForms)
                                         {
@@ -8131,7 +8170,7 @@ namespace Chummer
                                             {
                                                 if (y != null)
                                                     y.Visible = false;
-                                            });
+                                            }, token);
                                         }
                                     }
                                 }, token).ConfigureAwait(false);
@@ -8155,7 +8194,7 @@ namespace Chummer
                                             {
                                                 if (y != null)
                                                     y.Visible = true;
-                                            });
+                                            }, token);
                                             break;
 
                                         case Improvement.ImprovementSource.ComplexForm:
@@ -8163,7 +8202,7 @@ namespace Chummer
                                             {
                                                 if (y != null)
                                                     y.Visible = true;
-                                            });
+                                            }, token);
                                             break;
                                     }
 
@@ -8897,47 +8936,68 @@ namespace Chummer
 
         #endregion Additional Relationships Tab Control Events
 
-        public void RefreshSpiritsClearBindings(Panel panSpirits, Panel panSprites, CancellationToken token = default)
+        public async Task RefreshSpiritsClearBindings(Panel panSpirits, Panel panSprites, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (panSpirits != null)
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
             {
-                panSpirits.SuspendLayout();
-                try
-                {
-                    for (int i = panSpirits.Controls.Count - 1; i >= 0; --i)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!(panSpirits.Controls[i] is SpiritControl objSpiritControl))
-                            continue;
-                        objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                    }
-                }
-                finally
-                {
-                    panSpirits.ResumeLayout();
-                }
+                GenericToken.ThrowIfCancellationRequested();
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
             }
 
-            if (panSprites != null)
+            try
             {
-                panSprites.SuspendLayout();
-                try
+                if (panSpirits != null)
                 {
-                    for (int i = panSprites.Controls.Count - 1; i >= 0; --i)
+                    await panSpirits.DoThreadSafeAsync(x =>
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (!(panSprites.Controls[i] is SpiritControl objSpiritControl))
-                            continue;
-                        objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                    }
+                        x.SuspendLayout();
+                        try
+                        {
+                            for (int i = x.Controls.Count - 1; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!(x.Controls[i] is SpiritControl objSpiritControl))
+                                    continue;
+                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token).ConfigureAwait(false);
                 }
-                finally
+
+                if (panSprites != null)
                 {
-                    panSprites.ResumeLayout();
+                    await panSprites.DoThreadSafeAsync(x =>
+                    {
+                        x.SuspendLayout();
+                        try
+                        {
+                            for (int i = x.Controls.Count - 1; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!(x.Controls[i] is SpiritControl objSpiritControl))
+                                    continue;
+                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                objSource?.Dispose();
             }
         }
 

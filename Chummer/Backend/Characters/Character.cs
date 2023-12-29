@@ -11765,7 +11765,7 @@ namespace Chummer
                         }
 
                         objReturnGear
-                            = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory);
+                            = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory, token);
 
                         if (objReturnGear != null)
                         {
@@ -12413,7 +12413,7 @@ namespace Chummer
                             }
 
                             objReturnGear
-                                = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory);
+                                = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory, token);
 
                             if (objReturnGear != null)
                             {
@@ -16698,7 +16698,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     sbdReturn.Append((await GetWildReputationAsync(token).ConfigureAwait(false))
-                        .ToString(GlobalSettings.CultureInfo).ToString(GlobalSettings.CultureInfo));
+                        .ToString(GlobalSettings.CultureInfo));
 
                     foreach (Improvement objImprovement in await ImprovementManager
                                  .GetCachedImprovementListForValueOfAsync(this,
@@ -19542,7 +19542,6 @@ namespace Chummer
                         int intOldValue = Interlocked.Exchange(ref _intInitiateGrade, value);
                         if (intOldValue == value)
                             return;
-                        bool blnFirstInitiation = intOldValue == 0;
                         // Remove any existing Initiation Improvements.
                         if (value == 0)
                         {
@@ -19556,7 +19555,7 @@ namespace Chummer
                                                                       objMetamagic.InternalId);
                             }
                         }
-                        else if (blnFirstInitiation)
+                        else if (intOldValue == 0)
                         {
                             try
                             {
@@ -19702,7 +19701,6 @@ namespace Chummer
                     int intOldValue = Interlocked.Exchange(ref _intInitiateGrade, value);
                     if (intOldValue == value)
                         return;
-                    bool blnFirstInitiation = intOldValue == 0;
                     // Remove any existing Initiation Improvements.
                     if (value == 0)
                     {
@@ -19721,7 +19719,7 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
                     }
-                    else if (blnFirstInitiation)
+                    else if (intOldValue == 0)
                     {
                         try
                         {
@@ -20965,7 +20963,6 @@ namespace Chummer
                         int intOldValue = Interlocked.Exchange(ref _intSubmersionGrade, value);
                         if (intOldValue == value)
                             return;
-                        bool blnFirstSubmersion = intOldValue == 0;
                         // Remove any existing Submersion Improvements.
                         if (value == 0)
                         {
@@ -20979,7 +20976,7 @@ namespace Chummer
                                                                       objMetamagic.InternalId);
                             }
                         }
-                        else if (blnFirstSubmersion)
+                        else if (intOldValue == 0)
                         {
                             try
                             {
@@ -21112,7 +21109,6 @@ namespace Chummer
                     int intOldValue = Interlocked.Exchange(ref _intSubmersionGrade, value);
                     if (intOldValue == value)
                         return;
-                    bool blnFirstSubmersion = intOldValue == 0;
                     // Remove any existing Submersion Improvements.
                     if (value == 0)
                     {
@@ -21132,7 +21128,7 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
                     }
-                    else if (blnFirstSubmersion)
+                    else if (intOldValue == 0)
                     {
                         try
                         {
@@ -34345,20 +34341,20 @@ namespace Chummer
                                                .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 XPathNavigator objXmlBook
-                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
+                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']', token);
                 if (objXmlBook != null)
                 {
-                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value;
+                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate", token)?.Value;
                     if (!string.IsNullOrEmpty(strToAppend))
                         lstBooks.Add(strToAppend);
                     else
                     {
-                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                         if (!string.IsNullOrEmpty(strToAppend))
                             lstBooks.Add(strToAppend);
                         else
                         {
-                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
+                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode", token)?.Value ?? strBook;
                             lstBooks.Add(await LanguageManager
                                                .GetStringAsync("String_Unknown", strLanguage, token: token)
                                                .ConfigureAwait(false)
@@ -39369,7 +39365,7 @@ namespace Chummer
                                     using (objSpirit.LockObject.EnterUpgradeableReadLock())
                                     {
                                         if (objSpirit.EntityType == SpiritType.Sprite)
-                                            objSpirit.Force = MaxSpriteLevel;
+                                            objSpirit.Force = intMaxLevel;
                                     }
                                 }
                             }
@@ -41398,6 +41394,7 @@ namespace Chummer
                                                                     {
                                                                         // ReSharper disable once MethodHasAsyncOverload
                                                                         if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
+                                                                                // ReSharper disable once MethodHasAsyncOverload
                                                                                 objArmorMod.GetNode(token),
                                                                                 lstWeapons, token))
                                                                         {
@@ -42342,7 +42339,7 @@ namespace Chummer
                                     {
                                         // ReSharper disable once MethodHasAsyncOverload
                                         if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons, token))
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstGear.Add(objGear);
                                     }
                                     else if (await objGear.ImportHeroLabGearAsync(xmlGearToImport, null, lstWeapons, token).ConfigureAwait(false))

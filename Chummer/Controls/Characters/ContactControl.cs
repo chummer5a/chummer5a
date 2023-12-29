@@ -1299,7 +1299,7 @@ namespace Chummer
                         FormattingEnabled = true,
                         Name = "cboHobbiesVice"
                     };
-                });
+                }, token: token);
 
                 LoadStatBlockLists(token);
 
@@ -1474,7 +1474,7 @@ namespace Chummer
                     x.cboPersonalLife.TextChanged += PersonalLifeOnTextChanged;
                     x.cboPreferredPayment.TextChanged += PreferredPaymentOnTextChanged;
                     x.cboHobbiesVice.TextChanged += HobbiesViceOnTextChanged;
-                });
+                }, token: token);
 
                 Interlocked.Decrement(ref _intUpdatingMetatype);
                 Interlocked.Decrement(ref _intUpdatingGender);

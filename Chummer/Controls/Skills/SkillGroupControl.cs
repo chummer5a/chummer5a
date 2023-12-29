@@ -335,7 +335,15 @@ namespace Chummer.UI.Skills
         /// <param name="intNameWidth">Width of the Name label</param>
         public void MoveControls(int intNameWidth)
         {
-            lblName.DoThreadSafe(x => x.MinimumSize = new Size(intNameWidth, x.MinimumSize.Height));
+            try
+            {
+                lblName.DoThreadSafe(x => x.MinimumSize = new Size(intNameWidth, x.MinimumSize.Height),
+                    token: _objMyToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #endregion Methods

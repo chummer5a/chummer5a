@@ -404,7 +404,7 @@ namespace Chummer
                 if (_setData.Count == 0)
                     return new Tuple<bool, T>(false, default);
             }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -412,8 +412,17 @@ namespace Chummer
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     T objReturn = _setData.First();
-                    if (_setData.Remove(objReturn))
-                        return new Tuple<bool, T>(true, objReturn);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (_setData.Remove(objReturn))
+                            return new Tuple<bool, T>(true, objReturn);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
             finally
@@ -434,14 +443,17 @@ namespace Chummer
                     return false;
                 }
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_setData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     item = _setData.First();
-                    if (_setData.Remove(item))
-                        return true;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (_setData.Remove(item))
+                            return true;
+                    }
                 }
             }
             item = default;
