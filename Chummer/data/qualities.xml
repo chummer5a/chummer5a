@@ -15829,7 +15829,14 @@
           <quality>Spirit Hunter I</quality>
         </allof>
         <oneof>
-          <power>Killing Hands</power>
+          <group>
+            <power>Killing Hands</power>
+            <skill>
+              <name>Astral Combat</name>
+              <spec>Spirits</spec>
+              <val>6</val>
+            </skill>
+          </group>
           <skill>
             <name>Banishing</name>
             <val>8</val>
@@ -15862,7 +15869,14 @@
           <quality>Spirit Hunter II</quality>
         </allof>
         <oneof>
-          <power>Killing Hands</power>
+          <group>
+            <power>Killing Hands</power>
+            <skill>
+              <name>Astral Combat</name>
+              <spec>Spirits</spec>
+              <val>8</val>
+            </skill>
+          </group>
           <skill>
             <name>Banishing</name>
             <val>12</val>
