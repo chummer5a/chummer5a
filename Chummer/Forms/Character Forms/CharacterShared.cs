@@ -6528,7 +6528,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private async Task RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (treMartialArts == null || objMartialArt == null || e == null)
                 return;
@@ -10377,7 +10377,7 @@ namespace Chummer
                                                   await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, token);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);

@@ -788,79 +788,93 @@ namespace Chummer
 
         public static async Task<bool> Purchase(Character objCharacter, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            bool blnReturn = false;
-            bool blnAddAgain;
-            do
+            IAsyncDisposable objLocker =
+                await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (ThreadSafeForm<SelectMartialArt> frmPickMartialArt
-                       = await ThreadSafeForm<SelectMartialArt>.GetAsync(
-                           () => new SelectMartialArt(objCharacter), token).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                bool blnReturn = false;
+                bool blnAddAgain;
+                do
                 {
-                    if (await frmPickMartialArt.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
-                        return blnReturn;
-
-                    blnAddAgain = frmPickMartialArt.MyForm.AddAgain;
-                    // Open the Martial Arts XML file and locate the selected piece.
-                    XmlNode objXmlArt
-                        = (await objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false))
-                        .TryGetNodeByNameOrId(
-                            "/chummer/martialarts/martialart", frmPickMartialArt.MyForm.SelectedMartialArt);
-
-                    MartialArt objMartialArt = new MartialArt(objCharacter);
-                    try
+                    using (ThreadSafeForm<SelectMartialArt> frmPickMartialArt
+                           = await ThreadSafeForm<SelectMartialArt>.GetAsync(
+                               () => new SelectMartialArt(objCharacter), token).ConfigureAwait(false))
                     {
-                        objMartialArt.Create(objXmlArt);
+                        if (await frmPickMartialArt.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false) ==
+                            DialogResult.Cancel)
+                            return blnReturn;
 
-                        if (await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                        blnAddAgain = frmPickMartialArt.MyForm.AddAgain;
+                        // Open the Martial Arts XML file and locate the selected piece.
+                        XmlNode objXmlArt
+                            = (await objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false))
+                            .TryGetNodeByNameOrId(
+                                "/chummer/martialarts/martialart", frmPickMartialArt.MyForm.SelectedMartialArt);
+
+                        MartialArt objMartialArt = new MartialArt(objCharacter);
+                        try
                         {
-                            int intKarmaCost = objMartialArt.Cost;
-                            if (intKarmaCost > await objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
+                            objMartialArt.Create(objXmlArt);
+
+                            if (await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             {
-                                Program.ShowScrollableMessageBox(
-                                    await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
-                                                         .ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token)
-                                                         .ConfigureAwait(false),
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-                                await ImprovementManager.RemoveImprovementsAsync(
-                                    objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId,
-                                    token).ConfigureAwait(false);
-                                return blnReturn;
+                                int intKarmaCost = objMartialArt.Cost;
+                                if (intKarmaCost > await objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
+                                {
+                                    Program.ShowScrollableMessageBox(
+                                        await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
+                                            .ConfigureAwait(false),
+                                        await LanguageManager
+                                            .GetStringAsync("MessageTitle_NotEnoughKarma", token: token)
+                                            .ConfigureAwait(false),
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                                    await ImprovementManager.RemoveImprovementsAsync(
+                                        objCharacter, Improvement.ImprovementSource.MartialArt,
+                                        objMartialArt.InternalId,
+                                        token).ConfigureAwait(false);
+                                    return blnReturn;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                                objExpense.Create(intKarmaCost * -1,
+                                    await LanguageManager.GetStringAsync(
+                                        "String_ExpenseLearnMartialArt", token: token).ConfigureAwait(false)
+                                    + ' '
+                                    + await objMartialArt.GetCurrentDisplayNameShortAsync(token)
+                                        .ConfigureAwait(false),
+                                    ExpenseType.Karma,
+                                    DateTime.Now);
+                                await objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                    .ConfigureAwait(false);
+                                await objCharacter.ModifyKarmaAsync(-intKarmaCost, token).ConfigureAwait(false);
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.InternalId);
+                                objExpense.Undo = objUndo;
                             }
 
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-                            objExpense.Create(intKarmaCost * -1,
-                                              await LanguageManager.GetStringAsync(
-                                                  "String_ExpenseLearnMartialArt", token: token).ConfigureAwait(false)
-                                              + ' '
-                                              + await objMartialArt.GetCurrentDisplayNameShortAsync(token)
-                                                                   .ConfigureAwait(false),
-                                              ExpenseType.Karma,
-                                              DateTime.Now);
-                            await objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                                              .ConfigureAwait(false);
-                            await objCharacter.ModifyKarmaAsync(-intKarmaCost, token).ConfigureAwait(false);
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.InternalId);
-                            objExpense.Undo = objUndo;
+                            await objCharacter.MartialArts.AddAsync(objMartialArt, token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await objMartialArt.DisposeAsync().ConfigureAwait(false);
+                            throw;
                         }
 
-                        await objCharacter.MartialArts.AddAsync(objMartialArt, token).ConfigureAwait(false);
+                        blnReturn = true;
                     }
-                    catch
-                    {
-                        await objMartialArt.DisposeAsync().ConfigureAwait(false);
-                        throw;
-                    }
-
-                    blnReturn = true;
-                }
-            } while (blnAddAgain);
+                } while (blnAddAgain);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
             return true;
         }
@@ -907,8 +921,8 @@ namespace Chummer
                 }
 
                 decReturn += ImprovementManager.RemoveImprovements(_objCharacter,
-                                                                   Improvement.ImprovementSource.MartialArt,
-                                                                   InternalId);
+                    Improvement.ImprovementSource.MartialArt,
+                    InternalId);
             }
 
             Dispose();

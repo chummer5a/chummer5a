@@ -1823,7 +1823,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshContactsClearBindings(panContacts, panEnemies, panPets, token);
+                await RefreshContactsClearBindings(panContacts, panEnemies, panPets, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1847,7 +1847,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshSpiritsClearBindings(panSpirits, panSprites, token);
+                await RefreshSpiritsClearBindings(panSpirits, panSprites, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1871,7 +1871,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, token);
+                await RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -6334,7 +6334,7 @@ namespace Chummer
                                       DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                          .ConfigureAwait(false);
-                    CharacterObject.Nuyen -= decCost;
+                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddWeapon, objWeapon.InternalId);
@@ -6527,7 +6527,7 @@ namespace Chummer
                                       DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                          .ConfigureAwait(false);
-                    CharacterObject.Nuyen -= decCost;
+                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddVehicle, objVehicle.InternalId);
@@ -6643,7 +6643,7 @@ namespace Chummer
                                              .ConfigureAwait(false);
 
                         // Adjust the character's Nuyen total.
-                        CharacterObject.Nuyen += decCost * -1;
+                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
                     }
 
                     break;
@@ -6656,7 +6656,22 @@ namespace Chummer
 
         private async void cmdAddMartialArt_Click(object sender, EventArgs e)
         {
-            await MartialArt.Purchase(CharacterObject, token: GenericToken).ConfigureAwait(false);
+            try
+            {
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    await MartialArt.Purchase(CharacterObject, GenericToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
@@ -6784,272 +6799,318 @@ namespace Chummer
         {
             try
             {
-                if (CharacterObject.MAGEnabled)
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                    if (CharacterObject.InitiateGrade + 1
-                        > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
-                                .ConfigureAwait(false))
-                            .GetTotalValueAsync(
-                                GenericToken).ConfigureAwait(false) ||
-                        await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken)
-                                                     .ConfigureAwait(false)
-                        && await CharacterObject.GetIsMysticAdeptAsync(GenericToken).ConfigureAwait(false)
-                        && CharacterObject.InitiateGrade + 1
-                        > await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken)
-                                .ConfigureAwait(false))
-                            .GetTotalValueAsync(GenericToken).ConfigureAwait(false))
+                    IAsyncDisposable objLocker =
+                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                    try
                     {
-                        Program.ShowScrollableMessageBox(
-                            this,
-                            await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade", token: GenericToken)
-                                                 .ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseInitiateGrade", token: GenericToken)
-                                                 .ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    // Make sure the character has enough Karma.
-                    decimal decMultiplier = 1.0m;
-                    if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                .ConfigureAwait(false))
-                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
-                    if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                 .ConfigureAwait(false))
-                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
-                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                    .ConfigureAwait(false))
-                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
-
-                    int intKarmaExpense
-                        = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1)
-                            * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
-                    if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false))
-                    {
-                        Program.ShowScrollableMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                    .ConfigureAwait(false))
-                    {
-                        if (await CharacterObject.GetNuyenAsync(GenericToken).ConfigureAwait(false) < 10000)
+                        GenericToken.ThrowIfCancellationRequested();
+                        if (await CharacterObject.GetMAGEnabledAsync(GenericToken).ConfigureAwait(false))
                         {
-                            Program.ShowScrollableMessageBox(
-                                this,
-                                await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: GenericToken)
-                                                     .ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: GenericToken)
-                                                     .ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
+                            // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
+                            int intGrade = await CharacterObject.GetInitiateGradeAsync(GenericToken).ConfigureAwait(false);
+                            if (intGrade + 1 >
+                                await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
+                                    .ConfigureAwait(false)).GetTotalValueAsync(GenericToken).ConfigureAwait(false) ||
+                                await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken)
+                                    .ConfigureAwait(false) &&
+                                await CharacterObject.GetIsMysticAdeptAsync(GenericToken).ConfigureAwait(false) &&
+                                intGrade + 1 >
+                                await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken)
+                                    .ConfigureAwait(false)).GetTotalValueAsync(GenericToken).ConfigureAwait(false))
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager
+                                        .GetStringAsync("Message_CannotIncreaseInitiateGrade", token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseInitiateGrade",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return;
+                            }
+
+                            // Make sure the character has enough Karma.
+                            decimal decMultiplier = 1.0m;
+                            if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false))
+                                decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
+                            if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false))
+                                decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
+                            if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false))
+                                decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
+
+                            int intKarmaExpense
+                                = ((CharacterObjectSettings.KarmaInitiationFlat + (intGrade + 1)
+                                    * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+
+                            if (intKarmaExpense >
+                                await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false))
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return;
+                            }
+
+                            if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false))
+                            {
+                                if (await CharacterObject.GetNuyenAsync(GenericToken).ConfigureAwait(false) < 10000)
+                                {
+                                    Program.ShowScrollableMessageBox(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen",
+                                                token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen",
+                                                token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    return;
+                                }
+
+                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(
+                                                GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync(
+                                                        "Message_ConfirmKarmaandNuyenExpense",
+                                                        token: GenericToken)
+                                                    .ConfigureAwait(false),
+                                                await LanguageManager.GetStringAsync(
+                                                        "String_InitiateGrade",
+                                                        token: GenericToken)
+                                                    .ConfigureAwait(false),
+                                                (intGrade + 1)
+                                                .ToString(GlobalSettings.CultureInfo),
+                                                intKarmaExpense.ToString(
+                                                    GlobalSettings.CultureInfo),
+                                                10000.ToString(
+                                                    CharacterObjectSettings.NuyenFormat,
+                                                    GlobalSettings.CultureInfo)
+                                                + await LanguageManager
+                                                    .GetStringAsync(
+                                                        "String_NuyenSymbol",
+                                                        token: GenericToken)
+                                                    .ConfigureAwait(false)),
+                                            token: GenericToken)
+                                        .ConfigureAwait(false))
+                                    return;
+                            }
+                            else if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
+                                         string.Format(GlobalSettings.CultureInfo,
+                                             await LanguageManager
+                                                 .GetStringAsync("Message_ConfirmKarmaExpense", token: GenericToken)
+                                                 .ConfigureAwait(false),
+                                             await LanguageManager
+                                                 .GetStringAsync("String_InitiateGrade", token: GenericToken)
+                                                 .ConfigureAwait(false),
+                                             (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                             intKarmaExpense.ToString(GlobalSettings.CultureInfo)),
+                                         token: GenericToken).ConfigureAwait(false))
+                                return;
+
+                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                .ConfigureAwait(false);
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(intKarmaExpense * -1,
+                                await LanguageManager.GetStringAsync("String_ExpenseInitiateGrade", token: GenericToken)
+                                    .ConfigureAwait(false)
+                                + strSpace + intGrade.ToString(GlobalSettings.CultureInfo)
+                                + strSpace + "->" + strSpace
+                                + (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                .ConfigureAwait(false);
+                            await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken)
+                                .ConfigureAwait(false);
+
+                            // Create the Initiate Grade object.
+                            InitiationGrade objGrade = new InitiationGrade(CharacterObject);
+                            objGrade.Create(intGrade + 1, false,
+                                await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false),
+                                await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false),
+                                await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false), GenericToken);
+                            await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
+                                .ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
+                            objExpense.Undo = objUndo;
+
+                            if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false))
+                            {
+                                ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(CharacterObject);
+                                objNuyenExpense.Create(
+                                    -10000, await LanguageManager
+                                                .GetStringAsync("String_ExpenseInitiateGrade", token: GenericToken)
+                                                .ConfigureAwait(false)
+                                            + strSpace + intGrade.ToString(GlobalSettings.CultureInfo)
+                                            + strSpace + "->" + strSpace
+                                            + (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                    ExpenseType.Nuyen, DateTime.Now);
+                                await CharacterObject.ExpenseEntries
+                                    .AddWithSortAsync(objNuyenExpense, token: GenericToken)
+                                    .ConfigureAwait(false);
+                                await CharacterObject.ModifyNuyenAsync(-10000, GenericToken).ConfigureAwait(false);
+
+                                ExpenseUndo objNuyenUndo = new ExpenseUndo();
+                                objNuyenUndo.CreateNuyen(NuyenExpenseType.ImproveInitiateGrade, objGrade.InternalId,
+                                    10000);
+                                objNuyenExpense.Undo = objNuyenUndo;
+                            }
+
+                            int intAmount
+                                = ((CharacterObjectSettings.KarmaInitiationFlat + (intGrade + 1)
+                                    * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+
+                            string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade", token: GenericToken)
+                                    .ConfigureAwait(false),
+                                (intGrade + 1).ToString(
+                                    GlobalSettings.CultureInfo),
+                                intAmount.ToString(GlobalSettings.CultureInfo));
+                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
                         }
+                        else if (await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false))
+                        {
+                            int intGrade = await CharacterObject.GetSubmersionGradeAsync(GenericToken).ConfigureAwait(false);
+                            // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
+                            if (intGrade + 1
+                                > await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken)
+                                        .ConfigureAwait(false))
+                                    .GetTotalValueAsync(GenericToken).ConfigureAwait(false))
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseSubmersionGrade",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return;
+                            }
 
-                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
-                                                                                await LanguageManager.GetStringAsync(
-                                                                                        "Message_ConfirmKarmaandNuyenExpense",
-                                                                                        token: GenericToken)
-                                                                                    .ConfigureAwait(false),
-                                                                                await LanguageManager.GetStringAsync(
-                                                                                        "String_InitiateGrade",
-                                                                                        token: GenericToken)
-                                                                                    .ConfigureAwait(false),
-                                                                                (CharacterObject.InitiateGrade + 1)
-                                                                                .ToString(GlobalSettings.CultureInfo),
-                                                                                intKarmaExpense.ToString(
-                                                                                    GlobalSettings.CultureInfo),
-                                                                                10000.ToString(
-                                                                                    CharacterObjectSettings.NuyenFormat,
-                                                                                    GlobalSettings.CultureInfo)
-                                                                                + await LanguageManager
-                                                                                    .GetStringAsync(
-                                                                                        "String_NuyenSymbol",
-                                                                                        token: GenericToken)
-                                                                                    .ConfigureAwait(false)),
-                                                                            token: GenericToken)
-                                                  .ConfigureAwait(false))
-                            return;
+                            // Make sure the character has enough Karma.
+                            decimal decMultiplier = 1.0m;
+                            if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false))
+                                decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
+                            if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false))
+                                decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
+                            if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false))
+                                decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
+
+                            int intKarmaExpense
+                                = ((CharacterObjectSettings.KarmaInitiationFlat + (intGrade + 1)
+                                    * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+
+                            if (intKarmaExpense >
+                                await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false))
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return;
+                            }
+
+                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(
+                                            GlobalSettings.CultureInfo,
+                                            await LanguageManager.GetStringAsync(
+                                                    "Message_ConfirmKarmaExpense",
+                                                    token: GenericToken)
+                                                .ConfigureAwait(false),
+                                            await LanguageManager.GetStringAsync(
+                                                    "String_SubmersionGrade",
+                                                    token: GenericToken)
+                                                .ConfigureAwait(false),
+                                            (intGrade + 1)
+                                            .ToString(GlobalSettings.CultureInfo),
+                                            intKarmaExpense.ToString(
+                                                GlobalSettings.CultureInfo)),
+                                        token: GenericToken)
+                                    .ConfigureAwait(false))
+                                return;
+
+                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                .ConfigureAwait(false);
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(intKarmaExpense * -1,
+                                await LanguageManager
+                                    .GetStringAsync("String_ExpenseSubmersionGrade", token: GenericToken)
+                                    .ConfigureAwait(false)
+                                + strSpace + intGrade.ToString(GlobalSettings.CultureInfo)
+                                + strSpace + "->" + strSpace
+                                + (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                .ConfigureAwait(false);
+                            await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken)
+                                .ConfigureAwait(false);
+
+                            // Create the Initiate Grade object.
+                            InitiationGrade objGrade = new InitiationGrade(CharacterObject);
+                            objGrade.Create(intGrade + 1, true,
+                                await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false),
+                                await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false),
+                                await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false), GenericToken);
+                            await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
+                                .ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
+                            objExpense.Undo = objUndo;
+
+                            int intAmount
+                                = ((CharacterObjectSettings.KarmaInitiationFlat + (intGrade + 1)
+                                    * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+
+                            string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade", token: GenericToken)
+                                    .ConfigureAwait(false),
+                                (intGrade + 1).ToString(
+                                    GlobalSettings.CultureInfo),
+                                intAmount.ToString(GlobalSettings.CultureInfo));
+                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
+                        }
                     }
-                    else if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                 string.Format(GlobalSettings.CultureInfo,
-                                               await LanguageManager
-                                                     .GetStringAsync("Message_ConfirmKarmaExpense", token: GenericToken)
-                                                     .ConfigureAwait(false),
-                                               await LanguageManager
-                                                     .GetStringAsync("String_InitiateGrade", token: GenericToken)
-                                                     .ConfigureAwait(false),
-                                               (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                               intKarmaExpense.ToString(GlobalSettings.CultureInfo)),
-                                 token: GenericToken).ConfigureAwait(false))
-                        return;
-
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(intKarmaExpense * -1,
-                                      await LanguageManager.GetStringAsync("String_ExpenseInitiateGrade", token: GenericToken)
-                                                           .ConfigureAwait(false)
-                                      + strSpace + CharacterObject.InitiateGrade.ToString(GlobalSettings.CultureInfo)
-                                      + strSpace + "->" + strSpace
-                                      + (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                      ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
-                                         .ConfigureAwait(false);
-                    await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken).ConfigureAwait(false);
-
-                    // Create the Initiate Grade object.
-                    InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                    objGrade.Create(CharacterObject.InitiateGrade + 1, false,
-                                    await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                            .ConfigureAwait(false),
-                                    await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                             .ConfigureAwait(false),
-                                    await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                                .ConfigureAwait(false), GenericToken);
-                    await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken).ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
-                    objExpense.Undo = objUndo;
-
-                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                    .ConfigureAwait(false))
+                    finally
                     {
-                        ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(CharacterObject);
-                        objNuyenExpense.Create(
-                            -10000, await LanguageManager.GetStringAsync("String_ExpenseInitiateGrade", token: GenericToken)
-                                                         .ConfigureAwait(false)
-                                    + strSpace + CharacterObject.InitiateGrade.ToString(GlobalSettings.CultureInfo)
-                                    + strSpace + "->" + strSpace
-                                    + (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
-                            ExpenseType.Nuyen, DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objNuyenExpense, token: GenericToken).ConfigureAwait(false);
-                        CharacterObject.Nuyen -= 10000;
-
-                        ExpenseUndo objNuyenUndo = new ExpenseUndo();
-                        objNuyenUndo.CreateNuyen(NuyenExpenseType.ImproveInitiateGrade, objGrade.InternalId, 10000);
-                        objNuyenExpense.Undo = objNuyenUndo;
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
-
-                    int intAmount
-                        = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1)
-                            * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
-                    string strInitTip = string.Format(GlobalSettings.CultureInfo,
-                                                      await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade", token: GenericToken)
-                                                                           .ConfigureAwait(false),
-                                                      (CharacterObject.InitiateGrade + 1).ToString(
-                                                          GlobalSettings.CultureInfo),
-                                                      intAmount.ToString(GlobalSettings.CultureInfo));
-                    await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
                 }
-                else if (CharacterObject.RESEnabled)
+                finally
                 {
-                    // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
-                    if (CharacterObject.SubmersionGrade + 1
-                        > await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken)
-                                .ConfigureAwait(false))
-                            .GetTotalValueAsync(GenericToken).ConfigureAwait(false))
-                    {
-                        Program.ShowScrollableMessageBox(
-                            this,
-                            await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade", token: GenericToken)
-                                                 .ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseSubmersionGrade", token: GenericToken)
-                                                 .ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    // Make sure the character has enough Karma.
-                    decimal decMultiplier = 1.0m;
-                    if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                .ConfigureAwait(false))
-                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
-                    if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                 .ConfigureAwait(false))
-                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
-                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                    .ConfigureAwait(false))
-                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
-
-                    int intKarmaExpense
-                        = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1)
-                            * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
-                    if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false))
-                    {
-                        Program.ShowScrollableMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
-                                                                            await LanguageManager.GetStringAsync(
-                                                                                    "Message_ConfirmKarmaExpense",
-                                                                                    token: GenericToken)
-                                                                                .ConfigureAwait(false),
-                                                                            await LanguageManager.GetStringAsync(
-                                                                                    "String_SubmersionGrade",
-                                                                                    token: GenericToken)
-                                                                                .ConfigureAwait(false),
-                                                                            (CharacterObject.SubmersionGrade + 1)
-                                                                            .ToString(GlobalSettings.CultureInfo),
-                                                                            intKarmaExpense.ToString(
-                                                                                GlobalSettings.CultureInfo)),
-                                                                        token: GenericToken)
-                                              .ConfigureAwait(false))
-                        return;
-
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(intKarmaExpense * -1,
-                                      await LanguageManager.GetStringAsync("String_ExpenseSubmersionGrade", token: GenericToken)
-                                                           .ConfigureAwait(false)
-                                      + strSpace + CharacterObject.SubmersionGrade.ToString(GlobalSettings.CultureInfo)
-                                      + strSpace + "->" + strSpace
-                                      + (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                      ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
-                                         .ConfigureAwait(false);
-                    await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken).ConfigureAwait(false);
-
-                    // Create the Initiate Grade object.
-                    InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                    objGrade.Create(CharacterObject.SubmersionGrade + 1, true,
-                                    await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                            .ConfigureAwait(false),
-                                    await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                             .ConfigureAwait(false),
-                                    await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                                .ConfigureAwait(false), GenericToken);
-                    await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken).ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
-                    objExpense.Undo = objUndo;
-
-                    int intAmount
-                        = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1)
-                            * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
-                    string strInitTip = string.Format(GlobalSettings.CultureInfo,
-                                                      await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade", token: GenericToken)
-                                                                           .ConfigureAwait(false),
-                                                      (CharacterObject.SubmersionGrade + 1).ToString(
-                                                          GlobalSettings.CultureInfo),
-                                                      intAmount.ToString(GlobalSettings.CultureInfo));
-                    await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7067,50 +7128,76 @@ namespace Chummer
         {
             try
             {
-                string strText = await LanguageManager.GetStringAsync("String_WorkingForThePeople", token: GenericToken)
-                                                      .ConfigureAwait(false);
-                using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
-                           () => new CreateExpense(CharacterObjectSettings)
-                           {
-                               KarmaNuyenExchangeString = strText
-                           }, GenericToken).ConfigureAwait(false))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                        == DialogResult.Cancel)
-                        return;
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
-                                      frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
-                    objExpense.Undo = objUndo;
-
-                    // Adjust the character's Karma total.
-                    await CharacterObject.ModifyKarmaAsync(frmNewExpense.MyForm.Amount.ToInt32(), GenericToken)
-                                         .ConfigureAwait(false);
-
-                    if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                    string strText = await LanguageManager
+                        .GetStringAsync("String_WorkingForThePeople", token: GenericToken)
+                        .ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken)
+                            .ConfigureAwait(false);
+                    try
                     {
-                        // Create the Expense Log Entry.
-                        objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP,
-                                          frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
-                                          frmNewExpense.MyForm.SelectedDate);
-                        objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
-                                             .ConfigureAwait(false);
+                        GenericToken.ThrowIfCancellationRequested();
+                        using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>
+                                   .GetAsync(
+                                       () => new CreateExpense(CharacterObjectSettings)
+                                       {
+                                           KarmaNuyenExchangeString = strText
+                                       }, GenericToken).ConfigureAwait(false))
+                        {
+                            if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                == DialogResult.Cancel)
+                                return;
 
-                        objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
-                        objExpense.Undo = objUndo;
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason,
+                                ExpenseType.Karma,
+                                frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                .ConfigureAwait(false);
 
-                        // Adjust the character's Nuyen total.
-                        CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP;
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
+                            objExpense.Undo = objUndo;
+
+                            // Adjust the character's Karma total.
+                            await CharacterObject.ModifyKarmaAsync(frmNewExpense.MyForm.Amount.ToInt32(), GenericToken)
+                                .ConfigureAwait(false);
+
+                            if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                            {
+                                // Create the Expense Log Entry.
+                                objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP,
+                                    frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
+                                    frmNewExpense.MyForm.SelectedDate);
+                                objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                    .ConfigureAwait(false);
+
+                                objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                                objExpense.Undo = objUndo;
+
+                                // Adjust the character's Nuyen total.
+                                await CharacterObject
+                                    .ModifyNuyenAsync(
+                                        -frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM,
+                                        GenericToken).ConfigureAwait(false);
+                            }
+                        }
                     }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7123,62 +7210,91 @@ namespace Chummer
         {
             try
             {
-                string strText = await LanguageManager.GetStringAsync("String_WorkingForTheMan", token: GenericToken).ConfigureAwait(false);
-                using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
-                           () => new CreateExpense(CharacterObjectSettings)
-                           {
-                               KarmaNuyenExchangeString = strText
-                           }, GenericToken).ConfigureAwait(false))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                        == DialogResult.Cancel)
-                        return;
-
-                    // Make sure the Karma expense would not put the character's remaining Karma amount below 0.
-                    if (await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false)
-                        < frmNewExpense.MyForm.Amount)
+                    string strText = await LanguageManager
+                        .GetStringAsync("String_WorkingForTheMan", token: GenericToken).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken)
+                            .ConfigureAwait(false);
+                    try
                     {
-                        Program.ShowScrollableMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
+                        GenericToken.ThrowIfCancellationRequested();
+                        using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>
+                                   .GetAsync(
+                                       () => new CreateExpense(CharacterObjectSettings)
+                                       {
+                                           KarmaNuyenExchangeString = strText
+                                       }, GenericToken).ConfigureAwait(false))
+                        {
+                            if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                == DialogResult.Cancel)
+                                return;
+
+                            // Make sure the Karma expense would not put the character's remaining Karma amount below 0.
+                            if (await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false)
+                                < frmNewExpense.MyForm.Amount)
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager
+                                        .GetStringAsync("MessageTitle_NotEnoughKarma", token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason,
+                                ExpenseType.Karma,
+                                frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                            objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                .ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+                            objExpense.Undo = objUndo;
+
+                            // Adjust the character's Karma total.
+                            await CharacterObject.ModifyKarmaAsync(-frmNewExpense.MyForm.Amount.ToInt32(), GenericToken)
+                                .ConfigureAwait(false);
+
+                            if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                            {
+                                // Create the Expense Log Entry.
+                                objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM,
+                                    frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
+                                    frmNewExpense.MyForm.SelectedDate);
+                                objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                    .ConfigureAwait(false);
+
+                                objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                                objExpense.Undo = objUndo;
+
+                                // Adjust the character's Nuyen total.
+                                await CharacterObject
+                                    .ModifyNuyenAsync(
+                                        frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM,
+                                        GenericToken).ConfigureAwait(false);
+                            }
+                        }
                     }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
-                                      frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
-                    objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
-                                         .ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
-                    objExpense.Undo = objUndo;
-
-                    // Adjust the character's Karma total.
-                    await CharacterObject.ModifyKarmaAsync(-frmNewExpense.MyForm.Amount.ToInt32(), GenericToken)
-                                         .ConfigureAwait(false);
-
-                    if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                    finally
                     {
-                        // Create the Expense Log Entry.
-                        objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM,
-                                          frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
-                                          frmNewExpense.MyForm.SelectedDate);
-                        objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
-                                             .ConfigureAwait(false);
-
-                        objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
-                        objExpense.Undo = objUndo;
-
-                        // Adjust the character's Nuyen total.
-                        CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM;
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7191,51 +7307,73 @@ namespace Chummer
         {
             try
             {
-                string strText = await LanguageManager.GetStringAsync("String_WorkingForTheMan", token: GenericToken).ConfigureAwait(false);
-                using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
-                           () => new CreateExpense(CharacterObjectSettings)
-                           {
-                               Mode = ExpenseType.Nuyen,
-                               KarmaNuyenExchangeString = strText
-                           }, GenericToken).ConfigureAwait(false))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                        == DialogResult.Cancel)
-                        return;
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
-                                      frmNewExpense.MyForm.SelectedDate);
-                    objExpense.Refund = frmNewExpense.MyForm.Refund;
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
-                    objExpense.Undo = objUndo;
-
-                    // Adjust the character's Nuyen total.
-                    CharacterObject.Nuyen += frmNewExpense.MyForm.Amount;
-
-                    if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                    string strText = await LanguageManager
+                        .GetStringAsync("String_WorkingForTheMan", token: GenericToken).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                    try
                     {
-                        // Create the Expense Log Entry.
-                        objExpense = new ExpenseLogEntry(CharacterObject);
-                        int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftM)
-                            .ToInt32();
-                        objExpense.Create(-intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
-                                          frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
-                        objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
-                                             .ConfigureAwait(false);
+                        GenericToken.ThrowIfCancellationRequested();
+                        using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>
+                                   .GetAsync(
+                                       () => new CreateExpense(CharacterObjectSettings)
+                                       {
+                                           Mode = ExpenseType.Nuyen,
+                                           KarmaNuyenExchangeString = strText
+                                       }, GenericToken).ConfigureAwait(false))
+                        {
+                            if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                == DialogResult.Cancel)
+                                return;
 
-                        objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
-                        objExpense.Undo = objUndo;
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason,
+                                ExpenseType.Nuyen,
+                                frmNewExpense.MyForm.SelectedDate);
+                            objExpense.Refund = frmNewExpense.MyForm.Refund;
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                .ConfigureAwait(false);
 
-                        // Adjust the character's Karma total.
-                        await CharacterObject.ModifyKarmaAsync(-intAmount, GenericToken).ConfigureAwait(false);
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
+                            objExpense.Undo = objUndo;
+
+                            // Adjust the character's Nuyen total.
+                            await CharacterObject.ModifyNuyenAsync(frmNewExpense.MyForm.Amount, GenericToken).ConfigureAwait(false);
+
+                            if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                            {
+                                // Create the Expense Log Entry.
+                                objExpense = new ExpenseLogEntry(CharacterObject);
+                                int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftM)
+                                    .ToInt32();
+                                objExpense.Create(-intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
+                                    frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                                objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                    .ConfigureAwait(false);
+
+                                objUndo = new ExpenseUndo();
+                                objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+                                objExpense.Undo = objUndo;
+
+                                // Adjust the character's Karma total.
+                                await CharacterObject.ModifyKarmaAsync(-intAmount, GenericToken).ConfigureAwait(false);
+                            }
+                        }
                     }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7248,61 +7386,87 @@ namespace Chummer
         {
             try
             {
-                string strText = await LanguageManager.GetStringAsync("String_WorkingForThePeople", token: GenericToken)
-                                                      .ConfigureAwait(false);
-                using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
-                           () => new CreateExpense(CharacterObjectSettings)
-                           {
-                               Mode = ExpenseType.Nuyen,
-                               KarmaNuyenExchangeString = strText
-                           }, GenericToken).ConfigureAwait(false))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                        == DialogResult.Cancel)
-                        return;
-
-                    // Make sure the Nuyen expense would not put the character's remaining Nuyen amount below 0.
-                    if (CharacterObject.Nuyen - frmNewExpense.MyForm.Amount < 0)
+                    string strText = await LanguageManager
+                        .GetStringAsync("String_WorkingForThePeople", token: GenericToken)
+                        .ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                    try
                     {
-                        Program.ShowScrollableMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: GenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
+                        GenericToken.ThrowIfCancellationRequested();
+                        using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>
+                                   .GetAsync(
+                                       () => new CreateExpense(CharacterObjectSettings)
+                                       {
+                                           Mode = ExpenseType.Nuyen,
+                                           KarmaNuyenExchangeString = strText
+                                       }, GenericToken).ConfigureAwait(false))
+                        {
+                            if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                == DialogResult.Cancel)
+                                return;
+
+                            // Make sure the Nuyen expense would not put the character's remaining Nuyen amount below 0.
+                            if (CharacterObject.Nuyen - frmNewExpense.MyForm.Amount < 0)
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager
+                                        .GetStringAsync("MessageTitle_NotEnoughNuyen", token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason,
+                                ExpenseType.Nuyen,
+                                frmNewExpense.MyForm.SelectedDate);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                .ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                            objExpense.Undo = objUndo;
+
+                            // Adjust the character's Nuyen total.
+                            await CharacterObject.ModifyNuyenAsync(-frmNewExpense.MyForm.Amount, GenericToken).ConfigureAwait(false);
+
+                            if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                            {
+                                // Create the Expense Log Entry.
+                                objExpense = new ExpenseLogEntry(CharacterObject);
+                                int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftP)
+                                    .ToInt32();
+                                objExpense.Create(intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
+                                    frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                                objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                    .ConfigureAwait(false);
+
+                                objUndo = new ExpenseUndo();
+                                objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+                                objExpense.Undo = objUndo;
+
+                                // Adjust the character's Karma total.
+                                await CharacterObject.ModifyKarmaAsync(intAmount, GenericToken).ConfigureAwait(false);
+                            }
+                        }
                     }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
-                                      frmNewExpense.MyForm.SelectedDate);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
-                    objExpense.Undo = objUndo;
-
-                    // Adjust the character's Nuyen total.
-                    CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * -1;
-
-                    if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                    finally
                     {
-                        // Create the Expense Log Entry.
-                        objExpense = new ExpenseLogEntry(CharacterObject);
-                        int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftP)
-                            .ToInt32();
-                        objExpense.Create(intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
-                                          frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
-                        objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
-                                             .ConfigureAwait(false);
-
-                        objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
-                        objExpense.Undo = objUndo;
-
-                        // Adjust the character's Karma total.
-                        await CharacterObject.ModifyKarmaAsync(intAmount, GenericToken).ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -9284,7 +9448,7 @@ namespace Chummer
                 // Run through all the Foci the character has and count the un-Bonded ones.
                 List<Gear> lstGear
                     = await CharacterObject.Gear.ToListAsync(x =>
-                        (x.Category == "Foci" || x.Category == "Metamagic Foci") && !x.Bonded, GenericToken);
+                        (x.Category == "Foci" || x.Category == "Metamagic Foci") && !x.Bonded, GenericToken).ConfigureAwait(false);
 
                 // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
                 if (lstGear.Count < 2)
@@ -10083,7 +10247,7 @@ namespace Chummer
                                                                   .ConfigureAwait(false),
                                               ExpenseType.Nuyen, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                            CharacterObject.Nuyen -= decCost;
+                            await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddWeaponAccessory, objAccessory.InternalId);
@@ -10174,7 +10338,7 @@ namespace Chummer
                                       ExpenseType.Nuyen, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                          .ConfigureAwait(false);
-                    CharacterObject.Nuyen -= decCost;
+                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddArmor, objArmor.InternalId);
@@ -10361,7 +10525,7 @@ namespace Chummer
                                                             .ConfigureAwait(false), ExpenseType.Nuyen,
                                               DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                            CharacterObject.Nuyen -= decCost;
+                            await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddArmorMod, objMod.InternalId);
@@ -10600,7 +10764,7 @@ namespace Chummer
                                                             .ConfigureAwait(false), ExpenseType.Nuyen,
                                               DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                            CharacterObject.Nuyen -= decCost;
+                            await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
@@ -10755,7 +10919,7 @@ namespace Chummer
                                       DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                          .ConfigureAwait(false);
-                    CharacterObject.Nuyen -= decCost;
+                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeapon, objWeapon.InternalId);
@@ -10830,7 +10994,7 @@ namespace Chummer
                                                            .ConfigureAwait(false), ExpenseType.Nuyen,
                                   DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                CharacterObject.Nuyen -= decCost;
+                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMount, objNewWeaponMount.InternalId);
@@ -10958,7 +11122,7 @@ namespace Chummer
                                                                   .ConfigureAwait(false),
                                               ExpenseType.Nuyen, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                            CharacterObject.Nuyen -= decCost;
+                            await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponAccessory, objAccessory.InternalId);
@@ -11052,7 +11216,7 @@ namespace Chummer
                                       ExpenseType.Nuyen, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                          .ConfigureAwait(false);
-                    CharacterObject.Nuyen -= decCost;
+                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeapon, objWeapon.InternalId);
@@ -11347,7 +11511,7 @@ namespace Chummer
                                                                  .ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId,
@@ -13157,7 +13321,7 @@ namespace Chummer
                 }
 
                 // Refund the Nuyen amount and remove the Expense Entry.
-                CharacterObject.Nuyen -= objExpense.Amount;
+                await CharacterObject.ModifyNuyenAsync(-objExpense.Amount, GenericToken).ConfigureAwait(false);
                 await CharacterObject.ExpenseEntries.RemoveAsync(objExpense, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -14167,7 +14331,7 @@ namespace Chummer
                                                                  .ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
@@ -14319,7 +14483,7 @@ namespace Chummer
                                                                  .ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
@@ -14479,7 +14643,7 @@ namespace Chummer
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                                      .ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId,
@@ -14624,7 +14788,7 @@ namespace Chummer
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                                      .ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId,
@@ -14765,7 +14929,7 @@ namespace Chummer
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                                      .ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
@@ -14912,7 +15076,7 @@ namespace Chummer
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                                      .ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId,
@@ -15118,7 +15282,7 @@ namespace Chummer
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                                      .ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId,
@@ -15263,7 +15427,7 @@ namespace Chummer
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                                      .ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
@@ -18665,7 +18829,7 @@ namespace Chummer
                     if (blnAllowEdit && decOldAmount != decNewAmount)
                     {
                         objExpense.Amount = decNewAmount;
-                        CharacterObject.Nuyen += decNewAmount - decOldAmount;
+                        await CharacterObject.ModifyNuyenAsync(decNewAmount - decOldAmount, GenericToken).ConfigureAwait(false);
                         blnDoRepopulateList = true;
                     }
                     else
@@ -23134,7 +23298,7 @@ namespace Chummer
                                           DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                              .ConfigureAwait(false);
-                        CharacterObject.Nuyen -= decCost;
+                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                         objUndo.CreateNuyen(NuyenExpenseType.AddGear, objGear.InternalId, objGear.Quantity);
                         objExpense.Undo = objUndo;
@@ -23443,7 +23607,7 @@ namespace Chummer
                                           DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                              .ConfigureAwait(false);
-                        CharacterObject.Nuyen -= decCost;
+                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateNuyen(NuyenExpenseType.AddArmorGear,
@@ -26212,7 +26376,7 @@ namespace Chummer
                                                          .ConfigureAwait(false) + xmlSuite["name"]?.InnerText,
                                   ExpenseType.Nuyen, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                CharacterObject.Nuyen -= decCost;
+                await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                 Grade objGrade
                     = Grade.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);
@@ -27807,7 +27971,7 @@ namespace Chummer
                                                     .ConfigureAwait(false), ExpenseType.Nuyen, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                      .ConfigureAwait(false);
-                CharacterObject.Nuyen -= decCost;
+                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
                 selectedDrug.Quantity++;
                 string strText = await selectedDrug.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                 await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = strText,

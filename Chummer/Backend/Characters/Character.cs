@@ -29137,6 +29137,35 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Amount of Nuyen the character has.
+        /// </summary>
+        public async Task ModifyNuyenAsync(decimal value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decNuyen += value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+                await OnPropertyChangedAsync(nameof(Nuyen), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public decimal StolenNuyen
         {
             get
@@ -29262,12 +29291,45 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Amount of Nuyen the character started with via the priority system.
+        /// </summary>
         public async Task<decimal> GetStartingNuyenAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _decStartingNuyen;
+            }
+        }
+
+        /// <summary>
+        /// Amount of Nuyen the character started with via the priority system.
+        /// </summary>
+        public async Task SetStartingNuyenAsync(decimal value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decStartingNuyen == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decStartingNuyen = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(StartingNuyen), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

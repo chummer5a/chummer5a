@@ -5357,7 +5357,15 @@ namespace Chummer
         {
             try
             {
-                await MartialArt.Purchase(CharacterObject, GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    await MartialArt.Purchase(CharacterObject, GenericToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -5496,80 +5504,106 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
-                    if (await CharacterObject.GetMAGEnabledAsync(GenericToken).ConfigureAwait(false))
+                    IAsyncDisposable objLocker =
+                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                    try
                     {
-                        // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                        if (CharacterObject.InitiateGrade + 1
-                            > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
-                                                          .ConfigureAwait(false))
+                        GenericToken.ThrowIfCancellationRequested();
+                        if (await CharacterObject.GetMAGEnabledAsync(GenericToken).ConfigureAwait(false))
+                        {
+                            int intGrade = await CharacterObject.GetInitiateGradeAsync(GenericToken).ConfigureAwait(false);
+                            // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
+                            if (intGrade + 1
+                                > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
+                                        .ConfigureAwait(false))
                                     .GetTotalValueAsync(GenericToken).ConfigureAwait(false) ||
-                            CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                                                                               && CharacterObject.InitiateGrade + 1
-                                                                               > await (await CharacterObject
-                                                                                       .GetAttributeAsync(
-                                                                                           "MAGAdept",
-                                                                                           token: GenericToken)
-                                                                                       .ConfigureAwait(false))
-                                                                                   .GetTotalValueAsync(GenericToken)
-                                                                                   .ConfigureAwait(false))
-                        {
-                            Program.ShowScrollableMessageBox(
-                                this,
-                                await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade", token: GenericToken)
-                                                     .ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseInitiateGrade", token: GenericToken)
-                                                     .ConfigureAwait(false),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                            return;
-                        }
-
-                        // Create the Initiate Grade object.
-                        InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                        objGrade.Create(await CharacterObject.GetInitiateGradeAsync(GenericToken).ConfigureAwait(false) + 1, false,
-                                        await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
-                                        await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
-                                        await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), GenericToken);
-                        await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
-                                             .ConfigureAwait(false);
-                    }
-                    else if (await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false))
-                    {
-                        string strText = await LanguageManager.GetStringAsync("Button_AddEcho", token: GenericToken).ConfigureAwait(false);
-                        await cmsMetamagic.DoThreadSafeAsync(() =>
-                        {
-                            tsMetamagicAddArt.Visible = false;
-                            tsMetamagicAddEnchantment.Visible = false;
-                            tsMetamagicAddEnhancement.Visible = false;
-                            tsMetamagicAddRitual.Visible = false;
-                            tsMetamagicAddMetamagic.Text = strText;
-                        }, GenericToken).ConfigureAwait(false);
-
-                        // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
-                        if (CharacterObject.SubmersionGrade + 1
-                            > await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken)
+                                CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                                && intGrade + 1
+                                > await (await CharacterObject
+                                        .GetAttributeAsync(
+                                            "MAGAdept",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false))
+                                    .GetTotalValueAsync(GenericToken)
                                     .ConfigureAwait(false))
-                                .GetTotalValueAsync(GenericToken).ConfigureAwait(false))
-                        {
-                            Program.ShowScrollableMessageBox(
-                                this,
-                                await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade", token: GenericToken)
-                                                     .ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseSubmersionGrade", token: GenericToken)
-                                                     .ConfigureAwait(false),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                            return;
-                        }
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseInitiateGrade",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                                return;
+                            }
 
-                        // Create the Initiate Grade object.
-                        InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                        objGrade.Create(await CharacterObject.GetSubmersionGradeAsync(GenericToken).ConfigureAwait(false) + 1, true,
-                                        await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
-                                        await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
-                                        await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), GenericToken);
-                        await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
-                                             .ConfigureAwait(false);
+                            // Create the Initiate Grade object.
+                            InitiationGrade objGrade = new InitiationGrade(CharacterObject);
+                            objGrade.Create(
+                                await CharacterObject.GetInitiateGradeAsync(GenericToken).ConfigureAwait(false) + 1,
+                                false,
+                                await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false),
+                                await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false),
+                                await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false), GenericToken);
+                            await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                        else if (await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false))
+                        {
+                            string strText = await LanguageManager.GetStringAsync("Button_AddEcho", token: GenericToken)
+                                .ConfigureAwait(false);
+                            await cmsMetamagic.DoThreadSafeAsync(() =>
+                            {
+                                tsMetamagicAddArt.Visible = false;
+                                tsMetamagicAddEnchantment.Visible = false;
+                                tsMetamagicAddEnhancement.Visible = false;
+                                tsMetamagicAddRitual.Visible = false;
+                                tsMetamagicAddMetamagic.Text = strText;
+                            }, GenericToken).ConfigureAwait(false);
+
+                            // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
+                            if (await CharacterObject.GetSubmersionGradeAsync(GenericToken).ConfigureAwait(false) + 1
+                                > await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken)
+                                        .ConfigureAwait(false))
+                                    .GetTotalValueAsync(GenericToken).ConfigureAwait(false))
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseSubmersionGrade",
+                                            token: GenericToken)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                                return;
+                            }
+
+                            // Create the Initiate Grade object.
+                            InitiationGrade objGrade = new InitiationGrade(CharacterObject);
+                            objGrade.Create(
+                                await CharacterObject.GetSubmersionGradeAsync(GenericToken).ConfigureAwait(false) + 1,
+                                true,
+                                await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false),
+                                await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false),
+                                await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                    .ConfigureAwait(false), GenericToken);
+                            await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
@@ -6262,7 +6296,7 @@ namespace Chummer
                 // Run through all the Foci the character has and count the un-Bonded ones.
                 List<Gear> lstGear
                     = await CharacterObject.Gear.ToListAsync(x =>
-                        (x.Category == "Foci" || x.Category == "Metamagic Foci") && !x.Bonded, GenericToken);
+                        (x.Category == "Foci" || x.Category == "Metamagic Foci") && !x.Bonded, GenericToken).ConfigureAwait(false);
 
                 // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
                 if (lstGear.Count < 2)
@@ -11841,14 +11875,15 @@ namespace Chummer
                             }
                         }, GenericToken).ConfigureAwait(false);
 
-                        if (!CharacterObject.IgnoreRules)
+                        if (!await CharacterObject.GetIgnoreRulesAsync(GenericToken).ConfigureAwait(false))
                         {
                             if (intFociTotal > await (await CharacterObject
                                         .GetAttributeAsync("MAG", token: GenericToken)
                                         .ConfigureAwait(false))
                                     .GetTotalValueAsync(GenericToken).ConfigureAwait(false) * 5 ||
-                                CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                                && CharacterObject.InitiateGrade + 1
+                                await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken).ConfigureAwait(false)
+                                && await CharacterObject.GetIsMysticAdeptAsync(GenericToken).ConfigureAwait(false)
+                                && await CharacterObject.GetInitiateGradeAsync(GenericToken).ConfigureAwait(false) + 1
                                 > await (await CharacterObject
                                         .GetAttributeAsync(
                                             "MAGAdept",
@@ -11874,7 +11909,8 @@ namespace Chummer
                                         .GetAttributeAsync("MAG", token: GenericToken)
                                         .ConfigureAwait(false))
                                     .GetTotalValueAsync(GenericToken).ConfigureAwait(false) ||
-                                CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                                await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken).ConfigureAwait(false)
+                                && await CharacterObject.GetIsMysticAdeptAsync(GenericToken).ConfigureAwait(false)
                                 && intFociCount
                                 > await (await CharacterObject
                                         .GetAttributeAsync(
@@ -21072,166 +21108,194 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
 
-            int intBuildPoints = await CalculateBP(false, token).ConfigureAwait(false);
-
-            if (await CheckCharacterValidity(true, intBuildPoints, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker =
+                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                // See if the character has any Karma remaining.
-                if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
+                token.ThrowIfCancellationRequested();
+                using (await CharacterObjectSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
-                    if (!CharacterObject.EffectiveBuildMethodUsesPriorityTables)
-                    {
-                        if (Program.ShowScrollableMessageBox(
-                                this,
-                                string.Format(GlobalSettings.CultureInfo,
-                                              await LanguageManager.GetStringAsync("Message_NoExtraKarma", token: token)
-                                                                   .ConfigureAwait(false),
-                                              intBuildPoints.ToString(GlobalSettings.CultureInfo)),
-                                await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma", token: token)
-                                                     .ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Warning) == DialogResult.No)
-                            return false;
-                    }
-                    else if (Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo,
-                                                                        await LanguageManager
-                                                                              .GetStringAsync(
-                                                                                  "Message_ExtraKarma", token: token)
-                                                                              .ConfigureAwait(false),
-                                                                        intBuildPoints.ToString(
-                                                                            GlobalSettings.CultureInfo),
-                                                                        CharacterObjectSettings.KarmaCarryover.ToString(GlobalSettings.CultureInfo)),
-                                                    await LanguageManager
-                                                          .GetStringAsync("MessageTitle_ExtraKarma", token: token)
-                                                          .ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                                    MessageBoxIcon.Warning) == DialogResult.No)
-                    {
-                        return false;
-                    }
-                }
+                    token.ThrowIfCancellationRequested();
+                    int intBuildPoints = await CalculateBP(false, token).ConfigureAwait(false);
 
-                if (CharacterObject.Nuyen > 5000 && Program.ShowScrollableMessageBox(
-                        this, string.Format(GlobalSettings.CultureInfo,
-                                            await LanguageManager.GetStringAsync("Message_ExtraNuyen", token: token)
-                                                                 .ConfigureAwait(false),
-                                            CharacterObject.Nuyen.ToString(
-                                                CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo),
-                                            5000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)),
-                        await LanguageManager.GetStringAsync("MessageTitle_ExtraNuyen", token: token)
-                                             .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                    == DialogResult.No)
-                    return false;
-                if (GlobalSettings.CreateBackupOnCareer && await chkCharacterCreated
-                                                                 .DoThreadSafeFuncAsync(x => x.Checked, token)
-                                                                 .ConfigureAwait(false))
-                {
-                    // Create a pre-Career Mode backup of the character.
-                    // Make sure the backup directory exists.
-                    if (!Directory.Exists(Path.Combine(Utils.GetStartupPath, "saves", "backup")))
+                    if (await CheckCharacterValidity(true, intBuildPoints, token).ConfigureAwait(false))
                     {
+                        // See if the character has any Karma remaining.
+                        if (intBuildPoints > await CharacterObjectSettings.GetKarmaCarryoverAsync(token)
+                                .ConfigureAwait(false))
+                        {
+                            if (!await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token)
+                                    .ConfigureAwait(false))
+                            {
+                                if (Program.ShowScrollableMessageBox(
+                                        this,
+                                        string.Format(GlobalSettings.CultureInfo,
+                                            await LanguageManager.GetStringAsync("Message_NoExtraKarma", token: token)
+                                                .ConfigureAwait(false),
+                                            intBuildPoints.ToString(GlobalSettings.CultureInfo)),
+                                        await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma", token: token)
+                                            .ConfigureAwait(false), MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Warning) == DialogResult.No)
+                                    return false;
+                            }
+                            else if (Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo,
+                                             await LanguageManager
+                                                 .GetStringAsync(
+                                                     "Message_ExtraKarma", token: token)
+                                                 .ConfigureAwait(false),
+                                             intBuildPoints.ToString(
+                                                 GlobalSettings.CultureInfo),
+                                             (await CharacterObjectSettings.GetKarmaCarryoverAsync(token)
+                                                 .ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
+                                         await LanguageManager
+                                             .GetStringAsync("MessageTitle_ExtraKarma", token: token)
+                                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Warning) == DialogResult.No)
+                            {
+                                return false;
+                            }
+                        }
+
+                        decimal decNuyen = await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false);
+                        if (decNuyen > 5000 && Program.ShowScrollableMessageBox(
+                                this, string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync("Message_ExtraNuyen", token: token)
+                                        .ConfigureAwait(false),
+                                    decNuyen.ToString(
+                                        await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                        GlobalSettings.CultureInfo),
+                                    5000.ToString(
+                                        await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                        GlobalSettings.CultureInfo)),
+                                await LanguageManager.GetStringAsync("MessageTitle_ExtraNuyen", token: token)
+                                    .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                            == DialogResult.No)
+                            return false;
+                        if (GlobalSettings.CreateBackupOnCareer && await chkCharacterCreated
+                                .DoThreadSafeFuncAsync(x => x.Checked, token)
+                                .ConfigureAwait(false))
+                        {
+                            // Create a pre-Career Mode backup of the character.
+                            // Make sure the backup directory exists.
+                            if (!Directory.Exists(Path.Combine(Utils.GetStartupPath, "saves", "backup")))
+                            {
+                                try
+                                {
+                                    Directory.CreateDirectory(Path.Combine(Utils.GetStartupPath, "saves", "backup"));
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+                                    Program.ShowScrollableMessageBox(
+                                        this,
+                                        await LanguageManager
+                                            .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
+                                            .ConfigureAwait(false));
+                                    return false;
+                                }
+                            }
+
+                            string strNewName = Path.GetFileNameWithoutExtension(CharacterObject.FileName);
+                            if (string.IsNullOrEmpty(strNewName))
+                            {
+                                strNewName = await CharacterObject.GetAliasAsync(token).ConfigureAwait(false);
+                                if (string.IsNullOrEmpty(strNewName))
+                                {
+                                    strNewName = await CharacterObject.GetNameAsync(token).ConfigureAwait(false);
+                                    if (string.IsNullOrEmpty(strNewName))
+                                        strNewName = Guid.NewGuid().ToString("N", GlobalSettings.InvariantCultureInfo);
+                                }
+                            }
+
+                            strNewName += await LanguageManager.GetStringAsync("String_Space", token: token)
+                                    .ConfigureAwait(false) + '('
+                                                           + await LanguageManager
+                                                               .GetStringAsync(
+                                                                   "Title_CreateMode", token: token)
+                                                               .ConfigureAwait(false)
+                                                           + ").chum5";
+                            if (CharacterObject.FileName?.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase) ==
+                                true)
+                                strNewName += "lz";
+                            strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
+
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                            try
+                            {
+                                using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                       = await Program.CreateAndShowProgressBarAsync(token: token)
+                                           .ConfigureAwait(false))
+                                {
+                                    await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
+                                        LoadingBar.ProgressBarTextPatterns.Saving,
+                                        token).ConfigureAwait(false);
+                                    if (!await CharacterObject.SaveAsync(strNewName, token: token)
+                                            .ConfigureAwait(false))
+                                        return false;
+                                }
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+
+                        SkipUpdate = true;
                         try
                         {
-                            Directory.CreateDirectory(Path.Combine(Utils.GetStartupPath, "saves", "backup"));
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            Program.ShowScrollableMessageBox(
-                                this,
-                                await LanguageManager
-                                      .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
-                                      .ConfigureAwait(false));
-                            return false;
-                        }
-                    }
+                            // If the character does not have any Lifestyles, give them the Street Lifestyle.
+                            if (CharacterObject.Lifestyles.Count == 0)
+                            {
+                                Lifestyle objLifestyle = new Lifestyle(CharacterObject);
+                                XmlDocument objXmlDocument = await CharacterObject
+                                    .LoadDataAsync("lifestyles.xml", token: token)
+                                    .ConfigureAwait(false);
+                                XmlNode objXmlLifestyle
+                                    = objXmlDocument.SelectSingleNode(
+                                        "/chummer/lifestyles/lifestyle[name = \"Street\"]");
 
-                    string strNewName = Path.GetFileNameWithoutExtension(CharacterObject.FileName);
-                    if (string.IsNullOrEmpty(strNewName))
-                    {
-                        strNewName = CharacterObject.Alias;
-                        if (string.IsNullOrEmpty(strNewName))
-                        {
-                            strNewName = CharacterObject.Name;
-                            if (string.IsNullOrEmpty(strNewName))
-                                strNewName = Guid.NewGuid().ToString("N", GlobalSettings.InvariantCultureInfo);
-                        }
-                    }
+                                objLifestyle.Create(objXmlLifestyle);
 
-                    strNewName += await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                       .ConfigureAwait(false) + '('
-                                                                              + await LanguageManager
-                                                                                  .GetStringAsync(
-                                                                                      "Title_CreateMode", token: token)
-                                                                                  .ConfigureAwait(false)
-                                                                              + ").chum5";
-                    if (CharacterObject.FileName?.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase) == true)
-                        strNewName += "lz";
-                    strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
+                                await CharacterObject.Lifestyles.AddAsync(objLifestyle, token).ConfigureAwait(false);
+                            }
 
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
-                    {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                               = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
-                        {
-                            await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
-                                                                        LoadingBar.ProgressBarTextPatterns.Saving,
-                                                                        token).ConfigureAwait(false);
-                            if (!await CharacterObject.SaveAsync(strNewName, token: token).ConfigureAwait(false))
-                                return false;
+                            decimal decStartingNuyen;
+                            using (ThreadSafeForm<SelectLifestyleStartingNuyen> frmStartingNuyen
+                                   = await ThreadSafeForm<SelectLifestyleStartingNuyen>.GetAsync(
+                                       () => new SelectLifestyleStartingNuyen(CharacterObject),
+                                       token).ConfigureAwait(false))
+                            {
+                                if (await frmStartingNuyen.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
+                                    != DialogResult.OK)
+                                    return false;
+                                decStartingNuyen = frmStartingNuyen.MyForm.StartingNuyen;
+                            }
+
+                            // Assign starting values and overflows.
+                            if (decStartingNuyen < 0)
+                                decStartingNuyen = 0;
+                            if (await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false) > 5000)
+                                await CharacterObject.SetNuyenAsync(5000, token).ConfigureAwait(false);
+                            _decStartingLifestyleNuyen = decStartingNuyen;
+                            //This needs to be added to Character.Nuyen to ensure that the ExpanseEntries are created accurately
+                            await CharacterObject.ModifyNuyenAsync(decStartingNuyen, token).ConfigureAwait(false);
+                            // See if the character has any Karma remaining.
+                            await CharacterObject
+                                .SetKarmaAsync(Math.Min(intBuildPoints, CharacterObjectSettings.KarmaCarryover), token)
+                                .ConfigureAwait(false);
+
+                            return true;
                         }
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        finally
+                        {
+                            SkipUpdate = false;
+                        }
                     }
                 }
-
-                SkipUpdate = true;
-                try
-                {
-                    // If the character does not have any Lifestyles, give them the Street Lifestyle.
-                    if (CharacterObject.Lifestyles.Count == 0)
-                    {
-                        Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("lifestyles.xml", token: token)
-                                                                          .ConfigureAwait(false);
-                        XmlNode objXmlLifestyle
-                            = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
-
-                        objLifestyle.Create(objXmlLifestyle);
-
-                        await CharacterObject.Lifestyles.AddAsync(objLifestyle, token).ConfigureAwait(false);
-                    }
-
-                    decimal decStartingNuyen;
-                    using (ThreadSafeForm<SelectLifestyleStartingNuyen> frmStartingNuyen
-                           = await ThreadSafeForm<SelectLifestyleStartingNuyen>.GetAsync(
-                               () => new SelectLifestyleStartingNuyen(CharacterObject), token).ConfigureAwait(false))
-                    {
-                        if (await frmStartingNuyen.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
-                            != DialogResult.OK)
-                            return false;
-                        decStartingNuyen = frmStartingNuyen.MyForm.StartingNuyen;
-                    }
-
-                    // Assign starting values and overflows.
-                    if (decStartingNuyen < 0)
-                        decStartingNuyen = 0;
-                    if (CharacterObject.Nuyen > 5000)
-                        CharacterObject.Nuyen = 5000;
-                    _decStartingLifestyleNuyen = decStartingNuyen;
-                    //This needs to be added to Character.Nuyen to ensure that the ExpanseEntries are created accurately
-                    CharacterObject.Nuyen += decStartingNuyen;
-                    // See if the character has any Karma remaining.
-                    await CharacterObject
-                          .SetKarmaAsync(Math.Min(intBuildPoints, CharacterObjectSettings.KarmaCarryover), token)
-                          .ConfigureAwait(false);
-
-                    return true;
-                }
-                finally
-                {
-                    SkipUpdate = false;
-                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return false;
@@ -22099,46 +22163,52 @@ namespace Chummer
         private async Task UpdateInitiationCost(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            decimal decMultiplier = 1.0m;
-            int intAmount;
             string strInitTip;
-            if (CharacterObject.MAGEnabled)
+            using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
-                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
-                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
-                intAmount = ((CharacterObjectSettings.KarmaInitiationFlat
-                              + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation)
-                             * decMultiplier).StandardRound();
                 token.ThrowIfCancellationRequested();
-                strInitTip = string.Format(GlobalSettings.CultureInfo,
-                                           await LanguageManager
-                                                 .GetStringAsync("Tip_ImproveInitiateGrade", token: token)
-                                                 .ConfigureAwait(false),
-                                           (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                           intAmount.ToString(GlobalSettings.CultureInfo));
-            }
-            else
-            {
-                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
-                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
-                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
-                intAmount = ((CharacterObjectSettings.KarmaInitiationFlat
-                              + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation)
-                             * decMultiplier).StandardRound();
-                token.ThrowIfCancellationRequested();
-                strInitTip = string.Format(GlobalSettings.CultureInfo,
-                                           await LanguageManager
-                                                 .GetStringAsync("Tip_ImproveSubmersionGrade", token: token)
-                                                 .ConfigureAwait(false),
-                                           (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                           intAmount.ToString(GlobalSettings.CultureInfo));
+                decimal decMultiplier = 1.0m;
+                int intAmount;
+                if (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                {
+                    if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
+                    if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
+                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
+                    int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
+                    intAmount = ((CharacterObjectSettings.KarmaInitiationFlat
+                                  + (intGrade + 1) * CharacterObjectSettings.KarmaInitiation)
+                                 * decMultiplier).StandardRound();
+                    token.ThrowIfCancellationRequested();
+                    strInitTip = string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager
+                            .GetStringAsync("Tip_ImproveInitiateGrade", token: token)
+                            .ConfigureAwait(false),
+                        (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                        intAmount.ToString(GlobalSettings.CultureInfo));
+                }
+                else
+                {
+                    if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
+                    if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
+                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
+                    int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
+                    intAmount = ((CharacterObjectSettings.KarmaInitiationFlat
+                                  + (intGrade + 1) * CharacterObjectSettings.KarmaInitiation)
+                                 * decMultiplier).StandardRound();
+                    token.ThrowIfCancellationRequested();
+                    strInitTip = string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager
+                            .GetStringAsync("Tip_ImproveSubmersionGrade", token: token)
+                            .ConfigureAwait(false),
+                        (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                        intAmount.ToString(GlobalSettings.CultureInfo));
+                }
             }
 
             token.ThrowIfCancellationRequested();
@@ -23598,7 +23668,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshSpiritsClearBindings(panSpirits, panSprites, token);
+                await RefreshSpiritsClearBindings(panSpirits, panSprites, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

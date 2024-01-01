@@ -1638,7 +1638,11 @@ namespace Chummer
                         {
                             decimal decResources = 0;
                             if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
-                                _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
+                            {
+                                await _objCharacter.SetNuyenAsync(decResources, token).ConfigureAwait(false);
+                                await _objCharacter.SetStartingNuyenAsync(decResources, token).ConfigureAwait(false);
+                            }
+
                             break;
                         }
                     }
