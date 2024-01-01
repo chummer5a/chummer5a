@@ -5023,7 +5023,7 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     decReturn += objMartialArt.DeleteMartialArt();
                                 else
-                                    decReturn += await objMartialArt.DeleteMartialArtAsync(token).ConfigureAwait(false);
+                                    decReturn += await objMartialArt.DeleteMartialArtAsync(token: token).ConfigureAwait(false);
                             }
 
                             break;
@@ -5034,14 +5034,16 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     objCharacter.SkillsSection.RemoveSkills(
-                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
+                                        (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
                                             strImprovedName), objImprovement.Target,
                                         !blnReapplyImprovements && objCharacter.Created, token: token);
                                 else
                                     await objCharacter.SkillsSection.RemoveSkillsAsync(
-                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
-                                            strImprovedName), objImprovement.Target,
-                                        !blnReapplyImprovements && objCharacter.Created, token).ConfigureAwait(false);
+                                            (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
+                                                strImprovedName), objImprovement.Target,
+                                            !blnReapplyImprovements &&
+                                            await objCharacter.GetCreatedAsync(token).ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;

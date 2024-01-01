@@ -10293,6 +10293,29 @@ namespace Chummer
             base.Dispose(disposing);
         }
 
+        protected async Task RemoveSelectedObject(object objSelected, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            GenericToken.ThrowIfCancellationRequested();
+            if (!(objSelected is ICanRemove objRemovable))
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                await objRemovable.RemoveAsync(token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
         #region Vehicles Tab
 
         public async Task PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null, CancellationToken token = default)

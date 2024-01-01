@@ -384,6 +384,24 @@ namespace Chummer
             return blnReturn;
         }
 
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteGearLocation", token: token)
+                            .ConfigureAwait(false), token).ConfigureAwait(false))
+                return false;
+
+            await Children.ForEachAsync(x => x.Location = null, token: token).ConfigureAwait(false);
+
+            bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
+
+            await DisposeAsync().ConfigureAwait(false);
+
+            return blnReturn;
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {

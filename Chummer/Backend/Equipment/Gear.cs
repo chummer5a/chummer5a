@@ -5498,28 +5498,137 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public bool Sell(decimal percentage, bool blnConfirmDelete)
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager
+                            .GetStringAsync("Message_DeleteGear", token: token)
+                            .ConfigureAwait(false), token).ConfigureAwait(false))
+                return false;
+
+            await DeleteGearAsync(token: token).ConfigureAwait(false);
+            return true;
+        }
+
+        public bool Sell(decimal decPercentage, bool blnConfirmDelete)
+        {
+            if (!_objCharacter.Created)
+                return Remove(blnConfirmDelete);
+
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
                 return false;
 
-            if (!_objCharacter.Created)
+            string strExpense = "String_ExpenseSoldGear";
+
+            IHasCost objParent = null;
+            if (Parent != null)
             {
-                DeleteGear();
-                return true;
+                objParent = Parent as IHasCost;
+                switch (Parent)
+                {
+                    case Armor _:
+                    case ArmorMod _:
+                        strExpense = "String_ExpenseSoldArmorGear";
+                        break;
+                    case Weapon _:
+                    case WeaponAccessory _:
+                        strExpense = "String_ExpenseSoldWeaponGear";
+                        break;
+                    case Cyberware _:
+                        strExpense = "String_ExpenseSoldCyberwareGear";
+                        break;
+                    case Vehicle _:
+                    case VehicleMod _:
+                    case WeaponMount _:
+                        strExpense = "String_ExpenseSoldVehicleGear";
+                        break;
+                }
             }
 
-            IHasCost objParent = Parent as IHasCost;
-            decimal decOriginal = objParent?.TotalCost ?? TotalCost;
+            decimal decAmount;
+            if (objParent != null)
+            {
+                decimal decOriginal = objParent.TotalCost;
+                decAmount = DeleteGear() * decPercentage;
+                decAmount += (decOriginal - objParent.TotalCost) * decPercentage;
+            }
+            else
+            {
+                decimal decOriginal = TotalCost;
+                decAmount = (DeleteGear() + decOriginal) * decPercentage;
+            }
             // Create the Expense Log Entry for the sale.
-            decimal decAmount = DeleteGear() * percentage;
-            decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear");
+            string strEntry = LanguageManager.GetString(strExpense);
             objExpense.Create(decAmount, strEntry + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen,
                 DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen += decAmount;
+            return true;
+        }
+
+        public async Task<bool> SellAsync(decimal decPercentage, bool blnConfirmDelete,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                return await RemoveAsync(blnConfirmDelete, token).ConfigureAwait(false);
+
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteArmorMod", token: token).ConfigureAwait(false),
+                        token).ConfigureAwait(false))
+                return false;
+
+            string strExpense = "String_ExpenseSoldGear";
+
+            IHasCost objParent = null;
+            if (Parent != null)
+            {
+                objParent = Parent as IHasCost;
+                switch (Parent)
+                {
+                    case Armor _:
+                    case ArmorMod _:
+                        strExpense = "String_ExpenseSoldArmorGear";
+                        break;
+                    case Weapon _:
+                    case WeaponAccessory _:
+                        strExpense = "String_ExpenseSoldWeaponGear";
+                        break;
+                    case Cyberware _:
+                        strExpense = "String_ExpenseSoldCyberwareGear";
+                        break;
+                    case Vehicle _:
+                    case VehicleMod _:
+                    case WeaponMount _:
+                        strExpense = "String_ExpenseSoldVehicleGear";
+                        break;
+                }
+            }
+
+            decimal decAmount;
+            if (objParent != null)
+            {
+                decimal decOriginal = await objParent.GetTotalCostAsync(token).ConfigureAwait(false);
+                decAmount = await DeleteGearAsync(token: token).ConfigureAwait(false) * decPercentage;
+                decAmount += (decOriginal - await objParent.GetTotalCostAsync(token).ConfigureAwait(false)) * decPercentage;
+            }
+            else
+            {
+                decimal decOriginal = await GetTotalCostAsync(token).ConfigureAwait(false);
+                decAmount = (await DeleteGearAsync(token: token).ConfigureAwait(false) + decOriginal) * decPercentage;
+            }
+
+            // Create the Expense Log Entry for the sale.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+            objExpense.Create(decAmount,
+                await LanguageManager.GetStringAsync(strExpense, token: token).ConfigureAwait(false) +
+                ' ' + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
+                DateTime.Now);
+            await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+            await _objCharacter.ModifyNuyenAsync(decAmount, token).ConfigureAwait(false);
             return true;
         }
 

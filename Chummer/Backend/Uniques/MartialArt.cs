@@ -881,33 +881,50 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            // Delete the selected Martial Art.
-            if (IsQuality)
-                return false;
-            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
-                return false;
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                // Delete the selected Martial Art.
+                if (IsQuality)
+                    return false;
+                if (blnConfirmDelete &&
+                    !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
+                    return false;
 
-            DeleteMartialArt();
+                DeleteMartialArt(false);
+            }
+            Dispose();
+
             return true;
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            // Delete the selected Martial Art.
-            if (IsQuality)
-                return false;
-            if (blnConfirmDelete && !await CommonFunctions
-                                           .ConfirmDeleteAsync(
-                                               await LanguageManager
-                                                     .GetStringAsync("Message_DeleteMartialArt", token: token)
-                                                     .ConfigureAwait(false), token).ConfigureAwait(false))
-                return false;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                // Delete the selected Martial Art.
+                if (IsQuality)
+                    return false;
+                if (blnConfirmDelete && !await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager
+                                .GetStringAsync("Message_DeleteMartialArt", token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
 
-            await DeleteMartialArtAsync(token).ConfigureAwait(false);
+                await DeleteMartialArtAsync(false, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await DisposeAsync().ConfigureAwait(false);
             return true;
         }
 
-        public decimal DeleteMartialArt()
+        public decimal DeleteMartialArt(bool blnDoDispose = true)
         {
             decimal decReturn = 0;
             using (LockObject.EnterWriteLock())
@@ -915,7 +932,9 @@ namespace Chummer
                 _objCharacter.MartialArts.Remove(this);
 
                 // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-                foreach (MartialArtTechnique objTechnique in Techniques.ToList()) // Need ToList() because removing techniques alters parent Art's Techniques list
+                foreach (MartialArtTechnique objTechnique in
+                         Techniques
+                             .ToList()) // Need ToList() because removing techniques alters parent Art's Techniques list
                 {
                     decReturn += objTechnique.DeleteTechnique(false);
                 }
@@ -925,11 +944,12 @@ namespace Chummer
                     InternalId);
             }
 
-            Dispose();
+            if (blnDoDispose)
+                Dispose();
             return decReturn;
         }
 
-        public async Task<decimal> DeleteMartialArtAsync(CancellationToken token = default)
+        public async Task<decimal> DeleteMartialArtAsync(bool blnDoDispose = true, CancellationToken token = default)
         {
             decimal decReturn = 0;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -953,7 +973,8 @@ namespace Chummer
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            await DisposeAsync().ConfigureAwait(false);
+            if (blnDoDispose)
+                await DisposeAsync().ConfigureAwait(false);
             return decReturn;
         }
 

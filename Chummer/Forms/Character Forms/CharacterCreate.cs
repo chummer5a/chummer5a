@@ -4768,15 +4768,18 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteSpell_Click(object sender, EventArgs e)
+        private async void cmdDeleteSpell_Click(object sender, EventArgs e)
         {
-            // Locate the Spell that is selected in the tree.
-            if (!(treSpells.SelectedNode?.Tag is Spell objSpell))
-                return;
-            // Spells that come from Initiation Grades can't be deleted normally.
-            if (objSpell.Grade != 0)
-                return;
-            objSpell.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddSpirit_Click(object sender, EventArgs e)
@@ -4868,11 +4871,18 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteCyberware_Click(object sender, EventArgs e)
+        private async void cmdDeleteCyberware_Click(object sender, EventArgs e)
         {
-            if (!(treCyberware.SelectedNode?.Tag is ICanRemove selectedObject))
-                return;
-            selectedObject.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddComplexForm_Click(object sender, EventArgs e)
@@ -5022,11 +5032,18 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteArmor_Click(object sender, EventArgs e)
+        private async void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode?.Tag is ICanRemove selectedObject))
-                return;
-            selectedObject.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddBioware_Click(object sender, EventArgs e)
@@ -5120,11 +5137,18 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteWeapon_Click(object sender, EventArgs e)
+        private async void cmdDeleteWeapon_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode?.Tag is ICanRemove objSelectedNode))
-                return;
-            objSelectedNode.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddLifestyle_Click(object sender, EventArgs e)
@@ -5168,12 +5192,18 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteLifestyle_Click(object sender, EventArgs e)
+        private async void cmdDeleteLifestyle_Click(object sender, EventArgs e)
         {
-            // Delete the selected Lifestyle.
-            if (!(treLifestyles.SelectedNode?.Tag is ICanRemove objSelectedObject))
-                return;
-            objSelectedObject.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddGear_Click(object sender, EventArgs e)
@@ -5199,11 +5229,18 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteGear_Click(object sender, EventArgs e)
+        private async void cmdDeleteGear_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode?.Tag is ICanRemove objSelectedGear))
-                return;
-            objSelectedGear.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async Task<bool> AddVehicle(Location objLocation = null, CancellationToken token = default)
@@ -5347,7 +5384,7 @@ namespace Chummer
                 }
                 case ICanRemove selectedObject:
                 {
-                    selectedObject.Remove();
+                    await selectedObject.RemoveAsync(token: token).ConfigureAwait(false);
                     break;
                 }
             }
@@ -5373,11 +5410,18 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
+        private async void cmdDeleteMartialArt_Click(object sender, EventArgs e)
         {
-            if (!(treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode))
-                return;
-            objSelectedNode.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddMugshot_Click(object sender, EventArgs e)
@@ -5617,11 +5661,18 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
+        private async void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is ICanRemove selectedObject))
-                return;
-            selectedObject.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddCritterPower_Click(object sender, EventArgs e)
@@ -5671,27 +5722,46 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteCritterPower_Click(object sender, EventArgs e)
+        private async void cmdDeleteCritterPower_Click(object sender, EventArgs e)
         {
-            // If the selected object is not a critter or it comes from an initiate grade, we don't want to remove it.
-            if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objCritterPower) || objCritterPower.Grade != 0)
-                return;
-            objCritterPower.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void cmdDeleteComplexForm_Click(object sender, EventArgs e)
+        private async void cmdDeleteComplexForm_Click(object sender, EventArgs e)
         {
-            if (!(treComplexForms.SelectedNode?.Tag is ICanRemove objSelectedObject))
-                return;
-            objSelectedObject.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void cmdDeleteAIProgram_Click(object sender, EventArgs e)
+        private async void cmdDeleteAIProgram_Click(object sender, EventArgs e)
         {
-            // Delete the selected AI Program.
-            if (!(treAIPrograms.SelectedNode?.Tag is ICanRemove objSelectedObject))
-                return;
-            objSelectedObject.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdLifeModule_Click(object sender, EventArgs e)
@@ -22862,7 +22932,7 @@ namespace Chummer
                 }
                 catch
                 {
-                    objNewGear.Remove(false);
+                    await objNewGear.RemoveAsync(false, token).ConfigureAwait(false);
                     throw;
                 }
             }
@@ -22890,7 +22960,7 @@ namespace Chummer
                 }
                 catch
                 {
-                    objNewGear.Remove(false);
+                    await objNewGear.RemoveAsync(false, token).ConfigureAwait(false);
                     throw;
                 }
             }
@@ -24491,11 +24561,18 @@ namespace Chummer
 
         #endregion Stolen Property Changes
 
-        private void btnDeleteCustomDrug_Click(object sender, EventArgs e)
+        private async void btnDeleteCustomDrug_Click(object sender, EventArgs e)
         {
-            if (!(treCustomDrugs.SelectedNode?.Tag is ICanRemove selectedObject))
-                return;
-            selectedObject.Remove();
+            try
+            {
+                await RemoveSelectedObject(
+                    await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cboVehicleWeaponFiringMode_SelectedIndexChanged(object sender, EventArgs e)

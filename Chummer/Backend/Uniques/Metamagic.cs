@@ -574,10 +574,10 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (Grade <= 0)
-                return false;
             if (blnConfirmDelete)
             {
+                if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
+                    return false;
                 string strMessage;
                 if (_objCharacter.MAGEnabled)
                     strMessage = LanguageManager.GetString("Message_DeleteMetamagic");
@@ -596,15 +596,16 @@ namespace Chummer
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            if (Grade <= 0)
-                return false;
+            token.ThrowIfCancellationRequested();
             if (blnConfirmDelete)
             {
+                if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
+                    return false;
                 string strMessage;
-                if (_objCharacter.MAGEnabled)
+                if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
                     strMessage = await LanguageManager.GetStringAsync("Message_DeleteMetamagic", token: token)
                                                       .ConfigureAwait(false);
-                else if (_objCharacter.RESEnabled)
+                else if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
                     strMessage = await LanguageManager.GetStringAsync("Message_DeleteEcho", token: token)
                                                       .ConfigureAwait(false);
                 else

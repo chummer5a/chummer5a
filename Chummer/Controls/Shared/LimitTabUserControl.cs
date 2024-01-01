@@ -158,11 +158,19 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
+        private async void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
         {
-            if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject))
-                return;
-            selectedObject.Remove();
+            try
+            {
+                _objMyToken.ThrowIfCancellationRequested();
+                if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject))
+                    return;
+                await selectedObject.RemoveAsync(token: _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treLimit_KeyDown(object sender, KeyEventArgs e)

@@ -898,8 +898,13 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
-                return false;
+            if (blnConfirmDelete)
+            {
+                if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
+                    return false;
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
+                    return false;
+            }
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, InternalId);
 
@@ -908,12 +913,17 @@ namespace Chummer
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            if (blnConfirmDelete && !await CommonFunctions
-                                           .ConfirmDeleteAsync(
-                                               await LanguageManager
-                                                     .GetStringAsync("Message_DeleteComplexForm", token: token)
-                                                     .ConfigureAwait(false), token).ConfigureAwait(false))
-                return false;
+            token.ThrowIfCancellationRequested();
+            if (blnConfirmDelete)
+            {
+                if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
+                    return false;
+                if (!await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteComplexForm", token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
+            }
 
             await ImprovementManager
                   .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.ComplexForm, InternalId, token)

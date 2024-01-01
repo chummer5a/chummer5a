@@ -1532,32 +1532,48 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteQuality")))
-                return false;
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (blnConfirmDelete &&
+                    !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteQuality")))
+                    return false;
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);
 
-            if (ParentLifestyle.LifestyleQualities.Remove(this))
-                return true;
+                if (ParentLifestyle.LifestyleQualities.Remove(this))
+                    return true;
+            }
+
             Dispose();
             return false;
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            if (blnConfirmDelete && !await CommonFunctions
-                                           .ConfirmDeleteAsync(
-                                               await LanguageManager
-                                                     .GetStringAsync("Message_DeleteQuality", token: token)
-                                                     .ConfigureAwait(false), token).ConfigureAwait(false))
-                return false;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (blnConfirmDelete && !await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager
+                                .GetStringAsync("Message_DeleteQuality", token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
 
-            await ImprovementManager
-                  .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, token)
-                  .ConfigureAwait(false);
+                await ImprovementManager
+                    .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, token)
+                    .ConfigureAwait(false);
 
-            if (await ParentLifestyle.LifestyleQualities.RemoveAsync(this, token).ConfigureAwait(false))
-                return true;
+                if (await ParentLifestyle.LifestyleQualities.RemoveAsync(this, token).ConfigureAwait(false))
+                    return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
             await DisposeAsync().ConfigureAwait(false);
             return false;
         }
