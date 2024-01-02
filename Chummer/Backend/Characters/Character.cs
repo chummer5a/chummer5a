@@ -66,7 +66,6 @@ namespace Chummer
         private XmlNode _oldSkillGroupBackup;
         private string _strFileName = string.Empty;
         private string _strSettingsKey = GlobalSettings.DefaultCharacterSetting;
-        private DateTime _dateFileLastWriteTime = DateTime.MinValue;
         private bool _blnIgnoreRules;
         private int _intKarma;
         private int _intTotalKarma;
@@ -4822,9 +4821,6 @@ namespace Chummer
                     }
                 }
 
-                if (strFileName == FileName)
-                    _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
-
                 if (addToMRU)
                 {
                     if (blnSync)
@@ -5191,7 +5187,10 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                LoadAsDirty = false;
+                if (blnSync)
+                    LoadAsDirty = false;
+                else
+                    await SetLoadAsDirtyAsync(false, token).ConfigureAwait(false);
                 using (CustomActivity loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
                                                                              CustomActivity.OperationType
                                                                                  .DependencyOperation, strFileName))
@@ -5392,8 +5391,6 @@ namespace Chummer
 
                             using (Timekeeper.StartSyncron("load_char_misc", loadActivity))
                             {
-                                _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
-
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("created", ref _blnCreated);
 
@@ -5916,9 +5913,12 @@ namespace Chummer
                                         }
 
                                         _strSettingsKey = strReplacementSettingsKey;
-                                        LoadAsDirty = true;
+                                        if (blnSync)
+                                            LoadAsDirty = true;
+                                        else
+                                            await SetLoadAsDirtyAsync(true, token).ConfigureAwait(false);
                                     }
-                                    else if (!Created && objProspectiveSettings.BuildMethod != eSavedBuildMethod)
+                                    else if (!(blnSync ? Created : await GetCreatedAsync(token).ConfigureAwait(false)) && objProspectiveSettings.BuildMethod != eSavedBuildMethod)
                                     {
                                         // Prompt if we want to switch options or leave
                                         if (!Utils.IsUnitTest && showWarnings)
@@ -6015,7 +6015,10 @@ namespace Chummer
                                         }
 
                                         _strSettingsKey = strReplacementSettingsKey;
-                                        LoadAsDirty = true;
+                                        if (blnSync)
+                                            LoadAsDirty = true;
+                                        else
+                                            await SetLoadAsDirtyAsync(true, token).ConfigureAwait(false);
                                     }
                                     else if (!Utils.IsUnitTest && showWarnings)
                                     {
@@ -6133,9 +6136,9 @@ namespace Chummer
 
                                 if (blnShowSelectBP)
                                 {
-                                    LoadAsDirty = true;
                                     if (blnSync)
                                     {
+                                        LoadAsDirty = true;
                                         // ReSharper disable once MethodHasAsyncOverload
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         using (ThreadSafeForm<SelectBuildMethod> frmPickBP
@@ -6151,6 +6154,7 @@ namespace Chummer
                                     }
                                     else
                                     {
+                                        await SetLoadAsDirtyAsync(true, token).ConfigureAwait(false);
                                         using (ThreadSafeForm<SelectBuildMethod> frmPickBP
                                                = await ThreadSafeForm<SelectBuildMethod>
                                                        .GetAsync(() => new SelectBuildMethod(this, true), token)
@@ -11642,7 +11646,7 @@ namespace Chummer
                 await _lstWeaponLocations.ClearAsync(token).ConfigureAwait(false);
                 await _lstVehicleLocations.ClearAsync(token).ConfigureAwait(false);
                 await _lstImprovementGroups.ClearAsync(token).ConfigureAwait(false);
-                LoadAsDirty = false;
+                await SetLoadAsDirtyAsync(false, token).ConfigureAwait(false);
             }
             finally
             {
@@ -14995,6 +14999,7 @@ namespace Chummer
         /// </summary>
         public async Task<CharacterSettings> GetSettingsAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
@@ -15007,6 +15012,7 @@ namespace Chummer
         /// </summary>
         private async Task SetSettingsAsync(CharacterSettings value, CancellationToken token = default) // Private to make sure this is always in sync with GameplayOption
         {
+            token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -15101,19 +15107,56 @@ namespace Chummer
 
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (_strFileName == value)
+                    if (Interlocked.Exchange(ref _strFileName, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strFileName, value) == value)
-                            return;
-                        _dateFileLastWriteTime = string.IsNullOrEmpty(value)
-                            ? DateTime.MinValue
-                            : File.GetLastWriteTimeUtc(value);
-                    }
-
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Name of the file the Character is saved to.
+        /// </summary>
+        public async Task<string> GetFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strFileName;
+            }
+        }
+
+        /// <summary>
+        /// Name of the file the Character is saved to.
+        /// </summary>
+        public async Task SetFileNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrWhiteSpace(value)
+                && !value.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                && !value.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+            {
+                value = Path.GetFileNameWithoutExtension(value) + ".chum5";
+                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    if (!string.IsNullOrWhiteSpace(_strFileName)
+                        && _strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        value += "lz";
+                }
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strFileName, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(FileName), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -15124,12 +15167,23 @@ namespace Chummer
         {
             get
             {
-                using (LockObject.EnterReadLock())
-                {
-                    DateTime datReturn = _dateFileLastWriteTime;
-                    return datReturn > DateTime.MinValue ? datReturn : DateTime.UtcNow;
-                }
+                string strFileName = FileName;
+                return string.IsNullOrEmpty(strFileName) || !File.Exists(strFileName)
+                    ? DateTime.MinValue
+                    : File.GetLastWriteTimeUtc(strFileName);
             }
+        }
+
+        /// <summary>
+        /// Last write time of the file to which this character is saved.
+        /// </summary>
+        public async Task<DateTime> GetFileLastWriteTimeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
+            return string.IsNullOrEmpty(strFileName) || !File.Exists(strFileName)
+                    ? DateTime.MinValue
+                    : File.GetLastWriteTimeUtc(strFileName);
         }
 
         /// <summary>
@@ -38213,11 +38267,48 @@ namespace Chummer
                     if (_blnLoadAsDirty == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnLoadAsDirty = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
+            }
+        }
+
+        public async Task<bool> GetLoadAsDirtyAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnLoadAsDirty;
+            }
+        }
+
+
+        private async Task SetLoadAsDirtyAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnLoadAsDirty == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnLoadAsDirty = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                OnPropertyChanged(nameof(LoadAsDirty));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -40117,8 +40208,6 @@ namespace Chummer
 
                             using (Timekeeper.StartSyncron("load_char_misc", op_load))
                             {
-                                _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
-
                                 xmlStatBlockBaseNode =
                                     xmlStatBlockDocument.SelectSingleNode("/document/public/character[@name = " +
                                                                           strCharacterId.CleanXPath() + ']');

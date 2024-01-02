@@ -208,7 +208,7 @@ namespace ChummerHub.Client.Sinners
                             ResultSinnerGetSINById found = null;
                             using (_ = Timekeeper.StartSyncron(
                                        "Checking if already online Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, await MyCharacter.GetFileNameAsync(token)))
                             {
                                 if (myState != null)
                                 {
@@ -218,7 +218,7 @@ namespace ChummerHub.Client.Sinners
                                     myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                                 }
 
-                                if (MySINnerFile.DownloadedFromSINnersTime > MyCharacter.FileLastWriteTime)
+                                if (MySINnerFile.DownloadedFromSINnersTime > await MyCharacter.GetFileLastWriteTimeAsync(token))
                                 {
                                     if (myState != null)
                                     {
@@ -256,11 +256,11 @@ namespace ChummerHub.Client.Sinners
                                 myState.CurrentProgress += myState.ProgressSteps;
                             using (_ = Timekeeper.StartSyncron(
                                        "Setting Visibility for Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, await MyCharacter.GetFileNameAsync(token)))
                             {
                                 if (found?.CallSuccess == true)
                                 {
-                                    if (found.MySINner != null && found.MySINner.LastChange >= MyCharacter.FileLastWriteTime)
+                                    if (found.MySINner != null && found.MySINner.LastChange >= await MyCharacter.GetFileLastWriteTimeAsync(token))
                                     {
                                         if (myState != null)
                                         {
@@ -681,13 +681,14 @@ namespace ChummerHub.Client.Sinners
             foreach (string file in Directory.GetFiles(tempDir))
             {
                 FileInfo fi = new FileInfo(file);
-                if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
+                if (fi.LastWriteTimeUtc < (blnSync ? MyCharacter.FileLastWriteTime : await MyCharacter.GetFileLastWriteTimeAsync(token)))
                     File.Delete(file);
             }
 
-            if (string.IsNullOrEmpty(MyCharacter.FileName))
+            string strFileName = blnSync ? MyCharacter.FileName : await MyCharacter.GetFileNameAsync(token);
+            if (string.IsNullOrEmpty(strFileName))
                 return null;
-            string tempfile = Path.Combine(tempDir, MyCharacter.FileName);
+            string tempfile = Path.Combine(tempDir, strFileName);
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
 
@@ -696,16 +697,17 @@ namespace ChummerHub.Client.Sinners
                 ? MyCharacter.DoOnSaveCompletedAsync.Remove(PluginHandler.MyOnSaveUpload)
                 : await MyCharacter.DoOnSaveCompletedAsync.RemoveAsync(PluginHandler.MyOnSaveUpload, token);
 
-            if (!File.Exists(MyCharacter.FileName))
+            strFileName = blnSync ? MyCharacter.FileName : await MyCharacter.GetFileNameAsync(token);
+            if (!File.Exists(strFileName))
             {
-                string path2 = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
+                string path2 = strFileName.Substring(0, strFileName.LastIndexOf('\\'));
                 CreateDirectoryRecursively(path2);
 
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    MyCharacter.Save(MyCharacter.FileName, false, false, token);
+                    MyCharacter.Save(strFileName, false, false, token);
                 else
-                    await MyCharacter.SaveAsync(MyCharacter.FileName, false, false, token);
+                    await MyCharacter.SaveAsync(strFileName, false, false, token);
             }
             else
             {
@@ -716,7 +718,7 @@ namespace ChummerHub.Client.Sinners
                     await MyCharacter.SaveAsync(tempfile, false, false, token);
             }
 
-            MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
+            MySINnerFile.LastChange = blnSync ? MyCharacter.FileLastWriteTime : await MyCharacter.GetFileLastWriteTimeAsync(token);
             if (readCallback)
             {
                 if (blnSync)
