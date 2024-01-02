@@ -7011,7 +7011,7 @@ namespace Chummer
 
                 string strAllowedCategories = objArmor.Category + ',' + objArmor.Name;
                 bool blnExcludeGeneralCategory = false;
-                XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
+                XmlElement xmlAddModCategory = objXmlArmor["forcemodcategory"];
                 if (xmlAddModCategory != null)
                 {
                     strAllowedCategories = xmlAddModCategory.InnerText;
@@ -21615,7 +21615,7 @@ namespace Chummer
                 return false;
             const bool blnCreateChildren = true;
             // Update Qualities.
-            XmlNode xmlQualities = objXmlKit["qualities"];
+            XmlElement xmlQualities = objXmlKit["qualities"];
             if (xmlQualities != null)
             {
                 XmlDocument xmlQualityDocument = await CharacterObject.LoadDataAsync("qualities.xml", token: token)
@@ -21663,7 +21663,7 @@ namespace Chummer
             //TODO: PACKS SKILLS?
 
             // Select a Martial Art.
-            XmlNode xmlSelectMartialArt = objXmlKit["selectmartialart"];
+            XmlElement xmlSelectMartialArt = objXmlKit["selectmartialart"];
             if (xmlSelectMartialArt != null)
             {
                 string strForcedValue = xmlSelectMartialArt.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -21692,7 +21692,7 @@ namespace Chummer
             }
 
             // Update Martial Arts.
-            XmlNode xmlMartialArts = objXmlKit["martialarts"];
+            XmlElement xmlMartialArts = objXmlKit["martialarts"];
             if (xmlMartialArts != null)
             {
                 // Open the Martial Arts XML file and locate the selected art.
@@ -21750,7 +21750,7 @@ namespace Chummer
             */
 
             // Update Complex Forms.
-            XmlNode xmlComplexForms = objXmlKit["complexforms"];
+            XmlElement xmlComplexForms = objXmlKit["complexforms"];
             if (xmlComplexForms != null)
             {
                 // Open the Programs XML file and locate the selected program.
@@ -21780,7 +21780,7 @@ namespace Chummer
             }
 
             // Update AI Programs.
-            XmlNode xmlPrograms = objXmlKit["programs"];
+            XmlElement xmlPrograms = objXmlKit["programs"];
             if (xmlPrograms != null)
             {
                 // Open the Programs XML file and locate the selected program.
@@ -21808,7 +21808,7 @@ namespace Chummer
             }
 
             // Update Spells.
-            XmlNode xmlSpells = objXmlKit["spells"];
+            XmlElement xmlSpells = objXmlKit["spells"];
             if (xmlSpells != null)
             {
                 XmlDocument objXmlSpellDocument
@@ -21842,7 +21842,7 @@ namespace Chummer
             }
 
             // Update Spirits.
-            XmlNode xmlSpirits = objXmlKit["spirits"];
+            XmlElement xmlSpirits = objXmlKit["spirits"];
             if (xmlSpirits != null)
             {
                 using (XmlNodeList xmlSpiritsList = xmlSpirits.SelectNodes("spirit"))
@@ -21868,7 +21868,7 @@ namespace Chummer
             }
 
             // Update Lifestyles.
-            XmlNode xmlLifestyles = objXmlKit["lifestyles"];
+            XmlElement xmlLifestyles = objXmlKit["lifestyles"];
             if (xmlLifestyles != null)
             {
                 XmlDocument objXmlLifestyleDocument
@@ -21920,7 +21920,7 @@ namespace Chummer
                 = await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
 
             // Update Armor.
-            XmlNode xmlArmors = objXmlKit["armors"];
+            XmlElement xmlArmors = objXmlKit["armors"];
             if (xmlArmors != null)
             {
                 XmlDocument objXmlArmorDocument
@@ -21972,7 +21972,7 @@ namespace Chummer
             }
 
             // Update Weapons.
-            XmlNode xmlWeapons = objXmlKit["weapons"];
+            XmlElement xmlWeapons = objXmlKit["weapons"];
             if (xmlWeapons != null)
             {
                 XmlDocument objXmlWeaponDocument
@@ -22024,7 +22024,7 @@ namespace Chummer
                         }
 
                         // Look for an Underbarrel Weapon.
-                        XmlNode xmlUnderbarrelNode = objXmlWeapon["underbarrel"];
+                        XmlElement xmlUnderbarrelNode = objXmlWeapon["underbarrel"];
                         if (xmlUnderbarrelNode != null)
                         {
                             XmlNode objXmlUnderbarrelNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
@@ -22091,7 +22091,7 @@ namespace Chummer
                 = await CharacterObject.LoadDataAsync("bioware.xml", token: token).ConfigureAwait(false);
 
             // Update Cyberware.
-            XmlNode xmlCyberwares = objXmlKit["cyberwares"];
+            XmlElement xmlCyberwares = objXmlKit["cyberwares"];
             if (xmlCyberwares != null)
             {
                 XmlNodeList xmlCyberwaresList = xmlCyberwares.SelectNodes("cyberware");
@@ -22116,7 +22116,7 @@ namespace Chummer
             }
 
             // Update Bioware.
-            XmlNode xmlBiowares = objXmlKit["biowares"];
+            XmlElement xmlBiowares = objXmlKit["biowares"];
             if (xmlBiowares != null)
             {
                 XmlNodeList xmlBiowaresList = xmlBiowares.SelectNodes("bioware");
@@ -22141,7 +22141,7 @@ namespace Chummer
             }
 
             // Update Gear.
-            XmlNode xmlGears = objXmlKit["gears"];
+            XmlElement xmlGears = objXmlKit["gears"];
             if (xmlGears != null)
             {
                 XmlNodeList xmlGearsList = xmlGears.SelectNodes("gear");
@@ -22165,7 +22165,7 @@ namespace Chummer
             }
 
             // Update Vehicles.
-            XmlNode xmlVehicles = objXmlKit["vehicles"];
+            XmlElement xmlVehicles = objXmlKit["vehicles"];
             if (xmlVehicles != null)
             {
                 XmlDocument objXmlVehicleDocument
@@ -22293,7 +22293,7 @@ namespace Chummer
                             }
 
                             // Look for an Underbarrel Weapon.
-                            XmlNode xmlUnderbarrelNode = objXmlWeapon["underbarrel"];
+                            XmlElement xmlUnderbarrelNode = objXmlWeapon["underbarrel"];
                             if (xmlUnderbarrelNode != null)
                             {
                                 XmlNode objXmlUnderbarrelNode =

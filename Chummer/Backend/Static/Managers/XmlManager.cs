@@ -1353,7 +1353,7 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdFilter))
                                 {
-                                    XmlNode xmlIdNode = objType["id"];
+                                    XmlElement xmlIdNode = objType["id"];
                                     if (xmlIdNode != null)
                                         sbdFilter.Append("id = ")
                                                  .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
@@ -1438,12 +1438,12 @@ namespace Chummer
                                 if (objParentNode == null)
                                     continue;
                                 string strFilter = string.Empty;
-                                XmlNode xmlIdNode = objChild["id"];
+                                XmlElement xmlIdNode = objChild["id"];
                                 if (xmlIdNode != null)
                                     strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
                                 else
                                 {
-                                    XmlNode xmlNameNode = objChild["name"];
+                                    XmlElement xmlNameNode = objChild["name"];
                                     if (xmlNameNode != null)
                                     {
                                         strFilter += (string.IsNullOrEmpty(strFilter)
@@ -1492,7 +1492,7 @@ namespace Chummer
                                 objNode.RemoveChild(objRemoveNode);
                             }
 
-                            XmlNode xmlExistingNode = objDocElement[objNode.Name];
+                            XmlElement xmlExistingNode = objDocElement[objNode.Name];
                             if (xmlExistingNode != null
                                 && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count)
                             {
@@ -1619,7 +1619,7 @@ namespace Chummer
                     else
                     {
                         // Fetch the old node based on identifiers present in the amending node (id or name)
-                        XmlNode objAmendingNodeId = xmlAmendingNode["id"];
+                        XmlElement objAmendingNodeId = xmlAmendingNode["id"];
                         if (objAmendingNodeId != null)
                         {
                             sbdFilter.Append("id = ")
@@ -1746,7 +1746,11 @@ namespace Chummer
                     case "regexreplace":
                         // Operation only supported if a pattern is actually defined
                         if (string.IsNullOrWhiteSpace(strRegexPattern))
+                        {
+                            strOperation = "replace";
                             goto case "replace";
+                        }
+
                         // Test to make sure RegEx pattern is properly formatted before actual amend code starts
                         // Exit out early if it is not properly formatted
                         try

@@ -2647,7 +2647,7 @@ namespace Chummer
                 Movement = objXmlMetatype["movement"]?.InnerText ?? string.Empty;
 
                 // Determine if the Metatype has any bonuses.
-                XmlNode xmlBonusNode = charNode["bonus"];
+                XmlElement xmlBonusNode = charNode["bonus"];
                 if (xmlBonusNode != null)
                     ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId,
                         xmlBonusNode, 1, strMetatypeId, token: token);
@@ -3173,7 +3173,7 @@ namespace Chummer
 
                 if (strSelectedMetatypeCategory == "Spirits")
                 {
-                    XmlNode xmlOptionalPowersNode = charNode["optionalpowers"];
+                    XmlElement xmlOptionalPowersNode = charNode["optionalpowers"];
                     if (xmlOptionalPowersNode != null && intForce >= 3)
                     {
                         XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
@@ -5671,25 +5671,19 @@ namespace Chummer
                                                     intReturn -= Math.Abs(i - intLoopIndex) * intBaseline;
                                             }
 
-                                            foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
-                                            {
-                                                if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
-                                                        x => x.Name != strLoopCustomDataName))
-                                                    intReturn -= intBaselineCustomDataCount * intBaseline;
-                                            }
+                                            int intMismatchCount = lstSavedCustomDataDirectoryNames.Count(x =>
+                                                objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
+                                                    y => y.Name != x));
+                                            if (intMismatchCount != 0)
+                                                intReturn -= intMismatchCount * intBaselineCustomDataCount *
+                                                             intBaseline;
                                         }
 
                                         using (new FetchSafelyFromPool<HashSet<string>>(
                                                    Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
-                                            int intExtraBooks = 0;
-                                            foreach (string strBook in objOptionsToCheck.Books)
-                                            {
-                                                if (setDummyBooks.Remove(strBook))
-                                                    ++intExtraBooks;
-                                            }
-
+                                            int intExtraBooks = objOptionsToCheck.Books.Count(x => setDummyBooks.Remove(x));
                                             setDummyBooks.IntersectWith(objOptionsToCheck.Books);
                                             intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                                                           + intExtraBooks) * intBaseline;
@@ -5773,27 +5767,21 @@ namespace Chummer
                                                     intReturn -= Math.Abs(i - intLoopIndex) * intBaseline;
                                             }
 
-                                            foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
-                                            {
-                                                if (lstOtherEnabledCustomDataDirectoryInfos.All(
-                                                        x => x.Name != strLoopCustomDataName))
-                                                    intReturn -= intBaselineCustomDataCount * intBaseline;
-                                            }
+                                            int intMismatchCount = lstSavedCustomDataDirectoryNames.Count(x =>
+                                                objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
+                                                    y => y.Name != x));
+                                            if (intMismatchCount != 0)
+                                                intReturn -= intMismatchCount * intBaselineCustomDataCount *
+                                                             intBaseline;
                                         }
 
                                         using (new FetchSafelyFromPool<HashSet<string>>(
                                                    Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
-                                            int intExtraBooks = 0;
                                             IReadOnlyCollection<string> setOtherBooks
                                                 = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
-                                            foreach (string strBook in setOtherBooks)
-                                            {
-                                                if (setDummyBooks.Remove(strBook))
-                                                    ++intExtraBooks;
-                                            }
-
+                                            int intExtraBooks = setOtherBooks.Count(x => setDummyBooks.Remove(x));
                                             setDummyBooks.IntersectWith(setOtherBooks);
                                             intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                                                           + intExtraBooks) * intBaseline;
@@ -7416,7 +7404,7 @@ namespace Chummer
                                 _oldSkillsBackup = objXmlCharacter["skills"]?.Clone();
                                 _oldSkillGroupBackup = objXmlCharacter["skillgroups"]?.Clone();
 
-                                XmlNode objSkillNode = objXmlCharacter["newskills"];
+                                XmlElement objSkillNode = objXmlCharacter["newskills"];
                                 if (blnSync)
                                 {
                                     if (objSkillNode != null)
@@ -9111,7 +9099,7 @@ namespace Chummer
                                                     || objInitiationGrade.Grade.DivAwayFromZero(2) >
                                                     objCyberadeptImprovement.Value
                                                     || Metamagics.Any(x => x.Grade == objInitiationGrade.Grade, token)
-                                                    || lstCyberadeptSweepGrades.All(x =>
+                                                    || lstCyberadeptSweepGrades.TrueForAll(x =>
                                                             x.ImproveSource != Improvement.ImprovementSource
                                                                 .CyberadeptDaemon
                                                             || x.SourceName != objInitiationGrade.InternalId))
@@ -9130,7 +9118,7 @@ namespace Chummer
                                                     objCyberadeptImprovement.Value
                                                     || await Metamagics.AnyAsync(
                                                         x => x.Grade == objInitiationGrade.Grade, token).ConfigureAwait(false)
-                                                    || lstCyberadeptSweepGrades.All(x =>
+                                                    || lstCyberadeptSweepGrades.TrueForAll(x =>
                                                         x.ImproveSource != Improvement.ImprovementSource
                                                             .CyberadeptDaemon
                                                         || x.SourceName != objInitiationGrade.InternalId))
@@ -14023,21 +14011,22 @@ namespace Chummer
         /// </summary>
         public async Task<List<string>> GenerateBlackMarketMappingsAsync(XPathNavigator xmlCategoryList, CancellationToken token = default)
         {
-            List<string> lstReturn = new List<string>();
+            token.ThrowIfCancellationRequested();
+            List<string> lstReturn;
             if (xmlCategoryList == null)
-                return lstReturn;
+                return new List<string>();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Character has no Black Market discount qualities. Fail out early.
                 if (!BlackMarketDiscount)
-                    return lstReturn;
+                    return new List<string>();
                 // if the passed list is still the root, assume we're looking for default categories. Special cases like vehicle modcategories are expected to be passed through by the parameter.
                 if (xmlCategoryList.Name == "chummer")
                 {
                     xmlCategoryList = xmlCategoryList.SelectSingleNodeAndCacheExpression("categories", token);
                     if (xmlCategoryList == null)
-                        return lstReturn;
+                        return new List<string>();
                 }
 
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
@@ -14050,8 +14039,11 @@ namespace Chummer
                         setNames.Add(objImprovement.ImprovedName);
                     }
 
+                    XPathNodeIterator lstCategories = xmlCategoryList.SelectAndCacheExpression("category", token);
+                    lstReturn = new List<string>(lstCategories.Count);
+
                     // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
-                    foreach (XPathNavigator xmlCategoryNode in xmlCategoryList.SelectAndCacheExpression("category", token))
+                    foreach (XPathNavigator xmlCategoryNode in lstCategories)
                     {
                         string strBlackMarketAttribute
                             = xmlCategoryNode.SelectSingleNodeAndCacheExpression("@blackmarket", token)?.Value;
@@ -16461,7 +16453,7 @@ namespace Chummer
                     .Where(x => x.ImproveSource
                                 == Improvement.ImprovementSource
                                     .AstralReputation).ToList();
-                if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
+                if (lstCurrentAstralReputationImprovements.TrueForAll(x => x.Value == -intCurrentTotalAstralReputation))
                     return true;
                 ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements, token: token);
                 try
@@ -16524,7 +16516,7 @@ namespace Chummer
                 int intCurrentTotalAstralReputation = TotalAstralReputation;
                 List<Improvement> lstCurrentAstralReputationImprovements = await (await GetImprovementsAsync(token).ConfigureAwait(false))
                     .ToListAsync(x => x.ImproveSource == Improvement.ImprovementSource.AstralReputation, token).ConfigureAwait(false);
-                if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
+                if (lstCurrentAstralReputationImprovements.TrueForAll(x => x.Value == -intCurrentTotalAstralReputation))
                     return true;
                 await ImprovementManager.RemoveImprovementsAsync(this, lstCurrentAstralReputationImprovements,
                     token: token).ConfigureAwait(false);
@@ -18687,7 +18679,7 @@ namespace Chummer
                                 List<Improvement> lstAttributeImprovements = ImprovementManager
                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Attribute,
                                                                         "MAG");
-                                bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Exists(
                                     x => x.ImproveSource
                                          == Improvement.ImprovementSource
                                                        .Metatype
@@ -18728,7 +18720,7 @@ namespace Chummer
                                                     .GetCachedImprovementListForValueOf(
                                                         this, Improvement.ImprovementType.SpecificQuality,
                                                         objQuality.InternalId);
-                                                if (lstSpecificQualityImprovements.Any(x =>
+                                                if (lstSpecificQualityImprovements.Exists(x =>
                                                         x.ImproveSource == Improvement.ImprovementSource.Metatype
                                                         || x.ImproveSource == Improvement.ImprovementSource
                                                             .Metavariant
@@ -18956,7 +18948,7 @@ namespace Chummer
                                         .Attribute,
                                     "MAG", token: token)
                                 .ConfigureAwait(false);
-                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Exists(
                                 x => x.ImproveSource
                                      == Improvement.ImprovementSource
                                          .Metatype
@@ -19000,7 +18992,7 @@ namespace Chummer
                                                 .GetCachedImprovementListForValueOfAsync(
                                                     this, Improvement.ImprovementType.SpecificQuality,
                                                     objQuality.InternalId, token: token).ConfigureAwait(false);
-                                            if (lstSpecificQualityImprovements.Any(x =>
+                                            if (lstSpecificQualityImprovements.Exists(x =>
                                                     x.ImproveSource == Improvement.ImprovementSource.Metatype
                                                     || x.ImproveSource == Improvement.ImprovementSource
                                                         .Metavariant
@@ -19964,7 +19956,7 @@ namespace Chummer
                                 List<Improvement> lstAttributeImprovements = ImprovementManager
                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Attribute,
                                         "RES");
-                                bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Exists(
                                     x => x.ImproveSource
                                          == Improvement.ImprovementSource
                                              .Metatype
@@ -20005,7 +19997,7 @@ namespace Chummer
                                                     .GetCachedImprovementListForValueOf(
                                                         this, Improvement.ImprovementType.SpecificQuality,
                                                         objQuality.InternalId);
-                                                if (lstSpecificQualityImprovements.Any(x =>
+                                                if (lstSpecificQualityImprovements.Exists(x =>
                                                         x.ImproveSource == Improvement.ImprovementSource.Metatype
                                                         || x.ImproveSource == Improvement.ImprovementSource
                                                             .Metavariant
@@ -20258,7 +20250,7 @@ namespace Chummer
                                         .Attribute,
                                     "RES", token: token)
                                 .ConfigureAwait(false);
-                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Exists(
                                 x => x.ImproveSource
                                      == Improvement.ImprovementSource
                                          .Metatype
@@ -20302,7 +20294,7 @@ namespace Chummer
                                                 .GetCachedImprovementListForValueOfAsync(
                                                     this, Improvement.ImprovementType.SpecificQuality,
                                                     objQuality.InternalId, token: token).ConfigureAwait(false);
-                                            if (lstSpecificQualityImprovements.Any(x =>
+                                            if (lstSpecificQualityImprovements.Exists(x =>
                                                     x.ImproveSource == Improvement.ImprovementSource.Metatype
                                                     || x.ImproveSource == Improvement.ImprovementSource
                                                         .Metavariant
@@ -20534,7 +20526,7 @@ namespace Chummer
                                 List<Improvement> lstAttributeImprovements = ImprovementManager
                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Attribute,
                                         "DEP");
-                                bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Exists(
                                     x => x.ImproveSource
                                          == Improvement.ImprovementSource
                                              .Metatype
@@ -20575,7 +20567,7 @@ namespace Chummer
                                                     .GetCachedImprovementListForValueOf(
                                                         this, Improvement.ImprovementType.SpecificQuality,
                                                         objQuality.InternalId);
-                                                if (lstSpecificQualityImprovements.Any(x =>
+                                                if (lstSpecificQualityImprovements.Exists(x =>
                                                         x.ImproveSource == Improvement.ImprovementSource.Metatype
                                                         || x.ImproveSource == Improvement.ImprovementSource
                                                             .Metavariant
@@ -20776,7 +20768,7 @@ namespace Chummer
                                         .Attribute,
                                     "DEP", token: token)
                                 .ConfigureAwait(false);
-                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Exists(
                                 x => x.ImproveSource
                                      == Improvement.ImprovementSource
                                          .Metatype
@@ -20820,7 +20812,7 @@ namespace Chummer
                                                 .GetCachedImprovementListForValueOfAsync(
                                                     this, Improvement.ImprovementType.SpecificQuality,
                                                     objQuality.InternalId, token: token).ConfigureAwait(false);
-                                            if (lstSpecificQualityImprovements.Any(x =>
+                                            if (lstSpecificQualityImprovements.Exists(x =>
                                                     x.ImproveSource == Improvement.ImprovementSource.Metatype
                                                     || x.ImproveSource == Improvement.ImprovementSource
                                                         .Metavariant
@@ -27820,7 +27812,7 @@ namespace Chummer
                     if (Settings.NoArmorEncumbrance)
                         return 0;
                     List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
-                    if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.All(objArmor => !objArmor.Encumbrance))
+                    if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.TrueForAll(objArmor => !objArmor.Encumbrance))
                         return 0;
                     int intAverageStrength = STR?.TotalValue ?? 0;
                     // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
@@ -27933,7 +27925,7 @@ namespace Chummer
                 if (Settings.NoArmorEncumbrance)
                     return 0;
                 List<Armor> lstArmorsToConsider = await Armor.ToListAsync(objArmor => objArmor.Equipped, token: token).ConfigureAwait(false);
-                if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.All(objArmor => !objArmor.Encumbrance))
+                if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.TrueForAll(objArmor => !objArmor.Encumbrance))
                     return 0;
                 CharacterAttrib objStrength = await GetAttributeAsync("STR", token: token).ConfigureAwait(false);
                 int intAverageStrength = objStrength != null ? await objStrength.GetTotalValueAsync(token).ConfigureAwait(false) : 0;
@@ -28476,7 +28468,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return await GetIsAIAsync(token).ConfigureAwait(false)
                     ? await LanguageManager
-                        .GetStringAsync(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM",
+                        .GetStringAsync(
+                            await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle
+                                ? "Label_OtherPhysicalCM"
+                                : "Label_OtherCoreCM",
                             token: token).ConfigureAwait(false)
                     : await LanguageManager.GetStringAsync("Label_OtherPhysicalCM", token: token).ConfigureAwait(false);
             }
@@ -31415,12 +31410,11 @@ namespace Chummer
                     if (Settings.CyberlegMovement && blnUseCyberlegs)
                     {
                         int intTempAGI = int.MaxValue;
-                        int intLegs = 0;
-                        foreach (Cyberware objCyber in Cyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
+                        int intLegs = Cyberware.Sum(x => x.LimbSlot == "leg", x =>
                         {
-                            intLegs += objCyber.LimbSlotCount;
-                            intTempAGI = Math.Min(intTempAGI, objCyber.GetAttributeTotalValue("AGI"));
-                        }
+                            intTempAGI = Math.Min(intTempAGI, x.GetAttributeTotalValue("AGI"));
+                            return x.LimbSlotCount;
+                        });
 
                         if (intTempAGI != int.MaxValue && intLegs >= 2)
                         {
@@ -31506,14 +31500,13 @@ namespace Chummer
                     if (blnUseCyberlegs && await (await GetSettingsAsync(token).ConfigureAwait(false)).GetCyberlegMovementAsync(token).ConfigureAwait(false))
                     {
                         int intTempAGI = int.MaxValue;
-                        int intLegs = 0;
-                        await (await GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async objCyber =>
-                        {
-                            if (objCyber.LimbSlot != "leg")
-                                return;
-                            intLegs += await objCyber.GetLimbSlotCountAsync(token).ConfigureAwait(false);
-                            intTempAGI = Math.Min(intTempAGI, await objCyber.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false));
-                        }, token).ConfigureAwait(false);
+                        int intLegs = await (await GetCyberwareAsync(token).ConfigureAwait(false)).SumAsync(
+                            x => x.LimbSlot == "leg", async objCyber =>
+                            {
+                                intTempAGI = Math.Min(intTempAGI,
+                                    await objCyber.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false));
+                                return await objCyber.GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
 
                         if (intTempAGI != int.MaxValue && intLegs >= 2)
                         {
@@ -34393,7 +34386,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            List<string> lstBooks = new List<string>();
+            List<string> lstBooks = new List<string>(strInput.Count(x => x == ';'));
             // Load the Sourcebook information.
             XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
 
@@ -34446,9 +34439,10 @@ namespace Chummer
         public async Task<string> TranslatedBookListAsync(string strInput, string strLanguage = "",
                                                           CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            List<string> lstBooks = new List<string>();
+            List<string> lstBooks = new List<string>(strInput.Count(x => x == ';'));
             // Load the Sourcebook information.
             XPathNavigator objXmlDocument
                 = await LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false);
@@ -34671,7 +34665,7 @@ namespace Chummer
                         int intCount = Math.Min(Cyberware.Sum(x => x.GetCyberlimbCount(Settings.RedlinerExcludes)) / 2,
                             2);
 
-                        return _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
+                        return _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
                             ? intCount
                             : 0;
                     }
@@ -34705,7 +34699,7 @@ namespace Chummer
                             await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token),
                                 token: token).ConfigureAwait(false) / 2, 2);
 
-                    return _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
+                    return _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
                         ? intCount
                         : 0;
                 }
@@ -34751,7 +34745,7 @@ namespace Chummer
                 //Calculate bonus from cyberlimbs
                 int intCount = Math.Min(Cyberware.Sum(x => x.GetCyberlimbCount(Settings.RedlinerExcludes)) / 2, 2);
 
-                _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
+                _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
                     ? intCount
                     : 0;
 
@@ -34863,7 +34857,7 @@ namespace Chummer
                         await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token), token)
                             .ConfigureAwait(false) / 2, 2);
 
-                _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
+                _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
                     ? intCount
                     : 0;
 
@@ -38283,7 +38277,6 @@ namespace Chummer
             }
         }
 
-
         private async Task SetLoadAsDirtyAsync(bool value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -41184,21 +41177,20 @@ namespace Chummer
                                 {
                                     Contact objContact = new Contact(this)
                                     {
-                                        EntityType = ContactType.Contact
+                                        EntityType = ContactType.Contact,
+                                        Name
+                                            = xmlContactToImport.SelectSingleNodeAndCacheExpression("@name", token)
+                                                ?.Value ?? string.Empty,
+                                        Role
+                                            = xmlContactToImport.SelectSingleNodeAndCacheExpression("@type", token)
+                                                ?.Value ?? string.Empty,
+                                        Connection =
+                                            xmlContactToImport.SelectSingleNodeAndCacheExpression("@connection", token)
+                                                ?.ValueAsInt ?? 1,
+                                        Loyalty = xmlContactToImport
+                                            .SelectSingleNodeAndCacheExpression("@loyalty", token)
+                                            ?.ValueAsInt ?? 1
                                     };
-
-                                    objContact.Name
-                                        = xmlContactToImport.SelectSingleNodeAndCacheExpression("@name", token)
-                                            ?.Value ?? string.Empty;
-                                    objContact.Role
-                                        = xmlContactToImport.SelectSingleNodeAndCacheExpression("@type", token)
-                                            ?.Value ?? string.Empty;
-                                    objContact.Connection =
-                                        xmlContactToImport.SelectSingleNodeAndCacheExpression("@connection", token)
-                                            ?.ValueAsInt ?? 1;
-                                    objContact.Loyalty = xmlContactToImport
-                                        .SelectSingleNodeAndCacheExpression("@loyalty", token)
-                                        ?.ValueAsInt ?? 1;
 
                                     string strDescription =
                                         xmlContactToImport.SelectSingleNodeAndCacheExpression(
@@ -42240,10 +42232,10 @@ namespace Chummer
                             {
                                 // Complex Forms/Technomancer Programs.
                                 string strComplexFormsLine =
-                                    lstTextStatBlockLines?.FirstOrDefault(x =>
-                                                                              x.StartsWith(
-                                                                                  "Complex Forms:",
-                                                                                  StringComparison.Ordinal));
+                                    lstTextStatBlockLines?.Find(x =>
+                                        x.StartsWith(
+                                            "Complex Forms:",
+                                            StringComparison.Ordinal));
                                 if (!string.IsNullOrEmpty(strComplexFormsLine))
                                 {
                                     XmlDocument xmlComplexFormsDocument = blnSync

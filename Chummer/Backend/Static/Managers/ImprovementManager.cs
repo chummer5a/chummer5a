@@ -209,7 +209,7 @@ namespace Chummer
             }
             else
             {
-                List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>();
+                List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>(Math.Max(s_DictionaryCachedValues.Count, s_DictionaryCachedAugmentedValues.Count));
                 foreach (ImprovementDictionaryKey objCachedValueKey in s_DictionaryCachedValues.Keys)
                 {
                     token.ThrowIfCancellationRequested();
@@ -260,7 +260,7 @@ namespace Chummer
         public static void ClearCachedValues(Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>();
+            List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>(Math.Max(s_DictionaryCachedValues.Count, s_DictionaryCachedAugmentedValues.Count));
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys)
             {
                 token.ThrowIfCancellationRequested();
@@ -1854,7 +1854,7 @@ namespace Chummer
                     if (!string.IsNullOrWhiteSpace(strMaximumRating))
                         frmPickSkill.MyForm.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
 
-                    XmlNode xmlSkillCategories = xmlBonusNode["skillcategories"];
+                    XmlElement xmlSkillCategories = xmlBonusNode["skillcategories"];
                     if (xmlSkillCategories != null)
                         frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
                     string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
@@ -2012,12 +2012,9 @@ namespace Chummer
                                 {
                                     LimitSelection = _strForcedValue;
                                 }
-                                else if (objCharacter != null)
+                                else if (objCharacter?.PushText.TryPop(out string strText) == true)
                                 {
-                                    if (objCharacter.PushText.TryPop(out string strText))
-                                    {
-                                        LimitSelection = strText;
-                                    }
+                                    LimitSelection = strText;
                                 }
 
                                 sbdTrace.Append("SelectedValue = ").AppendLine(SelectedValue);

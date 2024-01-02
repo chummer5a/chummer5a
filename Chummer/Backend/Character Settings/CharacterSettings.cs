@@ -5322,11 +5322,11 @@ namespace Chummer
                         {
                             int intReturn = int.MaxValue;
                             intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
-                                         * 2.RaiseToPower(24);
+                                         * 16777216;
                             intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2)
-                                         * 2.RaiseToPower(16);
+                                         * 65536;
                             intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2)
-                                         * 2.RaiseToPower(8);
+                                         * 256;
                             intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
                             return intReturn;
                         }
@@ -5389,11 +5389,11 @@ namespace Chummer
                         {
                             int intReturn = int.MaxValue;
                             intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
-                                         * 2.RaiseToPower(24);
+                                         * 16777216;
                             intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2)
-                                         * 2.RaiseToPower(16);
+                                         * 65536;
                             intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2)
-                                         * 2.RaiseToPower(8);
+                                         * 256;
                             intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
                             return intReturn;
                         }

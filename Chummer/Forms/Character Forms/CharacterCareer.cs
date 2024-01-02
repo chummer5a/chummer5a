@@ -5683,7 +5683,7 @@ namespace Chummer
                                 objMerge.Movement = strMovement;
 
                             // Add any additional Critter Powers the Vessel grants.
-                            XmlNode xmlPowersNode = objSelected["powers"];
+                            XmlElement xmlPowersNode = objSelected["powers"];
                             if (xmlPowersNode != null)
                             {
                                 using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
@@ -8549,7 +8549,7 @@ namespace Chummer
                             if (!blnFreeCost)
                             {
                                 objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                                XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
+                                XmlElement xmlDiscountNode = objXmlQuality["costdiscount"];
                                 if (xmlDiscountNode != null && await xmlDiscountNode.CreateNavigator().RequirementsMetAsync(CharacterObject, token: GenericToken).ConfigureAwait(false))
                                 {
                                     int intTemp = 0;
@@ -10631,7 +10631,7 @@ namespace Chummer
 
                 string strAllowedCategories = objArmor.Category + ',' + objArmor.Name;
                 bool blnExcludeGeneralCategory = false;
-                XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
+                XmlElement xmlAddModCategory = objXmlArmor["forcemodcategory"];
                 if (xmlAddModCategory != null)
                 {
                     strAllowedCategories = xmlAddModCategory.InnerText;
@@ -15087,7 +15087,6 @@ namespace Chummer
                                    () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
                                    GenericToken).ConfigureAwait(false))
                         {
-
                             if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 break;

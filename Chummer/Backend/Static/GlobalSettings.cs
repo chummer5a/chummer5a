@@ -939,7 +939,6 @@ namespace Chummer
                         IReadOnlyDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
                         foreach (SourcebookInfo objSourcebookInfo in dicSourcebookInfos.Values)
                         {
-
                             objSourceRegistry.SetValue(objSourcebookInfo.Code,
                                 objSourcebookInfo.Path + '|'
                                                        + objSourcebookInfo.Offset.ToString(

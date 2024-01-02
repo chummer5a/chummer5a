@@ -316,7 +316,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // Local for thread safety
             DebuggableSemaphoreSlim objAutosaveSemaphore = _objAutosaveSemaphore;
-            if (objAutosaveSemaphore != null && !await objAutosaveSemaphore.WaitAsync(0, token).ConfigureAwait(false))
+            if (objAutosaveSemaphore == null || !await objAutosaveSemaphore.WaitAsync(0, token).ConfigureAwait(false))
                 return;
             try
             {
@@ -9799,7 +9799,7 @@ namespace Chummer
             try
             {
                 await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9818,7 +9818,7 @@ namespace Chummer
             try
             {
                 await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9831,7 +9831,7 @@ namespace Chummer
             try
             {
                 await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
