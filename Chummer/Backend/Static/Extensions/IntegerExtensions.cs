@@ -123,7 +123,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Exponentiates an integer by another integer, returning an integer with double the amount of bit-space.
+        /// Exponentiates an integer by another integer, returning a 64-bit integer.
         /// </summary>
         /// <param name="intBase">Number to exponentiate.</param>
         /// <param name="intPower">Power to which to raise <paramref name="intBase"/>.</param>
@@ -199,26 +199,26 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Exponentiates a short by another short, returning an integer.
+        /// Exponentiates a short by another short, returning a 64-bit integer.
         /// </summary>
         /// <param name="shtBase">Number to exponentiate.</param>
         /// <param name="shtPower">Power to which to raise <paramref name="shtBase"/>.</param>
         /// <returns><paramref name="shtBase"/> to the power of <paramref name="shtPower"/>.</returns>
-        internal static int RaiseToPowerSafe(this short shtBase, short shtPower)
+        internal static long RaiseToPowerSafe(this short shtBase, short shtPower)
         {
             switch (shtPower)
             {
                 case 3: // (Potentially) common case, handle explicitly
-                    if (shtBase >= 1291 || shtBase <= -1291) // cubing this will cause an overflow exception, so break
-                    {
-                        Utils.BreakIfDebug();
-                        throw new ArgumentException("Base is too big to be cubed and still stay an integer.", nameof(shtBase));
-                    }
-
-                    return shtBase * shtBase * shtBase;
+                {
+                    long lngBase = shtBase;
+                    return lngBase * lngBase * lngBase;
+                }
 
                 case 2: // Extremely common case, so handle it explicitly
-                    return shtBase * shtBase;
+                {
+                    long lngBase = shtBase;
+                    return lngBase * lngBase;
+                }
 
                 case 1:
                     return shtBase;
@@ -245,26 +245,97 @@ namespace Chummer
             // Special case when both the base and the exponent are powers of 2, since we can make things faster by bit shifting
             if ((shtBase & (shtBase - 1)) == 0 && (shtPower & (shtPower - 1)) == 0)
             {
+                long lngBase = shtBase;
                 for (; shtPower > 1; shtPower >>= 1)
                 {
-                    shtBase <<= 1;
+                    lngBase <<= 1;
                 }
 
-                return shtBase;
+                return lngBase;
             }
-            int intReturn = 1;
+            long lngReturn = 1;
             short i;
             // Dual loop structure looks funky, but cuts down on number of multiplication operations in worst case scenarios compared to a single loop
             for (; shtPower > 1; shtPower -= (short)(i >> 1))
             {
-                int intLoopElement = shtBase;
+                long lngLoopElement = shtBase;
                 for (i = 2; i <= shtPower; i <<= 1)
                 {
-                    intLoopElement *= intLoopElement;
+                    lngLoopElement *= lngLoopElement;
                 }
-                intReturn *= intLoopElement;
+                lngReturn *= lngLoopElement;
             }
-            return intReturn;
+            return lngReturn;
+        }
+
+        /// <summary>
+        /// Exponentiates a signed sbye by another signed sbye, returning a 64-bit integer.
+        /// </summary>
+        /// <param name="sbyBase">Number to exponentiate.</param>
+        /// <param name="sbyPower">Power to which to raise <paramref name="sbyBase"/>.</param>
+        /// <returns><paramref name="sbyBase"/> to the power of <paramref name="sbyPower"/>.</returns>
+        internal static long RaiseToPowerSafe(this sbyte sbyBase, sbyte sbyPower)
+        {
+            switch (sbyPower)
+            {
+                case 3: // (Potentially) common case, handle explicitly
+                    {
+                        long lngBase = sbyBase;
+                        return lngBase * lngBase * lngBase;
+                    }
+
+                case 2: // Extremely common case, so handle it explicitly
+                    {
+                        long lngBase = sbyBase;
+                        return lngBase * lngBase;
+                    }
+
+                case 1:
+                    return sbyBase;
+
+                case 0: // Yes, even 0^0 should return 1 per IEEE specifications
+                    return 1;
+            }
+            switch (sbyBase)
+            {
+                case 1:
+                    return 1;
+
+                case 0:
+                    if (sbyPower < 0)
+                        throw new DivideByZeroException();
+                    return 0;
+
+                case -1:
+                    return (Math.Abs(sbyPower) & 1) == 0 ? 1 : -1;
+            }
+            // Integer division always rounds towards zero, so every base except the ones already handled ends up producing 0 after rounding
+            if (sbyPower < 0)
+                return 0;
+            // Special case when both the base and the exponent are powers of 2, since we can make things faster by bit shifting
+            if ((sbyBase & (sbyBase - 1)) == 0 && (sbyPower & (sbyPower - 1)) == 0)
+            {
+                long lngBase = sbyBase;
+                for (; sbyPower > 1; sbyPower >>= 1)
+                {
+                    lngBase <<= 1;
+                }
+
+                return lngBase;
+            }
+            long lngReturn = 1;
+            sbyte i;
+            // Dual loop structure looks funky, but cuts down on number of multiplication operations in worst case scenarios compared to a single loop
+            for (; sbyPower > 1; sbyPower -= (sbyte)(i >> 1))
+            {
+                long lngLoopElement = sbyBase;
+                for (i = 2; i <= sbyPower; i <<= 1)
+                {
+                    lngLoopElement *= lngLoopElement;
+                }
+                lngReturn *= lngLoopElement;
+            }
+            return lngReturn;
         }
     }
 }
