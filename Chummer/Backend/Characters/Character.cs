@@ -5608,7 +5608,7 @@ namespace Chummer
                                                            .RaiseToPower(2)
                                                            + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
                                                            .RaiseToPower(2))
-                                                          .RaiseToPower(0.5m).StandardRound();
+                                                          .RaiseToPower(0.5m, decimal.MaxValue).StandardRound();
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
 
@@ -5701,7 +5701,7 @@ namespace Chummer
                                                            .RaiseToPower(2)
                                                            + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
                                                            .RaiseToPower(2))
-                                                          .RaiseToPower(0.5m).StandardRound();
+                                                          .RaiseToPower(0.5m, decimal.MaxValue).StandardRound();
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
 
