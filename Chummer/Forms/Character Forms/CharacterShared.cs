@@ -376,7 +376,7 @@ namespace Chummer
             }
             finally
             {
-                objAutosaveSemaphore.Release();
+                _objAutosaveSemaphore?.Release();
             }
         }
 
@@ -9938,7 +9938,7 @@ namespace Chummer
                 }
                 catch
                 {
-                    objCharacterUpdateStartingSemaphore.Release();
+                    CharacterUpdateStartingSemaphore?.Release();
                     throw;
                 }
                 Task tskTemp = Task.CompletedTask;
@@ -9982,7 +9982,7 @@ namespace Chummer
                 catch
                 {
                     Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource)?.Dispose();
-                    objCharacterUpdateStartingSemaphore.Release();
+                    CharacterUpdateStartingSemaphore?.Release();
                     throw;
                 }
 
@@ -10046,7 +10046,7 @@ namespace Chummer
                 }
                 catch
                 {
-                    objCharacterUpdateStartingSemaphore.Release();
+                    CharacterUpdateStartingSemaphore?.Release();
                     throw;
                 }
                 Task tskTemp = Task.CompletedTask;
@@ -10090,7 +10090,7 @@ namespace Chummer
                 catch
                 {
                     Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource)?.Dispose();
-                    objCharacterUpdateStartingSemaphore.Release();
+                    CharacterUpdateStartingSemaphore?.Release();
                     throw;
                 }
 
