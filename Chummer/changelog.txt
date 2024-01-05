@@ -62,6 +62,7 @@ Application Changes:
 - Selling gear now properly specifies the type of gear being sold in the expense entry instead of always claiming it is cyberware gear being sold.
 - After loading a character that required some modifications before they were loaded (e.g., removing orphaned improvements), the program now immediately autosaves them instead of waiting for the next character change to do so.
 - Autosaves are now also triggered by character changes that do not require the program's user interface to be updated (e.g., changing the description of their eye color).
+- Character settings can now also alter the maximum amount of nuyen that a character can carry over from Create mode into Career mode.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -106,9 +107,12 @@ Changed/New Strings:
 - Message_DeleteWeaponAccessory
 - String_ExpensePurchaseVehicleWeaponMount
 - String_ExpenseSoldVehicleWeaponMount
+- Label_Options_Carryover_Nuyen
+- Label_Options_Carryover_Karma
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage
+- Label_Options_Carryover
 
 Build 225
 Application Changes:

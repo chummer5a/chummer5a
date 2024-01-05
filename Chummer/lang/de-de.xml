@@ -4037,8 +4037,12 @@
       <text>Feinde</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Übertragen für neuen Charakter</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Nuyen Übertragen</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma Übertragen</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>

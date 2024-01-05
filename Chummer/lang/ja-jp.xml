@@ -4572,8 +4572,12 @@
       <text>敵</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>作成時の持ち越し</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>最大新円持ち越し</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>最大カルマ持ち越し</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>

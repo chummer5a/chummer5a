@@ -176,8 +176,6 @@ namespace Chummer
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
-
-        private int _intKarmaCarryover = 7;
         private int _intKarmaContact = 1;
         private int _intKarmaEnemy = 1;
         private int _intKarmaEnhancement = 2;
@@ -262,6 +260,7 @@ namespace Chummer
         private int _intMaxMartialArts = 1;
         private int _intMaxMartialTechniques = 5;
         private decimal _decNuyenCarryover = 5000;
+        private int _intKarmaCarryover = 7;
 
         // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether or not it's enabled
         private readonly LockingTypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys = new LockingTypedOrderedDictionary<string, bool>();

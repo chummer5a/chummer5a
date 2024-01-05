@@ -1827,6 +1827,15 @@ namespace Chummer
             await nudQualityKarmaLimit
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.QualityKarmaLimit),
                                       token).ConfigureAwait(false);
+            await nudNuyenCarryover
+                .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.NuyenCarryover), token)
+                .ConfigureAwait(false);
+            await nudNuyenCarryover
+                .DoDataBindingAsync("DecimalPlaces", _objCharacterSettings, nameof(CharacterSettings.MaxNuyenDecimals), token)
+                .ConfigureAwait(false);
+            await nudKarmaCarryover
+                .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaCarryover), token)
+                .ConfigureAwait(false);
             await nudMaxNumberMaxAttributes
                   .DoDataBindingAsync("Value", _objCharacterSettings,
                                       nameof(CharacterSettings.MaxNumberMaxAttributesCreate), token)
@@ -2262,9 +2271,6 @@ namespace Chummer
                   .ConfigureAwait(false);
             await nudKarmaContact
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaContact), token)
-                  .ConfigureAwait(false);
-            await nudKarmaCarryover
-                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaCarryover), token)
                   .ConfigureAwait(false);
             await nudKarmaSpirit
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpirit), token)

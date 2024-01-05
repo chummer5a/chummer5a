@@ -7579,8 +7579,12 @@
       <text>Enemies</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Carryover for New Character</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Nuyen Carry-Over</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma Carry-Over</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>

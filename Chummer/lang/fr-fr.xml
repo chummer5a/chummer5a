@@ -5257,8 +5257,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Énnemis</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Karma transféré à la carrière</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Nuyen transféré</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma transféré</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>
