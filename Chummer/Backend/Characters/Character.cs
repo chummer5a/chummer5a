@@ -74,7 +74,6 @@ namespace Chummer
         private int _intPublicAwareness;
         private int _intBurntStreetCred;
         private decimal _decNuyen;
-        private decimal _decStolenNuyen;
         private decimal _decStartingNuyen;
         private decimal _decEssenceAtSpecialStart = decimal.MinValue;
         private int _intSpecial;
@@ -86,7 +85,6 @@ namespace Chummer
         private int _intAINormalProgramLimit;
         private int _intAIAdvancedProgramLimit;
         private int _intCachedContactPoints = int.MinValue;
-        private int _intContactPointsUsed;
         private int _intCachedRedlinerBonus = int.MinValue;
         private int _intCurrentCounterspellingDice;
         private int _intCurrentLiftCarryHits;
@@ -956,7 +954,6 @@ namespace Chummer
                         case nameof(CharacterSettings.NuyenFormat):
                             setPropertiesToRefresh.Add(nameof(DisplayNuyen));
                             setPropertiesToRefresh.Add(nameof(DisplayCareerNuyen));
-                            setPropertiesToRefresh.Add(nameof(DisplayStolenNuyen));
                             break;
 
                         case nameof(CharacterSettings.WeightFormat):
@@ -3518,10 +3515,6 @@ namespace Chummer
                             objWriter.WriteElementString("contactpoints",
                                 _intCachedContactPoints.ToString(
                                     GlobalSettings.InvariantCultureInfo));
-                            // <contactpointsused />
-                            objWriter.WriteElementString("contactpointsused",
-                                _intContactPointsUsed.ToString(
-                                    GlobalSettings.InvariantCultureInfo));
                             // <spelllimit />
                             objWriter.WriteElementString("spelllimit",
                                 _intFreeSpells.ToString(GlobalSettings.InvariantCultureInfo));
@@ -4246,11 +4239,6 @@ namespace Chummer
                             // <contactpoints />
                             await objWriter.WriteElementStringAsync("contactpoints",
                                 _intCachedContactPoints.ToString(
-                                    GlobalSettings.InvariantCultureInfo),
-                                token: token).ConfigureAwait(false);
-                            // <contactpointsused />
-                            await objWriter.WriteElementStringAsync("contactpointsused",
-                                _intContactPointsUsed.ToString(
                                     GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             // <spelllimit />
@@ -6347,8 +6335,6 @@ namespace Chummer
 
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints",
                                                                               ref _intCachedContactPoints);
-                                xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused",
-                                                                              ref _intContactPointsUsed);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("basecarrylimit",
                                                                             ref _decCachedBaseCarryLimit);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("baseliftlimit",
@@ -9708,7 +9694,7 @@ namespace Chummer
                     // <contactpointsused />
                     await objWriter.WriteElementStringAsync("contactpointsused",
                             (await GetContactPointsUsedAsync(token)
-                                .ConfigureAwait(false)).ToString(objCulture),
+                                .ConfigureAwait(false)).Item1.ToString(objCulture),
                             token: token)
                         .ConfigureAwait(false);
                     // <cfplimit />
@@ -11369,7 +11355,6 @@ namespace Chummer
                 _decCachedEssenceHole = decimal.MinValue;
                 _decCachedPowerPointsUsed = decimal.MinValue;
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
-                _intContactPointsUsed = 0;
                 _intKarma = 0;
                 _intSpecial = 0;
                 _intTotalSpecial = 0;
@@ -11519,7 +11504,6 @@ namespace Chummer
                 _decCachedEssenceHole = decimal.MinValue;
                 _decCachedPowerPointsUsed = decimal.MinValue;
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
-                _intContactPointsUsed = 0;
                 _intKarma = 0;
                 _intSpecial = 0;
                 _intTotalSpecial = 0;
@@ -16867,6 +16851,22 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Number of Physical Condition Monitor Boxes that are filled.
+        /// </summary>
+        public async Task<int> GetPhysicalCMFilledAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle)
+                    return objVehicle.PhysicalCMFilled;
+
+                return _intPhysicalCMFilled;
+            }
+        }
+
+        /// <summary>
         /// Number of Stun Condition Monitor Boxes that are filled.
         /// </summary>
         public int StunCMFilled
@@ -16906,6 +16906,29 @@ namespace Chummer
                             OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of Stun Condition Monitor Boxes that are filled.
+        /// </summary>
+        public async Task<int> GetStunCMFilledAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    IHasMatrixAttributes objHomeNode = await GetHomeNodeAsync(token).ConfigureAwait(false);
+                    if (objHomeNode != null)
+                    {
+                        // A.I. do not have a Stun Condition Monitor, but they do have a Matrix Condition Monitor if they are in their home node.
+                        return objHomeNode.MatrixCMFilled;
+                    }
+                }
+
+                return _intStunCMFilled;
             }
         }
 
@@ -17038,51 +17061,78 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Number of free Contact Points the character has used.
+        /// Number of free Contact Points (and Friends in High Places Points) the character has used.
         /// </summary>
-        public int ContactPointsUsed
+        public Tuple<int, int> ContactPointsUsed
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _intContactPointsUsed;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _intContactPointsUsed, value) == value)
-                        return;
-                    OnPropertyChanged();
+                    bool blnFriendsInHighPlaces = FriendsInHighPlaces;
+                    int intHighPlacesFriends = 0;
+                    int intPointsInContacts = Contacts.Sum(objContact =>
+                    {
+                        // Don't care about free contacts and group contacts
+                        if (objContact.EntityType != ContactType.Contact)
+                            return 0;
+                        if (objContact.IsGroup)
+                            return 0;
+                        int intCost = objContact.ContactPoints;
+                        if (intCost == 0)
+                            return 0;
+
+                        if (objContact.Connection >= 8 && blnFriendsInHighPlaces)
+                        {
+                            intHighPlacesFriends += intCost;
+                        }
+                        else
+                        {
+                            return intCost;
+                        }
+                        return 0;
+                    });
+                    return new Tuple<int, int>(intPointsInContacts, intHighPlacesFriends);
                 }
             }
         }
 
         /// <summary>
-        /// Number of free Contact Points the character has used.
+        /// Number of free Contact Points (and Friends in High Places Points) the character has used.
         /// </summary>
-        public async Task<int> GetContactPointsUsedAsync(CancellationToken token = default)
+        public async Task<Tuple<int, int>> GetContactPointsUsedAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return _intContactPointsUsed;
-            }
-        }
+                bool blnFriendsInHighPlaces
+                    = await GetFriendsInHighPlacesAsync(token).ConfigureAwait(false);
+                int intHighPlacesFriends = 0;
+                ThreadSafeObservableCollection<Contact> lstContacts = await GetContactsAsync(token).ConfigureAwait(false);
+                int intPointsInContacts = await lstContacts.SumAsync(async objContact =>
+                {
+                    // Don't care about free contacts and group contacts
+                    if (await objContact.GetEntityTypeAsync(token) != ContactType.Contact)
+                        return 0;
+                    if (await objContact.GetIsGroupAsync(token))
+                        return 0;
+                    int intCost = await objContact.GetContactPointsAsync(token);
+                    if (intCost == 0)
+                        return 0;
 
-        public async Task SetContactPointsUsedAsync(int value, CancellationToken token = default)
-        {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                if (Interlocked.Exchange(ref _intContactPointsUsed, value) == value)
-                    return;
-                await OnPropertyChangedAsync(nameof(ContactPointsUsed), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                    if (await objContact.GetConnectionAsync(token) >= 8 && blnFriendsInHighPlaces)
+                    {
+                        intHighPlacesFriends += intCost;
+                    }
+                    else
+                    {
+                        return intCost;
+                    }
+                    return 0;
+                }, token).ConfigureAwait(false);
+
+                return new Tuple<int, int>(intPointsInContacts, intHighPlacesFriends);
             }
         }
 
@@ -17331,6 +17381,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Encumbrance interval (in kg).
+        /// </summary>
+        public async Task<decimal> GetEncumbranceIntervalAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decReturn = _decCachedEncumbranceInterval;
+                if (decReturn != decimal.MinValue)
+                    return decReturn;
+                string strExpression = Settings.EncumbranceIntervalExpression;
+                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                sbdValue.ToString(), token).ConfigureAwait(false);
+                        decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                    }
+                }
+                else
+                    decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                        out decReturn);
+
+                // Need this to make sure our division doesn't go haywire
+                if (decReturn <= 0)
+                    decReturn = Convert.ToDecimal(double.Epsilon);
+
+                return _decCachedEncumbranceInterval = decReturn;
+            }
+        }
+
+        /// <summary>
         /// CFP Limit.
         /// </summary>
         public int CFPLimit
@@ -17540,6 +17629,15 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return Karma.ToString(GlobalSettings.CultureInfo);
+            }
+        }
+
+        public async Task<string> GetDisplayKarmaAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return (await GetKarmaAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             }
         }
 
@@ -27764,6 +27862,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Encumbrance modifier for carrying more stuff than carry limit
+        /// </summary>
+        public async Task<int> GetEncumbranceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decCarryLimit = await GetCarryLimitAsync(token).ConfigureAwait(false);
+
+                decimal decCarriedWeight = await GetTotalCarriedWeightAsync(token).ConfigureAwait(false);
+
+                return decCarriedWeight > decCarryLimit
+                    ? -((decCarriedWeight - decCarryLimit) / await GetEncumbranceIntervalAsync(token).ConfigureAwait(false)).StandardRound()
+                    : 0;
+            }
+        }
+
+        /// <summary>
         /// Total amount of stuff the character is currently carrying on their person (via Equipped)
         /// </summary>
         public decimal TotalCarriedWeight
@@ -27775,12 +27892,33 @@ namespace Chummer
                     decimal decReturn = _decCachedTotalCarriedWeight;
                     if (decReturn != decimal.MinValue)
                         return decReturn;
-                    return _decCachedTotalCarriedWeight = Armor.Sum(x => x.Equipped, x => x.TotalWeight)
-                                                          + Weapons.Sum(x => x.Equipped, x => x.TotalWeight)
-                                                          + Gear.Sum(x => x.Equipped, x => x.TotalWeight)
-                                                          + Cyberware.Sum(
+                    return _decCachedTotalCarriedWeight = Armor.SumParallel(x => x.Equipped, x => x.TotalWeight)
+                                                          + Weapons.SumParallel(x => x.Equipped, x => x.TotalWeight)
+                                                          + Gear.SumParallel(x => x.Equipped, x => x.TotalWeight)
+                                                          + Cyberware.SumParallel(
                                                               x => x.IsModularCurrentlyEquipped, x => x.TotalWeight);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Total amount of stuff the character is currently carrying on their person (via Equipped)
+        /// </summary>
+        public async Task<decimal> GetTotalCarriedWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decReturn = _decCachedTotalCarriedWeight;
+                if (decReturn != decimal.MinValue)
+                    return decReturn;
+                return _decCachedTotalCarriedWeight =
+                    await Armor.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
+                    + await Weapons.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
+                    + await Gear.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
+                    + await Cyberware.SumParallelAsync(
+                        x => x.GetIsModularCurrentlyEquippedAsync(token), x => x.TotalWeight, token: token).ConfigureAwait(false);
             }
         }
 
@@ -27797,6 +27935,27 @@ namespace Chummer
                         + "kg"
                         + strSpace + '/' + strSpace
                         + CarryLimit.ToString(Settings.WeightFormat, GlobalSettings.CultureInfo) + strSpace + "kg";
+            }
+        }
+
+        /// <summary>
+        /// String used to show the current carried weight status in the toolstrip of character forms
+        /// </summary>
+        public async Task<string> GetDisplayTotalCarriedWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                string strFormat = await (await GetSettingsAsync(token).ConfigureAwait(false))
+                    .GetWeightFormatAsync(token).ConfigureAwait(false);
+                return (await GetTotalCarriedWeightAsync(token).ConfigureAwait(false)).ToString(strFormat,
+                        GlobalSettings.CultureInfo) + strSpace
+                                                    + "kg"
+                                                    + strSpace + '/' + strSpace
+                                                    + (await GetCarryLimitAsync(token).ConfigureAwait(false)).ToString(
+                                                        strFormat, GlobalSettings.CultureInfo) + strSpace + "kg";
             }
         }
 
@@ -29215,64 +29374,6 @@ namespace Chummer
             }
         }
 
-        public decimal StolenNuyen
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _decStolenNuyen;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                {
-                    if (_decStolenNuyen == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        _decStolenNuyen = value;
-                    }
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public async Task<decimal> GetStolenNuyenAsync(CancellationToken token = default)
-        {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                return _decStolenNuyen;
-            }
-        }
-
-        public async Task SetStolenNuyenAsync(decimal value, CancellationToken token = default)
-        {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                if (_decStolenNuyen == value)
-                    return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    _decStolenNuyen = value;
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-
-                await OnPropertyChangedAsync(nameof(StolenNuyen), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
         public string DisplayNuyen
         {
             get
@@ -29289,27 +29390,6 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return (await GetNuyenAsync(token).ConfigureAwait(false)).ToString(Settings.NuyenFormat,
-                    GlobalSettings.CultureInfo) + await LanguageManager
-                    .GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
-            }
-        }
-
-        public string DisplayStolenNuyen
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return StolenNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
-            }
-        }
-
-        public async Task<string> GetDisplayStolenNuyenAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                return (await GetStolenNuyenAsync(token).ConfigureAwait(false)).ToString(Settings.NuyenFormat,
                     GlobalSettings.CultureInfo) + await LanguageManager
                     .GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             }
@@ -29600,6 +29680,19 @@ namespace Chummer
                                              this, Improvement.ImprovementType.NuyenMaxBP, token: token).ConfigureAwait(false)), 0);
             }
         }
+
+        /// <summary>
+        /// Whether the character has any stolen nuyen at character creation.
+        /// </summary>
+        public bool HasStolenNuyen => ImprovementManager
+            .ValueOf(this, Improvement.ImprovementType.Nuyen, strImprovedName: "Stolen") != 0;
+
+        /// <summary>
+        /// Whether the character has any stolen nuyen at character creation.
+        /// </summary>
+        public async Task<bool> GetHasStolenNuyenAsync(CancellationToken token = default) =>
+            await ImprovementManager.ValueOfAsync(this,
+                Improvement.ImprovementType.Nuyen, strImprovedName: "Stolen", token: token).ConfigureAwait(false) > 0;
 
         /// <summary>
         /// The calculated Astral Limit.
@@ -39071,18 +39164,15 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(DisplayNuyen),
                         new DependencyGraphNode<string, Character>(nameof(Nuyen))
                     ),
-                    new DependencyGraphNode<string, Character>(nameof(DisplayStolenNuyen),
-                        new DependencyGraphNode<string, Character>(nameof(StolenNuyen))
-                    ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayKarma),
                         new DependencyGraphNode<string, Character>(nameof(Karma))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayTotalStartingNuyen),
                         new DependencyGraphNode<string, Character>(nameof(TotalStartingNuyen),
                             new DependencyGraphNode<string, Character>(nameof(StartingNuyen)),
+                            new DependencyGraphNode<string, Character>(nameof(HasStolenNuyen)),
                             new DependencyGraphNode<string, Character>(nameof(NuyenBP)),
                             new DependencyGraphNode<string, Character>(nameof(TotalNuyenMaximumBP),
-                                new DependencyGraphNode<string, Character>(nameof(StolenNuyen)),
                                 new DependencyGraphNode<string, Character>(nameof(IgnoreRules))
                             )
                         )

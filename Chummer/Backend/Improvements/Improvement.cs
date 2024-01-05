@@ -1080,6 +1080,9 @@ namespace Chummer
                 {
                     yield return new Tuple<INotifyMultiplePropertyChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalStartingNuyen));
+                    if (ImprovedName == "Stolen")
+                        yield return new Tuple<INotifyMultiplePropertyChangedAsync, string>(_objCharacter,
+                            nameof(Character.HasStolenNuyen));
                 }
                     break;
 
@@ -3408,6 +3411,9 @@ namespace Chummer
                     {
                         lstReturn.Add(new Tuple<INotifyMultiplePropertyChangedAsync, string>(_objCharacter,
                             nameof(Character.TotalStartingNuyen)));
+                        if (ImprovedName == "Stolen")
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertyChangedAsync, string>(_objCharacter,
+                                nameof(Character.HasStolenNuyen)));
                     }
                     break;
 
