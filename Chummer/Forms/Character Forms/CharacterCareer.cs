@@ -22669,7 +22669,7 @@ namespace Chummer
                                 string strOverclocked = await objHasMatrixAttributes.GetOverclockedAsync(token).ConfigureAwait(false);
                                 await cboArmorOverclocker.DoThreadSafeAsync(x =>
                                 {
-                                    x.SelectedValue = blnOverclocked;
+                                    x.SelectedValue = strOverclocked;
                                     if (x.SelectedIndex == -1)
                                         x.SelectedIndex = 0;
                                 }, token).ConfigureAwait(false);
