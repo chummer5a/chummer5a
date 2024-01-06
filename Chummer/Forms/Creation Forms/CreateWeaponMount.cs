@@ -160,7 +160,7 @@ namespace Chummer
                                 objModsParentNode.Nodes.Add(objLoopNode);
                         }
                     }, _objGenericToken).ConfigureAwait(false);
-                    await _lstMods.AddRangeAsync(_objMount.Mods, _objGenericToken);
+                    await _lstMods.AddRangeAsync(_objMount.Mods, _objGenericToken).ConfigureAwait(false);
 
                     await cboSize.DoThreadSafeAsync(x => x.SelectedValue = _objMount.SourceIDString, _objGenericToken).ConfigureAwait(false);
                 }
@@ -435,7 +435,7 @@ namespace Chummer
                                        !await _lstMods.ContainsAsync(x, _objGenericToken).ConfigureAwait(false),
                             _objGenericToken).ConfigureAwait(false);
                 await _objMount.Mods.RemoveAllAsync(x => lstOldRemovedVehicleMods.Contains(x), _objGenericToken).ConfigureAwait(false);
-                List<VehicleMod> lstNewVehicleMods = new List<VehicleMod>(await _lstMods.GetCountAsync(_objGenericToken));
+                List<VehicleMod> lstNewVehicleMods = new List<VehicleMod>(await _lstMods.GetCountAsync(_objGenericToken).ConfigureAwait(false));
                 foreach (VehicleMod objMod in _lstMods)
                 {
                     if (await _objMount.Mods.ContainsAsync(objMod, _objGenericToken).ConfigureAwait(false))

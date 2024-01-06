@@ -1135,7 +1135,7 @@ namespace Chummer.Backend.Equipment
                                            (await this.GetTotalMatrixAttributeAsync("Program Limit", token).ConfigureAwait(false)).ToString(objCulture), token)
                   .ConfigureAwait(false);
             await objWriter
-                  .WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo),
+                  .WriteElementStringAsync("iscommlink", (await GetIsCommlinkAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                            token).ConfigureAwait(false);
             await objWriter
                   .WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo), token)

@@ -35,6 +35,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -342,22 +343,22 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name", strName, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("crittername", CritterName, token: token)
+                    await objWriter.WriteElementStringAsync("crittername", await GetCritterNameAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("fettered", (await GetFetteredAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("bound", (await GetBoundAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("services", ServicesOwed.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("services", (await GetServicesOwedAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("force", (await GetForceAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("ratinglabel",
                             await LanguageManager
-                                .GetStringAsync(RatingLabel, strLanguageToPrint, token: token)
+                                .GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                     if (objXmlCritterNode != null)
@@ -560,9 +561,9 @@ namespace Chummer
                     }
 
                     await objWriter
-                        .WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("bound", (await GetBoundAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("type", EntityType.ToString(), token: token)
+                    await objWriter.WriteElementStringAsync("type", (await GetEntityTypeAsync(token).ConfigureAwait(false)).ToString(), token: token)
                         .ConfigureAwait(false);
 
                     if (GlobalSettings.PrintNotes)
@@ -942,6 +943,22 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetRatingLabelAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            switch (await GetEntityTypeAsync(token).ConfigureAwait(false))
+            {
+                case SpiritType.Spirit:
+                    return "String_Force";
+
+                case SpiritType.Sprite:
+                    return "String_Level";
+
+                default:
+                    return "String_Rating";
+            }
+        }
+
         /// <summary>
         /// Number of Services the Spirit owes.
         /// </summary>
@@ -1014,6 +1031,96 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Number of Services the Spirit owes.
+        /// </summary>
+        public async Task<int> GetServicesOwedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intServicesOwed;
+            }
+        }
+
+        /// <summary>
+        /// Number of Services the Spirit owes.
+        /// </summary>
+        public async Task SetServicesOwedAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intServicesOwed == value)
+                    return;
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intServicesOwed == value)
+                    return;
+                SpiritType eType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                {
+                    if (value > 0 && _intServicesOwed <= 0 && !await GetBoundAsync(token).ConfigureAwait(false) &&
+                        !await GetFetteredAsync(token).ConfigureAwait(false) && await CharacterObject.Spirits.AnyAsync(
+                            async x =>
+                                !ReferenceEquals(x, this)
+                                && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eType
+                                && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
+                                && !await x.GetBoundAsync(token).ConfigureAwait(false)
+                                && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    {
+                        // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                        Program.ShowScrollableMessageBox(
+                            await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
+                                ? "Message_UnregisteredSpriteLimit"
+                                : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
+                                ? "MessageTitle_UnregisteredSpriteLimit"
+                                : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+                else if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                {
+                    // Retrieve the character's Summoning Skill Rating.
+                    Skill objSkill = await (await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .GetActiveSkillAsync(
+                            eType == SpiritType.Spirit
+                                ? "Summoning"
+                                : "Compiling", token).ConfigureAwait(false);
+                    int intSkillValue =
+                        objSkill != null ? await objSkill.GetRatingAsync(token).ConfigureAwait(false) : 0;
+
+                    if (value > intSkillValue)
+                    {
+                        Program.ShowScrollableMessageBox(
+                            await LanguageManager.GetStringAsync(eType == SpiritType.Spirit
+                                ? "Message_SpiritServices"
+                                : "Message_SpriteServices", token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync(eType == SpiritType.Spirit
+                                ? "MessageTitle_SpiritServices"
+                                : "MessageTitle_SpriteServices", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        value = intSkillValue;
+                    }
+                }
+
+                if (Interlocked.Exchange(ref _intServicesOwed, value) != value)
+                    await OnPropertyChangedAsync(nameof(ServicesOwed), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The Spirit's Force.
         /// </summary>
         public int Force
@@ -1067,7 +1174,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                switch (EntityType)
+                switch (await GetEntityTypeAsync(token).ConfigureAwait(false))
                 {
                     case SpiritType.Spirit:
                         int intMaxForce = await CharacterObject.GetMaxSpiritForceAsync(token).ConfigureAwait(false);
@@ -1136,6 +1243,76 @@ namespace Chummer
 
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Spirit is Bound.
+        /// </summary>
+        public async Task<bool> GetBoundAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnBound;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Spirit is Bound.
+        /// </summary>
+        public async Task SetBoundAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (_blnBound == value)
+                    return;
+            }
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnBound == value)
+                    return;
+                SpiritType eType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !value && await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && !await GetFetteredAsync(token).ConfigureAwait(false)
+                    && await CharacterObject.Spirits.AnyAsync(async x =>
+                        !ReferenceEquals(x, this)
+                        && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eType
+                        && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
+                        && !await x.GetBoundAsync(token).ConfigureAwait(false)
+                        && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                {
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnBound = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(Bound), token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1463,6 +1640,26 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Whether the sprite/spirit has unlimited services due to Fettering.
+        /// See KC 91 and SG 192 for sprites and spirits, respectively.
+        /// </summary>
+        public async Task<bool> GetFetteredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedAllowFettering < 0)
+                    _intCachedAllowFettering = (await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false)).ToInt32();
+                return _blnFettered && _intCachedAllowFettering > 0;
+            }
+        }
+
+        /// <summary>
+        /// Whether the sprite/spirit has unlimited services due to Fettering.
+        /// See KC 91 and SG 192 for sprites and spirits, respectively.
+        /// </summary>
         public async Task SetFetteredAsync(bool value, CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
@@ -1473,17 +1670,27 @@ namespace Chummer
                 if (value)
                 {
                     //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
-                    if (!await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false) && eEntityType == SpiritType.Sprite)
+                    if (!await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false) &&
+                        eEntityType == SpiritType.Sprite)
                         return;
 
                     //Only one Fettered spirit is permitted.
-                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.Fettered, token: token).ConfigureAwait(false))
+                    if (await CharacterObject.Spirits
+                            .AnyAsync(objSpirit => objSpirit.GetFetteredAsync(token), token: token)
+                            .ConfigureAwait(false))
                         return;
                 }
-                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !Bound && ServicesOwed > 0 && await CharacterObject.Spirits.AnyAsync(
-                             async x =>
-                                 !ReferenceEquals(x, this) && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType && x.ServicesOwed > 0
-                                 && !x.Bound && !x.Fettered, token: token).ConfigureAwait(false))
+                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
+                         !await GetBoundAsync(token).ConfigureAwait(false) &&
+                         await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && await CharacterObject.Spirits
+                             .AnyAsync(
+                                 async x =>
+                                     !ReferenceEquals(x, this)
+                                     && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType
+                                     && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
+                                     && !await x.GetBoundAsync(token).ConfigureAwait(false)
+                                     && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token)
+                             .ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
                     Program.ShowScrollableMessageBox(
@@ -1514,7 +1721,7 @@ namespace Chummer
                         return;
 
                     //Only one Fettered spirit is permitted.
-                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.Fettered, token: token)
+                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.GetFetteredAsync(token), token: token)
                             .ConfigureAwait(false))
                         return;
                     if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
@@ -1534,13 +1741,14 @@ namespace Chummer
                         }
                     }
                 }
-                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !Bound &&
-                         ServicesOwed > 0 && await CharacterObject.Spirits.AnyAsync(
+                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !await GetBoundAsync(token).ConfigureAwait(false) &&
+                         await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && await CharacterObject.Spirits.AnyAsync(
                              async x =>
-                                 !ReferenceEquals(x, this) &&
-                                 await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType &&
-                                 x.ServicesOwed > 0
-                                 && !x.Bound && !x.Fettered, token: token).ConfigureAwait(false))
+                                 !ReferenceEquals(x, this)
+                                 && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType
+                                 && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
+                                 && !await x.GetBoundAsync(token).ConfigureAwait(false)
+                                 && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
                     Program.ShowScrollableMessageBox(

@@ -8170,7 +8170,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    if (!await _lstSpirits.AnyAsync(s => s.Fettered, token).ConfigureAwait(false)
+                                    if (!await _lstSpirits.AnyAsync(s => s.GetFetteredAsync(token), token).ConfigureAwait(false)
                                         && await Improvements
                                                  .AnyAsync(
                                                      imp => imp.ImproveSource
@@ -17113,15 +17113,15 @@ namespace Chummer
                 int intPointsInContacts = await lstContacts.SumAsync(async objContact =>
                 {
                     // Don't care about free contacts and group contacts
-                    if (await objContact.GetEntityTypeAsync(token) != ContactType.Contact)
+                    if (await objContact.GetEntityTypeAsync(token).ConfigureAwait(false) != ContactType.Contact)
                         return 0;
-                    if (await objContact.GetIsGroupAsync(token))
+                    if (await objContact.GetIsGroupAsync(token).ConfigureAwait(false))
                         return 0;
-                    int intCost = await objContact.GetContactPointsAsync(token);
+                    int intCost = await objContact.GetContactPointsAsync(token).ConfigureAwait(false);
                     if (intCost == 0)
                         return 0;
 
-                    if (await objContact.GetConnectionAsync(token) >= 8 && blnFriendsInHighPlaces)
+                    if (await objContact.GetConnectionAsync(token).ConfigureAwait(false) >= 8 && blnFriendsInHighPlaces)
                     {
                         intHighPlacesFriends += intCost;
                     }

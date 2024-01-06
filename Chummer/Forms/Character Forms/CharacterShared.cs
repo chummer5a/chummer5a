@@ -4160,7 +4160,7 @@ namespace Chummer
 
                 async Task AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
-                    if (blnCommlinksOnly && !objGear.IsCommlink)
+                    if (blnCommlinksOnly && !await objGear.GetIsCommlinkAsync(token).ConfigureAwait(false))
                         return;
 
                     if (blnHideLoadedAmmo && objGear.LoadedIntoClip != null)
@@ -9035,7 +9035,7 @@ namespace Chummer
                         int intSprites = -1;
                         await CharacterObject.Spirits.ForEachAsync(async objSpirit =>
                         {
-                            bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                            bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit;
                             if (blnIsSpirit)
                             {
                                 if (panSpirits == null)
@@ -9097,7 +9097,7 @@ namespace Chummer
                                 : 0;
                             foreach (Spirit objSpirit in e.NewItems)
                             {
-                                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                                bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit;
                                 if (blnIsSpirit)
                                 {
                                     if (panSpirits == null)
@@ -9142,7 +9142,7 @@ namespace Chummer
                             foreach (Spirit objSpirit in e.OldItems)
                             {
                                 int intMoveUpAmount = 0;
-                                if (objSpirit.EntityType == SpiritType.Spirit)
+                                if (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit)
                                 {
                                     if (panSpirits == null)
                                         continue;
@@ -9233,7 +9233,7 @@ namespace Chummer
                             foreach (Spirit objSpirit in e.OldItems)
                             {
                                 int intMoveUpAmount = 0;
-                                if (objSpirit.EntityType == SpiritType.Spirit)
+                                if (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit)
                                 {
                                     if (panSpirits == null)
                                         continue;
@@ -9306,7 +9306,7 @@ namespace Chummer
 
                             foreach (Spirit objSpirit in e.NewItems)
                             {
-                                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                                bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit;
                                 if (blnIsSpirit)
                                 {
                                     if (panSpirits == null)
@@ -9362,7 +9362,7 @@ namespace Chummer
             if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false) && await CharacterObject.Spirits
                     .CountAsync(
                         async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit &&
-                                   x.Bound && !x.Fettered, token).ConfigureAwait(false) >=
+                                   await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 CharacterObject.BoundSpiritLimit)
             {
                 Program.ShowScrollableMessageBox(
@@ -9394,7 +9394,7 @@ namespace Chummer
                 await CharacterObject.Spirits
                     .CountAsync(
                         async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite &&
-                                   x.Bound && !x.Fettered, token).ConfigureAwait(false) >=
+                                   await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 CharacterObject.RegisteredSpriteLimit)
             {
                 Program.ShowScrollableMessageBox(

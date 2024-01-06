@@ -11162,40 +11162,109 @@ namespace Chummer
             }
         }
 
-        private void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || treGear.SelectedNode == null)
-                return;
-            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
-                return;
-            objCommlink.SetHomeNode(CharacterObject, chkGearHomeNode.Checked);
-        }
-
-        private void chkArmorHomeNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || treArmor.SelectedNode == null)
-                return;
-            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
-                return;
-            objCommlink.SetHomeNode(CharacterObject, chkArmorHomeNode.Checked);
-        }
-
-        private void chkWeaponHomeNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || treWeapons.SelectedNode == null)
-                return;
-            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
-                return;
-            objCommlink.SetHomeNode(CharacterObject, chkWeaponHomeNode.Checked);
-        }
-
-        private void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
+            try
+            {
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
+                    IHasMatrixAttributes objCommlink)
+                {
+                    await objCommlink.SetHomeNodeAsync(CharacterObject,
+                            await chkGearHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                .ConfigureAwait(false))
+                        .ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void chkArmorHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
                 return;
-            objCommlink.SetHomeNode(CharacterObject, chkCyberwareHomeNode.Checked);
+            try
+            {
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
+                    IHasMatrixAttributes objCommlink)
+                {
+                    await objCommlink.SetHomeNodeAsync(CharacterObject,
+                            await chkArmorHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                .ConfigureAwait(false))
+                        .ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void chkWeaponHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            try
+            {
+                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
+                    IHasMatrixAttributes objCommlink)
+                {
+                    await objCommlink.SetHomeNodeAsync(CharacterObject,
+                            await chkWeaponHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                .ConfigureAwait(false))
+                        .ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            try
+            {
+                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
+                    IHasMatrixAttributes objCommlink)
+                {
+                    await objCommlink.SetHomeNodeAsync(CharacterObject,
+                            await chkCyberwareHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                .ConfigureAwait(false))
+                        .ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            try
+            {
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
+                    IHasMatrixAttributes objCommlink)
+                {
+                    await objCommlink.SetHomeNodeAsync(CharacterObject,
+                            await chkVehicleHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                .ConfigureAwait(false))
+                        .ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private async void chkCommlinks_CheckedChanged(object sender, EventArgs e)
@@ -11212,57 +11281,119 @@ namespace Chummer
             }
         }
 
-        private void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || treGear.SelectedNode == null)
-                return;
-
-            // Attempt to locate the selected piece of Gear.
-            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
-                return;
-            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
-        }
-
-        private void chkArmorActiveCommlink_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || treArmor.SelectedNode == null)
-                return;
-
-            // Attempt to locate the selected piece of Gear.
-            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
-                return;
-            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkArmorActiveCommlink.Checked);
-        }
-
-        private void chkWeaponActiveCommlink_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || treWeapons.SelectedNode == null)
-                return;
-
-            // Attempt to locate the selected piece of Gear.
-            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
-                return;
-            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkWeaponActiveCommlink.Checked);
-        }
-
-        private void chkCyberwareActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
-            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
-                return;
-            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkCyberwareActiveCommlink.Checked);
+            try
+            {
+                // Attempt to locate the selected piece of Gear.
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false) is
+                    IHasMatrixAttributes objSelectedCommlink)
+                {
+                    await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
+                        await chkGearActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                            .ConfigureAwait(false)).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        private void chkVehicleActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        private async void chkArmorActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
-            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
+            try
+            {
+                // Attempt to locate the selected piece of Gear.
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false) is
+                    IHasMatrixAttributes objSelectedCommlink)
+                {
+                    await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
+                        await chkArmorActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                            .ConfigureAwait(false)).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void chkWeaponActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
                 return;
-            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkVehicleActiveCommlink.Checked);
+
+            try
+            {
+                // Attempt to locate the selected piece of Gear.
+                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false) is
+                    IHasMatrixAttributes objSelectedCommlink)
+                {
+                    await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
+                        await chkWeaponActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                            .ConfigureAwait(false)).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void chkCyberwareActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+
+            try
+            {
+                // Attempt to locate the selected piece of Gear.
+                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false) is
+                    IHasMatrixAttributes objSelectedCommlink)
+                {
+                    await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
+                        await chkCyberwareActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                            .ConfigureAwait(false)).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void chkVehicleActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+
+            try
+            {
+                // Attempt to locate the selected piece of Gear.
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false) is
+                    IHasMatrixAttributes objSelectedCommlink)
+                {
+                    await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
+                        await chkVehicleActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                            .ConfigureAwait(false)).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private async void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
@@ -11931,15 +12062,6 @@ namespace Chummer
             {
                 //swallow this
             }
-        }
-
-        private void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing)
-                return;
-            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
-                return;
-            objTarget.SetHomeNode(CharacterObject, chkVehicleHomeNode.Checked);
         }
 
         #endregion Additional Vehicle Tab Control Events
@@ -14034,18 +14156,18 @@ namespace Chummer
                         async objSpirit =>
                         {
                             token.ThrowIfCancellationRequested();
-                            int intLoopKarma = objSpirit.ServicesOwed
+                            int intLoopKarma = await objSpirit.GetServicesOwedAsync(token).ConfigureAwait(false)
                                                * await CharacterObjectSettings.GetKarmaSpiritAsync(token)
                                                    .ConfigureAwait(false);
                             // Each Sprite costs KarmaSpirit x Services Owed.
                             int intReturn = intLoopKarma;
-                            if (objSpirit.EntityType == SpiritType.Spirit)
+                            if (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit)
                             {
                                 intSpiritPointsUsed += intLoopKarma;
                                 // Each Fettered Spirit costs 3 x Force.
-                                if (objSpirit.Fettered)
+                                if (await objSpirit.GetFetteredAsync(token).ConfigureAwait(false))
                                 {
-                                    int intTemp = objSpirit.Force
+                                    int intTemp = await objSpirit.GetForceAsync(token).ConfigureAwait(false)
                                                   * await CharacterObjectSettings.GetKarmaSpiritFetteringAsync(token)
                                                       .ConfigureAwait(false);
                                     intReturn += intTemp;
@@ -15011,28 +15133,35 @@ namespace Chummer
                                     cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing,
                                     cboCyberwareFirewall, token).ConfigureAwait(false);
 
-                                await chkCyberwareActiveCommlink.DoThreadSafeAsync(x =>
+                                bool blnIsActiveCommlink = await objCyberware.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                                bool blnIsCommlink = await objCyberware.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                                if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                                 {
-                                    x.Visible = objCyberware.IsCommlink;
-                                    x.Checked = objCyberware.IsActiveCommlink(CharacterObject);
-                                }, token).ConfigureAwait(false);
-                                if (CharacterObject.IsAI)
-                                {
+                                    bool blnIsHomeNode = await objCyberware.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                    bool blnCanBeHomeNode = blnIsCommlink &&
+                                                            await objCyberware.GetTotalMatrixAttributeAsync(
+                                                                "Program Limit", token).ConfigureAwait(false) >=
+                                                            (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                                token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                                ? 2
+                                                                : 1);
                                     await chkCyberwareHomeNode.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Checked = objCyberware.IsHomeNode(CharacterObject);
-                                        x.Enabled = chkCyberwareActiveCommlink.Visible &&
-                                                    objCyberware.GetTotalMatrixAttribute("Program Limit")
-                                                    >= (CharacterObject.DEP.TotalValue > intDeviceRating
-                                                        ? 2
-                                                        : 1);
+                                        x.Checked = blnIsHomeNode;
+                                        x.Enabled = blnCanBeHomeNode;
                                     }, token).ConfigureAwait(false);
                                 }
                                 else
                                     await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                              .ConfigureAwait(false);
-                            }
+                                        .ConfigureAwait(false);
+
+                                await chkCyberwareActiveCommlink.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = blnIsActiveCommlink;
+                                    x.Visible = blnIsCommlink;
+                                }, token).ConfigureAwait(false);
+                                }
 
                             token.ThrowIfCancellationRequested();
                             string strNodeText
@@ -15165,33 +15294,36 @@ namespace Chummer
                                 cboCyberwareDataProcessing,
                                 cboCyberwareFirewall, token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            await chkCyberwareActiveCommlink.DoThreadSafeAsync(x =>
+                            bool blnIsActiveCommlink = await objGear.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnIsCommlink = await objGear.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                            if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                             {
-                                x.Visible = objGear.IsCommlink;
-                                x.Checked = objGear.IsActiveCommlink(CharacterObject);
-                            }, token).ConfigureAwait(false);
-                            if (CharacterObject.IsAI)
-                            {
-                                bool blnEnabled
-                                    = await chkCyberwareActiveCommlink.DoThreadSafeFuncAsync(x => x.Visible, token)
-                                                                      .ConfigureAwait(false)
-                                      && await objGear.GetTotalMatrixAttributeAsync("Program Limit", token).ConfigureAwait(false)
-                                      >= (await CharacterObject.DEP.GetTotalValueAsync(token).ConfigureAwait(false)
-                                          > intDeviceRating
-                                          ? 2
-                                          : 1);
+                                bool blnIsHomeNode = await objGear.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                bool blnCanBeHomeNode = blnIsCommlink &&
+                                                        await objGear.GetTotalMatrixAttributeAsync(
+                                                            "Program Limit", token).ConfigureAwait(false) >=
+                                                        (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                            token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                            ? 2
+                                                            : 1);
                                 await chkCyberwareHomeNode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Checked = objGear.IsHomeNode(CharacterObject);
-                                    x.Enabled = blnEnabled;
+                                    x.Checked = blnIsHomeNode;
+                                    x.Enabled = blnCanBeHomeNode;
                                 }, token).ConfigureAwait(false);
                             }
                             else
                                 await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                          .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
 
-                            token.ThrowIfCancellationRequested();
+                            await chkCyberwareActiveCommlink.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnIsActiveCommlink;
+                                x.Visible = blnIsCommlink;
+                            }, token).ConfigureAwait(false);
+
+                                token.ThrowIfCancellationRequested();
                             string strText = await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             await treCyberware
                                   .DoThreadSafeAsync(() => objSelectedNode.Text = strText, token)
@@ -15578,45 +15710,54 @@ namespace Chummer
 
                             // gpbWeaponsMatrix
                             int intDeviceRating = await objWeapon.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
+                            int intAttack = await objWeapon.GetTotalMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+                            int intSleaze = await objWeapon.GetTotalMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+                            int intDP = await objWeapon.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                            int intFirewall = await objWeapon.GetTotalMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
                             await lblWeaponDeviceRating
                                   .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                      token).ConfigureAwait(false);
-                            await lblWeaponAttack.DoThreadSafeAsync(x => x.Text = objWeapon
-                                                                        .GetTotalMatrixAttribute("Attack")
+                            await lblWeaponAttack.DoThreadSafeAsync(x => x.Text = intAttack
                                                                         .ToString(GlobalSettings.CultureInfo), token)
                                                  .ConfigureAwait(false);
-                            await lblWeaponSleaze.DoThreadSafeAsync(x => x.Text = objWeapon
-                                                                        .GetTotalMatrixAttribute("Sleaze")
+                            await lblWeaponSleaze.DoThreadSafeAsync(x => x.Text = intSleaze
                                                                         .ToString(GlobalSettings.CultureInfo), token)
                                                  .ConfigureAwait(false);
                             await lblWeaponDataProcessing.DoThreadSafeAsync(
-                                                             x => x.Text = objWeapon
-                                                                           .GetTotalMatrixAttribute("Data Processing")
+                                                             x => x.Text = intDP
                                                                            .ToString(GlobalSettings.CultureInfo), token)
                                                          .ConfigureAwait(false);
-                            await lblWeaponFirewall.DoThreadSafeAsync(x => x.Text = objWeapon
-                                                                          .GetTotalMatrixAttribute("Firewall")
+                            await lblWeaponFirewall.DoThreadSafeAsync(x => x.Text = intFirewall
                                                                           .ToString(GlobalSettings.CultureInfo), token)
                                                    .ConfigureAwait(false);
-                            await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
+                            bool blnIsActiveCommlink = await objWeapon.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnIsCommlink = await objWeapon.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                            if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                             {
-                                x.Visible = objWeapon.IsCommlink;
-                                x.Checked = objWeapon.IsActiveCommlink(CharacterObject);
-                            }, token).ConfigureAwait(false);
-                            if (CharacterObject.IsAI)
-                            {
+                                bool blnIsHomeNode = await objWeapon.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                bool blnCanBeHomeNode = blnIsCommlink &&
+                                                        await objWeapon.GetTotalMatrixAttributeAsync(
+                                                            "Program Limit", token).ConfigureAwait(false) >=
+                                                        (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                            token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                            ? 2
+                                                            : 1);
                                 await chkWeaponHomeNode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Checked = objWeapon.IsHomeNode(CharacterObject);
-                                    x.Enabled = objWeapon.IsCommlink &&
-                                                objWeapon.GetTotalMatrixAttribute("Program Limit") >=
-                                                (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                                    x.Checked = blnIsHomeNode;
+                                    x.Enabled = blnCanBeHomeNode;
                                 }, token).ConfigureAwait(false);
                             }
                             else
                                 await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                       .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+
+                            await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnIsActiveCommlink;
+                                x.Visible = blnIsCommlink;
+                            }, token).ConfigureAwait(false);
 
                             token.ThrowIfCancellationRequested();
                             break;
@@ -16052,47 +16193,56 @@ namespace Chummer
 
                             // gpbWeaponsMatrix
                             int intDeviceRating = await objGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
+                            int intAttack = await objGear.GetTotalMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+                            int intSleaze = await objGear.GetTotalMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+                            int intDP = await objGear.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                            int intFirewall = await objGear.GetTotalMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
                             await lblWeaponDeviceRating
-                                  .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
-                                                     token).ConfigureAwait(false);
-                            await lblWeaponAttack.DoThreadSafeAsync(x => x.Text = objGear
-                                                                        .GetTotalMatrixAttribute("Attack")
-                                                                        .ToString(GlobalSettings.CultureInfo), token)
-                                                 .ConfigureAwait(false);
-                            await lblWeaponSleaze.DoThreadSafeAsync(x => x.Text = objGear
-                                                                        .GetTotalMatrixAttribute("Sleaze")
-                                                                        .ToString(GlobalSettings.CultureInfo), token)
-                                                 .ConfigureAwait(false);
+                                .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
+                                    token).ConfigureAwait(false);
+                            await lblWeaponAttack.DoThreadSafeAsync(x => x.Text = intAttack
+                                    .ToString(GlobalSettings.CultureInfo), token)
+                                .ConfigureAwait(false);
+                            await lblWeaponSleaze.DoThreadSafeAsync(x => x.Text = intSleaze
+                                    .ToString(GlobalSettings.CultureInfo), token)
+                                .ConfigureAwait(false);
                             await lblWeaponDataProcessing.DoThreadSafeAsync(
-                                                             x => x.Text = objGear
-                                                                           .GetTotalMatrixAttribute("Data Processing")
-                                                                           .ToString(GlobalSettings.CultureInfo), token)
-                                                         .ConfigureAwait(false);
-                            await lblWeaponFirewall.DoThreadSafeAsync(x => x.Text = objGear
-                                                                          .GetTotalMatrixAttribute("Firewall")
-                                                                          .ToString(GlobalSettings.CultureInfo), token)
-                                                   .ConfigureAwait(false);
-                            await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
+                                    x => x.Text = intDP
+                                        .ToString(GlobalSettings.CultureInfo), token)
+                                .ConfigureAwait(false);
+                            await lblWeaponFirewall.DoThreadSafeAsync(x => x.Text = intFirewall
+                                    .ToString(GlobalSettings.CultureInfo), token)
+                                .ConfigureAwait(false);
+                            bool blnIsActiveCommlink = await objGear.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnIsCommlink = await objGear.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                            if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                             {
-                                x.Visible = objGear.IsCommlink;
-                                x.Checked = objGear.IsActiveCommlink(CharacterObject);
-                            }, token).ConfigureAwait(false);
-                            if (CharacterObject.IsAI)
-                            {
+                                bool blnIsHomeNode = await objGear.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                bool blnCanBeHomeNode = blnIsCommlink &&
+                                                        await objGear.GetTotalMatrixAttributeAsync(
+                                                            "Program Limit", token).ConfigureAwait(false) >=
+                                                        (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                            token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                            ? 2
+                                                            : 1);
                                 await chkWeaponHomeNode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Checked = objGear.IsHomeNode(CharacterObject);
-                                    x.Enabled = objGear.IsCommlink &&
-                                                objGear.GetTotalMatrixAttribute("Program Limit") >=
-                                                (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                                    x.Checked = blnIsHomeNode;
+                                    x.Enabled = blnCanBeHomeNode;
                                 }, token).ConfigureAwait(false);
                             }
                             else
                                 await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                       .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
 
-                            break;
+                            await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnIsActiveCommlink;
+                                x.Visible = blnIsCommlink;
+                            }, token).ConfigureAwait(false);
+
+                                break;
                         }
                         default:
                             await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -16252,44 +16402,56 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // gpbArmorMatrix
                         int intDeviceRating = await objArmor.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
+                        int intAttack = await objArmor.GetTotalMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+                        int intSleaze = await objArmor.GetTotalMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+                        int intDP = await objArmor.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                        int intFirewall = await objArmor.GetTotalMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
                         await lblArmorDeviceRating
                               .DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo),
                                                  token).ConfigureAwait(false);
                         await lblArmorAttack.DoThreadSafeAsync(x => x.Text
-                                                                   = objArmor.GetTotalMatrixAttribute("Attack")
+                                                                   = intAttack
                                                                              .ToString(GlobalSettings.CultureInfo),
                                                                token).ConfigureAwait(false);
                         await lblArmorSleaze.DoThreadSafeAsync(x => x.Text
-                                                                   = objArmor.GetTotalMatrixAttribute("Sleaze")
+                                                                   = intSleaze
                                                                              .ToString(GlobalSettings.CultureInfo),
                                                                token).ConfigureAwait(false);
-                        await lblArmorDataProcessing.DoThreadSafeAsync(x => x.Text = objArmor
-                                                                           .GetTotalMatrixAttribute("Data Processing")
+                        await lblArmorDataProcessing.DoThreadSafeAsync(x => x.Text = intDP
                                                                            .ToString(GlobalSettings.CultureInfo), token)
                                                     .ConfigureAwait(false);
-                        await lblArmorFirewall.DoThreadSafeAsync(x => x.Text = objArmor
-                                                                               .GetTotalMatrixAttribute("Firewall")
+                        await lblArmorFirewall.DoThreadSafeAsync(x => x.Text = intFirewall
                                                                                .ToString(GlobalSettings.CultureInfo),
                                                                  token).ConfigureAwait(false);
-                        await chkArmorActiveCommlink.DoThreadSafeAsync(x =>
+                        bool blnIsActiveCommlink = await objArmor.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                        bool blnIsCommlink = await objArmor.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                        if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                         {
-                            x.Visible = objArmor.IsCommlink;
-                            x.Checked = objArmor.IsActiveCommlink(CharacterObject);
-                        }, token).ConfigureAwait(false);
-                        if (CharacterObject.IsAI)
-                        {
+                            bool blnIsHomeNode = await objArmor.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnCanBeHomeNode = blnIsCommlink &&
+                                                    await objArmor.GetTotalMatrixAttributeAsync(
+                                                        "Program Limit", token).ConfigureAwait(false) >=
+                                                    (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                        token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                        ? 2
+                                                        : 1);
                             await chkArmorHomeNode.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Checked = objArmor.IsHomeNode(CharacterObject);
-                                x.Enabled = objArmor.IsCommlink &&
-                                            objArmor.GetTotalMatrixAttribute("Program Limit") >=
-                                            (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                                x.Checked = blnIsHomeNode;
+                                x.Enabled = blnCanBeHomeNode;
                             }, token).ConfigureAwait(false);
                         }
                         else
                             await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
+
+                        token.ThrowIfCancellationRequested();
+                        await chkArmorActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Checked = blnIsActiveCommlink;
+                            x.Visible = blnIsCommlink;
+                        }, token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -16532,53 +16694,63 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     // gpbArmorMatrix
                                     int intDeviceRating = await objSelectedGear.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
-                                    await lblArmorDeviceRating
+                                    int intAttack = await objSelectedGear
+                                        .GetTotalMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+                                    int intSleaze = await objSelectedGear
+                                        .GetTotalMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+                                    int intDP = await objSelectedGear
+                                        .GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                                    int intFirewall = await objSelectedGear
+                                        .GetTotalMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
+                                        await lblArmorDeviceRating
                                           .DoThreadSafeAsync(
                                               x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo), token)
                                           .ConfigureAwait(false);
                                     await lblArmorAttack.DoThreadSafeAsync(
-                                                            x => x.Text = objSelectedGear
-                                                                          .GetTotalMatrixAttribute("Attack")
-                                                                          .ToString(GlobalSettings.CultureInfo), token)
+                                                            x => x.Text = intAttack.ToString(GlobalSettings.CultureInfo), token)
                                                         .ConfigureAwait(false);
                                     await lblArmorSleaze.DoThreadSafeAsync(
-                                                            x => x.Text = objSelectedGear
-                                                                          .GetTotalMatrixAttribute("Sleaze")
+                                                            x => x.Text = intSleaze
                                                                           .ToString(GlobalSettings.CultureInfo), token)
                                                         .ConfigureAwait(false);
                                     await lblArmorDataProcessing.DoThreadSafeAsync(
-                                                                    x => x.Text = objSelectedGear
-                                                                        .GetTotalMatrixAttribute("Data Processing")
+                                                                    x => x.Text = intDP
                                                                         .ToString(GlobalSettings.CultureInfo), token)
                                                                 .ConfigureAwait(false);
                                     await lblArmorFirewall.DoThreadSafeAsync(
-                                                              x => x.Text = objSelectedGear
-                                                                            .GetTotalMatrixAttribute("Firewall")
+                                                              x => x.Text = intFirewall
                                                                             .ToString(GlobalSettings.CultureInfo),
                                                               token)
                                                           .ConfigureAwait(false);
-                                    await chkArmorActiveCommlink.DoThreadSafeAsync(x =>
+                                    bool blnIsActiveCommlink = await objSelectedGear.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                                    bool blnIsCommlink = await objSelectedGear.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                                    if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                                     {
-                                        x.Visible = objSelectedGear.IsCommlink;
-                                        x.Checked = objSelectedGear.IsActiveCommlink(CharacterObject);
-                                    }, token).ConfigureAwait(false);
-                                    if (CharacterObject.IsAI)
-                                    {
+                                        bool blnIsHomeNode = await objSelectedGear.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                        bool blnCanBeHomeNode = blnIsCommlink &&
+                                                                await objSelectedGear.GetTotalMatrixAttributeAsync(
+                                                                    "Program Limit", token).ConfigureAwait(false) >=
+                                                                (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                                    token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                                    ? 2
+                                                                    : 1);
                                         await chkArmorHomeNode.DoThreadSafeAsync(x =>
                                         {
                                             x.Visible = true;
-                                            x.Checked = objSelectedGear.IsHomeNode(CharacterObject);
-                                            x.Enabled = objSelectedGear.IsCommlink &&
-                                                        objSelectedGear.GetTotalMatrixAttribute("Program Limit")
-                                                        >=
-                                                        (CharacterObject.DEP.TotalValue > intDeviceRating
-                                                            ? 2
-                                                            : 1);
+                                            x.Checked = blnIsHomeNode;
+                                            x.Enabled = blnCanBeHomeNode;
                                         }, token).ConfigureAwait(false);
                                     }
                                     else
                                         await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                              .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
+
+                                    token.ThrowIfCancellationRequested();
+                                    await chkArmorActiveCommlink.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Checked = blnIsActiveCommlink;
+                                        x.Visible = blnIsCommlink;
+                                    }, token).ConfigureAwait(false);
 
                                     token.ThrowIfCancellationRequested();
                                     break;
@@ -16904,7 +17076,7 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
                         if (objGear.IsProgram && objGear.Parent is IHasMatrixAttributes objCommlink
-                                              && objCommlink.IsCommlink)
+                                              && await objCommlink.GetIsCommlinkAsync(token).ConfigureAwait(false))
                         {
                             string strText = await LanguageManager
                                                    .GetStringAsync("Checkbox_SoftwareRunning", token: token)
@@ -16919,7 +17091,7 @@ namespace Chummer
                         }
 
                         token.ThrowIfCancellationRequested();
-                        if (CharacterObject.BlackMarketDiscount)
+                        if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                         {
                             bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                            .GenerateBlackMarketMappings(
@@ -16956,30 +17128,34 @@ namespace Chummer
                         await objGear.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze,
                                                                             cboGearDataProcessing, cboGearFirewall,
                                                                             token).ConfigureAwait(false);
-                        await chkGearActiveCommlink.DoThreadSafeAsync(x =>
+                        bool blnIsActiveCommlink = await objGear.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                        bool blnIsCommlink = await objGear.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                        if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                         {
-                            x.Checked = objGear.IsActiveCommlink(CharacterObject);
-                            x.Visible = objGear.IsCommlink;
-                        }, token).ConfigureAwait(false);
-                        if (CharacterObject.IsAI)
-                        {
-                            bool blnEnabled
-                                = objGear.IsCommlink
-                                  && await objGear.GetTotalMatrixAttributeAsync("Program Limit", token).ConfigureAwait(false)
-                                  >= (await CharacterObject.DEP.GetTotalValueAsync(token).ConfigureAwait(false)
-                                      > intDeviceRating
-                                      ? 2
-                                      : 1);
+                            bool blnIsHomeNode = await objGear.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnCanBeHomeNode = blnIsCommlink &&
+                                                    await objGear.GetTotalMatrixAttributeAsync(
+                                                        "Program Limit", token).ConfigureAwait(false) >=
+                                                    (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                        token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                        ? 2
+                                                        : 1);
                             await chkGearHomeNode.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Checked = objGear.IsHomeNode(CharacterObject);
-                                x.Enabled = blnEnabled;
+                                x.Checked = blnIsHomeNode;
+                                x.Enabled = blnCanBeHomeNode;
                             }, token).ConfigureAwait(false);
                         }
                         else
                             await chkGearHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                 .ConfigureAwait(false);
+                                .ConfigureAwait(false);
+
+                        await chkGearActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Checked = blnIsActiveCommlink;
+                            x.Visible = blnIsCommlink;
+                        }, token).ConfigureAwait(false);
 
                         token.ThrowIfCancellationRequested();
                         string strNodeText = await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -17690,7 +17866,7 @@ namespace Chummer
                     objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                     // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-                    if (CharacterObject.ActiveCommlink == null && objGear.IsCommlink)
+                    if (await CharacterObject.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objGear.GetIsCommlinkAsync(token).ConfigureAwait(false))
                     {
                         await objGear.SetActiveCommlinkAsync(CharacterObject, true, token).ConfigureAwait(false);
                     }
@@ -18465,24 +18641,34 @@ namespace Chummer
                                                 cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing,
                                                 cboVehicleFirewall, token)
                                             .ConfigureAwait(false);
-                            await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                            bool blnIsActiveCommlink = await objVehicle.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnIsCommlink = await objVehicle.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                            if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                             {
-                                x.Visible = objVehicle.IsCommlink;
-                                x.Checked = objVehicle.IsActiveCommlink(CharacterObject);
-                            }, token).ConfigureAwait(false);
-                            if (CharacterObject.IsAI)
-                            {
+                                bool blnIsHomeNode = await objVehicle.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                bool blnCanBeHomeNode = blnIsCommlink &&
+                                                        await objVehicle.GetTotalMatrixAttributeAsync(
+                                                            "Program Limit", token).ConfigureAwait(false) >=
+                                                        (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                            token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                            ? 2
+                                                            : 1);
                                 await chkVehicleHomeNode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Checked = objVehicle.IsHomeNode(CharacterObject);
-                                    x.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit")
-                                                >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                                    x.Checked = blnIsHomeNode;
+                                    x.Enabled = blnCanBeHomeNode;
                                 }, token).ConfigureAwait(false);
                             }
                             else
                                 await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                        .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+
+                            await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnIsActiveCommlink;
+                                x.Visible = blnIsCommlink;
+                            }, token).ConfigureAwait(false);
 
                             token.ThrowIfCancellationRequested();
                             await UpdateSensor(objVehicle, token).ConfigureAwait(false);
@@ -19020,24 +19206,34 @@ namespace Chummer
                                                cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing,
                                                cboVehicleFirewall, token)
                                            .ConfigureAwait(false);
-                            await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                            bool blnIsActiveCommlink = await objWeapon.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnIsCommlink = await objWeapon.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                            if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                             {
-                                x.Visible = objWeapon.IsCommlink;
-                                x.Checked = objWeapon.IsActiveCommlink(CharacterObject);
-                            }, token).ConfigureAwait(false);
-                            if (CharacterObject.IsAI)
-                            {
+                                bool blnIsHomeNode = await objWeapon.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                bool blnCanBeHomeNode = blnIsCommlink &&
+                                                        await objWeapon.GetTotalMatrixAttributeAsync(
+                                                            "Program Limit", token).ConfigureAwait(false) >=
+                                                        (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                            token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                            ? 2
+                                                            : 1);
                                 await chkVehicleHomeNode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Checked = objWeapon.IsHomeNode(CharacterObject);
-                                    x.Enabled = objWeapon.GetTotalMatrixAttribute("Program Limit")
-                                                >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                                    x.Checked = blnIsHomeNode;
+                                    x.Enabled = blnCanBeHomeNode;
                                 }, token).ConfigureAwait(false);
                             }
                             else
                                 await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                        .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+
+                            await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnIsActiveCommlink;
+                                x.Visible = blnIsCommlink;
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -19465,25 +19661,34 @@ namespace Chummer
                                                   cboVehicleFirewall, token)
                                               .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                            bool blnIsActiveCommlink = await objCyberware.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnIsCommlink = await objCyberware.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                            if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                             {
-                                x.Visible = objCyberware.IsCommlink;
-                                x.Checked = objCyberware.IsActiveCommlink(CharacterObject);
-                            }, token).ConfigureAwait(false);
-                            if (CharacterObject.IsAI)
-                            {
+                                bool blnIsHomeNode = await objCyberware.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                bool blnCanBeHomeNode = blnIsCommlink &&
+                                                        await objCyberware.GetTotalMatrixAttributeAsync(
+                                                            "Program Limit", token).ConfigureAwait(false) >=
+                                                        (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                            token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                            ? 2
+                                                            : 1);
                                 await chkVehicleHomeNode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Checked = objCyberware.IsHomeNode(CharacterObject);
-                                    x.Enabled = chkVehicleActiveCommlink.Visible
-                                                && objCyberware.GetTotalMatrixAttribute("Program Limit")
-                                                >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                                    x.Checked = blnIsHomeNode;
+                                    x.Enabled = blnCanBeHomeNode;
                                 }, token).ConfigureAwait(false);
                             }
                             else
                                 await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                        .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+
+                            await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnIsActiveCommlink;
+                                x.Visible = blnIsCommlink;
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -19653,25 +19858,34 @@ namespace Chummer
                                              cboVehicleFirewall, token)
                                          .ConfigureAwait(false);
 
-                            await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                            bool blnIsActiveCommlink = await objGear.IsActiveCommlinkAsync(CharacterObject, token).ConfigureAwait(false);
+                            bool blnIsCommlink = await objGear.GetIsCommlinkAsync(token).ConfigureAwait(false);
+                            if (await CharacterObject.GetIsAIAsync(token).ConfigureAwait(false))
                             {
-                                x.Visible = objGear.IsCommlink;
-                                x.Checked = objGear.IsActiveCommlink(CharacterObject);
-                            }, token).ConfigureAwait(false);
-                            if (CharacterObject.IsAI)
-                            {
+                                bool blnIsHomeNode = await objGear.IsHomeNodeAsync(CharacterObject, token).ConfigureAwait(false);
+                                bool blnCanBeHomeNode = blnIsCommlink &&
+                                                        await objGear.GetTotalMatrixAttributeAsync(
+                                                            "Program Limit", token).ConfigureAwait(false) >=
+                                                        (await (await CharacterObject.GetAttributeAsync("DEP",
+                                                            token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) > intDeviceRating
+                                                            ? 2
+                                                            : 1);
                                 await chkVehicleHomeNode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Checked = objGear.IsHomeNode(CharacterObject);
-                                    x.Enabled = objGear.IsCommlink
-                                                && objGear.GetTotalMatrixAttribute("Program Limit")
-                                                >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                                    x.Checked = blnIsHomeNode;
+                                    x.Enabled = blnCanBeHomeNode;
                                 }, token).ConfigureAwait(false);
                             }
                             else
                                 await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                        .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+
+                            await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnIsActiveCommlink;
+                                x.Visible = blnIsCommlink;
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -21847,13 +22061,12 @@ namespace Chummer
                             Spirit objSpirit = new Spirit(CharacterObject)
                             {
                                 EntityType = SpiritType.Spirit,
-                                Name = objXmlSpirit["name"].InnerText,
-                                Force =
-                                    Convert.ToInt32(objXmlSpirit["force"].InnerText,
-                                                    GlobalSettings.InvariantCultureInfo),
-                                ServicesOwed = Convert.ToInt32(objXmlSpirit["services"].InnerText,
-                                                               GlobalSettings.InvariantCultureInfo)
+                                Name = objXmlSpirit["name"].InnerText
                             };
+                            await objSpirit.SetForceAsync(Convert.ToInt32(objXmlSpirit["force"].InnerText,
+                                GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                            await objSpirit.SetServicesOwedAsync(Convert.ToInt32(objXmlSpirit["services"].InnerText,
+                                GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                             await CharacterObject.Spirits.AddAsync(objSpirit, token).ConfigureAwait(false);
                         }
                     }
