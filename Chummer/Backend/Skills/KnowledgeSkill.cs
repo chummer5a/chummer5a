@@ -244,13 +244,35 @@ namespace Chummer.Backend.Skills
 
         private int _intIsNativeLanguage;
 
-        public bool ForcedName { get; }
+        public bool ForcedName { get; private set; }
 
-        public KnowledgeSkill(Character objCharacter) : base(objCharacter)
+        public KnowledgeSkill(Character objCharacter, bool blnSetProperties = true) : base(objCharacter)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            DefaultAttribute = "LOG";
+            if (blnSetProperties)
+                DefaultAttribute = "LOG";
+        }
+
+        public static async Task<KnowledgeSkill> NewAsync(Character objCharacter, string strForcedName,
+            bool blnAllowUpgrade, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            KnowledgeSkill objReturn = new KnowledgeSkill(objCharacter, false);
+            try
+            {
+                await objReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                await objReturn.SetWritableNameAsync(strForcedName, token).ConfigureAwait(false);
+                objReturn.ForcedName = true;
+                objReturn._blnAllowUpgrade = blnAllowUpgrade;
+            }
+            catch
+            {
+                await objReturn.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
+
+            return objReturn;
         }
 
         public KnowledgeSkill(Character objCharacter, string strForcedName, bool blnAllowUpgrade) : this(objCharacter)

@@ -446,7 +446,9 @@ namespace Chummer.Backend.Skills
                     xmlSkillDataNode.TryGetBoolFieldQuickly("exotic", ref blnExotic);
                     if (blnExotic)
                     {
-                        ExoticSkill exotic = new ExoticSkill(objCharacter, xmlSkillDataNode);
+                        ExoticSkill exotic = FromData(xmlSkillDataNode, objCharacter, false) as ExoticSkill
+                                             ?? throw new ArgumentException(
+                                                 "Attempted to load non-exotic skill as exotic skill");
                         exotic.Load(xmlSkillNode);
                         objLoadingSkill = exotic;
                     }
@@ -542,16 +544,13 @@ namespace Chummer.Backend.Skills
             Skill objSkill;
             if (xmlSkillNode.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
             {
-                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
+                objSkill = new KnowledgeSkill(objCharacter)
                 {
                     WritableName = strName,
                     Base = intBaseRating,
                     Karma = intKarmaRating,
-
                     Type = xmlSkillNode["skillcategory"]?.InnerText
                 };
-
-                objSkill = objKnowledgeSkill;
             }
             else
             {
@@ -701,6 +700,67 @@ namespace Chummer.Backend.Skills
             return new Skill(objCharacter, xmlNode);
         }
 
+        /// <summary>
+        /// Load a skill from a data file describing said skill
+        /// </summary>
+        /// <param name="xmlNode">The XML node describing the skill</param>
+        /// <param name="objCharacter">The character the skill belongs to</param>
+        /// <param name="blnIsKnowledgeSkill">Whether or not this skill is a knowledge skill.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public static async Task<Skill> FromDataAsync(XmlNode xmlNode, Character objCharacter, bool blnIsKnowledgeSkill, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlNode == null)
+                return null;
+            if (xmlNode["exotic"]?.InnerText == bool.TrueString)
+            {
+                //load exotic skill
+                ExoticSkill objExoticReturn = new ExoticSkill(objCharacter, xmlNode, false);
+                string strExoticGroup = xmlNode["skillgroup"]?.InnerText;
+
+                if (!string.IsNullOrEmpty(strExoticGroup))
+                {
+                    objExoticReturn.SkillGroup = strExoticGroup;
+                    SkillGroup objGroup = await Skills.SkillGroup.GetAsync(objExoticReturn, token).ConfigureAwait(false);
+                    objExoticReturn.SkillGroupObject = objGroup;
+                    if (objGroup != null)
+                    {
+                        objGroup.PropertyChangedAsync += objExoticReturn.OnSkillGroupChanged;
+                    }
+                }
+                return objExoticReturn;
+            }
+
+            if (blnIsKnowledgeSkill)
+            {
+                //TODO INIT SKILL
+                Utils.BreakIfDebug();
+
+                KnowledgeSkill objKnoSkillReturn = new KnowledgeSkill(objCharacter, false);
+                await objKnoSkillReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                return objKnoSkillReturn;
+            }
+
+            //TODO INIT SKILL
+
+            Skill objReturn = new Skill(objCharacter, xmlNode, false);
+            string strGroup = xmlNode["skillgroup"]?.InnerText;
+
+            if (!string.IsNullOrEmpty(strGroup))
+            {
+                objReturn.SkillGroup = strGroup;
+                SkillGroup objGroup = await Skills.SkillGroup.GetAsync(objReturn, token).ConfigureAwait(false);
+                objReturn.SkillGroupObject = objGroup;
+                if (objGroup != null)
+                {
+                    objGroup.PropertyChangedAsync += objReturn.OnSkillGroupChanged;
+                }
+            }
+
+            return objReturn;
+        }
+
         protected Skill(Character character)
         {
             CharacterObject = character ?? throw new ArgumentNullException(nameof(character));
@@ -780,7 +840,7 @@ namespace Chummer.Backend.Skills
         }
 
         //load from data
-        protected Skill(Character character, XmlNode xmlNode) : this(character)
+        protected Skill(Character character, XmlNode xmlNode, bool blnDoSkillGroup = true) : this(character)
         //Ugly hack, needs by then
         {
             if (xmlNode == null)
@@ -807,15 +867,18 @@ namespace Chummer.Backend.Skills
             if (xmlNode.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp) || objMyNode.Value?.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp) == true)
                 RequiresFlyMovement = blnTemp;
 
-            string strGroup = xmlNode["skillgroup"]?.InnerText;
-
-            if (!string.IsNullOrEmpty(strGroup))
+            if (blnDoSkillGroup)
             {
-                SkillGroup = strGroup;
-                SkillGroupObject = Skills.SkillGroup.Get(this);
-                if (SkillGroupObject != null)
+                string strGroup = xmlNode["skillgroup"]?.InnerText;
+
+                if (!string.IsNullOrEmpty(strGroup))
                 {
-                    SkillGroupObject.PropertyChangedAsync += OnSkillGroupChanged;
+                    SkillGroup = strGroup;
+                    SkillGroupObject = Skills.SkillGroup.Get(this);
+                    if (SkillGroupObject != null)
+                    {
+                        SkillGroupObject.PropertyChangedAsync += OnSkillGroupChanged;
+                    }
                 }
             }
 
@@ -3427,7 +3490,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string SkillGroup { get; } = string.Empty;
+        public string SkillGroup { get; private set; } = string.Empty;
 
         public virtual string SkillCategory { get; } = string.Empty;
 
@@ -4776,7 +4839,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public SkillGroup SkillGroupObject { get; }
+        public SkillGroup SkillGroupObject { get; private set; }
 
         public string Page { get; }
 

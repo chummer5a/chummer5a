@@ -2585,7 +2585,10 @@ namespace Chummer
         /// <summary>
         /// Set up a character with a metatype and new attributes to match.
         /// </summary>
-        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null, XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null, string strSelectedPossessionMethod = "", CancellationToken token = default)
+        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId,
+            XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null,
+            XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null,
+            string strSelectedPossessionMethod = "", CancellationToken token = default)
         {
             using (LockObject.EnterWriteLock(token))
             {
@@ -2675,7 +2678,7 @@ namespace Chummer
                                             objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString
                                                 ? QualitySource.MetatypeRemovable
                                                 : QualitySource.Metatype;
-                                        objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
+                                        objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue, token: token);
                                         objQuality.ContributeToLimit = false;
                                         Qualities.Add(objQuality);
                                     }
@@ -3127,10 +3130,6 @@ namespace Chummer
                     }
 
                     objGear.Cost = "0";
-                    // Create any Weapons that came with this Gear.
-                    foreach (Weapon objWeapon in lstWeapons)
-                        Weapons.Add(objWeapon);
-
                     objGear.ParentID = Guid.NewGuid().ToString();
 
                     Gear.Add(objGear);
@@ -3264,6 +3263,758 @@ namespace Chummer
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Set up a character with a metatype and new attributes to match.
+        /// </summary>
+        public async Task CreateAsync(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId,
+            XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null,
+            XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null,
+            string strSelectedPossessionMethod = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (objXmlMetatype == null)
+                    throw new ArgumentNullException(nameof(objXmlMetatype));
+                // Remove any Improvements the character received from their Metatype.
+                await ImprovementManager.RemoveImprovementsAsync(this,
+                    await Improvements.ToListAsync(objImprovement =>
+                            objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant, token: token)
+                        .ConfigureAwait(false),
+                    token: token).ConfigureAwait(false);
+
+                // Remove any Qualities the character received from their Metatype, then remove the Quality.
+                for (int i = await Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                {
+                    if (i >= await Qualities.GetCountAsync(token).ConfigureAwait(false))
+                        continue;
+                    Quality objQuality = await Qualities.GetValueAtAsync(i, token).ConfigureAwait(false);
+                    if (objQuality.OriginSource == QualitySource.Metatype ||
+                        objQuality.OriginSource == QualitySource.MetatypeRemovable ||
+                        objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                        await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                }
+
+                // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
+                if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId == Guid.Empty.ToString())
+                    strMetavariantId =
+                        objXmlMetatype
+                            .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                "metavariants/metavariant[name = \"Human\"]/id", token)?.Value ??
+                        string.Empty;
+                XmlNode objXmlMetavariant =
+                    objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strMetavariantId);
+
+                // Set Metatype information.
+                XmlNode charNode =
+                    strSelectedMetatypeCategory == "Shapeshifter" || strMetavariantId == Guid.Empty.ToString()
+                        ? objXmlMetatype
+                        : objXmlMetavariant ?? objXmlMetatype;
+                AttributeSection.Create(charNode, intForce, token: token);
+                MetatypeGuid = new Guid(strMetatypeId);
+                Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
+                MetatypeCategory = strSelectedMetatypeCategory;
+                MetavariantGuid = string.IsNullOrEmpty(strMetavariantId) ? Guid.Empty : new Guid(strMetavariantId);
+                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? "None" : "None";
+                // We only reverted to the base metatype to get the attributes.
+                if (strSelectedMetatypeCategory == "Shapeshifter")
+                {
+                    charNode = objXmlMetavariant ?? objXmlMetatype;
+                }
+
+                Source = charNode["source"]?.InnerText ?? "SR5";
+                Page = charNode["page"]?.InnerText ?? "0";
+                _intMetatypeBP = 0;
+                charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
+                _intInitiativeDice = Settings.MinInitiativeDice;
+                charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
+
+                Movement = objXmlMetatype["movement"]?.InnerText ?? string.Empty;
+
+                // Determine if the Metatype has any bonuses.
+                XmlElement xmlBonusNode = charNode["bonus"];
+                if (xmlBonusNode != null)
+                    await ImprovementManager.CreateImprovementsAsync(this, Improvement.ImprovementSource.Metatype,
+                        strMetatypeId,
+                        xmlBonusNode, 1, strMetatypeId, token: token).ConfigureAwait(false);
+
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                // Create the Qualities that come with the Metatype.
+                if (xmlQualityDocumentQualitiesNode == null)
+                    xmlQualityDocumentQualitiesNode =
+                        (await LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false)).SelectSingleNode(
+                            "/chummer/qualities");
+                if (xmlQualityDocumentQualitiesNode != null)
+                {
+                    using (XmlNodeList xmlQualityList = charNode.SelectNodes("qualities/*/quality"))
+                    {
+                        if (xmlQualityList != null)
+                        {
+                            foreach (XmlNode objXmlQualityItem in xmlQualityList)
+                            {
+                                string strQuality = objXmlQualityItem.InnerText;
+                                XmlNode objXmlQuality =
+                                    xmlQualityDocumentQualitiesNode.TryGetNodeByNameOrId("quality", strQuality);
+                                if (objXmlQuality != null)
+                                {
+                                    Quality objQuality = new Quality(this);
+                                    try
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        string strForceValue =
+                                            objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
+                                        QualitySource objSource =
+                                            objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString
+                                                ? QualitySource.MetatypeRemovable
+                                                : QualitySource.Metatype;
+                                        await objQuality.CreateAsync(objXmlQuality, objSource, lstWeapons,
+                                            strForceValue,
+                                            token: token).ConfigureAwait(false);
+                                        objQuality.ContributeToLimit = false;
+                                        await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                                        throw;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //Load any critter powers the character has.
+                if (xmlCritterPowerDocumentPowersNode == null)
+                    xmlCritterPowerDocumentPowersNode =
+                        (await LoadDataAsync("critterpowers.xml", token: token).ConfigureAwait(false)).SelectSingleNode(
+                            "/chummer/powers");
+                if (xmlCritterPowerDocumentPowersNode != null)
+                {
+                    foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
+                    {
+                        string strCritterPower = objXmlPower.InnerText;
+                        XmlNode objXmlCritterPower =
+                            xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power", strCritterPower);
+                        if (objXmlCritterPower != null)
+                        {
+                            CritterPower objPower = new CritterPower(this);
+                            string strForcedValue = objXmlPower.Attributes["select"]?.InnerText ?? string.Empty;
+                            int intRating =
+                                await CommonFunctions.ExpressionToIntAsync(objXmlPower.Attributes["rating"]?.InnerText,
+                                    intForce,
+                                    0,
+                                    0, token).ConfigureAwait(false);
+
+                            objPower.Create(objXmlCritterPower, intRating, strForcedValue);
+                            objPower.CountTowardsLimit = false;
+                            await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                await ImprovementManager.CreateImprovementAsync(this, objPower.InternalId,
+                                    Improvement.ImprovementSource.Metatype,
+                                    string.Empty,
+                                    Improvement.ImprovementType.CritterPower,
+                                    string.Empty, token: token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(this, CancellationToken.None)
+                                    .ConfigureAwait(false);
+                                throw;
+                            }
+
+                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                //Load any natural weapons the character has.
+                foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("naturalweapons/naturalweapon"))
+                {
+                    Weapon objWeapon = new Weapon(this)
+                    {
+                        Name = objXmlNaturalWeapon["name"].InnerText,
+                        Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage,
+                            token: token).ConfigureAwait(false),
+                        RangeType = "Melee",
+                        Reach =
+                            await CommonFunctions.ExpressionToIntAsync(objXmlNaturalWeapon["reach"]?.InnerText ?? "0",
+                                intForce, 0,
+                                0, token).ConfigureAwait(false),
+                        Damage = objXmlNaturalWeapon["damage"]?.InnerText ?? "({STR})S",
+                        Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerText ?? "Physical",
+                        AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",
+                        Mode = "0",
+                        RC = "0",
+                        Concealability = 0,
+                        Avail = "0",
+                        Cost = "0",
+                        UseSkill = objXmlNaturalWeapon["useskill"]?.InnerText ?? string.Empty,
+                        Source = objXmlNaturalWeapon["source"]?.InnerText ?? "SR5",
+                        Page = objXmlNaturalWeapon["page"]?.InnerText ?? "0"
+                    };
+                    await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                }
+
+                // Add the Unarmed Attack Weapon to the character.
+                if (await Weapons.AllAsync(x => x.Name != "Unarmed Attack", token).ConfigureAwait(false))
+                {
+                    XmlNode objXmlWeapon = (await LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false))
+                        .SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                    if (objXmlWeapon != null)
+                    {
+                        Weapon objWeapon = new Weapon(this);
+                        objWeapon.Create(objXmlWeapon, lstWeapons);
+                        objWeapon.ParentID =
+                            Guid.NewGuid()
+                                .ToString("D",
+                                    GlobalSettings.InvariantCultureInfo); // Unarmed Attack can never be removed
+                        await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                    }
+                }
+
+                //Set the Active Skill Ratings for the Critter.
+                foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/skill"))
+                {
+                    string strRating = xmlSkill.Attributes?["rating"]?.InnerText;
+                    bool bImprovementAdded = false;
+                    if (!string.IsNullOrEmpty(strRating))
+                    {
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await ImprovementManager.CreateImprovementAsync(this, xmlSkill.InnerText,
+                                    Improvement.ImprovementSource.Metatype, string.Empty,
+                                    Improvement.ImprovementType.SkillLevel,
+                                    string.Empty,
+                                    await CommonFunctions.ExpressionToIntAsync(
+                                        strRating, intForce, 0, 0, token).ConfigureAwait(false), token: token)
+                                .ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
+                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        bImprovementAdded = true;
+                    }
+
+                    string strSkill = xmlSkill.InnerText;
+                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
+                    Skill objSkill = await SkillsSection.GetActiveSkillAsync(strSkill, token).ConfigureAwait(false);
+
+                    if (objSkill == null)
+                    {
+                        if (await ExoticSkill.IsExoticSkillNameAsync(this, strSkill, token).ConfigureAwait(false))
+                        {
+                            await SkillsSection.AddExoticSkillAsync(strSkill, strSpec, token).ConfigureAwait(false);
+                            continue;
+                        }
+
+                        if (!bImprovementAdded)
+                            continue;
+
+                        //This skill does not yet exist but the datafile asks to improve it.
+                        //We need to add it so it is not only improved but also shown on the skills tab.
+                        await SkillsSection.AddSkillsAsync(SkillsSection.FilterOption.Name, strSkill, token)
+                            .ConfigureAwait(false);
+                        objSkill = await SkillsSection.GetActiveSkillAsync(strSkill, token).ConfigureAwait(false);
+                    }
+
+                    if (objSkill != null) //More or less a safeguard only. Should not be empty at that point any longer.
+                    {
+                        if (string.IsNullOrEmpty(strSpec)) continue;
+                        if (await objSkill.Specializations.AllAsync(x => x.Name != strSpec, token)
+                                .ConfigureAwait(false))
+                        {
+                            SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                await objSkill.Specializations.AddAsync(objSpec, token).ConfigureAwait(false);
+                                try
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    await ImprovementManager.CreateImprovementAsync(this, strSkill,
+                                        Improvement.ImprovementSource.Metatype,
+                                        string.Empty,
+                                        Improvement.ImprovementType
+                                            .SkillSpecialization,
+                                        objSpec.InternalId, token: token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await ImprovementManager.RollbackAsync(this, CancellationToken.None)
+                                        .ConfigureAwait(false);
+                                    throw;
+                                }
+
+                                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objSpec.DisposeAsync().ConfigureAwait(false);
+                                throw;
+                            }
+                        }
+                    }
+                }
+
+                //Set the Skill Group Ratings for the Critter.
+                foreach (XmlNode xmlSkillGroup in charNode.SelectNodes("skills/group"))
+                {
+                    string strRating = xmlSkillGroup.Attributes?["rating"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strRating))
+                    {
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await ImprovementManager.CreateImprovementAsync(this, xmlSkillGroup.InnerText,
+                                    Improvement.ImprovementSource.Metatype, string.Empty,
+                                    Improvement.ImprovementType.SkillGroupLevel,
+                                    string.Empty,
+                                    await CommonFunctions.ExpressionToIntAsync(
+                                        strRating, intForce, 0, 0, token).ConfigureAwait(false), token: token)
+                                .ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
+                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                    }
+                }
+
+                //Set the Knowledge Skill Ratings for the Critter.
+                if (xmlSkillsDocumentKnowledgeSkillsNode == null)
+                    xmlSkillsDocumentKnowledgeSkillsNode =
+                        (await LoadDataAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNode(
+                            "/chummer/knowledgeskills");
+                if (xmlSkillsDocumentKnowledgeSkillsNode != null)
+                {
+                    foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/knowledge"))
+                    {
+                        string strName = xmlSkill.InnerText;
+                        if (string.IsNullOrEmpty(strName))
+                            continue;
+                        string strRating = xmlSkill.Attributes?["rating"]?.InnerText;
+                        if (string.IsNullOrEmpty(strRating))
+                            continue;
+                        if (await SkillsSection.KnowledgeSkills
+                                .AllAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) != strName,
+                                    token).ConfigureAwait(false))
+                        {
+                            XmlNode objXmlSkillNode =
+                                xmlSkillsDocumentKnowledgeSkillsNode.TryGetNodeByNameOrId("skill", strName);
+                            if (objXmlSkillNode != null)
+                            {
+                                Skill objUncastSkill = await Skill.FromDataAsync(objXmlSkillNode, this, true, token).ConfigureAwait(false);
+                                if (objUncastSkill is KnowledgeSkill objSkill)
+                                    await SkillsSection.KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                else
+                                {
+                                    Utils.BreakIfDebug();
+                                    await objUncastSkill.RemoveAsync(token).ConfigureAwait(false);
+                                }
+                            }
+                            else
+                            {
+                                KnowledgeSkill objSkill = await KnowledgeSkill.NewAsync(this, strName, true, token)
+                                    .ConfigureAwait(false);
+                                await objSkill.SetTypeAsync(xmlSkill.Attributes?["category"]?.InnerText, token)
+                                    .ConfigureAwait(false);
+                                await SkillsSection.KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                            }
+                        }
+
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await ImprovementManager.CreateImprovementAsync(this, strName,
+                                    Improvement.ImprovementSource.Metatype, string.Empty,
+                                    Improvement.ImprovementType.SkillLevel, string.Empty,
+                                    await CommonFunctions.ExpressionToIntAsync(
+                                        strRating, intForce, 0, 0, token).ConfigureAwait(false), token: token)
+                                .ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
+                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                    }
+                }
+
+                // Add any Complex Forms the Critter comes with (typically Sprites)
+                XmlDocument xmlComplexFormDocument =
+                    await LoadDataAsync("complexforms.xml", token: token).ConfigureAwait(false);
+                foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
+                {
+                    XmlNode xmlComplexFormData =
+                        xmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform",
+                            xmlComplexForm.InnerText);
+                    if (xmlComplexFormData == null)
+                        continue;
+
+                    ComplexForm objComplexform = new ComplexForm(this);
+                    objComplexform.Create(xmlComplexFormData);
+                    if (objComplexform.InternalId.IsEmptyGuid())
+                        continue;
+                    objComplexform.Grade = -1;
+
+                    await ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
+
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.CreateImprovementAsync(this, objComplexform.InternalId,
+                            Improvement.ImprovementSource.Metatype, string.Empty,
+                            Improvement.ImprovementType.ComplexForm,
+                            string.Empty, token: token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+
+                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                }
+
+                //Load any cyberware the character has.
+                XmlDocument xmlCyberwareDocument =
+                    await LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false);
+                foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
+                {
+                    XmlNode objXmlCyberwareNode =
+                        xmlCyberwareDocument.TryGetNodeByNameOrId("chummer/cyberwares/cyberware", node.InnerText);
+                    if (objXmlCyberwareNode == null)
+                        continue;
+                    Cyberware objWare = new Cyberware(this);
+                    string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                    int intRating =
+                        await CommonFunctions
+                            .ExpressionToIntAsync(node.Attributes["rating"]?.InnerText, intForce, 0, 0, token)
+                            .ConfigureAwait(false);
+
+                    objWare.Create(objXmlCyberwareNode,
+                        GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
+                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        Weapons, Vehicles, true, true, strForcedValue);
+                    await Cyberware.AddAsync(objWare, token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.CreateImprovementAsync(this, objWare.InternalId,
+                            Improvement.ImprovementSource.Metatype,
+                            string.Empty, Improvement.ImprovementType.FreeWare,
+                            string.Empty, token: token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+
+                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                }
+
+                //Load any bioware the character has.
+                XmlDocument xmlBiowareDocument = await LoadDataAsync("bioware.xml", token: token).ConfigureAwait(false);
+                foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
+                {
+                    XmlNode objXmlCyberwareNode =
+                        xmlBiowareDocument.TryGetNodeByNameOrId("chummer/biowares/bioware", node.InnerText);
+                    if (objXmlCyberwareNode == null)
+                        continue;
+                    Cyberware objWare = new Cyberware(this);
+                    string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                    int intRating =
+                        await CommonFunctions
+                            .ExpressionToIntAsync(node.Attributes["rating"]?.InnerText, intForce, 0, 0, token)
+                            .ConfigureAwait(false);
+
+                    objWare.Create(objXmlCyberwareNode,
+                        GetGrades(Improvement.ImprovementSource.Bioware, true, token)
+                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        Weapons, Vehicles, true, true, strForcedValue);
+                    await Cyberware.AddAsync(objWare, token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.CreateImprovementAsync(this, objWare.InternalId,
+                            Improvement.ImprovementSource.Metatype,
+                            string.Empty, Improvement.ImprovementType.FreeWare,
+                            string.Empty, token: token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+
+                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                }
+
+                // Add any Advanced Programs the Critter comes with (typically A.I.s)
+                XmlDocument xmlAIProgramDocument =
+                    await LoadDataAsync("programs.xml", token: token).ConfigureAwait(false);
+                foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
+                {
+                    XmlNode xmlAIProgramData =
+                        xmlAIProgramDocument.TryGetNodeByNameOrId("chummer/programs/program", xmlAIProgram.InnerText);
+                    if (xmlAIProgramData == null)
+                        continue;
+
+                    // Check for SelectText.
+                    string strExtra = xmlAIProgram.Attributes?["select"]?.InnerText ?? string.Empty;
+                    if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token) !=
+                        null && !string.IsNullOrWhiteSpace(strExtra))
+                    {
+                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token)
+                                .ConfigureAwait(false),
+                            xmlAIProgramData["translate"]?.InnerText ??
+                            xmlAIProgramData["name"]?.InnerText);
+                        using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() =>
+                                   new SelectText
+                                   {
+                                       Description = strDescription
+                                   }, token).ConfigureAwait(false))
+                        {
+                            // Make sure the dialogue window was not canceled.
+                            if (await frmPickText.ShowDialogSafeAsync(this, token).ConfigureAwait(false) ==
+                                DialogResult.Cancel)
+                                continue;
+                            strExtra = frmPickText.MyForm.SelectedValue;
+                        }
+                    }
+
+                    AIProgram objAIProgram = new AIProgram(this);
+                    objAIProgram.Create(xmlAIProgram, strExtra, false);
+                    if (objAIProgram.InternalId.IsEmptyGuid())
+                        continue;
+
+                    await AIPrograms.AddAsync(objAIProgram, token).ConfigureAwait(false);
+
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.CreateImprovementAsync(this, objAIProgram.InternalId,
+                            Improvement.ImprovementSource.Metatype, string.Empty,
+                            Improvement.ImprovementType.AIProgram,
+                            string.Empty, token: token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+
+                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                }
+
+                // Add any Gear the Critter comes with (typically Programs for A.I.s)
+                XmlDocument xmlGearDocument = await LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
+                foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
+                {
+                    XmlNode xmlGearData = xmlGearDocument.TryGetNodeByNameOrId(
+                        "/chummer/gears/gear", xmlGear["name"].InnerText,
+                        "category = " + xmlGear["category"].InnerText.CleanXPath());
+                    if (xmlGearData == null)
+                        continue;
+
+                    int intRating = 1;
+                    if (xmlGear["rating"] != null)
+                        intRating = await CommonFunctions
+                            .ExpressionToIntAsync(xmlGear["rating"].InnerText, intForce, 0, 0, token)
+                            .ConfigureAwait(false);
+                    decimal decQty = 1.0m;
+                    if (xmlGear["quantity"] != null)
+                        decQty = await CommonFunctions.ExpressionToDecimalAsync(xmlGear["quantity"].InnerText, intForce,
+                            token: token).ConfigureAwait(false);
+                    string strForceValue = xmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
+
+                    Gear objGear = new Gear(this);
+                    objGear.Create(xmlGearData, intRating, lstWeapons, strForceValue);
+
+                    if (objGear.InternalId.IsEmptyGuid())
+                        continue;
+
+                    objGear.Quantity = decQty;
+
+                    // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                    if (await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null &&
+                        await objGear.GetIsCommlinkAsync(token).ConfigureAwait(false))
+                    {
+                        await objGear.SetActiveCommlinkAsync(this, true, token).ConfigureAwait(false);
+                    }
+
+                    objGear.Cost = "0";
+                    objGear.ParentID = Guid.NewGuid().ToString();
+
+                    await Gear.AddAsync(objGear, token).ConfigureAwait(false);
+
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.CreateImprovementAsync(this, objGear.InternalId,
+                            Improvement.ImprovementSource.Metatype,
+                            string.Empty, Improvement.ImprovementType.Gear,
+                            string.Empty, token: token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+
+                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                }
+
+                // Add any created Weapons to the character.
+                foreach (Weapon objWeapon in lstWeapons)
+                    await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+
+                // Sprites can never have Physical Attributes
+                if (await GetDEPEnabledAsync(token).ConfigureAwait(false)
+                    || strSelectedMetatypeCategory?.EndsWith("Sprite", StringComparison.Ordinal) == true
+                    || strSelectedMetatypeCategory?.EndsWith("Sprites", StringComparison.Ordinal) == true)
+                {
+                    await (await GetAttributeAsync("BOD", true, token).ConfigureAwait(false))
+                        .AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                    await (await GetAttributeAsync("AGI", true, token).ConfigureAwait(false))
+                        .AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                    await (await GetAttributeAsync("REA", true, token).ConfigureAwait(false))
+                        .AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                    await (await GetAttributeAsync("STR", true, token).ConfigureAwait(false))
+                        .AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                    await (await GetAttributeAsync("MAG", true, token).ConfigureAwait(false))
+                        .AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                    await (await GetAttributeAsync("MAGAdept", true, token).ConfigureAwait(false))
+                        .AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                }
+
+                if (strSelectedMetatypeCategory == "Spirits")
+                {
+                    XmlElement xmlOptionalPowersNode = charNode["optionalpowers"];
+                    if (xmlOptionalPowersNode != null && intForce >= 3)
+                    {
+                        XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
+                        //For every 3 full points of Force a spirit has, it may gain one Optional Power.
+                        for (int i = intForce; i >= 3; i -= 3)
+                        {
+                            XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
+                            XmlNode powerNode =
+                                objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
+                            bonusNode.AppendChild(powerNode);
+                            objDummyDocument.AppendChild(bonusNode);
+                        }
+
+                        foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
+                            await ImprovementManager.CreateImprovementsAsync(this,
+                                Improvement.ImprovementSource.Metatype,
+                                strMetatypeId, bonusNode, 1, strMetatypeId, token: token).ConfigureAwait(false);
+                    }
+
+                    // Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
+                    if (xmlCritterPowerDocumentPowersNode != null)
+                    {
+                        if (!string.IsNullOrEmpty(strSelectedPossessionMethod))
+                        {
+                            CritterPower objMaterializationPower =
+                                await CritterPowers.FirstOrDefaultAsync(x => x.Name == "Materialization")
+                                    .ConfigureAwait(false);
+                            if (objMaterializationPower != null)
+                                await CritterPowers.RemoveAsync(objMaterializationPower, token).ConfigureAwait(false);
+
+                            if (await CritterPowers.AllAsync(x => !x.Name.Contains(strSelectedPossessionMethod), token)
+                                    .ConfigureAwait(false))
+                            {
+                                // Add the selected Power.
+                                XmlNode objXmlCritterPower =
+                                    xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power",
+                                        strSelectedPossessionMethod);
+                                if (objXmlCritterPower != null)
+                                {
+                                    CritterPower objPower = new CritterPower(this);
+                                    objPower.Create(objXmlCritterPower, 0, string.Empty);
+                                    objPower.CountTowardsLimit = false;
+                                    await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
+
+                                    try
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        await ImprovementManager.CreateImprovementAsync(this, objPower.InternalId,
+                                            Improvement.ImprovementSource.Metatype,
+                                            string.Empty,
+                                            Improvement.ImprovementType.CritterPower,
+                                            string.Empty, token: token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await ImprovementManager.RollbackAsync(this, CancellationToken.None)
+                                            .ConfigureAwait(false);
+                                        throw;
+                                    }
+
+                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                                }
+                            }
+                        }
+                        else if (await CritterPowers.AllAsync(x =>
+                                     x.Name != "Materialization" && !x.Name.Contains("Possession") &&
+                                     !x.Name.Contains("Inhabitation"), token).ConfigureAwait(false))
+                        {
+                            // Add the Materialization Power.
+                            XmlNode objXmlCritterPower =
+                                xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Materialization\"]");
+                            if (objXmlCritterPower != null)
+                            {
+                                CritterPower objPower = new CritterPower(this);
+                                objPower.Create(objXmlCritterPower, 0, string.Empty);
+                                objPower.CountTowardsLimit = false;
+                                await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
+
+                                try
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    await ImprovementManager.CreateImprovementAsync(this, objPower.InternalId,
+                                        Improvement.ImprovementSource.Metatype,
+                                        string.Empty,
+                                        Improvement.ImprovementType.CritterPower,
+                                        string.Empty, token: token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await ImprovementManager.RollbackAsync(this, CancellationToken.None)
+                                        .ConfigureAwait(false);
+                                    throw;
+                                }
+
+                                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6663,23 +7414,22 @@ namespace Chummer
                                     {
                                         if (objXmlQuality["name"] != null)
                                         {
-                                            if (!CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode))
+                                            if (!(blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    ? CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode)
+                                                    : await CorrectedUnleveledQualityAsync(objXmlQuality, xmlRootQualitiesNode, token).ConfigureAwait(false)))
                                             {
                                                 Quality objQuality = new Quality(this);
                                                 try
                                                 {
                                                     token.ThrowIfCancellationRequested();
                                                     objQuality.Load(objXmlQuality);
-                                                    // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
-                                                    if (blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? _lstQualities.Any(
-                                                                x => x.InternalId == objQuality.InternalId, token)
-                                                            : await _lstQualities.AnyAsync(
-                                                                x => x.InternalId == objQuality.InternalId, token).ConfigureAwait(false))
-                                                        objQuality.SetGUID(Guid.NewGuid());
                                                     if (blnSync)
                                                     {
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId, token))
+                                                            // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
+                                                            objQuality.SetGUID(Guid.NewGuid());
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         _lstQualities.Add(objQuality);
                                                         // ReSharper disable once MethodHasAsyncOverload
@@ -6691,6 +7441,9 @@ namespace Chummer
                                                     }
                                                     else
                                                     {
+                                                        if (await _lstQualities.AnyAsync(x => x.InternalId == objQuality.InternalId, token).ConfigureAwait(false))
+                                                            // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
+                                                            objQuality.SetGUID(Guid.NewGuid());
                                                         await _lstQualities.AddAsync(objQuality, token)
                                                                            .ConfigureAwait(false);
                                                         XPathNavigator objQualityNode = await objQuality
@@ -7131,7 +7884,13 @@ namespace Chummer
 
                                     // If old Qualities are in use, they need to be converted before loading can continue.
                                     if (blnHasOldQualities)
-                                        ConvertOldQualities(objXmlNodeList);
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            ConvertOldQualities(objXmlNodeList);
+                                        else
+                                            await ConvertOldQualitiesAsync(objXmlNodeList, token).ConfigureAwait(false);
+                                    }
                                     //Timekeeper.Finish("load_char_quality");
                                 }
                             }
@@ -9034,11 +9793,11 @@ namespace Chummer
                                             try
                                             {
                                                 token.ThrowIfCancellationRequested();
-                                                objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype,
-                                                                  lstWeapons);
-
                                                 if (blnSync)
                                                 {
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype,
+                                                        lstWeapons, token: token);
                                                     foreach (Weapon objWeapon in lstWeapons)
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         Weapons.Add(objWeapon);
@@ -9047,6 +9806,8 @@ namespace Chummer
                                                 }
                                                 else
                                                 {
+                                                    await objQuality.CreateAsync(objXmlDwarfQuality, QualitySource.Metatype,
+                                                        lstWeapons, token: token).ConfigureAwait(false);
                                                     foreach (Weapon objWeapon in lstWeapons)
                                                         await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                                     await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
@@ -33672,16 +34433,16 @@ namespace Chummer
                                 if (objXmlQualityNode.InnerXml.Contains("<bonus>"))
                                 {
                                     // Look for the existing Improvement.
-                                    foreach (Improvement objImprovement in Improvements)
+                                    Improvement objExistingImprovement = Improvements.FirstOrDefault(x =>
+                                        x.ImproveSource == Improvement.ImprovementSource.Quality &&
+                                        x.SourceName == objXmlQuality.InnerText
+                                        && x.Enabled);
+                                    if (objExistingImprovement != null)
                                     {
-                                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
-                                            objImprovement.SourceName == objXmlQuality.InnerText
-                                            && objImprovement.Enabled)
+                                        strForceValue = objExistingImprovement.ImprovedName;
+                                        using (LockObject.EnterWriteLock())
                                         {
-                                            strForceValue = objImprovement.ImprovedName;
-                                            using (LockObject.EnterWriteLock())
-                                                Improvements.Remove(objImprovement);
-                                            break;
+                                            Improvements.Remove(objExistingImprovement);
                                         }
                                     }
                                 }
@@ -33915,6 +34676,283 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Convert Qualities that are still saved in the old format.
+        /// </summary>
+        private async Task ConvertOldQualitiesAsync(XmlNodeList objXmlQualityList, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                XmlNode xmlRootQualitiesNode = (await LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/qualities");
+
+                if (xmlRootQualitiesNode != null)
+                {
+                    // Convert the old Qualities.
+                    foreach (XmlNode objXmlQuality in objXmlQualityList)
+                    {
+                        if (objXmlQuality["name"] == null)
+                        {
+                            XmlNode objXmlQualityNode =
+                                xmlRootQualitiesNode.TryGetNodeByNameOrId(
+                                    "quality", GetQualityName(objXmlQuality.InnerText));
+
+                            if (objXmlQualityNode != null)
+                            {
+                                string strForceValue = string.Empty;
+                                // Re-create the bonuses for the Quality.
+                                if (objXmlQualityNode.InnerXml.Contains("<bonus>"))
+                                {
+                                    // Look for the existing Improvement.
+                                    Improvement objExistingImprovement = await Improvements.FirstOrDefaultAsync(x =>
+                                        x.ImproveSource == Improvement.ImprovementSource.Quality &&
+                                        x.SourceName == objXmlQuality.InnerText
+                                        && x.Enabled, token: token).ConfigureAwait(false);
+                                    if (objExistingImprovement != null)
+                                    {
+                                        strForceValue = objExistingImprovement.ImprovedName;
+                                        IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            await Improvements.RemoveAsync(objExistingImprovement, token).ConfigureAwait(false);
+                                        }
+                                        finally
+                                        {
+                                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+
+                                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    // Convert the item to the new Quality class.
+                                    Quality objQuality = new Quality(this);
+                                    try
+                                    {
+                                        await objQuality.CreateAsync(objXmlQualityNode, QualitySource.Selected, _lstWeapons,
+                                            strForceValue, token: token).ConfigureAwait(false);
+                                        await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                                        throw;
+                                    }
+                                }
+                                finally
+                                {
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                        }
+                    }
+
+                    // Take care of the Metatype information.
+                    XmlNode objXmlMetatype =
+                        (await LoadDataAsync("metatypes.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype) ??
+                        (await LoadDataAsync("critters.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype);
+
+                    if (objXmlMetatype != null)
+                    {
+                        // Positive Qualities.
+                        using (XmlNodeList xmlMetatypeQualityList =
+                               objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                        {
+                            if (xmlMetatypeQualityList != null)
+                            {
+                                foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
+                                {
+                                    // See if the Quality already exists in the character.
+                                    // If the Quality was not found, create it.
+                                    if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerText, token: token).ConfigureAwait(false))
+                                    {
+                                        string strForceValue =
+                                            objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                        XmlNode objXmlQuality =
+                                            xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
+                                                objXmlMetatypeQuality.InnerText);
+                                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            Quality objQuality = new Quality(this);
+                                            try
+                                            {
+                                                await objQuality.CreateAsync(objXmlQuality, QualitySource.Metatype, _lstWeapons,
+                                                    strForceValue, token: token).ConfigureAwait(false);
+                                                await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                            }
+                                            catch
+                                            {
+                                                await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                throw;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Negative Qualities.
+                        using (XmlNodeList xmlMetatypeQualityList =
+                               objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                        {
+                            if (xmlMetatypeQualityList != null)
+                            {
+                                foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
+                                {
+                                    // See if the Quality already exists in the character.
+                                    // If the Quality was not found, create it.
+                                    if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerText, token: token).ConfigureAwait(false))
+                                    {
+                                        string strForceValue =
+                                            objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                        XmlNode objXmlQuality =
+                                            xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
+                                                objXmlMetatypeQuality.InnerText);
+                                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            Quality objQuality = new Quality(this);
+                                            try
+                                            {
+                                                await objQuality.CreateAsync(objXmlQuality, QualitySource.Metatype, _lstWeapons,
+                                                    strForceValue, token: token).ConfigureAwait(false);
+                                                await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                            }
+                                            catch
+                                            {
+                                                await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                throw;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Do it all over again for Metavariants.
+                        if (!string.IsNullOrEmpty(_strMetavariant))
+                        {
+                            objXmlMetatype =
+                                objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
+
+                            if (objXmlMetatype != null)
+                            {
+                                // Positive Qualities.
+                                using (XmlNodeList xmlMetatypeQualityList =
+                                       objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                                {
+                                    if (xmlMetatypeQualityList != null)
+                                    {
+                                        foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
+                                        {
+                                            // See if the Quality already exists in the character.
+                                            // If the Quality was not found, create it.
+                                            if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerText, token: token).ConfigureAwait(false))
+                                            {
+                                                string strForceValue =
+                                                    objXmlMetatypeQuality.Attributes?["select"]?.InnerText
+                                                    ?? string.Empty;
+                                                XmlNode objXmlQuality =
+                                                    xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
+                                                        objXmlMetatypeQuality.InnerText);
+                                                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                                try
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    Quality objQuality = new Quality(this);
+                                                    try
+                                                    {
+                                                        await objQuality.CreateAsync(objXmlQuality, QualitySource.Metatype,
+                                                            _lstWeapons,
+                                                            strForceValue, token: token).ConfigureAwait(false);
+                                                        await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                                    }
+                                                    catch
+                                                    {
+                                                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                        throw;
+                                                    }
+                                                }
+                                                finally
+                                                {
+                                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Negative Qualities.
+                                using (XmlNodeList xmlMetatypeQualityList =
+                                       objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                                {
+                                    if (xmlMetatypeQualityList != null)
+                                    {
+                                        foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
+                                        {
+                                            // See if the Quality already exists in the character.
+                                            // If the Quality was not found, create it.
+                                            if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerText, token: token).ConfigureAwait(false))
+                                            {
+                                                string strForceValue =
+                                                    objXmlMetatypeQuality.Attributes?["select"]?.InnerText
+                                                    ?? string.Empty;
+                                                XmlNode objXmlQuality =
+                                                    xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
+                                                        objXmlMetatypeQuality.InnerText);
+                                                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                                try
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    Quality objQuality = new Quality(this);
+                                                    try
+                                                    {
+                                                        await objQuality.CreateAsync(objXmlQuality, QualitySource.Metatype,
+                                                            _lstWeapons,
+                                                            strForceValue, token: token).ConfigureAwait(false);
+                                                        await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                                    }
+                                                    catch
+                                                    {
+                                                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                        throw;
+                                                    }
+                                                }
+                                                finally
+                                                {
+                                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Get the name of a Quality by parsing out its BP cost.
         /// </summary>
         /// <param name="strQuality">String to parse.</param>
@@ -33926,15 +34964,11 @@ namespace Chummer
             return strQuality;
         }
 
-        /// <summary>
-        /// Check for older instances of certain qualities that were manually numbered to be replaced with multiple instances of the first level quality (so that it works with the level system)
-        /// Returns true if it's a corrected quality, false otherwise
-        /// </summary>
-        private bool CorrectedUnleveledQuality(XmlNode xmlOldQuality, XmlNode xmlRootQualitiesNode)
+        private Tuple<XmlNode, int> CorrectedUnleveledQualityCommon(string strName, XmlNode xmlRootQualitiesNode)
         {
             XmlNode xmlNewQuality = null;
             int intRanks = 0;
-            switch (xmlOldQuality["name"]?.InnerText)
+            switch (strName)
             {
                 case "Focused Concentration (Rating 1)":
                     {
@@ -34364,6 +35398,16 @@ namespace Chummer
                     }
             }
 
+            return new Tuple<XmlNode, int>(xmlNewQuality, intRanks);
+        }
+
+        /// <summary>
+        /// Check for older instances of certain qualities that were manually numbered to be replaced with multiple instances of the first level quality (so that it works with the level system)
+        /// Returns true if it's a corrected quality, false otherwise
+        /// </summary>
+        private bool CorrectedUnleveledQuality(XmlNode xmlOldQuality, XmlNode xmlRootQualitiesNode)
+        {
+            (XmlNode xmlNewQuality, int intRanks) = CorrectedUnleveledQualityCommon(xmlOldQuality["name"]?.InnerText, xmlRootQualitiesNode);
             if (intRanks > 0)
             {
                 using (LockObject.EnterWriteLock())
@@ -34396,6 +35440,59 @@ namespace Chummer
                             throw;
                         }
                     }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Check for older instances of certain qualities that were manually numbered to be replaced with multiple instances of the first level quality (so that it works with the level system)
+        /// Returns true if it's a corrected quality, false otherwise
+        /// </summary>
+        private async Task<bool> CorrectedUnleveledQualityAsync(XmlNode xmlOldQuality, XmlNode xmlRootQualitiesNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            (XmlNode xmlNewQuality, int intRanks) = CorrectedUnleveledQualityCommon(xmlOldQuality["name"]?.InnerText, xmlRootQualitiesNode);
+            if (intRanks > 0)
+            {
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    for (int i = 0; i < intRanks; ++i)
+                    {
+                        Quality objQuality = new Quality(this);
+                        try
+                        {
+                            if (i == 0 && xmlOldQuality.TryGetField("guid", Guid.TryParse, out Guid guidOld))
+                            {
+                                await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Quality,
+                                    guidOld.ToString(), token).ConfigureAwait(false);
+                                objQuality.SetGUID(guidOld);
+                            }
+
+                            QualitySource objQualitySource =
+                                Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerText);
+                            await objQuality.CreateAsync(xmlNewQuality, objQualitySource, _lstWeapons,
+                                xmlOldQuality["extra"]?.InnerText, token: token).ConfigureAwait(false);
+                            if (xmlOldQuality["bp"] != null
+                                && int.TryParse(xmlOldQuality["bp"].InnerText, out int intOldBP))
+                                objQuality.BP = intOldBP / intRanks;
+
+                            await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await objQuality.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 return true;
@@ -40971,20 +42068,33 @@ namespace Chummer
                                                 try
                                                 {
                                                     token.ThrowIfCancellationRequested();
-                                                    objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
-                                                                      lstWeapons,
-                                                                      strForcedValue);
-                                                    objQuality.Notes =
-                                                        xmlQualityToImport
-                                                            .SelectSingleNodeAndCacheExpression(
-                                                                "description", token)?.Value ??
-                                                        string.Empty;
                                                     if (blnSync)
+                                                    {
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
+                                                            lstWeapons,
+                                                            strForcedValue, token: token);
+                                                        objQuality.Notes =
+                                                            xmlQualityToImport
+                                                                .SelectSingleNodeAndCacheExpression(
+                                                                    "description", token)?.Value ??
+                                                            string.Empty;
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         _lstQualities.Add(objQuality);
+                                                    }
                                                     else
-                                                        await _lstQualities.AddAsync(objQuality, token)
-                                                                           .ConfigureAwait(false);
+                                                    {
+                                                        await objQuality.CreateAsync(xmlQualityDataNode,
+                                                            QualitySource.Selected,
+                                                            lstWeapons,
+                                                            strForcedValue, token: token).ConfigureAwait(false);
+                                                        await objQuality.SetNotesAsync(xmlQualityToImport
+                                                                .SelectSingleNodeAndCacheExpression(
+                                                                    "description", token)?.Value ??
+                                                            string.Empty, token).ConfigureAwait(false);
+                                                        await _lstQualities.AddAsync(objQuality, token: token)
+                                                            .ConfigureAwait(false);
+                                                    }
                                                 }
                                                 catch
                                                 {
@@ -41094,20 +42204,33 @@ namespace Chummer
                                                 try
                                                 {
                                                     token.ThrowIfCancellationRequested();
-                                                    objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
-                                                                      lstWeapons,
-                                                                      strForcedValue);
-                                                    objQuality.Notes =
-                                                        xmlQualityToImport
-                                                            .SelectSingleNodeAndCacheExpression(
-                                                                "description", token)?.Value ??
-                                                        string.Empty;
                                                     if (blnSync)
+                                                    {
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
+                                                            lstWeapons,
+                                                            strForcedValue, token: token);
+                                                        objQuality.Notes =
+                                                            xmlQualityToImport
+                                                                .SelectSingleNodeAndCacheExpression(
+                                                                    "description", token)?.Value ??
+                                                            string.Empty;
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         _lstQualities.Add(objQuality);
+                                                    }
                                                     else
+                                                    {
+                                                        await objQuality.CreateAsync(xmlQualityDataNode,
+                                                            QualitySource.Selected,
+                                                            lstWeapons,
+                                                            strForcedValue, token: token).ConfigureAwait(false);
+                                                        await objQuality.SetNotesAsync(xmlQualityToImport
+                                                                .SelectSingleNodeAndCacheExpression(
+                                                                    "description", token)?.Value ??
+                                                            string.Empty, token).ConfigureAwait(false);
                                                         await _lstQualities.AddAsync(objQuality, token: token)
-                                                                           .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
+                                                    }
                                                 }
                                                 catch
                                                 {

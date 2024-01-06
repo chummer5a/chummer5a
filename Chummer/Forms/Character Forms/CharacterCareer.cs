@@ -8629,7 +8629,7 @@ namespace Chummer
                             Quality objQuality = new Quality(CharacterObject);
                             try
                             {
-                                objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
+                                await objQuality.CreateAsync(objXmlQuality, QualitySource.Selected, lstWeapons, token: GenericToken).ConfigureAwait(false);
                                 if (objQuality.InternalId.IsEmptyGuid())
                                 {
                                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -9284,10 +9284,10 @@ namespace Chummer
                             Quality objQuality = new Quality(CharacterObject);
                             try
                             {
-                                objQuality.Create(
+                                await objQuality.CreateAsync(
                                     await objSelectedQuality.GetNodeAsync(GenericToken).ConfigureAwait(false),
                                     QualitySource.Selected,
-                                    lstWeapons, objSelectedQuality.Extra);
+                                    lstWeapons, objSelectedQuality.Extra, token: GenericToken).ConfigureAwait(false);
                                 if (objQuality.InternalId.IsEmptyGuid())
                                 {
                                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -13131,8 +13131,8 @@ namespace Chummer
                                                        .ConfigureAwait(false);
                             XmlNode objXmlQualityNode
                                 = objXmlQualityDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strUndoId);
-                            objAddQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons,
-                                                 objExpense.Undo.Extra);
+                            await objAddQuality.CreateAsync(objXmlQualityNode, QualitySource.Selected, lstWeapons,
+                                objExpense.Undo.Extra, token: GenericToken).ConfigureAwait(false);
                         }
                         catch
                         {
@@ -28432,7 +28432,7 @@ namespace Chummer
                                                                      == selectedDrug.InternalId, GenericToken)
                                           .ConfigureAwait(false))
                 {
-                    selectedDrug.GenerateImprovement();
+                    await selectedDrug.GenerateImprovement(GenericToken).ConfigureAwait(false);
                 }
 
                 // Create the Expense Log Entry.

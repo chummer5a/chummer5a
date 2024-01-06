@@ -5954,7 +5954,7 @@ namespace Chummer
                         Quality objLifeModule = new Quality(CharacterObject);
                         try
                         {
-                            objLifeModule.Create(objXmlLifeModule, QualitySource.LifeModule, lstWeapons);
+                            await objLifeModule.CreateAsync(objXmlLifeModule, QualitySource.LifeModule, lstWeapons, token: GenericToken).ConfigureAwait(false);
                         }
                         catch
                         {
@@ -6048,7 +6048,8 @@ namespace Chummer
                                     Quality objQuality = new Quality(CharacterObject);
                                     try
                                     {
-                                        objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
+                                        await objQuality.CreateAsync(objXmlQuality, QualitySource.Selected, lstWeapons,
+                                            token: GenericToken).ConfigureAwait(false);
                                         if (objQuality.InternalId.IsEmptyGuid())
                                         {
                                             // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -6264,8 +6265,9 @@ namespace Chummer
                         Quality objReplaceQuality = new Quality(CharacterObject);
                         try
                         {
-                            objReplaceQuality.Create(xmlDeleteQualityNoBonus, QualitySource.MetatypeRemovedAtChargen,
-                                lstWeapons);
+                            await objReplaceQuality.CreateAsync(xmlDeleteQualityNoBonus,
+                                QualitySource.MetatypeRemovedAtChargen,
+                                lstWeapons, token: token).ConfigureAwait(false);
                             objReplaceQuality.BP *= -1;
                             // If a Negative Quality is being bought off, the replacement one is Positive.
                             if (objSelectedQuality.Type == QualityType.Positive)
@@ -6339,8 +6341,8 @@ namespace Chummer
                                               == bool.TrueString
                                                 ? QualitySource.MetatypeRemovable
                                                 : QualitySource.Metatype;
-                                        objQuality.Create(objXmlQuality, objSource, CharacterObject.Weapons,
-                                            strForceValue);
+                                        await objQuality.CreateAsync(objXmlQuality, objSource, CharacterObject.Weapons,
+                                            strForceValue, token: token).ConfigureAwait(false);
                                         await CharacterObject.Qualities.AddAsync(objQuality, token)
                                             .ConfigureAwait(false);
                                     }
@@ -10072,8 +10074,8 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objQuality = new Quality(CharacterObject);
 
-                            objQuality.Create(await objSelectedQuality.GetNodeAsync(GenericToken).ConfigureAwait(false),
-                                QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                            await objQuality.CreateAsync(await objSelectedQuality.GetNodeAsync(GenericToken).ConfigureAwait(false),
+                                QualitySource.Selected, lstWeapons, objSelectedQuality.Extra, token: GenericToken).ConfigureAwait(false);
                             if (objQuality.InternalId.IsEmptyGuid())
                             {
                                 // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -21847,7 +21849,7 @@ namespace Chummer
                             {
                                 string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                                objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
+                                await objQuality.CreateAsync(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue, token: token).ConfigureAwait(false);
 
                                 await CharacterObject.Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
 

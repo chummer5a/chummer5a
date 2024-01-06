@@ -1055,7 +1055,8 @@ namespace Chummer.UI.Skills
                         strSelectedSkill = form.MyForm.SelectedItem;
                     }
 
-                    KnowledgeSkill skill = new KnowledgeSkill(_objCharacter);
+                    KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, false);
+                    await skill.SetDefaultAttributeAsync("LOG", MyToken).ConfigureAwait(false);
                     await skill.SetWritableNameAsync(strSelectedSkill, MyToken).ConfigureAwait(false);
 
                     if (await _objCharacter.SkillsSection.GetHasAvailableNativeLanguageSlotsAsync(MyToken)
@@ -1106,8 +1107,9 @@ namespace Chummer.UI.Skills
                 }
                 else
                 {
-                    await _objCharacter.SkillsSection.KnowledgeSkills
-                                       .AddAsync(new KnowledgeSkill(_objCharacter), MyToken).ConfigureAwait(false);
+                    KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, false);
+                    await skill.SetDefaultAttributeAsync("LOG", MyToken).ConfigureAwait(false);
+                    await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(skill, MyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

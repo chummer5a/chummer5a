@@ -673,7 +673,7 @@ namespace Chummer.Backend.Skills
                                                   + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
                                               ?.Value
                                           != "active";
-                                    lstReturn.Add(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
+                                    lstReturn.Add(await Skill.FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token).ConfigureAwait(false));
                                 }
                             }
                             else if (!_dicSkillBackups.IsEmpty
@@ -763,10 +763,9 @@ namespace Chummer.Backend.Skills
                 .TryGetNodeByNameOrId("/chummer/skills/skill", strName);
             using (LockObject.EnterWriteLock(token))
             {
-                ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
-                {
-                    Specific = strSpecific
-                };
+                ExoticSkill objExoticSkill = Skill.FromData(xmlSkillNode, _objCharacter, false) as ExoticSkill
+                                             ?? throw new ArgumentException("Attempted to add non-exotic skill as exotic skill");
+                objExoticSkill.Specific = strSpecific;
                 Skills.AddWithSort(objExoticSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
                 return objExoticSkill;
             }
@@ -782,10 +781,9 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
-                {
-                    Specific = strSpecific
-                };
+                ExoticSkill objExoticSkill = await Skill.FromDataAsync(xmlSkillNode, _objCharacter, false, token).ConfigureAwait(false) as ExoticSkill
+                                             ?? throw new ArgumentException("Attempted to add non-exotic skill as exotic skill");
+                await objExoticSkill.SetSpecificAsync(strSpecific, token).ConfigureAwait(false);
                 await Skills.AddWithSortAsync(objExoticSkill, (x, y) => CompareSkillsAsync(x, y, token),
                     (x, y) => MergeSkillsAsync(x, y, token),
                     token: token).ConfigureAwait(false);
@@ -950,7 +948,8 @@ namespace Chummer.Backend.Skills
                         if (blnCreateKnowledge &&
                             await objSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0)
                         {
-                            KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter);
+                            KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter, false);
+                            await objNewKnowledgeSkill.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
                             await objNewKnowledgeSkill
                                 .SetBaseAsync(await objSkill.GetBaseAsync(token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
@@ -1144,10 +1143,16 @@ namespace Chummer.Backend.Skills
                                                                                       + "]/@type", token)
                                                                                   ?.Value
                                                                               != "active";
-                                                                        Skill objSkill = Skill.FromData(
-                                                                            xmlSkillDataNode,
-                                                                            _objCharacter,
-                                                                            blnIsKnowledgeSkill);
+                                                                        Skill objSkill = blnSync
+                                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                            ? Skill.FromData(
+                                                                                xmlSkillDataNode,
+                                                                                _objCharacter,
+                                                                                blnIsKnowledgeSkill)
+                                                                            : await Skill.FromDataAsync(
+                                                                                xmlSkillDataNode,
+                                                                                _objCharacter,
+                                                                                blnIsKnowledgeSkill, token).ConfigureAwait(false);
                                                                         if (objSkill.SkillId != Guid.Empty)
                                                                         {
                                                                             string strSkillId =
@@ -1409,7 +1414,8 @@ namespace Chummer.Backend.Skills
                                                              token)
                                                          .ConfigureAwait(false))
                                             {
-                                                KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter);
+                                                KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter, false);
+                                                await objEnglishSkill.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
                                                 await objEnglishSkill.SetWritableNameAsync("English", token)
                                                     .ConfigureAwait(false);
                                                 await objEnglishSkill.SetIsNativeLanguageAsync(true, token)
@@ -1435,14 +1441,22 @@ namespace Chummer.Backend.Skills
                                                 string strName = string.Empty;
                                                 if (xmlNode.TryGetStringFieldQuickly("name", ref strName))
                                                 {
-                                                    KnowledgeSkill objSkill
-                                                        = new KnowledgeSkill(_objCharacter, strName, false);
                                                     if (blnSync)
+                                                    {
+                                                        KnowledgeSkill objSkill
+                                                            = new KnowledgeSkill(_objCharacter, strName, false);
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         KnowsoftSkills.Add(objSkill);
+                                                    }
                                                     else
+                                                    {
+                                                        KnowledgeSkill objSkill
+                                                            = await KnowledgeSkill
+                                                                .NewAsync(_objCharacter, strName, false, token)
+                                                                .ConfigureAwait(false);
                                                         await KnowsoftSkills.AddAsync(objSkill, token)
                                                             .ConfigureAwait(false);
+                                                    }
                                                 }
                                             }
                                         }
@@ -1638,8 +1652,10 @@ namespace Chummer.Backend.Skills
                                                 string strName = xmlSkillDataNode["name"]?.InnerText;
                                                 if (!string.IsNullOrEmpty(strName) && setSkillNames.Add(strName))
                                                 {
-                                                    Skill objSkill = Skill.FromData(xmlSkillDataNode, _objCharacter,
-                                                        false);
+                                                    Skill objSkill = blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        ? Skill.FromData(xmlSkillDataNode, _objCharacter, false)
+                                                        : await Skill.FromDataAsync(xmlSkillDataNode, _objCharacter, false, token).ConfigureAwait(false);
                                                     if (objSkill == null)
                                                         continue;
                                                     if (blnSync)
@@ -2562,8 +2578,8 @@ namespace Chummer.Backend.Skills
                                                       + "]/@type", token)
                                                   ?.Value
                                               != "active";
-                                        Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
-                                            blnIsKnowledgeSkill);
+                                        Skill objSkill = await Skill.FromDataAsync(xmlSkill, _objCharacter,
+                                            blnIsKnowledgeSkill, token).ConfigureAwait(false);
                                         string strKey = await objSkill.GetDictionaryKeyAsync(token)
                                             .ConfigureAwait(false);
                                         if (_dicSkills.TryAdd(strKey, objSkill))
