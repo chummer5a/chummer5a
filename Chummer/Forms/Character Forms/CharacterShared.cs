@@ -1033,6 +1033,24 @@ namespace Chummer
                         }
                         objParentNode = objEnchantmentsNode;
                         break;
+                    default:
+                        TreeNode objSpellNode = treSpells.FindNodeByTag(objSpell.Category);
+                        if (objSpellNode == null)
+                        {
+                            objSpellNode = new TreeNode
+                            {
+                                Tag = objSpell.Category,
+                                Text = objSpell.DisplayCategory(GlobalSettings.Language)
+                            };
+                            await treSpells.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Add(objSpellNode);
+                                objSpellNode.Expand();
+                            }, token).ConfigureAwait(false);
+                        }
+                        objParentNode = objSpellNode;
+                        break;
                 }
                 if (objSpell.Grade > 0)
                 {
