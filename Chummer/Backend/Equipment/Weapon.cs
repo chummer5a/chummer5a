@@ -1781,14 +1781,17 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("type", RangeType, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("reach", (await GetTotalReachAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("accuracy", await GetAccuracyAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("accuracy_noammo", await GetAccuracyAsync(objCulture, strLanguageToPrint, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("accuracy_english", await GetAccuracyAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("accuracy_english_noammo", await GetAccuracyAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawaccuracy", Accuracy, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("damage", await CalculatedDamageAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("damage_noammo", await CalculatedDamageAsync(objCulture, strLanguageToPrint, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1797,11 +1800,17 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("rawdamage", Damage, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ap", await TotalAPAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ap_noammo", await TotalAPAsync(objCulture, strLanguageToPrint, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ap_english", await TotalAPAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ap_english_noammo", await TotalAPAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawap", AP, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("mode", await CalculatedModeAsync(strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("mode_noammo", await CalculatedModeAsync(strLanguageToPrint, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("mode_english", await CalculatedModeAsync(GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("mode_english_noammo", await CalculatedModeAsync(GlobalSettings.DefaultLanguage, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc", await TotalRCAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc_noammo", await TotalRCAsync(objCulture, strLanguageToPrint, blnIncludeAmmo: false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rc_english", await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rc_english_noammo", await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, blnIncludeAmmo: false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawrc", RC, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ammo", await CalculatedAmmoAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ammo_english", await CalculatedAmmoAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1810,6 +1819,7 @@ namespace Chummer.Backend.Equipment
                 if (objGear != null)
                 {
                     await objWriter.WriteElementStringAsync("avail", await objGear.TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("avail_english", await objGear.TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("cost", (await objGear.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("owncost", (await objGear.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight", objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
@@ -1818,6 +1828,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("avail_english", await TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
@@ -1841,14 +1852,14 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture), token).ConfigureAwait(false);
 
-                if (WeaponAccessories.Count > 0)
+                if (await WeaponAccessories.GetCountAsync(token) > 0)
                 {
                     // <accessories>
                     XmlElementWriteHelper objAccessoriesElement = await objWriter.StartElementAsync("accessories", token).ConfigureAwait(false);
                     try
                     {
-                        foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                            await objAccessory.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
+                        await WeaponAccessories.ForEachAsync(
+                            x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -1864,6 +1875,7 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     await objWriter.WriteElementStringAsync("name", await DisplayRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", await DisplayRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("short", dicRanges["short"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("medium", dicRanges["medium"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("long", dicRanges["long"], token).ConfigureAwait(false);
@@ -1880,6 +1892,7 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     await objWriter.WriteElementStringAsync("name", await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", await DisplayAlternateRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("short", dicRanges["alternateshort"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("medium", dicRanges["alternatemedium"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("long", dicRanges["alternatelong"], token).ConfigureAwait(false);
@@ -1898,6 +1911,7 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     await objWriter.WriteElementStringAsync("name", await DisplayRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", await DisplayRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("short", dicRangesNoAmmo["short"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("medium", dicRangesNoAmmo["medium"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("long", dicRangesNoAmmo["long"], token).ConfigureAwait(false);
@@ -1914,6 +1928,7 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     await objWriter.WriteElementStringAsync("name", await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", await DisplayAlternateRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("short", dicRangesNoAmmo["alternateshort"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("medium", dicRangesNoAmmo["alternatemedium"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("long", dicRangesNoAmmo["alternatelong"], token).ConfigureAwait(false);
@@ -1925,25 +1940,28 @@ namespace Chummer.Backend.Equipment
                     await objAlternateRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
                 }
 
-                foreach (Weapon objUnderbarrel in Children)
+                await Children.ForEachAsync(async objUnderbarrel =>
                 {
                     // <underbarrel>
-                    XmlElementWriteHelper objUnderbarrelElement = await objWriter.StartElementAsync("underbarrel", token).ConfigureAwait(false);
+                    XmlElementWriteHelper objUnderbarrelElement =
+                        await objWriter.StartElementAsync("underbarrel", token).ConfigureAwait(false);
                     try
                     {
-                        await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint, token: token).ConfigureAwait(false);
+                        await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint, token: token)
+                            .ConfigureAwait(false);
                     }
                     finally
                     {
                         // </underbarrel>
                         await objUnderbarrelElement.DisposeAsync().ConfigureAwait(false);
                     }
-                }
+                }, token).ConfigureAwait(false);
 
                 // Currently loaded Ammo.
                 Clip objLoadedClip = GetClip(_intActiveAmmoSlot);
                 await objWriter.WriteElementStringAsync("availableammo", GetAvailableAmmo.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("currentammo", await objLoadedClip.DisplayAmmoNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("currentammo_english", await objLoadedClip.DisplayAmmoNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                 // <clips>
                 XmlElementWriteHelper objClipsElement = await objWriter.StartElementAsync("clips", token).ConfigureAwait(false);
@@ -9368,8 +9386,7 @@ namespace Chummer.Backend.Equipment
         private Clip GetClip(int clip)
         {
             //1 indexed due legacy
-            clip--;
-            return _lstAmmo[clip];
+            return _lstAmmo[clip - 1];
         }
 
         #endregion Methods
