@@ -3079,9 +3079,9 @@ namespace Chummer.Backend.Equipment
                     strCategory = "Unarmed Combat";
                 }
 
-                string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
                 if (blnSync)
                 {
+                    string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
                     // ReSharper disable MethodHasAsyncOverload
                     decImprove += ImprovementManager.ValueOf(_objCharacter,
                                                              Improvement.ImprovementType.WeaponCategoryDV,
@@ -3118,6 +3118,9 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
+                    string strUseSkill = Skill != null
+                        ? await Skill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                        : string.Empty;
                     decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                         Improvement.ImprovementType.WeaponCategoryDV,
                                                                         strImprovedName: strCategory, token: token).ConfigureAwait(false);
@@ -3406,145 +3409,101 @@ namespace Chummer.Backend.Equipment
                 strReturn = Damage;
 
             // Translate the Damage Code.
-            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-            {
-                if (blnSync)
-                {
-                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                    Lazy<string> strStun
-                        = new Lazy<string>(
-                            () => LanguageManager.GetString("String_DamageStun", strLanguage, token: token));
-                    Lazy<string> strPhysical
-                        = new Lazy<string>(
-                            () => LanguageManager.GetString("String_DamagePhysical", strLanguage, token: token));
-                    // ReSharper disable once MethodHasAsyncOverload
-                    strReturn = ReplaceStrings(strReturn, strLanguage, token)
-                                .CheapReplace("0S", () => '0' + strStun.Value)
-                                .CheapReplace("1S", () => '1' + strStun.Value)
-                                .CheapReplace("2S", () => '2' + strStun.Value)
-                                .CheapReplace("3S", () => '3' + strStun.Value)
-                                .CheapReplace("4S", () => '4' + strStun.Value)
-                                .CheapReplace("5S", () => '5' + strStun.Value)
-                                .CheapReplace("6S", () => '6' + strStun.Value)
-                                .CheapReplace("7S", () => '7' + strStun.Value)
-                                .CheapReplace("8S", () => '8' + strStun.Value)
-                                .CheapReplace("9S", () => '9' + strStun.Value)
-                                .CheapReplace("0P", () => '0' + strPhysical.Value)
-                                .CheapReplace("1P", () => '1' + strPhysical.Value)
-                                .CheapReplace("2P", () => '2' + strPhysical.Value)
-                                .CheapReplace("3P", () => '3' + strPhysical.Value)
-                                .CheapReplace("4P", () => '4' + strPhysical.Value)
-                                .CheapReplace("5P", () => '5' + strPhysical.Value)
-                                .CheapReplace("6P", () => '6' + strPhysical.Value)
-                                .CheapReplace("7P", () => '7' + strPhysical.Value)
-                                .CheapReplace("8P", () => '8' + strPhysical.Value)
-                                .CheapReplace("9P", () => '9' + strPhysical.Value);
-                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                }
-                else
-                {
-                    AsyncLazy<string> strStun = new AsyncLazy<string>(
-                        () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token),
-                        Utils.JoinableTaskFactory);
-                    AsyncLazy<string> strPhysical = new AsyncLazy<string>(
-                        () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage, token: token),
-                        Utils.JoinableTaskFactory);
-                    strReturn = await ReplaceStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
-                    strReturn = await strReturn
-                                      .CheapReplaceAsync(
-                                          "0S",
-                                          async () => '0' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "1S",
-                                          async () => '1' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "2S",
-                                          async () => '2' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "3S",
-                                          async () => '3' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "4S",
-                                          async () => '4' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "5S",
-                                          async () => '5' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "6S",
-                                          async () => '6' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "7S",
-                                          async () => '7' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "8S",
-                                          async () => '8' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "9S",
-                                          async () => '9' + await strStun.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "0P",
-                                          async () => '0'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "1P",
-                                          async () => '1'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "2P",
-                                          async () => '2'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "3P",
-                                          async () => '3'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "4P",
-                                          async () => '4'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "5P",
-                                          async () => '5'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "6P",
-                                          async () => '6'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "7P",
-                                          async () => '7'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "8P",
-                                          async () => '8'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token)
-                                      .CheapReplaceAsync(
-                                          "9P",
-                                          async () => '9'
-                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
-                                          token: token).ConfigureAwait(false);
-                }
-            }
+            strReturn = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? ReplaceDamageStrings(strReturn, strLanguage, token)
+                : await ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
 
             return strReturn;
+        }
+
+        public static string ReplaceDamageStrings(string strInput, string strLanguage,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+                return strInput;
+            Lazy<string> strStun
+                = new Lazy<string>(
+                    () => LanguageManager.GetString("String_DamageStun", strLanguage, token: token));
+            Lazy<string> strPhysical
+                = new Lazy<string>(
+                    () => LanguageManager.GetString("String_DamagePhysical", strLanguage, token: token));
+            return ReplaceStrings(strInput, strLanguage, token)
+                .CheapReplace("0S", () => '0' + strStun.Value)
+                .CheapReplace("1S", () => '1' + strStun.Value)
+                .CheapReplace("2S", () => '2' + strStun.Value)
+                .CheapReplace("3S", () => '3' + strStun.Value)
+                .CheapReplace("4S", () => '4' + strStun.Value)
+                .CheapReplace("5S", () => '5' + strStun.Value)
+                .CheapReplace("6S", () => '6' + strStun.Value)
+                .CheapReplace("7S", () => '7' + strStun.Value)
+                .CheapReplace("8S", () => '8' + strStun.Value)
+                .CheapReplace("9S", () => '9' + strStun.Value)
+                .CheapReplace("0P", () => '0' + strPhysical.Value)
+                .CheapReplace("1P", () => '1' + strPhysical.Value)
+                .CheapReplace("2P", () => '2' + strPhysical.Value)
+                .CheapReplace("3P", () => '3' + strPhysical.Value)
+                .CheapReplace("4P", () => '4' + strPhysical.Value)
+                .CheapReplace("5P", () => '5' + strPhysical.Value)
+                .CheapReplace("6P", () => '6' + strPhysical.Value)
+                .CheapReplace("7P", () => '7' + strPhysical.Value)
+                .CheapReplace("8P", () => '8' + strPhysical.Value)
+                .CheapReplace("9P", () => '9' + strPhysical.Value);
+        }
+
+        public static async Task<string> ReplaceDamageStringsAsync(string strInput, string strLanguage,
+            CancellationToken token = default)
+        {
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+                return strInput;
+            AsyncLazy<string> strStun = new AsyncLazy<string>(
+                () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token),
+                Utils.JoinableTaskFactory);
+            AsyncLazy<string> strPhysical = new AsyncLazy<string>(
+                () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage, token: token),
+                Utils.JoinableTaskFactory);
+            return await (await ReplaceStringsAsync(strInput, strLanguage, token).ConfigureAwait(false))
+                .CheapReplaceAsync("0S", async () => '0' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("1S", async () => '1' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("2S", async () => '2' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("3S", async () => '3' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("4S", async () => '4' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("5S", async () => '5' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("6S", async () => '6' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("7S", async () => '7' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("8S", async () => '8' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("9S", async () => '9' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("0P", async () => '0' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("1P", async () => '1' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("2P", async () => '2' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("3P", async () => '3' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("4P", async () => '4' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("5P", async () => '5' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("6P", async () => '6' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("7P", async () => '7' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("8P", async () => '8' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token)
+                .CheapReplaceAsync("9P", async () => '9' + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                    token: token).ConfigureAwait(false);
         }
 
         public static string ReplaceStrings(string strInput, string strLanguage, CancellationToken token = default)

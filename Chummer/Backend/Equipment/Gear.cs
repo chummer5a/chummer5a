@@ -1511,7 +1511,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("weaponbonusdamage", await WeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusdamage_english",
                                                         await WeaponBonusDamageAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weaponbonusap", WeaponBonusAP, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonusap", await WeaponBonusAPAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonusap_english", await WeaponBonusAPAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusacc", WeaponBonusAcc, token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusrange", WeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonuspool", WeaponBonusPool.ToString(objCulture), token: token).ConfigureAwait(false);
@@ -1524,7 +1525,8 @@ namespace Chummer.Backend.Equipment
                                                         await FlechetteWeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage_english",
                                                         await FlechetteWeaponBonusDamageAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("flechetteweaponbonusap", FlechetteWeaponBonusAP, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusap", await FlechetteWeaponBonusAPAsync(strLanguageToPrint, token), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusap_english", await FlechetteWeaponBonusAPAsync(GlobalSettings.DefaultLanguage, token), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusacc", FlechetteWeaponBonusAcc, token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusrange", FlechetteWeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonuspool", FlechetteWeaponBonusPool.ToString(objCulture), token: token).ConfigureAwait(false);
@@ -3599,17 +3601,17 @@ namespace Chummer.Backend.Equipment
                 // Attach the type if applicable.
                 strReturn += WeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
+                // Translate the string.
+                strReturn = Weapon.ReplaceDamageStrings(strReturn, strLanguage);
+
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
             }
-
-            // Translate the Avail string.
-            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            else
             {
-                strReturn = strReturn.CheapReplace("P",
-                        () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+                // Translate the string.
+                strReturn = Weapon.ReplaceDamageStrings(strReturn, strLanguage);
             }
 
             return strReturn;
@@ -3633,19 +3635,17 @@ namespace Chummer.Backend.Equipment
                 // Attach the type if applicable.
                 strReturn += WeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
+                // Translate the string.
+                strReturn = await Weapon.ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
+
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
             }
-
-            // Translate the Avail string.
-            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            else
             {
-                strReturn = await strReturn
-                                  .CheapReplaceAsync(
-                                      "P", () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage, token: token), token: token)
-                                  .CheapReplaceAsync(
-                                      "S", () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token), token: token).ConfigureAwait(false);
+                // Translate the string.
+                strReturn = await Weapon.ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
             }
 
             return strReturn;
@@ -3654,22 +3654,51 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus AP.
         /// </summary>
-        public string WeaponBonusAP
+        public string WeaponBonusAP(string strLanguage)
         {
-            get
-            {
-                if (WeaponBonus == null)
+            if (WeaponBonus == null)
                     return string.Empty;
-                // Use the apreplace value if applicable.
-                // Use the ap bonus if available, otherwise use 0.
-                string strReturn = WeaponBonus["apreplace"]?.InnerText ?? WeaponBonus["ap"]?.InnerText ?? "0";
+            // Use the apreplace value if applicable.
+            // Use the ap bonus if available, otherwise use 0.
+            string strReturn = WeaponBonus["apreplace"]?.InnerText ?? WeaponBonus["ap"]?.InnerText ?? "0";
 
-                // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-', '+'))
-                    strReturn = '+' + strReturn;
+            // Translate the string.
+            strReturn = Weapon.ReplaceStrings(
+                strReturn.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
+                strLanguage);
 
-                return strReturn;
-            }
+            // If this does not start with "-", add a "+" to the string.
+            if (!strReturn.StartsWith('-', '+'))
+                strReturn = '+' + strReturn;
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Weapon Bonus AP.
+        /// </summary>
+        public async Task<string> WeaponBonusAPAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (WeaponBonus == null)
+                return string.Empty;
+            // Use the apreplace value if applicable.
+            // Use the ap bonus if available, otherwise use 0.
+            string strReturn = WeaponBonus["apreplace"]?.InnerText ?? WeaponBonus["ap"]?.InnerText ?? "0";
+
+            // Translate the string.
+            strReturn = await Weapon
+                .ReplaceStringsAsync(
+                    await strReturn.CheapReplaceAsync("-half",
+                            () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token),
+                            token: token)
+                        .ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
+
+            // If this does not start with "-", add a "+" to the string.
+            if (!strReturn.StartsWith('-', '+'))
+                strReturn = '+' + strReturn;
+
+            return strReturn;
         }
 
         /// <summary>
@@ -3750,17 +3779,17 @@ namespace Chummer.Backend.Equipment
                 // Attach the type if applicable.
                 strReturn += FlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
+                // Translate the string.
+                strReturn = Weapon.ReplaceDamageStrings(strReturn, strLanguage);
+
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-'))
+                if (!strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
             }
-
-            // Translate the Avail string.
-            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            else
             {
-                strReturn = strReturn.CheapReplace("P",
-                        () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+                // Translate the string.
+                strReturn = Weapon.ReplaceDamageStrings(strReturn, strLanguage);
             }
 
             return strReturn;
@@ -3784,16 +3813,17 @@ namespace Chummer.Backend.Equipment
                 // Attach the type if applicable.
                 strReturn += FlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
+                // Translate the string.
+                strReturn = await Weapon.ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
+
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-'))
+                if (!strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
             }
-
-            // Translate the Avail string.
-            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            else
             {
-                strReturn = await strReturn.CheapReplaceAsync("P", () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage, token: token), token: token)
-                                           .CheapReplaceAsync("S", () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token), token: token).ConfigureAwait(false);
+                // Translate the string.
+                strReturn = await Weapon.ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
             }
 
             return strReturn;
@@ -3802,23 +3832,51 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus AP.
         /// </summary>
-        public string FlechetteWeaponBonusAP
+        public string FlechetteWeaponBonusAP(string strLanguage)
         {
-            get
-            {
-                if (FlechetteWeaponBonus == null)
-                    return string.Empty;
-                // Use the apreplace value if applicable.
-                // Use the ap bonus if available, otherwise use 0.
-                string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerText ??
-                                   FlechetteWeaponBonus["ap"]?.InnerText ?? "0";
+            if (FlechetteWeaponBonus == null)
+                return string.Empty;
+            // Use the apreplace value if applicable.
+            // Use the ap bonus if available, otherwise use 0.
+            string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerText ?? FlechetteWeaponBonus["ap"]?.InnerText ?? "0";
 
-                // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-'))
-                    strReturn = '+' + strReturn;
+            // Translate the string.
+            strReturn = Weapon.ReplaceStrings(
+                strReturn.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
+                strLanguage);
 
-                return strReturn;
-            }
+            // If this does not start with "-", add a "+" to the string.
+            if (!strReturn.StartsWith('-', '+'))
+                strReturn = '+' + strReturn;
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Weapon Bonus AP.
+        /// </summary>
+        public async Task<string> FlechetteWeaponBonusAPAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (FlechetteWeaponBonus == null)
+                return string.Empty;
+            // Use the apreplace value if applicable.
+            // Use the ap bonus if available, otherwise use 0.
+            string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerText ?? FlechetteWeaponBonus["ap"]?.InnerText ?? "0";
+
+            // Translate the string.
+            strReturn = await Weapon
+                .ReplaceStringsAsync(
+                    await strReturn.CheapReplaceAsync("-half",
+                            () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token),
+                            token: token)
+                        .ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
+
+            // If this does not start with "-", add a "+" to the string.
+            if (!strReturn.StartsWith('-', '+'))
+                strReturn = '+' + strReturn;
+
+            return strReturn;
         }
 
         /// <summary>
