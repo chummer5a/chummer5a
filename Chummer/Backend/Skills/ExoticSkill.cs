@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
     {
         private string _strSpecific;
 
-        public ExoticSkill(Character character, XmlNode node) : base(character, node)
+        public ExoticSkill(Character character, XmlNode node, bool blnDoSkillGroup = true) : base(character, node, blnDoSkillGroup)
         {
         }
 

@@ -171,20 +171,18 @@ namespace Chummer.Backend.Equipment
             writer.WriteStartElement("clip");
             writer.WriteElementString("count", Ammo.ToString(GlobalSettings.InvariantCultureInfo));
             writer.WriteElementString("location", AmmoLocation);
-            writer.WriteElementString(
-                "id",
-                AmmoGear != null
-                    ? AmmoGear.InternalId
-                    : Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
+            writer.WriteElementString("id",
+                AmmoGear?.InternalId ?? Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
             writer.WriteEndElement();
         }
 
         internal async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            if (AmmoGear == null && Ammo == 0) //Don't save empty clips, we are recreating them anyway. Save those kb
+            if (AmmoGear == null && Ammo == 0) // Don't print empty clips because they are just for the program
                 return;
             await objWriter.WriteStartElementAsync("clip", token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("name", await DisplayAmmoNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("english_name", await DisplayAmmoNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("count", Ammo.ToString(objCulture), token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("location", AmmoLocation, token: token).ConfigureAwait(false);
             if (AmmoGear != null)

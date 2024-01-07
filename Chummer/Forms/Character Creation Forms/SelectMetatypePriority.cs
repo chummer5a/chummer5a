@@ -1565,15 +1565,16 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
 
-                        _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype,
+                        await _objCharacter.CreateAsync(strSelectedMetatypeCategory, strSelectedMetatype,
                             strSelectedMetavariant, objXmlMetatype, intForce,
                             _xmlQualityDocumentQualitiesNode,
-                            await _xmlCritterPowerDocumentPowersNode.GetValueAsync(token).ConfigureAwait(false), null,
+                            await _xmlCritterPowerDocumentPowersNode.GetValueAsync(token).ConfigureAwait(false),
+                            null,
                             await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, token)
                                 .ConfigureAwait(false)
                                 ? await cboPossessionMethod.DoThreadSafeFuncAsync(
                                     x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
-                                : string.Empty, token);
+                                : string.Empty, token).ConfigureAwait(false);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
                             XPathNavigator objLoopNode
@@ -1766,8 +1767,8 @@ namespace Chummer
                                                 }
                                             }
 
-                                            objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons,
-                                                strForceValue);
+                                            await objQuality.CreateAsync(objXmlQuality, QualitySource.Heritage, lstWeapons,
+                                                strForceValue, token: token).ConfigureAwait(false);
                                             // TODO: Do something if we are prompted to select something for a quality and the user cancels out.
                                             // The naive thing would be to just return, but we've already changed too much about the character (and had to in order to allow this quality
                                             // selection's requirements checking to work properly) to undo it at this point.
@@ -2087,7 +2088,7 @@ namespace Chummer
                     }
 
                     blnDoSwitch = false;
-                    await _objCharacter.SkillsSection.SkillGroups.ForEachWithBreakAsync(objGroup =>
+                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(objGroup =>
                     {
                         if (objGroup.Base > 0)
                         {
@@ -2106,7 +2107,7 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
                         {
                             SkillGroup objGroupToShift = null;
-                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objGroup =>
+                            await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objGroup =>
                             {
                                 if (objGroup.Karma > 0
                                     && (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating))
@@ -2127,7 +2128,7 @@ namespace Chummer
                     }
 
                     blnDoSwitch = false;
-                    await _objCharacter.SkillsSection.Skills.ForEachWithBreakAsync(async objSkill =>
+                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async objSkill =>
                     {
                         if (await objSkill.GetBaseAsync(token).ConfigureAwait(false) > 0)
                         {
@@ -2149,7 +2150,7 @@ namespace Chummer
                         {
                             Skill objSkillToShift = null;
                             int intSkillToShiftKarma = 0;
-                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objSkill =>
+                            await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSkill =>
                             {
                                 int intLoopKarma = await objSkill.GetKarmaAsync(token).ConfigureAwait(false);
                                 if (intLoopKarma > 0 && (objSkillToShift == null

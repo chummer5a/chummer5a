@@ -2306,7 +2306,7 @@ namespace Chummer.Backend.Equipment
                             token: token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("iscommlink",
-                            IsCommlink.ToString(GlobalSettings.InvariantCultureInfo),
+                            (await GetIsCommlinkAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo),

@@ -495,14 +495,16 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
 
                         int intForce = await nudForce.DoThreadSafeFuncAsync(x => x.Visible ? x.ValueAsInt : 0, token).ConfigureAwait(false);
-                        _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant,
-                                             objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
-                                             await _xmlCritterPowerDocumentPowersNode
-                                                   .GetValueAsync(_objGenericToken)
-                                                   .ConfigureAwait(false), _xmlSkillsDocumentKnowledgeSkillsNode,
-                                             chkPossessionBased.Checked
-                                                 ? cboPossessionMethod.SelectedValue?.ToString()
-                                                 : string.Empty, token);
+                        await _objCharacter.CreateAsync(strSelectedMetatypeCategory, strSelectedMetatype,
+                            strSelectedMetavariant,
+                            objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
+                            await _xmlCritterPowerDocumentPowersNode
+                                .GetValueAsync(_objGenericToken)
+                                .ConfigureAwait(false), _xmlSkillsDocumentKnowledgeSkillsNode,
+                            await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false)
+                                ? await cboPossessionMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
+                                    token).ConfigureAwait(false)
+                                : string.Empty, token).ConfigureAwait(false);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
                             XPathNavigator objLoopNode
@@ -514,7 +516,7 @@ namespace Chummer
                     }
 
                     // Flip all attribute, skill, and skill group points to karma levels (relevant when switching from Priority/Sum-to-Ten to Karma)
-                    await _objCharacter.AttributeSection.Attributes.ForEachAsync(async objAttrib =>
+                    await (await _objCharacter.AttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachAsync(async objAttrib =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objAttrib.GetBaseAsync(token).ConfigureAwait(false);
@@ -522,7 +524,7 @@ namespace Chummer
                         await objAttrib.ModifyKarmaAsync(intBase, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
-                    await _objCharacter.SkillsSection.Skills.ForEachAsync(async objSkill =>
+                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSkill =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objSkill.GetBasePointsAsync(token).ConfigureAwait(false);
@@ -530,7 +532,7 @@ namespace Chummer
                         await objSkill.ModifyKarmaPointsAsync(intBase, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
-                    await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(async objGroup =>
+                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objGroup =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objGroup.GetBasePointsAsync(token).ConfigureAwait(false);

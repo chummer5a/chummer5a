@@ -1352,13 +1352,15 @@ namespace Chummer.Backend.Equipment
         /// TODO: Refactor drug effects to just use XML nodes, which can then be passed to Improvement Manager?
         /// TODO: Refactor Improvement Manager to automatically collapse improvements of the same type into a single improvement?
         /// </summary>
-        public void GenerateImprovement()
+        public async Task GenerateImprovement(CancellationToken token = default)
         {
-            if (_objCharacter.Improvements.Any(ig => ig.SourceName == InternalId))
+            if (await _objCharacter.Improvements.AnyAsync(ig => ig.SourceName == InternalId, token: token)
+                    .ConfigureAwait(false))
                 return;
-            _objCharacter.ImprovementGroups.Add(Name);
-            string strSpace = LanguageManager.GetString("String_Space");
-            string strNamePrefix = CurrentDisplayNameShort + strSpace + '-' + strSpace;
+            await _objCharacter.ImprovementGroups.AddAsync(Name, token).ConfigureAwait(false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strNamePrefix = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false) + strSpace + '-' +
+                                   strSpace;
             List<Improvement> lstImprovements = Attributes.Where(objAttribute => objAttribute.Value != 0)
                 .Select(objAttribute => new Improvement(_objCharacter)
                 {
@@ -1367,8 +1369,10 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     Augmented = objAttribute.Value,
                     ImprovedName = objAttribute.Key,
-                    CustomName = strNamePrefix + LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short")
-                                               + strSpace + objAttribute.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
+                    CustomName =
+                        strNamePrefix + LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short")
+                                      + strSpace +
+                                      objAttribute.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
                 }).ToList();
 
             foreach (KeyValuePair<string, int> objLimit in Limits)
@@ -1379,8 +1383,11 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     Value = objLimit.Value,
-                    CustomName = strNamePrefix + LanguageManager.GetString("Node_" + objLimit.Key)
-                                               + strSpace + objLimit.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
+                    CustomName = strNamePrefix + await LanguageManager
+                                                   .GetStringAsync("Node_" + objLimit.Key, token: token)
+                                                   .ConfigureAwait(false)
+                                               + strSpace + objLimit.Value.ToString("+#,0;-#,0;0",
+                                                   GlobalSettings.CultureInfo)
                 };
                 switch (objLimit.Key)
                 {
@@ -1396,6 +1403,7 @@ namespace Chummer.Backend.Equipment
                         i.ImproveType = Improvement.ImprovementType.SocialLimit;
                         break;
                 }
+
                 lstImprovements.Add(i);
             }
 
@@ -1407,8 +1415,10 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.Initiative,
                     Value = Initiative,
-                    CustomName = strNamePrefix + LanguageManager.GetString("String_Initiative")
-                                               + strSpace + Initiative.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
+                    CustomName = strNamePrefix + await LanguageManager.GetStringAsync("String_Initiative", token: token)
+                                                   .ConfigureAwait(false)
+                                               + strSpace + Initiative.ToString("+#,0;-#,0;0",
+                                                   GlobalSettings.CultureInfo)
                 };
                 lstImprovements.Add(i);
             }
@@ -1421,39 +1431,52 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.InitiativeDice,
                     Value = InitiativeDice,
-                    CustomName = strNamePrefix + LanguageManager.GetString("String_InitiativeDice")
-                                               + strSpace + InitiativeDice.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
+                    CustomName = strNamePrefix + await LanguageManager
+                                                   .GetStringAsync("String_InitiativeDice", token: token)
+                                                   .ConfigureAwait(false)
+                                               + strSpace + InitiativeDice.ToString("+#,0;-#,0;0",
+                                                   GlobalSettings.CultureInfo)
                 };
                 lstImprovements.Add(i);
             }
 
             if (Qualities.Count > 0)
             {
-                XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
+                XmlDocument objXmlDocument =
+                    await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
-                    XmlNode objXmlSelectedQuality = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objXmlAddQuality.InnerText);
+                    XmlNode objXmlSelectedQuality =
+                        objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objXmlAddQuality.InnerText);
                     if (objXmlSelectedQuality == null)
                         continue;
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
                     string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
                     string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
-                    int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, 1);
-                    bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.OrdinalIgnoreCase);
+                    int intCount = string.IsNullOrEmpty(strRating)
+                        ? 1
+                        : await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, 1, token)
+                            .ConfigureAwait(false);
+                    bool blnDoesNotContributeToBP =
+                        !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString,
+                            StringComparison.OrdinalIgnoreCase);
 
                     for (int i = 0; i < intCount; ++i)
                     {
                         // Makes sure we aren't over our limits for this particular quality from this overall source
                         if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                            xpnSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
+                            await xpnSelectedQuality.RequirementsMetAsync(_objCharacter,
+                                await LanguageManager.GetStringAsync("String_Quality", token: token)
+                                    .ConfigureAwait(false), string.Empty, Name, token: token).ConfigureAwait(false))
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objAddQuality = new Quality(_objCharacter);
                             try
                             {
-                                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
-                                                     strForceValue, Name);
+                                await objAddQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement,
+                                    lstWeapons,
+                                    strForceValue, Name, token).ConfigureAwait(false);
 
                                 if (blnDoesNotContributeToBP)
                                 {
@@ -1461,23 +1484,27 @@ namespace Chummer.Backend.Equipment
                                     objAddQuality.ContributeToLimit = false;
                                 }
 
-                                _objCharacter.Qualities.Add(objAddQuality);
+                                await _objCharacter.Qualities.AddAsync(objAddQuality, token).ConfigureAwait(false);
                                 foreach (Weapon objWeapon in lstWeapons)
-                                    _objCharacter.Weapons.Add(objWeapon);
+                                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                 Improvement objImprovement = new Improvement(_objCharacter)
                                 {
                                     ImprovedName = objAddQuality.InternalId,
                                     ImproveSource = Improvement.ImprovementSource.Drug,
                                     SourceName = InternalId,
                                     ImproveType = Improvement.ImprovementType.SpecificQuality,
-                                    CustomName = strNamePrefix + LanguageManager.GetString("String_InitiativeDice")
-                                                               + strSpace + objAddQuality.Name
+                                    CustomName =
+                                        strNamePrefix + await LanguageManager
+                                                          .GetStringAsync("String_InitiativeDice", token: token)
+                                                          .ConfigureAwait(false)
+                                                      + strSpace + await objAddQuality.GetNameAsync(token)
+                                                          .ConfigureAwait(false)
                                 };
                                 lstImprovements.Add(objImprovement);
                             }
                             catch
                             {
-                                objAddQuality.Dispose();
+                                await objAddQuality.DisposeAsync().ConfigureAwait(false);
                                 throw;
                             }
                         }
@@ -1488,6 +1515,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
             foreach (Improvement i in lstImprovements)
             {
                 i.CustomGroup = Name;
@@ -1496,6 +1524,7 @@ namespace Chummer.Backend.Equipment
                 // This is initially set to false make sure no property changers are triggered
                 i.SetupComplete = true;
             }
+
             _objCharacter.Improvements.AddRange(lstImprovements);
         }
 

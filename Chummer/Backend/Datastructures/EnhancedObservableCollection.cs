@@ -253,28 +253,25 @@ namespace Chummer
         {
             if (_setBeforeClearCollectionChangedAsync.Count != 0)
             {
-                Utils.SafelyRunSynchronously(async () =>
+                IDisposable objLocker = CollectionChangedLock?.EnterReadLock();
+                try
                 {
-                    IDisposable objLocker = null;
-                    if (CollectionChangedLock != null)
-                        objLocker = await CollectionChangedLock.EnterReadLockAsync().ConfigureAwait(false);
-                    try
+                    using (BlockReentrancy())
                     {
-                        using (BlockReentrancy())
-                        {
-                            NotifyCollectionChangedEventArgs objArgs =
-                                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
-                                    (IList)Items);
-                            await Task.WhenAll(
-                                _setBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs))).ConfigureAwait(false);
-                            BeforeClearCollectionChanged?.Invoke(this, objArgs);
-                        }
+                        NotifyCollectionChangedEventArgs objArgs =
+                            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
+                                (IList)Items);
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setBeforeClearCollectionChangedAsync.Count);
+                        foreach (AsyncNotifyCollectionChangedEventHandler objEvent in _setBeforeClearCollectionChangedAsync)
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        BeforeClearCollectionChanged?.Invoke(this, objArgs);
                     }
-                    finally
-                    {
-                        objLocker?.Dispose();
-                    }
-                });
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
             }
             else
             {
@@ -382,22 +379,19 @@ namespace Chummer
         {
             if (_setCollectionChangedAsync.Count != 0)
             {
-                Utils.SafelyRunSynchronously(async () =>
+                IDisposable objLocker = CollectionChangedLock?.EnterReadLock();
+                try
                 {
-                    IDisposable objLocker = null;
-                    if (CollectionChangedLock != null)
-                        objLocker = await CollectionChangedLock.EnterReadLockAsync().ConfigureAwait(false);
-                    try
-                    {
-                        await Task.WhenAll(
-                            _setCollectionChangedAsync.Select(x => x.Invoke(this, e))).ConfigureAwait(false);
-                        base.OnCollectionChanged(e);
-                    }
-                    finally
-                    {
-                        objLocker?.Dispose();
-                    }
-                });
+                    List<Func<Task>> lstFuncs = new List<Func<Task>>(_setCollectionChangedAsync.Count);
+                    foreach (AsyncNotifyCollectionChangedEventHandler objEvent in _setCollectionChangedAsync)
+                        lstFuncs.Add(() => objEvent.Invoke(this, e));
+                    Utils.RunWithoutThreadLock(lstFuncs);
+                    base.OnCollectionChanged(e);
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
             }
             else
             {

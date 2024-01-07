@@ -395,18 +395,18 @@ namespace Chummer
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (await _objCharacter.LimitModifiers.ContainsAsync(this, token) && blnConfirmDelete)
+            if (await _objCharacter.LimitModifiers.ContainsAsync(this, token).ConfigureAwait(false) && blnConfirmDelete)
             {
                 return await CommonFunctions.ConfirmDeleteAsync(
-                           await LanguageManager.GetStringAsync("Message_DeleteLimitModifier", token: token), token)
-                       && await _objCharacter.LimitModifiers.RemoveAsync(this, token);
+                           await LanguageManager.GetStringAsync("Message_DeleteLimitModifier", token: token).ConfigureAwait(false), token).ConfigureAwait(false)
+                       && await _objCharacter.LimitModifiers.RemoveAsync(this, token).ConfigureAwait(false);
             }
 
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
             Program.ShowScrollableMessageBox(
-                await LanguageManager.GetStringAsync("Message_CannotDeleteLimitModifier", token: token),
-                await LanguageManager.GetStringAsync("MessageTitle_CannotDeleteLimitModifier", token: token),
+                await LanguageManager.GetStringAsync("Message_CannotDeleteLimitModifier", token: token).ConfigureAwait(false),
+                await LanguageManager.GetStringAsync("MessageTitle_CannotDeleteLimitModifier", token: token).ConfigureAwait(false),
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }

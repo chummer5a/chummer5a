@@ -854,14 +854,28 @@ namespace Chummer
 
                 try
                 {
-                    List<Improvement> lstImprovementsToConsider
-                        = new List<Improvement>(objCharacter.Improvements.Count);
-                    foreach (Improvement objImprovement in objCharacter.Improvements)
+                    List<Improvement> lstImprovementsToConsider;
+                    if (blnSync)
+                    {
+                        lstImprovementsToConsider = new List<Improvement>(objCharacter.Improvements.Count);
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objCharacter.Improvements.ForEach(ImprovementsLoopCommon, token);
+                    }
+                    else
+                    {
+                        lstImprovementsToConsider =
+                            new List<Improvement>(await objCharacter.Improvements.GetCountAsync(token)
+                                .ConfigureAwait(false));
+                        await objCharacter.Improvements.ForEachAsync(ImprovementsLoopCommon, token)
+                            .ConfigureAwait(false);
+                    }
+
+                    void ImprovementsLoopCommon(Improvement objImprovement)
                     {
                         if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
-                            continue;
+                            return;
                         if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))
-                            continue;
+                            return;
                         // Matrix initiative boosting gear does not help Living Personas
                         if ((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
                              || eImprovementType == Improvement.ImprovementType.MatrixInitiative
@@ -869,17 +883,17 @@ namespace Chummer
                             && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
                             && objCharacter.ActiveCommlink is Gear objCommlink
                             && objCommlink.Name == "Living Persona")
-                            continue;
+                            return;
                         // Ignore items that apply to a Skill's Rating.
                         if (objImprovement.AddToRating != blnAddToRating)
-                            continue;
+                            return;
                         // If an Improved Name has been passed, only retrieve values that have this Improved Name.
                         if (!string.IsNullOrEmpty(strImprovedName))
                         {
                             string strLoopImprovedName = objImprovement.ImprovedName;
                             if (strImprovedName != strLoopImprovedName
                                 && !(blnIncludeNonImproved && string.IsNullOrWhiteSpace(strLoopImprovedName)))
-                                continue;
+                                return;
                         }
 
                         lstImprovementsToConsider.Add(objImprovement);

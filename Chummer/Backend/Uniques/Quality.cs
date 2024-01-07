@@ -208,15 +208,43 @@ namespace Chummer
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
         /// <param name="strSourceName">Friendly name for the improvement that added this quality.</param>
-        public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "", CancellationToken token = default)
         {
+            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, token), token);
+        }
+
+        /// <summary>
+        /// Create a Quality from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlQuality">XmlNode to create the object from.</param>
+        /// <param name="objQualitySource">Source of the Quality.</param>
+        /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
+        /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
+        /// <param name="strSourceName">Friendly name for the improvement that added this quality.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task CreateAsync(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "", CancellationToken token = default)
+        {
+            return CreateCoreAsync(false, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, token);
+        }
+
+        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons,
+            string strForceValue = "", string strSourceName = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (!objXmlQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for xmlnode", objXmlQuality });
                 Utils.BreakIfDebug();
             }
 
-            using (LockObject.EnterWriteLock())
+            IDisposable objSyncLocker = null;
+            IAsyncDisposable objAsyncLocker = null;
+            if (blnSync)
+                objSyncLocker = LockObject.EnterWriteLock(token);
+            else
+                objAsyncLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
                 _strSourceName = strSourceName;
                 objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
@@ -258,7 +286,10 @@ namespace Chummer
                 {
                     if (xmlAddWeaponList?.Count > 0 && lstWeapons != null)
                     {
-                        XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
+                        XmlDocument objXmlWeaponDocument = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? _objCharacter.LoadData("weapons.xml", token: token)
+                            : await _objCharacter.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
                         foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                         {
                             string strLoopID = objXmlAddWeapon.InnerText;
@@ -299,8 +330,18 @@ namespace Chummer
                 if (_nodBonus?.ChildNodes.Count > 0)
                 {
                     ImprovementManager.ForcedValue = strForceValue;
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
-                                                               InternalId, _nodBonus, 1, CurrentDisplayNameShort))
+                    if (blnSync)
+                    {
+                        // ReSharper disable once MethodHasAsyncOverload
+                        if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
+                                InternalId, _nodBonus, 1, CurrentDisplayNameShort))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
+                    else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Quality,
+                                 InternalId, _nodBonus, 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -320,9 +361,20 @@ namespace Chummer
                 if (_nodFirstLevelBonus?.ChildNodes.Count > 0 && Levels == 0)
                 {
                     ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
-                                                               InternalId, _nodFirstLevelBonus, 1,
-                                                               CurrentDisplayNameShort))
+                    if (blnSync)
+                    {
+                        // ReSharper disable once MethodHasAsyncOverload
+                        if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
+                                InternalId, _nodFirstLevelBonus, 1,
+                                CurrentDisplayNameShort))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
+                    else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Quality,
+                                 InternalId, _nodFirstLevelBonus, 1,
+                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -334,9 +386,19 @@ namespace Chummer
                 if (_nodNaturalWeaponsNode?.ChildNodes.Count > 0)
                 {
                     ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
-                                                               InternalId, _nodNaturalWeaponsNode, 1,
-                                                               CurrentDisplayNameShort))
+                    if (blnSync)
+                    {
+                        if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
+                                InternalId, _nodNaturalWeaponsNode, 1,
+                                CurrentDisplayNameShort))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
+                    else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Quality,
+                                 InternalId, _nodNaturalWeaponsNode, 1,
+                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -344,13 +406,39 @@ namespace Chummer
                 }
 
                 // Check if the quality is already suppressed by something
-                RefreshSuppressed();
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    RefreshSuppressed();
+                else
+                    await RefreshSuppressedAsync(token).ConfigureAwait(false);
 
-                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable)
                 {
-                    Notes = CommonFunctions.GetBookNotes(objXmlQuality, Name, CurrentDisplayName, Source, Page,
-                                                         DisplayPage(GlobalSettings.Language), _objCharacter);
+                    if (blnSync)
+                    {
+                        if (string.IsNullOrEmpty(Notes))
+                        {
+                            // ReSharper disable once MethodHasAsyncOverload
+                            Notes = CommonFunctions.GetBookNotes(objXmlQuality, Name, CurrentDisplayName, Source, Page,
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                DisplayPage(GlobalSettings.Language), _objCharacter);
+                        }
+                    }
+                    else if (string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                    {
+                        await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlQuality,
+                            await GetNameAsync(token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                            await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
+                            token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    }
                 }
+            }
+            finally
+            {
+                objSyncLocker?.Dispose();
+                if (objAsyncLocker != null)
+                    await objAsyncLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1698,6 +1786,26 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Notes.
+        /// </summary>
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (Interlocked.Exchange(ref _strNotes, value) == value)
+                    return;
+                _strCachedNotes = string.Empty;
+                await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
         public Color NotesColor
@@ -2223,7 +2331,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     List<Weapon> lstWeapons = new List<Weapon>(1);
-                    Create(objXmlQuality, QualitySource.Selected, lstWeapons);
+                    await CreateAsync(objXmlQuality, QualitySource.Selected, lstWeapons, token: token).ConfigureAwait(false);
 
                     int intKarmaCost;
                     IAsyncDisposable objLocker3 = await objOldQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -2333,8 +2441,8 @@ namespace Chummer
                         Quality objNewQualityLevel = new Quality(_objCharacter);
                         try
                         {
-                            objNewQualityLevel.Create(objXmlQuality, QualitySource.Selected, lstWeapons, _strExtra,
-                                _strSourceName);
+                            await objNewQualityLevel.CreateAsync(objXmlQuality, QualitySource.Selected, lstWeapons, _strExtra,
+                                _strSourceName, token).ConfigureAwait(false);
                             await _objCharacter.Qualities.AddAsync(objNewQualityLevel, token).ConfigureAwait(false);
                         }
                         catch

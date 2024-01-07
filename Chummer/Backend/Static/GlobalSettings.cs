@@ -841,8 +841,16 @@ namespace Chummer
                         s_LstFavoriteCharacters.Add(strFileName);
                 }
             }
-            s_LstFavoriteCharacters.CollectionChangedAsync += LstFavoritedCharactersOnCollectionChanged;
+            
             s_LstFavoriteCharacters.Sort();
+            for (int i = 1; i <= MaxMruSize; ++i)
+            {
+                if (i <= s_LstFavoriteCharacters.Count)
+                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), s_LstFavoriteCharacters[i - 1]);
+                else
+                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+            }
+            s_LstFavoriteCharacters.CollectionChangedAsync += LstFavoritedCharactersOnCollectionChanged;
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
@@ -854,6 +862,7 @@ namespace Chummer
                         s_LstMostRecentlyUsedCharacters.Add(strFileName);
                 }
             }
+
             s_LstMostRecentlyUsedCharacters.CollectionChangedAsync += LstMostRecentlyUsedCharactersOnCollectionChanged;
 
             if (blnFirstEverLaunch)
