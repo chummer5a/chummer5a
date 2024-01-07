@@ -3937,7 +3937,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelectedPossessionMethod))
                         {
                             CritterPower objMaterializationPower =
-                                await CritterPowers.FirstOrDefaultAsync(x => x.Name == "Materialization")
+                                await CritterPowers.FirstOrDefaultAsync(x => x.Name == "Materialization", token: token)
                                     .ConfigureAwait(false);
                             if (objMaterializationPower != null)
                                 await CritterPowers.RemoveAsync(objMaterializationPower, token).ConfigureAwait(false);
@@ -34976,7 +34976,7 @@ namespace Chummer
             return strQuality;
         }
 
-        private Tuple<XmlNode, int> CorrectedUnleveledQualityCommon(string strName, XmlNode xmlRootQualitiesNode)
+        private static Tuple<XmlNode, int> CorrectedUnleveledQualityCommon(string strName, XmlNode xmlRootQualitiesNode)
         {
             XmlNode xmlNewQuality = null;
             int intRanks = 0;

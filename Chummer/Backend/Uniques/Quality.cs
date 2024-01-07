@@ -334,7 +334,7 @@ namespace Chummer
                     {
                         // ReSharper disable once MethodHasAsyncOverload
                         if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
-                                InternalId, _nodBonus, 1, CurrentDisplayNameShort))
+                                InternalId, _nodBonus, 1, CurrentDisplayNameShort, token: token))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -366,7 +366,7 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverload
                         if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
                                 InternalId, _nodFirstLevelBonus, 1,
-                                CurrentDisplayNameShort))
+                                CurrentDisplayNameShort, token: token))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -390,7 +390,7 @@ namespace Chummer
                     {
                         if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
                                 InternalId, _nodNaturalWeaponsNode, 1,
-                                CurrentDisplayNameShort))
+                                CurrentDisplayNameShort, token: token))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -421,7 +421,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             Notes = CommonFunctions.GetBookNotes(objXmlQuality, Name, CurrentDisplayName, Source, Page,
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                DisplayPage(GlobalSettings.Language), _objCharacter);
+                                DisplayPage(GlobalSettings.Language), _objCharacter, token);
                         }
                     }
                     else if (string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
