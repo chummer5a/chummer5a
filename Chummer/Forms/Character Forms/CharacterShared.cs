@@ -316,8 +316,16 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // Local for thread safety
             DebuggableSemaphoreSlim objAutosaveSemaphore = _objAutosaveSemaphore;
-            if (objAutosaveSemaphore == null || !await objAutosaveSemaphore.WaitAsync(0, token).ConfigureAwait(false))
+            try
+            {
+                if (objAutosaveSemaphore == null || !await objAutosaveSemaphore.WaitAsync(0, token).ConfigureAwait(false))
+                    return;
+            }
+            catch (ObjectDisposedException)
+            {
                 return;
+            }
+
             try
             {
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
