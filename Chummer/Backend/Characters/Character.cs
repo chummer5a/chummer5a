@@ -30543,7 +30543,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (await GetIsAIAsync(token).ConfigureAwait(false))
                 {
-                    Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                    Vehicle objHomeNodeVehicle = await GetHomeNodeAsync(token).ConfigureAwait(false) as Vehicle;
                     return objHomeNodeVehicle?.Handling ?? 0;
                 }
 
@@ -30612,7 +30612,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (await GetIsAIAsync(token).ConfigureAwait(false))
                 {
-                    Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                    Vehicle objHomeNodeVehicle = await GetHomeNodeAsync(token).ConfigureAwait(false) as Vehicle;
                     return string.Concat(await LanguageManager.GetStringAsync("String_Handling", token: token).ConfigureAwait(false),
                         strSpace, "[",
                         (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalSettings.CultureInfo),
@@ -30625,14 +30625,14 @@ namespace Chummer
                     int intStr = await STR.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intBod = await BOD.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intRea = await REA.GetTotalValueAsync(token).ConfigureAwait(false);
-                    sbdToolTip.Append('(').Append(STR.GetDisplayAbbrevAsync(GlobalSettings.Language, token)).Append(strSpace).Append('[')
+                    sbdToolTip.Append('(').Append(await STR.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace).Append('[')
                         .Append(intStr.ToString(GlobalSettings.CultureInfo)).Append(']')
                         .Append(strSpace)
                         .Append('×').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
-                        .Append(strSpace).Append('+').Append(strSpace).Append(BOD.GetDisplayAbbrevAsync(GlobalSettings.Language, token))
+                        .Append(strSpace).Append('+').Append(strSpace).Append(await BOD.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
                         .Append(strSpace)
                         .Append('[').Append(intBod.ToString(GlobalSettings.CultureInfo)).Append(']')
-                        .Append(strSpace).Append('+').Append(strSpace).Append(REA.GetDisplayAbbrevAsync(GlobalSettings.Language, token))
+                        .Append(strSpace).Append('+').Append(strSpace).Append(await REA.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
                         .Append(strSpace)
                         .Append('[').Append(intRea.ToString(GlobalSettings.CultureInfo)).Append("])")
                         .Append(strSpace).Append('/').Append(strSpace)
@@ -30699,9 +30699,9 @@ namespace Chummer
                 int intInt = await INT.GetTotalValueAsync(token).ConfigureAwait(false);
                 int intWil = await WIL.GetTotalValueAsync(token).ConfigureAwait(false);
                 int intLimit = (intLog * 2 + intInt + intWil + 2) / 3;
-                if (await GetIsAIAsync(token).ConfigureAwait(false) && HomeNode != null)
+                if (await GetIsAIAsync(token).ConfigureAwait(false) && await GetHomeNodeAsync(token).ConfigureAwait(false) is IHasMatrixAttributes objHomeNode)
                 {
-                    if (HomeNode is Vehicle objHomeNodeVehicle)
+                    if (objHomeNode is Vehicle objHomeNodeVehicle)
                     {
                         int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
                         if (intHomeNodeSensor > intLimit)
@@ -30710,7 +30710,7 @@ namespace Chummer
                         }
                     }
 
-                    int intHomeNodeDP = await HomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                    int intHomeNodeDP = await objHomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
                     if (intHomeNodeDP > intLimit)
                     {
                         intLimit = intHomeNodeDP;
@@ -30801,23 +30801,23 @@ namespace Chummer
                     int intLog = await LOG.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intInt = await INT.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intWil = await WIL.GetTotalValueAsync(token).ConfigureAwait(false);
-                    sbdToolTip.Append('(').Append(LOG.GetDisplayAbbrevAsync(GlobalSettings.Language, token)).Append(strSpace).Append('[')
+                    sbdToolTip.Append('(').Append(await LOG.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace).Append('[')
                               .Append(intLog.ToString(GlobalSettings.CultureInfo)).Append(']')
                               .Append(strSpace)
                               .Append('×').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
-                              .Append(strSpace).Append('+').Append(strSpace).Append(INT.GetDisplayAbbrevAsync(GlobalSettings.Language, token))
+                              .Append(strSpace).Append('+').Append(strSpace).Append(await INT.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
                               .Append(strSpace)
                               .Append('[').Append(intInt.ToString(GlobalSettings.CultureInfo)).Append(']')
-                              .Append(strSpace).Append('+').Append(strSpace).Append(WIL.GetDisplayAbbrevAsync(GlobalSettings.Language, token))
+                              .Append(strSpace).Append('+').Append(strSpace).Append(await WIL.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
                               .Append(strSpace)
                               .Append('[').Append(intWil.ToString(GlobalSettings.CultureInfo)).Append("])")
                               .Append(strSpace).Append('/').Append(strSpace)
                               .Append(3.ToString(GlobalSettings.CultureInfo));
 
-                    if (await GetIsAIAsync(token).ConfigureAwait(false) && HomeNode != null)
+                    if (await GetIsAIAsync(token).ConfigureAwait(false) && await GetHomeNodeAsync(token).ConfigureAwait(false) is IHasMatrixAttributes objHomeNode)
                     {
                         int intLimit = (intLog * 2 + intInt + intWil + 2) / 3;
-                        if (HomeNode is Vehicle objHomeNodeVehicle)
+                        if (objHomeNode is Vehicle objHomeNodeVehicle)
                         {
                             int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
                             if (intHomeNodeSensor > intLimit)
@@ -30830,7 +30830,7 @@ namespace Chummer
                             }
                         }
 
-                        int intHomeNodeDP = await HomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                        int intHomeNodeDP = await objHomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
                         if (intHomeNodeDP > intLimit)
                         {
                             intLimit = intHomeNodeDP;
@@ -30865,10 +30865,10 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    int intHomeNodeDP = 0;
+                    int intLimit = CHA.TotalValue;
                     if (IsAI && HomeNode != null)
                     {
-                        intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
 
                         if (HomeNode is Vehicle objHomeNodeVehicle)
                         {
@@ -30876,12 +30876,16 @@ namespace Chummer
                             if (intHomeNodePilot > intHomeNodeDP)
                                 intHomeNodeDP = intHomeNodePilot;
                         }
+
+                        intLimit += intHomeNodeDP;
                     }
-                    int intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + Essence().StandardRound() + 2)
-                                   / 3;
+                    else
+                        intLimit *= 2;
+
+                    intLimit = (intLimit + WIL.TotalValue + Essence().StandardRound() + 2) / 3;
 
                     return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit)
-                                                        .StandardRound();
+                        .StandardRound();
                 }
             }
         }
@@ -30895,24 +30899,32 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                int intCha = await CHA.GetTotalValueAsync(token).ConfigureAwait(false);
                 int intWil = await WIL.GetTotalValueAsync(token).ConfigureAwait(false);
                 int intEss = (await EssenceAsync(token: token).ConfigureAwait(false)).StandardRound();
-                int intHomeNodeDP = 0;
-                if (await GetIsAIAsync(token).ConfigureAwait(false) && HomeNode != null)
+                int intLimit = await CHA.GetTotalValueAsync(token).ConfigureAwait(false);
+                if (await GetIsAIAsync(token).ConfigureAwait(false) &&
+                    await GetHomeNodeAsync(token).ConfigureAwait(false) is IHasMatrixAttributes objHomeNode)
                 {
-                    intHomeNodeDP = await HomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                    int intHomeNodeDP = await objHomeNode.GetTotalMatrixAttributeAsync("Data Processing", token)
+                        .ConfigureAwait(false);
 
-                    if (HomeNode is Vehicle objHomeNodeVehicle)
+                    if (objHomeNode is Vehicle objHomeNodeVehicle)
                     {
                         int intHomeNodePilot = objHomeNodeVehicle.Pilot;
                         if (intHomeNodePilot > intHomeNodeDP)
                             intHomeNodeDP = intHomeNodePilot;
                     }
-                }
-                int intLimit = (intCha + intHomeNodeDP + intWil + intEss + 2) / 3;
 
-                return intLimit + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SocialLimit, token: token).ConfigureAwait(false))
+                    intLimit += intHomeNodeDP;
+                }
+                else
+                    intLimit *= 2;
+
+                intLimit = (intLimit + intWil + intEss + 2) / 3;
+
+                return intLimit + (await ImprovementManager
+                        .ValueOfAsync(this, Improvement.ImprovementType.SocialLimit, token: token)
+                        .ConfigureAwait(false))
                     .StandardRound();
             }
         }
@@ -30991,13 +31003,13 @@ namespace Chummer
                 {
                     int intCha = await CHA.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intWil = await WIL.GetTotalValueAsync(token).ConfigureAwait(false);
-                    sbdToolTip.Append('(').Append(CHA.GetDisplayAbbrevAsync(GlobalSettings.Language, token)).Append(strSpace).Append('[')
+                    sbdToolTip.Append('(').Append(await CHA.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace).Append('[')
                               .Append(intCha.ToString(GlobalSettings.CultureInfo)).Append(']');
-                    if (await GetIsAIAsync(token).ConfigureAwait(false) && HomeNode != null)
+                    if (await GetIsAIAsync(token).ConfigureAwait(false) && await GetHomeNodeAsync(token).ConfigureAwait(false) is IHasMatrixAttributes objHomeNode)
                     {
-                        int intHomeNodeDP = await HomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                        int intHomeNodeDP = await objHomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
                         string strDPString = await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false);
-                        if (HomeNode is Vehicle objHomeNodeVehicle)
+                        if (objHomeNode is Vehicle objHomeNodeVehicle)
                         {
                             int intHomeNodePilot = objHomeNodeVehicle.Pilot;
                             if (intHomeNodePilot > intHomeNodeDP)
@@ -31018,10 +31030,10 @@ namespace Chummer
                                   .Append(2.ToString(GlobalSettings.CultureInfo));
                     }
 
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(WIL.GetDisplayAbbrevAsync(GlobalSettings.Language, token))
+                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(await WIL.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
                               .Append(strSpace)
                               .Append('[').Append(intWil.ToString(GlobalSettings.CultureInfo)).Append(']')
-                              .Append(strSpace).Append('+').Append(strSpace).Append(ESS.GetDisplayAbbrevAsync(GlobalSettings.Language, token))
+                              .Append(strSpace).Append('+').Append(strSpace).Append(await ESS.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
                               .Append(strSpace)
                               .Append('[').Append(await GetDisplayEssenceAsync(token).ConfigureAwait(false)).Append("])").Append(strSpace).Append('/')
                               .Append(strSpace)
