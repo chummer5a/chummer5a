@@ -240,17 +240,17 @@ namespace Chummer
                             bool blnMismatch;
                             if (objMinVersion != default && objMaxVersion != default)
                             {
-                                blnMismatch = lstEnabledCustomData.All(
+                                blnMismatch = lstEnabledCustomData.TrueForAll(
                                     x => x.MyVersion < objMinVersion
                                          || x.MyVersion > objMaxVersion);
                             }
                             else if (objMinVersion != default)
                             {
-                                blnMismatch = lstEnabledCustomData.All(x => x.MyVersion < objMinVersion);
+                                blnMismatch = lstEnabledCustomData.TrueForAll(x => x.MyVersion < objMinVersion);
                             }
                             else
                             {
-                                blnMismatch = lstEnabledCustomData.All(x => x.MyVersion > objMaxVersion);
+                                blnMismatch = lstEnabledCustomData.TrueForAll(x => x.MyVersion > objMaxVersion);
                             }
 
                             if (blnMismatch)
@@ -330,17 +330,17 @@ namespace Chummer
                             bool blnMismatch;
                             if (objMinVersion != default && objMaxVersion != default)
                             {
-                                blnMismatch = lstEnabledCustomData.All(
+                                blnMismatch = lstEnabledCustomData.TrueForAll(
                                     x => x.MyVersion < objMinVersion
                                          || x.MyVersion > objMaxVersion);
                             }
                             else if (objMinVersion != default)
                             {
-                                blnMismatch = lstEnabledCustomData.All(x => x.MyVersion < objMinVersion);
+                                blnMismatch = lstEnabledCustomData.TrueForAll(x => x.MyVersion < objMinVersion);
                             }
                             else
                             {
-                                blnMismatch = lstEnabledCustomData.All(x => x.MyVersion > objMaxVersion);
+                                blnMismatch = lstEnabledCustomData.TrueForAll(x => x.MyVersion > objMaxVersion);
                             }
 
                             if (blnMismatch)

@@ -134,7 +134,7 @@ namespace Chummer
                 {
                     if (_setBeforeRemoveAsync.Count > 0)
                     {
-                        List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>();
+                        List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>(Items.Count);
                         for (int i = 0; i < Items.Count; ++i)
                             lstArgsList.Add(new RemovingOldEventArgs(Items[i], i));
                         List<Func<Task>> lstFuncs =
@@ -311,7 +311,7 @@ namespace Chummer
                 : Task.FromResult(GetEnumerator());
         }
 
-        public Task<int> GetCountAsync(CancellationToken token)
+        public Task<int> GetCountAsync(CancellationToken token = default)
         {
             return token.IsCancellationRequested
                 ? Task.FromCanceled<int>(token)
@@ -336,7 +336,7 @@ namespace Chummer
 
             if (_setBeforeRemoveAsync.Count > 0)
             {
-                List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>();
+                List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>(Items.Count);
                 for (int j = 0; j < Items.Count; ++j)
                     lstArgsList.Add(new RemovingOldEventArgs(Items[j], j));
                 List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
@@ -397,7 +397,7 @@ namespace Chummer
             return true;
         }
 
-        public Task<T> GetValueAtAsync(int index, CancellationToken token)
+        public Task<T> GetValueAtAsync(int index, CancellationToken token = default)
         {
             return token.IsCancellationRequested
                 ? Task.FromCanceled<T>(token)

@@ -59,6 +59,10 @@ Application Changes:
 - Weapons and ammo types that cause the fire damage type (e.g. Flame Bracers) can now properly process other sources of damage and damage type modification.
 - Some inconsistent handling of drone armor mods and their effects on other stats when using Rigger 5.0's drone modding rules has been fixed.
 - Removed Capacity check for weapon accessories that allow child gear items. This allows Weapon Commlink to take Commlink accessories, for example.
+- Selling gear now properly specifies the type of gear being sold in the expense entry instead of always claiming it is cyberware gear being sold.
+- After loading a character that required some modifications before they were loaded (e.g., removing orphaned improvements), the program now immediately autosaves them instead of waiting for the next character change to do so.
+- Autosaves are now also triggered by character changes that do not require the program's user interface to be updated (e.g., changing the description of their eye color).
+- Character settings can now also alter the maximum amount of nuyen that a character can carry over from Create mode into Career mode.
 - Fixed custom category spells not presenting as a treenode.
 
 Data Changes:
@@ -100,9 +104,16 @@ Changed/New Strings:
 - Label_SelectMentorSpirit_Disadvantage
 - Label_SelectMentorSpirit_Choices
 - String_DamageFire
+- Message_DeleteArmorMod
+- Message_DeleteWeaponAccessory
+- String_ExpensePurchaseVehicleWeaponMount
+- String_ExpenseSoldVehicleWeaponMount
+- Label_Options_Carryover_Nuyen
+- Label_Options_Carryover_Karma
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage
+- Label_Options_Carryover
 
 Build 225
 Application Changes:

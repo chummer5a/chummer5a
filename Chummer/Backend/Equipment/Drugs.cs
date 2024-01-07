@@ -1561,6 +1561,27 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteDrug", token: token).ConfigureAwait(false),
+                        token).ConfigureAwait(false))
+            {
+                return false;
+            }
+
+            await _objCharacter.Drugs.RemoveAsync(this, token).ConfigureAwait(false);
+            await ImprovementManager
+                .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Drug, InternalId, token)
+                .ConfigureAwait(false);
+
+            await DisposeAsync().ConfigureAwait(false);
+
+            return true;
+        }
+
         #endregion Methods
 
         /// <inheritdoc />

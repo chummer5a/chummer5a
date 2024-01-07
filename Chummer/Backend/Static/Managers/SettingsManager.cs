@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 using Microsoft.VisualStudio.Threading;
+using NLog.Time;
 
 namespace Chummer
 {
@@ -303,11 +304,17 @@ namespace Chummer
                 return;
             }
 
-            List<Task> lstTasks = new List<Task>();
+            List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+            int i = 0;
             foreach (XPathNavigator xmlBuiltInSetting in (await XmlManager.LoadXPathAsync("settings.xml", token: token)
                          .ConfigureAwait(false)).SelectAndCacheExpression("/chummer/settings/setting", token: token))
             {
                 lstTasks.Add(Task.Run(() => LoadSettings(xmlBuiltInSetting), token));
+                if (++i < Utils.MaxParallelBatchSize)
+                    continue;
+                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                lstTasks.Clear();
+                i = 0;
             }
 
             await Task.WhenAll(lstTasks).ConfigureAwait(false);
@@ -342,8 +349,16 @@ namespace Chummer
             if (Directory.Exists(strSettingsPath))
             {
                 lstTasks.Clear();
+                i = 0;
                 foreach (string strSettingsFilePath in Directory.EnumerateFiles(strSettingsPath, "*.xml"))
+                {
                     lstTasks.Add(Task.Run(() => LoadSettingsFromFile(strSettingsFilePath), token));
+                    if (++i < Utils.MaxParallelBatchSize)
+                        continue;
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    lstTasks.Clear();
+                    i = 0;
+                }
 
                 await Task.WhenAll(lstTasks).ConfigureAwait(false);
 
@@ -544,7 +559,7 @@ namespace Chummer
             int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).RaiseToPower(2)
                                             + (await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false))
                                             .RaiseToPower(2))
-                                           .RaiseToPower(0.5m).StandardRound();
+                                           .RaiseToPower(0.5m, decimal.MaxValue).StandardRound();
             int intBaseline = await objOptionsToCheck.GetBuiltInOptionAsync(token).ConfigureAwait(false) ? 5 : 4;
             CharacterBuildMethod eLeftBuildMethod = await objBaselineSettings.GetBuildMethodAsync(token).ConfigureAwait(false);
             CharacterBuildMethod eRightBuildMethod = await objOptionsToCheck.GetBuildMethodAsync(token).ConfigureAwait(false);
@@ -594,23 +609,17 @@ namespace Chummer
                         intReturn -= Math.Abs(i - intLoopIndex) * intBaseline;
                 }
 
-                foreach (string strLoopCustomDataName in objBaselineSettings.EnabledCustomDataDirectoryInfos.Select(x => x.Name))
-                {
-                    if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
-                        intReturn -= intBaselineCustomDataCount * intBaseline;
-                }
+                int intMismatchCount = objBaselineSettings.EnabledCustomDataDirectoryInfos.Count(x =>
+                    objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(y => y.Name != x.Name));
+                if (intMismatchCount != 0)
+                    intReturn -= intMismatchCount * intBaselineCustomDataCount * intBaseline;
             }
 
             using (new FetchSafelyFromPool<HashSet<string>>(
                        Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
             {
                 setDummyBooks.AddRange(objBaselineSettings.Books);
-                int intExtraBooks = 0;
-                foreach (string strBook in objOptionsToCheck.Books)
-                {
-                    if (setDummyBooks.Remove(strBook))
-                        ++intExtraBooks;
-                }
+                int intExtraBooks = objOptionsToCheck.Books.Count(x => setDummyBooks.Remove(x));
                 setDummyBooks.IntersectWith(objOptionsToCheck.Books);
                 intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                               + intExtraBooks) * intBaseline;

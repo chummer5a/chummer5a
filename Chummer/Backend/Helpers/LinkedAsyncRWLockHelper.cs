@@ -557,8 +557,7 @@ namespace Chummer
                     // Use locals for thread safety
                     DebuggableSemaphoreSlim objLoopSemaphore = _objCancelledWriterSemaphore;
                     if (objLoopSemaphore != null)
-                        // ReSharper disable once MethodSupportsCancellation
-                        await objLoopSemaphore.WaitAsync().ConfigureAwait(false);
+                        await objLoopSemaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
                     long lngPendingCount;
                     try
                     {
@@ -929,8 +928,7 @@ namespace Chummer
                                 // Use locals for thread safety
                                 DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper._objCancelledWriterSemaphore;
                                 if (objLoopSemaphore2 != null)
-                                    // ReSharper disable once MethodSupportsCancellation
-                                    await objLoopSemaphore2.WaitAsync().ConfigureAwait(false);
+                                    await objLoopSemaphore2.WaitAsync(CancellationToken.None).ConfigureAwait(false);
                                 try
                                 {
                                     Interlocked.Add(ref objLoopHelper._lngNumReaders, MaxReaderCount);
@@ -1160,8 +1158,7 @@ namespace Chummer
                             // Use locals for thread safety
                             DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                             if (objLoopSemaphore2 != null)
-                                // ReSharper disable once MethodSupportsCancellation
-                                await objLoopSemaphore2.WaitAsync().ConfigureAwait(false);
+                                await objLoopSemaphore2.WaitAsync(CancellationToken.None).ConfigureAwait(false);
                             try
                             {
                                 Interlocked.Add(ref _lngNumReaders, MaxReaderCount);
@@ -1363,8 +1360,7 @@ namespace Chummer
                             // Use locals for thread safety
                             DebuggableSemaphoreSlim objLoopSemaphore2 = _objCancelledWriterSemaphore;
                             if (objLoopSemaphore2 != null)
-                                // ReSharper disable once MethodSupportsCancellation
-                                await objLoopSemaphore2.WaitAsync().ConfigureAwait(false);
+                                await objLoopSemaphore2.WaitAsync(CancellationToken.None).ConfigureAwait(false);
                             try
                             {
                                 Interlocked.Add(ref _lngNumReaders, MaxReaderCount);

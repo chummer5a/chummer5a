@@ -70,18 +70,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             CancellationTokenRegistration objCancellationRegistration
                 = GenericToken.Register(() => Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null)?.Cancel(false));
-            Disposed += (sender, args) =>
-            {
-                objCancellationRegistration.Dispose();
-                try
-                {
-                    Utils.StopwatchPool.Return(ref _stpAutosaveStopwatch);
-                }
-                catch (ArgumentNullException)
-                {
-                    //swallow this, the event handler somehow called this twice
-                }
-            };
+            Disposed += (sender, args) => objCancellationRegistration.Dispose();
             _objCharacter.PropertyChangedAsync += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
             Load += OnLoad;
@@ -317,56 +306,77 @@ namespace Chummer
 
         protected Stopwatch AutosaveStopwatch => _stpAutosaveStopwatch;
 
+        private DebuggableSemaphoreSlim _objAutosaveSemaphore = new DebuggableSemaphoreSlim();
+
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
         protected async Task AutoSaveCharacter(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
+            // Local for thread safety
+            DebuggableSemaphoreSlim objAutosaveSemaphore = _objAutosaveSemaphore;
+            if (objAutosaveSemaphore == null || !await objAutosaveSemaphore.WaitAsync(0, token).ConfigureAwait(false))
+                return;
             try
             {
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
                 try
                 {
-                    string strAutosavePath = Utils.GetAutosavesFolderPath;
-
-                    if (!Directory.Exists(strAutosavePath))
+                    try
                     {
-                        try
+                        string strAutosavePath = Utils.GetAutosavesFolderPath;
+
+                        if (!Directory.Exists(strAutosavePath))
                         {
-                            Directory.CreateDirectory(strAutosavePath);
+                            try
+                            {
+                                Directory.CreateDirectory(strAutosavePath);
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    this,
+                                    await LanguageManager
+                                        .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
+                                        .ConfigureAwait(false));
+                                return;
+                            }
                         }
-                        catch (UnauthorizedAccessException)
+
+                        string strShowFileName =
+                            Path.GetFileNameWithoutExtension(await CharacterObject.GetFileNameAsync(token)
+                                .ConfigureAwait(false));
+
+                        if (string.IsNullOrEmpty(strShowFileName))
+                            strShowFileName =
+                                (await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false))
+                                .CleanForFileName() + ".chum5lz";
+                        else
+                            // Autosaves are always compressed
+                            strShowFileName += ".chum5lz";
+
+                        string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
+                        if (!await CharacterObject.SaveAsync(strFilePath, false, false, token).ConfigureAwait(false))
                         {
-                            Program.ShowScrollableMessageBox(
-                                this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
-                            return;
+                            Log.Info("Autosave failed for character " +
+                                     await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + " ("
+                                     + await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false) + ')');
                         }
                     }
-
-                    string strShowFileName = Path.GetFileNameWithoutExtension(CharacterObject.FileName);
-
-                    if (string.IsNullOrEmpty(strShowFileName))
-                        strShowFileName = CharacterObject.CharacterName.CleanForFileName() + ".chum5lz";
-                    else
-                        // Autosaves are always compressed
-                        strShowFileName += ".chum5lz";
-
-                    string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                    if (!await CharacterObject.SaveAsync(strFilePath, false, false, token).ConfigureAwait(false))
+                    finally
                     {
-                        Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " ("
-                                 + CharacterObject.FileName + ')');
+                        AutosaveStopwatch.Restart();
                     }
                 }
                 finally
                 {
-                    AutosaveStopwatch.Restart();
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                _objAutosaveSemaphore?.Release();
             }
         }
 
@@ -6546,7 +6556,7 @@ namespace Chummer
             }
         }
 
-        protected async Task RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private async Task RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (treMartialArts == null || objMartialArt == null || e == null)
                 return;
@@ -9758,12 +9768,16 @@ namespace Chummer
             }
         }
 
-        public Task SetDirty(bool blnValue, CancellationToken token = default)
+        public async Task SetDirty(bool blnValue, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             int intNewValue = blnValue.ToInt32();
-            return Interlocked.Exchange(ref _intIsDirty, intNewValue) == intNewValue
-                ? Task.CompletedTask
-                : UpdateWindowTitleAsync(true, token);
+            if (Interlocked.Exchange(ref _intIsDirty, intNewValue) != intNewValue)
+                await UpdateWindowTitleAsync(true, token).ConfigureAwait(false);
+            if (blnValue && AutosaveStopwatch.Elapsed.Minutes >= 5)
+            {
+                await AutoSaveCharacter(token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -9803,7 +9817,7 @@ namespace Chummer
             try
             {
                 await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9822,7 +9836,7 @@ namespace Chummer
             try
             {
                 await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9835,7 +9849,7 @@ namespace Chummer
             try
             {
                 await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9913,11 +9927,12 @@ namespace Chummer
             }
         }
 
-        public async Task<Task> RequestCharacterUpdate(CancellationToken token = default)
+        public async Task RequestCharacterUpdate(CancellationToken token = default)
         {
             if (IsLoading)
-                return _tskUpdateCharacterInfo;
+                return;
             token.ThrowIfCancellationRequested();
+            GenericToken.ThrowIfCancellationRequested();
             CancellationTokenSource objSource = null;
             if (token == CancellationToken.None)
             {
@@ -9931,11 +9946,24 @@ namespace Chummer
 
             try
             {
-                await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
+                // Local for thread safety
+                DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
+                if (objCharacterUpdateStartingSemaphore == null || !await objCharacterUpdateStartingSemaphore.WaitAsync(0, token).ConfigureAwait(false))
+                    return; // Update request already starting and awaiting locks
                 try
                 {
-                    CancellationTokenSource objNewSource = new CancellationTokenSource();
-                    CancellationToken objNewToken = objNewSource.Token;
+                    await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
+                }
+                catch
+                {
+                    CharacterUpdateStartingSemaphore?.Release();
+                    throw;
+                }
+                Task tskTemp = Task.CompletedTask;
+                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationToken objNewToken = objNewSource.Token;
+                try
+                {
                     CancellationTokenSource objOldSource
                         = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, objNewSource);
                     if (objOldSource != null)
@@ -9954,8 +9982,8 @@ namespace Chummer
 
                         objOldSource.Dispose();
                     }
+
                     token.ThrowIfCancellationRequested();
-                    Task tskTemp = Task.CompletedTask;
                     Task tskOld = Interlocked.Exchange(ref _tskUpdateCharacterInfo, tskTemp);
                     if (tskOld?.IsCompleted == false)
                     {
@@ -9968,36 +9996,37 @@ namespace Chummer
                             //swallow this
                         }
                     }
-
-                    await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
-
-                    Task tskNew = Utils.RunInEmptyExecutionContext(() => Task.Run(() => DoUpdateCharacterInfo(objNewToken), token));
-                    if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
-                    {
-                        Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
-                        try
-                        {
-                            objNewSource.Cancel(false);
-                        }
-                        finally
-                        {
-                            objNewSource.Dispose();
-                        }
-                        try
-                        {
-                            await tskNew.ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            //swallow this
-                        }
-                    }
-
-                    return tskNew;
                 }
-                finally
+                catch
                 {
-                    _objUpdateCharacterInfoSemaphoreSlim.Release();
+                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource)?.Dispose();
+                    CharacterUpdateStartingSemaphore?.Release();
+                    throw;
+                }
+
+                Task tskNew =
+                    Utils.RunInEmptyExecutionContext(
+                        () => Task.Run(() => DoUpdateCharacterInfo(objNewToken), objNewToken));
+
+                if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
+                {
+                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
+                    try
+                    {
+                        objNewSource.Cancel(false);
+                    }
+                    finally
+                    {
+                        objNewSource.Dispose();
+                    }
+                    try
+                    {
+                        await tskNew.ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
                 }
             }
             finally
@@ -10006,28 +10035,152 @@ namespace Chummer
             }
         }
 
+        public async Task RequestAndProcessCharacterUpdate(CancellationToken token = default)
+        {
+            if (IsLoading)
+                return;
+            token.ThrowIfCancellationRequested();
+            GenericToken.ThrowIfCancellationRequested();
+            CancellationTokenSource objSource = null;
+            if (token == CancellationToken.None)
+            {
+                token = GenericToken;
+            }
+            else if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            Task tskNew;
+            try
+            {
+                DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
+                if (objCharacterUpdateStartingSemaphore == null || !await objCharacterUpdateStartingSemaphore.WaitAsync(0, token).ConfigureAwait(false))
+                    return; // Update request already starting and awaiting locks
+                try
+                {
+                    await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
+                }
+                catch
+                {
+                    CharacterUpdateStartingSemaphore?.Release();
+                    throw;
+                }
+                Task tskTemp = Task.CompletedTask;
+                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationToken objNewToken = objNewSource.Token;
+                try
+                {
+                    CancellationTokenSource objOldSource
+                        = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, objNewSource);
+                    if (objOldSource != null)
+                    {
+                        if (!objOldSource.IsCancellationRequested)
+                        {
+                            try
+                            {
+                                objOldSource.Cancel(false);
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                //swallow this
+                            }
+                        }
+
+                        objOldSource.Dispose();
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    Task tskOld = Interlocked.Exchange(ref _tskUpdateCharacterInfo, tskTemp);
+                    if (tskOld?.IsCompleted == false)
+                    {
+                        try
+                        {
+                            await tskOld.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
+                }
+                catch
+                {
+                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource)?.Dispose();
+                    CharacterUpdateStartingSemaphore?.Release();
+                    throw;
+                }
+
+                tskNew = Utils.RunInEmptyExecutionContext(
+                    () => Task.Run(() => DoUpdateCharacterInfo(objNewToken), objNewToken));
+
+                if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
+                {
+                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
+                    try
+                    {
+                        objNewSource.Cancel(false);
+                    }
+                    finally
+                    {
+                        objNewSource.Dispose();
+                    }
+                    try
+                    {
+                        await tskNew.ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+
+                    return;
+                }
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+
+            try
+            {
+                await tskNew.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         public bool IsCharacterUpdateRequested
         {
             get
             {
-                if (_objUpdateCharacterInfoSemaphoreSlim.CurrentCount == 0)
+                // Local for thread safety
+                DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
+                if (objCharacterUpdateStartingSemaphore == null)
+                    return false;
+                if (objCharacterUpdateStartingSemaphore.CurrentCount == 0)
                     return true;
                 Task tskTemp = _tskUpdateCharacterInfo; // Need to do this in case the task gets swapped out by an interlock in between the null check and the IsCompleted check
                 return tskTemp?.IsCompleted == false;
             }
         }
 
+        private DebuggableSemaphoreSlim _objCharacterUpdateStartingSemaphore = new DebuggableSemaphoreSlim();
+
+        protected DebuggableSemaphoreSlim CharacterUpdateStartingSemaphore => _objCharacterUpdateStartingSemaphore;
+
         protected Task UpdateCharacterInfoTask => _tskUpdateCharacterInfo;
 
         private Task _tskUpdateCharacterInfo = Task.CompletedTask;
-
-        private readonly DebuggableSemaphoreSlim _objUpdateCharacterInfoSemaphoreSlim = new DebuggableSemaphoreSlim();
 
         private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
 
         protected virtual Task DoUpdateCharacterInfo(CancellationToken token = default)
         {
-            return Task.CompletedTask;
+            return token.IsCancellationRequested ? Task.FromCanceled(token) : Task.CompletedTask;
         }
 
         protected bool SkipUpdate
@@ -10305,10 +10458,36 @@ namespace Chummer
                         objTemp.Dispose();
                     }
                 }
-                _objUpdateCharacterInfoSemaphoreSlim.Dispose();
                 dlgSaveFile?.Dispose();
+                Interlocked.Exchange(ref _objCharacterUpdateStartingSemaphore, null)?.Dispose();
+                Interlocked.Exchange(ref _objAutosaveSemaphore, null)?.Dispose();
+                if (_stpAutosaveStopwatch != null)
+                    Utils.StopwatchPool.Return(ref _stpAutosaveStopwatch);
             }
             base.Dispose(disposing);
+        }
+
+        protected async Task RemoveSelectedObject(object objSelected, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            GenericToken.ThrowIfCancellationRequested();
+            if (!(objSelected is ICanRemove objRemovable))
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                await objRemovable.RemoveAsync(token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
         }
 
         #region Vehicles Tab
@@ -10395,7 +10574,7 @@ namespace Chummer
                                                   await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                                CharacterObject.Nuyen -= decCost;
+                                await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);

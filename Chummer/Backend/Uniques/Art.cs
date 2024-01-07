@@ -507,25 +507,32 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (Grade <= 0)
-                return false;
-            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt")))
-                return false;
+            if (blnConfirmDelete)
+            {
+                if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
+                    return false;
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt")))
+                    return false;
+            }
 
             ImprovementManager.RemoveImprovements(_objCharacter, _objImprovementSource, InternalId);
+
             return _objCharacter.Arts.Remove(this);
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            if (Grade <= 0)
-                return false;
-            if (blnConfirmDelete && !await CommonFunctions
-                                           .ConfirmDeleteAsync(
-                                               await LanguageManager.GetStringAsync("Message_DeleteArt", token: token)
-                                                                    .ConfigureAwait(false), token)
-                                           .ConfigureAwait(false))
-                return false;
+            token.ThrowIfCancellationRequested();
+            if (blnConfirmDelete)
+            {
+                if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
+                    return false;
+                if (!await CommonFunctions
+                        .ConfirmDeleteAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteArt", token: token)
+                                .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
+            }
 
             await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objImprovementSource, InternalId, token)
                                     .ConfigureAwait(false);

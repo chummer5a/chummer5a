@@ -17,10 +17,15 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Chummer
 {
     internal interface ICanSell : ICanRemove, IHasCost
     {
-        bool Sell(decimal percentage, bool blnConfirmDelete);
+        bool Sell(decimal decPercentage, bool blnConfirmDelete);
+
+        Task<bool> SellAsync(decimal decPercentage, bool blnConfirmDelete, CancellationToken token = default);
     }
 }

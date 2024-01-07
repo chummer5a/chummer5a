@@ -67,7 +67,6 @@ namespace Chummer
             bool blnIsInReadLock = false;
             LinkedAsyncRWLockHelper objNextHelper = null;
             // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
-            int intLoopCount = 0;
             if (blnForReadLock)
             {
                 token.ThrowIfCancellationRequested();
@@ -80,6 +79,7 @@ namespace Chummer
             }
             else
             {
+                int intLoopCount = 0;
                 while (true)
                 {
                     token.ThrowIfCancellationRequested();

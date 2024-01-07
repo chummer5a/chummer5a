@@ -151,7 +151,7 @@ namespace Chummer
         {
             if (parser != null)
             {
-                XmlNode xmlField = node?[field];
+                XmlElement xmlField = node?[field];
                 if (xmlField != null)
                 {
                     return parser(xmlField.InnerText, out read);

@@ -1832,7 +1832,7 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XmlNode objDoc = blnSync
+                XmlDocument objDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("qualities.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync("qualities.xml", strLanguage, token: token)
@@ -1998,10 +1998,10 @@ namespace Chummer
                     }
                 }
 
-                XmlNode xmlRequiredNode = objXmlQuality["required"];
+                XmlElement xmlRequiredNode = objXmlQuality["required"];
                 if (xmlRequiredNode != null)
                 {
-                    XmlNode xmlOneOfNode = xmlRequiredNode["oneof"];
+                    XmlElement xmlOneOfNode = xmlRequiredNode["oneof"];
                     if (xmlOneOfNode != null)
                     {
                         token.ThrowIfCancellationRequested();
@@ -2050,7 +2050,7 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    XmlNode xmlAllOfNode = xmlRequiredNode["allof"];
+                    XmlElement xmlAllOfNode = xmlRequiredNode["allof"];
                     if (xmlAllOfNode != null)
                     {
                         //Add to set for O(N log M) runtime instead of O(N * M)
@@ -2085,10 +2085,10 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                XmlNode xmlForbiddenNode = objXmlQuality["forbidden"];
+                XmlElement xmlForbiddenNode = objXmlQuality["forbidden"];
                 if (xmlForbiddenNode != null)
                 {
-                    XmlNode xmlOneOfNode = xmlForbiddenNode["oneof"];
+                    XmlElement xmlOneOfNode = xmlForbiddenNode["oneof"];
                     if (xmlOneOfNode != null)
                     {
                         //Add to set for O(N log M) runtime instead of O(N * M)
@@ -2159,7 +2159,7 @@ namespace Chummer
                 }
                 else if (node.LocalName == "bonus")
                 {
-                    XmlNode xmlBonusNode = workNode["bonus"];
+                    XmlElement xmlBonusNode = workNode["bonus"];
                     if (xmlBonusNode == null)
                         continue;
                     foreach (XmlNode childNode in node.ChildNodes)

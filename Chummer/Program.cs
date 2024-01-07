@@ -271,10 +271,12 @@ namespace Chummer
                                         //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
                                         foreach (DictionaryEntry d in ex.Data)
                                         {
-                                            object objKey = d.Key;
                                             object objValue = d.Value;
                                             if (objValue != null)
+                                            {
+                                                object objKey = d.Key;
                                                 et.Properties.Add(objKey.ToString(), objValue.ToString());
+                                            }
                                         }
 
                                         et.Properties.Add("IsCrash", exa.IsTerminating.ToString());

@@ -8157,7 +8157,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
-        public decimal DeleteCyberware(bool blnDoRemoval = true, bool blnIncreaseEssenceHole = true)
+        public decimal DeleteCyberware(bool blnDoRemoval = true, bool blnIncreaseEssenceHole = true, bool blnDoDisposal = true)
         {
             decimal decReturn = 0;
             using (LockObject.EnterWriteLock())
@@ -8413,7 +8413,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            DisposeSelf();
+            if (blnDoDisposal)
+                DisposeSelf();
 
             return decReturn;
         }
@@ -8423,6 +8424,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> DeleteCyberwareAsync(bool blnDoRemoval = true,
                                                              bool blnIncreaseEssenceHole = true,
+                                                             bool blnDoDisposal = true,
                                                              CancellationToken token = default)
         {
             decimal decReturn;
@@ -8748,7 +8750,8 @@ namespace Chummer.Backend.Equipment
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            await DisposeSelfAsync().ConfigureAwait(false);
+            if (blnDoDisposal)
+                await DisposeSelfAsync().ConfigureAwait(false);
 
             return decReturn;
         }
@@ -9462,7 +9465,7 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Capacity == "[*]" && Parent != null && (!_objCharacter.IgnoreRules || _objCharacter.Created))
                 {
@@ -9479,44 +9482,58 @@ namespace Chummer.Backend.Equipment
                                                                                ? "Message_DeleteBioware"
                                                                                : "Message_DeleteCyberware")))
                     return false;
+
+                DeleteCyberware(false);
             }
 
-            DeleteCyberware();
+            DisposeSelf();
             return true;
         }
 
-        public bool Sell(decimal percentage, bool blnConfirmDelete)
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            if (!_objCharacter.Created)
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (LockObject.EnterReadLock())
+                if (Capacity == "[*]" && Parent != null &&
+                    (!await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) ||
+                     await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)))
                 {
-                    if (Capacity == "[*]" && Parent != null && (!_objCharacter.IgnoreRules || _objCharacter.Created))
-                    {
-                        Program.ShowScrollableMessageBox(
-                            LanguageManager.GetString("Message_CannotRemoveCyberware"),
-                            LanguageManager.GetString("MessageTitle_CannotRemoveCyberware"),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return false;
-                    }
-
-                    if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString(
-                                                                               SourceType == Improvement
-                                                                                   .ImprovementSource
-                                                                                   .Bioware
-                                                                                   ? "Message_DeleteBioware"
-                                                                                   : "Message_DeleteCyberware")))
-                        return false;
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware", token: token)
+                            .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware", token: token)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
                 }
 
-                DeleteCyberware();
-                return true;
+                if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync(
+                            await GetSourceTypeAsync(token).ConfigureAwait(false) == Improvement.ImprovementSource
+                                .Bioware
+                                ? "Message_DeleteBioware"
+                                : "Message_DeleteCyberware", token: token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false))
+                    return false;
+
+                await DeleteCyberwareAsync(blnDoDisposal: false, token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            decimal decOriginal;
-            string strEntry;
-            IHasCost objParent = null;
-            using (LockObject.EnterReadLock())
+            await DisposeSelfAsync().ConfigureAwait(false);
+            return true;
+        }
+
+        public bool Sell(decimal decPercentage, bool blnConfirmDelete)
+        {
+            if (!_objCharacter.Created)
+                return Remove(blnConfirmDelete);
+
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Capacity == "[*]" && Parent != null && (!_objCharacter.IgnoreRules || _objCharacter.Created))
                 {
@@ -9533,10 +9550,12 @@ namespace Chummer.Backend.Equipment
                                                                                ? "Message_DeleteBioware"
                                                                                : "Message_DeleteCyberware")))
                     return false;
-                strEntry = LanguageManager.GetString(
+
+                string strEntry = LanguageManager.GetString(
                     SourceType == Improvement.ImprovementSource.Cyberware
                         ? "String_ExpenseSoldCyberware"
                         : "String_ExpenseSoldBioware");
+                IHasCost objParent = null;
                 if (Parent != null)
                     objParent = Parent;
                 else if (ParentVehicle != null)
@@ -9547,16 +9566,109 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Record the cost of the Cyberware carrier with the Cyberware.
-                decOriginal = Parent?.TotalCost ?? TotalCost;
+                decimal decAmount;
+                if (objParent != null)
+                {
+                    decimal decOriginal = objParent.TotalCost;
+                    decAmount = DeleteCyberware(blnDoDisposal: false) * decPercentage;
+                    decAmount += (decOriginal - objParent.TotalCost) * decPercentage;
+                }
+                else
+                {
+                    decimal decOriginal = TotalCost;
+                    decAmount = (DeleteCyberware(blnDoDisposal: false) + decOriginal) * decPercentage;
+                }
+                // Create the Expense Log Entry for the sale.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                objExpense.Create(decAmount, strEntry + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen,
+                    DateTime.Now);
+                _objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                _objCharacter.Nuyen += decAmount;
             }
 
-            decimal decAmount = DeleteCyberware() * percentage + (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
-            // Create the Expense Log Entry for the sale.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, strEntry + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen,
-                DateTime.Now);
-            _objCharacter.ExpenseEntries.AddWithSort(objExpense);
-            _objCharacter.Nuyen += decAmount;
+            DisposeSelf();
+
+            return true;
+        }
+
+        public async Task<bool> SellAsync(decimal decPercentage, bool blnConfirmDelete,
+            CancellationToken token = default)
+        {
+            if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                return await RemoveAsync(blnConfirmDelete, token).ConfigureAwait(false);
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Capacity == "[*]" && Parent != null &&
+                    (!await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) ||
+                     await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)))
+                {
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware", token: token)
+                            .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware", token: token)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
+
+                if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync(
+                            await GetSourceTypeAsync(token).ConfigureAwait(false) == Improvement.ImprovementSource
+                                .Bioware
+                                ? "Message_DeleteBioware"
+                                : "Message_DeleteCyberware", token: token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false))
+                    return false;
+
+                string strEntry = await LanguageManager.GetStringAsync(
+                    await GetSourceTypeAsync(token).ConfigureAwait(false) == Improvement.ImprovementSource.Cyberware
+                        ? "String_ExpenseSoldCyberware"
+                        : "String_ExpenseSoldBioware", token: token).ConfigureAwait(false);
+                IHasCost objParent = null;
+                if (Parent != null)
+                    objParent = Parent;
+                else if (ParentVehicle != null)
+                {
+                    _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
+                        out VehicleMod objMod);
+                    objParent = objMod;
+                }
+
+                // Record the cost of the Cyberware carrier with the Cyberware.
+                decimal decAmount;
+                if (objParent != null)
+                {
+                    decimal decOriginal = await objParent.GetTotalCostAsync(token).ConfigureAwait(false);
+                    decAmount = await DeleteCyberwareAsync(blnDoDisposal: false, token: token).ConfigureAwait(false) *
+                                decPercentage;
+                    decAmount += (decOriginal - await objParent.GetTotalCostAsync(token).ConfigureAwait(false)) *
+                                 decPercentage;
+                }
+                else
+                {
+                    decimal decOriginal = await GetTotalCostAsync(token).ConfigureAwait(false);
+                    decAmount = (await DeleteCyberwareAsync(blnDoDisposal: false, token: token).ConfigureAwait(false) +
+                                 decOriginal) * decPercentage;
+                }
+
+                // Create the Expense Log Entry for the sale.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                objExpense.Create(decAmount,
+                    strEntry + ' ' + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                    ExpenseType.Nuyen,
+                    DateTime.Now);
+                await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                await _objCharacter.ModifyNuyenAsync(decAmount, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await DisposeSelfAsync().ConfigureAwait(false);
+
             return true;
         }
 

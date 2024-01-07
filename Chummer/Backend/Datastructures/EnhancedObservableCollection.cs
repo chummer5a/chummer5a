@@ -308,7 +308,6 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_setBeforeClearCollectionChangedAsync.Count != 0)
                 {
-
                     using (BlockReentrancy())
                     {
                         NotifyCollectionChangedEventArgs objArgs =

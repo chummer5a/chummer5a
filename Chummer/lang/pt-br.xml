@@ -6004,8 +6004,12 @@
       <text>Inimigos</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Transferir para Novo Personagem</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Neoiene Transferir</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma Transferir</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>

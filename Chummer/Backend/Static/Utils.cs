@@ -383,7 +383,7 @@ namespace Chummer
         public static void MoveMisplacedCustomDataFiles(bool blnShowErrors = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstToMove = new List<string>();
+            List<string> lstToMove = new List<string>(BasicDataFileNames.Count);
             foreach (string strFilePath in Directory.EnumerateFiles(GetDataFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();

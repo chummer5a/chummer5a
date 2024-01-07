@@ -176,8 +176,6 @@ namespace Chummer
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
-
-        private int _intKarmaCarryover = 7;
         private int _intKarmaContact = 1;
         private int _intKarmaEnemy = 1;
         private int _intKarmaEnhancement = 2;
@@ -261,6 +259,8 @@ namespace Chummer
         private int _intAvailability = 12;
         private int _intMaxMartialArts = 1;
         private int _intMaxMartialTechniques = 5;
+        private decimal _decNuyenCarryover = 5000;
+        private int _intKarmaCarryover = 7;
 
         // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether or not it's enabled
         private readonly LockingTypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys = new LockingTypedOrderedDictionary<string, bool>();
@@ -1346,6 +1346,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _intAvailability;
                 hashCode = (hashCode * 397) ^ _intMaxMartialArts;
                 hashCode = (hashCode * 397) ^ _intMaxMartialTechniques;
+                hashCode = (hashCode * 397) ^ _decNuyenCarryover.GetHashCode();
                 hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys?.GetEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories?.GetEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397)
@@ -2050,6 +2051,9 @@ namespace Chummer
                         // <maxmartialtechniques />
                         objWriter.WriteElementString("maxmartialtechniques",
                             _intMaxMartialTechniques.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <nuyencarryover />
+                        objWriter.WriteElementString("nuyencarryover",
+                            _decNuyenCarryover.ToString(GlobalSettings.InvariantCultureInfo));
                         // <nuyenmaxbp />
                         objWriter.WriteElementString("nuyenmaxbp",
                                                      _decNuyenMaximumBP.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2974,6 +2978,11 @@ namespace Chummer
                                 _intMaxMartialTechniques.ToString(
                                     GlobalSettings.InvariantCultureInfo), token: token)
                             .ConfigureAwait(false);
+                        // <nuyencarryover />
+                        await objWriter.WriteElementStringAsync("nuyencarryover",
+                                _decNuyenCarryover.ToString(
+                                    GlobalSettings.InvariantCultureInfo), token: token)
+                            .ConfigureAwait(false);
                         // <nuyenmaxbp />
                         await objWriter.WriteElementStringAsync("nuyenmaxbp",
                                 _decNuyenMaximumBP.ToString(
@@ -3762,6 +3771,7 @@ namespace Chummer
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts);
                 if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques);
+                objXmlNode.TryGetDecFieldQuickly("nuyencarryover", ref _decNuyenCarryover);
                 objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
 
                 _setBannedWareGrades.Clear();
@@ -4549,6 +4559,7 @@ namespace Chummer
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts);
                 if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques);
+                objXmlNode.TryGetDecFieldQuickly("nuyencarryover", ref _decNuyenCarryover);
                 objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
 
                 _setBannedWareGrades.Clear();
@@ -5322,11 +5333,11 @@ namespace Chummer
                         {
                             int intReturn = int.MaxValue;
                             intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
-                                         * 2.RaiseToPower(24);
+                                         * 16777216;
                             intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2)
-                                         * 2.RaiseToPower(16);
+                                         * 65536;
                             intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2)
-                                         * 2.RaiseToPower(8);
+                                         * 256;
                             intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
                             return intReturn;
                         }
@@ -5389,11 +5400,11 @@ namespace Chummer
                         {
                             int intReturn = int.MaxValue;
                             intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
-                                         * 2.RaiseToPower(24);
+                                         * 16777216;
                             intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2)
-                                         * 2.RaiseToPower(16);
+                                         * 65536;
                             intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2)
-                                         * 2.RaiseToPower(8);
+                                         * 256;
                             intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
                             return intReturn;
                         }
@@ -9504,6 +9515,41 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaCarryover;
+            }
+        }
+
+        /// <summary>
+        /// Maximum amount of remaining Nuyen that is carried over to the character once they are created.
+        /// </summary>
+        public decimal NuyenCarryover
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _decNuyenCarryover;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_decNuyenCarryover == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _decNuyenCarryover = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum amount of remaining Nuyen that is carried over to the character once they are created.
+        /// </summary>
+        public async Task<decimal> GetNuyenCarryoverAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _decNuyenCarryover;
             }
         }
 

@@ -140,7 +140,7 @@ namespace Chummer
                         continue;
                     ablnItemChanged[i] = true;
                     ++intCountChanges;
-                    lstCollection[i] = aobjSorted[i];
+                    lstCollection[i] = objLoop;
                 }
             }
             finally
@@ -204,7 +204,7 @@ namespace Chummer
                         continue;
                     ablnItemChanged[i] = true;
                     ++intCountChanges;
-                    lstCollection[i] = aobjSorted[i];
+                    lstCollection[i] = objLoop;
                 }
             }
             finally
