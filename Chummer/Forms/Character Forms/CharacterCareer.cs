@@ -20607,7 +20607,7 @@ namespace Chummer
                         }
 
                         Task tskAutosave = Task.CompletedTask;
-                        if (AutosaveStopwatch.Elapsed.Minutes >= 5 && IsDirty)
+                        if (AutosaveStopwatch?.Elapsed.Minutes >= 5 && IsDirty)
                         {
                             tskAutosave = AutoSaveCharacter(token);
                         }

@@ -366,7 +366,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        AutosaveStopwatch.Restart();
+                        AutosaveStopwatch?.Restart();
                     }
                 }
                 finally
@@ -9774,7 +9774,7 @@ namespace Chummer
             int intNewValue = blnValue.ToInt32();
             if (Interlocked.Exchange(ref _intIsDirty, intNewValue) != intNewValue)
                 await UpdateWindowTitleAsync(true, token).ConfigureAwait(false);
-            if (blnValue && AutosaveStopwatch.Elapsed.Minutes >= 5)
+            if (blnValue && AutosaveStopwatch?.Elapsed.Minutes >= 5)
             {
                 await AutoSaveCharacter(token).ConfigureAwait(false);
             }
