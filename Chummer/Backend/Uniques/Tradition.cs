@@ -606,6 +606,21 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public async Task<string> GetSourceIDStringAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
+
+        /// <summary>
         /// Internal identifier which will be used to identify this Tradition in the Improvement system.
         /// </summary>
         public string InternalId
@@ -714,12 +729,36 @@ namespace Chummer.Backend.Uniques
             }
         }
 
+        /// <summary>
+        /// Whether or not a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
+        /// </summary>
+        public async Task<bool> GetIsCustomTraditionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return string.Equals(await GetSourceIDStringAsync(token).ConfigureAwait(false),
+                    CustomMagicalTraditionGuid, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         public bool CanChooseDrainAttribute
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return IsCustomTradition || string.IsNullOrEmpty(_strDrainExpression);
+            }
+        }
+
+        public async Task<bool> GetCanChooseDrainAttributeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetIsCustomTraditionAsync(token).ConfigureAwait(false) || string.IsNullOrEmpty(_strDrainExpression);
             }
         }
 
