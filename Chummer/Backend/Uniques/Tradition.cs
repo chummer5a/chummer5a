@@ -784,6 +784,37 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Tradition name.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strName;
+            }
+        }
+
+        /// <summary>
+        /// Tradition name.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public string DisplayNameShort(string strLanguage)
@@ -1046,6 +1077,55 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Magician's Tradition Drain Attributes.
+        /// </summary>
+        public async Task SetDrainExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldExpression = Interlocked.Exchange(ref _strDrainExpression, value);
+                if (strOldExpression == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    {
+                        if (strOldExpression.Contains(strAttribute))
+                        {
+                            if (!value.Contains(strAttribute))
+                            {
+                                CharacterAttrib objAttrib = await _objCharacter
+                                    .GetAttributeAsync(strAttribute, token: token).ConfigureAwait(false);
+                                objAttrib.PropertyChangedAsync -= RefreshDrainValue;
+                            }
+                        }
+                        else if (value.Contains(strAttribute))
+                        {
+                            CharacterAttrib objAttrib = await _objCharacter
+                                .GetAttributeAsync(strAttribute, token: token).ConfigureAwait(false);
+                            objAttrib.PropertyChangedAsync += RefreshDrainValue;
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(DisplayDrainExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
         public string DisplayDrainExpression => DisplayDrainExpressionMethod(GlobalSettings.CultureInfo, GlobalSettings.Language);
@@ -1275,6 +1355,41 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Magician's Combat Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritCombatAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritCombat;
+            }
+        }
+
+        /// <summary>
+        /// Magician's Combat Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritCombatAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritCombat, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritCombat), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Method to get Magician's Combat Spirit (for Custom Traditions) in a language.
         /// </summary>
         public string DisplaySpiritCombatMethod(string strLanguage)
@@ -1331,6 +1446,41 @@ namespace Chummer.Backend.Uniques
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritDetection, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Magician's Detection Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritDetectionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritDetection;
+            }
+        }
+
+        /// <summary>
+        /// Magician's Detection Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritDetectionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritDetection, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritDetection), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1394,6 +1544,41 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Magician's Health Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritHealthAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritHealth;
+            }
+        }
+
+        /// <summary>
+        /// Magician's Health Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritHealthAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritHealth, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritHealth), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Method to get Magician's Health Spirit (for Custom Traditions) in a language.
         /// </summary>
         public string DisplaySpiritHealthMethod(string strLanguage)
@@ -1453,6 +1638,41 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Magician's Illusion Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritIllusionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritIllusion;
+            }
+        }
+
+        /// <summary>
+        /// Magician's Illusion Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritIllusionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritIllusion, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritIllusion), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Method to get Magician's Illusion Spirit (for Custom Traditions) in a language.
         /// </summary>
         public string DisplaySpiritIllusionMethod(string strLanguage)
@@ -1508,6 +1728,41 @@ namespace Chummer.Backend.Uniques
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritManipulation, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Magician's Manipulation Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritManipulationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritManipulation;
+            }
+        }
+
+        /// <summary>
+        /// Magician's Manipulation Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritManipulationAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritManipulation, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritManipulation), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

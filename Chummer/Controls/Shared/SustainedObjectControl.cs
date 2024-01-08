@@ -61,9 +61,11 @@ namespace Chummer
 
                 //Only do  the binding if it's actually needed
                 if (_objLinkedSustainedObject.LinkedObjectType != Improvement.ImprovementSource.CritterPower)
+                {
                     await chkSelfSustained.DoDataBindingAsync("Checked", _objLinkedSustainedObject,
-                                                              nameof(SustainedObject.SelfSustained))
-                                          .ConfigureAwait(false);
+                            nameof(SustainedObject.SelfSustained))
+                        .ConfigureAwait(false);
+                }
             }
             finally
             {

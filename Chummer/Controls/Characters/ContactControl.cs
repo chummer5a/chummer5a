@@ -179,17 +179,19 @@ namespace Chummer
         private async void nudConnection_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
-            if (_intLoading == 0 && _intStatBlockIsLoaded > 1 && ContactDetailChanged != null)
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
+                return;
+            try
             {
-                try
-                {
+                while (_intStatBlockIsLoaded == 1)
+                    await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
+                if (ContactDetailChanged != null)
                     await ContactDetailChanged.Invoke(this, new TextEventArgs("Connection"), _objMyToken)
                         .ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    // swallow this
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
             }
         }
 
@@ -1007,8 +1009,20 @@ namespace Chummer
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
                                                                x => x.GetQuickTextAsync(token), token: token).ConfigureAwait(false);
-            await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(Contact.Name), token).ConfigureAwait(false);
-            await txtContactLocation.DoDataBindingAsync("Text", _objContact, nameof(Contact.Location), token).ConfigureAwait(false);
+            await txtContactName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                _objContact,
+                nameof(Contact.Name),
+                (x, y) => x.TextChanged += y,
+                x => x.GetNameAsync(token),
+                (x, y) => x.SetNameAsync(y, token),
+                1000, token, token).ConfigureAwait(false);
+            await txtContactLocation.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                _objContact,
+                nameof(Contact.Location),
+                (x, y) => x.TextChanged += y,
+                x => x.GetLocationAsync(token),
+                (x, y) => x.SetLocationAsync(y, token),
+                1000, token, token).ConfigureAwait(false);
             await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
                 nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken), token).ConfigureAwait(false);
             await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.BackColor = y, _objContact,
@@ -1145,24 +1159,57 @@ namespace Chummer
                                      .ConfigureAwait(false);
                     else
                         await chkFree.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                    await chkGroup.DoDataBindingAsync("Checked", _objContact, nameof(Contact.IsGroup), token)
-                                  .ConfigureAwait(false);
-                    await chkFree.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Free), token)
-                                 .ConfigureAwait(false);
-                    await chkFamily.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Family), token)
-                                   .ConfigureAwait(false);
+                    await chkGroup.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objContact,
+                        nameof(Contact.IsGroup),
+                        (x, y) => x.CheckedChanged += y,
+                        x => x.GetIsGroupAsync(_objMyToken),
+                        (x, y) => x.SetIsGroupAsync(y, _objMyToken),
+                        _objMyToken,
+                        token).ConfigureAwait(false);
+                    await chkFree.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objContact,
+                        nameof(Contact.IsGroup),
+                        (x, y) => x.CheckedChanged += y,
+                        x => x.GetFreeAsync(_objMyToken),
+                        (x, y) => x.SetFreeAsync(y, _objMyToken),
+                        _objMyToken,
+                        token).ConfigureAwait(false);
+                    await chkFamily.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objContact,
+                        nameof(Contact.Family),
+                        (x, y) => x.CheckedChanged += y,
+                        x => x.GetFamilyAsync(_objMyToken),
+                        (x, y) => x.SetFamilyAsync(y, _objMyToken),
+                        _objMyToken,
+                        token).ConfigureAwait(false);
                     await chkFamily.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
                             nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken), token)
                         .ConfigureAwait(false);
-                    await chkBlackmail.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Blackmail), token)
-                                      .ConfigureAwait(false);
+                    await chkBlackmail.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                        _objContact,
+                        nameof(Contact.Blackmail),
+                        (x, y) => x.CheckedChanged += y,
+                        x => x.GetBlackmailAsync(_objMyToken),
+                        (x, y) => x.SetBlackmailAsync(y, _objMyToken),
+                        _objMyToken,
+                        token).ConfigureAwait(false);
                     await chkBlackmail.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
                             nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken), token)
                         .ConfigureAwait(false);
-                    await nudLoyalty.DoDataBindingAsync("Value", _objContact, nameof(Contact.Loyalty), token)
-                                    .ConfigureAwait(false);
-                    await nudConnection.DoDataBindingAsync("Value", _objContact, nameof(Contact.Connection), token)
-                                       .ConfigureAwait(false);
+                    await nudLoyalty.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                        _objContact,
+                        nameof(Contact.Loyalty),
+                        (x, y) => x.ValueChanged += y,
+                        x => x.GetLoyaltyAsync(_objMyToken),
+                        (x, y) => x.SetLoyaltyAsync(y, _objMyToken),
+                        _objMyToken,
+                        token).ConfigureAwait(false);
+                    await nudConnection.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                        _objContact,
+                        nameof(Contact.Connection),
+                        (x, y) => x.ValueChanged += y,
+                        x => x.GetConnectionAsync(_objMyToken),
+                        (x, y) => x.SetConnectionAsync(y, _objMyToken),
+                        _objMyToken,
+                        token).ConfigureAwait(false);
                     await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
                             nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken), token)
                         .ConfigureAwait(false);
@@ -1187,9 +1234,9 @@ namespace Chummer
                                                                             x => x.GetConnectionMaximumAsync(token),
                                                                             token: token).ConfigureAwait(false);
                     string strToolTipText;
-                    if (_objContact.IsEnemy)
+                    if (await _objContact.GetIsEnemyAsync(token).ConfigureAwait(false))
                     {
-                        strToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
+                        strToolTipText = !string.IsNullOrEmpty(await _objContact.GetFileNameAsync(token).ConfigureAwait(false))
                             ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy", token: token)
                                                    .ConfigureAwait(false)
                             : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy", token: token)
@@ -1197,7 +1244,7 @@ namespace Chummer
                     }
                     else
                     {
-                        strToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
+                        strToolTipText = !string.IsNullOrEmpty(await _objContact.GetFileNameAsync(token).ConfigureAwait(false))
                             ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact", token: token)
                                                    .ConfigureAwait(false)
                             : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact", token: token)

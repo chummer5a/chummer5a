@@ -451,18 +451,58 @@ namespace Chummer
                     }
                 }
 
-                await chkBonusLPRandomize.DoNegatableDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.AllowBonusLP)).ConfigureAwait(false);
-                await nudBonusLP.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BonusLP)).ConfigureAwait(false);
+                await chkBonusLPRandomize.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                    _objLifestyle,
+                    nameof(Lifestyle.AllowBonusLP),
+                    (x, y) => x.CheckedChanged += y,
+                    async x => !await x.GetAllowBonusLPAsync().ConfigureAwait(false),
+                    (x, y) => x.SetAllowBonusLPAsync(!y)).ConfigureAwait(false);
+                await nudBonusLP.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    _objLifestyle,
+                    nameof(Lifestyle.BonusLP),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetBonusLPAsync(),
+                    (x, y) => x.SetBonusLPAsync(y)).ConfigureAwait(false);
                 await ResetLifestyleQualitiesTree().ConfigureAwait(false);
                 await cboBaseLifestyle.PopulateWithListItemsAsync(lstLifestyles).ConfigureAwait(false);
             }
 
-            await txtLifestyleName.DoDataBindingAsync("Text", _objLifestyle, nameof(Lifestyle.Name)).ConfigureAwait(false);
-            await nudRoommates.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.Roommates)).ConfigureAwait(false);
-            await nudPercentage.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.Percentage)).ConfigureAwait(false);
-            await nudArea.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableArea)).ConfigureAwait(false);
-            await nudComforts.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableComforts)).ConfigureAwait(false);
-            await nudSecurity.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity)).ConfigureAwait(false);
+            await txtLifestyleName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                _objLifestyle,
+                nameof(Lifestyle.Name),
+                (x, y) => x.TextChanged += y,
+                x => x.GetNameAsync(),
+                (x, y) => x.SetNameAsync(y)).ConfigureAwait(false);
+            await nudRoommates.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                _objLifestyle,
+                nameof(Lifestyle.Percentage),
+                (x, y) => x.ValueChanged += y,
+                x => x.GetRoommatesAsync(),
+                (x, y) => x.SetRoommatesAsync(y)).ConfigureAwait(false);
+            await nudPercentage.RegisterAsyncDataBindingAsync(x => x.Value, (x, y) => x.Value = y,
+                _objLifestyle,
+                nameof(Lifestyle.Percentage),
+                (x, y) => x.ValueChanged += y,
+                x => x.GetPercentageAsync(),
+                (x, y) => x.SetPercentageAsync(y)).ConfigureAwait(false);
+            await nudComforts.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                _objLifestyle,
+                nameof(Lifestyle.Area),
+                (x, y) => x.ValueChanged += y,
+                x => x.GetAreaAsync(),
+                (x, y) => x.SetAreaAsync(y)).ConfigureAwait(false);
+            await nudComforts.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                _objLifestyle,
+                nameof(Lifestyle.Comforts),
+                (x, y) => x.ValueChanged += y,
+                x => x.GetComfortsAsync(),
+                (x, y) => x.SetComfortsAsync(y)).ConfigureAwait(false);
+            await nudSecurity.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                _objLifestyle,
+                nameof(Lifestyle.Security),
+                (x, y) => x.ValueChanged += y,
+                x => x.GetSecurityAsync(),
+                (x, y) => x.SetSecurityAsync(y)).ConfigureAwait(false);
             await nudArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
                                                          nameof(Lifestyle.AreaDelta),
                                                          x => x.GetAreaDeltaAsync())
@@ -475,12 +515,28 @@ namespace Chummer
                                                              nameof(Lifestyle.SecurityDelta),
                                                              x => x.GetSecurityDeltaAsync())
                              .ConfigureAwait(false);
-            await cboBaseLifestyle.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.BaseLifestyle)).ConfigureAwait(false);
-            await chkTrustFund.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.TrustFund)).ConfigureAwait(false);
+            await cboBaseLifestyle.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
+                (x, y) => x.SelectedValue = y,
+                _objLifestyle,
+                nameof(Lifestyle.BaseLifestyle),
+                (x, y) => x.SelectedValueChanged += y,
+                x => x.GetBaseLifestyleAsync(),
+                (x, y) => x.SetBaseLifestyleAsync(y)).ConfigureAwait(false);
+            await chkTrustFund.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                _objLifestyle,
+                nameof(Lifestyle.TrustFund),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetTrustFundAsync(),
+                (x, y) => x.SetTrustFundAsync(y)).ConfigureAwait(false);
             await chkTrustFund.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objLifestyle,
                     nameof(Lifestyle.IsTrustFundEligible), x => x.GetIsTrustFundEligibleAsync())
                 .ConfigureAwait(false);
-            await chkPrimaryTenant.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant)).ConfigureAwait(false);
+            await chkPrimaryTenant.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                _objLifestyle,
+                nameof(Lifestyle.PrimaryTenant),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetPrimaryTenantAsync(),
+                (x, y) => x.SetPrimaryTenantAsync(y)).ConfigureAwait(false);
             await lblCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                                                          nameof(Lifestyle.DisplayTotalMonthlyCost),
                                                          x => x.GetDisplayTotalMonthlyCostAsync())
@@ -541,14 +597,32 @@ namespace Chummer
 
                 lstCity.Sort();
                 await cboCity.PopulateWithListItemsAsync(lstCity).ConfigureAwait(false);
-                await cboCity.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.City)).ConfigureAwait(false);
+                await cboCity.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
+                    (x, y) => x.SelectedValue = y,
+                    _objLifestyle,
+                    nameof(Lifestyle.City),
+                    (x, y) => x.SelectedValueChanged += y,
+                    x => x.GetCityAsync(),
+                    (x, y) => x.SetCityAsync(y)).ConfigureAwait(false);
             }
 
             //Populate District and Borough ComboBox for the first time
             await RefreshDistrictList().ConfigureAwait(false);
-            await cboDistrict.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.District)).ConfigureAwait(false);
+            await cboDistrict.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
+                (x, y) => x.SelectedValue = y,
+                _objLifestyle,
+                nameof(Lifestyle.District),
+                (x, y) => x.SelectedValueChanged += y,
+                x => x.GetDistrictAsync(),
+                (x, y) => x.SetDistrictAsync(y)).ConfigureAwait(false);
             await RefreshBoroughList().ConfigureAwait(false);
-            await cboBorough.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.Borough)).ConfigureAwait(false);
+            await cboBorough.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
+                (x, y) => x.SelectedValue = y,
+                _objLifestyle,
+                nameof(Lifestyle.Borough),
+                (x, y) => x.SelectedValueChanged += y,
+                x => x.GetBoroughAsync(),
+                (x, y) => x.SetBoroughAsync(y)).ConfigureAwait(false);
 
             Interlocked.Decrement(ref _intSkipRefresh);
             await RefreshSelectedLifestyle().ConfigureAwait(false);

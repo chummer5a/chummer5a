@@ -229,6 +229,28 @@ namespace Chummer
             Interlocked.Decrement(ref _intUpdatingCity);
             Interlocked.Decrement(ref _intUpdatingDistrict);
             Interlocked.Decrement(ref _intUpdatingBorough);
+
+            await cboCity.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
+                (x, y) => x.SelectedValue = y,
+                _objLifestyle,
+                nameof(Lifestyle.City),
+                (x, y) => x.SelectedValueChanged += y,
+                x => x.GetCityAsync(),
+                (x, y) => x.SetCityAsync(y)).ConfigureAwait(false);
+            await cboDistrict.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
+                (x, y) => x.SelectedValue = y,
+                _objLifestyle,
+                nameof(Lifestyle.District),
+                (x, y) => x.SelectedValueChanged += y,
+                x => x.GetDistrictAsync(),
+                (x, y) => x.SetDistrictAsync(y)).ConfigureAwait(false);
+            await cboBorough.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
+                (x, y) => x.SelectedValue = y,
+                _objLifestyle,
+                nameof(Lifestyle.Borough),
+                (x, y) => x.SelectedValueChanged += y,
+                x => x.GetBoroughAsync(),
+                (x, y) => x.SetBoroughAsync(y)).ConfigureAwait(false);
             await CalculateValues().ConfigureAwait(false);
         }
 
@@ -274,7 +296,7 @@ namespace Chummer
 
         private async void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
-            if (nudRoommates.Value == 0)
+            if (await nudRoommates.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) == 0)
             {
                 await chkPrimaryTenant.DoThreadSafeAsync(x =>
                 {
@@ -332,7 +354,7 @@ namespace Chummer
             }
             else
             {
-                lblSource.Text = string.Empty;
+                await lblSource.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
                 await lblSource.SetToolTipAsync(string.Empty).ConfigureAwait(false);
                 await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
             }
@@ -486,9 +508,9 @@ namespace Chummer
             HashSet<string> setLifestyleQualityIds = new HashSet<string>();
             foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes, token: token).ConfigureAwait(false))
             {
-                if (!objNode.Checked)
+                if (!await treQualities.DoThreadSafeFuncAsync(() => objNode.Checked, token: token).ConfigureAwait(false))
                     continue;
-                string strLoopId = objNode.Tag.ToString();
+                string strLoopId = await treQualities.DoThreadSafeFuncAsync(() => objNode.Tag.ToString(), token: token).ConfigureAwait(false);
                 setLifestyleQualityIds.Add(strLoopId);
                 if (await _objLifestyle.LifestyleQualities.AnyAsync(x => string.Equals(x.SourceIDString, strLoopId, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false))
                     continue;
@@ -567,7 +589,7 @@ namespace Chummer
                     }
                     else
                     {
-                        lblSource.Text = string.Empty;
+                        await lblSource.DoThreadSafeAsync(x => x.Text = string.Empty, token: token).ConfigureAwait(false);
                         await lblSource.SetToolTipAsync(string.Empty, token: token).ConfigureAwait(false);
                         await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token: token)
                                             .ConfigureAwait(false);
@@ -577,9 +599,9 @@ namespace Chummer
                     foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes, token: token)
                                                                    .ConfigureAwait(false))
                     {
-                        if (objNode.Checked)
+                        if (await treQualities.DoThreadSafeFuncAsync(() => objNode.Checked, token: token).ConfigureAwait(false))
                         {
-                            string strCost = _objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objNode.Tag.ToString())?["cost"]?.InnerText;
+                            string strCost = _objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", await treQualities.DoThreadSafeFuncAsync(() => objNode.Tag.ToString(), token: token).ConfigureAwait(false))?["cost"]?.InnerText;
                             if (!string.IsNullOrEmpty(strCost))
                             {
                                 (bool blnIsSuccess, object objProcess) = await CommonFunctions
@@ -600,10 +622,10 @@ namespace Chummer
                                                            .DoThreadSafeFuncAsync(x => x.Nodes, token: token)
                                                            .ConfigureAwait(false))
                         {
-                            if (!objNode.Checked)
+                            if (!await treQualities.DoThreadSafeFuncAsync(() => objNode.Checked, token: token).ConfigureAwait(false))
                                 continue;
                             objXmlAspect = _objXmlDocument.TryGetNodeByNameOrId(
-                                "/chummer/qualities/quality", objNode.Tag.ToString());
+                                "/chummer/qualities/quality", await treQualities.DoThreadSafeFuncAsync(() => objNode.Tag.ToString(), token: token).ConfigureAwait(false));
                             if (objXmlAspect == null)
                                 continue;
                             if (objXmlAspect.TryGetDecFieldQuickly("multiplier", ref decTemp))

@@ -835,6 +835,37 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// A custom name for the Lifestyle assigned by the player.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strName;
+            }
+        }
+
+        /// <summary>
+        /// A custom name for the Lifestyle assigned by the player.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string CustomName
         {
             get => Name;
@@ -1213,6 +1244,104 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Base Lifestyle.
+        /// </summary>
+        public async Task SetBaseLifestyleAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strBaseLifestyle == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strBaseLifestyle, value) == value)
+                    return;
+                XmlDocument xmlLifestyleDocument = await _objCharacter.LoadDataAsync("lifestyles.xml", token: token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    // This needs a handler for translations, will fix later.
+                    if (value == "Bolt Hole")
+                    {
+                        if (await LifestyleQualities.AllAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) != "Not a Home",
+                                token: token).ConfigureAwait(false))
+                        {
+                            XmlNode xmlQuality
+                                = xmlLifestyleDocument.SelectSingleNode(
+                                    "/chummer/qualities/quality[name = \"Not a Home\"]");
+                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                            objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
+
+                            await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        foreach (LifestyleQuality objNotAHomeQuality in await LifestyleQualities
+                                     .ToListAsync(async x =>
+                                     {
+                                         string strName = await x.GetNameAsync(token).ConfigureAwait(false);
+                                         return strName == "Not a Home" || strName == "Dug a Hole";
+                                     }, token: token).ConfigureAwait(false))
+                        {
+                            await objNotAHomeQuality.RemoveAsync(false, token).ConfigureAwait(false);
+                        }
+                    }
+
+                    XmlNode xmlLifestyle
+                        = xmlLifestyleDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", value);
+                    if (xmlLifestyle != null)
+                    {
+                        _strBaseLifestyle = string.Empty;
+                        _decCost = 0;
+                        _intDice = 0;
+                        _decMultiplier = 0;
+                        _strSource = string.Empty;
+                        _strPage = string.Empty;
+                        _intLP = 0;
+                        _decCostForArea = 0;
+                        _decCostForComforts = 0;
+                        _decCostForSecurity = 0;
+                        _blnAllowBonusLP = false;
+                        _eIncrement = LifestyleIncrement.Month;
+                        _intBaseComforts = 0;
+                        _intComfortsMaximum = 0;
+                        _intBaseArea = 0;
+                        _intAreaMaximum = 0;
+                        _intBaseSecurity = 0;
+                        _intSecurityMaximum = 0;
+                        Create(xmlLifestyle);
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(BaseLifestyle), nameof(Cost), nameof(Dice),
+                            nameof(Multiplier), nameof(SourceID), nameof(Source),
+                            nameof(Page), nameof(LP), nameof(CostForArea),
+                            nameof(CostForComforts), nameof(CostForSecurity),
+                            nameof(AllowBonusLP), nameof(IncrementType),
+                            nameof(BaseComforts), nameof(ComfortsMaximum),
+                            nameof(BaseArea), nameof(AreaMaximum), nameof(BaseSecurity),
+                            nameof(SecurityMaximum), nameof(LifestyleQualities)).ConfigureAwait(false);
+                        return;
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+                await OnPropertyChangedAsync(nameof(BaseLifestyle), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Base Lifestyle Points awarded by the lifestyle.
         /// </summary>
         public int LP
@@ -1266,6 +1395,37 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Free Lifestyle points from Traveler lifestyle.
+        /// </summary>
+        public async Task<int> GetBonusLPAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intBonusLP;
+            }
+        }
+
+        /// <summary>
+        /// Free Lifestyle points from Traveler lifestyle.
+        /// </summary>
+        public async Task SetBonusLPAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intBonusLP, value) != value)
+                    await OnPropertyChangedAsync(nameof(BonusLP), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool AllowBonusLP
         {
             get
@@ -1273,25 +1433,67 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterReadLock())
                     return _blnAllowBonusLP;
             }
-        }
-
-        /// <summary>
-        /// Advance Lifestyle Comforts.
-        /// </summary>
-        public int Comforts
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _intComforts;
-            }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnAllowBonusLP == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _intComforts, value) != value)
-                        OnPropertyChanged();
+                    if (_blnAllowBonusLP == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _blnAllowBonusLP = value;
+                    OnPropertyChanged();
                 }
+            }
+        }
+
+        public async Task<bool> GetAllowBonusLPAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnAllowBonusLP;
+            }
+        }
+
+        public async Task SetAllowBonusLPAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAllowBonusLP == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAllowBonusLP == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnAllowBonusLP = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(AllowBonusLP), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1356,6 +1558,58 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public int Comforts
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _intComforts;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _intComforts, value) != value)
+                        OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public async Task<int> GetComfortsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intComforts;
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public async Task SetComfortsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intComforts, value) != value)
+                    await OnPropertyChangedAsync(nameof(Comforts), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Advance Lifestyle Neighborhood.
         /// </summary>
         public int Area
@@ -1376,12 +1630,35 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Area as accessible by numericupdown bindings.
+        /// Advance Lifestyle Neighborhood.
         /// </summary>
-        public decimal BindableArea
+        public async Task<int> GetAreaAsync(CancellationToken token = default)
         {
-            get => Area;
-            set => Area = (int)value;
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intArea;
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Neighborhood.
+        /// </summary>
+        public async Task SetAreaAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intArea, value) != value)
+                    await OnPropertyChangedAsync(nameof(Area), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1405,21 +1682,35 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Security as accessible by numericupdown bindings.
+        /// Advance Lifestyle Security.
         /// </summary>
-        public decimal BindableSecurity
+        public async Task<int> GetSecurityAsync(CancellationToken token = default)
         {
-            get => Security;
-            set => Security = (int)value;
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intSecurity;
+            }
         }
 
         /// <summary>
-        /// Comforts as accessible by numericupdown bindings.
+        /// Advance Lifestyle Security.
         /// </summary>
-        public decimal BindableComforts
+        public async Task SetSecurityAsync(int value, CancellationToken token = default)
         {
-            get => Comforts;
-            set => Comforts = (int)value;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intSecurity, value) != value)
+                    await OnPropertyChangedAsync(nameof(Security), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public int AreaMaximum
@@ -1672,6 +1963,38 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Number of Roommates this Lifestyle is shared with.
+        /// </summary>
+        public async Task<int> GetRoommatesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intRoommates;
+            }
+        }
+
+        /// <summary>
+        /// Number of Roommates this Lifestyle is shared with.
+        /// </summary>
+        public async Task SetRoommatesAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intRoommates, value) != value)
+                    await OnPropertyChangedAsync(nameof(Roommates), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Percentage of the total cost the character pays per month.
         /// </summary>
         public decimal Percentage
@@ -1697,6 +2020,51 @@ namespace Chummer.Backend.Equipment
                         _decPercentage = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public async Task<decimal> GetPercentageAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _decPercentage;
+            }
+        }
+
+        public async Task SetPercentageAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decPercentage == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decPercentage == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decPercentage = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(Percentage), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1726,6 +2094,57 @@ namespace Chummer.Backend.Equipment
                         _blnTrustFund = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether the lifestyle is currently covered by the Trust Fund Quality.
+        /// </summary>
+        public async Task<bool> GetTrustFundAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnTrustFund && await GetIsTrustFundEligibleAsync(token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the lifestyle is currently covered by the Trust Fund Quality.
+        /// </summary>
+        public async Task SetTrustFundAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnTrustFund == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnTrustFund == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnTrustFund = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(TrustFund), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1797,6 +2216,58 @@ namespace Chummer.Backend.Equipment
                         _blnIsPrimaryTenant = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether the character is the primary tenant for the Lifestyle.
+        /// </summary>
+        public async Task<bool> GetPrimaryTenantAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnIsPrimaryTenant || await GetRoommatesAsync(token).ConfigureAwait(false) == 0 ||
+                       await GetTrustFundAsync(token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the character is the primary tenant for the Lifestyle.
+        /// </summary>
+        public async Task SetPrimaryTenantAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnIsPrimaryTenant == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnIsPrimaryTenant == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnIsPrimaryTenant = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(PrimaryTenant), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

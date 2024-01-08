@@ -142,6 +142,8 @@ namespace Chummer.UI.Editors
                 : Cursors.IBeam;
         }
 
+        public event EventHandler RtfContentChanged;
+
         #region Properties
 
         public string Rtf
@@ -314,5 +316,10 @@ namespace Chummer.UI.Editors
         }
 
         #endregion Control Methods
+
+        private void rtbContent_TextChanged(object sender, EventArgs e)
+        {
+            RtfContentChanged?.Invoke(sender, e);
+        }
     }
 }

@@ -290,69 +290,126 @@ namespace Chummer
                                                 GenericToken)
                                             .ConfigureAwait(false);
 
-                                        await txtGroupName
-                                            .DoDataBindingAsync("Text", CharacterObject, nameof(Character.GroupName),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtGroupNotes
-                                            .DoDataBindingAsync("Text", CharacterObject, nameof(Character.GroupNotes),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
+                                        await txtGroupName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.GroupName),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetGroupNameAsync(GenericToken),
+                                            (x, y) => x.SetGroupNameAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtGroupNotes.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.GroupNotes),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetGroupNotesAsync(GenericToken),
+                                            (x, y) => x.SetGroupNotesAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
 
-                                        await txtCharacterName
-                                            .DoDataBindingAsync("Text", CharacterObject, nameof(Character.Name),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtGender
-                                            .DoDataBindingAsync("Text", CharacterObject, nameof(Character.Gender),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtAge.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Age),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtEyes.DoDataBindingAsync("Text", CharacterObject,
-                                                nameof(Character.Eyes), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtHeight
-                                            .DoDataBindingAsync("Text", CharacterObject, nameof(Character.Height),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtWeight
-                                            .DoDataBindingAsync("Text", CharacterObject, nameof(Character.Weight),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtSkin.DoDataBindingAsync("Text", CharacterObject,
-                                                nameof(Character.Skin), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtHair.DoDataBindingAsync("Text", CharacterObject,
-                                                nameof(Character.Hair), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await rtfDescription
-                                            .DoDataBindingAsync("Rtf", CharacterObject, nameof(Character.Description),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await rtfBackground
-                                            .DoDataBindingAsync("Rtf", CharacterObject, nameof(Character.Background),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await rtfConcept
-                                            .DoDataBindingAsync("Rtf", CharacterObject, nameof(Character.Concept),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await rtfNotes.DoDataBindingAsync("Rtf", CharacterObject,
-                                                nameof(Character.Notes), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await rtfGameNotes
-                                            .DoDataBindingAsync("Rtf", CharacterObject, nameof(Character.GameNotes),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtAlias.DoDataBindingAsync("Text", CharacterObject,
-                                                nameof(Character.Alias), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await txtPlayerName
-                                            .DoDataBindingAsync("Text", CharacterObject, nameof(Character.PlayerName),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
+                                        await txtCharacterName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Name),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetNameAsync(GenericToken),
+                                            (x, y) => x.SetNameAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtGender.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Gender),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetGenderAsync(GenericToken),
+                                            (x, y) => x.SetGenderAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtAge.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Age),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetAgeAsync(GenericToken),
+                                            (x, y) => x.SetAgeAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtEyes.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Eyes),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetEyesAsync(GenericToken),
+                                            (x, y) => x.SetEyesAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtHeight.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Height),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetHeightAsync(GenericToken),
+                                            (x, y) => x.SetHeightAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtWeight.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Weight),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetWeightAsync(GenericToken),
+                                            (x, y) => x.SetWeightAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtSkin.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Skin),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetSkinAsync(GenericToken),
+                                            (x, y) => x.SetSkinAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtHair.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Hair),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetHairAsync(GenericToken),
+                                            (x, y) => x.SetHairAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await rtfDescription.RegisterAsyncDataBindingWithDelayAsync(x => x.Rtf, (x, y) => x.Rtf = y,
+                                            CharacterObject,
+                                            nameof(Character.Description),
+                                            (x, y) => x.RtfContentChanged += y,
+                                            x => x.GetDescriptionAsync(GenericToken),
+                                            (x, y) => x.SetDescriptionAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await rtfBackground.RegisterAsyncDataBindingWithDelayAsync(x => x.Rtf, (x, y) => x.Rtf = y,
+                                            CharacterObject,
+                                            nameof(Character.Background),
+                                            (x, y) => x.RtfContentChanged += y,
+                                            x => x.GetBackgroundAsync(GenericToken),
+                                            (x, y) => x.SetBackgroundAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await rtfConcept.RegisterAsyncDataBindingWithDelayAsync(x => x.Rtf, (x, y) => x.Rtf = y,
+                                            CharacterObject,
+                                            nameof(Character.Concept),
+                                            (x, y) => x.RtfContentChanged += y,
+                                            x => x.GetConceptAsync(GenericToken),
+                                            (x, y) => x.SetConceptAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await rtfNotes.RegisterAsyncDataBindingWithDelayAsync(x => x.Rtf, (x, y) => x.Rtf = y,
+                                            CharacterObject,
+                                            nameof(Character.Notes),
+                                            (x, y) => x.RtfContentChanged += y,
+                                            x => x.GetNotesAsync(GenericToken),
+                                            (x, y) => x.SetNotesAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await rtfGameNotes.RegisterAsyncDataBindingWithDelayAsync(x => x.Rtf, (x, y) => x.Rtf = y,
+                                            CharacterObject,
+                                            nameof(Character.GameNotes),
+                                            (x, y) => x.RtfContentChanged += y,
+                                            x => x.GetGameNotesAsync(GenericToken),
+                                            (x, y) => x.SetGameNotesAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtAlias.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.Alias),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetAliasAsync(GenericToken),
+                                            (x, y) => x.SetAliasAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
+                                        await txtPlayerName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.PlayerName),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetPlayerNameAsync(GenericToken),
+                                            (x, y) => x.SetPlayerNameAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
 
                                         await chkJoinGroup.DoThreadSafeAsync(
                                                 x => x.Checked = CharacterObject.GroupMember, GenericToken)
@@ -392,22 +449,46 @@ namespace Chummer
                                             .DoThreadSafeAsync(x => x.Text = strNumMugshots, GenericToken)
                                             .ConfigureAwait(false);
 
-                                        await nudStreetCred
-                                            .DoDataBindingAsync("Value", CharacterObject, nameof(Character.StreetCred),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await nudNotoriety
-                                            .DoDataBindingAsync("Value", CharacterObject, nameof(Character.Notoriety),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await nudPublicAware.DoDataBindingAsync("Value", CharacterObject,
-                                                nameof(Character.PublicAwareness), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await nudAstralReputation.DoDataBindingAsync("Value", CharacterObject,
-                                            nameof(Character.AstralReputation), GenericToken).ConfigureAwait(false);
-                                        await nudWildReputation.DoDataBindingAsync("Value", CharacterObject,
-                                                nameof(Character.WildReputation), GenericToken)
-                                            .ConfigureAwait(false);
+                                        await nudStreetCred.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                            (x, y) => x.ValueAsInt = y,
+                                            CharacterObject,
+                                            nameof(Character.StreetCred),
+                                            (x, y) => x.ValueChanged += y,
+                                            x => x.GetStreetCredAsync(GenericToken),
+                                            (x, y) => x.SetStreetCredAsync(y, GenericToken), GenericToken,
+                                            GenericToken).ConfigureAwait(false);
+                                        await nudNotoriety.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                            (x, y) => x.ValueAsInt = y,
+                                            CharacterObject,
+                                            nameof(Character.Notoriety),
+                                            (x, y) => x.ValueChanged += y,
+                                            x => x.GetNotorietyAsync(GenericToken),
+                                            (x, y) => x.SetNotorietyAsync(y, GenericToken), GenericToken,
+                                            GenericToken).ConfigureAwait(false);
+                                        await nudPublicAware.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                            (x, y) => x.ValueAsInt = y,
+                                            CharacterObject,
+                                            nameof(Character.PublicAwareness),
+                                            (x, y) => x.ValueChanged += y,
+                                            x => x.GetPublicAwarenessAsync(GenericToken),
+                                            (x, y) => x.SetPublicAwarenessAsync(y, GenericToken), GenericToken,
+                                            GenericToken).ConfigureAwait(false);
+                                        await nudAstralReputation.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                            (x, y) => x.ValueAsInt = y,
+                                            CharacterObject,
+                                            nameof(Character.AstralReputation),
+                                            (x, y) => x.ValueChanged += y,
+                                            x => x.GetAstralReputationAsync(GenericToken),
+                                            (x, y) => x.SetAstralReputationAsync(y, GenericToken), GenericToken,
+                                            GenericToken).ConfigureAwait(false);
+                                        await nudWildReputation.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                            (x, y) => x.ValueAsInt = y,
+                                            CharacterObject,
+                                            nameof(Character.WildReputation),
+                                            (x, y) => x.ValueChanged += y,
+                                            x => x.GetWildReputationAsync(GenericToken),
+                                            (x, y) => x.SetWildReputationAsync(y, GenericToken), GenericToken,
+                                            GenericToken).ConfigureAwait(false);
                                         await cmdAddMetamagic.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Enabled = y, CharacterObject,
                                                 nameof(Character.AddInitiationsAllowed),
@@ -424,10 +505,22 @@ namespace Chummer
                                                 x => x.GetFormattedMetatypeAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
 
-                                        await chkPsycheActiveMagician.DoDataBindingAsync("Checked", CharacterObject,
-                                            nameof(CharacterObject.PsycheActive), GenericToken).ConfigureAwait(false);
-                                        await chkPsycheActiveTechnomancer.DoDataBindingAsync("Checked", CharacterObject,
-                                            nameof(CharacterObject.PsycheActive), GenericToken).ConfigureAwait(false);
+                                        await chkPsycheActiveMagician.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                                            CharacterObject,
+                                            nameof(Character.PsycheActive),
+                                            (x, y) => x.CheckedChanged += y,
+                                            x => x.GetPsycheActiveAsync(GenericToken),
+                                            (x, y) => x.SetPsycheActiveAsync(y, GenericToken),
+                                            GenericToken,
+                                            GenericToken).ConfigureAwait(false);
+                                        await chkPsycheActiveTechnomancer.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                                            CharacterObject,
+                                            nameof(Character.PsycheActive),
+                                            (x, y) => x.CheckedChanged += y,
+                                            x => x.GetPsycheActiveAsync(GenericToken),
+                                            (x, y) => x.SetPsycheActiveAsync(y, GenericToken),
+                                            GenericToken,
+                                            GenericToken).ConfigureAwait(false);
                                     }
 
                                     if (!await CharacterObjectSettings.BookEnabledAsync("RF", GenericToken)
@@ -574,9 +667,16 @@ namespace Chummer
                                             lstDrainAttributes.Insert(0, ListItem.Blank);
                                             await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, GenericToken)
                                                 .ConfigureAwait(false);
-                                            await cboDrain.DoDataBindingAsync(
-                                                "SelectedValue", objTradition,
-                                                nameof(Tradition.DrainExpression), GenericToken).ConfigureAwait(false);
+                                            await cboDrain.RegisterAsyncDataBindingWithDelayAsync(
+                                                x => x.SelectedValue?.ToString() ?? string.Empty,
+                                                (x, y) => x.SelectedValue = y, objTradition,
+                                                nameof(Tradition.DrainExpression),
+                                                (x, y) => x.SelectedValueChanged += y,
+                                                x => x.GetDrainExpressionAsync(GenericToken),
+                                                (x, y) => x.SetDrainExpressionAsync(y, GenericToken),
+                                                1000,
+                                                GenericToken,
+                                                GenericToken).ConfigureAwait(false);
                                         }
 
                                         await lblDrainAttributes.RegisterOneWayAsyncDataBindingAsync(
@@ -664,12 +764,20 @@ namespace Chummer
 
                                                 async ValueTask BindSpiritVisibility(ElasticComboBox cboBox,
                                                     Label lblName,
-                                                    string strSpirit)
+                                                    string strSpirit, Func<Tradition, Task<string>> funcSpiritGetter, Func<Tradition, string, Task> funcSpiritSetter)
                                                 {
                                                     await cboBox.PopulateWithListItemsAsync(lstSpirit, GenericToken)
                                                         .ConfigureAwait(false);
-                                                    await cboBox.DoDataBindingAsync("SelectedValue", objTradition,
-                                                        strSpirit, GenericToken).ConfigureAwait(false);
+                                                    await cboBox.RegisterAsyncDataBindingWithDelayAsync(
+                                                        x => x.SelectedValue?.ToString() ?? string.Empty,
+                                                        (x, y) => x.SelectedValue = y, objTradition,
+                                                        strSpirit,
+                                                        (x, y) => x.SelectedValueChanged += y,
+                                                        funcSpiritGetter,
+                                                        funcSpiritSetter,
+                                                        1000,
+                                                        GenericToken,
+                                                        GenericToken).ConfigureAwait(false);
                                                     bool blnIsMag =
                                                         await objTradition.GetTypeAsync(GenericToken)
                                                             .ConfigureAwait(false) == TraditionType.MAG;
@@ -686,19 +794,29 @@ namespace Chummer
                                                 }
 
                                                 await BindSpiritVisibility(cboSpiritCombat, lblSpiritCombat,
-                                                        nameof(Tradition.SpiritCombat))
+                                                        nameof(Tradition.SpiritCombat),
+                                                        x => x.GetSpiritCombatAsync(GenericToken),
+                                                        (x, y) => x.SetSpiritCombatAsync(y, GenericToken))
                                                     .ConfigureAwait(false);
                                                 await BindSpiritVisibility(cboSpiritDetection, lblSpiritDetection,
-                                                        nameof(Tradition.SpiritDetection))
+                                                        nameof(Tradition.SpiritDetection),
+                                                        x => x.GetSpiritDetectionAsync(GenericToken),
+                                                        (x, y) => x.SetSpiritDetectionAsync(y, GenericToken))
                                                     .ConfigureAwait(false);
                                                 await BindSpiritVisibility(cboSpiritHealth, lblSpiritHealth,
-                                                        nameof(Tradition.SpiritHealth))
+                                                        nameof(Tradition.SpiritHealth),
+                                                        x => x.GetSpiritHealthAsync(GenericToken),
+                                                        (x, y) => x.SetSpiritHealthAsync(y, GenericToken))
                                                     .ConfigureAwait(false);
                                                 await BindSpiritVisibility(cboSpiritIllusion, lblSpiritIllusion,
-                                                        nameof(Tradition.SpiritIllusion))
+                                                        nameof(Tradition.SpiritIllusion),
+                                                        x => x.GetSpiritIllusionAsync(GenericToken),
+                                                        (x, y) => x.SetSpiritIllusionAsync(y, GenericToken))
                                                     .ConfigureAwait(false);
                                                 await BindSpiritVisibility(cboSpiritManipulation, lblSpiritManipulation,
-                                                        nameof(Tradition.SpiritManipulation))
+                                                        nameof(Tradition.SpiritManipulation),
+                                                        x => x.GetSpiritManipulationAsync(GenericToken),
+                                                        (x, y) => x.SetSpiritManipulationAsync(y, GenericToken))
                                                     .ConfigureAwait(false);
                                             }
                                         }
@@ -861,10 +979,13 @@ namespace Chummer
                                             else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
                                                 cboStream.SelectedIndex = 0;
                                         }, GenericToken).ConfigureAwait(false);
-                                        await txtTraditionName.DoDataBindingAsync("Text",
-                                                objTradition,
-                                                nameof(Tradition.Name), GenericToken)
-                                            .ConfigureAwait(false);
+                                        await txtTraditionName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                                            objTradition,
+                                            nameof(Tradition.Name),
+                                            (x, y) => x.TextChanged += y,
+                                            x => x.GetNameAsync(GenericToken),
+                                            (x, y) => x.SetNameAsync(y, GenericToken),
+                                            1000, GenericToken, GenericToken).ConfigureAwait(false);
                                     }
 
                                     using (Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2",
@@ -1169,13 +1290,23 @@ namespace Chummer
                                                 nameof(Character
                                                     .SpellDefenseManipulationPhysicalToolTip), GenericToken)
                                             .ConfigureAwait(false);
-                                        await nudCounterspellingDice.DoDataBindingAsync("Value", CharacterObject,
-                                                nameof(Character.CurrentCounterspellingDice), GenericToken)
-                                            .ConfigureAwait(false);
+                                        await nudCounterspellingDice.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                            (x, y) => x.ValueAsInt = y,
+                                            CharacterObject,
+                                            nameof(Character.CurrentCounterspellingDice),
+                                            (x, y) => x.ValueChanged += y,
+                                            x => x.GetCurrentCounterspellingDiceAsync(GenericToken),
+                                            (x, y) => x.SetCurrentCounterspellingDiceAsync(y, GenericToken), GenericToken,
+                                            GenericToken).ConfigureAwait(false);
 
-                                        await nudLiftCarryHits.DoDataBindingAsync("Value", CharacterObject,
-                                                nameof(Character.CurrentLiftCarryHits), GenericToken)
-                                            .ConfigureAwait(false);
+                                        await nudLiftCarryHits.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                            (x, y) => x.ValueAsInt = y,
+                                            CharacterObject,
+                                            nameof(Character.CurrentLiftCarryHits),
+                                            (x, y) => x.ValueChanged += y,
+                                            x => x.GetCurrentLiftCarryHitsAsync(GenericToken),
+                                            (x, y) => x.SetCurrentLiftCarryHitsAsync(y, GenericToken), GenericToken,
+                                            GenericToken).ConfigureAwait(false);
 
                                         await lblMovement.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Text = y, CharacterObject,

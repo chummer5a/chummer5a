@@ -16024,6 +16024,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's name.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
         public ThreadSafeList<Image> Mugshots
@@ -16590,6 +16609,25 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Character's gender.
+        /// </summary>
+        public async Task SetGenderAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strGender, value) != value)
+                    await OnPropertyChangedAsync(nameof(Gender), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private string _strCachedCharacterGrammaticGender = string.Empty;
 
         public string CharacterGrammaticGender
@@ -16661,6 +16699,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's age.
+        /// </summary>
+        public async Task SetAgeAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strAge, value) != value)
+                    await OnPropertyChangedAsync(nameof(Age), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's eyes.
         /// </summary>
         public string Eyes
@@ -16678,6 +16735,37 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's eyes.
+        /// </summary>
+        public async Task<string> GetEyesAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strEyes;
+            }
+        }
+
+        /// <summary>
+        /// Character's eyes.
+        /// </summary>
+        public async Task SetEyesAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strEyes, value) != value)
+                    await OnPropertyChangedAsync(nameof(Eyes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16703,6 +16791,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's height.
+        /// </summary>
+        public async Task<string> GetHeightAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strHeight;
+            }
+        }
+
+        /// <summary>
+        /// Character's height.
+        /// </summary>
+        public async Task SetHeightAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strHeight, value) != value)
+                    await OnPropertyChangedAsync(nameof(Height), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's weight.
         /// </summary>
         public string Weight
@@ -16720,6 +16839,37 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's weight.
+        /// </summary>
+        public async Task<string> GetWeightAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strWeight;
+            }
+        }
+
+        /// <summary>
+        /// Character's weight.
+        /// </summary>
+        public async Task SetWeightAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strWeight, value) != value)
+                    await OnPropertyChangedAsync(nameof(Weight), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16745,6 +16895,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's skin.
+        /// </summary>
+        public async Task<string> GetSkinAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strSkin;
+            }
+        }
+
+        /// <summary>
+        /// Character's skin.
+        /// </summary>
+        public async Task SetSkinAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strSkin, value) != value)
+                    await OnPropertyChangedAsync(nameof(Skin), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's hair.
         /// </summary>
         public string Hair
@@ -16762,6 +16943,37 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's hair.
+        /// </summary>
+        public async Task<string> GetHairAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strHair;
+            }
+        }
+
+        /// <summary>
+        /// Character's hair.
+        /// </summary>
+        public async Task SetHairAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strHair, value) != value)
+                    await OnPropertyChangedAsync(nameof(Hair), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16798,6 +17010,49 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's description.
+        /// </summary>
+        public async Task<string> GetDescriptionAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strDescription;
+            }
+        }
+
+        /// <summary>
+        /// Character's description.
+        /// </summary>
+        public async Task SetDescriptionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strNewText = await value.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(strNewText))
+                value = string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldValue = Interlocked.Exchange(ref _strDescription, value);
+                if (strOldValue == value)
+                    return;
+                string strNewHtml = await value.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                string strOldText = await strOldValue.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+                string strOldHtml = await strOldValue.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                    && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                    && strOldHtml != strNewHtml)
+                    await OnPropertyChangedAsync(nameof(Description), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's background.
         /// </summary>
         public string Background
@@ -16826,6 +17081,49 @@ namespace Chummer
                         && strOldHtml != strNewHtml)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's background.
+        /// </summary>
+        public async Task<string> GetBackgroundAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strBackground;
+            }
+        }
+
+        /// <summary>
+        /// Character's background.
+        /// </summary>
+        public async Task SetBackgroundAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strNewText = await value.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(strNewText))
+                value = string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldValue = Interlocked.Exchange(ref _strBackground, value);
+                if (strOldValue == value)
+                    return;
+                string strNewHtml = await value.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                string strOldText = await strOldValue.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+                string strOldHtml = await strOldValue.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                    && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                    && strOldHtml != strNewHtml)
+                    await OnPropertyChangedAsync(nameof(Background), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16862,6 +17160,49 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's concept.
+        /// </summary>
+        public async Task<string> GetConceptAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strConcept;
+            }
+        }
+
+        /// <summary>
+        /// Character's concept.
+        /// </summary>
+        public async Task SetConceptAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strNewText = await value.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(strNewText))
+                value = string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldValue = Interlocked.Exchange(ref _strConcept, value);
+                if (strOldValue == value)
+                    return;
+                string strNewHtml = await value.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                string strOldText = await strOldValue.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+                string strOldHtml = await strOldValue.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                    && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                    && strOldHtml != strNewHtml)
+                    await OnPropertyChangedAsync(nameof(Concept), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character notes.
         /// </summary>
         public string Notes
@@ -16894,6 +17235,49 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character notes.
+        /// </summary>
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+        }
+
+        /// <summary>
+        /// Character notes.
+        /// </summary>
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strNewText = await value.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(strNewText))
+                value = string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldValue = Interlocked.Exchange(ref _strNotes, value);
+                if (strOldValue == value)
+                    return;
+                string strNewHtml = await value.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                string strOldText = await strOldValue.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+                string strOldHtml = await strOldValue.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                    && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                    && strOldHtml != strNewHtml)
+                    await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// General gameplay notes.
         /// </summary>
         public string GameNotes
@@ -16922,6 +17306,49 @@ namespace Chummer
                         && strOldHtml != strNewHtml)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// General gameplay notes.
+        /// </summary>
+        public async Task<string> GetGameNotesAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strGameNotes;
+            }
+        }
+
+        /// <summary>
+        /// General gameplay notes.
+        /// </summary>
+        public async Task SetGameNotesAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strNewText = await value.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(strNewText))
+                value = string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldValue = Interlocked.Exchange(ref _strGameNotes, value);
+                if (strOldValue == value)
+                    return;
+                string strNewHtml = await value.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                string strOldText = await strOldValue.RtfToPlainTextAsync(token: token).ConfigureAwait(false);
+                string strOldHtml = await strOldValue.RtfToHtmlAsync(token: token).ConfigureAwait(false);
+                // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                    && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                    && strOldHtml != strNewHtml)
+                    await OnPropertyChangedAsync(nameof(GameNotes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16969,6 +17396,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Player name.
+        /// </summary>
+        public async Task<string> GetPlayerNameAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPlayerName;
+            }
+        }
+
+        /// <summary>
+        /// Player name.
+        /// </summary>
+        public async Task SetPlayerNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPlayerName, value) != value)
+                    await OnPropertyChangedAsync(nameof(PlayerName), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's alias.
         /// </summary>
         [HubTag]
@@ -16999,6 +17457,25 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strAlias;
+            }
+        }
+
+        /// <summary>
+        /// Character's alias.
+        /// </summary>
+        public async Task SetAliasAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strAlias, value) != value)
+                    await OnPropertyChangedAsync(nameof(Alias), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -17080,6 +17557,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Street Cred.
+        /// </summary>
+        public async Task SetStreetCredAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intStreetCred, value) != value)
+                    await OnPropertyChangedAsync(nameof(StreetCred), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Burnt Street Cred.
         /// </summary>
         public int BurntStreetCred
@@ -17149,6 +17645,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Notoriety.
+        /// </summary>
+        public async Task SetNotorietyAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intNotoriety, value) != value)
+                    await OnPropertyChangedAsync(nameof(Notoriety), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Public Awareness.
         /// </summary>
         public int PublicAwareness
@@ -17180,6 +17695,25 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intPublicAwareness;
+            }
+        }
+
+        /// <summary>
+        /// Public Awareness.
+        /// </summary>
+        public async Task SetPublicAwarenessAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intPublicAwareness, value) != value)
+                    await OnPropertyChangedAsync(nameof(PublicAwareness), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -17446,6 +17980,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Points of Astral Reputation that have added or removed manually (latter usually by burning Wild Reputation).
+        /// </summary>
+        public async Task SetAstralReputationAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intBaseAstralReputation, value) != value)
+                    await OnPropertyChangedAsync(nameof(AstralReputation), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Tooltip to use for Wild Reputation total.
         /// </summary>
         public string WildReputationTooltip
@@ -17569,6 +18122,25 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intBaseWildReputation;
+            }
+        }
+
+        /// <summary>
+        /// Points of Astral Reputation that have added or removed manually (latter usually by burning Wild Reputation).
+        /// </summary>
+        public async Task SetWildReputationAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intBaseWildReputation, value) != value)
+                    await OnPropertyChangedAsync(nameof(WildReputation), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -22185,8 +22757,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnGroupMember = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -22200,6 +22772,37 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _blnGroupMember;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the character is a member of a Group or Network.
+        /// </summary>
+        public async Task SetGroupMemberAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnGroupMember == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnGroupMember = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(GroupMember), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -22226,6 +22829,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the Group the Initiate has joined.
+        /// </summary>
+        public async Task<string> GetGroupNameAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strGroupName;
+            }
+        }
+
+        /// <summary>
+        /// The name of the Group the Initiate has joined.
+        /// </summary>
+        public async Task SetGroupNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strGroupName, value) != value)
+                    await OnPropertyChangedAsync(nameof(GroupName), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Notes for the Group the Initiate has joined.
         /// </summary>
         public string GroupNotes
@@ -22243,6 +22877,37 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Notes for the Group the Initiate has joined.
+        /// </summary>
+        public async Task<string> GetGroupNotesAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strGroupNotes;
+            }
+        }
+
+        /// <summary>
+        /// Notes for the Group the Initiate has joined.
+        /// </summary>
+        public async Task SetGroupNotesAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strGroupNotes, value) != value)
+                    await OnPropertyChangedAsync(nameof(GroupNotes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -27052,6 +27717,22 @@ namespace Chummer
             }
         }
 
+        public async Task SetCurrentCounterspellingDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intCurrentCounterspellingDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(CurrentCounterspellingDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public int CurrentLiftCarryHits
         {
             get
@@ -27077,6 +27758,22 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intCurrentLiftCarryHits;
+            }
+        }
+
+        public async Task SetCurrentLiftCarryHitsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intCurrentLiftCarryHits, value) != value)
+                    await OnPropertyChangedAsync(nameof(CurrentLiftCarryHits), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -30393,6 +31090,37 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Number of Build Points put into Nuyen.
+        /// </summary>
+        public async Task SetNuyenBPAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                value = Math.Max(Math.Min(value, await GetTotalNuyenMaximumBPAsync(token).ConfigureAwait(false)), 0);
+                if (_decNuyenBP == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decNuyenBP = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+                await OnPropertyChangedAsync(nameof(NuyenBP), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public decimal TotalNuyenMaximumBP
         {
             get
@@ -32774,9 +33502,53 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnPsycheActive = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Drug Psyche is active
+        /// </summary>
+        public async Task<bool> GetPsycheActiveAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnPsycheActive;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Drug Psyche is active
+        /// </summary>
+        public async Task SetPsycheActiveAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnPsycheActive == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnPsycheActive = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(PsycheActive), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -447,11 +447,29 @@ namespace Chummer.UI.Skills
                             Interlocked.Decrement(ref _intUpdatingSpec);
                         }
 
-                        chkKarma.DoDataBinding("Checked", _objSkill, nameof(Skill.BuyWithKarma), _objMyToken);
+                        chkKarma.RegisterAsyncDataBinding(x => x.Checked, (x, y) => x.Checked = y, _objSkill,
+                            nameof(Skill.BuyWithKarma),
+                            (x, y) => x.CheckedChanged += y,
+                            x => x.GetBuyWithKarmaAsync(_objMyToken),
+                            (x, y) => x.SetBuyWithKarmaAsync(y, _objMyToken),
+                            _objMyToken,
+                            _objMyToken);
                     }
 
-                    nudSkill.DoDataBinding("Value", _objSkill, nameof(Skill.Base), _objMyToken);
-                    nudKarma.DoDataBinding("Value", _objSkill, nameof(Skill.Karma), _objMyToken);
+                    nudKarma.RegisterAsyncDataBinding(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                        nameof(Skill.Karma),
+                        (x, y) => x.ValueChanged += y,
+                        x => x.GetKarmaAsync(_objMyToken),
+                        (x, y) => x.SetKarmaAsync(y, _objMyToken),
+                        _objMyToken,
+                        _objMyToken);
+                    nudSkill.RegisterAsyncDataBinding(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                        nameof(Skill.Base),
+                        (x, y) => x.ValueChanged += y,
+                        x => x.GetBaseAsync(_objMyToken),
+                        (x, y) => x.SetBaseAsync(y, _objMyToken),
+                        _objMyToken,
+                        _objMyToken);
                 }
 
                 this.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
@@ -633,15 +651,29 @@ namespace Chummer.UI.Skills
                         Interlocked.Decrement(ref _intUpdatingSpec);
                     }
 
-                    await chkKarma
-                          .DoDataBindingAsync("Checked", _objSkill, nameof(Skill.BuyWithKarma), token)
-                          .ConfigureAwait(false);
+                    await chkKarma.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objSkill,
+                        nameof(Skill.BuyWithKarma),
+                        (x, y) => x.CheckedChanged += y,
+                        x => x.GetBuyWithKarmaAsync(_objMyToken),
+                        (x, y) => x.SetBuyWithKarmaAsync(y, _objMyToken),
+                        _objMyToken,
+                        _objMyToken).ConfigureAwait(false);
                 }
 
-                await nudSkill.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Base), token)
-                              .ConfigureAwait(false);
-                await nudKarma.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Karma), token)
-                              .ConfigureAwait(false);
+                await nudKarma.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                    nameof(Skill.Karma),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetKarmaAsync(_objMyToken),
+                    (x, y) => x.SetKarmaAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
+                await nudSkill.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                    nameof(Skill.Base),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetBaseAsync(_objMyToken),
+                    (x, y) => x.SetBaseAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
             }
 
             await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,

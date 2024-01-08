@@ -1772,9 +1772,16 @@ namespace Chummer
                                                                 token: token)
                            .ConfigureAwait(false);
 
-            await cboBuildMethod
-                  .DoDataBindingAsync("SelectedValue", _objCharacterSettings, nameof(CharacterSettings.BuildMethod),
-                                      token).ConfigureAwait(false);
+            await cboBuildMethod.RegisterAsyncDataBindingWithDelayAsync(
+                x => (CharacterBuildMethod)x.SelectedValue,
+                (x, y) => x.SelectedValue = y, _objCharacterSettings,
+                nameof(CharacterSettings.BuildMethod),
+                (x, y) => x.SelectedValueChanged += y,
+                x => x.GetBuildMethodAsync(token),
+                (x, y) => x.SetBuildMethodAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
             await lblPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                        nameof(CharacterSettings
                                                                                   .BuildMethodUsesPriorityTables),
@@ -1801,9 +1808,13 @@ namespace Chummer
                                                                     x => x.GetBuildMethodIsPriorityAsync(token)
                                                                           ,
                                                                     token: token).ConfigureAwait(false);
-            await txtPriorities
-                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.PriorityArray), token)
-                  .ConfigureAwait(false);
+            await txtPriorities.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.PriorityArray),
+                (x, y) => x.TextChanged += y,
+                x => x.GetPriorityArrayAsync(token),
+                (x, y) => x.SetPriorityArrayAsync(y, token),
+                1000, token, token).ConfigureAwait(false);
             await lblSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings.BuildMethodIsSumtoTen),
                                                                   x => x.GetBuildMethodIsSumtoTenAsync(token),
@@ -1861,33 +1872,86 @@ namespace Chummer
             await nudMaxKnowledgeSkillRatingCreate
                   .DoDataBindingAsync("Maximum", _objCharacterSettings,
                                       nameof(CharacterSettings.MaxKnowledgeSkillRating), token).ConfigureAwait(false);
-            await txtContactPoints
-                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.ContactPointsExpression),
-                                      token).ConfigureAwait(false);
-            await txtKnowledgePoints
-                  .DoDataBindingAsync("Text", _objCharacterSettings,
-                                      nameof(CharacterSettings.KnowledgePointsExpression), token).ConfigureAwait(false);
-            await txtRegisteredSpriteLimit
-                  .DoDataBindingAsync("Text", _objCharacterSettings,
-                                      nameof(CharacterSettings.RegisteredSpriteExpression), token)
-                  .ConfigureAwait(false);
-            await txtBoundSpiritLimit
-                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.BoundSpiritExpression),
-                                      token).ConfigureAwait(false);
-            await txtEssenceModifierPostExpression
-                  .DoDataBindingAsync("Text", _objCharacterSettings,
-                                      nameof(CharacterSettings.EssenceModifierPostExpression), token)
-                  .ConfigureAwait(false);
-            await txtLiftLimit
-                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.LiftLimitExpression),
-                                      token).ConfigureAwait(false);
-            await txtCarryLimit
-                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.CarryLimitExpression),
-                                      token).ConfigureAwait(false);
-            await txtEncumbranceInterval
-                  .DoDataBindingAsync("Text", _objCharacterSettings,
-                                      nameof(CharacterSettings.EncumbranceIntervalExpression), token)
-                  .ConfigureAwait(false);
+            await txtContactPoints.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.ContactPointsExpression),
+                (x, y) => x.TextChanged += y,
+                x => x.GetContactPointsExpressionAsync(token),
+                (x, y) => x.SetContactPointsExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
+            await txtKnowledgePoints.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.KnowledgePointsExpression),
+                (x, y) => x.TextChanged += y,
+                x => x.GetKnowledgePointsExpressionAsync(token),
+                (x, y) => x.SetKnowledgePointsExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
+            await txtRegisteredSpriteLimit.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.RegisteredSpriteExpression),
+                (x, y) => x.TextChanged += y,
+                x => x.GetRegisteredSpriteExpressionAsync(token),
+                (x, y) => x.SetRegisteredSpriteExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
+            await txtBoundSpiritLimit.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.BoundSpiritExpression),
+                (x, y) => x.TextChanged += y,
+                x => x.GetBoundSpiritExpressionAsync(token),
+                (x, y) => x.SetBoundSpiritExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
+            await txtEssenceModifierPostExpression.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.EssenceModifierPostExpression),
+                (x, y) => x.TextChanged += y,
+                x => x.GetEssenceModifierPostExpressionAsync(token),
+                (x, y) => x.SetEssenceModifierPostExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
+            await txtLiftLimit.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.LiftLimitExpression),
+                (x, y) => x.TextChanged += y,
+                x => x.GetLiftLimitExpressionAsync(token),
+                (x, y) => x.SetLiftLimitExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
+            await txtCarryLimit.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.CarryLimitExpression),
+                (x, y) => x.TextChanged += y,
+                x => x.GetCarryLimitExpressionAsync(token),
+                (x, y) => x.SetCarryLimitExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
+            await txtEncumbranceInterval.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.EncumbranceIntervalExpression),
+                (x, y) => x.TextChanged += y,
+                x => x.GetEncumbranceIntervalExpressionAsync(token),
+                (x, y) => x.SetEncumbranceIntervalExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
             await nudWeightDecimals
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.WeightDecimals), token)
                   .ConfigureAwait(false);
@@ -1983,22 +2047,30 @@ namespace Chummer
                   .DoDataBindingAsync("Value", _objCharacterSettings,
                                       nameof(CharacterSettings.CyberlimbAttributeBonusCap), token)
                   .ConfigureAwait(false);
-            await chkRedlinerLimbsSkull
-                  .DoNegatableDataBindingAsync("Checked", _objCharacterSettings,
-                                               nameof(CharacterSettings.RedlinerExcludesSkull), token)
-                  .ConfigureAwait(false);
-            await chkRedlinerLimbsTorso
-                  .DoNegatableDataBindingAsync("Checked", _objCharacterSettings,
-                                               nameof(CharacterSettings.RedlinerExcludesTorso), token)
-                  .ConfigureAwait(false);
-            await chkRedlinerLimbsArms
-                  .DoNegatableDataBindingAsync("Checked", _objCharacterSettings,
-                                               nameof(CharacterSettings.RedlinerExcludesArms), token)
-                  .ConfigureAwait(false);
-            await chkRedlinerLimbsLegs
-                  .DoNegatableDataBindingAsync("Checked", _objCharacterSettings,
-                                               nameof(CharacterSettings.RedlinerExcludesLegs), token)
-                  .ConfigureAwait(false);
+            await chkRedlinerLimbsSkull.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.RedlinerExcludesSkull),
+                (x, y) => x.CheckedChanged += y,
+                async x => !await x.GetRedlinerExcludesSkullAsync(token).ConfigureAwait(false),
+                (x, y) => x.SetRedlinerExcludesSkullAsync(!y, token), token, token).ConfigureAwait(false);
+            await chkRedlinerLimbsTorso.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.RedlinerExcludesTorso),
+                (x, y) => x.CheckedChanged += y,
+                async x => !await x.GetRedlinerExcludesTorsoAsync(token).ConfigureAwait(false),
+                (x, y) => x.SetRedlinerExcludesTorsoAsync(!y, token), token, token).ConfigureAwait(false);
+            await chkRedlinerLimbsArms.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.RedlinerExcludesArms),
+                (x, y) => x.CheckedChanged += y,
+                async x => !await x.GetRedlinerExcludesArmsAsync(token).ConfigureAwait(false),
+                (x, y) => x.SetRedlinerExcludesArmsAsync(!y, token), token, token).ConfigureAwait(false);
+            await chkRedlinerLimbsLegs.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.RedlinerExcludesLegs),
+                (x, y) => x.CheckedChanged += y,
+                async x => !await x.GetRedlinerExcludesLegsAsync(token).ConfigureAwait(false),
+                (x, y) => x.SetRedlinerExcludesLegsAsync(!y, token), token, token).ConfigureAwait(false);
 
             await nudNuyenDecimalsMaximum
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxNuyenDecimals), token)
@@ -2200,10 +2272,14 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.AllowCyberwareESSDiscounts), token)
                   .ConfigureAwait(false);
-            await chkAllowInitiation
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.AllowInitiationInCreateMode), token)
-                  .ConfigureAwait(false);
+            await chkAllowInitiation.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.AllowInitiationInCreateMode),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetAllowInitiationInCreateModeAsync(token),
+                (x, y) => x.SetAllowInitiationInCreateModeAsync(y, token),
+                token,
+                token).ConfigureAwait(false);
             await nudMaxSkillRating
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRating), token)
                   .ConfigureAwait(false);

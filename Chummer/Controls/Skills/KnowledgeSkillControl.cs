@@ -239,7 +239,15 @@ namespace Chummer.UI.Skills
                                                              nameof(KnowledgeSkill.AllowTypeChange),
                                                              x => x.GetAllowTypeChangeAsync(_objMyToken),
                                                              _objMyToken);
-                cboType.DoDataBinding("SelectedValue", _objSkill, nameof(KnowledgeSkill.Type), _objMyToken);
+                cboType.RegisterAsyncDataBindingWithDelay(x => x.SelectedValue?.ToString() ?? string.Empty,
+                    (x, y) => x.SelectedValue = y, _objSkill,
+                    nameof(KnowledgeSkill.Type),
+                    (x, y) => x.SelectedValueChanged += y,
+                    x => x.GetTypeAsync(_objMyToken),
+                    (x, y) => x.SetTypeAsync(y, _objMyToken),
+                    1000,
+                    _objMyToken,
+                    _objMyToken);
 
                 lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = !y, _objSkill,
                                                              nameof(KnowledgeSkill.AllowNameChange),
@@ -387,10 +395,34 @@ namespace Chummer.UI.Skills
                         Interlocked.Decrement(ref _intUpdatingSpec);
                     }
 
-                    nudSkill.DoDataBinding("Value", _objSkill, nameof(Skill.Base), _objMyToken);
-                    nudKarma.DoDataBinding("Value", _objSkill, nameof(Skill.Karma), _objMyToken);
-                    chkNativeLanguage.DoDataBinding("Checked", _objSkill, nameof(Skill.IsNativeLanguage), _objMyToken);
-                    chkKarma.DoDataBinding("Checked", _objSkill, nameof(Skill.BuyWithKarma), _objMyToken);
+                    nudKarma.RegisterAsyncDataBinding(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                        nameof(Skill.Karma),
+                        (x, y) => x.ValueChanged += y,
+                        x => x.GetKarmaAsync(_objMyToken),
+                        (x, y) => x.SetKarmaAsync(y, _objMyToken),
+                        _objMyToken,
+                        _objMyToken);
+                    nudSkill.RegisterAsyncDataBinding(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                        nameof(Skill.Base),
+                        (x, y) => x.ValueChanged += y,
+                        x => x.GetBaseAsync(_objMyToken),
+                        (x, y) => x.SetBaseAsync(y, _objMyToken),
+                        _objMyToken,
+                        _objMyToken);
+                    chkNativeLanguage.RegisterAsyncDataBinding(x => x.Checked, (x, y) => x.Checked = y, _objSkill,
+                        nameof(Skill.IsNativeLanguage),
+                        (x, y) => x.CheckedChanged += y,
+                        x => x.GetIsNativeLanguageAsync(_objMyToken),
+                        (x, y) => x.SetIsNativeLanguageAsync(y, _objMyToken),
+                        _objMyToken,
+                        _objMyToken);
+                    chkKarma.RegisterAsyncDataBinding(x => x.Checked, (x, y) => x.Checked = y, _objSkill,
+                        nameof(Skill.BuyWithKarma),
+                        (x, y) => x.CheckedChanged += y,
+                        x => x.GetBuyWithKarmaAsync(_objMyToken),
+                        (x, y) => x.SetBuyWithKarmaAsync(y, _objMyToken),
+                        _objMyToken,
+                        _objMyToken);
                 }
 
                 if (_objSkill.ForcedName)
@@ -432,9 +464,15 @@ namespace Chummer.UI.Skills
                                                          nameof(KnowledgeSkill.AllowTypeChange),
                                                          x => x.GetAllowTypeChangeAsync(_objMyToken),
                                                          token).ConfigureAwait(false);
-            await cboType
-                  .DoDataBindingAsync("SelectedValue", _objSkill, nameof(KnowledgeSkill.Type), token)
-                  .ConfigureAwait(false);
+            await cboType.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString() ?? string.Empty,
+                (x, y) => x.SelectedValue = y, _objSkill,
+                nameof(KnowledgeSkill.Type),
+                (x, y) => x.SelectedValueChanged += y,
+                x => x.GetTypeAsync(_objMyToken),
+                (x, y) => x.SetTypeAsync(y, _objMyToken),
+                1000,
+                _objMyToken,
+                _objMyToken).ConfigureAwait(false);
 
             await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objSkill,
                                                          nameof(KnowledgeSkill.AllowNameChange),
@@ -580,15 +618,35 @@ namespace Chummer.UI.Skills
                     Interlocked.Decrement(ref _intUpdatingSpec);
                 }
 
-                await nudSkill.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Base), token)
-                              .ConfigureAwait(false);
-                await nudKarma.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Karma), token)
-                              .ConfigureAwait(false);
-                await chkNativeLanguage
-                      .DoDataBindingAsync("Checked", _objSkill, nameof(Skill.IsNativeLanguage), token)
-                      .ConfigureAwait(false);
-                await chkKarma.DoDataBindingAsync("Checked", _objSkill, nameof(Skill.BuyWithKarma), token)
-                              .ConfigureAwait(false);
+                await nudKarma.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                    nameof(Skill.Karma),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetKarmaAsync(_objMyToken),
+                    (x, y) => x.SetKarmaAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
+                await nudSkill.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                    nameof(Skill.Base),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetBaseAsync(_objMyToken),
+                    (x, y) => x.SetBaseAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
+                await chkNativeLanguage.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                    _objSkill,
+                    nameof(Skill.IsNativeLanguage),
+                    (x, y) => x.CheckedChanged += y,
+                    x => x.GetIsNativeLanguageAsync(_objMyToken),
+                    (x, y) => x.SetIsNativeLanguageAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
+                await chkKarma.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objSkill,
+                    nameof(Skill.BuyWithKarma),
+                    (x, y) => x.CheckedChanged += y,
+                    x => x.GetBuyWithKarmaAsync(_objMyToken),
+                    (x, y) => x.SetBuyWithKarmaAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
             }
 
             if (_objSkill.ForcedName)

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -425,16 +426,22 @@ namespace Chummer
                 await cboMetatype.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
             }
 
-            await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(Contact.Name), token).ConfigureAwait(false);
+            await txtContactName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                _objContact,
+                nameof(Contact.Name),
+                (x, y) => x.TextChanged += y,
+                x => x.GetNameAsync(token),
+                (x, y) => x.SetNameAsync(y, token),
+                1000, token, token).ConfigureAwait(false);
             await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.BackColor = y, _objContact,
                     nameof(Contact.PreferredColor), x => x.GetPreferredColorAsync(_objMyToken), token)
                 .ConfigureAwait(false);
 
             // Properties controllable by the character themselves
             await txtContactName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                nameof(_objContact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token).ConfigureAwait(false);
+                nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token).ConfigureAwait(false);
             await cboMetatype.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                nameof(_objContact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token).ConfigureAwait(false);
+                nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token).ConfigureAwait(false);
         }
 
         #endregion Methods

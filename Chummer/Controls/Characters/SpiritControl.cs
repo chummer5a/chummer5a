@@ -69,13 +69,31 @@ namespace Chummer
                 await nudForce.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit.CharacterObject,
                         nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
-                await chkBound.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Bound), token: _objMyToken).ConfigureAwait(false);
+                await chkBound.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                    _objSpirit,
+                    nameof(Spirit.Bound),
+                    (x, y) => x.CheckedChanged += y,
+                    x => x.GetBoundAsync(_objMyToken),
+                    (x, y) => x.SetBoundAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
                 await chkBound.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit.CharacterObject,
                         nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
-                await cboSpiritName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.Name), token: _objMyToken).ConfigureAwait(false);
-                await txtCritterName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.CritterName), token: _objMyToken)
-                    .ConfigureAwait(false);
+                await cboSpiritName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                    _objSpirit,
+                    nameof(Spirit.Name),
+                    (x, y) => x.TextChanged += y,
+                    x => x.GetNameAsync(_objMyToken),
+                    (x, y) => x.SetNameAsync(y, _objMyToken),
+                    1000, _objMyToken, _objMyToken).ConfigureAwait(false);
+                await txtCritterName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
+                    _objSpirit,
+                    nameof(Spirit.CritterName),
+                    (x, y) => x.TextChanged += y,
+                    x => x.GetCritterNameAsync(_objMyToken),
+                    (x, y) => x.SetCritterNameAsync(y, _objMyToken),
+                    1000, _objMyToken, _objMyToken).ConfigureAwait(false);
                 await txtCritterName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit,
                         nameof(Spirit.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
@@ -85,14 +103,33 @@ namespace Chummer
                             ? x.GetMaxSpiritForceAsync(_objMyToken)
                             : x.GetMaxSpriteLevelAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
-                await nudServices.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.ServicesOwed), token: _objMyToken)
-                    .ConfigureAwait(false);
-                await nudForce.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.Force), token: _objMyToken).ConfigureAwait(false);
+                await nudServices.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    _objSpirit,
+                    nameof(Spirit.ServicesOwed),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetServicesOwedAsync(_objMyToken),
+                    (x, y) => x.SetServicesOwedAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
+                await nudForce.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    _objSpirit,
+                    nameof(Spirit.Force),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetForceAsync(_objMyToken),
+                    (x, y) => x.SetForceAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
                 await chkFettered.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit,
                         nameof(Spirit.AllowFettering), x => x.GetAllowFetteringAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
-                await chkFettered.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Fettered), token: _objMyToken)
-                    .ConfigureAwait(false);
+                await chkFettered.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                    _objSpirit,
+                    nameof(Spirit.Fettered),
+                    (x, y) => x.CheckedChanged += y,
+                    x => x.GetFetteredAsync(_objMyToken),
+                    (x, y) => x.SetFetteredAsync(y, _objMyToken),
+                    _objMyToken,
+                    _objMyToken).ConfigureAwait(false);
                 if (blnIsSpirit)
                 {
                     string strText = await LanguageManager.GetStringAsync("Label_Spirit_Force", token: _objMyToken).ConfigureAwait(false);

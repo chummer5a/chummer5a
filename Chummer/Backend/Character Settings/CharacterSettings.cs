@@ -4614,6 +4614,25 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Method being used to build the character.
+        /// </summary>
+        public async Task SetBuildMethodAsync(CharacterBuildMethod value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (InterlockedExtensions.Exchange(ref _eBuildMethod, value) != value)
+                    await OnPropertyChangedAsync(nameof(BuildMethod), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool BuildMethodUsesPriorityTables
         {
             get
@@ -4664,6 +4683,37 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _strPriorityArray, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// The priority configuration used in Priority mode.
+        /// </summary>
+        public async Task<string> GetPriorityArrayAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityArray;
+            }
+        }
+
+        /// <summary>
+        /// The priority configuration used in Priority mode.
+        /// </summary>
+        public async Task SetPriorityArrayAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityArray, value) != value)
+                    await OnPropertyChangedAsync(nameof(PriorityArray), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4899,6 +4949,11 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (value == _setRedlinerExcludes.Contains("skull"))
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (value)
@@ -4906,17 +4961,88 @@ namespace Chummer
                         if (_setRedlinerExcludes.Contains("skull"))
                             return;
                         using (LockObject.EnterWriteLock())
-                            _setRedlinerExcludes.Add("skull");
+                        {
+                            if (!_setRedlinerExcludes.Add("skull"))
+                                return;
+                        }
                     }
                     else
                     {
                         if (!_setRedlinerExcludes.Contains("skull"))
                             return;
                         using (LockObject.EnterWriteLock())
-                            _setRedlinerExcludes.Remove("skull");
+                        {
+                            if (!_setRedlinerExcludes.Remove("skull"))
+                                return;
+                        }
                     }
                     this.OnMultiplePropertyChanged(nameof(RedlinerExcludesSkull), nameof(RedlinerExcludes));
                 }
+            }
+        }
+
+        public async Task<bool> GetRedlinerExcludesSkullAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _setRedlinerExcludes.Contains("skull");
+            }
+        }
+
+        public async Task SetRedlinerExcludesSkullAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _setRedlinerExcludes.Contains("skull"))
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value)
+                {
+                    if (_setRedlinerExcludes.Contains("skull"))
+                        return;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!_setRedlinerExcludes.Add("skull"))
+                            return;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    if (!_setRedlinerExcludes.Contains("skull"))
+                        return;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!_setRedlinerExcludes.Remove("skull"))
+                            return;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                await this.OnMultiplePropertyChangedAsync(token, nameof(RedlinerExcludesSkull), nameof(RedlinerExcludes)).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4925,10 +5051,15 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return RedlinerExcludes.Contains("torso");
+                    return _setRedlinerExcludes.Contains("torso");
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (value == _setRedlinerExcludes.Contains("torso"))
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (value)
@@ -4936,17 +5067,88 @@ namespace Chummer
                         if (_setRedlinerExcludes.Contains("torso"))
                             return;
                         using (LockObject.EnterWriteLock())
-                            _setRedlinerExcludes.Add("torso");
+                        {
+                            if (!_setRedlinerExcludes.Add("torso"))
+                                return;
+                        }
                     }
                     else
                     {
                         if (!_setRedlinerExcludes.Contains("torso"))
                             return;
                         using (LockObject.EnterWriteLock())
-                            _setRedlinerExcludes.Remove("torso");
+                        {
+                            if (!_setRedlinerExcludes.Remove("torso"))
+                                return;
+                        }
                     }
                     this.OnMultiplePropertyChanged(nameof(RedlinerExcludesTorso), nameof(RedlinerExcludes));
                 }
+            }
+        }
+
+        public async Task<bool> GetRedlinerExcludesTorsoAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _setRedlinerExcludes.Contains("torso");
+            }
+        }
+
+        public async Task SetRedlinerExcludesTorsoAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _setRedlinerExcludes.Contains("torso"))
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value)
+                {
+                    if (_setRedlinerExcludes.Contains("torso"))
+                        return;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!_setRedlinerExcludes.Add("torso"))
+                            return;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    if (!_setRedlinerExcludes.Contains("torso"))
+                        return;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!_setRedlinerExcludes.Remove("torso"))
+                            return;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                await this.OnMultiplePropertyChangedAsync(token, nameof(RedlinerExcludesSkull), nameof(RedlinerExcludes)).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4955,10 +5157,15 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return RedlinerExcludes.Contains("arm");
+                    return _setRedlinerExcludes.Contains("arm");
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (value == _setRedlinerExcludes.Contains("arm"))
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (value)
@@ -4966,17 +5173,88 @@ namespace Chummer
                         if (_setRedlinerExcludes.Contains("arm"))
                             return;
                         using (LockObject.EnterWriteLock())
-                            _setRedlinerExcludes.Add("arm");
+                        {
+                            if (!_setRedlinerExcludes.Add("arm"))
+                                return;
+                        }
                     }
                     else
                     {
                         if (!_setRedlinerExcludes.Contains("arm"))
                             return;
                         using (LockObject.EnterWriteLock())
-                            _setRedlinerExcludes.Remove("arm");
+                        {
+                            if (!_setRedlinerExcludes.Remove("arm"))
+                                return;
+                        }
                     }
                     this.OnMultiplePropertyChanged(nameof(RedlinerExcludesArms), nameof(RedlinerExcludes));
                 }
+            }
+        }
+
+        public async Task<bool> GetRedlinerExcludesArmsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _setRedlinerExcludes.Contains("arm");
+            }
+        }
+
+        public async Task SetRedlinerExcludesArmsAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _setRedlinerExcludes.Contains("arm"))
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value)
+                {
+                    if (_setRedlinerExcludes.Contains("arm"))
+                        return;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!_setRedlinerExcludes.Add("arm"))
+                            return;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    if (!_setRedlinerExcludes.Contains("arm"))
+                        return;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!_setRedlinerExcludes.Remove("arm"))
+                            return;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                await this.OnMultiplePropertyChangedAsync(token, nameof(RedlinerExcludesSkull), nameof(RedlinerExcludes)).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4985,10 +5263,15 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return RedlinerExcludes.Contains("leg");
+                    return _setRedlinerExcludes.Contains("leg");
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (value == _setRedlinerExcludes.Contains("leg"))
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (value)
@@ -4996,17 +5279,88 @@ namespace Chummer
                         if (_setRedlinerExcludes.Contains("leg"))
                             return;
                         using (LockObject.EnterWriteLock())
-                            _setRedlinerExcludes.Add("leg");
+                        {
+                            if (!_setRedlinerExcludes.Add("leg"))
+                                return;
+                        }
                     }
                     else
                     {
                         if (!_setRedlinerExcludes.Contains("leg"))
                             return;
                         using (LockObject.EnterWriteLock())
-                            _setRedlinerExcludes.Remove("leg");
+                        {
+                            if (!_setRedlinerExcludes.Remove("leg"))
+                                return;
+                        }
                     }
                     this.OnMultiplePropertyChanged(nameof(RedlinerExcludesLegs), nameof(RedlinerExcludes));
                 }
+            }
+        }
+
+        public async Task<bool> GetRedlinerExcludesLegsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _setRedlinerExcludes.Contains("leg");
+            }
+        }
+
+        public async Task SetRedlinerExcludesLegsAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _setRedlinerExcludes.Contains("leg"))
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value)
+                {
+                    if (_setRedlinerExcludes.Contains("leg"))
+                        return;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!_setRedlinerExcludes.Add("leg"))
+                            return;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    if (!_setRedlinerExcludes.Contains("leg"))
+                        return;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!_setRedlinerExcludes.Remove("leg"))
+                            return;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                await this.OnMultiplePropertyChangedAsync(token, nameof(RedlinerExcludesSkull), nameof(RedlinerExcludes)).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5659,6 +6013,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not characters may use Initiation/Submersion in Create mode.
+        /// </summary>
+        public async Task SetAllowInitiationInCreateModeAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAllowInitiationInCreateMode == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnAllowInitiationInCreateMode = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(AllowInitiationInCreateMode), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether or not characters can spend skill points on broken groups.
         /// </summary>
         public bool UsePointsOnBrokenGroups
@@ -5984,6 +6369,26 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The XPath expression to use to determine how many contact points the character has
+        /// </summary>
+        public async Task SetContactPointsExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = value.CleanXPath().Trim('\"');
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strContactPointsExpression, value) != value)
+                    await OnPropertyChangedAsync(nameof(ContactPointsExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The XPath expression to use to determine how many knowledge points the character has
         /// </summary>
         public string KnowledgePointsExpression
@@ -6014,6 +6419,26 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strKnowledgePointsExpression;
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many knowledge points the character has
+        /// </summary>
+        public async Task SetKnowledgePointsExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = value.CleanXPath().Trim('\"');
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strKnowledgePointsExpression, value) != value)
+                    await OnPropertyChangedAsync(nameof(KnowledgePointsExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6109,7 +6534,39 @@ namespace Chummer
         }
 
         /// <summary>
-        /// The XPath expression to use to determine how many sprites a character can bind
+        /// The XPath expression to use to determine how many spirits a character can bind
+        /// </summary>
+        public async Task<string> GetBoundSpiritExpressionAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strBoundSpiritExpression;
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many spirits a character can bind
+        /// </summary>
+        public async Task SetBoundSpiritExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = value.CleanXPath().Trim('\"');
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strBoundSpiritExpression, value) != value)
+                    await OnPropertyChangedAsync(nameof(BoundSpiritExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many sprites a character can register
         /// </summary>
         public string RegisteredSpriteExpression
         {
@@ -6127,6 +6584,38 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many sprites a character can register
+        /// </summary>
+        public async Task<string> GetRegisteredSpriteExpressionAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strRegisteredSpriteExpression;
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many sprites a character can register
+        /// </summary>
+        public async Task SetRegisteredSpriteExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = value.CleanXPath().Trim('\"');
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strRegisteredSpriteExpression, value) != value)
+                    await OnPropertyChangedAsync(nameof(RegisteredSpriteExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6149,6 +6638,38 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use (if any) to modify Essence modifiers after they have all been collected
+        /// </summary>
+        public async Task<string> GetEssenceModifierPostExpressionAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _strEssenceModifierPostExpression;
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use (if any) to modify Essence modifiers after they have all been collected
+        /// </summary>
+        public async Task SetEssenceModifierPostExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = value.CleanXPath().Trim('\"');
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strEssenceModifierPostExpression, value) != value)
+                    await OnPropertyChangedAsync(nameof(EssenceModifierPostExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7227,6 +7748,26 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The XPath expression to use to determine the maximum weight the character can lift in kg
+        /// </summary>
+        public async Task SetLiftLimitExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = value.CleanXPath().Trim('\"');
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strLiftLimitExpression, value) != value)
+                    await OnPropertyChangedAsync(nameof(LiftLimitExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The XPath expression to use to determine the maximum weight the character can carry in kg
         /// </summary>
         public string CarryLimitExpression
@@ -7249,7 +7790,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// The XPath expression to use to determine the maximum weight the character can lift in kg
+        /// The XPath expression to use to determine the maximum weight the character can carry in kg
         /// </summary>
         public async Task<string> GetCarryLimitExpressionAsync(CancellationToken token = default)
         {
@@ -7258,6 +7799,26 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strCarryLimitExpression;
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the maximum weight the character can carry in kg
+        /// </summary>
+        public async Task SetCarryLimitExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = value.CleanXPath().Trim('\"');
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strCarryLimitExpression, value) != value)
+                    await OnPropertyChangedAsync(nameof(CarryLimitExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7293,6 +7854,26 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strEncumbranceIntervalExpression;
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the amount of weight necessary to increase encumbrance penalties by one tick
+        /// </summary>
+        public async Task SetEncumbranceIntervalExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = value.CleanXPath().Trim('\"');
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strEncumbranceIntervalExpression, value) != value)
+                    await OnPropertyChangedAsync(nameof(EncumbranceIntervalExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
